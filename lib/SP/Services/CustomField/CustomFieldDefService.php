@@ -94,6 +94,7 @@ class CustomFieldDefService extends Service
      * @return \SP\DataModel\CustomFieldDefinitionData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function getById($id)
     {

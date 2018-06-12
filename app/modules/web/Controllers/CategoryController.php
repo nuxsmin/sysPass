@@ -143,6 +143,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->view->assign('readonly');
         }
 
+        // FIXME
+        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
         $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId, $this->session));
     }
 

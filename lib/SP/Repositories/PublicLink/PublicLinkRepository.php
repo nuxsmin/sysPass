@@ -116,6 +116,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT PL.id, 
               PL.itemId,
@@ -152,12 +156,16 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return bool
+     * @return int
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM PublicLink WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
@@ -180,13 +188,13 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return mixed
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PublicLinkListData::class);
@@ -214,18 +222,18 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               INNER JOIN Client C ON A.clientId = C.id');
         $queryData->setOrder('PL.dateExpire DESC');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('U.login LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

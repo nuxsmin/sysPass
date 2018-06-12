@@ -27,6 +27,7 @@ namespace SP\Repositories\CustomField;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -116,6 +117,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * @return CustomFieldDefinitionData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
@@ -133,10 +135,15 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        $result = $this->db->doSelect($queryData)->getData();
-        $this->customFieldDefCollection->set($id, $result);
+        $result = $this->db->doSelect($queryData);
 
-        return $result;
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El campo personalizado no existe'));
+        }
+
+        $this->customFieldDefCollection->set($id, $result->getData());
+
+        return $result->getData();
     }
 
     /**
@@ -149,7 +156,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT id, `name`, moduleId, required, `help`, showInList, isEncrypted
+            'SELECT id, `name`, moduleId, required, `help`, showInList, isEncrypted, typeId
               FROM CustomFieldDefinition
               ORDER BY moduleId';
 
@@ -165,23 +172,28 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      *
      * @param array $ids
      *
-     * @return array
+     * @return CustomFieldDefinitionData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT id, `name`, moduleId, required, `help`, showInList, typeId, isEncrypted
               FROM CustomFieldDefinition
-              WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+              WHERE id IN (' . $this->getParamsFromArray($ids) . ') 
+              ORDER BY id';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -196,12 +208,16 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldDefinition WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($ids);
+        $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los campos personalizados'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -260,13 +276,13 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
@@ -274,11 +290,25 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setFrom('CustomFieldDefinition CFD INNER JOIN CustomFieldType CFT ON CFD.typeId = CFT.id');
         $queryData->setOrder('CFD.moduleId');
 
+        if ($itemSearchData->getSeachString() !== '') {
+            $queryData->setWhere('CFD.name LIKE ? OR CFT.name LIKE ?');
+
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParams([$search, $search]);
+        }
+
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParams([$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]);
 
         return $this->db->doSelect($queryData, true);
+    }
+
+    /**
+     * Resets the custom fields collection cache
+     */
+    public function resetCollection()
+    {
+        $this->customFieldDefCollection->clear();
     }
 
     protected function initialize()

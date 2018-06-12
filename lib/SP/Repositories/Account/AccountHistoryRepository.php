@@ -378,13 +378,13 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setSelect('AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted');
@@ -394,17 +394,17 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         ');
         $queryData->setOrder('AH.name, C.name, AH.id DESC');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('AH.name LIKE ? OR C.name LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

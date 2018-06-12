@@ -228,7 +228,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return [];
         }
 
@@ -254,6 +254,10 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+        
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
@@ -296,13 +300,13 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ClientData::class);
@@ -310,17 +314,17 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setFrom('Client');
         $queryData->setOrder('name');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

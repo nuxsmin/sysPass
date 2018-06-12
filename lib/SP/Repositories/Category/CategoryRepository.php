@@ -217,7 +217,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return [];
         }
 
@@ -288,30 +288,30 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setSelect('id, name, description');
         $queryData->setFrom('Category');
         $queryData->setOrder('name');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

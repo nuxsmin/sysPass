@@ -451,6 +451,10 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
 
         $queryData->setQuery('DELETE FROM Account WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
@@ -493,13 +497,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setSelect('Account.id, Account.name, C.name AS clientName, C2.name AS categoryName');
@@ -508,17 +512,17 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         INNER JOIN Category C2 ON Account.categoryId = C2.id');
         $queryData->setOrder('Account.name, C.name');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('Account.name LIKE ? OR C.name LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         }
 
         $queryData->setLimit('?,?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

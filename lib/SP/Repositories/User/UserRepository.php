@@ -298,7 +298,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return [];
         }
 
@@ -351,6 +351,10 @@ class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM User WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
@@ -374,13 +378,13 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
         $queryData->setSelect('U.id,
@@ -396,14 +400,14 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setFrom('User U INNER JOIN UserProfile UP ON U.userProfileId = UP.id INNER JOIN UserGroup UG ON U.userGroupId = UG.id');
         $queryData->setOrder('U.name');
 
-        if ($SearchData->getSeachString() !== '') {
+        if ($itemSearchData->getSeachString() !== '') {
             if ($this->context->getUserData()->getIsAdminApp()) {
                 $queryData->setWhere('U.name LIKE ? OR U.login LIKE ?');
             } else {
                 $queryData->setWhere('U.name LIKE ? OR U.login LIKE ? AND U.isAdminApp = 0');
             }
 
-            $search = '%' . $SearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         } elseif (!$this->context->getUserData()->getIsAdminApp()) {
@@ -411,8 +415,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
         }
 
         $queryData->setLimit('?, ?');
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
     }

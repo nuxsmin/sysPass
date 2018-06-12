@@ -152,6 +152,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->view->assign('readonly');
         }
 
+        // FIXME
+        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
         $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId, $this->session));
     }
 

@@ -124,7 +124,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return 0;
         }
 
@@ -151,13 +151,13 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
         $query = /** @lang SQL */
             'SELECT AT.id,
@@ -170,8 +170,8 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
 
-        if ($SearchData->getSeachString() !== '') {
-            $search = '%' . $SearchData->getSeachString() . '%';
+        if ($itemSearchData->getSeachString() !== '') {
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $query .= ' WHERE U.login LIKE ?';
 
             $queryData->addParam($search);
@@ -179,7 +179,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData->setQuery($query);
         $queryData->setOrder('U.login, AT.actionId');
-        $queryData->setLimit('?, ?', [$SearchData->getLimitStart(), $SearchData->getLimitCount()]);
+        $queryData->setLimit('?, ?', [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]);
 
         return $this->db->doSelect($queryData, true);
     }

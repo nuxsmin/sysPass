@@ -144,6 +144,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('readonly');
         }
 
+        // FIXME
+        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
         $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $clientId, $this->session));
     }
 

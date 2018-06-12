@@ -363,6 +363,30 @@
 		<field name="text">Área de Texto</field>
 	</row>
 	</table_data>
+    <table_data name="CustomFieldDefinition">
+        <row>
+            <field name="id">1</field>
+            <field name="name">Prueba</field>
+            <field name="moduleId">10</field>
+            <field name="field" xsi:nil="true" />
+            <field name="required">1</field>
+            <field name="help">Ayuda</field>
+            <field name="showInList">0</field>
+            <field name="typeId">1</field>
+            <field name="isEncrypted">1</field>
+        </row>
+        <row>
+            <field name="id">2</field>
+            <field name="name">RSA</field>
+            <field name="moduleId">61</field>
+            <field name="field" xsi:nil="true" />
+            <field name="required">0</field>
+            <field name="help"></field>
+            <field name="showInList">0</field>
+            <field name="typeId">2</field>
+            <field name="isEncrypted">0</field>
+        </row>
+    </table_data>
 	<table_data name="UserToUserGroup">
 	<row>
 		<field name="userId">1</field>

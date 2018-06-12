@@ -169,6 +169,10 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      */
     public function deleteAdminBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
@@ -250,6 +254,10 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      */
     public function getByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return [];
+        }
+        
         $query = /** @lang SQL */
             'SELECT id, 
             type,
@@ -282,6 +290,10 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id IN (' . $this->getParamsFromArray($ids) . ') AND sticky = 0');
         $queryData->setParams($ids);

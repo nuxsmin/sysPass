@@ -188,7 +188,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return [];
         }
 
@@ -214,6 +214,10 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Tag WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);

@@ -221,6 +221,10 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
     {
+        if (empty($definitionIds)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId IN (' . $this->getParamsFromArray($definitionIds) . ')');
         $queryData->setParams($definitionIds);
@@ -240,6 +244,10 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function deleteCustomFieldDataBatch(array $ids, $moduleId)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldData
             WHERE itemId IN (' . $this->getParamsFromArray($ids) . ')
@@ -374,7 +382,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             LEFT JOIN CustomFieldData CFD2 ON CFD2.definitionId = CFD.id AND CFD2.itemId = ?
             INNER JOIN CustomFieldType CFT ON CFT.id = CFD.typeId
             WHERE CFD.moduleId = ?
-            ORDER BY CFD.required, CFT.text';
+            ORDER BY CFD.required DESC, CFT.text';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

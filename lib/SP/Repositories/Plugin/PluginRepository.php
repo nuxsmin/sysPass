@@ -168,6 +168,10 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function getByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT id,
             `name`,
