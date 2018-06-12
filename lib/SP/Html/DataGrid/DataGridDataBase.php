@@ -124,7 +124,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function setData(QueryResult $queryResult)
     {
-        $this->_dataCount = $queryResult->getNumRows();
+        $this->_dataCount = $queryResult->getTotalNumRows();
         $this->_data = $queryResult->getDataAsArray();
     }
 
