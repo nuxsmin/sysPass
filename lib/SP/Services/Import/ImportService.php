@@ -29,7 +29,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DbWrapper;
 
 defined('APP_ROOT') || die();
 
@@ -67,19 +66,19 @@ class ImportService extends Service
         $db = $this->dic->get(Database::class);
 
         try {
-            if (!DbWrapper::beginTransaction($db)) {
+            if (!$db->beginTransaction()) {
                 throw new ImportException(__u('No es posible iniciar una transacción'));
             }
 
             $counter = $import->doImport()->getCounter();
 
-            if (!DbWrapper::endTransaction($db)) {
+            if (!$db->endTransaction()) {
                 throw new ImportException(__u('No es posible finalizar una transacción'));
             }
 
             return $counter;
         } catch (\Exception $e) {
-            if (DbWrapper::rollbackTransaction($db)) {
+            if ($db->rollbackTransaction()) {
                 $this->eventDispatcher->notifyEvent('run.import.rollback',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Rollback')))

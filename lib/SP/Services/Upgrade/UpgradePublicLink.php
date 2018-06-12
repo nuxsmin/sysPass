@@ -32,7 +32,6 @@ use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DbWrapper;
 use SP\Storage\Database\QueryData;
 use SP\Util\Util;
 
@@ -67,7 +66,7 @@ class UpgradePublicLink extends Service
         try {
             $publicLinkService = $this->dic->get(PublicLinkService::class);
 
-            if (!DbWrapper::beginTransaction($this->db)) {
+            if (!$this->db->beginTransaction()) {
                 throw new ServiceException(__u('No es posible iniciar una transacción'));
             }
 
@@ -98,11 +97,11 @@ class UpgradePublicLink extends Service
                 );
             }
 
-            if (!DbWrapper::endTransaction($this->db)) {
+            if (!$this->db->endTransaction()) {
                 throw new ServiceException(__u('No es posible finalizar una transacción'));
             }
         } catch (\Exception $e) {
-            DbWrapper::rollbackTransaction($this->db);
+            $this->db->rollbackTransaction();
 
             processException($e);
 

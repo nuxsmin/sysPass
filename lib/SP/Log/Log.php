@@ -26,7 +26,6 @@ namespace SP\Log;
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
-use SP\Storage\Database\DbWrapper;
 use SP\Storage\Database\QueryData;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
@@ -89,8 +88,6 @@ class Log extends ActionLog
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setOnErrorMessage(__('Error al vaciar el registro de eventos', false));
-
-        return DbWrapper::getQuery($Data);
     }
 
     /**

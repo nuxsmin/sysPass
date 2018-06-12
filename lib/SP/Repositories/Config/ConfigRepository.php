@@ -28,7 +28,6 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\Repositories\Repository;
-use SP\Storage\Database\DbWrapper;
 use SP\Storage\Database\QueryData;
 
 /**
@@ -46,7 +45,7 @@ class ConfigRepository extends Repository
      */
     public function updateBatch(array $data)
     {
-        DbWrapper::beginTransaction($this->db);
+        $this->db->beginTransaction();
 
         try {
             foreach ($data as $configData) {
@@ -57,7 +56,7 @@ class ConfigRepository extends Repository
         } catch (ConstraintException $e) {
             debugLog($e->getMessage());
         } finally {
-            return DbWrapper::endTransaction($this->db);
+            return $this->db->endTransaction();
         }
     }
 

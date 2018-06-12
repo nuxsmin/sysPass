@@ -32,7 +32,6 @@ use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DbWrapper;
 use SP\Storage\Database\QueryData;
 use SP\Util\Util;
 
@@ -67,7 +66,7 @@ class UpgradeCustomFieldDefinition extends Service
         $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
 
         try {
-            if (!DbWrapper::beginTransaction($this->db)) {
+            if (!$this->db->beginTransaction()) {
                 throw new ServiceException(__u('No es posible iniciar una transacción'));
             }
 
@@ -93,11 +92,11 @@ class UpgradeCustomFieldDefinition extends Service
                 );
             }
 
-            if (!DbWrapper::endTransaction($this->db)) {
+            if (!$this->db->endTransaction()) {
                 throw new ServiceException(__u('No es posible finalizar una transacción'));
             }
         } catch (\Exception $e) {
-            DbWrapper::rollbackTransaction($this->db);
+            $this->db->rollbackTransaction();
 
             processException($e);
 

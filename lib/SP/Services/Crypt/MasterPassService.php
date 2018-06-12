@@ -33,7 +33,6 @@ use SP\Services\CustomField\CustomFieldCryptService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DbWrapper;
 
 /**
  * Class MasterPassService
@@ -87,7 +86,7 @@ class MasterPassService extends Service
         $db = $this->dic->get(Database::class);
 
         try {
-            if (!DbWrapper::beginTransaction($db)) {
+            if (!$db->beginTransaction()) {
                 throw new ServiceException(__u('No es posible iniciar una transacción'), ServiceException::ERROR);
             }
 
@@ -97,11 +96,11 @@ class MasterPassService extends Service
 
             $this->customFieldCryptService->updateMasterPassword($request);
 
-            if (!DbWrapper::endTransaction($db)) {
+            if (!$db->endTransaction()) {
                 throw new ServiceException(__u('No es posible finalizar una transacción'), ServiceException::ERROR);
             }
         } catch (\Exception $e) {
-            if (DbWrapper::rollbackTransaction($db)) {
+            if ($db->rollbackTransaction()) {
                 $this->eventDispatcher->notifyEvent('update.masterPassword.rollback',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Rollback')))

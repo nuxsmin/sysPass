@@ -110,7 +110,7 @@ class Database implements DatabaseInterface
 
     /**
      * @param QueryData $queryData
-     * @param bool      $fullCount
+     * @param bool $fullCount
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -299,10 +299,50 @@ class Database implements DatabaseInterface
      * @param QueryData $queryData
      *
      * @return \PDOStatement
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function doQueryRaw(QueryData $queryData)
     {
         return $this->prepareQueryData($queryData);
+    }
+
+    /**
+     * Iniciar una transacción
+     *
+     * @return bool
+     * @throws SPException
+     */
+    public function beginTransaction()
+    {
+        $conn = $this->dbHandler->getConnection();
+
+        return !$conn->inTransaction() && $conn->beginTransaction();
+    }
+
+    /**
+     * Finalizar una transacción
+     *
+     * @return bool
+     * @throws SPException
+     */
+    public function endTransaction()
+    {
+        $conn = $this->dbHandler->getConnection();
+
+        return $conn->inTransaction() && $conn->commit();
+    }
+
+    /**
+     * Rollback de una transacción
+     *
+     * @return bool
+     * @throws SPException
+     */
+    public function rollbackTransaction()
+    {
+        $conn = $this->dbHandler->getConnection();
+
+        return $conn->inTransaction() && $conn->rollBack();
     }
 }
