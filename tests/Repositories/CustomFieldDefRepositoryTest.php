@@ -99,9 +99,13 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $this->assertEquals(2, self::$customFieldDefRepository->deleteByIdBatch([1, 2, 3]));
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldDefinition'));
+        $this->assertEquals(1, self::$customFieldDefRepository->deleteByIdBatch([3, 4]));
+        $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
         $this->assertEquals(0, self::$customFieldDefRepository->deleteByIdBatch([]));
+
+        $this->expectException(ConstraintException::class);
+
+        self::$customFieldDefRepository->deleteByIdBatch([1, 2]);
     }
 
     /**
@@ -176,7 +180,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     public function testCreate()
     {
         $data = new CustomFieldDefinitionData();
-        $data->setId(3);
+        $data->setId(4);
         $data->setName('Phone');
         $data->setIsEncrypted(0);
         $data->setHelp('Telefono');
@@ -185,9 +189,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $data->setTypeId(6);
         $data->setShowInList(0);
 
-        $this->assertEquals(3, self::$customFieldDefRepository->create($data));
+        $this->assertEquals(4, self::$customFieldDefRepository->create($data));
 
-        $this->assertEquals($data, self::$customFieldDefRepository->getById(3));
+        $this->assertEquals($data, self::$customFieldDefRepository->getById(4));
     }
 
     /**
@@ -200,7 +204,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
 
         $data = self::$customFieldDefRepository->getAll();
 
-        $this->assertCount(2, $data);
+        $this->assertCount(3, $data);
 
         $expected = new CustomFieldDefinitionData();
         $expected->setId(1);
@@ -239,9 +243,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $result = self::$customFieldDefRepository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
-        $this->assertEquals(1, $result->getNumRows());
-        $this->assertEquals(1, $result->getTotalNumRows());
-        $this->assertCount(1, $data);
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertEquals(2, $result->getTotalNumRows());
+        $this->assertCount(2, $data);
         $this->assertInstanceOf(CustomFieldDefinitionData::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('password', $data[0]->typeName);
@@ -260,9 +264,13 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $this->assertEquals(1, self::$customFieldDefRepository->delete(1));
+        $this->assertEquals(1, self::$customFieldDefRepository->delete(3));
         $this->assertEquals(0, self::$customFieldDefRepository->delete(10));
-        $this->assertEquals(1, $this->conn->getRowCount('CustomFieldDefinition'));
+        $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
+
+        $this->expectException(ConstraintException::class);
+
+        self::$customFieldDefRepository->delete(1);
     }
 
     /**

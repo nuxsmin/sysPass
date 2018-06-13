@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -114,7 +114,7 @@ class ConfigWikiController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::WIKI_CONFIG);
+            $this->checkAccess(Acl::WIKI_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

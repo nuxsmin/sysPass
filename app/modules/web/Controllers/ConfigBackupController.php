@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
@@ -118,7 +118,7 @@ class ConfigBackupController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::BACKUP_CONFIG);
+            $this->checkAccess(Acl::BACKUP_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -58,8 +57,8 @@ class AccessManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function indexAction()
     {
@@ -69,8 +68,8 @@ class AccessManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getGridTabs()
     {
@@ -80,29 +79,29 @@ class AccessManagerController extends ControllerBase
         $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
-        if ($this->checkAccess(ActionsInterface::USER)) {
+        if ($this->checkAccess(Acl::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
         }
 
-        if ($this->checkAccess(ActionsInterface::GROUP)) {
+        if ($this->checkAccess(Acl::GROUP)) {
             $this->tabsGridHelper->addTab($this->getUsersGroupList());
         }
 
-        if ($this->checkAccess(ActionsInterface::PROFILE)) {
+        if ($this->checkAccess(Acl::PROFILE)) {
             $this->tabsGridHelper->addTab($this->getUsersProfileList());
         }
 
-        if ($this->checkAccess(ActionsInterface::AUTHTOKEN)) {
+        if ($this->checkAccess(Acl::AUTHTOKEN)) {
             $this->tabsGridHelper->addTab($this->getApiTokensList());
         }
 
-        if ($this->configData->isPublinksEnabled() && $this->checkAccess(ActionsInterface::PUBLICLINK)) {
+        if ($this->configData->isPublinksEnabled() && $this->checkAccess(Acl::PUBLICLINK)) {
             $this->tabsGridHelper->addTab($this->getPublicLinksList());
         }
 
         $this->eventDispatcher->notifyEvent('show.itemlist.accesses', new Event($this));
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE), Request::analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ACCESS_MANAGE), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }
@@ -111,8 +110,8 @@ class AccessManagerController extends ControllerBase
      * Returns users' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getUsersList()
     {
@@ -124,8 +123,8 @@ class AccessManagerController extends ControllerBase
      * Returns users group data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getUsersGroupList()
     {
@@ -136,8 +135,8 @@ class AccessManagerController extends ControllerBase
      * Returns users profile data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getUsersProfileList()
     {
@@ -160,8 +159,8 @@ class AccessManagerController extends ControllerBase
      * Returns public links data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getPublicLinksList()
     {
@@ -175,6 +174,7 @@ class AccessManagerController extends ControllerBase
     {
         return $this->tabsGridHelper;
     }
+
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

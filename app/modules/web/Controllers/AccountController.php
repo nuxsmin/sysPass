@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
@@ -126,6 +125,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * View action
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -140,7 +140,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
-            $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_VIEW);
+            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_VIEW);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -171,6 +171,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * View public link action
      *
      * @param string $hash Link's hash
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -211,7 +212,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 if ($this->view->useImage) {
                     $this->view->assign('accountPassImage', ImageUtil::convertText($accountData->getPass()));
                 } else {
-                    $this->view->assign('copyPassRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
+                    $this->view->assign('copyPassRoute', Acl::getActionRoute(Acl::ACCOUNT_VIEW_PASS));
                 }
 
                 $this->view->assign('accountData', $accountData);
@@ -245,7 +246,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForBlank(ActionsInterface::ACCOUNT_CREATE);
+            $accountHelper->setViewForBlank(Acl::ACCOUNT_CREATE);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -275,6 +276,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Copy action
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -288,7 +290,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withTagsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_COPY);
+            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_COPY);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -318,6 +320,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Edit action
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -331,7 +334,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withTagsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_EDIT);
+            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_EDIT);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -363,6 +366,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Delete action
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -375,7 +379,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_DELETE);
+            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_DELETE);
 
             $this->view->addTemplate('account');
             $this->view->assign('title',
@@ -405,6 +409,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -417,7 +422,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse);
 
             $accountHelper = $this->dic->get(AccountHelper::class);
-            $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_EDIT_PASS);
+            $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_EDIT_PASS);
 
             $this->view->addTemplate('account-editpass');
             $this->view->assign('title',
@@ -449,6 +454,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -459,7 +465,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountHistoryData = $accountHistoryService->getById($id);
 
             $accountHistoryHelper = $this->dic->get(AccountHistoryHelper::class);
-            $accountHistoryHelper->setView($accountHistoryData, ActionsInterface::ACCOUNT_HISTORY_VIEW);
+            $accountHistoryHelper->setView($accountHistoryData, Acl::ACCOUNT_HISTORY_VIEW);
 
             $this->view->addTemplate('account-history');
 
@@ -491,6 +497,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
      * @param int $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -499,7 +506,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         try {
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
-            $accountHelper->setViewForRequest($this->accountService->getById($id), ActionsInterface::ACCOUNT_REQUEST);
+            $accountHelper->setViewForRequest($this->accountService->getById($id), Acl::ACCOUNT_REQUEST);
 
             $this->view->addTemplate('account-request');
             $this->view->assign('formRoute', 'account/saveRequest');
@@ -521,7 +528,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Display account's password
      *
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
      * @param int $parentId
      */
     public function viewPassAction($id, $parentId)
@@ -594,7 +601,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
+     *
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -623,7 +631,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
+     *
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -664,14 +673,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $form = new AccountForm();
-            $form->validate(ActionsInterface::ACCOUNT_CREATE);
+            $form->validate(Acl::ACCOUNT_CREATE);
 
             $itemData = $form->getItemData();
             $itemData->userId = $this->userData->getId();
 
             $accountId = $this->accountService->create($itemData);
 
-            $this->addCustomFieldsForItem(ActionsInterface::ACCOUNT, $accountId);
+            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId);
 
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
@@ -685,7 +694,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->returnJsonResponseData(
                 [
                     'itemId' => $accountId,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT)
+                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_EDIT)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Cuenta creada')
@@ -703,6 +712,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -710,13 +720,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $form = new AccountForm($id);
-            $form->validate(ActionsInterface::ACCOUNT_EDIT);
+            $form->validate(Acl::ACCOUNT_EDIT);
 
             $itemData = $form->getItemData();
 
             $this->accountService->update($itemData);
 
-            $this->updateCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id);
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
@@ -730,7 +740,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Cuenta actualizada')
@@ -748,6 +758,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -755,7 +766,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $form = new AccountForm($id);
-            $form->validate(ActionsInterface::ACCOUNT_EDIT_PASS);
+            $form->validate(Acl::ACCOUNT_EDIT_PASS);
 
             $this->accountService->editPassword($form->getItemData());
 
@@ -771,7 +782,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Clave actualizada')
@@ -790,6 +801,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      *
      * @param int $historyId Account's history ID
      * @param int $id        Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -810,7 +822,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)
+                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Cuenta restaurada')
@@ -826,6 +838,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves delete action
      *
      * @param int $id Account's ID
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -835,7 +848,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
@@ -847,7 +860,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
                 $this->accountService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account',
                     new Event($this, EventMessage::factory()
@@ -869,6 +882,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves a request action
      *
      * @param $id Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -899,7 +913,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
+                    'nextAction' => Acl::getActionRoute(Acl::ACCOUNT)
                 ],
                 JsonResponse::JSON_SUCCESS,
                 __u('Solicitud realizada')

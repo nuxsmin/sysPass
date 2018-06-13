@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -44,6 +44,9 @@ class ItemsController extends SimpleControllerBase
      * Devolver las cuentas visibles por el usuario
      *
      * @param int $accountId
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function accountsUserAction($accountId = null)
     {
@@ -101,6 +104,7 @@ class ItemsController extends SimpleControllerBase
      * Preparar los elementos para devolverlos
      *
      * @param array $items
+     *
      * @return array
      */
     protected function prepareItems(array $items)

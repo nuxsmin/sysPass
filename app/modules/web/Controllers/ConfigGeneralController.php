@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Config\ConfigUtil;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -169,7 +169,7 @@ class ConfigGeneralController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
+            $this->checkAccess(Acl::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

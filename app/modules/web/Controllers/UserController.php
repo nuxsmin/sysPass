@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -67,7 +66,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_SEARCH)) {
             return;
         }
 
@@ -100,7 +99,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
             return;
         }
 
@@ -141,7 +140,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('profiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true
             || ($this->configData->isDemoEnabled() && $user->getLogin() === 'demo')
@@ -171,9 +170,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('readonly');
         }
 
-        // FIXME
-        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::USER, $userId, $this->session));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::USER, $userId, $this->session));
     }
 
     /**
@@ -185,7 +183,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
             return;
         }
 
@@ -217,7 +215,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
     public function editPassAction($id)
     {
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS, $this->userData->getId())) {
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $this->userData->getId())) {
             return;
         }
 
@@ -254,7 +252,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
             return;
         }
 
@@ -264,7 +262,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
             if ($id === null) {
                 $this->userService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
+                $this->deleteCustomFieldsForItem(Acl::USER, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.user.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Usuarios eliminados')))
@@ -274,7 +272,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
             } else {
                 $this->userService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
+                $this->deleteCustomFieldsForItem(Acl::USER, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.user',
                     new Event($this, EventMessage::factory()
@@ -296,19 +294,19 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
             return;
         }
 
         try {
             $form = new UserForm();
-            $form->validate(ActionsInterface::USER_CREATE);
+            $form->validate(Acl::USER_CREATE);
 
             $itemData = $form->getItemData();
 
             $id = $this->userService->create($itemData);
 
-            $this->addCustomFieldsForItem(ActionsInterface::USER, $id);
+            $this->addCustomFieldsForItem(Acl::USER, $id);
 
             $this->eventDispatcher->notifyEvent('create.user',
                 new Event($this, EventMessage::factory()
@@ -360,19 +358,19 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
             return;
         }
 
         try {
             $form = new UserForm($id);
-            $form->validate(ActionsInterface::USER_EDIT);
+            $form->validate(Acl::USER_EDIT);
 
             $itemData = $form->getItemData();
 
             $this->userService->update($itemData);
 
-            $this->updateCustomFieldsForItem(ActionsInterface::USER, $id);
+            $this->updateCustomFieldsForItem(Acl::USER, $id);
 
             $this->eventDispatcher->notifyEvent('edit.user',
                 new Event($this, EventMessage::factory()
@@ -399,13 +397,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditPassAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS)) {
             return;
         }
 
         try {
             $form = new UserForm($id);
-            $form->validate(ActionsInterface::USER_EDIT_PASS);
+            $form->validate(Acl::USER_EDIT_PASS);
 
             $itemData = $form->getItemData();
 
@@ -436,7 +434,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::USER_VIEW)) {
             return;
         }
 

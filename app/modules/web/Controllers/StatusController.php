@@ -40,6 +40,8 @@ class StatusController extends SimpleControllerBase
 
     /**
      * checkReleaseAction
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkReleaseAction()
     {
@@ -85,6 +87,8 @@ class StatusController extends SimpleControllerBase
 
     /**
      * checkNoticesAction
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkNoticesAction()
     {

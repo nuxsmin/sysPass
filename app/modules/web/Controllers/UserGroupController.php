@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -68,7 +67,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_SEARCH)) {
             return;
         }
 
@@ -101,7 +100,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
             return;
         }
 
@@ -142,7 +141,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         $this->view->assign('usedBy', $this->userGroupService->getUsageByUsers($userGroupId));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -152,9 +151,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->view->assign('readonly');
         }
 
-        // FIXME
-        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId, $this->session));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::GROUP, $userGroupId, $this->session));
     }
 
     /**
@@ -166,7 +164,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
             return;
         }
 
@@ -197,7 +195,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_DELETE)) {
             return;
         }
 
@@ -205,7 +203,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             if ($id === null) {
                 $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
+                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userGroup.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Grupos eliminados')))
@@ -215,7 +213,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             } else {
                 $this->userGroupService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
+                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userGroup',
                     new Event($this, EventMessage::factory()
@@ -237,19 +235,19 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
             return;
         }
 
         try {
             $form = new UserGroupForm();
-            $form->validate(ActionsInterface::GROUP_CREATE);
+            $form->validate(Acl::GROUP_CREATE);
 
             $groupData = $form->getItemData();
 
             $id = $this->userGroupService->create($groupData, $groupData->getUsers());
 
-            $this->addCustomFieldsForItem(ActionsInterface::GROUP, $id);
+            $this->addCustomFieldsForItem(Acl::GROUP, $id);
 
             $this->eventDispatcher->notifyEvent('create.userGroup',
                 new Event($this, EventMessage::factory()
@@ -277,19 +275,19 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
             return;
         }
 
         try {
             $form = new UserGroupForm($id);
-            $form->validate(ActionsInterface::GROUP_EDIT);
+            $form->validate(Acl::GROUP_EDIT);
 
             $groupData = $form->getItemData();
 
             $this->userGroupService->update($groupData);
 
-            $this->updateCustomFieldsForItem(ActionsInterface::GROUP, $id);
+            $this->updateCustomFieldsForItem(Acl::GROUP, $id);
 
             $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()
@@ -316,7 +314,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::GROUP_VIEW)) {
             return;
         }
 

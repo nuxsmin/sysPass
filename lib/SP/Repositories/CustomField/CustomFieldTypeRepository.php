@@ -29,6 +29,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\DataModel\ItemSearchData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -118,6 +119,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      *
      * @return CustomFieldTypeData
      * @throws ConstraintException
+     * @throws NoSuchItemException
      * @throws QueryException
      */
     public function getById($id)
@@ -127,7 +129,13 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        $result = $this->db->doSelect($queryData);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Tipo de campo no encontrado'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -163,15 +171,22 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      *
      * @param array $ids
      *
-     * @return void
+     * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->delete($id);
+        if (empty($ids)) {
+            return 0;
         }
+
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM CustomFieldType WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**

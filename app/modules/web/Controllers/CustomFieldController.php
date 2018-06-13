@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -63,7 +62,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_SEARCH)) {
             return;
         }
 
@@ -96,7 +95,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
             return;
         }
 
@@ -137,7 +136,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         $this->view->assign('modules', SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())->getItemsFromArraySelected([$customField->getModuleId()]));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -157,7 +156,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
             return;
         }
 
@@ -188,7 +187,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
             return;
         }
 
@@ -220,13 +219,13 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
             return;
         }
 
         try {
             $form = new CustomFieldDefForm();
-            $form->validate(ActionsInterface::CUSTOMFIELD_CREATE);
+            $form->validate(Acl::CUSTOMFIELD_CREATE);
 
             $itemData = $form->getItemData();
 
@@ -255,13 +254,13 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
             return;
         }
 
         try {
             $form = new CustomFieldDefForm($id);
-            $form->validate(ActionsInterface::CUSTOMFIELD_EDIT);
+            $form->validate(Acl::CUSTOMFIELD_EDIT);
 
             $itemData = $form->getItemData();
 
@@ -292,7 +291,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {
             return;
         }
 

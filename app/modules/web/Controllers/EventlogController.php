@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -55,7 +55,7 @@ class EventlogController extends ControllerBase
      */
     public function indexAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::EVENTLOG)) {
+        if (!$this->acl->checkUserAccess(Acl::EVENTLOG)) {
             return;
         }
 
@@ -89,7 +89,7 @@ class EventlogController extends ControllerBase
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::EVENTLOG_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
             return;
         }
 

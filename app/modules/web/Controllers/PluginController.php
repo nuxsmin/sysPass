@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\PluginData;
@@ -60,7 +59,7 @@ class PluginController extends ControllerBase
      */
     public function indexAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN)) {
+        if (!$this->acl->checkUserAccess(Acl::PLUGIN)) {
             return;
         }
 
@@ -94,7 +93,7 @@ class PluginController extends ControllerBase
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
             return;
         }
 
@@ -115,7 +114,7 @@ class PluginController extends ControllerBase
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PLUGIN_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
             return;
         }
 
@@ -152,7 +151,7 @@ class PluginController extends ControllerBase
         $this->view->assign('plugin', $pluginData);
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

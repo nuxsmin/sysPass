@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
@@ -232,7 +232,7 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::ENCRYPTION_CONFIG);
+            $this->checkAccess(Acl::ENCRYPTION_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

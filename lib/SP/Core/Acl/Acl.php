@@ -70,6 +70,7 @@ class Acl implements ActionsInterface
      * Returns action route
      *
      * @param $actionId
+     *
      * @return string
      */
     public static function getActionRoute($actionId)
@@ -88,6 +89,7 @@ class Acl implements ActionsInterface
      *
      * @param int  $actionId El id de la acción
      * @param bool $translate
+     *
      * @return string
      * @internal param bool $shortName Si se devuelve el nombre corto de la acción
      */
@@ -111,6 +113,7 @@ class Acl implements ActionsInterface
      *
      * @param string $action con el nombre de la acción
      * @param int    $userId opcional, con el Id del usuario
+     *
      * @return bool
      */
     public function checkUserAccess($action, $userId = 0)
@@ -246,6 +249,8 @@ class Acl implements ActionsInterface
             case self::EVENTLOG_SEARCH:
             case self::EVENTLOG_CLEAR:
                 return $userProfile->isEvl();
+            case self::CUSTOMFIELD_VIEW_PASS:
+                return ($userData->getIsAdminApp() || $userProfile->isAccViewPass());
             case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:
             case self::NOTIFICATION_VIEW:

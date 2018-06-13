@@ -26,9 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\CryptMasterPass;
 use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
@@ -85,46 +83,46 @@ class ConfigManagerController extends ControllerBase
     {
         $this->tabsHelper = $this->dic->get(TabsHelper::class);
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
+        if ($this->checkAccess(Acl::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
         }
 
-        if ($this->checkAccess(ActionsInterface::ACCOUNT_CONFIG)) {
+        if ($this->checkAccess(Acl::ACCOUNT_CONFIG)) {
             $this->tabsHelper->addTab($this->getAccountConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::WIKI_CONFIG)) {
+        if ($this->checkAccess(Acl::WIKI_CONFIG)) {
             $this->tabsHelper->addTab($this->getWikiConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::LDAP_CONFIG)) {
+        if ($this->checkAccess(Acl::LDAP_CONFIG)) {
             $this->tabsHelper->addTab($this->getLdapConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::MAIL_CONFIG)) {
+        if ($this->checkAccess(Acl::MAIL_CONFIG)) {
             $this->tabsHelper->addTab($this->getMailConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::ENCRYPTION_CONFIG)) {
+        if ($this->checkAccess(Acl::ENCRYPTION_CONFIG)) {
             $this->tabsHelper->addTab($this->getEncryptionConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::BACKUP_CONFIG)) {
+        if ($this->checkAccess(Acl::BACKUP_CONFIG)) {
             $this->tabsHelper->addTab($this->getBackupConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::IMPORT_CONFIG)) {
+        if ($this->checkAccess(Acl::IMPORT_CONFIG)) {
             $this->tabsHelper->addTab($this->getImportConfig());
         }
 
-        if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
+        if ($this->checkAccess(Acl::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getInfo());
         }
 
 
         $this->eventDispatcher->notifyEvent('show.config', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::CONFIG), Request::analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::CONFIG), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }
@@ -221,8 +219,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function getEncryptionConfig()

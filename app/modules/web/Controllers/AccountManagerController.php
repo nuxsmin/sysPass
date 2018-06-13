@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -36,6 +36,7 @@ use SP\Services\Account\AccountService;
 
 /**
  * Class AccountManagerController
+ *
  * @package SP\Modules\Web\Controllers
  */
 class AccountManagerController extends ControllerBase
@@ -48,11 +49,12 @@ class AccountManagerController extends ControllerBase
     protected $accountService;
 
     /**
-     * Search action
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH)) {
             return;
         }
 
@@ -89,7 +91,7 @@ class AccountManagerController extends ControllerBase
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
@@ -101,7 +103,7 @@ class AccountManagerController extends ControllerBase
 
                 $this->accountService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account',
                     new Event($this, EventMessage::factory()

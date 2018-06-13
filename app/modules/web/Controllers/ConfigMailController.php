@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Config\ConfigUtil;
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -158,7 +158,7 @@ class ConfigMailController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::MAIL_CONFIG);
+            $this->checkAccess(Acl::MAIL_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

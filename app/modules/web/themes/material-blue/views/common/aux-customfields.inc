@@ -48,7 +48,7 @@ foreach ($customFields as $index => $field):?>
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__no-pki <?php echo $isView ? 'passwordfield__input-show' : 'passwordfield__input'; ?>"
                            data-clipboard="1"
                            maxlength="500"
-                           value="<?php echo (!$showViewCustomPass && $field->value !== '') ? '***' : htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $readonly; ?>>
+                           value="<?php echo !$showViewCustomPass && !empty($field->value) ? '***' : htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $readonly; ?>>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>

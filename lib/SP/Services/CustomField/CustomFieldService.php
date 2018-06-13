@@ -160,11 +160,13 @@ class CustomFieldService extends Service
      * Creates an item
      *
      * @param CustomFieldData $customFieldData
+     *
      * @return bool
      * @throws CryptoException
      * @throws QueryException
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function create(CustomFieldData $customFieldData)
     {

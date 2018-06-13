@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -66,7 +65,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_SEARCH)) {
             return;
         }
 
@@ -99,7 +98,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
             return;
         }
 
@@ -140,7 +139,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         $this->view->assign('accounts', SelectItemAdapter::factory($this->dic->get(AccountService::class)->getForUser())->getItemsFromModelSelected([$publicLink->getItemId()]));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink->getHash()));
@@ -162,7 +161,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function refreshAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_REFRESH)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
             return;
         }
 
@@ -188,7 +187,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
             return;
         }
 
@@ -219,7 +218,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
             return;
         }
 
@@ -227,7 +226,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             if ($id === null) {
                 $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
+                $this->deleteCustomFieldsForItem(Acl::PUBLICLINK, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.publicLink.selection',
                     new Event($this, EventMessage::factory()
@@ -238,7 +237,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             } else {
                 $this->publicLinkService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
+                $this->deleteCustomFieldsForItem(Acl::PUBLICLINK, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.publicLink',
                     new Event($this, EventMessage::factory()
@@ -263,13 +262,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
             return;
         }
 
         try {
             $form = new PublicLinkForm();
-            $form->validate(ActionsInterface::PUBLICLINK_CREATE);
+            $form->validate(Acl::PUBLICLINK_CREATE);
 
             $this->publicLinkService->create($form->getItemData());
 
@@ -296,7 +295,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function saveCreateFromAccountAction($accountId, $notify)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
             return;
         }
 
@@ -338,7 +337,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {
             return;
         }
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -83,41 +82,41 @@ class ItemManagerController extends ControllerBase
         $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
-        if ($this->checkAccess(ActionsInterface::CATEGORY)) {
+        if ($this->checkAccess(Acl::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
         }
 
-        if ($this->checkAccess(ActionsInterface::TAG)) {
+        if ($this->checkAccess(Acl::TAG)) {
             $this->tabsGridHelper->addTab($this->getTagsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::CLIENT)) {
+        if ($this->checkAccess(Acl::CLIENT)) {
             $this->tabsGridHelper->addTab($this->getClientsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::CUSTOMFIELD)) {
+        if ($this->checkAccess(Acl::CUSTOMFIELD)) {
             $this->tabsGridHelper->addTab($this->getCustomFieldsList());
         }
 
-        if ($this->configData->isFilesEnabled() && $this->checkAccess(ActionsInterface::FILE)) {
+        if ($this->configData->isFilesEnabled() && $this->checkAccess(Acl::FILE)) {
             $this->tabsGridHelper->addTab($this->getAccountFilesList());
         }
 
-        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR)) {
+        if ($this->checkAccess(Acl::ACCOUNTMGR)) {
             $this->tabsGridHelper->addTab($this->getAccountsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::ACCOUNTMGR_HISTORY)) {
+        if ($this->checkAccess(Acl::ACCOUNTMGR_HISTORY)) {
             $this->tabsGridHelper->addTab($this->getAccountsHistoryList());
         }
 
-        if ($this->checkAccess(ActionsInterface::PLUGIN)) {
+        if ($this->checkAccess(Acl::PLUGIN)) {
             $this->tabsGridHelper->addTab($this->getPluginsList());
         }
 
         $this->eventDispatcher->notifyEvent('show.itemlist.items', new Event($this));
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE), Request::analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ITEMS_MANAGE), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }
@@ -126,8 +125,8 @@ class ItemManagerController extends ControllerBase
      * Returns categories' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getCategoriesList()
     {
@@ -138,8 +137,8 @@ class ItemManagerController extends ControllerBase
      * Returns tags' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getTagsList()
     {
@@ -150,8 +149,8 @@ class ItemManagerController extends ControllerBase
      * Returns clients' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getClientsList()
     {
@@ -162,8 +161,8 @@ class ItemManagerController extends ControllerBase
      * Returns custom fields' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getCustomFieldsList()
     {
@@ -174,8 +173,8 @@ class ItemManagerController extends ControllerBase
      * Returns account files' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getAccountFilesList()
     {
@@ -186,8 +185,8 @@ class ItemManagerController extends ControllerBase
      * Returns accounts' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getAccountsList()
     {
@@ -198,8 +197,8 @@ class ItemManagerController extends ControllerBase
      * Returns accounts' history data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getAccountsHistoryList()
     {
@@ -210,8 +209,8 @@ class ItemManagerController extends ControllerBase
      * Returns plugins' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getPluginsList()
     {

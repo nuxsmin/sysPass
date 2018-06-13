@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Http\Request;
@@ -35,6 +34,7 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class UserSettingsManagerController
+ *
  * @package web\Controllers
  */
 class UserSettingsManagerController extends ControllerBase
@@ -60,7 +60,7 @@ class UserSettingsManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.userSettings', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::USERSETTINGS), Request::analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::USERSETTINGS), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }

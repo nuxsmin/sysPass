@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
@@ -60,7 +59,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_SEARCH)) {
             return;
         }
 
@@ -93,7 +92,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_CREATE)) {
             return;
         }
 
@@ -132,7 +131,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('tag', $tag);
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -151,7 +150,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
             return;
         }
 
@@ -181,7 +180,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_DELETE)) {
             return;
         }
 
@@ -189,7 +188,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
             if ($id === null) {
                 $this->tagService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id);
+                $this->deleteCustomFieldsForItem(Acl::TAG, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.tag.selection', new Event($this));
 
@@ -197,7 +196,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
             } else {
                 $this->tagService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id);
+                $this->deleteCustomFieldsForItem(Acl::TAG, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.tag', new Event($this));
 
@@ -215,13 +214,13 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_CREATE)) {
             return;
         }
 
         try {
             $form = new TagForm();
-            $form->validate(ActionsInterface::TAG_CREATE);
+            $form->validate(Acl::TAG_CREATE);
 
             $this->tagService->create($form->getItemData());
 
@@ -244,13 +243,13 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
             return;
         }
 
         try {
             $form = new TagForm($id);
-            $form->validate(ActionsInterface::TAG_EDIT);
+            $form->validate(Acl::TAG_EDIT);
 
             $this->tagService->update($form->getItemData());
 
@@ -274,7 +273,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::TAG_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::TAG_VIEW)) {
             return;
         }
 

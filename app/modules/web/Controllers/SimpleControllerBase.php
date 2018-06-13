@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -92,6 +92,7 @@ abstract class SimpleControllerBase
      *
      * @param Container $container
      * @param           $actionName
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -128,6 +129,7 @@ abstract class SimpleControllerBase
      * Comprobar si está permitido el acceso al módulo/página.
      *
      * @param null $action La acción a comprobar
+     *
      * @throws UnauthorizedPageException
      */
     protected function checkAccess($action)

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -62,7 +61,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_SEARCH)) {
             return;
         }
 
@@ -95,7 +94,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
             return;
         }
 
@@ -135,7 +134,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('usedBy', $this->userProfileService->getUsersForProfile($profileId));
@@ -147,7 +146,8 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::PROFILE, $profileId, $this->session));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::PROFILE, $profileId, $this->session));
     }
 
     /**
@@ -159,7 +159,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
             return;
         }
 
@@ -190,7 +190,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_DELETE)) {
             return;
         }
 
@@ -198,7 +198,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             if ($id === null) {
                 $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+                $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userProfile.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Perfiles eliminados')))
@@ -208,7 +208,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             } else {
                 $this->userProfileService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+                $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userProfile',
                     new Event($this, EventMessage::factory()
@@ -230,19 +230,19 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
             return;
         }
 
         try {
             $form = new UserProfileForm();
-            $form->validate(ActionsInterface::PROFILE_CREATE);
+            $form->validate(Acl::PROFILE_CREATE);
 
             $profileData = $form->getItemData();
 
             $id = $this->userProfileService->create($profileData);
 
-            $this->addCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+            $this->addCustomFieldsForItem(Acl::PROFILE, $id);
 
             $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
 
@@ -266,20 +266,20 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
             return;
         }
 
         try {
             $form = new UserProfileForm($id);
-            $form->validate(ActionsInterface::PROFILE_EDIT);
+            $form->validate(Acl::PROFILE_EDIT);
 
             $profileData = $form->getItemData();
 
             $this->userProfileService->update($profileData);
-//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_EDIT);
+//            $this->userProfileService->logAction($id, Acl::PROFILE_EDIT);
 
-            $this->updateCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+            $this->updateCustomFieldsForItem(Acl::PROFILE, $id);
 
             $this->eventDispatcher->notifyEvent('edit.userProfile', new Event($this));
 
@@ -302,7 +302,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::PROFILE_VIEW)) {
             return;
         }
 

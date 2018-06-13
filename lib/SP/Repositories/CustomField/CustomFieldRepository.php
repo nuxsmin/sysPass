@@ -120,7 +120,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @param CustomFieldData $itemData
      *
-     * @return bool
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -290,7 +290,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     }
 
     /**
-     * Returns all the items
+     * Returns all the items that were encryptes
      *
      * @return CustomFieldData[]
      * @throws QueryException

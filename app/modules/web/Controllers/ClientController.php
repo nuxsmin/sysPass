@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -62,7 +61,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_SEARCH)) {
             return;
         }
 
@@ -95,7 +94,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
             return;
         }
 
@@ -134,7 +133,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('client', $client);
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -144,9 +143,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('readonly');
         }
 
-        // FIXME
-        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $clientId, $this->session));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CLIENT, $clientId, $this->session));
     }
 
     /**
@@ -158,7 +156,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
             return;
         }
 
@@ -189,7 +187,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_DELETE)) {
             return;
         }
 
@@ -197,7 +195,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             if ($id === null) {
                 $this->clientService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
+                $this->deleteCustomFieldsForItem(Acl::CLIENT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.client.selection',
                     new Event($this, EventMessage::factory()
@@ -208,7 +206,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             } else {
                 $this->clientService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
+                $this->deleteCustomFieldsForItem(Acl::CLIENT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.client',
                     new Event($this, EventMessage::factory()
@@ -230,13 +228,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
             return;
         }
 
         try {
             $form = new ClientForm();
-            $form->validate(ActionsInterface::CLIENT_CREATE);
+            $form->validate(Acl::CLIENT_CREATE);
 
             $itemData = $form->getItemData();
 
@@ -266,13 +264,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
             return;
         }
 
         try {
             $form = new ClientForm($id);
-            $form->validate(ActionsInterface::CLIENT_EDIT);
+            $form->validate(Acl::CLIENT_EDIT);
 
             $this->clientService->update($form->getItemData());
 
@@ -302,7 +300,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::CLIENT_VIEW)) {
             return;
         }
 

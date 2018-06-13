@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\NotificationData;
@@ -63,7 +62,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function indexAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION)) {
             return;
         }
 
@@ -93,12 +92,13 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      * View action
      *
      * @param $id
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
             return;
         }
 
@@ -139,7 +139,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
         }
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::NOTIFICATION));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -155,7 +155,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_SEARCH)) {
             return;
         }
 
@@ -173,7 +173,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
             return;
         }
 
@@ -199,12 +199,13 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      * Edit action
      *
      * @param $id
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
             return;
         }
 
@@ -233,7 +234,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_DELETE)) {
             return;
         }
 
@@ -282,7 +283,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function checkAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CHECK)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
             return;
         }
 
@@ -309,13 +310,13 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
             return;
         }
 
         try {
             $form = new NotificationForm();
-            $form->validate(ActionsInterface::NOTIFICATION_CREATE);
+            $form->validate(Acl::NOTIFICATION_CREATE);
 
             $this->notificationService->create($form->getItemData());
 
@@ -340,13 +341,13 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
             return;
         }
 
         try {
             $form = new NotificationForm($id);
-            $form->validate(ActionsInterface::NOTIFICATION_EDIT);
+            $form->validate(Acl::NOTIFICATION_EDIT);
 
             $this->notificationService->update($form->getItemData());
 

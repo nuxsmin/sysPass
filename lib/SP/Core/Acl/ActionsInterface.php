@@ -86,6 +86,7 @@ interface ActionsInterface
     const CUSTOMFIELD_VIEW = 641;
     const CUSTOMFIELD_EDIT = 642;
     const CUSTOMFIELD_DELETE = 643;
+    const CUSTOMFIELD_VIEW_PASS = 644;
     const CUSTOMFIELD_SEARCH = 645;
     const PUBLICLINK = 65;
     const PUBLICLINK_CREATE = 650;

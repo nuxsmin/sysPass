@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -156,7 +155,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
 
             $allowedExts = $this->configData->getFilesAllowedExts();
 
-            if (count($allowedExts) === 0) {
+            if (empty($allowedExts)) {
                 throw new SPException(__u('No hay extensiones permitidas'), SPException::ERROR);
             }
 
@@ -171,27 +170,44 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
                 $fileData->setExtension(mb_strtoupper(pathinfo($fileData->getName(), PATHINFO_EXTENSION)));
 
                 if (!in_array($fileData->getExtension(), $allowedExts, true)) {
-                    throw new SPException(__u('Tipo de archivo no soportado'), SPException::ERROR, sprintf(__('Extensión: %s'), $fileData->getExtension()));
+                    throw new SPException(
+                        __u('Tipo de archivo no soportado'),
+                        SPException::ERROR,
+                        sprintf(__('Extensión: %s'), $fileData->getExtension())
+                    );
                 }
             } else {
-                throw new SPException(__u('Archivo inválido'), SPException::ERROR, sprintf(__u('Archivo: %s'), $fileData->getName()));
+                throw new SPException(
+                    __u('Archivo inválido'),
+                    SPException::ERROR,
+                    sprintf(__u('Archivo: %s'), $fileData->getName())
+                );
             }
 
             if (!file_exists($file['tmp_name'])) {
-                throw new SPException(__u('Error interno al leer el archivo'), SPException::ERROR, sprintf(__u('Máximo tamaño: %s'), Util::getMaxUpload()));
+                throw new SPException(
+                    __u('Error interno al leer el archivo'),
+                    SPException::ERROR,
+                    sprintf(__u('Máximo tamaño: %s'), Util::getMaxUpload())
+                );
             }
 
             $allowedSize = $this->configData->getFilesAllowedSize();
 
             if ($fileData->getSize() > ($allowedSize * 1000)) {
-                throw new SPException(__u('Tamaño de archivo superado'), SPException::ERROR, sprintf(__u('Máximo tamaño: %d KB'), $fileData->getRoundSize()));
+                throw new SPException(
+                    __u('Tamaño de archivo superado'),
+                    SPException::ERROR,
+                    sprintf(__u('Máximo tamaño: %d KB'),
+                        $fileData->getRoundSize())
+                );
             }
 
             // Leemos el archivo a una variable
             $fileData->setContent(file_get_contents($file['tmp_name']));
 
             if ($fileData->getContent() === false) {
-                throw new SPException(__u('Error interno al leer el archivo'), SPException::ERROR);
+                throw new SPException(__u('Error interno al leer el archivo'));
             }
 
             $this->accountFileService->create($fileData);
@@ -232,7 +248,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_FILE_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
             return;
         }
 
@@ -333,6 +349,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      * Obtener los datos para la vista de archivos de una cuenta
      *
      * @param int $accountId Account's ID
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function listAction($accountId)
@@ -347,9 +364,9 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             $this->view->assign('deleteEnabled', Request::analyzeInt('del', false));
             $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
             $this->view->assign('sk', $this->session->getSecurityKey());
-            $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
-            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
-            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
+            $this->view->assign('fileViewRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_VIEW));
+            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DOWNLOAD));
+            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DELETE));
 
             if (!is_array($this->view->files) || count($this->view->files) === 0) {
                 return;

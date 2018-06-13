@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -48,11 +48,12 @@ class AccountHistoryManagerController extends ControllerBase
     protected $accountHistoryService;
 
     /**
-     * Search action
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY)) {
+        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH_HISTORY)) {
             return;
         }
 

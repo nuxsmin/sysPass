@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
@@ -61,7 +60,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_SEARCH)) {
             return;
         }
 
@@ -94,7 +93,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
             return;
         }
 
@@ -133,7 +132,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         $this->view->assign('category', $category);
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
-        $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
@@ -143,9 +142,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->view->assign('readonly');
         }
 
-        // FIXME
-        $this->view->assign('showViewCustomPass', $this->userProfileData->isAccViewPass());
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId, $this->session));
+        $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CATEGORY, $categoryId, $this->session));
     }
 
     /**
@@ -157,7 +155,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
             return;
         }
 
@@ -188,7 +186,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_DELETE)) {
             return;
         }
 
@@ -196,7 +194,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             if ($id === null) {
                 $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+                $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.category',
                     new Event($this,
@@ -208,7 +206,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             } else {
                 $this->categoryService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+                $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.category',
                     new Event($this,
@@ -234,19 +232,19 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
             return;
         }
 
         try {
             $form = new CategoryForm();
-            $form->validate(ActionsInterface::CATEGORY_CREATE);
+            $form->validate(Acl::CATEGORY_CREATE);
 
             $itemData = $form->getItemData();
 
             $id = $this->categoryService->create($itemData);
 
-            $this->addCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+            $this->addCustomFieldsForItem(Acl::CATEGORY, $id);
 
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this,
@@ -276,19 +274,19 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
             return;
         }
 
         try {
             $form = new CategoryForm($id);
-            $form->validate(ActionsInterface::CATEGORY_EDIT);
+            $form->validate(Acl::CATEGORY_EDIT);
 
             $itemData = $form->getItemData();
 
             $this->categoryService->update($itemData);
 
-            $this->updateCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id);
 
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this,
@@ -316,7 +314,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::CATEGORY_VIEW)) {
             return;
         }
 

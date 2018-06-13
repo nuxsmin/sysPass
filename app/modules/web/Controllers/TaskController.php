@@ -48,6 +48,7 @@ class TaskController
      * TaskController constructor.
      *
      * @param Container $container
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -58,6 +59,7 @@ class TaskController
 
     /**
      * @param string $taskId
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
