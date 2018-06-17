@@ -52,7 +52,7 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * @var AccountRepository
      */
-    private static $accountRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -67,7 +67,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$accountRepository = $dic->get(AccountRepository::class);
+        self::$repository = $dic->get(AccountRepository::class);
     }
 
     /**
@@ -81,14 +81,14 @@ class AccountRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $this->conn->getRowCount('Account'));
 
         // Eliminar un registro y comprobar el total de registros
-        $this->assertEquals(1, self::$accountRepository->delete(1));
+        $this->assertEquals(1, self::$repository->delete(1));
         $this->assertEquals(1, $this->conn->getRowCount('Account'));
 
         // Eliminar un registro no existente
-        $this->assertEquals(0, self::$accountRepository->delete(100));
+        $this->assertEquals(0, self::$repository->delete(100));
 
         // Eliminar un registro y comprobar el total de registros
-        $this->assertEquals(1, self::$accountRepository->delete(2));
+        $this->assertEquals(1, self::$repository->delete(2));
         $this->assertEquals(0, $this->conn->getRowCount('Account'));
     }
 
@@ -118,16 +118,16 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->passDateChange = time() + 3600;
 
         // Comprobar que la modificación de la clave es correcta
-        $this->assertEquals(1, self::$accountRepository->editPassword($accountRequest));
+        $this->assertEquals(1, self::$repository->editPassword($accountRequest));
 
-        $accountPassData = self::$accountRepository->getPasswordForId(2);
+        $accountPassData = self::$repository->getPasswordForId(2);
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente
         $this->assertEquals('1234', $clearPassword);
 
         // Comprobar que se devuelve un array vacío
-        $this->assertCount(0, self::$accountRepository->getPasswordForId(10));
+        $this->assertCount(0, self::$repository->getPasswordForId(10));
     }
 
     /**
@@ -137,17 +137,18 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $account = self::$accountRepository->getById(1);
+        $account = self::$repository->getById(1);
 
         $this->assertInstanceOf(AccountVData::class, $account);
         $this->assertEquals(1, $account->getId());
 
         $this->expectException(SPException::class);
 
-        self::$accountRepository->getById(100);
+        self::$repository->getById(100);
     }
 
     /**
+     * @depends testGetById
      * @throws SPException
      */
     public function testUpdate()
@@ -167,9 +168,9 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->parentId = 0;
         $accountRequest->userGroupId = 2;
 
-        $this->assertEquals(1, self::$accountRepository->update($accountRequest));
+        $this->assertEquals(1, self::$repository->update($accountRequest));
 
-        $account = self::$accountRepository->getById(1);
+        $account = self::$repository->getById(1);
 
         $this->assertEquals($accountRequest->name, $account->getName());
         $this->assertEquals($accountRequest->login, $account->getLogin());
@@ -207,7 +208,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar registros iniciales
         $this->assertEquals(2, $this->conn->getRowCount('Account'));
 
-        $this->assertEquals(2, self::$accountRepository->deleteByIdBatch([1, 2, 100]));
+        $this->assertEquals(2, self::$repository->deleteByIdBatch([1, 2, 100]));
 
         // Comprobar registros tras eliminación
         $this->assertEquals(0, $this->conn->getRowCount('Account'));
@@ -226,7 +227,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('Google');
         $itemSearchData->setLimitCount(10);
 
-        $result = self::$accountRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertCount(1, $data);
@@ -240,7 +241,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('Apple');
         $itemSearchData->setLimitCount(1);
 
-        $result = self::$accountRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertCount(1, $data);
@@ -261,23 +262,24 @@ class AccountRepositoryTest extends DatabaseTestCase
         $filter = new QueryCondition();
         $filter->addFilter('Account.parentId = 1');
 
-        $this->assertCount(0, self::$accountRepository->getLinked($filter));
+        $this->assertCount(0, self::$repository->getLinked($filter));
     }
 
     /**
      * Comprobar en incremento del contador de vistas
      *
+     * @depends testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws SPException
      */
     public function testIncrementViewCounter()
     {
-        $accountBefore = self::$accountRepository->getById(1);
+        $accountBefore = self::$repository->getById(1);
 
-        $this->assertTrue(self::$accountRepository->incrementViewCounter(1));
+        $this->assertTrue(self::$repository->incrementViewCounter(1));
 
-        $accountAfter = self::$accountRepository->getById(1);
+        $accountAfter = self::$repository->getById(1);
 
         $this->assertEquals($accountBefore->getCountView() + 1, $accountAfter->getCountView());
     }
@@ -290,10 +292,11 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $this->assertCount(2, self::$accountRepository->getAll());
+        $this->assertCount(2, self::$repository->getAll());
     }
 
     /**
+     * @covers \SP\Repositories\Account\AccountRepository::getPasswordForId()
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -306,9 +309,9 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->pass = Crypt::encrypt('1234', $accountRequest->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la modificación de la clave es correcta
-        $this->assertTrue(self::$accountRepository->updatePassword($accountRequest));
+        $this->assertTrue(self::$repository->updatePassword($accountRequest));
 
-        $accountPassData = self::$accountRepository->getPasswordForId(2);
+        $accountPassData = self::$repository->getPasswordForId(2);
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente
@@ -318,17 +321,18 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar en incremento del contador de desencriptado
      *
+     * @depends testGetById
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testIncrementDecryptCounter()
     {
-        $accountBefore = self::$accountRepository->getById(1);
+        $accountBefore = self::$repository->getById(1);
 
-        $this->assertTrue(self::$accountRepository->incrementDecryptCounter(1));
+        $this->assertTrue(self::$repository->incrementDecryptCounter(1));
 
-        $accountAfter = self::$accountRepository->getById(1);
+        $accountAfter = self::$repository->getById(1);
 
         $this->assertEquals($accountBefore->getCountDecrypt() + 1, $accountAfter->getCountDecrypt());
     }
@@ -341,7 +345,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetTotalNumAccounts()
     {
-        $this->assertEquals(2, self::$accountRepository->getTotalNumAccounts()->num);
+        $this->assertEquals(2, self::$repository->getTotalNumAccounts()->num);
     }
 
     /**
@@ -363,7 +367,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $queryCondition = new QueryCondition();
         $queryCondition->addFilter('Account.isPrivate = 1');
 
-        $this->assertCount(0, self::$accountRepository->getForUser($queryCondition));
+        $this->assertCount(0, self::$repository->getForUser($queryCondition));
     }
 
     /**
@@ -374,7 +378,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetAccountsPassData()
     {
-        $this->assertCount(2, self::$accountRepository->getAccountsPassData());
+        $this->assertCount(2, self::$repository->getAccountsPassData());
     }
 
     /**
@@ -407,7 +411,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar registros iniciales
         $this->assertEquals(2, $this->conn->getRowCount('Account'));
 
-        self::$accountRepository->create($accountRequest);
+        self::$repository->create($accountRequest);
 
         // Comprobar registros finales
         $this->assertEquals(3, $this->conn->getRowCount('Account'));
@@ -451,7 +455,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setCategoryId(1);
 
         // Comprobar un Id de categoría
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
@@ -462,7 +466,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId(10);
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
@@ -473,7 +477,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(1);
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
@@ -484,7 +488,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
@@ -495,7 +499,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setCleanTxtSearch('apple.com');
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
@@ -507,7 +511,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
@@ -518,7 +522,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setTagsId([1]);
 
-        $response = self::$accountRepository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter);
 
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());

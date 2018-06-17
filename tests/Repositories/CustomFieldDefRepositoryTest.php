@@ -44,7 +44,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     /**
      * @var CustomFieldDefRepository
      */
-    private static $customFieldDefRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -59,10 +59,35 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$customFieldDefRepository = $dic->get(CustomFieldDefRepository::class);
+        self::$repository = $dic->get(CustomFieldDefRepository::class);
     }
 
     /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testGetById()
+    {
+        $expected = new CustomFieldDefinitionData();
+        $expected->setId(1);
+        $expected->setName('Prueba');
+        $expected->setIsEncrypted(1);
+        $expected->setHelp('Ayuda');
+        $expected->setModuleId(ActionsInterface::ACCOUNT);
+        $expected->setRequired(true);
+        $expected->setTypeId(1);
+        $expected->setShowInList(0);
+
+        $this->assertEquals($expected, self::$repository->getById(1));
+
+        $this->expectException(NoSuchItemException::class);
+
+        $this->assertEquals($expected, self::$repository->getById(10));
+    }
+
+    /**
+     * @depends testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws NoSuchItemException
@@ -79,9 +104,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $data->setTypeId(2);
         $data->setShowInList(1);
 
-        $this->assertEquals(1, self::$customFieldDefRepository->update($data));
+        $this->assertEquals(1, self::$repository->update($data));
 
-        $dataUpdated = self::$customFieldDefRepository->getById(1);
+        $dataUpdated = self::$repository->getById(1);
 
         $this->assertEquals($data, $dataUpdated);
 
@@ -89,7 +114,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(1, self::$customFieldDefRepository->update($data));
+        $this->assertEquals(1, self::$repository->update($data));
     }
 
     /**
@@ -99,13 +124,13 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $this->assertEquals(1, self::$customFieldDefRepository->deleteByIdBatch([3, 4]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([3, 4]));
         $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
-        $this->assertEquals(0, self::$customFieldDefRepository->deleteByIdBatch([]));
+        $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
         $this->expectException(ConstraintException::class);
 
-        self::$customFieldDefRepository->deleteByIdBatch([1, 2]);
+        self::$repository->deleteByIdBatch([1, 2]);
     }
 
     /**
@@ -114,7 +139,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $data = self::$customFieldDefRepository->getByIdBatch([1, 2]);
+        $data = self::$repository->getByIdBatch([1, 2]);
 
         $this->assertCount(2, $data);
         $this->assertInstanceOf(CustomFieldDefinitionData::class, $data[0]);
@@ -143,33 +168,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals($expected, $data[1]);
 
-        $this->assertCount(0, self::$customFieldDefRepository->getByIdBatch([10]));
+        $this->assertCount(0, self::$repository->getByIdBatch([10]));
 
-        $this->assertCount(0, self::$customFieldDefRepository->getByIdBatch([]));
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function testGetById()
-    {
-        $expected = new CustomFieldDefinitionData();
-        $expected->setId(1);
-        $expected->setName('Prueba');
-        $expected->setIsEncrypted(1);
-        $expected->setHelp('Ayuda');
-        $expected->setModuleId(ActionsInterface::ACCOUNT);
-        $expected->setRequired(true);
-        $expected->setTypeId(1);
-        $expected->setShowInList(0);
-
-        $this->assertEquals($expected, self::$customFieldDefRepository->getById(1));
-
-        $this->expectException(NoSuchItemException::class);
-
-        $this->assertEquals($expected, self::$customFieldDefRepository->getById(10));
+        $this->assertCount(0, self::$repository->getByIdBatch([]));
     }
 
     /**
@@ -189,9 +190,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $data->setTypeId(6);
         $data->setShowInList(0);
 
-        $this->assertEquals(4, self::$customFieldDefRepository->create($data));
+        $this->assertEquals(4, self::$repository->create($data));
 
-        $this->assertEquals($data, self::$customFieldDefRepository->getById(4));
+        $this->assertEquals($data, self::$repository->getById(4));
     }
 
     /**
@@ -200,9 +201,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        self::$customFieldDefRepository->resetCollection();
+        self::$repository->resetCollection();
 
-        $data = self::$customFieldDefRepository->getAll();
+        $data = self::$repository->getAll();
 
         $this->assertCount(3, $data);
 
@@ -240,7 +241,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('RSA');
         $itemSearchData->setLimitCount(10);
 
-        $result = self::$customFieldDefRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(2, $result->getNumRows());
@@ -254,7 +255,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('test');
         $itemSearchData->setLimitCount(10);
 
-        $this->assertEquals(0, self::$customFieldDefRepository->search($itemSearchData)->getNumRows());
+        $this->assertEquals(0, self::$repository->search($itemSearchData)->getNumRows());
     }
 
     /**
@@ -264,13 +265,13 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $this->assertEquals(1, self::$customFieldDefRepository->delete(3));
-        $this->assertEquals(0, self::$customFieldDefRepository->delete(10));
+        $this->assertEquals(1, self::$repository->delete(3));
+        $this->assertEquals(0, self::$repository->delete(10));
         $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$customFieldDefRepository->delete(1);
+        self::$repository->delete(1);
     }
 
     /**
@@ -280,6 +281,6 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        self::$customFieldDefRepository->resetCollection();
+        self::$repository->resetCollection();
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -130,7 +130,7 @@ class HttpUtil
             return $matchesFor;
         }
 
-        return $_SERVER['REMOTE_ADDR'];
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
     }
 
     /**
@@ -164,6 +164,7 @@ class HttpUtil
      * Devolver la dirección IP del cliente
      *
      * @param bool $fullForwarded Devolver la cadena de forward completa
+     *
      * @return string|array
      */
     public static function getClientAddress($fullForwarded = false)

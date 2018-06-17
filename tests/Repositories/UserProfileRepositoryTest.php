@@ -48,7 +48,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
     /**
      * @var UserProfileRepository
      */
-    private static $userProfileRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -63,7 +63,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$userProfileRepository = $dic->get(UserProfileRepository::class);
+        self::$repository = $dic->get(UserProfileRepository::class);
     }
 
     /**
@@ -74,7 +74,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $profiles = self::$userProfileRepository->getAll();
+        $profiles = self::$repository->getAll();
 
         $this->assertCount(3, $profiles);
         $this->assertInstanceOf(UserProfileData::class, $profiles[0]);
@@ -95,7 +95,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('Demo');
 
-        $result = self::$userProfileRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -107,7 +107,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         // Nueva búsqueda de perfil no existente
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$userProfileRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
@@ -127,13 +127,13 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $userProfileData->setId(2);
         $userProfileData->setName('Perfil Demo');
 
-        $this->assertEquals(1, self::$userProfileRepository->update($userProfileData));
+        $this->assertEquals(1, self::$repository->update($userProfileData));
 
         $this->expectException(DuplicatedItemException::class);
 
         $userProfileData->setName('Admin');
 
-        self::$userProfileRepository->update($userProfileData);
+        self::$repository->update($userProfileData);
     }
 
     /**
@@ -144,15 +144,15 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $result = self::$userProfileRepository->delete(3);
+        $result = self::$repository->delete(3);
 
         $this->assertEquals(1, $result);
         $this->assertEquals(2, $this->conn->getRowCount('UserProfile'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$userProfileRepository->delete(1);
-        self::$userProfileRepository->delete(2);
+        self::$repository->delete(1);
+        self::$repository->delete(2);
     }
 
     /**
@@ -163,9 +163,9 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testCheckInUse()
     {
-        $this->assertTrue(self::$userProfileRepository->checkInUse(1));
-        $this->assertTrue(self::$userProfileRepository->checkInUse(2));
-        $this->assertFalse(self::$userProfileRepository->checkInUse(3));
+        $this->assertTrue(self::$repository->checkInUse(1));
+        $this->assertTrue(self::$repository->checkInUse(2));
+        $this->assertFalse(self::$repository->checkInUse(3));
     }
 
     /**
@@ -186,7 +186,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $userProfileData->setName('Prueba');
         $userProfileData->setProfile($profileData);
 
-        $result = self::$userProfileRepository->create($userProfileData);
+        $result = self::$repository->create($userProfileData);
 
         $this->assertEquals(4, $result);
         $this->assertEquals(4, $this->conn->getRowCount('UserProfile'));
@@ -195,39 +195,48 @@ class UserProfileRepositoryTest extends DatabaseTestCase
 
         $userProfileData->setName('Demo');
 
-        self::$userProfileRepository->create($userProfileData);
+        self::$repository->create($userProfileData);
     }
 
     /**
      * Comprobar la obtención de perfiles por Id
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
-        $profile = self::$userProfileRepository->getById(2);
+        $profile = self::$repository->getById(2);
 
         $this->assertInstanceOf(UserProfileData::class, $profile);
         $this->assertEquals('Demo', $profile->getName());
         $this->assertNotEmpty($profile->getProfile());
 
-        $profile = self::$userProfileRepository->getById(4);
+        $profile = self::$repository->getById(4);
         $this->assertCount(0, $profile);
     }
 
     /**
      * Comprobar la obtención de los usuarios asociados a un perfil
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUsersForProfile()
     {
-        $this->assertCount(1, self::$userProfileRepository->getUsersForProfile(2));
-        $this->assertCount(0, self::$userProfileRepository->getUsersForProfile(3));
+        $this->assertCount(1, self::$repository->getUsersForProfile(2));
+        $this->assertCount(0, self::$repository->getUsersForProfile(3));
     }
 
     /**
      * Comprobar la obtención de perfiles en lote
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
-        $profiles = self::$userProfileRepository->getByIdBatch([1, 2, 5]);
+        $profiles = self::$repository->getByIdBatch([1, 2, 5]);
 
         $this->assertCount(2, $profiles);
         $this->assertInstanceOf(UserProfileData::class, $profiles[0]);
@@ -247,7 +256,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         // Se lanza excepción en caso de restricción relacional
         $this->expectException(ConstraintException::class);
 
-        $result = self::$userProfileRepository->deleteByIdBatch([1, 2, 3, 4]);
+        $result = self::$repository->deleteByIdBatch([1, 2, 3, 4]);
 
         $this->assertEquals(1, $result);
     }

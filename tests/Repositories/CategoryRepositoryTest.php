@@ -46,7 +46,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
     /**
      * @var CategoryRepository
      */
-    private static $categoryRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -61,30 +61,33 @@ class CategoryRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$categoryRepository = $dic->get(CategoryRepository::class);
+        self::$repository = $dic->get(CategoryRepository::class);
     }
 
     /**
      * Comprobar los resultados de obtener las categorías por nombre
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByName()
     {
-        $category = self::$categoryRepository->getByName('Prueba');
+        $category = self::$repository->getByName('Prueba');
 
         $this->assertCount(0, $category);
 
-        $category = self::$categoryRepository->getByName('Web');
+        $category = self::$repository->getByName('Web');
 
         $this->assertEquals(1, $category->getId());
         $this->assertEquals('Web sites', $category->getDescription());
 
-        $category = self::$categoryRepository->getByName('Linux');
+        $category = self::$repository->getByName('Linux');
 
         $this->assertEquals(2, $category->getId());
         $this->assertEquals('Linux server', $category->getDescription());
 
         // Se comprueba que el hash generado es el mismo en para el nombre 'Web'
-        $category = self::$categoryRepository->getByName(' web. ');
+        $category = self::$repository->getByName(' web. ');
 
         $this->assertEquals(1, $category->getId());
         $this->assertEquals('Web sites', $category->getDescription());
@@ -102,7 +105,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('linux');
 
-        $result = self::$categoryRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -115,7 +118,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$categoryRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(0, $result->getNumRows());
@@ -124,19 +127,22 @@ class CategoryRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar los resultados de obtener las categorías por Id
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
-        $category = self::$categoryRepository->getById(10);
+        $category = self::$repository->getById(10);
 
         $this->assertCount(0, $category);
 
-        $category = self::$categoryRepository->getById(1);
+        $category = self::$repository->getById(1);
 
         $this->assertEquals('Web', $category->getName());
         $this->assertEquals('Web sites', $category->getDescription());
 
-        $category = self::$categoryRepository->getById(2);
+        $category = self::$repository->getById(2);
 
         $this->assertEquals('Linux', $category->getName());
         $this->assertEquals('Linux server', $category->getDescription());
@@ -144,12 +150,15 @@ class CategoryRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la obtención de todas las categorías
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
         $count = $this->conn->getRowCount('Category');
 
-        $results = self::$categoryRepository->getAll();
+        $results = self::$repository->getAll();
 
         $this->assertCount($count, $results);
 
@@ -166,7 +175,8 @@ class CategoryRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de categorías
      *
-     * @covers \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnUpdate()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -179,9 +189,9 @@ class CategoryRepositoryTest extends DatabaseTestCase
         $categoryData->name = 'Web prueba';
         $categoryData->description = 'Descripción web prueba';
 
-        self::$categoryRepository->update($categoryData);
+        self::$repository->update($categoryData);
 
-        $category = self::$categoryRepository->getById(1);
+        $category = self::$repository->getById(1);
 
         $this->assertEquals($category->getName(), $categoryData->name);
         $this->assertEquals($category->getDescription(), $categoryData->description);
@@ -193,7 +203,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$categoryRepository->update($categoryData);
+        self::$repository->update($categoryData);
     }
 
     /**
@@ -206,7 +216,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Category');
 
-        $this->assertEquals(1, self::$categoryRepository->deleteByIdBatch([3]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([3]));
 
         $countAfter = $this->conn->getRowCount('Category');
 
@@ -215,13 +225,14 @@ class CategoryRepositoryTest extends DatabaseTestCase
         // Comprobar que se produce una excepción al tratar de eliminar categorías usadas
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(1, self::$categoryRepository->deleteByIdBatch([1, 2, 3]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([1, 2, 3]));
     }
 
     /**
      * Comprobar la creación de categorías
      *
-     * @covers \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnAdd()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnAdd()
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -233,10 +244,10 @@ class CategoryRepositoryTest extends DatabaseTestCase
         $categoryData->name = 'Categoría prueba';
         $categoryData->description = 'Descripción prueba';
 
-        $id = self::$categoryRepository->create($categoryData);
+        $id = self::$repository->create($categoryData);
 
         // Comprobar que el Id devuelto corresponde con la categoría creada
-        $category = self::$categoryRepository->getById($id);
+        $category = self::$repository->getById($id);
 
         $this->assertEquals($categoryData->name, $category->getName());
 
@@ -255,7 +266,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Category');
 
-        $this->assertEquals(1, self::$categoryRepository->delete(3));
+        $this->assertEquals(1, self::$repository->delete(3));
 
         $countAfter = $this->conn->getRowCount('Category');
 
@@ -264,7 +275,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
         // Comprobar que se produce una excepción al tratar de eliminar categorías usadas
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(1, self::$categoryRepository->delete(2));
+        $this->assertEquals(1, self::$repository->delete(2));
     }
 
     /**
@@ -275,8 +286,8 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->assertCount(3, self::$categoryRepository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$categoryRepository->getByIdBatch([1, 2, 3, 4, 5]));
-        $this->assertCount(0, self::$categoryRepository->getByIdBatch([]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
+        $this->assertCount(0, self::$repository->getByIdBatch([]));
     }
 }

@@ -140,6 +140,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('profiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true
@@ -337,14 +338,11 @@ class UserController extends ControllerBase implements CrudControllerInterface
     protected function checkChangeUserPass(UserData $userData)
     {
         if ($userData->isChangePass()) {
-            $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
-            $this->dic->get(MailService::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
+            $hash = $this->dic->get(UserPassRecoverService::class)
+                ->requestForUserId($userData->getId());
 
-//            $this->returnJsonResponse(
-//                JsonResponse::JSON_WARNING,
-//                __u('Usuario creado'),
-//                [__('No se pudo realizar la petición de cambio de clave.')]
-//            );
+            $this->dic->get(MailService::class)
+                ->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
         }
     }
 

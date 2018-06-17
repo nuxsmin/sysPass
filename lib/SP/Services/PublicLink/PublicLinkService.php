@@ -33,6 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Http\Request;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountService;
 use SP\Services\Service;
@@ -98,12 +99,12 @@ class PublicLinkService extends Service
     /**
      * @param $id
      *
-     * @return \SP\DataModel\PublicLinkData
+     * @return \SP\DataModel\PublicLinkListData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getById($id)
     {
-        return $this->publicLinkRepository->getById($id);
+        return $this->publicLinkRepository->getById($id)->getData();
     }
 
     /**
@@ -123,7 +124,14 @@ class PublicLinkService extends Service
         $salt = $this->config->getConfigData()->getPasswordSalt();
         $key = self::getNewKey($salt);
 
-        $publicLinkData = $this->publicLinkRepository->getById($id);
+        $result = $this->publicLinkRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El enlace no existe'));
+        }
+
+        /** @var PublicLinkData $publicLinkData */
+        $publicLinkData = $result->getData();
         $publicLinkData->setHash(self::getHashForKey($key, $salt));
         $publicLinkData->setData($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
         $publicLinkData->setDateExpire(self::calcDateExpire($this->config));
@@ -247,7 +255,7 @@ class PublicLinkService extends Service
         $itemData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
         $itemData->setUserId($this->context->getUserData()->getId());
 
-        return $this->publicLinkRepository->create($itemData);
+        return $this->publicLinkRepository->create($itemData)->getLastId();
     }
 
     /**
@@ -270,7 +278,7 @@ class PublicLinkService extends Service
      */
     public function getAllBasic()
     {
-        return $this->publicLinkRepository->getAll();
+        return $this->publicLinkRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -332,7 +340,13 @@ class PublicLinkService extends Service
      */
     public function getByHash($hash)
     {
-        return $this->publicLinkRepository->getByHash($hash);
+        $result = $this->publicLinkRepository->getByHash($hash);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El enlace no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -347,7 +361,13 @@ class PublicLinkService extends Service
      */
     public function getHashForItem($itemId)
     {
-        return $this->publicLinkRepository->getHashForItem($itemId);
+        $result = $this->publicLinkRepository->getHashForItem($itemId);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El enlace no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**

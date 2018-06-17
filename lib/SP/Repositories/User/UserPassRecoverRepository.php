@@ -56,7 +56,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$userId, $time]);
+        $queryData->setParams([(int)$userId, (int)$time]);
 
         return $this->db->doSelect($queryData)->getNumRows();
     }
@@ -64,8 +64,8 @@ class UserPassRecoverRepository extends Repository
     /**
      * Adds a hash for a user's id
      *
-     * @param $userId
-     * @param $hash
+     * @param int    $userId
+     * @param string $hash
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -82,7 +82,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$userId, $hash]);
+        $queryData->setParams([(int)$userId, $hash]);
         $queryData->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
 
         return $this->db->doQuery($queryData)->getLastId();
@@ -94,7 +94,7 @@ class UserPassRecoverRepository extends Repository
      * @param string $hash
      * @param int    $time
      *
-     * @return bool
+     * @return int
      * @throws SPException
      */
     public function toggleUsedByHash($hash, $time)
@@ -108,7 +108,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$hash, $time]);
+        $queryData->setParams([$hash, (int)$time]);
         $queryData->setOnErrorMessage(__u('Error en comprobación de hash'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -120,7 +120,7 @@ class UserPassRecoverRepository extends Repository
      * @param $hash
      * @param $time
      *
-     * @return mixed
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -136,8 +136,8 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$hash, $time]);
+        $queryData->setParams([$hash, (int)$time]);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 }

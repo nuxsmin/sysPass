@@ -45,7 +45,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * @var AccountToUserRepository
      */
-    private static $accountToUserRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -60,51 +60,18 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$accountToUserRepository = $dic->get(AccountToUserRepository::class);
-    }
-
-    /**
-     * Comprobar la actualización de usuarios por Id de cuenta
-     *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function testUpdate()
-    {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = 1;
-        $accountRequest->usersView = [1, 2, 3];
-
-        self::$accountToUserRepository->update($accountRequest);
-
-        $users = self::$accountToUserRepository->getUsersByAccountId($accountRequest->id);
-
-        $this->assertCount(3, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
-        $this->assertEquals(0, (int)$users[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $users[1]);
-        $this->assertEquals(0, (int)$users[1]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $users[2]);
-        $this->assertEquals(0, (int)$users[2]->isEdit);
-
-        $this->expectException(ConstraintException::class);
-
-        $accountRequest->usersView = [10];
-
-        self::$accountToUserRepository->update($accountRequest);
-
-        $accountRequest->id = 3;
-        $accountRequest->usersView = [1, 2, 3];
-
-        self::$accountToUserRepository->update($accountRequest);
+        self::$repository = $dic->get(AccountToUserRepository::class);
     }
 
     /**
      * Comprobar la obtención de usuarios por Id de cuenta
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetUsersByAccountId()
     {
-        $users = self::$accountToUserRepository->getUsersByAccountId(1);
+        $users = self::$repository->getUsersByAccountId(1);
 
         $this->assertCount(1, $users);
         $this->assertInstanceOf(ItemData::class, $users[0]);
@@ -121,7 +88,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(1, $usersEdit);
 
-        $users = self::$accountToUserRepository->getUsersByAccountId(2);
+        $users = self::$repository->getUsersByAccountId(2);
 
         $this->assertCount(1, $users);
         $this->assertInstanceOf(ItemData::class, $users[0]);
@@ -138,14 +105,52 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(0, $usersEdit);
 
-        $users = self::$accountToUserRepository->getUsersByAccountId(3);
+        $users = self::$repository->getUsersByAccountId(3);
 
         $this->assertCount(0, $users);
     }
 
     /**
+     * Comprobar la actualización de usuarios por Id de cuenta
+     *
+     * @depends testGetUsersByAccountId
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testUpdate()
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->usersView = [1, 2, 3];
+
+        self::$repository->update($accountRequest);
+
+        $users = self::$repository->getUsersByAccountId($accountRequest->id);
+
+        $this->assertCount(3, $users);
+        $this->assertInstanceOf(ItemData::class, $users[0]);
+        $this->assertEquals(0, (int)$users[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $users[1]);
+        $this->assertEquals(0, (int)$users[1]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $users[2]);
+        $this->assertEquals(0, (int)$users[2]->isEdit);
+
+        $this->expectException(ConstraintException::class);
+
+        $accountRequest->usersView = [10];
+
+        self::$repository->update($accountRequest);
+
+        $accountRequest->id = 3;
+        $accountRequest->usersView = [1, 2, 3];
+
+        self::$repository->update($accountRequest);
+    }
+
+    /**
      * Comprobar la actualización de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -155,9 +160,9 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersEdit = [2, 3];
 
-        self::$accountToUserRepository->updateEdit($accountRequest);
+        self::$repository->updateEdit($accountRequest);
 
-        $users = self::$accountToUserRepository->getUsersByAccountId($accountRequest->id);
+        $users = self::$repository->getUsersByAccountId($accountRequest->id);
 
         $this->assertCount(2, $users);
         $this->assertInstanceOf(ItemData::class, $users[0]);
@@ -170,27 +175,28 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersEdit = [10];
 
-        self::$accountToUserRepository->updateEdit($accountRequest);
+        self::$repository->updateEdit($accountRequest);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersEdit = [2, 3];
 
-        self::$accountToUserRepository->updateEdit($accountRequest);
+        self::$repository->updateEdit($accountRequest);
     }
 
     /**
      * Comprobar la eliminación de usuarios por Id de cuenta
      *
+     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testDeleteByAccountId()
     {
-        $this->assertEquals(1, self::$accountToUserRepository->deleteByAccountId(1));
-        $this->assertCount(0, self::$accountToUserRepository->getUsersByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteByAccountId(1));
+        $this->assertCount(0, self::$repository->getUsersByAccountId(1));
 
-        $this->assertEquals(0, self::$accountToUserRepository->deleteByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteByAccountId(10));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
     }
@@ -198,6 +204,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -207,9 +214,9 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersEdit = [1, 2, 3];
 
-        self::$accountToUserRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
 
-        $users = self::$accountToUserRepository->getUsersByAccountId($accountRequest->id);
+        $users = self::$repository->getUsersByAccountId($accountRequest->id);
 
         $this->assertCount(3, $users);
         $this->assertInstanceOf(ItemData::class, $users[0]);
@@ -221,18 +228,19 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersEdit = [10];
 
-        self::$accountToUserRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersEdit = [1, 2, 3];
 
-        self::$accountToUserRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
     }
 
     /**
      * Comprobar la insercción de usuarios por Id de cuenta
      *
+     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -242,9 +250,9 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$accountToUserRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
 
-        $users = self::$accountToUserRepository->getUsersByAccountId($accountRequest->id);
+        $users = self::$repository->getUsersByAccountId($accountRequest->id);
 
         $this->assertCount(3, $users);
         $this->assertInstanceOf(ItemData::class, $users[0]);
@@ -256,27 +264,28 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersView = [10];
 
-        self::$accountToUserRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$accountToUserRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
     }
 
     /**
      * Comprobar la eliminación de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testDeleteEditByAccountId()
     {
-        $this->assertEquals(1, self::$accountToUserRepository->deleteEditByAccountId(1));
-        $this->assertCount(0, self::$accountToUserRepository->getUsersByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
+        $this->assertCount(0, self::$repository->getUsersByAccountId(1));
 
-        $this->assertEquals(0, self::$accountToUserRepository->deleteEditByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
     }

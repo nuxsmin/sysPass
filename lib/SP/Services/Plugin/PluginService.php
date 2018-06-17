@@ -56,7 +56,7 @@ class PluginService extends Service
      */
     public function create(PluginData $itemData)
     {
-        return $this->pluginRepository->create($itemData);
+        return $this->pluginRepository->create($itemData)->getLastId();
     }
 
     /**
@@ -84,7 +84,7 @@ class PluginService extends Service
      */
     public function getById($id)
     {
-        return $this->pluginRepository->getById($id);
+        return $this->pluginRepository->getById($id)->getData();
     }
 
     /**
@@ -96,7 +96,7 @@ class PluginService extends Service
      */
     public function getAll()
     {
-        return $this->pluginRepository->getAll();
+        return $this->pluginRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -110,7 +110,7 @@ class PluginService extends Service
      */
     public function getByIdBatch(array $ids)
     {
-        return $this->pluginRepository->getByIdBatch($ids);
+        return $this->pluginRepository->getByIdBatch($ids)->getDataAsArray();
     }
 
     /**
@@ -169,7 +169,7 @@ class PluginService extends Service
      */
     public function getByName($name)
     {
-        return $this->pluginRepository->getByName($name);
+        return $this->pluginRepository->getByName($name)->getData();
     }
 
     /**
@@ -255,7 +255,7 @@ class PluginService extends Service
      */
     public function getEnabled()
     {
-        return $this->pluginRepository->getEnabled();
+        return $this->pluginRepository->getEnabled()->getDataAsArray();
     }
 
     protected function initialize()

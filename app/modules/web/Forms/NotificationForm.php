@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\Messages\NoticeMessage;
+use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\NotificationData;
 use SP\Http\Request;
 
@@ -73,7 +73,7 @@ class NotificationForm extends FormBase implements FormInterface
         $this->notificationData->setId($this->itemId);
         $this->notificationData->setType(Request::analyzeString('notification_type'));
         $this->notificationData->setComponent(Request::analyzeString('notification_component'));
-        $this->notificationData->setDescription(NoticeMessage::factory()->addDescription(Request::analyzeString('notification_description')));
+        $this->notificationData->setDescription(NotificationMessage::factory()->addDescription(Request::analyzeString('notification_description')));
         $this->notificationData->setUserId(Request::analyzeInt('notification_user'));
         $this->notificationData->setChecked(Request::analyzeBool('notification_checkout', false));
 

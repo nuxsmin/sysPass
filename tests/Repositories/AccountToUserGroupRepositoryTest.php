@@ -45,7 +45,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * @var AccountToUserGroupRepository
      */
-    private static $accountToUserGroupRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -60,51 +60,18 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$accountToUserGroupRepository = $dic->get(AccountToUserGroupRepository::class);
-    }
-
-    /**
-     * Comprobar la actualización de grupos de usuarios por Id de cuenta
-     *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function testUpdate()
-    {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = 1;
-        $accountRequest->userGroupsView = [1, 2, 3];
-
-        $this->assertEquals(3, self::$accountToUserGroupRepository->update($accountRequest));
-
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId($accountRequest->id);
-
-        $this->assertCount(3, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
-        $this->assertEquals(0, (int)$userGroups[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
-        $this->assertEquals(0, (int)$userGroups[1]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $userGroups[2]);
-        $this->assertEquals(0, (int)$userGroups[2]->isEdit);
-
-        $this->expectException(ConstraintException::class);
-
-        $accountRequest->userGroupsView = [10];
-
-        self::$accountToUserGroupRepository->update($accountRequest);
-
-        $accountRequest->id = 3;
-        $accountRequest->userGroupsView = [1, 2, 3];
-
-        self::$accountToUserGroupRepository->update($accountRequest);
+        self::$repository = $dic->get(AccountToUserGroupRepository::class);
     }
 
     /**
      * Comprobar la obtención de grupos de usuarios por Id de cuenta
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testGetUsersByAccountId()
+    public function testGetUserGroupsByAccountId()
     {
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId(1);
+        $userGroups = self::$repository->getUserGroupsByAccountId(1);
 
         $this->assertCount(1, $userGroups);
         $this->assertInstanceOf(ItemData::class, $userGroups[0]);
@@ -121,7 +88,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(1, $userGroupsEdit);
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId(2);
+        $userGroups = self::$repository->getUserGroupsByAccountId(2);
 
         $this->assertCount(1, $userGroups);
         $this->assertInstanceOf(ItemData::class, $userGroups[0]);
@@ -138,14 +105,52 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(0, $userGroupsEdit);
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId(3);
+        $userGroups = self::$repository->getUserGroupsByAccountId(3);
 
         $this->assertCount(0, $userGroups);
     }
 
     /**
+     * Comprobar la actualización de grupos de usuarios por Id de cuenta
+     *
+     * @depends testGetUserGroupsByAccountId
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testUpdate()
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->userGroupsView = [1, 2, 3];
+
+        $this->assertEquals(3, self::$repository->update($accountRequest));
+
+        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+
+        $this->assertCount(3, $userGroups);
+        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
+        $this->assertEquals(0, (int)$userGroups[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
+        $this->assertEquals(0, (int)$userGroups[1]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $userGroups[2]);
+        $this->assertEquals(0, (int)$userGroups[2]->isEdit);
+
+        $this->expectException(ConstraintException::class);
+
+        $accountRequest->userGroupsView = [10];
+
+        self::$repository->update($accountRequest);
+
+        $accountRequest->id = 3;
+        $accountRequest->userGroupsView = [1, 2, 3];
+
+        self::$repository->update($accountRequest);
+    }
+
+    /**
      * Comprobar la actualización de grupos de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -155,9 +160,9 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsEdit = [2, 3];
 
-        $this->assertEquals(3, self::$accountToUserGroupRepository->updateEdit($accountRequest));
+        $this->assertEquals(3, self::$repository->updateEdit($accountRequest));
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId($accountRequest->id);
+        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
         $this->assertCount(2, $userGroups);
         $this->assertInstanceOf(ItemData::class, $userGroups[0]);
@@ -170,27 +175,28 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsEdit = [10];
 
-        self::$accountToUserGroupRepository->updateEdit($accountRequest);
+        self::$repository->updateEdit($accountRequest);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsEdit = [2, 3];
 
-        self::$accountToUserGroupRepository->updateEdit($accountRequest);
+        self::$repository->updateEdit($accountRequest);
     }
 
     /**
      * Comprobar la eliminación de grupos de usuarios por Id de cuenta
      *
+     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testDeleteByAccountId()
     {
-        $this->assertEquals(1, self::$accountToUserGroupRepository->deleteByAccountId(1));
-        $this->assertCount(0, self::$accountToUserGroupRepository->getUserGroupsByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteByAccountId(1));
+        $this->assertCount(0, self::$repository->getUserGroupsByAccountId(1));
 
-        $this->assertEquals(0, self::$accountToUserGroupRepository->deleteByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteByAccountId(10));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUserGroup'));
     }
@@ -198,6 +204,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de grupos de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -207,9 +214,9 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsEdit = [1, 2, 3];
 
-        self::$accountToUserGroupRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId($accountRequest->id);
+        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
         $this->assertCount(3, $userGroups);
         $this->assertInstanceOf(ItemData::class, $userGroups[0]);
@@ -221,18 +228,19 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsEdit = [10];
 
-        self::$accountToUserGroupRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
 
         // Comprobar que se lanza excepción al añadir grupos de usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsEdit = [1, 2, 3];
 
-        self::$accountToUserGroupRepository->addEdit($accountRequest);
+        self::$repository->addEdit($accountRequest);
     }
 
     /**
      * Comprobar la insercción de grupos de usuarios por Id de cuenta
      *
+     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -242,9 +250,9 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        $this->assertEquals(3, self::$accountToUserGroupRepository->add($accountRequest));
+        $this->assertEquals(3, self::$repository->add($accountRequest));
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByAccountId($accountRequest->id);
+        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
         $this->assertCount(3, $userGroups);
         $this->assertInstanceOf(ItemData::class, $userGroups[0]);
@@ -256,45 +264,49 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsView = [10];
 
-        self::$accountToUserGroupRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
 
         // Comprobar que se lanza excepción al añadir grupos de usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        self::$accountToUserGroupRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
     }
 
     /**
      * Comprobar la eliminación de grupos de usuarios con permisos de modificación por Id de cuenta
      *
+     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testDeleteEditByAccountId()
     {
-        $this->assertEquals(1, self::$accountToUserGroupRepository->deleteEditByAccountId(1));
-        $this->assertCount(0, self::$accountToUserGroupRepository->getUserGroupsByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
+        $this->assertCount(0, self::$repository->getUserGroupsByAccountId(1));
 
-        $this->assertEquals(0, self::$accountToUserGroupRepository->deleteEditByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUserGroup'));
     }
 
     /**
      * Comprobar la obtención de grupos de usuarios por Id de grupo
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetUserGroupsByUserGroupId()
     {
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByUserGroupId(2);
+        $userGroups = self::$repository->getUserGroupsByUserGroupId(2);
 
         $this->assertCount(2, $userGroups);
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByUserGroupId(3);
+        $userGroups = self::$repository->getUserGroupsByUserGroupId(3);
 
         $this->assertCount(0, $userGroups);
 
-        $userGroups = self::$accountToUserGroupRepository->getUserGroupsByUserGroupId(10);
+        $userGroups = self::$repository->getUserGroupsByUserGroupId(10);
 
         $this->assertCount(0, $userGroups);
     }
@@ -307,10 +319,10 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByUserGroupId()
     {
-        $this->assertEquals(2, self::$accountToUserGroupRepository->deleteByUserGroupId(2));
+        $this->assertEquals(2, self::$repository->deleteByUserGroupId(2));
 
-        $this->assertEquals(0, self::$accountToUserGroupRepository->deleteByUserGroupId(1));
+        $this->assertEquals(0, self::$repository->deleteByUserGroupId(1));
 
-        $this->assertEquals(0, self::$accountToUserGroupRepository->deleteByUserGroupId(10));
+        $this->assertEquals(0, self::$repository->deleteByUserGroupId(10));
     }
 }

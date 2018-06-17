@@ -47,7 +47,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * @var ClientRepository
      */
-    private static $clientRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -62,30 +62,33 @@ class ClientRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$clientRepository = $dic->get(ClientRepository::class);
+        self::$repository = $dic->get(ClientRepository::class);
     }
 
     /**
      * Comprobar los resultados de obtener los cliente por nombre
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByName()
     {
-        $client = self::$clientRepository->getByName('Amazon');
+        $client = self::$repository->getByName('Amazon');
 
         $this->assertCount(0, $client);
 
-        $client = self::$clientRepository->getByName('Google');
+        $client = self::$repository->getByName('Google');
 
         $this->assertEquals(1, $client->getId());
         $this->assertEquals('Google Inc.', $client->getDescription());
 
-        $client = self::$clientRepository->getByName('Apple');
+        $client = self::$repository->getByName('Apple');
 
         $this->assertEquals(2, $client->getId());
         $this->assertEquals('Apple Inc.', $client->getDescription());
 
         // Se comprueba que el hash generado es el mismo en para el nombre 'Web'
-        $client = self::$clientRepository->getByName(' google. ');
+        $client = self::$repository->getByName(' google. ');
 
         $this->assertEquals(1, $client->getId());
         $this->assertEquals('Google Inc.', $client->getDescription());
@@ -103,7 +106,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('google');
 
-        $result = self::$clientRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -116,7 +119,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$clientRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
@@ -124,19 +127,22 @@ class ClientRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar los resultados de obtener los clientes por Id
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
-        $client = self::$clientRepository->getById(10);
+        $client = self::$repository->getById(10);
 
         $this->assertCount(0, $client);
 
-        $client = self::$clientRepository->getById(1);
+        $client = self::$repository->getById(1);
 
         $this->assertEquals('Google', $client->getName());
         $this->assertEquals('Google Inc.', $client->getDescription());
 
-        $client = self::$clientRepository->getById(2);
+        $client = self::$repository->getById(2);
 
         $this->assertEquals('Apple', $client->getName());
         $this->assertEquals('Apple Inc.', $client->getDescription());
@@ -144,12 +150,15 @@ class ClientRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la obtención de todas las client
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
         $count = $this->conn->getRowCount('Client');
 
-        $results = self::$clientRepository->getAll();
+        $results = self::$repository->getAll();
 
         $this->assertCount($count, $results);
 
@@ -166,7 +175,8 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de clientes
      *
-     * @covers \SP\Repositories\Client\ClientRepository::checkDuplicatedOnUpdate()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Client\ClientRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -179,9 +189,9 @@ class ClientRepositoryTest extends DatabaseTestCase
         $clientData->name = 'Cliente prueba';
         $clientData->description = 'Descripción cliente prueba';
 
-        self::$clientRepository->update($clientData);
+        self::$repository->update($clientData);
 
-        $category = self::$clientRepository->getById(1);
+        $category = self::$repository->getById(1);
 
         $this->assertEquals($category->getName(), $clientData->name);
         $this->assertEquals($category->getDescription(), $clientData->description);
@@ -193,7 +203,7 @@ class ClientRepositoryTest extends DatabaseTestCase
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$clientRepository->update($clientData);
+        self::$repository->update($clientData);
     }
 
     /**
@@ -206,7 +216,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Client');
 
-        $this->assertEquals(1, self::$clientRepository->deleteByIdBatch([3]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([3]));
 
         $countAfter = $this->conn->getRowCount('Client');
 
@@ -215,13 +225,14 @@ class ClientRepositoryTest extends DatabaseTestCase
         // Comprobar que se produce una excepción al tratar de eliminar clientes usados
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(1, self::$clientRepository->deleteByIdBatch([1, 2, 3]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([1, 2, 3]));
     }
 
     /**
      * Comprobar la creación de clientes
      *
-     * @covers \SP\Repositories\Client\ClientRepository::checkDuplicatedOnAdd()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Client\ClientRepository::checkDuplicatedOnAdd()
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -234,10 +245,10 @@ class ClientRepositoryTest extends DatabaseTestCase
         $clientData->description = 'Descripción prueba';
         $clientData->isGlobal = 1;
 
-        $id = self::$clientRepository->create($clientData);
+        $id = self::$repository->create($clientData);
 
         // Comprobar que el Id devuelto corresponde con el cliente creado
-        $client = self::$clientRepository->getById($id);
+        $client = self::$repository->getById($id);
 
         $this->assertEquals($clientData->name, $client->getName());
         $this->assertEquals($clientData->isGlobal, $client->getIsGlobal());
@@ -257,7 +268,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Client');
 
-        $this->assertEquals(1, self::$clientRepository->delete(3));
+        $this->assertEquals(1, self::$repository->delete(3));
 
         $countAfter = $this->conn->getRowCount('Client');
 
@@ -266,7 +277,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         // Comprobar que se produce una excepción al tratar de eliminar clientes usados
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(1, self::$clientRepository->delete(2));
+        $this->assertEquals(1, self::$repository->delete(2));
     }
 
     /**
@@ -277,9 +288,9 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->assertCount(3, self::$clientRepository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$clientRepository->getByIdBatch([1, 2, 3, 4, 5]));
-        $this->assertCount(0, self::$clientRepository->getByIdBatch([]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
+        $this->assertCount(0, self::$repository->getByIdBatch([]));
     }
 
     /**
@@ -291,6 +302,6 @@ class ClientRepositoryTest extends DatabaseTestCase
         $filter = new QueryCondition();
         $filter->addFilter('Account.isPrivate = 0');
 
-        $this->assertCount(3, self::$clientRepository->getAllForFilter($filter));
+        $this->assertCount(3, self::$repository->getAllForFilter($filter));
     }
 }

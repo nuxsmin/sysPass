@@ -47,7 +47,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * @var UserGroupRepository
      */
-    private static $userGroupRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -62,17 +62,20 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$userGroupRepository = $dic->get(UserGroupRepository::class);
+        self::$repository = $dic->get(UserGroupRepository::class);
     }
 
     /**
      * Comprobar la obtención de uso del grupo por usuarios
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUsageByUsers()
     {
-        $this->assertCount(2, self::$userGroupRepository->getUsageByUsers(1));
-        $this->assertCount(5, self::$userGroupRepository->getUsageByUsers(2));
-        $this->assertCount(0, self::$userGroupRepository->getUsageByUsers(3));
+        $this->assertCount(2, self::$repository->getUsageByUsers(1));
+        $this->assertCount(5, self::$repository->getUsageByUsers(2));
+        $this->assertCount(0, self::$repository->getUsageByUsers(3));
     }
 
     /**
@@ -83,9 +86,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testCheckInUse()
     {
-        $this->assertTrue(self::$userGroupRepository->checkInUse(1));
-        $this->assertTrue(self::$userGroupRepository->checkInUse(2));
-        $this->assertFalse(self::$userGroupRepository->checkInUse(5));
+        $this->assertTrue(self::$repository->checkInUse(1));
+        $this->assertTrue(self::$repository->checkInUse(2));
+        $this->assertFalse(self::$repository->checkInUse(5));
     }
 
     /**
@@ -96,13 +99,13 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $group = self::$userGroupRepository->getByName('Demo');
+        $group = self::$repository->getByName('Demo');
 
         $this->assertInstanceOf(UserGroupData::class, $group);
         $this->assertEquals('Demo', $group->getName());
         $this->assertEmpty($group->getDescription());
 
-        $group = self::$userGroupRepository->getByName('Prueba');
+        $group = self::$repository->getByName('Prueba');
         $this->assertCount(0, $group);
     }
 
@@ -117,7 +120,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         // Se lanza excepción en caso de restricción relacional
         $this->expectException(ConstraintException::class);
 
-        $result = self::$userGroupRepository->deleteByIdBatch([1, 2, 3]);
+        $result = self::$repository->deleteByIdBatch([1, 2, 3]);
 
         $this->assertEquals(1, $result);
     }
@@ -137,28 +140,31 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $userGroupData->setName('Grupo demo');
         $userGroupData->setDescription('Grupo para usuarios demo');
 
-        $this->assertEquals(1, self::$userGroupRepository->update($userGroupData));
+        $this->assertEquals(1, self::$repository->update($userGroupData));
 
         $this->expectException(DuplicatedItemException::class);
 
         $userGroupData->setName('Admins');
 
-        self::$userGroupRepository->update($userGroupData);
+        self::$repository->update($userGroupData);
 
     }
 
     /**
      * Comprobar la obtención de grupos por Id
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
-        $group = self::$userGroupRepository->getById(2);
+        $group = self::$repository->getById(2);
 
         $this->assertInstanceOf(UserGroupData::class, $group);
         $this->assertEquals('Demo', $group->getName());
         $this->assertEmpty($group->getDescription());
 
-        $group = self::$userGroupRepository->getById(4);
+        $group = self::$repository->getById(4);
         $this->assertCount(0, $group);
     }
 
@@ -176,21 +182,24 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $userGroupData->setName('Grupo Prueba');
         $userGroupData->setDescription('Grupo de prueba para usuarios');
 
-        $this->assertEquals(4, self::$userGroupRepository->create($userGroupData));
+        $this->assertEquals(4, self::$repository->create($userGroupData));
 
         $this->expectException(DuplicatedItemException::class);
 
         $userGroupData->setName('Admins');
 
-        self::$userGroupRepository->create($userGroupData);
+        self::$repository->create($userGroupData);
     }
 
     /**
      * Comprobar la obtención de grupos
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
-        $groups = self::$userGroupRepository->getAll();
+        $groups = self::$repository->getAll();
 
         $this->assertCount(3, $groups);
         $this->assertInstanceOf(UserGroupData::class, $groups[0]);
@@ -206,32 +215,38 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $result = self::$userGroupRepository->delete(3);
+        $result = self::$repository->delete(3);
 
         $this->assertEquals(1, $result);
         $this->assertEquals(2, $this->conn->getRowCount('UserGroup'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$userGroupRepository->delete(1);
-        self::$userGroupRepository->delete(2);
+        self::$repository->delete(1);
+        self::$repository->delete(2);
     }
 
     /**
      * Comprobar la obtención de uso de grupos
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUsage()
     {
-        $this->assertCount(7, self::$userGroupRepository->getUsage(2));
-        $this->assertCount(0, self::$userGroupRepository->getUsage(3));
+        $this->assertCount(7, self::$repository->getUsage(2));
+        $this->assertCount(0, self::$repository->getUsage(3));
     }
 
     /**
      * Comprobar la obtención de grupos en lote
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
-        $groups = self::$userGroupRepository->getByIdBatch([1, 2, 5]);
+        $groups = self::$repository->getByIdBatch([1, 2, 5]);
 
         $this->assertCount(2, $groups);
         $this->assertInstanceOf(UserGroupData::class, $groups[0]);
@@ -252,7 +267,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('Demo');
 
-        $result = self::$userGroupRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -265,7 +280,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$userGroupRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());

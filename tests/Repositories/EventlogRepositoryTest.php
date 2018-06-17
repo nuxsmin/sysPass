@@ -45,7 +45,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
     /**
      * @var EventlogRepository
      */
-    private static $eventlogRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -60,7 +60,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$eventlogRepository = $dic->get(EventlogRepository::class);
+        self::$repository = $dic->get(EventlogRepository::class);
     }
 
     /**
@@ -75,7 +75,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('login.auth.database');
 
-        $result = self::$eventlogRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(4, $result->getNumRows());
@@ -85,7 +85,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
         $itemSearchData->setSeachString('login.auth.');
 
-        $result = self::$eventlogRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(4, $result->getNumRows());
@@ -94,7 +94,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
         $itemSearchData->setSeachString('Tiempo inactivo : 0 min.');
 
-        $result = self::$eventlogRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -103,7 +103,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$eventlogRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertCount(0, $result->getDataAsArray());
         $this->assertEquals(0, $result->getNumRows());
@@ -117,7 +117,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
      */
     public function testClear()
     {
-        self::$eventlogRepository->clear();
+        self::$repository->clear();
 
         $this->assertEquals(0, $this->conn->getRowCount('EventLog'));
     }
@@ -140,7 +140,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
         $countBefore = $this->conn->getRowCount('EventLog');
 
-        self::$eventlogRepository->create($eventlogData);
+        self::$repository->create($eventlogData);
 
         $countAfter = $this->conn->getRowCount('EventLog');
 
@@ -148,7 +148,7 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        self::$eventlogRepository->create(new EventlogData());
+        self::$repository->create(new EventlogData());
     }
 
     /**

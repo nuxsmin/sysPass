@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,6 +61,10 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      * @var int
      */
     public $dateAdd = 0;
+    /**
+     * @var int
+     */
+    public $dateUpdate = 0;
     /**
      * @var int
      */
@@ -308,5 +312,21 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
     public function getName()
     {
         // TODO: Implement getName() method.
+    }
+
+    /**
+     * @return int
+     */
+    public function getDateUpdate(): int
+    {
+        return (int)$this->dateUpdate;
+    }
+
+    /**
+     * @param int $dateUpdate
+     */
+    public function setDateUpdate(int $dateUpdate)
+    {
+        $this->dateUpdate = $dateUpdate;
     }
 }

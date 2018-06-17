@@ -217,23 +217,25 @@
                                     </li>
                                 <?php endif; ?>
 
-                                <li class="mdl-list__item mdl-list__item--two-line">
-                                    <div class="mdl-switch__box">
-                                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                                               for="changepass_enabled">
-                                            <input type="checkbox" id="changepass_enabled"
-                                                   class="mdl-switch__input"
-                                                   name="changepass_enabled" <?php echo $user->isChangePass() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
-                                        </label>
-                                    </div>
+                                <?php if ($mailEnabled): ?>
+                                    <li class="mdl-list__item mdl-list__item--two-line">
+                                        <div class="mdl-switch__box">
+                                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                                   for="changepass_enabled">
+                                                <input type="checkbox" id="changepass_enabled"
+                                                       class="mdl-switch__input"
+                                                       name="changepass_enabled" <?php echo $user->isChangePass() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
+                                            </label>
+                                        </div>
 
-                                    <span class="mdl-list__item-primary-content">
-                                        <span><?php echo __('Cambio de Clave'); ?></span>
-                                        <span class="mdl-list__item-sub-title">
-                                            <?php echo __('Forzar cambio de clave'); ?>
+                                        <span class="mdl-list__item-primary-content">
+                                            <span><?php echo __('Cambio de Clave'); ?></span>
+                                            <span class="mdl-list__item-sub-title">
+                                                <?php echo __('Forzar cambio de clave'); ?>
+                                            </span>
                                         </span>
-                                    </span>
-                                </li>
+                                    </li>
+                                <?php endif; ?>
 
                                 <li class="mdl-list__item mdl-list__item--two-line">
                                     <div class="mdl-switch__box">

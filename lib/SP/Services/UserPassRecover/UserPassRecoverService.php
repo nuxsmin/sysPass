@@ -136,18 +136,21 @@ class UserPassRecoverService extends Service
      * Comprobar el hash de recuperación de clave.
      *
      * @param string $hash
+     *
      * @return int
      * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserIdForHash($hash)
     {
         $result = $this->userPassRecoverRepository->getUserIdForHash($hash, time() - self::MAX_PASS_RECOVER_TIME);
 
-        if (!is_object($result)) {
+        if ($result->getNumRows() === 0) {
             throw new ServiceException(__u('Hash inválido o expirado'), ServiceException::INFO);
         }
 
-        return (int)$result->userId;
+        return (int)$result->getData()->userId;
     }
 
     /**

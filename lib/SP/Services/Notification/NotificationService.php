@@ -54,7 +54,7 @@ class NotificationService extends Service
      */
     public function create(NotificationData $itemData)
     {
-        return $this->notificationRepository->create($itemData);
+        return $this->notificationRepository->create($itemData)->getLastId();
     }
 
     /**
@@ -82,7 +82,7 @@ class NotificationService extends Service
      */
     public function getByIdBatch(array $ids)
     {
-        return $this->notificationRepository->getByIdBatch($ids);
+        return $this->notificationRepository->getByIdBatch($ids)->getDataAsArray();
     }
 
     /**
@@ -172,7 +172,7 @@ class NotificationService extends Service
      */
     public function getById($id)
     {
-        return $this->notificationRepository->getById($id);
+        return $this->notificationRepository->getById($id)->getData();
     }
 
     /**
@@ -184,7 +184,7 @@ class NotificationService extends Service
      */
     public function getAll()
     {
-        return $this->notificationRepository->getAll();
+        return $this->notificationRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -213,7 +213,7 @@ class NotificationService extends Service
      */
     public function getForUserIdByDate($component, $id)
     {
-        return $this->notificationRepository->getForUserIdByDate($component, $id);
+        return $this->notificationRepository->getForUserIdByDate($component, $id)->getDataAsArray();
     }
 
     /**
@@ -225,7 +225,7 @@ class NotificationService extends Service
      */
     public function getAllForUserId($id)
     {
-        return $this->notificationRepository->getAllForUserId($id);
+        return $this->notificationRepository->getAllForUserId($id)->getDataAsArray();
     }
 
     /**
@@ -237,7 +237,7 @@ class NotificationService extends Service
      */
     public function getAllActiveForUserId($id)
     {
-        return $this->notificationRepository->getAllForUserId($id);
+        return $this->notificationRepository->getAllActiveForUserId($id)->getDataAsArray();
     }
 
     /**

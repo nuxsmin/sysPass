@@ -45,7 +45,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * @var AccountToTagRepository
      */
-    private static $accountToTagRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -60,12 +60,25 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$accountToTagRepository = $dic->get(AccountToTagRepository::class);
+        self::$repository = $dic->get(AccountToTagRepository::class);
+    }
+
+    /**
+     * Comprobar la obtención de etiquetas por Id de cuenta
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testGetTagsByAccountId()
+    {
+        $this->assertCount(1, self::$repository->getTagsByAccountId(1));
+        $this->assertCount(0, self::$repository->getTagsByAccountId(10));
     }
 
     /**
      * Comprobar la creación de etiquetas asociadas a las cuentas
      *
+     * @depends testGetTagsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -75,9 +88,9 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 1;
         $accountRequest->tags = [2, 3];
 
-        $this->assertEquals(2, self::$accountToTagRepository->add($accountRequest));
+        $this->assertEquals(2, self::$repository->add($accountRequest));
 
-        $tags = self::$accountToTagRepository->getTagsByAccountId($accountRequest->id);
+        $tags = self::$repository->getTagsByAccountId($accountRequest->id);
 
         $this->assertCount(3, $tags);
         $this->assertInstanceOf(ItemData::class, $tags[0]);
@@ -88,11 +101,11 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
 
         $accountRequest->tags = [1];
 
-        self::$accountToTagRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
 
         $accountRequest->id = 10;
 
-        self::$accountToTagRepository->add($accountRequest);
+        self::$repository->add($accountRequest);
     }
 
 
@@ -104,28 +117,17 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByAccountId()
     {
-        $this->assertEquals(1, self::$accountToTagRepository->deleteByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteByAccountId(1));
 
-        $this->assertCount(0, self::$accountToTagRepository->getTagsByAccountId(1));
+        $this->assertCount(0, self::$repository->getTagsByAccountId(1));
 
-        $this->assertEquals(0, self::$accountToTagRepository->deleteByAccountId(10));
-    }
-
-    /**
-     * Comprobar la obtención de etiquetas por Id de cuenta
-     *
-     * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function testGetTagsByAccountId()
-    {
-        $this->assertCount(1, self::$accountToTagRepository->getTagsByAccountId(1));
-        $this->assertCount(0, self::$accountToTagRepository->getTagsByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteByAccountId(10));
     }
 
     /**
      * Comprobar la actualización de etiquetas por Id de cuenta
      *
+     * @depends testGetTagsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -135,9 +137,9 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 1;
         $accountRequest->tags = [1, 2];
 
-        self::$accountToTagRepository->update($accountRequest);
+        self::$repository->update($accountRequest);
 
-        $tags = self::$accountToTagRepository->getTagsByAccountId($accountRequest->id);
+        $tags = self::$repository->getTagsByAccountId($accountRequest->id);
 
         $this->assertCount(2, $tags);
         $this->assertInstanceOf(ItemData::class, $tags[0]);

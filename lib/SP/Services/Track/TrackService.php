@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,6 +53,7 @@ class TrackService extends Service
 
     /**
      * @param $source
+     *
      * @return TrackRequest
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
@@ -68,6 +69,7 @@ class TrackService extends Service
 
     /**
      * @param $id int|array
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -78,31 +80,25 @@ class TrackService extends Service
     }
 
     /**
-     * @param TrackData $itemData
-     * @return bool
+     * @param $id int
+     *
+     * @return TrackData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(TrackData $itemData)
-    {
-        return $this->trackRepository->update($itemData);
-    }
-
-    /**
-     * @param $id int
-     * @return TrackData
-     */
     public function getById($id)
     {
-        return $this->trackRepository->getById($id);
+        return $this->trackRepository->getById($id)->getData();
     }
 
     /**
      * @return TrackData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
-        return $this->trackRepository->getAll();
+        return $this->trackRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -118,6 +114,7 @@ class TrackService extends Service
      * Comprobar los intentos de login
      *
      * @param TrackRequest $trackRequest
+     *
      * @return bool True if delay is performed, false otherwise
      * @throws \Exception
      */
@@ -154,15 +151,19 @@ class TrackService extends Service
      * Devuelve los tracks de un cliente desde un tiempo y origen determinados
      *
      * @param TrackRequest $trackRequest
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
     {
-        return $this->trackRepository->getTracksForClientFromTime($trackRequest);
+        return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getDataAsArray();
     }
 
     /**
      * @param TrackRequest $trackRequest
+     *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

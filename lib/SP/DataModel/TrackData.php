@@ -40,11 +40,11 @@ class TrackData extends DataModelBase
     /**
      * @var int
      */
-    public $userId = 0;
+    public $userId;
     /**
      * @var string
      */
-    public $source = '';
+    public $source;
     /**
      * @var int
      */
@@ -52,11 +52,11 @@ class TrackData extends DataModelBase
     /**
      * @var string
      */
-    public $ipv4 = '';
+    public $ipv4;
     /**
      * @var string
      */
-    public $ipv6 = '';
+    public $ipv6;
 
     /**
      * @return int

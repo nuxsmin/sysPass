@@ -173,12 +173,15 @@ class MailService extends Service
 
     /**
      * @throws MailProviderException
+     * @throws ServiceException
      */
     protected function initialize()
     {
         if ($this->config->getConfigData()->isMailEnabled()) {
             $this->mailer = $this->dic->get(MailProvider::class)
                 ->getMailer($this->getParamsFromConfig());
+        } else {
+            throw new ServiceException(__u('Servicio de correo no disponible'));
         }
 
         $this->appInfo = Util::getAppInfo();

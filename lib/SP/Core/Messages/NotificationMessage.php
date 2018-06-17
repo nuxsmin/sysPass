@@ -29,7 +29,7 @@ namespace SP\Core\Messages;
  *
  * @package SP\Core\Messages
  */
-class NoticeMessage extends MessageBase
+class NotificationMessage extends MessageBase
 {
     /**
      * Componer un mensaje en formato HTML

@@ -48,7 +48,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param NotificationData $itemData
      *
-     * @return int
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -77,7 +77,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear la notificación'));
 
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->db->doQuery($queryData);
     }
 
     /**
@@ -186,7 +186,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param int $id
      *
-     * @return NotificationData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -211,21 +211,21 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener la notificación'));
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return NotificationData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT id 
-            notice_type,
+            'SELECT id,
+            type,
             component,
             description,
             `date`,
@@ -233,14 +233,15 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             checked,
             sticky,
             onlyAdmin 
-            FROM Notification';
+            FROM Notification
+            ORDER BY id';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -248,16 +249,16 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param array $ids
      *
-     * @return NotificationData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
         if (empty($ids)) {
-            return [];
+            return new QueryResult();
         }
-        
+
         $query = /** @lang SQL */
             'SELECT id, 
             type,
@@ -269,14 +270,15 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             sticky,
             onlyAdmin 
             FROM Notification 
-            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            WHERE id IN (' . $this->getParamsFromArray($ids) . ')
+            ORDER BY id';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -344,6 +346,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
     public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
@@ -377,6 +380,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
     public function searchForUserId(ItemSearchData $itemSearchData, $userId)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
@@ -429,16 +433,17 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
      *
      * @param $component
-     * @param $id
+     * @param $userId
      *
-     * @return NotificationData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getForUserIdByDate($component, $id)
+    public function getForUserIdByDate($component, $userId)
     {
         $query = /** @lang SQL */
-            'SELECT type,
+            'SELECT id,
+            type,
             component,
             description,
             `date`,
@@ -447,23 +452,24 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             sticky,
             onlyAdmin 
             FROM Notification 
-            WHERE component = ? AND 
-            (UNIX_TIMESTAMP() - `date`) <= 86400 AND
-            userId = ?';
+            WHERE component = ?
+            AND (UNIX_TIMESTAMP() - `date`) <= 86400
+            AND userId = ?
+            ORDER BY id';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
-        $queryData->setParams([$component, $id]);
+        $queryData->setParams([$component, $userId]);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * @param $id
      *
-     * @return NotificationData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -490,13 +496,13 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * @param $id
      *
-     * @return NotificationData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -524,6 +530,6 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

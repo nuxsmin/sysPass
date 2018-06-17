@@ -53,7 +53,7 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * @var UserRepository
      */
-    private static $userRepository;
+    private static $repository;
 
     /**
      * @throws DependencyException
@@ -68,7 +68,7 @@ class UserRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$userRepository = $dic->get(UserRepository::class);
+        self::$repository = $dic->get(UserRepository::class);
     }
 
     /**
@@ -95,17 +95,17 @@ class UserRepositoryTest extends DatabaseTestCase
         $userData->setIsChangePass(1);
         $userData->setIsLdap(0);
 
-        $this->assertEquals(1, self::$userRepository->update($userData));
+        $this->assertEquals(1, self::$repository->update($userData));
 
         $userData->setId(3);
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$userRepository->update($userData);
+        self::$repository->update($userData);
 
         $userData->setId(10);
 
-        $this->assertEquals(0, self::$userRepository->update($userData));
+        $this->assertEquals(0, self::$repository->update($userData));
     }
 
     /**
@@ -123,7 +123,7 @@ class UserRepositoryTest extends DatabaseTestCase
         $preferences->setResultsAsCards(true);
         $preferences->setResultsPerPage(10);
 
-        $this->assertEquals(1, self::$userRepository->updatePreferencesById(2, $preferences));
+        $this->assertEquals(1, self::$repository->updatePreferencesById(2, $preferences));
     }
 
     /**
@@ -133,7 +133,7 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $user = self::$userRepository->getById(2);
+        $user = self::$repository->getById(2);
 
         $this->assertInstanceOf(UserData::class, $user);
         $this->assertEquals('sysPass demo', $user->getName());
@@ -141,7 +141,7 @@ class UserRepositoryTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$userRepository->getById(5);
+        self::$repository->getById(5);
     }
 
     /**
@@ -152,16 +152,19 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testCheckExistsByLogin()
     {
-        $this->assertTrue(self::$userRepository->checkExistsByLogin('demo'));
-        $this->assertFalse(self::$userRepository->checkExistsByLogin('usuario'));
+        $this->assertTrue(self::$repository->checkExistsByLogin('demo'));
+        $this->assertFalse(self::$repository->checkExistsByLogin('usuario'));
     }
 
     /**
      * Comprobar los datos de uso de un usuario
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUsageForUser()
     {
-        $this->assertCount(2, self::$userRepository->getUsageForUser(2));
+        $this->assertCount(2, self::$repository->getUsageForUser(2));
     }
 
     /**
@@ -173,11 +176,11 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testUpdatePassById()
     {
-        $result = self::$userRepository->updatePassById(2, new UpdatePassRequest(Hash::hashKey('prueba123')));
+        $result = self::$repository->updatePassById(2, new UpdatePassRequest(Hash::hashKey('prueba123')));
 
         $this->assertEquals(1, $result);
 
-        $result = self::$userRepository->updatePassById(10, new UpdatePassRequest(Hash::hashKey('prueba123')));
+        $result = self::$repository->updatePassById(10, new UpdatePassRequest(Hash::hashKey('prueba123')));
         $this->assertEquals(0, $result);
     }
 
@@ -189,7 +192,7 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $users = self::$userRepository->getByIdBatch([1, 2, 5]);
+        $users = self::$repository->getByIdBatch([1, 2, 5]);
 
         $this->assertCount(2, $users);
         $this->assertInstanceOf(UserData::class, $users[0]);
@@ -199,10 +202,13 @@ class UserRepositoryTest extends DatabaseTestCase
 
     /**
      * Obtener los datos de todos los usuarios
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
-        $users = self::$userRepository->getAll();
+        $users = self::$repository->getAll();
 
         $this->assertCount(4, $users);
         $this->assertInstanceOf(UserData::class, $users[0]);
@@ -224,11 +230,11 @@ class UserRepositoryTest extends DatabaseTestCase
         $userData->setIsLdap(1);
         $userData->setLogin('demo');
 
-        $this->assertEquals(1, self::$userRepository->updateOnLogin($userData));
+        $this->assertEquals(1, self::$repository->updateOnLogin($userData));
 
         $userData->setLogin('demodedadae');
 
-        $this->assertEquals(0, self::$userRepository->updateOnLogin($userData));
+        $this->assertEquals(0, self::$repository->updateOnLogin($userData));
     }
 
     /**
@@ -241,7 +247,7 @@ class UserRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $result = self::$userRepository->deleteByIdBatch([1, 2, 5]);
+        $result = self::$repository->deleteByIdBatch([1, 2, 5]);
 
         $this->assertCount(2, $result);
     }
@@ -253,7 +259,7 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetByLogin()
     {
-        $user = self::$userRepository->getByLogin('demo');
+        $user = self::$repository->getByLogin('demo');
 
         $this->assertInstanceOf(UserData::class, $user);
         $this->assertEquals('sysPass demo', $user->getName());
@@ -261,7 +267,7 @@ class UserRepositoryTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$userRepository->getByLogin('prueba');
+        self::$repository->getByLogin('prueba');
     }
 
     /**
@@ -272,22 +278,25 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $result = self::$userRepository->delete(3);
+        $result = self::$repository->delete(3);
 
         $this->assertEquals(1, $result);
         $this->assertEquals(3, $this->conn->getRowCount('User'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$userRepository->delete(1);
+        self::$repository->delete(1);
     }
 
     /**
      * Comprobar la obtención de los datos de usuarios
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetBasicInfo()
     {
-        $users = self::$userRepository->getBasicInfo();
+        $users = self::$repository->getBasicInfo();
 
         $this->assertCount(4, $users);
         $this->assertInstanceOf(UserData::class, $users[0]);
@@ -301,9 +310,9 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testUpdateLastLoginById()
     {
-        $this->assertEquals(1, self::$userRepository->updateLastLoginById(2));
+        $this->assertEquals(1, self::$repository->updateLastLoginById(2));
 
-        $this->assertEquals(0, self::$userRepository->updateLastLoginById(10));
+        $this->assertEquals(0, self::$repository->updateLastLoginById(10));
     }
 
     /**
@@ -318,7 +327,7 @@ class UserRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('User A');
 
-        $result = self::$userRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -331,13 +340,14 @@ class UserRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$userRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
     }
 
     /**
+     * @depends testGetById
      * @throws ConstraintException
      * @throws QueryException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -348,9 +358,9 @@ class UserRepositoryTest extends DatabaseTestCase
         $key = Crypt::makeSecuredKey('prueba123');
         $pass = Crypt::encrypt('prueba_key', $key, 'prueba123');
 
-        $this->assertEquals(1, self::$userRepository->updateMasterPassById(3, $pass, $key));
+        $this->assertEquals(1, self::$repository->updateMasterPassById(3, $pass, $key));
 
-        $user = self::$userRepository->getById(3);
+        $user = self::$repository->getById(3);
 
         $this->assertEquals($pass, $user->getMPass());
         $this->assertEquals($key, $user->getMKey());
@@ -378,26 +388,29 @@ class UserRepositoryTest extends DatabaseTestCase
         $userData->setIsLdap(0);
         $userData->setPass(Hash::hashKey('prueba123'));
 
-        $this->assertEquals(5, self::$userRepository->create($userData));
+        $this->assertEquals(5, self::$repository->create($userData));
 
         $userData->setLogin('demo');
         $userData->setEmail('prueba@syspass.org');
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$userRepository->create($userData);
+        self::$repository->create($userData);
 
         $userData->setLogin('prueba');
         $userData->setEmail('demo@syspass.org');
 
-        self::$userRepository->create($userData);
+        self::$repository->create($userData);
     }
 
     /**
      * Comprobar la obtención de email de usuario por Id de grupo
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUserEmailForGroup()
     {
-        $this->assertCount(4, self::$userRepository->getUserEmailForGroup(2));
+        $this->assertCount(4, self::$repository->getUserEmailForGroup(2));
     }
 }

@@ -38,7 +38,7 @@ class TrackRepository extends Repository
     /**
      * @param TrackRequest $trackRequest
      *
-     * @return mixed
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -66,7 +66,7 @@ class TrackRepository extends Repository
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      *
      * @return int
      * @throws \SP\Core\Exceptions\QueryException
@@ -83,41 +83,9 @@ class TrackRepository extends Repository
     }
 
     /**
-     * @param TrackData $itemData
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function update(TrackData $itemData)
-    {
-        $query = /** @lang SQL */
-            'UPDATE Track SET 
-            userId = ?, 
-            `source` = ?, 
-            `time` = UNIX_TIMESTAMP(),
-            ipv4 = ?,
-            ipv6 = ? 
-            WHERE id = ? LIMIT 1';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setParams([
-            $itemData->getUserId(),
-            $itemData->getSource(),
-            $itemData->getTrackIpv4Bin(),
-            $itemData->getTrackIpv6Bin(),
-            $itemData->getId()
-        ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar track'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
      * @param $id int
      *
-     * @return TrackData
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -139,11 +107,11 @@ class TrackRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener track'));
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
-     * @return TrackData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -162,7 +130,7 @@ class TrackRepository extends Repository
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -170,7 +138,7 @@ class TrackRepository extends Repository
      *
      * @param TrackRequest $trackRequest
      *
-     * @return array
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -187,13 +155,13 @@ class TrackRepository extends Repository
         $queryData->setMapClassName(TrackData::class);
         $queryData->setQuery($query);
         $queryData->setParams([
-            $trackRequest->time,
+            (int)$trackRequest->time,
             $trackRequest->getIpv4(),
             $trackRequest->getIpv6(),
             $trackRequest->source
         ]);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

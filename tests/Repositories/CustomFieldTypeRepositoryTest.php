@@ -42,7 +42,7 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     /**
      * @var CustomFieldTypeRepository
      */
-    private static $customFieldTypeRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -57,7 +57,7 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$customFieldTypeRepository = $dic->get(CustomFieldTypeRepository::class);
+        self::$repository = $dic->get(CustomFieldTypeRepository::class);
     }
 
     /**
@@ -68,13 +68,13 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('CustomFieldType');
 
-        $this->assertEquals(2, self::$customFieldTypeRepository->deleteByIdBatch([3, 4, 100]));
-        $this->assertEquals(0, self::$customFieldTypeRepository->deleteByIdBatch([]));
+        $this->assertEquals(2, self::$repository->deleteByIdBatch([3, 4, 100]));
+        $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
         $this->assertEquals($countBefore - 2, $this->conn->getRowCount('CustomFieldType'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$customFieldTypeRepository->deleteByIdBatch([1, 2]);
+        self::$repository->deleteByIdBatch([1, 2]);
     }
 
     /**
@@ -85,14 +85,14 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('CustomFieldType');
 
-        $this->assertEquals(1, self::$customFieldTypeRepository->delete(3));
-        $this->assertEquals(0, self::$customFieldTypeRepository->delete(100));
+        $this->assertEquals(1, self::$repository->delete(3));
+        $this->assertEquals(0, self::$repository->delete(100));
         $this->assertEquals($countBefore - 1, $this->conn->getRowCount('CustomFieldType'));
 
         $this->expectException(ConstraintException::class);
 
-        self::$customFieldTypeRepository->delete(1);
-        self::$customFieldTypeRepository->delete(2);
+        self::$repository->delete(1);
+        self::$repository->delete(2);
     }
 
     /**
@@ -101,45 +101,13 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $result = self::$customFieldTypeRepository->getAll();
+        $result = self::$repository->getAll();
 
         $this->assertCount(10, $result);
         $this->assertInstanceOf(CustomFieldTypeData::class, $result[0]);
         $this->assertEquals(1, $result[0]->getId());
         $this->assertEquals('text', $result[0]->getName());
         $this->assertEquals('Texto', $result[0]->getText());
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function testCreate()
-    {
-        $data = new CustomFieldTypeData();
-        $data->setId(11);
-        $data->setName('prueba');
-        $data->setText('Prueba');
-
-        $this->assertEquals(11, self::$customFieldTypeRepository->create($data));
-        $this->assertEquals($data, self::$customFieldTypeRepository->getById(11));
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function testUpdate()
-    {
-        $data = new CustomFieldTypeData();
-        $data->setId(10);
-        $data->setName('prueba');
-        $data->setText('Prueba');
-
-        $this->assertEquals(1, self::$customFieldTypeRepository->update($data));
-        $this->assertEquals($data, self::$customFieldTypeRepository->getById(10));
     }
 
     /**
@@ -154,10 +122,44 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
         $data->setName('textarea');
         $data->setText('Área de Texto');
 
-        $this->assertEquals($data, self::$customFieldTypeRepository->getById(10));
+        $this->assertEquals($data, self::$repository->getById(10));
 
         $this->expectException(NoSuchItemException::class);
 
-        $this->assertEquals(0, self::$customFieldTypeRepository->getById(11));
+        $this->assertEquals(0, self::$repository->getById(11));
+    }
+
+    /**
+     * @depends testGetById
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCreate()
+    {
+        $data = new CustomFieldTypeData();
+        $data->setId(11);
+        $data->setName('prueba');
+        $data->setText('Prueba');
+
+        $this->assertEquals(11, self::$repository->create($data));
+        $this->assertEquals($data, self::$repository->getById(11));
+    }
+
+    /**
+     * @depends testGetById
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testUpdate()
+    {
+        $data = new CustomFieldTypeData();
+        $data->setId(10);
+        $data->setName('prueba');
+        $data->setText('Prueba');
+
+        $this->assertEquals(1, self::$repository->update($data));
+        $this->assertEquals($data, self::$repository->getById(10));
     }
 }

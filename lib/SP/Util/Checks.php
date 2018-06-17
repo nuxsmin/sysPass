@@ -150,13 +150,14 @@ class Checks
     {
         return
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || (int)$_SERVER['SERVER_PORT'] === 443;
+            || (!empty($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
     }
 
     /**
      * Comprobar si la petición es Ajax
      *
      * @param Klein $router
+     *
      * @return bool
      */
     public static function isAjax(Klein $router)
@@ -169,6 +170,7 @@ class Checks
      * Comprobar si la petición es en formato JSON
      *
      * @param Klein $router
+     *
      * @return bool
      */
     public static function isJson(Klein $router)

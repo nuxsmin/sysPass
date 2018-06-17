@@ -45,7 +45,7 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * @var TagRepository
      */
-    private static $tagRepository;
+    private static $repository;
 
     /**
      * @throws \DI\NotFoundException
@@ -60,7 +60,7 @@ class TagRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$tagRepository = $dic->get(TagRepository::class);
+        self::$repository = $dic->get(TagRepository::class);
     }
 
     /**
@@ -75,7 +75,7 @@ class TagRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('www');
 
-        $result = self::$tagRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -87,7 +87,7 @@ class TagRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $result = self::$tagRepository->search($itemSearchData);
+        $result = self::$repository->search($itemSearchData);
 
         $this->assertEquals(0, $result->getNumRows());
         $this->assertCount(0, $result->getDataAsArray());
@@ -95,30 +95,36 @@ class TagRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar los resultados de obtener las etiquetas por Id
+     *
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function testGetById()
     {
-        $tag = self::$tagRepository->getById(10);
+        $tag = self::$repository->getById(10);
 
         $this->assertCount(0, $tag);
 
-        $tag = self::$tagRepository->getById(1);
+        $tag = self::$repository->getById(1);
 
         $this->assertEquals('www', $tag->getName());
 
-        $tag = self::$tagRepository->getById(2);
+        $tag = self::$repository->getById(2);
 
         $this->assertEquals('windows', $tag->getName());
     }
 
     /**
      * Comprobar la obtención de todas las etiquetas
+     *
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function testGetAll()
     {
         $count = $this->conn->getRowCount('Tag');
 
-        $results = self::$tagRepository->getAll();
+        $results = self::$repository->getAll();
 
         $this->assertCount($count, $results);
 
@@ -135,7 +141,8 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de etiquetas
      *
-     * @covers \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnUpdate()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -146,9 +153,9 @@ class TagRepositoryTest extends DatabaseTestCase
         $tagData->id = 1;
         $tagData->name = 'Servidor';
 
-        self::$tagRepository->update($tagData);
+        self::$repository->update($tagData);
 
-        $category = self::$tagRepository->getById(1);
+        $category = self::$repository->getById(1);
 
         $this->assertEquals($category->getName(), $tagData->name);
 
@@ -159,7 +166,7 @@ class TagRepositoryTest extends DatabaseTestCase
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$tagRepository->update($tagData);
+        self::$repository->update($tagData);
     }
 
     /**
@@ -169,8 +176,8 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $this->assertEquals(0, self::$tagRepository->deleteByIdBatch([4]));
-        $this->assertEquals(3, self::$tagRepository->deleteByIdBatch([1, 2, 3]));
+        $this->assertEquals(0, self::$repository->deleteByIdBatch([4]));
+        $this->assertEquals(3, self::$repository->deleteByIdBatch([1, 2, 3]));
 
         $this->assertEquals(0, $this->conn->getRowCount('Tag'));
     }
@@ -178,7 +185,8 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de etiquetas
      *
-     * @covers \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnAdd()
+     * @depends testGetById
+     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnAdd()
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -189,10 +197,10 @@ class TagRepositoryTest extends DatabaseTestCase
         $tagData = new TagData();
         $tagData->name = 'Core';
 
-        $id = self::$tagRepository->create($tagData);
+        $id = self::$repository->create($tagData);
 
         // Comprobar que el Id devuelto corresponde con la etiqueta creada
-        $tag = self::$tagRepository->getById($id);
+        $tag = self::$repository->getById($id);
 
         $this->assertEquals($tagData->name, $tag->getName());
 
@@ -211,14 +219,14 @@ class TagRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Tag');
 
-        $this->assertEquals(1, self::$tagRepository->delete(3));
+        $this->assertEquals(1, self::$repository->delete(3));
 
         $countAfter = $this->conn->getRowCount('Tag');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 
         // Comprobar la eliminación de etiquetas usadas
-        $this->assertEquals(1, self::$tagRepository->delete(1));
+        $this->assertEquals(1, self::$repository->delete(1));
     }
 
     /**
@@ -229,9 +237,9 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->assertCount(3, self::$tagRepository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$tagRepository->getByIdBatch([1, 2, 3, 4, 5]));
-        $this->assertCount(0, self::$tagRepository->getByIdBatch([]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
+        $this->assertCount(0, self::$repository->getByIdBatch([]));
     }
 
     /**
@@ -240,6 +248,6 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testCheckInUse()
     {
-        $this->assertTrue(self::$tagRepository->checkInUse(1));
+        $this->assertTrue(self::$repository->checkInUse(1));
     }
 }
