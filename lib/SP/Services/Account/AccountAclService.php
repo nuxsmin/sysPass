@@ -358,7 +358,7 @@ class AccountAclService extends Service
         }
     }
 
-    public function initialize()
+    protected function initialize()
     {
         $this->acl = $this->dic->get(Acl::class);
         $this->fileCache = $this->dic->get(FileCache::class);

@@ -24,8 +24,6 @@
 
 namespace SP\Account;
 
-use SP\DataModel\AccountPermissionData;
-
 /**
  * Class AccountRequest
  *
