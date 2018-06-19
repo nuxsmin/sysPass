@@ -194,7 +194,7 @@ CREATE TABLE `accHistory` (
   `acchistory_url` varchar(255) DEFAULT NULL,
   `acchistory_pass` varbinary(1000) NOT NULL,
   `acchistory_key` varbinary(1000) NOT NULL,
-  `acchistory_notes` text NOT NULL,
+  `acchistory_notes` text,
   `acchistory_countView` int(10) unsigned NOT NULL DEFAULT '0',
   `acchistory_countDecrypt` int(10) unsigned NOT NULL DEFAULT '0',
   `acchistory_dateAdd` datetime NOT NULL,

@@ -26,7 +26,6 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Http\Request;
-use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die();
 
@@ -156,6 +155,7 @@ class Language
         $fallback = 'en_US.utf8';
 
         putenv('LANG=' . $lang);
+        putenv('LANGUAGE=' . $lang);
         self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
         setlocale(LC_ALL, [$lang, $fallback]);
         bindtextdomain('messages', LOCALES_PATH);

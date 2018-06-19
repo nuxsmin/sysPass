@@ -292,7 +292,7 @@ sysPass.Theme = function (Common) {
         };
 
         var getUnixtime = function (val) {
-            return moment.tz(val, Common.config().TIMEZONE).format("X");
+            return Math.max(0, moment.tz(val, Common.config().TIMEZONE).format("X"));
         };
 
         // Actualizar el input oculto con la fecha en formato UNIX

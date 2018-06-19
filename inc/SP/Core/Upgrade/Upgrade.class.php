@@ -33,6 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session as CoreSession;
 use SP\Core\TaskFactory;
+use SP\Core\Upgrade\User as UserUpgrade;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -44,7 +45,6 @@ use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
-use SP\Core\Upgrade\User as UserUpgrade;
 
 defined('APP_ROOT') || die();
 
@@ -124,11 +124,13 @@ class Upgrade
     private static function normalizeVersion($version)
     {
         if (strpos($version, '.') === false) {
-            if (strlen($version) === 10) {
+            $versionLength = strlen($version);
+
+            if ($versionLength === 10) {
                 return substr($version, 0, 2) . '0.' . substr($version, 2);
             }
 
-            return substr($version, 0, 3) . '.' . substr($version, 3);
+            return substr($version, 0, -8) . '.' . substr($version, -8);
         }
 
         return $version;
@@ -197,7 +199,9 @@ class Upgrade
      * Actualiza la BBDD según la versión.
      *
      * @param int $version con la versión a actualizar
+     *
      * @returns bool
+     * @return bool
      */
     private static function upgradeDB($version)
     {
@@ -280,8 +284,10 @@ class Upgrade
      * Actualizaciones de la aplicación
      *
      * @param $version
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Exception
      */
     private static function appUpgrades($version)
     {
@@ -348,7 +354,9 @@ class Upgrade
      * Comprueba si es necesario actualizar la configuración.
      *
      * @param int $version con el número de versión actual
+     *
      * @returns bool
+     * @return bool
      */
     public static function needConfigUpgrade($version)
     {

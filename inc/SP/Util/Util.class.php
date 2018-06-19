@@ -32,7 +32,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Html\Html;
-use SP\Http\Request;
 use SP\Log\Log;
 use SP\Log\LogUtil;
 
@@ -121,7 +120,6 @@ class Util
      *
      * @param int $length opcional, con la longitud de la cadena
      * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function generateRandomBytes($length = 30)
     {
@@ -386,7 +384,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17110201;
+        $build = 18061801;
         $version = [2, 1, 16];
 
         if ($normalized === true) {

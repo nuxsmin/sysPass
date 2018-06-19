@@ -204,8 +204,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn con el DN del usuario
+     * @param string $bindDn   con el DN del usuario
      * @param string $bindPass con la clave del usuario
+     *
      * @throws SPException
      * @return bool
      */
@@ -257,8 +258,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Devolver los resultados de una paginación
      *
-     * @param string $filter Filtro a utilizar
-     * @param array $attributes Atributos a devolver
+     * @param string $filter     Filtro a utilizar
+     * @param array  $attributes Atributos a devolver
+     *
      * @return bool|array
      */
     protected function getResults($filter, array $attributes = null)
@@ -423,6 +425,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Autentificar al usuario
      *
      * @param UserLoginData $UserData Datos del usuario
+     *
      * @return bool
      */
     public function authenticate(UserLoginData $UserData)
@@ -536,7 +539,13 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         }
 
         $this->LdapAuthData->setDn($searchResults[0]['dn']);
-        $this->LdapAuthData->setEmail($res['mail']);
+
+        if (is_array($res['mail'])) {
+            $this->LdapAuthData->setEmail($res['mail'][0]);
+        } else {
+            $this->LdapAuthData->setEmail($res['mail']);
+        }
+
         $this->LdapAuthData->setExpire($res['expire']);
         $this->LdapAuthData->setGroups($res['group']);
 
@@ -589,7 +598,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     protected function searchGroupDN()
     {
         $group = $this->getGroupName() ?: $this->group;
-        $filter = '(cn=' . ldap_escape($group) . ')';
+        $filter = '(&(cn=' . ldap_escape($group) . ')(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)(objectCategory=group)))';
 
         $searchResults = $this->getResults($filter, ['dn', 'cn']);
 
@@ -686,6 +695,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Escapar carácteres especiales en el RDN de LDAP.
      *
      * @param string $dn con el RDN del usuario
+     *
      * @return string
      */
     protected function escapeLdapDN($dn)

@@ -46,8 +46,6 @@ if (!$file) {
         ->addFile('magnific-popup.min.css')
         ->getMinified();
 } elseif ($file && $base) {
-    $base = Request::analyze('b');
-
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_CSS)
         ->setBase(urldecode($base), true)
