@@ -394,6 +394,9 @@ sysPass.Triggers = function (Common) {
 
             Common.appTheme().passwordDetect($form);
             selectDetect($form);
+
+            // Actualizar objetos de MDL
+            componentHandler.upgradeDom();
         }
     };
 
