@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -55,6 +55,10 @@ class AccountPassData extends DataModelBase implements DataModelInterface
      * @var int
      */
     public $parentId = 0;
+    /**
+     * @var string
+     */
+    public $mPassHash = '';
 
     /**
      * @return int
@@ -150,5 +154,21 @@ class AccountPassData extends DataModelBase implements DataModelInterface
     public function setParentId($parentId)
     {
         $this->parentId = $parentId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMPassHash()
+    {
+        return $this->mPassHash;
+    }
+
+    /**
+     * @param string $mPassHash
+     */
+    public function setMPassHash($mPassHash)
+    {
+        $this->mPassHash = $mPassHash;
     }
 }

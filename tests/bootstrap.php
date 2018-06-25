@@ -28,6 +28,7 @@ use DI\ContainerBuilder;
 use Doctrine\Common\Cache\ArrayCache;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
+use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
 
@@ -36,11 +37,10 @@ define('APP_MODULE', 'tests');
 define('APP_ROOT', dirname(__DIR__));
 define('TEST_ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');
 define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-
 define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
@@ -86,8 +86,11 @@ function setupContext()
     $userData->setId(1);
     $userData->setUserGroupId(1);
     $userData->setIsAdminApp(1);
+    $userData->setLastUpdate(time());
 
     $context->setUserData($userData);
+
+    $context->setUserProfile(new ProfileData());
 
     // Establecer configuración de conexión con la BBDD
     $databaseConnectionData = (new DatabaseConnectionData())

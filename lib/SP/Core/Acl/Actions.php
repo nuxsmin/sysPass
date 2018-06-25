@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -64,8 +64,9 @@ class Actions
     /**
      * Action constructor.
      *
-     * @param FileStorageInterface $fileStorage
+     * @param FileStorageInterface    $fileStorage
      * @param XmlFileStorageInterface $xmlFileStorage
+     *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
@@ -140,7 +141,7 @@ class Actions
      * Loads actions from DB
      *
      * @return ActionData[]
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileException
      */
     protected function load()
     {
@@ -165,6 +166,7 @@ class Actions
      * Returns an action by id
      *
      * @param $id
+     *
      * @return ActionData
      * @throws ActionNotFoundException
      */

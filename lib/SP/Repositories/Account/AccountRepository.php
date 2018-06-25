@@ -110,8 +110,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getPasswordHistoryForId(QueryCondition $queryCondition)
     {
         $query = /** @lang SQL */
-            'SELECT AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId 
-            FROM AccountHistory AH 
+            'SELECT 
+              AccountHistory.id, 
+              AccountHistory.name,
+              AccountHistory.login,
+              AccountHistory.pass,
+              AccountHistory.key,
+              AccountHistory.parentId,
+              AccountHistory.mPassHash 
+            FROM AccountHistory 
             WHERE ' . $queryCondition->getFilters();
 
         $queryData = new QueryData();

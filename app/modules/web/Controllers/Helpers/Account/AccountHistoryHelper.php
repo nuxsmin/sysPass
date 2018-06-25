@@ -75,11 +75,12 @@ class AccountHistoryHelper extends HelperBase
     /**
      * @param AccountHistoryData $accountHistoryData
      * @param int                $actionId
+     *
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
@@ -131,17 +132,18 @@ class AccountHistoryHelper extends HelperBase
      * Comprobar si el usuario dispone de acceso al módulo
      *
      * @param AccountHistoryData $accountHistoryData
+     *
      * @throws AccountPermissionException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function checkAccess(AccountHistoryData $accountHistoryData)
     {
-        $acccountAclDto = new AccountAclDto();
-        $acccountAclDto->setAccountId($accountHistoryData->getAccountId());
-        $acccountAclDto->setDateEdit(strtotime($accountHistoryData->getDateEdit()));
-        $acccountAclDto->setUserId($accountHistoryData->getUserId());
-        $acccountAclDto->setUserGroupId($accountHistoryData->getUserGroupId());
-        $acccountAclDto->setUsersId($this->accountHistoryService->getUsersByAccountId($this->accountId));
-        $acccountAclDto->setUserGroupsId($this->accountHistoryService->getUserGroupsByAccountId($this->accountId));
+        $acccountAclDto = AccountAclDto::makeFromAccountHistory(
+            $accountHistoryData,
+            $this->accountHistoryService->getUsersByAccountId($this->accountId),
+            $this->accountHistoryService->getUserGroupsByAccountId($this->accountId)
+        );
 
         $this->accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, $acccountAclDto, true);
 

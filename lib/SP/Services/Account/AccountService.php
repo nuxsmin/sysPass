@@ -494,7 +494,7 @@ class AccountService extends Service implements AccountServiceInterface
     public function getPasswordHistoryForId($id)
     {
         $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->context)
-            ->addFilter('AH.id = ?', [$id]);
+            ->addFilter('AccountHistory.id = ?', [$id]);
 
         return $this->accountRepository->getPasswordHistoryForId($queryFilter);
     }

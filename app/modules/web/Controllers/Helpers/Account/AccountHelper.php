@@ -213,20 +213,12 @@ class AccountHelper extends HelperBase
      *
      * @return AccountAcl
      * @throws AccountPermissionException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function checkAccess(AccountDetailsResponse $accountDetailsResponse)
     {
-        $accountData = $accountDetailsResponse->getAccountVData();
-
-        $accountAclDto = new AccountAclDto();
-        $accountAclDto->setAccountId($accountData->getId());
-        $accountAclDto->setDateEdit(strtotime($accountData->getDateEdit()));
-        $accountAclDto->setUserId($accountData->getUserId());
-        $accountAclDto->setUserGroupId($accountData->getUserGroupId());
-        $accountAclDto->setUsersId($accountDetailsResponse->getUsers());
-        $accountAclDto->setUserGroupsId($accountDetailsResponse->getUserGroups());
-
-        $accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, $accountAclDto);
+        $accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, AccountAclDto::makeFromAccount($accountDetailsResponse));
 
         if ($accountAcl === null || $accountAcl->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(AccountPermissionException::INFO);
@@ -238,8 +230,8 @@ class AccountHelper extends HelperBase
     /**
      * Sets account's view common data
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewCommon()
     {
@@ -291,8 +283,8 @@ class AccountHelper extends HelperBase
      * @return void
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setViewForBlank($actionId)
@@ -305,7 +297,7 @@ class AccountHelper extends HelperBase
         $userProfileData = $this->context->getUserProfile();
         $userData = $this->context->getUserData();
 
-        $this->accountAcl->showPermission = $userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission();
+        $this->accountAcl->setShowPermission($userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission());
 
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());

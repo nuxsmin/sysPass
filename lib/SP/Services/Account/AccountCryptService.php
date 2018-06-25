@@ -26,7 +26,6 @@ namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\OldCrypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -56,113 +55,11 @@ class AccountCryptService extends Service
      */
     protected $request;
 
-
-    /**
-     * Actualiza las claves de todas las cuentas con la clave maestra actual
-     * usando nueva encriptación.
-     *
-     * @param UpdateMasterPassRequest $updateMasterPassRequest
-     * @throws ServiceException
-     */
-    public function updateOldPass(UpdateMasterPassRequest $updateMasterPassRequest)
-    {
-        set_time_limit(0);
-
-        $this->request = $updateMasterPassRequest;
-
-        $accountsOk = [];
-        $errorCount = 0;
-
-        $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.start',
-            new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra')))
-        );
-
-        if (!OldCrypt::checkCryptModule()) {
-            throw new ServiceException(__u('Error en el módulo de encriptación'), ServiceException::ERROR);
-        }
-
-        $accountsPass = $this->accountService->getAccountsPassData();
-        $numAccounts = count($accountsPass);
-
-        if ($numAccounts === 0) {
-            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), ServiceException::ERROR);
-        }
-
-        if ($this->request->useTask()) {
-            $taskId = $this->request->getTask()->getTaskId();
-
-            TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra')));
-        }
-
-        $counter = 0;
-        $startTime = time();
-        $configData = $this->config->getConfigData();
-        $eventMessage = EventMessage::factory();
-
-        foreach ($accountsPass as $account) {
-            // No realizar cambios si está en modo demo
-            if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->id;
-                continue;
-            }
-
-            if ($counter % 100 === 0) {
-                $eta = Util::getETA($startTime, $counter, $numAccounts);
-
-                if (isset($taskId)) {
-                    $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
-                        ->setMessage(sprintf(__('Cuentas actualizadas: %d / %d'), $counter, $numAccounts))
-                        ->setProgress(round(($counter * 100) / $numAccounts, 2))
-                        ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
-
-
-                    TaskFactory::update($taskId, $taskMessage);
-
-                    debugLog($taskMessage->composeText());
-                } else {
-                    debugLog(
-                        sprintf(__('Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
-                            $counter,
-                            $numAccounts,
-                            round(($counter * 100) / $numAccounts, 2),
-                            $eta[0], $eta[1])
-                    );
-                }
-            }
-
-            $accountRequest = new AccountPasswordRequest();
-            $accountRequest->id = $account->id;
-
-            try {
-                $passData = $this->accountService->getPasswordEncrypted(
-                    OldCrypt::getDecrypt($account->pass, $account->key, $this->request->getCurrentMasterPass()),
-                    $this->request->getNewMasterPass()
-                );
-
-                $accountRequest->key = $passData['key'];
-                $accountRequest->pass = $passData['pass'];
-
-                $this->accountService->updatePasswordMasterPass($accountRequest);
-
-                $accountsOk[] = $account->id;
-                $counter++;
-            } catch (SPException $e) {
-                $errorCount++;
-                $eventMessage->addDescription(__u('Fallo al actualizar la clave de la cuenta'));
-                $eventMessage->addDetail($account->name, $account->id);
-            }
-        }
-
-        $eventMessage->addDetail(__u('Cuentas actualizadas'), implode(',', $accountsOk));
-        $eventMessage->addDetail(__u('Errores'), $errorCount);
-
-        $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.end', new Event($this, $eventMessage));
-    }
-
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
      * @param UpdateMasterPassRequest $updateMasterPassRequest
+     *
      * @throws ServiceException
      */
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest)
@@ -200,6 +97,7 @@ class AccountCryptService extends Service
     /**
      * @param array    $accounts
      * @param callable $passUpdater
+     *
      * @return EventMessage
      * @throws ServiceException
      */
@@ -281,6 +179,7 @@ class AccountCryptService extends Service
                 $counter++;
             } catch (SPException $e) {
                 $errorCount++;
+
                 $eventMessage->addDescription(__u('Fallo al actualizar la clave de la cuenta'));
                 $eventMessage->addDetail($account->name, $account->id);
             } catch (CryptoException $e) {
@@ -301,6 +200,7 @@ class AccountCryptService extends Service
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
      * @param UpdateMasterPassRequest $updateMasterPassRequest
+     *
      * @throws ServiceException
      */
     public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest)

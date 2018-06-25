@@ -41,7 +41,10 @@ class UserToUserGroupService extends Service
 
     /**
      * @param $id
+     *
      * @return \SP\DataModel\UserToUserGroupData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -51,6 +54,7 @@ class UserToUserGroupService extends Service
     /**
      * @param       $id
      * @param array $users
+     *
      * @return UserToUserGroupRepository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -63,6 +67,7 @@ class UserToUserGroupService extends Service
     /**
      * @param int   $id
      * @param array $users
+     *
      * @return UserToUserGroupRepository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -78,7 +83,10 @@ class UserToUserGroupService extends Service
 
     /**
      * @param $id
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUsersByGroupId($id)
     {
@@ -94,9 +102,12 @@ class UserToUserGroupService extends Service
     /**
      * Checks whether the user is included in the group
      *
-     * @param $userId
      * @param $groupId
+     * @param $userId
+     *
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkUserInGroup($groupId, $userId)
     {
@@ -107,7 +118,10 @@ class UserToUserGroupService extends Service
      * Returns the groups which the user belongs to
      *
      * @param $userId
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getGroupsForUser($userId)
     {

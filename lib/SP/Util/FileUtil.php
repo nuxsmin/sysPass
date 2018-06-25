@@ -27,6 +27,7 @@ namespace SP\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\FileData;
 
 /**
@@ -45,13 +46,15 @@ class FileUtil
      * Removes a directory in a recursive way
      *
      * @param $dir
+     *
      * @return bool
      * @see https://stackoverflow.com/a/7288067
+     * @throws FileNotFoundException
      */
     public static function rmdir_recursive($dir)
     {
         if (!is_dir($dir)) {
-            return true;
+            throw new FileNotFoundException('Directory does not exist');
         }
 
         $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);
@@ -66,6 +69,7 @@ class FileUtil
 
     /**
      * @param FileData $FileData
+     *
      * @return bool
      */
     public static function isImage(FileData $FileData)

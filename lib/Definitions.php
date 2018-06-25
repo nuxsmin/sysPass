@@ -61,5 +61,8 @@ return [
     \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
         ->constructor(true),
     \Monolog\Logger::class => object(\Monolog\Logger::class)
-        ->constructor('syspass')
+        ->constructor('syspass'),
+    \SP\Services\Account\AccountAclService::class => function (\Interop\Container\ContainerInterface $c) {
+        return new \SP\Services\Account\AccountAclService($c);
+    }
 ];

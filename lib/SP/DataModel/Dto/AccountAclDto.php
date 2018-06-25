@@ -24,6 +24,8 @@
 
 namespace SP\DataModel\Dto;
 
+use SP\DataModel\AccountHistoryData;
+use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
 
 /**
@@ -31,7 +33,7 @@ use SP\DataModel\ItemData;
  *
  * @package SP\DataModel\Dto
  */
-class AccountAclDto
+final class AccountAclDto
 {
     /**
      * @var int
@@ -58,20 +60,76 @@ class AccountAclDto
      */
     private $dateEdit;
 
+    private function __construct()
+    {
+    }
+
+    /**
+     * @param AccountDetailsResponse $accountDetailsResponse
+     *
+     * @return AccountAclDto
+     */
+    public static function makeFromAccount(AccountDetailsResponse $accountDetailsResponse)
+    {
+        $dto = new self();
+        $dto->accountId = $accountDetailsResponse->getId();
+        $dto->userId = $accountDetailsResponse->getAccountVData()->getUserId();
+        $dto->usersId = $accountDetailsResponse->getUsers();
+        $dto->userGroupId = $accountDetailsResponse->getAccountVData()->getUserGroupId();
+        $dto->userGroupsId = $accountDetailsResponse->getUserGroups();
+        $dto->dateEdit = strtotime($accountDetailsResponse->getAccountVData()->getDateEdit());
+
+        return $dto;
+    }
+
+    /**
+     * @param AccountHistoryData $accountHistoryData
+     *
+     * @param array              $users
+     * @param array              $userGroups
+     *
+     * @return AccountAclDto
+     */
+    public static function makeFromAccountHistory(AccountHistoryData $accountHistoryData, array $users, array $userGroups)
+    {
+        $dto = new self();
+        $dto->accountId = $accountHistoryData->getId();
+        $dto->userId = $accountHistoryData->getUserId();
+        $dto->usersId = $users;
+        $dto->userGroupId = $accountHistoryData->getUserGroupId();
+        $dto->userGroupsId = $userGroups;
+        $dto->dateEdit = strtotime($accountHistoryData->getDateEdit());
+
+        return $dto;
+    }
+
+    /**
+     * @param AccountSearchVData $accountSearchVData
+     *
+     * @param array              $users
+     * @param array              $userGroups
+     *
+     * @return AccountAclDto
+     */
+    public static function makeFromAccountSearch(AccountSearchVData $accountSearchVData, array $users, array $userGroups)
+    {
+        $dto = new self();
+        $dto->accountId = $accountSearchVData->getId();
+        $dto->userId = $accountSearchVData->getUserId();
+        $dto->usersId = $users;
+        $dto->userGroupId = $accountSearchVData->getUserGroupId();
+        $dto->userGroupsId = $userGroups;
+        $dto->dateEdit = strtotime($accountSearchVData->getDateEdit());
+
+        return $dto;
+    }
+
     /**
      * @return int
      */
     public function getUserId()
     {
         return $this->userId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = (int)$userId;
     }
 
     /**
@@ -83,27 +141,11 @@ class AccountAclDto
     }
 
     /**
-     * @param ItemData[] $usersId
-     */
-    public function setUsersId(array $usersId)
-    {
-        $this->usersId = $usersId;
-    }
-
-    /**
      * @return int
      */
     public function getUserGroupId()
     {
         return $this->userGroupId;
-    }
-
-    /**
-     * @param int $userGroupId
-     */
-    public function setUserGroupId($userGroupId)
-    {
-        $this->userGroupId = (int)$userGroupId;
     }
 
     /**
@@ -115,27 +157,11 @@ class AccountAclDto
     }
 
     /**
-     * @param ItemData[] $userGroupsId
-     */
-    public function setUserGroupsId(array $userGroupsId)
-    {
-        $this->userGroupsId = $userGroupsId;
-    }
-
-    /**
      * @return int
      */
     public function getDateEdit()
     {
         return $this->dateEdit;
-    }
-
-    /**
-     * @param int $dateEdit
-     */
-    public function setDateEdit($dateEdit)
-    {
-        $this->dateEdit = (int)$dateEdit;
     }
 
     /**
@@ -145,13 +171,4 @@ class AccountAclDto
     {
         return $this->accountId;
     }
-
-    /**
-     * @param int $accountId
-     */
-    public function setAccountId($accountId)
-    {
-        $this->accountId = (int)$accountId;
-    }
-
 }

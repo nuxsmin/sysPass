@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -160,10 +160,14 @@ class ProfileData
 
     /**
      * @param boolean $accView
+     *
+     * @return ProfileData
      */
     public function setAccView($accView)
     {
         $this->accView = $accView;
+
+        return $this;
     }
 
     /**
@@ -176,10 +180,14 @@ class ProfileData
 
     /**
      * @param boolean $accViewPass
+     *
+     * @return ProfileData
      */
     public function setAccViewPass($accViewPass)
     {
         $this->accViewPass = $accViewPass;
+
+        return $this;
     }
 
     /**
@@ -192,10 +200,14 @@ class ProfileData
 
     /**
      * @param boolean $accViewHistory
+     *
+     * @return ProfileData
      */
     public function setAccViewHistory($accViewHistory)
     {
         $this->accViewHistory = $accViewHistory;
+
+        return $this;
     }
 
     /**
@@ -208,10 +220,14 @@ class ProfileData
 
     /**
      * @param boolean $accEdit
+     *
+     * @return ProfileData
      */
     public function setAccEdit($accEdit)
     {
         $this->accEdit = $accEdit;
+
+        return $this;
     }
 
     /**
@@ -224,10 +240,14 @@ class ProfileData
 
     /**
      * @param boolean $accEditPass
+     *
+     * @return ProfileData
      */
     public function setAccEditPass($accEditPass)
     {
         $this->accEditPass = $accEditPass;
+
+        return $this;
     }
 
     /**
@@ -240,10 +260,14 @@ class ProfileData
 
     /**
      * @param boolean $accAdd
+     *
+     * @return ProfileData
      */
     public function setAccAdd($accAdd)
     {
         $this->accAdd = $accAdd;
+
+        return $this;
     }
 
     /**
@@ -256,10 +280,14 @@ class ProfileData
 
     /**
      * @param boolean $accDelete
+     *
+     * @return ProfileData
      */
     public function setAccDelete($accDelete)
     {
         $this->accDelete = $accDelete;
+
+        return $this;
     }
 
     /**
@@ -272,10 +300,14 @@ class ProfileData
 
     /**
      * @param boolean $accFiles
+     *
+     * @return ProfileData
      */
     public function setAccFiles($accFiles)
     {
         $this->accFiles = $accFiles;
+
+        return $this;
     }
 
     /**
@@ -288,10 +320,14 @@ class ProfileData
 
     /**
      * @param boolean $accPublicLinks
+     *
+     * @return ProfileData
      */
     public function setAccPublicLinks($accPublicLinks)
     {
         $this->accPublicLinks = $accPublicLinks;
+
+        return $this;
     }
 
     /**
@@ -304,10 +340,14 @@ class ProfileData
 
     /**
      * @param boolean $configGeneral
+     *
+     * @return ProfileData
      */
     public function setConfigGeneral($configGeneral)
     {
         $this->configGeneral = $configGeneral;
+
+        return $this;
     }
 
     /**
@@ -320,10 +360,14 @@ class ProfileData
 
     /**
      * @param boolean $configEncryption
+     *
+     * @return ProfileData
      */
     public function setConfigEncryption($configEncryption)
     {
         $this->configEncryption = $configEncryption;
+
+        return $this;
     }
 
     /**
@@ -336,10 +380,14 @@ class ProfileData
 
     /**
      * @param boolean $configBackup
+     *
+     * @return ProfileData
      */
     public function setConfigBackup($configBackup)
     {
         $this->configBackup = $configBackup;
+
+        return $this;
     }
 
     /**
@@ -352,10 +400,14 @@ class ProfileData
 
     /**
      * @param boolean $configImport
+     *
+     * @return ProfileData
      */
     public function setConfigImport($configImport)
     {
         $this->configImport = $configImport;
+
+        return $this;
     }
 
     /**
@@ -368,10 +420,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmUsers
+     *
+     * @return ProfileData
      */
     public function setMgmUsers($mgmUsers)
     {
         $this->mgmUsers = $mgmUsers;
+
+        return $this;
     }
 
     /**
@@ -384,10 +440,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmGroups
+     *
+     * @return ProfileData
      */
     public function setMgmGroups($mgmGroups)
     {
         $this->mgmGroups = $mgmGroups;
+
+        return $this;
     }
 
     /**
@@ -400,10 +460,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmProfiles
+     *
+     * @return ProfileData
      */
     public function setMgmProfiles($mgmProfiles)
     {
         $this->mgmProfiles = $mgmProfiles;
+
+        return $this;
     }
 
     /**
@@ -416,10 +480,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmCategories
+     *
+     * @return ProfileData
      */
     public function setMgmCategories($mgmCategories)
     {
         $this->mgmCategories = $mgmCategories;
+
+        return $this;
     }
 
     /**
@@ -432,10 +500,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmCustomers
+     *
+     * @return ProfileData
      */
     public function setMgmCustomers($mgmCustomers)
     {
         $this->mgmCustomers = $mgmCustomers;
+
+        return $this;
     }
 
     /**
@@ -448,10 +520,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmApiTokens
+     *
+     * @return ProfileData
      */
     public function setMgmApiTokens($mgmApiTokens)
     {
         $this->mgmApiTokens = $mgmApiTokens;
+
+        return $this;
     }
 
     /**
@@ -464,10 +540,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmPublicLinks
+     *
+     * @return ProfileData
      */
     public function setMgmPublicLinks($mgmPublicLinks)
     {
         $this->mgmPublicLinks = $mgmPublicLinks;
+
+        return $this;
     }
 
     /**
@@ -480,10 +560,14 @@ class ProfileData
 
     /**
      * @param boolean $evl
+     *
+     * @return ProfileData
      */
     public function setEvl($evl)
     {
         $this->evl = $evl;
+
+        return $this;
     }
 
     /**
@@ -496,10 +580,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmCustomFields
+     *
+     * @return ProfileData
      */
     public function setMgmCustomFields($mgmCustomFields)
     {
         $this->mgmCustomFields = $mgmCustomFields;
+
+        return $this;
     }
 
     /**
@@ -532,10 +620,14 @@ class ProfileData
 
     /**
      * @param boolean $accPrivate
+     *
+     * @return ProfileData
      */
     public function setAccPrivate($accPrivate)
     {
         $this->accPrivate = $accPrivate;
+
+        return $this;
     }
 
     /**
@@ -548,10 +640,14 @@ class ProfileData
 
     /**
      * @param boolean $accPermission
+     *
+     * @return ProfileData
      */
     public function setAccPermission($accPermission)
     {
         $this->accPermission = $accPermission;
+
+        return $this;
     }
 
     /**
@@ -564,10 +660,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmAccounts
+     *
+     * @return ProfileData
      */
     public function setMgmAccounts($mgmAccounts)
     {
         $this->mgmAccounts = $mgmAccounts;
+
+        return $this;
     }
 
     /**
@@ -580,10 +680,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmTags
+     *
+     * @return ProfileData
      */
     public function setMgmTags($mgmTags)
     {
         $this->mgmTags = $mgmTags;
+
+        return $this;
     }
 
     /**
@@ -596,10 +700,14 @@ class ProfileData
 
     /**
      * @param boolean $mgmFiles
+     *
+     * @return ProfileData
      */
     public function setMgmFiles($mgmFiles)
     {
         $this->mgmFiles = $mgmFiles;
+
+        return $this;
     }
 
     /**
@@ -612,10 +720,14 @@ class ProfileData
 
     /**
      * @param boolean $accGlobalSearch
+     *
+     * @return ProfileData
      */
     public function setAccGlobalSearch($accGlobalSearch)
     {
         $this->accGlobalSearch = $accGlobalSearch;
+
+        return $this;
     }
 
     /**
@@ -628,9 +740,25 @@ class ProfileData
 
     /**
      * @param bool $accPrivateGroup
+     *
+     * @return ProfileData
      */
     public function setAccPrivateGroup($accPrivateGroup)
     {
         $this->accPrivateGroup = $accPrivateGroup;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function reset()
+    {
+        foreach ($this as $property => $value) {
+            $this->{$property} = false;
+        }
+
+        return $this;
     }
 }

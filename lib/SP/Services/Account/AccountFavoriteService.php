@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -43,7 +43,10 @@ class AccountFavoriteService extends Service
      * Obtener un array con los Ids de cuentas favoritas
      *
      * @param $id int El Id de usuario
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getForUserId($id)
     {
@@ -55,6 +58,7 @@ class AccountFavoriteService extends Service
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -68,6 +72,7 @@ class AccountFavoriteService extends Service
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

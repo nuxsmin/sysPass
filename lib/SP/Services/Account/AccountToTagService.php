@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -41,21 +41,24 @@ class AccountToTagService extends Service
     protected $accountToTagRepository;
 
     /**
+     * @param $id
+     *
+     * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function getTagsByAccountId($id)
+    {
+        return $this->accountToTagRepository->getTagsByAccountId($id);
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
-    }
-
-    /**
-     * @param $id
-     * @return ItemData[]
-     */
-    public function getTagsByAccountId($id)
-    {
-        return $this->accountToTagRepository->getTagsByAccountId($id);
     }
 
 }

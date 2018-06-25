@@ -151,20 +151,15 @@ class AccountSearchService extends Service
         $accountAclService = $this->dic->get(AccountAclService::class);
 
         $accountsData = [];
-        
+
         foreach ($accountSearchResponse->getData() as $accountSearchData) {
             $cache = $this->getCacheForAccount($accountSearchData);
 
-            $accountAclDto = new AccountAclDto();
-            $accountAclDto->setAccountId($accountSearchData->getId());
-            $accountAclDto->setDateEdit(strtotime($accountSearchData->getDateEdit()));
-            $accountAclDto->setUserId($accountSearchData->getUserId());
-            $accountAclDto->setUserGroupId($accountSearchData->getUserGroupId());
-            $accountAclDto->setUsersId($cache->getUsers());
-            $accountAclDto->setUserGroupsId($cache->getUserGroups());
-
             // Obtener la ACL de la cuenta
-            $accountAcl = $accountAclService->getAcl(Acl::ACCOUNT_SEARCH, $accountAclDto);
+            $accountAcl = $accountAclService->getAcl(
+                Acl::ACCOUNT_SEARCH,
+                AccountAclDto::makeFromAccountSearch($accountSearchData, $cache->getUsers(), $cache->getUserGroups())
+            );
 
             // Propiedades de búsqueda de cada cuenta
             $accountsSearchItem = new AccountSearchItem($accountSearchData, $accountAcl, $this->configData);
@@ -296,6 +291,8 @@ class AccountSearchService extends Service
      * @param AccountSearchVData $accountSearchData
      *
      * @return AccountCache
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getCacheForAccount(AccountSearchVData $accountSearchData)
     {

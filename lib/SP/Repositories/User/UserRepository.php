@@ -437,7 +437,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
 
         $query = /** @lang SQL */
             'INSERT INTO User SET
-            name = ?,
+            `name` = ?,
             login = ?,
             ssoLogin = ?,
             email = ?,
