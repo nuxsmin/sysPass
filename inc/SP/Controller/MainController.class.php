@@ -143,8 +143,8 @@ class MainController extends ControllerBase implements ActionsInterface
         $theme = DiFactory::getTheme();
 
         $jsVersionHash = md5($version);
-        $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
-        $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?g=1&v=' . $jsVersionHash);
+        $this->view->append('jsLinks', Init::$WEBURI . '/js/js.php?v=' . $jsVersionHash);
+        $this->view->append('jsLinks', Init::$WEBURI . '/js/js.php?g=1&v=' . $jsVersionHash);
 
         $themeInfo = $theme->getThemeInfo();
 
@@ -152,7 +152,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $themeJsBase = urlencode($theme->getThemePath() . DIRECTORY_SEPARATOR . 'js');
             $themeJsFiles = urlencode(implode(',', $themeInfo['js']));
 
-            $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
+            $this->view->append('jsLinks', Init::$WEBURI . '/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
         if (Init::isLoggedIn() && Session::getUserPreferences()->getUserId() > 0) {
@@ -162,7 +162,7 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         $cssVersionHash = md5($version . $resultsAsCards);
-        $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
+        $this->view->append('cssLinks', Init::$WEBURI . '/css/css.php?v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {
             if ($resultsAsCards) {
@@ -178,7 +178,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $themeCssBase = urlencode($theme->getThemePath() . DIRECTORY_SEPARATOR . 'css');
             $themeCssFiles = urlencode(implode(',', $themeInfo['css']));
 
-            $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);
+            $this->view->append('cssLinks', Init::$WEBURI . '/css/css.php?f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);
         }
 
         // Cargar los recursos de los plugins
@@ -188,11 +188,11 @@ class MainController extends ControllerBase implements ActionsInterface
             $cssResources = $Plugin->getCssResources();
 
             if (count($jsResources) > 0) {
-                $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . urlencode(implode(',', $jsResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'js') . '&v=' . $jsVersionHash);
+                $this->view->append('jsLinks', Init::$WEBURI . '/js/js.php?f=' . urlencode(implode(',', $jsResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'js') . '&v=' . $jsVersionHash);
             }
 
             if (count($cssResources) > 0) {
-                $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?f=' . urlencode(implode(',', $cssResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'css') . '&v=' . $jsVersionHash);
+                $this->view->append('cssLinks', Init::$WEBURI . '/css/css.php?f=' . urlencode(implode(',', $cssResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'css') . '&v=' . $jsVersionHash);
             }
         }
     }
