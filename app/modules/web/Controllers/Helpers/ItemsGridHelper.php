@@ -51,6 +51,9 @@ use SP\Util\DateUtil;
  */
 class ItemsGridHelper extends HelperBase
 {
+    /**
+     * @var float
+     */
     protected $queryTimeStart;
     /**
      * @var ThemeIcons
@@ -88,7 +91,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Categorías'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -195,7 +198,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Clientes'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -281,7 +284,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Campos Personalizados'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -367,7 +370,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Archivos'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -449,7 +452,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Cuentas'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -516,7 +519,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Cuentas (H)'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -592,7 +595,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Usuarios'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -711,7 +714,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Grupos'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -800,7 +803,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Perfiles'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -893,7 +896,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Autorizaciones API'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -994,7 +997,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Enlaces'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -1082,7 +1085,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Etiquetas'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -1164,7 +1167,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Plugins'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -1296,7 +1299,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Registro de Eventos'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -1380,7 +1383,7 @@ class ItemsGridHelper extends HelperBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Notificaciones'));
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
@@ -1482,6 +1485,14 @@ class ItemsGridHelper extends HelperBase
         $dataGrid->updatePager();
 
         return $dataGrid;
+    }
+
+    /**
+     * @param mixed $queryTimeStart
+     */
+    public function setQueryTimeStart(float $queryTimeStart)
+    {
+        $this->queryTimeStart = $queryTimeStart;
     }
 
     /**

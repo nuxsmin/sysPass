@@ -19,7 +19,7 @@
   },
   "require": {
     "roave/security-advisories": "dev-master",
-    "php": "7.0.* || 7.1.*",
+    "php": "7.0.* || 7.1.* || 7.2.*",
     "defuse/php-encryption": "~2.1",
     "phpmailer/phpmailer": "~6.0",
     "ademarre/binary-to-text-php": "dev-master",
@@ -33,7 +33,10 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*",
     "phpunit/phpunit": "^6",
-    "phpunit/dbunit": "^3"
+    "phpunit/dbunit": "^3",
+    "pdepend/pdepend" : "@stable",
+    "phpmd/phpmd" : "@stable",
+    "squizlabs/php_codesniffer": "3.*"
   },
   "autoload": {
     "psr-4": {

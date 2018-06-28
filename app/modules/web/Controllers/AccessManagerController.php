@@ -79,6 +79,8 @@ class AccessManagerController extends ControllerBase
         $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
+        $this->itemsGridHelper->setQueryTimeStart(microtime(true));
+
         if ($this->checkAccess(Acl::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
         }

@@ -144,7 +144,11 @@ function mb_ucfirst($string)
  */
 function getElapsedTime($from)
 {
-    return microtime(true) - (float)$from;
+    if ($from === 0) {
+        return 0;
+    }
+
+    return microtime(true) - floatval($from);
 }
 
 /**

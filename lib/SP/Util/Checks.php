@@ -72,7 +72,7 @@ class Checks
      */
     public static function checkPhpVersion()
     {
-        return PHP_VERSION_ID >= 50600 && version_compare(PHP_VERSION, '7.1.0') === -1;
+        return version_compare(PHP_VERSION, '7.0', '>=') && version_compare(PHP_VERSION, '7.3', '<');
     }
 
     /**

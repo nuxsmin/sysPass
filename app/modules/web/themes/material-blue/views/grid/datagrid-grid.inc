@@ -79,7 +79,7 @@ if (!isset($index)): $index = 0; endif;
                   class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconBack()->getTitle(); ?></span>
         </li>
 
-        <?php if (count($data->getDataActionsMenu()) > 0): ?>
+        <?php if ($data->getDataActionsMenuCount() > 0): ?>
             <li>
                 <button id="menu-<?php echo $data->getId(); ?>-menu-lower-right"
                         class="mdl-button mdl-js-button mdl-button--icon">

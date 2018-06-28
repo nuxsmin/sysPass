@@ -138,7 +138,7 @@ class AccountSearchHelper extends HelperBase
         $Grid = $this->getGrid();
         $Grid->getData()->setData($accountSearchService->processSearchResults($this->accountSearchFilter));
         $Grid->updatePager();
-        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
 
         // Establecer el filtro de búsqueda en la sesión como un objeto
@@ -262,7 +262,7 @@ class AccountSearchHelper extends HelperBase
      */
     protected function initialize()
     {
-        $this->queryTimeStart = microtime();
+        $this->queryTimeStart = microtime(true);
         $this->sk = $this->context->generateSecurityKey();
         $this->view->assign('sk', $this->sk);
         $this->setVars();

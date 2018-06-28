@@ -36,7 +36,6 @@ use SP\Config\ConfigUtil;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
 use SP\Modules\Api\Init as InitApi;
@@ -279,8 +278,8 @@ class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__u('Versión de PHP requerida >= %s <= %s'), '5.6', '7.0'),
-                SPException::ERROR,
+                sprintf(__u('Versión de PHP requerida >= %s <= %s'), '7.0', '7.2'),
+                InitializationException::ERROR,
                 __u('Actualice la versión de PHP para que la aplicación funcione correctamente')
             );
         }

@@ -60,8 +60,8 @@ class ItemManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function indexAction()
     {
@@ -71,8 +71,8 @@ class ItemManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getGridTabs()
     {
@@ -81,6 +81,8 @@ class ItemManagerController extends ControllerBase
 
         $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
+
+        $this->itemsGridHelper->setQueryTimeStart(microtime(true));
 
         if ($this->checkAccess(Acl::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
