@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<mysqldump>
+<database name="syspass">
+	<table_data name="AccountToFavorite">
+        <row>
+            <field name="accountId">1</field>
+            <field name="userId">3</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userId">3</field>
+        </row>
+        <row>
+            <field name="accountId">1</field>
+            <field name="userId">1</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userId">2</field>
+        </row>
+	</table_data>
+</database>
+</mysqldump>

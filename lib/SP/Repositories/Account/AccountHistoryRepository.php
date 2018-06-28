@@ -52,7 +52,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      *
      * @param $id
      *
-     * @return array|false Con los registros con id como clave y fecha - usuario como valor
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -61,9 +61,9 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $query = /** @lang SQL */
             'SELECT AH.id,
             AH.dateEdit,
+            AH.dateAdd ,
             U1.login AS userAdd,
-            U2.login AS userEdit,
-            AH.dateAdd 
+            U2.login AS userEdit
             FROM AccountHistory AH
             INNER JOIN User U1 ON AH.userId = U1.id
             LEFT JOIN User U2 ON AH.userEditId = U2.id
@@ -74,45 +74,31 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * @param $id
      *
-     * @return AccountPassData
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
+     * @deprecated
      */
     public function getPasswordForHistoryId($id)
     {
+        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->context);
+        $queryWhere->addFilter('AccountHistory.id = ?', [$id]);
+
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountPassData::class);
+        $queryData->setSelect('AccountHistory.id, AccountHistory.name, AccountHistory.login, AccountHistory.pass, AccountHistory.key, AccountHistory.parentId');
+        $queryData->setFrom('AccountHistory AH');
+        $queryData->setWhere($queryWhere->getFilters());
         $queryData->setLimit(1);
 
-        $queryData->setSelect('AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId');
-        $queryData->setFrom('AccountHistory AH');
 
-        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->context);
-        $queryWhere[] = 'AH.id = ?';
-        $queryData->addParam($id);
-
-        $queryData->setWhere($queryWhere);
-
-        return $this->db->doSelect($queryData)->getData();
-    }
-
-    /**
-     * @param array $items array of ['id' => <int>, 'isDelete' => <bool>]
-     *
-     * @throws QueryException
-     * @throws ConstraintException
-     */
-    public function createBatch(array $items)
-    {
-        foreach ($items as $item) {
-            $this->create($item);
-        }
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -120,7 +106,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      *
      * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
      *
-     * @return bool
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -187,7 +173,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
-     * @param array|int $id
+     * @param int $id
      *
      * @return bool Los ids de las cuentas eliminadas
      * @throws ConstraintException
@@ -195,15 +181,12 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AccountHistory WHERE id = ? LIMIT 1';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -223,7 +206,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      *
      * @param int $id
      *
-     * @return AccountHistoryData
+     * @return QueryResult
      * @throws SPException
      */
     public function getById($id)
@@ -272,19 +255,13 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setMapClassName(AccountHistoryData::class);
         $queryData->addParam($id);
 
-        $results = $this->db->doSelect($queryData);
-
-        if ($results->getNumRows() === false) {
-            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
-        }
-
-        return $results->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return array
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -304,7 +281,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -330,8 +307,11 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function deleteByIdBatch(array $ids)
     {
-        $queryData = new QueryData();
+        if (empty($ids)) {
+            return 0;
+        }
 
+        $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
@@ -412,7 +392,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return array Con los datos de la clave
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -420,12 +400,13 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     {
         $query = /** @lang SQL */
             'SELECT id, `name`, pass, `key`, mPassHash
-            FROM AccountHistory WHERE BIT_LENGTH(pass) > 0';
+            FROM AccountHistory WHERE BIT_LENGTH(pass) > 0
+            ORDER BY id';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -456,6 +437,6 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 }

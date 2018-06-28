@@ -50,7 +50,7 @@ class AccountFavoriteService extends Service
      */
     public function getForUserId($id)
     {
-        return $this->accountFavoriteRepository->getForUserId($id);
+        return $this->accountFavoriteRepository->getForUserId($id)->getDataAsArray();
     }
 
     /**

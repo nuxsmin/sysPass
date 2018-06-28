@@ -32,7 +32,9 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -77,7 +79,13 @@ class AccountHistoryService extends Service
      */
     public function getById($id)
     {
-        return $this->accountHistoryRepository->getById($id);
+        $results = $this->accountHistoryRepository->getById($id);
+
+        if ($results->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('No se pudieron obtener los datos de la cuenta'));
+        }
+
+        return $results->getData();
     }
 
     /**
@@ -91,7 +99,7 @@ class AccountHistoryService extends Service
      */
     public function getHistoryForAccount($id)
     {
-        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getHistoryForAccount($id));
+        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getHistoryForAccount($id)->getDataAsArray());
     }
 
     /**
@@ -177,7 +185,7 @@ class AccountHistoryService extends Service
      */
     public function getAccountsPassData()
     {
-        return $this->accountHistoryRepository->getAccountsPassData();
+        return $this->accountHistoryRepository->getAccountsPassData()->getDataAsArray();
     }
 
     /**
@@ -185,12 +193,15 @@ class AccountHistoryService extends Service
      *
      * @param array|int $id
      *
-     * @return bool Los ids de las cuentas eliminadas
-     * @throws SPException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function delete($id)
     {
-        return $this->accountHistoryRepository->delete($id);
+        if ($this->accountHistoryRepository->delete($id) === 0) {
+            throw new ServiceException(__u('Error al eliminar la cuenta'));
+        }
     }
 
     /**
@@ -210,13 +221,14 @@ class AccountHistoryService extends Service
     /**
      * @param AccountPasswordRequest $accountRequest
      *
-     * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
     {
-        return $this->accountHistoryRepository->updatePassword($accountRequest);
+        if ($this->accountHistoryRepository->updatePassword($accountRequest) !== 1) {
+            throw new ServiceException(__u('Error al actualizar la clave'));
+        }
     }
 
     /**
@@ -228,6 +240,6 @@ class AccountHistoryService extends Service
      */
     public function getAll()
     {
-        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getAll());
+        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getAll()->getDataAsArray());
     }
 }

@@ -39,7 +39,7 @@ class AccountFavoriteRepository extends Repository
      *
      * @param $id int El Id de usuario
      *
-     * @return array
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -50,7 +50,7 @@ class AccountFavoriteRepository extends Repository
         $queryData->addParam($id);
         $queryData->setUseKeyPair(true);
 
-        return $this->db->doQuery($queryData)->getDataAsArray();
+        return $this->db->doQuery($queryData);
     }
 
     /**
