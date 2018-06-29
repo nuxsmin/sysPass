@@ -1,24 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: sysPass\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-03 13:27+0100\n"
-"PO-Revision-Date: 2018-01-07 01:43+0100\n"
-"Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
-"Language-Team: <language@syspass.org>\n"
-"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.0.5\n"
-"X-Contributors: Ars, Christian Baumann, CyrosX, Erik Bent, GoatMaster, Hod, "
-"Ingo Gabriel, JochenK, Julian, Lukas, Michael Wahl, Normo, Sascha Heimann, "
-"Sauerbier, Thomas Laible\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SearchPath-0: ../../../..\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: sysPass\n"
+"Language: de\n"
 
 #: ../../../../ajax/ajax_accGetFiles.php:50
 #: ../../../../ajax/ajax_accSearch.php:44
@@ -506,6 +493,7 @@ msgstr "Export abgeschlossen"
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:124
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:464
 #: ../../../../inc/SP/Controller/ChecksController.class.php:92
+#, fuzzy
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "LDAP-Parameter sind nicht gesetzt"
 
@@ -731,6 +719,7 @@ msgid "Inicio sesión"
 msgstr "Anmelden"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:114
+#, fuzzy
 msgid "Error al guardar los datos de LDAP"
 msgstr "Fehler beim Speichern der LDAP-Benutzerdaten"
 
@@ -861,6 +850,7 @@ msgstr "Master-Passwort ist nicht sicher oder ist nicht korrekt"
 #: ../../../../inc/SP/Controller/LoginController.class.php:342
 #: ../../../../inc/SP/Controller/LoginController.class.php:344
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:63
+#, fuzzy
 msgid "Clave maestra incorrecta"
 msgstr "Ungültiges Master-Passwort"
 
@@ -917,6 +907,7 @@ msgstr "Ungültige Datei"
 #: ../../../../inc/SP/Import/FileImport.class.php:113
 #: ../../../../inc/SP/Import/FileImport.class.php:157
 #: ../../../../inc/SP/Import/FileImport.class.php:185
+#, fuzzy
 msgid "Error interno al leer el archivo"
 msgstr "Interner Fehler beim Lesen der Datei"
 
@@ -997,6 +988,7 @@ msgstr "Datei gelöscht"
 
 #: ../../../../ajax/ajax_filesMgmt.php:206
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:125
+#, fuzzy
 msgid "Error al eliminar el archivo"
 msgstr "Fehler beim Löschen der Datei"
 
@@ -1175,6 +1167,7 @@ msgstr "Kontowiederherstellung"
 #: ../../../../inc/SP/Account/Account.class.php:508
 #: ../../../../inc/SP/Account/AccountHistory.class.php:216
 #: ../../../../inc/SP/Account/AccountHistory.class.php:393
+#, fuzzy
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Fehler beim Laden der Kontodaten"
 
@@ -1207,6 +1200,7 @@ msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Fehler beim Löschen der Benutzer eines Kontos"
 
 #: ../../../../inc/SP/Mgmt/Files/FileUtil.class.php:102
+#, fuzzy
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Fehler beim Löschen der Dateien eines Kontos"
 
@@ -1219,6 +1213,7 @@ msgstr "Start"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:74
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:77
+#, fuzzy
 msgid "Error en el módulo de encriptación"
 msgstr "Fehler im Verschlüsselungsmodul"
 
@@ -1265,6 +1260,7 @@ msgstr "Master-Passwort stimmt nicht"
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:160
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:283
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:286
+#, fuzzy
 msgid "Fallo al actualizar la clave del histórico"
 msgstr "Fehler beim Ändern des Master-Passworts"
 
@@ -1275,7 +1271,7 @@ msgstr "Datensätze aktualisiert"
 
 #: ../../../../inc/SP/Core/Acl.class.php:185
 msgid "Buscar Cuentas"
-msgstr "Benutzer suchen"
+msgstr "Konten suchen"
 
 #: ../../../../inc/SP/Core/Acl.class.php:186
 msgid "Ver Cuenta"
@@ -1436,15 +1432,14 @@ msgstr "Zum Abschluss des Vorgangs folgen Sie bitte diesem URL-Link:"
 
 #: ../../../../inc/SP/Auth/AuthUtil.class.php:68
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
-msgstr ""
-"Wenn Sie diese Aktion nicht ausgelöst haben, dann ignorieren Sie bitte diese "
-"Meldung."
+msgstr "Wenn Sie diese Aktion nicht ausgelöst haben, dann ignorieren Sie bitte diese Meldung."
 
 #: ../../../../inc/SP/Core/Backup.class.php:249
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Diese Funktion ist nur in einer Linux-Umgebung verfügbar"
 
 #: ../../../../inc/SP/Core/Backup.class.php:253
+#, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Fehler während der Durchführung der Sicherung im Kompatibilitätsmodus"
 
@@ -1459,6 +1454,7 @@ msgstr "Kategoriename dupliziert"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:97
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:65
+#, fuzzy
 msgid "Error al crear la categoría"
 msgstr "Fehler beim Anlegen der Kategorie"
 
@@ -1472,6 +1468,7 @@ msgid "Categoría"
 msgstr "Kategorie"
 
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:119
+#, fuzzy
 msgid "Error al eliminar la categoría"
 msgstr "Fehler beim Löschen einer Kategorie"
 
@@ -1484,6 +1481,7 @@ msgid "Eliminar Categoría"
 msgstr "Kategorie löschen"
 
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:190
+#, fuzzy
 msgid "Error al actualizar la categoría"
 msgstr "Fehler beim Ändern der Kategorie"
 
@@ -1533,17 +1531,15 @@ msgstr "Warnung"
 
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:105
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:116
-msgid ""
-"Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
-msgstr ""
-"Das Master-Password HASH wurde generiert. Es sind keine weiteren Aktionen "
-"nötig."
+msgid "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
+msgstr "Das Master-Password HASH wurde generiert. Es sind keine weiteren Aktionen nötig."
 
 #: ../../../../inc/SP/Core/OldCrypt.class.php:170
 msgid "No se puede usar el módulo de encriptación"
 msgstr "Kryptographie-Modul konnte nicht geladen werden"
 
 #: ../../../../inc/SP/Core/OldCrypt.class.php:182
+#, fuzzy
 msgid "Error al generar datos cifrados"
 msgstr "Fehler beim Erzeugen der verschlüsselten Daten"
 
@@ -1573,6 +1569,7 @@ msgid "Importar Cuentas"
 msgstr "Importiere Konten"
 
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:111
+#, fuzzy
 msgid "Error importando cuenta"
 msgstr "Fehler beim Importieren des Kontos"
 
@@ -1657,10 +1654,12 @@ msgstr "Kunde bereits vorhanden"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:98
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:69
+#, fuzzy
 msgid "Error al crear el cliente"
 msgstr "Fehler beim Anlegen des Kunden"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:195
+#, fuzzy
 msgid "Error al actualizar el cliente"
 msgstr "Fehler beim Ändern des Kunden"
 
@@ -1669,6 +1668,7 @@ msgid "Actualizar Cliente"
 msgstr "Kunde ändern"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:124
+#, fuzzy
 msgid "Error al eliminar el cliente"
 msgstr "Fehler beim Löschen des Kunden"
 
@@ -1690,6 +1690,7 @@ msgstr "Verbindung zum Datenbank-Server kann nicht hergestellt werden"
 #: ../../../../inc/SP/Core/Installer.class.php:204
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:137
+#, fuzzy
 msgid "Compruebe los datos de conexión"
 msgstr "Bitte überprüfen Sie Ihre Verbindungseinstellungen"
 
@@ -1873,6 +1874,7 @@ msgid "Usuario admin para acceso a la aplicación"
 msgstr "Anwendungs-Administrator"
 
 #: ../../../../inc/SP/Core/Installer.class.php:144
+#, fuzzy
 msgid "Indicar la clave de admin"
 msgstr "Administrator-Passwort eingeben"
 
@@ -1881,6 +1883,7 @@ msgid "Clave del usuario admin de la aplicación"
 msgstr "Administrationspasswort der Anwendung"
 
 #: ../../../../inc/SP/Core/Installer.class.php:149
+#, fuzzy
 msgid "Indicar la clave maestra"
 msgstr "Master-Passwort eingeben"
 
@@ -1934,14 +1937,14 @@ msgstr "Überprüfung des sysPass Nutzers nicht möglich"
 
 #: ../../../../inc/SP/Core/Installer.class.php:239
 msgid "Compruebe los permisos del usuario de conexión a la BD"
-msgstr ""
-"Bitte die Berechtigungen des Benutzers zur Datenbankverbindung überprüfen"
+msgstr "Bitte die Berechtigungen des Benutzers zur Datenbankverbindung überprüfen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:301
 msgid "La BBDD ya existe"
 msgstr "Datenbank existiert bereits"
 
 #: ../../../../inc/SP/Core/Installer.class.php:302
+#, fuzzy
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Neuen Datenbanknamen eingeben oder bestehende Datenbank löschen"
 
@@ -1952,6 +1955,7 @@ msgstr "Fehler beim Erstellen der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:317
 #: ../../../../inc/SP/Core/Installer.class.php:337
+#, fuzzy
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Bitte überprüfen Sie die Datenbank-Zugriffsberechtigungen"
 
@@ -1961,17 +1965,14 @@ msgstr "Datei mit Datenbank-Schema existiert nicht"
 
 #: ../../../../inc/SP/Core/Installer.class.php:393
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
-msgstr ""
-"Anwendungsdatenbank kann nicht angelegt werden. Bitte erneut herunterladen"
+msgstr "Anwendungsdatenbank kann nicht angelegt werden. Bitte erneut herunterladen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:401
 msgid "Error al seleccionar la BBDD"
 msgstr "Fehler bei der Auswahl der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:402
-msgid ""
-"No es posible usar la Base de Datos para crear la estructura. Compruebe los "
-"permisos y que no exista."
+msgid "No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista."
 msgstr "Datenbank kann nicht gefunden werden. Überprüfen Sie die Berechtigung."
 
 #: ../../../../inc/SP/Core/Installer.class.php:420
@@ -1983,6 +1984,7 @@ msgid "Informe al desarrollador"
 msgstr "Warnung an Entwickler"
 
 #: ../../../../inc/SP/Core/Installer.class.php:484
+#, fuzzy
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Fehler beim Ändern des Master-Passworts des Benutzers \"admin\""
 
@@ -2004,6 +2006,7 @@ msgid "Error al buscar RDN de grupo"
 msgstr "Fehler beim Suchen nach Gruppen-RDN"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:564
+#, fuzzy
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Fehler beim Suchen des Benutzers in LDAP"
 
@@ -2034,6 +2037,7 @@ msgid "Cliente no encontrado"
 msgstr "Kunde nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:246
+#, fuzzy
 msgid "Error al obtener los usuarios"
 msgstr "Fehler beim Laden der Benutzer"
 
@@ -2081,6 +2085,7 @@ msgstr "Unmöglich die Variable \"%s\" zu löschen"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:89
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:232
+#, fuzzy
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Fehler beim Aktualisieren der Datenbank"
 
@@ -2150,6 +2155,7 @@ msgid "Nuevo usuario de LDAP"
 msgstr "Neuer LDAP Benutzer"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:152
+#, fuzzy
 msgid "Error al migrar grupo del usuario"
 msgstr "Migrieren der Nutzergruppen ist fehlgeschlagen"
 
@@ -2160,11 +2166,8 @@ msgstr "Benötige PHP Version >="
 
 #: ../../../../inc/SP/Controller/MainController.class.php:368
 #: ../../../../inc/SP/Core/Init.class.php:130
-msgid ""
-"Actualice la versión de PHP para que la aplicación funcione correctamente"
-msgstr ""
-"Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben "
-"zu können."
+msgid "Actualice la versión de PHP para que la aplicación funcione correctamente"
+msgstr "Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben zu können."
 
 #: ../../../../inc/SP/Controller/MainController.class.php:378
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:311
@@ -2184,6 +2187,7 @@ msgid "Error al crear el archivo XML"
 msgstr "Fehler beim Erstellen der XML Datei"
 
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:107
+#, fuzzy
 msgid "No es posible procesar el archivo XML"
 msgstr "XML-Datei kann nicht verarbeitet werden"
 
@@ -2193,12 +2197,11 @@ msgstr "XML-Datei wird nicht unterstützt"
 
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:86
 msgid "No es posible detectar la aplicación que exportó los datos"
-msgstr ""
-"Die Anwendung von der die Daten exportiert wurden, kann nicht festgestellt "
-"werden"
+msgstr "Die Anwendung von der die Daten exportiert wurden, kann nicht festgestellt werden"
 
 #: ../../../../inc/SP/Storage/DB.class.php:285
-#: ../../../../inc/SP/Storage/DB.class.php:330 ../../../../js/strings.js.php:26
+#: ../../../../inc/SP/Storage/DB.class.php:330
+#: ../../../../js/strings.js.php:26
 msgid "Error en la consulta"
 msgstr "Fehler bei der Abfrage"
 
@@ -2384,7 +2387,7 @@ msgstr "Nein"
 
 #: ../../../../js/strings.js.php:68
 msgid "Aceptar"
-msgstr "Annehmen"
+msgstr "OK"
 
 #: ../../../../js/strings.js.php:69
 msgid "Cancelar"
@@ -2498,6 +2501,7 @@ msgid "Último backup"
 msgstr "Letztes Backup"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:375
+#, fuzzy
 msgid "No se encontraron backups"
 msgstr "Keine Backups vorhanden"
 
@@ -2522,6 +2526,7 @@ msgstr "Ereignisprotokoll gelöscht"
 
 #. corrected translation
 #: ../../../../inc/SP/Log/Log.class.php:95
+#, fuzzy
 msgid "Error al vaciar el registro de eventos"
 msgstr "Fehler beim Löschen des Ereignisprotokolls"
 
@@ -2555,20 +2560,15 @@ msgstr "Die PHP-Version ist verwundbar für 'NULL Byte attack (CVE-2006-7243)'"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:388
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
-msgstr ""
-"Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben "
-"zu können."
+msgstr "Bitte aktualisieren Sie ihre PHP Installation, um sysPass sicher betreiben zu können."
 
 #: ../../../../inc/SP/Controller/MainController.class.php:394
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Zufallszahlengenerator konnte nicht gefunden werden"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:395
-msgid ""
-"Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
-msgstr ""
-"Ohne diese Funktion könnte an Angreifer Ihren Zugang oder Ihr Passwort "
-"zurücksetzen."
+msgid "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
+msgstr "Ohne diese Funktion könnte an Angreifer Ihren Zugang oder Ihr Passwort zurücksetzen."
 
 #: ../../../../ajax/ajax_install.php:58
 msgid "Instalación finalizada"
@@ -2845,6 +2845,7 @@ msgid "Descargar Actual"
 msgstr "Herunterladen"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:43
+#, fuzzy
 msgid "No hay backups para descargar"
 msgstr "Es sind keine Backups zum Herunterladen vorhanden"
 
@@ -2859,21 +2860,12 @@ msgid "Ayuda"
 msgstr "Hilfe"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:71
-msgid ""
-"La copia de seguridad permite guardar y descargar tanto la base de datos de "
-"sysPass como los archivos de la aplicación y su configuración."
-msgstr ""
-"Das Backup erlaubt das Speichern und Herunterladen der sysPass Datenbank, "
-"von Anwendungsdateien und der Konfiguration."
+msgid "La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración."
+msgstr "Das Backup erlaubt das Speichern und Herunterladen der sysPass Datenbank, von Anwendungsdateien und der Konfiguration."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:73
-msgid ""
-"Con este método es posible guardar todos los datos de sysPass en otro lugar "
-"o utilizarlos para hacer la aplicación portable."
-msgstr ""
-"Mit dieser Methode ist es möglich, alle sysPass Daten an einem anderen Platz "
-"zu speichern. Sie kann auch dafür verwendet werden, um die Anwendung "
-"portabel zu machen."
+msgid "Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable."
+msgstr "Mit dieser Methode ist es möglich, alle sysPass Daten an einem anderen Platz zu speichern. Sie kann auch dafür verwendet werden, um die Anwendung portabel zu machen."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:88
 msgid "Exportar Cuentas"
@@ -2894,26 +2886,16 @@ msgid "Clave de Exportación (repetir)"
 msgstr "Exportpasswort (Wiederholung)"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:180
-msgid ""
-"La exportación de cuentas permite guardar las cuentas y sus datos en formato "
-"XML para posteriormente poder ser importados en otras instancias de sysPass."
-msgstr ""
-"Das Exportieren der Konten ermöglicht das Speichern der Konten und ihren "
-"Daten in XML Format um sie in einer anderen sysPass Instanz zu importieren."
+msgid "La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass."
+msgstr "Das Exportieren der Konten ermöglicht das Speichern der Konten und ihren Daten in XML Format um sie in einer anderen sysPass Instanz zu importieren."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:184
-msgid ""
-"Las claves de las cuentas son exportadas de forma encriptada para mayor "
-"seguridad."
+msgid "Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad."
 msgstr "Die Kontenpasswörter werden verschlüsselt exportiert."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:186
-msgid ""
-"Es posible establecer una clave de exportación para guardar todos los datos "
-"encriptados en el archivo XML."
-msgstr ""
-"Es ist möglich ein Exportpasswort an zu geben um alle Daten in der XML Datei "
-"zu verschlüsseln."
+msgid "Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML."
+msgstr "Es ist möglich ein Exportpasswort an zu geben um alle Daten in der XML Datei zu verschlüsseln."
 
 #: ../../../../inc/themes/material-blue/views/main/body-start.inc:4
 msgid "Javascript es necesario para el correcto funcionamiento"
@@ -2932,7 +2914,7 @@ msgstr "Beschreibung der Kategorie"
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:4
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:7
 msgid "Sitio"
-msgstr "Site"
+msgstr "Seite"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:10
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:24
@@ -2946,12 +2928,8 @@ msgid "Idioma"
 msgstr "Sprache"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:15
-msgid ""
-"Establece el idioma global de la aplicación. Es posible establecer un idioma "
-"por usuario en las preferencias."
-msgstr ""
-"Setzen Sie die globale Sprache fest. Jeder Nutzer kann seine eigene Sprache "
-"in den Nutzereinstellungen wählen."
+msgid "Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias."
+msgstr "Setzen Sie die globale Sprache fest. Jeder Nutzer kann seine eigene Sprache in den Nutzereinstellungen wählen."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:36
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:46
@@ -2961,12 +2939,8 @@ msgid "Tema Visual"
 msgstr "Visuelles Thema"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:41
-msgid ""
-"Establece el tema visual global de la aplicación. Es posible establecer un "
-"tema visual por usuario en las preferencias."
-msgstr ""
-"Definieren des globalen visuellen Themas. Jeder Nutzer kann sein "
-"persönliches visuelles Thema in den Nutzereinstellungen wählen."
+msgid "Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias."
+msgstr "Definieren des globalen visuellen Themas. Jeder Nutzer kann sein persönliches visuelles Thema in den Nutzereinstellungen wählen."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:59
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:67
@@ -2987,9 +2961,7 @@ msgid "Habilitar depuración"
 msgstr "Debugging einschalten"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:96
-msgid ""
-"Muestra información relativa a la configuración de la aplicación y "
-"rendimiento."
+msgid "Muestra información relativa a la configuración de la aplicación y rendimiento."
 msgstr "Zeigt Informationen zu Einstellungen und zur Leistung."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:122
@@ -2997,21 +2969,15 @@ msgid "Modo mantenimiento"
 msgstr "Wartungsmodus"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:114
-msgid ""
-"En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
-"necesario modificar el archivo de configuración."
-msgstr ""
-"In diesem Modus kann sich niemand anmelden. Dies kann nur über die "
-"Konfigurationsdatei geändert werden."
+msgid "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración."
+msgstr "In diesem Modus kann sich niemand anmelden. Dies kann nur über die Konfigurationsdatei geändert werden."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:140
 msgid "Comprobar actualizaciones"
 msgstr "Nach Updates schauen"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:132
-msgid ""
-"Comprobar actualizaciones de la aplicación (sólo para los usuarios "
-"administradores)."
+msgid "Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores)."
 msgstr "Prüft auf Anwendungsaktualisierungen (nur für Administratoren)."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:158
@@ -3019,9 +2985,7 @@ msgid "Comprobar notificaciones"
 msgstr "Prüft auf Meldungen"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:150
-msgid ""
-"Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
-"para los usuarios administradores)."
+msgid "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores)."
 msgstr "Prüft auf sysPass Sicherheitsmeldungen (nur für Administratoren)."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:53
@@ -3031,9 +2995,7 @@ msgstr "Kontoname als Link"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:44
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:73
-msgid ""
-"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
-"de la cuenta."
+msgid "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta."
 msgstr "Gibt den Kontonamen als Link zu den Kontodetails aus."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:251
@@ -3050,12 +3012,8 @@ msgid "Búsquedas globales"
 msgstr "Globale Suchen"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:63
-msgid ""
-"Permite que todos los usuarios puedan realizar búsquedas en todas las "
-"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
-msgstr ""
-"Ermöglicht Nutzern über alle Konten zu suchen, auch wenn sie keine Rechte "
-"haben. Die Kontodetails können sie aber nicht sehen."
+msgid "Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+msgstr "Ermöglicht Nutzern über alle Konten zu suchen, auch wenn sie keine Rechte haben. Die Kontodetails können sie aber nicht sehen."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:257
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:275
@@ -3071,12 +3029,8 @@ msgid "Se permite un máximo de 4 caracteres."
 msgstr "Maximal 4 Zeichen erlaubt."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:270
-msgid ""
-"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
-"configuración."
-msgstr ""
-"Erweiterung schreiben und Enter zum Hinzufügen drücken. Speichern nicht "
-"vergessen."
+msgid "Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración."
+msgstr "Erweiterung schreiben und Enter zum Hinzufügen drücken. Speichern nicht vergessen."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:288
 msgid "Establece el tamaño máximo para subir archivos."
@@ -3116,9 +3070,7 @@ msgstr "Bild generieren mit dem Text des Kontopassworts."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:86
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
-msgstr ""
-"Nützlich für Umgebungen, in denen das Kopieren eines Passworts in die "
-"Zwischenablage ein Sicherheitsrisiko darstellt."
+msgstr "Nützlich für Umgebungen, in denen das Kopieren eines Passworts in die Zwischenablage ein Sicherheitsrisiko darstellt."
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:538
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:26
@@ -3196,20 +3148,12 @@ msgid "Los usuarios deberán de introducir la nueva clave maestra."
 msgstr "Alle Benutzer müssen das neue Master-Passwort eingeben."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:138
-msgid ""
-"La clave maestra es utilizada para encriptar las claves de las cuentas de "
-"sysPass para mantenerlas seguras."
-msgstr ""
-"Das Master Passwort wird benutzt um die sysPass Kontenpasswörter zu "
-"verschlüsseln und diese zu sichern."
+msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras."
+msgstr "Das Master Passwort wird benutzt um die sysPass Kontenpasswörter zu verschlüsseln und diese zu sichern."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:140
-msgid ""
-"Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
-"que incluya números, letras y símbolos."
-msgstr ""
-"Es ist ratsam, es von Zeit zu Zeit zu ändern und ein komplexes Password mit "
-"Zahlen, Buchstaben und Symbolen zu nutzen."
+msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
+msgstr "Es ist ratsam, es von Zeit zu Zeit zu ändern und ein komplexes Password mit Zahlen, Buchstaben und Symbolen zu nutzen."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:171
 msgid "Clave Temporal"
@@ -3231,14 +3175,8 @@ msgid "Validez (s)"
 msgstr "Lebensspanne (s)"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:303
-msgid ""
-"La clave temporal es utilizada como clave maestra para los usuarios que "
-"necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
-"la clave maestra original."
-msgstr ""
-"Das temporäre Passwort dient als Master Passwort für die Benutzer, welche "
-"dieses während der Anmeldung eingeben müssen. Somit brauchen Benutzern das "
-"wahre Master Passwort nicht zu erfahren."
+msgid "La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original."
+msgstr "Das temporäre Passwort dient als Master Passwort für die Benutzer, welche dieses während der Anmeldung eingeben müssen. Somit brauchen Benutzern das wahre Master Passwort nicht zu erfahren."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:309
 msgid "Generar"
@@ -3290,12 +3228,8 @@ msgid "Indica si la conexión utiliza HTTPS."
 msgstr "Zeigt, ob die Verbindung über HTTPS aufgebaut wurde"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:39
-msgid ""
-"Las claves de formularios enviados se encriptan mediante PKI, el resto de "
-"datos no."
-msgstr ""
-"Die aus dem Formular gesendeten Passwörter werden verschlüsselt; andere "
-"Daten nicht."
+msgid "Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no."
+msgstr "Die aus dem Formular gesendeten Passwörter werden verschlüsselt; andere Daten nicht."
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:60
 msgid "Ayuda :: FAQ :: Changelog"
@@ -3331,7 +3265,7 @@ msgstr "Definiert den Standardbenutzer für den Kontoimport."
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:207
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:217
 msgid "Grupo por Defecto"
-msgstr "Standard-Gruppe"
+msgstr "Standardgruppe"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:45
 msgid "Define el grupo por defecto para las cuentas importadas."
@@ -3340,7 +3274,7 @@ msgstr "Definiert die Standardgruppe für den Kontoimport."
 #: ../../../../inc/themes/material-blue/views/config/import.inc:127
 #: ../../../../inc/themes/material-blue/views/config/import.inc:142
 msgid "Clave de Importación"
-msgstr "Passwort importieren"
+msgstr "Import-Passwort"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:176
 #: ../../../../inc/themes/material-blue/views/config/import.inc:191
@@ -3352,43 +3286,28 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Dateien hier fallen lassen oder zum selektieren anklicken"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:102
-msgid ""
-"Permite realizar la importación de Cuentas, Categorías y Clientes desde "
-"archivos XML y CSV."
-msgstr ""
-"Erlaubt es, Konten, Kategorien und Kunden aus einer XML- oder CSV-Datei zu "
-"importieren."
+msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
+msgstr "Erlaubt es, Konten, Kategorien und Kunden aus einer XML- oder CSV-Datei zu importieren."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:104
-msgid ""
-"Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
+msgid "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr "Die unterstützen XML Dateiformate sind: sysPass, KeePass und KeePassX"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:106
-msgid ""
-"Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
-"flecha."
+msgid "Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha."
 msgstr "Datei in die Importzone ziehen oder auf den Pfeil klicken."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:108
-msgid ""
-"Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
-"KeePass o KeePassX y la categoría igual al nombre de los grupos."
-msgstr ""
-"Bei KeePass oder KeePassX Dateien wird der Kundenname \"KeePass\" oder "
-"\"KeePassX\" und die Kategorienamen wie die Gruppennamen sein."
+msgid "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos."
+msgstr "Bei KeePass oder KeePassX Dateien wird der Kundenname \"KeePass\" oder \"KeePassX\" und die Kategorienamen wie die Gruppennamen sein."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:110
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
 msgstr "Die zu importierende CSV Datei benötigt folgendes Format:"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:114
-msgid ""
-"En todos los casos, si el cliente o la categoría no están creados, se crean "
-"automáticamente."
-msgstr ""
-"In dem Fall, dass der Kunden- oder Kategorienname noch nicht existiert, wird "
-"dieser automatisch erstellt."
+msgid "En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente."
+msgstr "In dem Fall, dass der Kunden- oder Kategorienname noch nicht existiert, wird dieser automatisch erstellt."
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:5
 msgid "Información de la Aplicación"
@@ -3447,9 +3366,7 @@ msgstr "Hosting-Modus"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:152
 msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
-msgstr ""
-"Berechtigungen des Benutzers für die Datenbank werden weder erstellt, noch "
-"überprüft"
+msgstr "Berechtigungen des Benutzers für die Datenbank werden weder erstellt, noch überprüft"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:166
 #: ../../../../inc/themes/material-blue/views/main/install.inc:168
@@ -3502,18 +3419,16 @@ msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr "LDAP Basis für die LDAP Nutzer-Suche"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:179
-msgid ""
-"Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
-msgstr ""
-"LDAP Gruppe, zu welcher der Benutzer gehören muss, um sich anmelden zu können"
+msgid "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
+msgstr "LDAP Gruppe, zu welcher der Benutzer gehören muss, um sich anmelden zu können"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:183
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
 msgstr "Diese Gruppe muss in der LDAP Suchbasis platziert werden"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:212
-msgid ""
-"Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
+#, fuzzy
+msgid "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Legen Sie die Standard-Gruppe für neue LDAP-Benutzer fest"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:231
@@ -3522,8 +3437,7 @@ msgid "Perfil por Defecto"
 msgstr "Standard-Profil"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:236
-msgid ""
-"Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
+msgid "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Definiert das Standardprofil für neu erstellte LDAP Benutzer"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:56
@@ -3612,10 +3526,8 @@ msgid "Ordenar resultados por visitas"
 msgstr "Suchergebnis nach Aufrufen sortieren"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:92
-msgid ""
-"Ordena los resultados de búsqueda por el número de visitas de las cuentas."
-msgstr ""
-"Sortiert das Suchergebnis der Konten anhand der Anzahl der Kontenzugriffe."
+msgid "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
+msgstr "Sortiert das Suchergebnis der Konten anhand der Anzahl der Kontenzugriffe."
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:118
 msgid "Barra de navegación superior"
@@ -3630,10 +3542,8 @@ msgid "Mostrar Acciones Ocultas"
 msgstr "Zeige versteckte Aktionen"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:128
-msgid ""
-"Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
-msgstr ""
-"Ermöglicht es, die versteckten Aktionen der Kontensuchmaske anzuzeigen."
+msgid "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
+msgstr "Ermöglicht es, die versteckten Aktionen der Kontensuchmaske anzuzeigen."
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:25
 msgid "Nombre del perfil"
@@ -3828,8 +3738,7 @@ msgstr "Suche nach Konten, für die 'group_name' Rechte besitzt"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:29
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
-msgstr ""
-"Suche nach Konten, welche eine Datei enthalten mit dem Dateinamen 'file_name'"
+msgstr "Suche nach Konten, welche eine Datei enthalten mit dem Dateinamen 'file_name'"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:39
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:43
@@ -3901,7 +3810,7 @@ msgstr "Anwendungs-Administrator"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:152
 msgid "Administrador de cuentas"
-msgstr "Anwendungs-Administrator"
+msgstr "Konto-Administrator"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:167
 msgid "Forzar cambio de clave"
@@ -3927,11 +3836,9 @@ msgid "Habilitar enlaces Wiki"
 msgstr "Wiki-Links aktivieren"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:20
-msgid ""
-"Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
-"la búsqueda."
-msgstr ""
-"Aktiviert die Option einen Link für Suchresultate zu einem externen Wiki."
+#, fuzzy
+msgid "Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda."
+msgstr "Aktiviert die Option einen Link für Suchresultate zu einem externen Wiki."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:36
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:63
@@ -3939,6 +3846,7 @@ msgid "URL de búsqueda Wiki"
 msgstr "Wiki Such-URL"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:41
+#, fuzzy
 msgid "URL que utiliza la wiki para realizar una búsqueda de una página."
 msgstr "URL, welche das Wiki zur Inhaltssuche nutzt."
 
@@ -3963,9 +3871,7 @@ msgid "URL que utiliza la wiki para acceder a los detalles de una página."
 msgstr "URL für das Wiki mit den Seitendetails."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:78
-msgid ""
-"El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
-"de la Wiki."
+msgid "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki."
 msgstr "Der Kontoname wird benutzt als Parameter der Wiki Such Variable."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:102
@@ -3974,8 +3880,7 @@ msgid "Prefijo para nombre de cuenta"
 msgstr "Präfix eines Kontonamens"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:107
-msgid ""
-"Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
+msgid "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr "Präfix zur Auswahl der Konten die einen Link zum Wiki besitzen."
 
 #: ../../../../inc/themes/material-blue/views/account/account.inc:11
@@ -4074,18 +3979,15 @@ msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP Verbindungspasswort"
 
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:124
-msgid ""
-"Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
-"cuentas sin permisos."
-msgstr ""
-"Ermöglicht Benutzern, Änderungen oder Zugriff auf Konten ohne Berechtigungen "
-"anzufordern."
+msgid "Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos."
+msgstr "Ermöglicht Benutzern, Änderungen oder Zugriff auf Konten ohne Berechtigungen anzufordern."
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
 msgid "Crear nueva cuenta"
 msgstr "Neues Konto erstellen"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
+#, fuzzy
 msgid "Crear"
 msgstr "Erstellen"
 
@@ -4121,12 +4023,11 @@ msgstr "Anfrage wurde nicht abgeschickt"
 
 #: ../../../../ajax/ajax_passReset.php:78
 msgid "Compruebe datos de usuario o consulte con el administrador"
-msgstr ""
-"Bitte überprüfen Sie die Benutzerdaten oder kontaktieren Sie den "
-"Administrator"
+msgstr "Bitte überprüfen Sie die Benutzerdaten oder kontaktieren Sie den Administrator"
 
 #: ../../../../inc/SP/Account/Account.class.php:203
 #: ../../../../inc/SP/Account/Account.class.php:510
+#, fuzzy
 msgid "La cuenta no existe"
 msgstr "Konto existiert nicht"
 
@@ -4147,6 +4048,7 @@ msgid "Error al eliminar favorito"
 msgstr "Fehler beim Löschen des Favoriten"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:129
+#, fuzzy
 msgid "Error al eliminar las etiquetas de la cuenta"
 msgstr "Fehler beim Entfernen von Tags des Kontos"
 
@@ -4171,6 +4073,7 @@ msgid "Id de la cuenta"
 msgstr "Konto ID"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:467
+#, fuzzy
 msgid "Devolver detalles en la respuesta"
 msgstr "Senden Sie Details über die Antwort"
 
@@ -4219,6 +4122,7 @@ msgid "Objetos encontrados: %d"
 msgstr "Objekte gefunden: %d"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:127
+#, fuzzy
 msgid "Los parámetros de DokuWiki no están configurados"
 msgstr "DokuWiki Einstellungen sind nicht konfiguriert"
 
@@ -4380,7 +4284,7 @@ msgstr "Neuer Tag"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:956
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:225
 msgid "Editar Etiqueta"
-msgstr "Tab bearbeiten"
+msgstr "Tag bearbeiten"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:965
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:966
@@ -4513,6 +4417,7 @@ msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP-Benutzerimport abgeschlossen"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1096
+#, fuzzy
 msgid "Error al importar usuarios de LDAP"
 msgstr "Fehler beim Import von LDAP-Benutzern"
 
@@ -4599,6 +4504,7 @@ msgid "Es necesario un objeto"
 msgstr "Ein Objekt wird benötigt"
 
 #: ../../../../inc/SP/Core/Installer.class.php:164
+#, fuzzy
 msgid "Indicar la clave de la BBDD"
 msgstr "Geben Sie das Passwort für die Datenbank ein"
 
@@ -4611,6 +4517,7 @@ msgid "Error al crear el usuario de conexión a MySQL '%s'"
 msgstr "Fehler beim Erstellen des Benutzers '%s' für die MySQL Verbindung"
 
 #: ../../../../inc/SP/Core/Installer.class.php:305
+#, fuzzy
 msgid "La BBDD no existe"
 msgstr "Datenbank existiert nicht"
 
@@ -4625,6 +4532,7 @@ msgstr "Fehler beim Konfigurieren der Datenbank ('%s')"
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:111
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:113
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:166
+#, fuzzy
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Plugin \"%s\" konnte nicht geladen werden"
 
@@ -4691,16 +4599,19 @@ msgid "Categoría no encontrada"
 msgstr "Kategorie nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:60
+#, fuzzy
 msgid "Error al crear el campo personalizado"
 msgstr "Fehler beim Anlegen des Nutzerfelds"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:75
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:84
+#, fuzzy
 msgid "Error al eliminar el campo personalizado"
 msgstr "Fehler beim Entfernen des Nutzerfelds"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:128
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:290
+#, fuzzy
 msgid "Error al actualizar el campo personalizado"
 msgstr "Fehler beim Aktualisieren des Nutzerfelds"
 
@@ -4714,10 +4625,12 @@ msgstr "Keine Nutzerfelder gefunden"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:72
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:143
+#, fuzzy
 msgid "No hay datos de campos personalizados"
 msgstr "Keine Daten aus benutzerdefinierten Feldern"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:263
+#, fuzzy
 msgid "Error al migrar campos personalizados"
 msgstr "Fehler beim Migrieren von Nutzerfeldern"
 
@@ -4738,15 +4651,18 @@ msgid "Error al asignar los usuarios al grupo"
 msgstr "Fehler beim Festlegen von Benutzern in der Gruppe"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:71
+#, fuzzy
 msgid "Error al crear la notificación"
 msgstr "Fehler beim Hinzufügen der Benachrichtigung"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:96
+#, fuzzy
 msgid "Error al eliminar la notificación"
 msgstr "Fehler beim Löschen der Benachrichtigung"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:134
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:246
+#, fuzzy
 msgid "Error al modificar la notificación"
 msgstr "Fehler beim Löschen der Benachrichtigung"
 
@@ -4758,10 +4674,12 @@ msgstr "Fehler beim Abrufen der Benachrichtigung"
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:286
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:320
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:356
+#, fuzzy
 msgid "Error al obtener las notificaciones"
 msgstr "Fehler beim Abrufen der Benachrichtigungen"
 
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:60
+#, fuzzy
 msgid "Error al crear el plugin"
 msgstr "Fehler beim Hinzufügen des Plugins"
 
@@ -4770,12 +4688,14 @@ msgid "Nuevo Plugin"
 msgstr "Neues Plugin"
 
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:84
+#, fuzzy
 msgid "Error al eliminar el plugin"
 msgstr "Fehler beim Löschen des Plugins"
 
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:116
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:220
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:244
+#, fuzzy
 msgid "Error al actualizar el plugin"
 msgstr "Fehler beim Aktualisieren des Plugins"
 
@@ -4785,6 +4705,7 @@ msgstr "Aktiviert"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:97
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:69
+#, fuzzy
 msgid "Error al crear perfil"
 msgstr "Fehler beim Erstellen des Profils"
 
@@ -4793,10 +4714,12 @@ msgid "Perfil en uso"
 msgstr "Profil in Verwendung"
 
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:115
+#, fuzzy
 msgid "Error al eliminar perfil"
 msgstr "Fehler beim Entfernen des Profils"
 
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:197
+#, fuzzy
 msgid "Error al modificar perfil"
 msgstr "Fehler beim Anpassen des Profils"
 
@@ -4806,6 +4729,7 @@ msgid "Enlace visualizado"
 msgstr "Link angesehen"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:105
+#, fuzzy
 msgid "Error al actualizar enlace"
 msgstr "Fehler beim Aktualisieren des Links"
 
@@ -4814,10 +4738,12 @@ msgid "Enlace ya creado"
 msgstr "Link bereits erstellt"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:145
+#, fuzzy
 msgid "Error al crear enlace"
 msgstr "Fehler beim Erstellen des Links"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:182
+#, fuzzy
 msgid "Error al eliminar enlace"
 msgstr "Fehler beim Entfernen des Links"
 
@@ -4833,6 +4759,7 @@ msgstr "Link aktualisieren"
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:248
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:347
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:381
+#, fuzzy
 msgid "Error al obtener enlace"
 msgstr "Fehler beim Abrufen des Links"
 
@@ -4852,18 +4779,22 @@ msgid "Etiqueta duplicada"
 msgstr "Tag bereits vorhanden"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:64
+#, fuzzy
 msgid "Error al crear etiqueta"
 msgstr "Fehler beim Anlegen des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:109
+#, fuzzy
 msgid "Error al eliminar etiqueta"
 msgstr "Fehler beim Entfernen des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:138
+#, fuzzy
 msgid "Error al actualizar etiqueta"
 msgstr "Fehler beim Aktualisieren des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:181
+#, fuzzy
 msgid "Error al obtener etiqueta"
 msgstr "Fehler beim Abrufen des Tags"
 
@@ -4876,6 +4807,7 @@ msgstr "Benutzer-Login/E-Mail bereits vorhanden"
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:300
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:338
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:396
+#, fuzzy
 msgid "Error al obtener los datos del usuario"
 msgstr "Fehler beim Abrufen der Benutzerdaten"
 
@@ -4892,18 +4824,22 @@ msgid "Sincronización finalizada"
 msgstr "Synchronisation abgeschlossen"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:97
+#, fuzzy
 msgid "Error al migrar cuenta de usuario"
 msgstr "Fehler beim Migrieren des Benutzerkontos"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:137
+#, fuzzy
 msgid "Error al obtener grupo de usuarios"
 msgstr "Fehler beim Abrufen der Gruppen des Benutzers"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:111
+#, fuzzy
 msgid "Error en comprobación de hash"
 msgstr "Fehler beim Überprüfen des Hash-Wertes"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:113
+#, fuzzy
 msgid "Hash inválido o expirado"
 msgstr "Ungültiger oder abgelaufener Hash-Wert"
 
@@ -4928,6 +4864,7 @@ msgid "Socket no inicializado"
 msgstr "Socket nicht initialisiert"
 
 #: ../../../../inc/SP/Util/Connection.class.php:129
+#, fuzzy
 msgid "Error al enviar datos"
 msgstr "Fehler beim Senden der Daten"
 
@@ -4940,6 +4877,7 @@ msgid "Fallo de autentificación"
 msgstr "Authentifizierungsfehler"
 
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:173
+#, fuzzy
 msgid "Error al realizar la consulta"
 msgstr "Fehler beim Ausführen der Anfrage"
 
@@ -4969,7 +4907,7 @@ msgstr "Kritisch"
 
 #: ../../../../js/strings.js.php:73
 msgid "Recibir notificaciones?"
-msgstr "Benachrichtigungen gesendet?"
+msgstr "Benachrichtigungen erhalten?"
 
 #: ../../../../js/strings.js.php:74
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:136
@@ -5000,16 +4938,12 @@ msgid "Ahora"
 msgstr "Jetzt"
 
 #: ../../../../js/strings.js.php:82
-msgid ""
-"Este proceso importará los usuarios de LDAP detectados. Desea continuar?"
-msgstr ""
-"Der Vorgang wird die ermittelten LDAP-Benutzer importieren. Möchten Sie "
-"fortfahren?"
+msgid "Este proceso importará los usuarios de LDAP detectados. Desea continuar?"
+msgstr "Der Vorgang wird die ermittelten LDAP-Benutzer importieren. Möchten Sie fortfahren?"
 
 #: ../../../../js/strings.js.php:83
 msgid "Esta acción restablecerá todos los datos del plugin. Desea continuar?"
-msgstr ""
-"Diese Aktion wird all Plugin-Daten zurücksetzen. Möchten Sie fortfahren?"
+msgstr "Diese Aktion wird all Plugin-Daten zurücksetzen. Möchten Sie fortfahren?"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:78
 #: ../../../../inc/themes/material-blue/views/account/account.inc:150
@@ -5147,27 +5081,16 @@ msgid "Habilitar Enlaces Públicos"
 msgstr "Öffentliche Links aktivieren"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:156
-msgid ""
-"Habilita la posibilidad de generar enlaces públicos para ver los detalles de "
-"una cuenta."
-msgstr ""
-"Ermöglicht die Erstellung öffentlicher Links, um die Details eines Kontos "
-"anzuzeigen"
+msgid "Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta."
+msgstr "Ermöglicht die Erstellung öffentlicher Links, um die Details eines Kontos anzuzeigen"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:160
-msgid ""
-"Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
-msgstr ""
-"Die verknüpften Konten werden für alle sichtbar sein, die im Besitz des "
-"Links sind"
+msgid "Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
+msgstr "Die verknüpften Konten werden für alle sichtbar sein, die im Besitz des Links sind"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:164
-msgid ""
-"Para crear enlaces, los usuarios tienen que tener activada la opción en su "
-"perfl."
-msgstr ""
-"Um Links erstellen zu können, muss die Option im Profil der Benutzer "
-"aktiviert sein"
+msgid "Para crear enlaces, los usuarios tienen que tener activada la opción en su perfl."
+msgstr "Um Links erstellen zu können, muss die Option im Profil der Benutzer aktiviert sein"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:180
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:189
@@ -5211,17 +5134,12 @@ msgid "Habilitar API de DokuWiki"
 msgstr "DokuWiki API aktivieren"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:134
-msgid ""
-"Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki."
+msgid "Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki."
 msgstr "Aktiviert DokuWiki XML-RPC API für Wiki-Links."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:137
-msgid ""
-"Para que esta característica funcione, es necesario habilitar los enlaces "
-"Wiki para el filtrado de cuentas."
-msgstr ""
-"Um diese Funktion zu erhalten, sollten Sie Wiki-Links für die "
-"Kontenfilterung aktivieren"
+msgid "Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas."
+msgstr "Um diese Funktion zu erhalten, sollten Sie Wiki-Links für die Kontenfilterung aktivieren"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:154
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:175
@@ -5355,12 +5273,8 @@ msgid "Actualización  %s"
 msgstr "Aktualisierung %s"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:27
-msgid ""
-"Este código se encuentra en el archivo de configuración de sysPass con la "
-"etiqueta \"upgradeKey\""
-msgstr ""
-"Diesen Code finden Sie in der sysPass Konfigurationsdatei mit dem Tag-Namen "
-"\"upgradekey\""
+msgid "Este código se encuentra en el archivo de configuración de sysPass con la etiqueta \"upgradeKey\""
+msgstr "Diesen Code finden Sie in der sysPass Konfigurationsdatei mit dem Tag-Namen \"upgradekey\""
 
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:2
 msgid "Ver Wiki"
@@ -5396,11 +5310,8 @@ msgid "Agente"
 msgstr "Agent"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:19
-msgid ""
-"Para mejorar/añadir las traducciones, puede colaborar en https://poeditor."
-"com/join/project/fmlsBuugyv"
-msgstr ""
-"Um die Übersetzungen zu verbessern / hinzufügen, können Sie sich beteiligen\n"
+msgid "Para mejorar/añadir las traducciones, puede colaborar en https://poeditor.com/join/project/fmlsBuugyv"
+msgstr "Um die Übersetzungen zu verbessern / hinzufügen, können Sie sich beteiligen\n"
 "https://poeditor.com/join/project/fmlsBuugyv"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:83
@@ -5408,13 +5319,8 @@ msgid "Indica si el idioma se encuentra disponible"
 msgstr "Gibt an, ob die Sprache verfügbar ist oder nicht."
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:87
-msgid ""
-"Si no está instalado, es necesario instalar las locales en el sistema "
-"operativo. Más información en Wiki."
-msgstr ""
-"Wenn nicht installiert, müssen Sie die richtigen "
-"Betriebssystemgebietsschemas installieren. Weitere Informationen finden Sie "
-"im Wiki."
+msgid "Si no está instalado, es necesario instalar las locales en el sistema operativo. Más información en Wiki."
+msgstr "Wenn nicht installiert, müssen Sie die richtigen Betriebssystemgebietsschemas installieren. Weitere Informationen finden Sie im Wiki."
 
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:48
 msgid "No hay no hay notificaciones pendientes"
@@ -5479,6 +5385,7 @@ msgid "Actualizar Campo"
 msgstr "Feld aktualisieren"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:731
+#, fuzzy
 msgid "Crear Enlace"
 msgstr "Link hinzufügen"
 
@@ -5514,6 +5421,7 @@ msgid "Acceso denegado"
 msgstr "Zugang verweigert"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:90
+#, fuzzy
 msgid "Error al añadir las etiquetas de la cuenta"
 msgstr "Fehler beim Hinzufügen von Konto-Tags"
 
@@ -5664,28 +5572,19 @@ msgstr "Privat für Gruppe"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:132
 msgid "Sólo es necesaria para archivos XML de sysPass encriptados."
-msgstr ""
-"Es wird nur für sysPass XML-Dateien benötigt, die verschlüsselt wurden."
+msgstr "Es wird nur für sysPass XML-Dateien benötigt, die verschlüsselt wurden."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:153
-msgid ""
-"Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de "
-"la actual."
-msgstr ""
-"Es wird nur für sysPass XML-Dateien benötigt, die mit einem anderen Master-"
-"Passwort vom aktuellen verschlüsselt wurden."
+msgid "Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de la actual."
+msgstr "Es wird nur für sysPass XML-Dateien benötigt, die mit einem anderen Master-Passwort als dem aktuellen verschlüsselt wurden."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:181
 msgid "Sólo es necesario para archivos CSV."
 msgstr "Es wird nur für CSV-Dateien benötigt."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:112
-msgid ""
-"\"nombre_de_cuenta\";\"cliente\";\"categoría\";\"url\";\"usuario\";\"clave\";"
-"\"notas\""
-msgstr ""
-"Name\", \"Kunde\", \"Kategorie\", \"URL\", \"Benutzer\", \"Passwort\", "
-"\"Notizen\""
+msgid "\"nombre_de_cuenta\";\"cliente\";\"categoría\";\"url\";\"usuario\";\"clave\";\"notas\""
+msgstr "\"Name\", \"Kunde\", \"Kategorie\", \"URL\", \"Benutzer\", \"Passwort\", \"Notizen\""
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:110
 msgid "Crear cuenta privada para grupo"
@@ -5716,22 +5615,17 @@ msgid "Clave Maestra %s"
 msgstr "Master Passwort %s"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:654
-msgid ""
-"Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
-"el siguiente inicio."
-msgstr ""
-"Ein neues sysPass-Master-Passwort wurde generiert, welches bei der nächsten "
-"Anmeldung angefordert wird."
+msgid "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio."
+msgstr "Ein neues sysPass-Master-Passwort wurde generiert, welches bei der nächsten Anmeldung angefordert wird."
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:656
 msgid "La nueva clave es: %s"
 msgstr "Neues Master Passwort ist: %s"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:658
+#, fuzzy
 msgid "No olvide acceder lo antes posible para guardar los cambios."
-msgstr ""
-"Bitte vergessen Sie nicht, sich so schnell wie möglich anzumelden, um die "
-"Änderungen zu speichern."
+msgstr "Bitte vergessen Sie nicht, sich so schnell wie möglich anzumelden, um die Änderungen zu speichern."
 
 #: ../../../../js/strings.js.php:84
 msgid "Este proceso puede durar algo de tiempo. Desea continuar?"
@@ -5742,11 +5636,8 @@ msgid "Búsqueda"
 msgstr "Suchen"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:237
-msgid ""
-"Envía un correo a todos los usuarios o sólo a los del grupo seleccionado."
-msgstr ""
-"Sendet eine E-Mail an alle Benutzer oder nur an diejenigen, deren Gruppe "
-"ausgewählt ist."
+msgid "Envía un correo a todos los usuarios o sólo a los del grupo seleccionado."
+msgstr "Sendet eine E-Mail an alle Benutzer oder nur an diejenigen, deren Gruppe ausgewählt ist."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:245
 msgid "Enviar correo"
@@ -5825,8 +5716,7 @@ msgstr "Hole Konten, in denen der Benutzer mit Login \"Login\" Eigentümer ist"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:28
 msgid "Devolver las cuentas con grupo principal 'group_name'"
-msgstr ""
-"Konten anzeigen, welche die Hauptgruppe mit dem Namen \"group_name\" haben"
+msgstr "Konten anzeigen, welche die Hauptgruppe mit dem Namen \"group_name\" haben"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:31
 msgid "Devolver las cuentas privadas del usuario actual"
@@ -5861,12 +5751,8 @@ msgid "Actualización de Aplicación"
 msgstr "Anwendungsupdate"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:35
-msgid ""
-"Se han encontrado elementos huérfanos. Por favor, modifique estos elementos "
-"o indique los IDs por defecto para los elementos huérfanos."
-msgstr ""
-"Einige verwaiste Konten wurden gefunden. Bitte ändern Sie diese Einträge "
-"oder geben Sie die Standard-IDs für diese ein."
+msgid "Se han encontrado elementos huérfanos. Por favor, modifique estos elementos o indique los IDs por defecto para los elementos huérfanos."
+msgstr "Einige verwaiste Konten wurden gefunden. Bitte ändern Sie diese Einträge oder geben Sie die Standard-IDs für diese ein."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:59
 msgid "Introducir un ID de usuario válido para cuentas"
@@ -5881,25 +5767,22 @@ msgid "Introducir un ID de cliente válido para cuentas"
 msgstr "Bitte geben Sie eine gültige Customer-ID für die Konten ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:96
+#, fuzzy
 msgid "Introducir un ID de grupo válido para usuarios"
 msgstr "Bitte geben Sie eine gültige Gruppen-ID für die Benutzer ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:106
+#, fuzzy
 msgid "Introducir un ID de perfil válido para usuarios"
 msgstr "Bitte geben Sie eine gültige Profil-ID für die Benutzer ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:116
-msgid ""
-"Esta actualización utiliza un nuevo esquema de encriptación, por lo que es "
-"necesario reencriptar los datos almacenados"
-msgstr ""
-"Das Update verwendet ein neues Verschlüsselungsschema. Es ist erforderlich, "
-"dass alle verschlüsselten Daten aktualisiert werden."
+msgid "Esta actualización utiliza un nuevo esquema de encriptación, por lo que es necesario reencriptar los datos almacenados"
+msgstr "Das Update verwendet ein neues Verschlüsselungsschema. Es ist erforderlich, dass alle verschlüsselten Daten aktualisiert werden."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:104
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:118
-msgid ""
-"Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
+msgid "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
 msgstr "Es werden %s Konten aktualisiert. Dies kann etwas dauern."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:142
@@ -5992,8 +5875,7 @@ msgid "Actualizando IDs de usuarios"
 msgstr "Aktualisiere die ID der Benutzer"
 
 #: ../../../../js/strings.js.php:87
-msgid ""
-"Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
+msgid "Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
 msgstr "Führe Aktion aus. Bitte das Browserfenster/Tab nicht schließen."
 
 #: ../../../../js/strings.js.php:88
@@ -6007,8 +5889,7 @@ msgstr "Verschlüsselte Sitzung"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:104
 msgid "Indica si los datos de la sesión están encriptados en el servidor"
-msgstr ""
-"Zeigt an, ob die Sitzungsdaten auf dem Server verschlüsselt sind oder nicht"
+msgstr "Zeigt an, ob die Sitzungsdaten auf dem Server verschlüsselt sind oder nicht"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:111
 msgid "Sí"
@@ -6020,9 +5901,7 @@ msgstr "Nein"
 
 #: ../../../../js/strings.js.php:89
 msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
-msgstr ""
-"Cookies sind deaktiviert, weshalb die Anwendung nicht ordnungsgemäß "
-"funktionieren kann."
+msgstr "Cookies sind deaktiviert, weshalb die Anwendung nicht ordnungsgemäß funktionieren kann."
 
 #: ../../../../js/strings.js.php:90
 msgid "Portapapeles no soportado por el navegador."
@@ -6034,26 +5913,16 @@ msgid "Atributo Login"
 msgstr "Login Attribut"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:260
-msgid ""
-"Define el atributo a utilizar para el login del usuario en la importación."
+msgid "Define el atributo a utilizar para el login del usuario en la importación."
 msgstr "Definiert das Attribut für den Benutzerlogin beim Import"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:126
-msgid ""
-"Habilita el acceso a los usuarios que estén incluidos en los grupos "
-"secundarios."
-msgstr ""
-"Gibt den Benutzern die sich in der untergeordneten Gruppe befinden "
-"Zugriffsrechte "
+msgid "Habilita el acceso a los usuarios que estén incluidos en los grupos secundarios."
+msgstr "Gibt den Benutzern die sich in der untergeordneten Gruppe befinden Zugriffsrechte "
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:129
-msgid ""
-"Por defecto el usuario de un grupo secundario es permitido si el grupo "
-"secundario está establecido como el primario del usuario."
-msgstr ""
-"Standardmäßig erhält der Benutzer einer untergeordneten Gruppe "
-"Zugriffsrechte, wenn die Hauptgruppe des Benutzers die untergeordnete Gruppe "
-"ist"
+msgid "Por defecto el usuario de un grupo secundario es permitido si el grupo secundario está establecido como el primario del usuario."
+msgstr "Standardmäßig erhält der Benutzer einer untergeordneten Gruppe Zugriffsrechte, wenn die Hauptgruppe des Benutzers die untergeordnete Gruppe ist"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:139
 msgid "Acceso Grupos Secundarios"
@@ -6064,12 +5933,8 @@ msgid "Encriptar los datos de la sesión de PHP."
 msgstr "Verschlüsseln Sie die Daten der PHP-Sitzung."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:171
-msgid ""
-"Esta funcionalidad incrementa la seguridad de las sesiones de PHP ya que los "
-"datos almacenados no serán legibles."
-msgstr ""
-"Diese Funktionalität erhöht die Sicherheit von PHP-Sitzungen, da die "
-"gespeicherten Daten nicht lesbar sind."
+msgid "Esta funcionalidad incrementa la seguridad de las sesiones de PHP ya que los datos almacenados no serán legibles."
+msgstr "Diese Funktionalität erhöht die Sicherheit von PHP-Sitzungen, da die gespeicherten Daten nicht lesbar sind."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:179
 msgid "Encriptar Sesión"
@@ -6081,12 +5946,11 @@ msgid "Atributo Nombre"
 msgstr "Namensattribut"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
-msgid ""
-"Define el atributo a utilizar para el nombre del usuario en la importación."
-msgstr ""
-"Definiert das Benutzernamenattribut\n"
+msgid "Define el atributo a utilizar para el nombre del usuario en la importación."
+msgstr "Definiert das Benutzernamenattribut\n"
 "für den Import"
 
 #: ../../../../js/strings.js.php:91
 msgid "Hay una versión más reciente del plugin {0} ({1})"
 msgstr "Es gibt eine neuere Version des Plugins {0} ({1})"
+
