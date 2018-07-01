@@ -73,9 +73,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $client = self::$repository->getByName('Amazon');
-
-        $this->assertCount(0, $client);
+        $this->assertNull(self::$repository->getByName('Amazon'));
 
         $client = self::$repository->getByName('Google');
 
@@ -133,9 +131,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $client = self::$repository->getById(10);
-
-        $this->assertCount(0, $client);
+        $this->assertNull(self::$repository->getById(10));
 
         $client = self::$repository->getById(1);
 

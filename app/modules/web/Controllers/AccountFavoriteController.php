@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\Account\AccountFavoriteService;
+use SP\Services\Account\AccountToFavoriteService;
 
 /**
  * Class AccountFavoriteController
@@ -38,7 +38,7 @@ class AccountFavoriteController extends SimpleControllerBase
     use JsonTrait;
 
     /**
-     * @var AccountFavoriteService
+     * @var AccountToFavoriteService
      */
     private $accountFavoriteService;
 
@@ -78,7 +78,7 @@ class AccountFavoriteController extends SimpleControllerBase
     {
         $this->checks();
 
-        $this->accountFavoriteService = $this->dic->get(AccountFavoriteService::class);
+        $this->accountFavoriteService = $this->dic->get(AccountToFavoriteService::class);
     }
 
 }

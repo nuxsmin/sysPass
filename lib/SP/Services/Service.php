@@ -28,8 +28,6 @@ use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 
 /**
@@ -46,7 +44,7 @@ abstract class Service
      */
     protected $config;
     /**
-     * @var SessionContext|StatelessContext
+     * @var ContextInterface
      */
     protected $context;
     /**

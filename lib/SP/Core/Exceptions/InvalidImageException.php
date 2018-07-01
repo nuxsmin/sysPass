@@ -22,27 +22,14 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Log;
+namespace SP\Core\Exceptions;
 
 /**
- * Class LogUtil
+ * Class InvalidImageException
  *
- * @package SP\Log
+ * @package SP\Core\Exceptions
  */
-class LogUtil
+class InvalidImageException extends SPException
 {
-    /**
-     * Registrar que una extensión no ha sido cargada
-     *
-     * @param string $extension La extensión no cargada
-     * @param string $source    El origen del error
-     * @return Log
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function extensionNotLoaded($extension, $source = __FUNCTION__)
-    {
-        $msg = sprintf(__('Extensión \'%s\' no cargada'), $extension);
 
-        return Log::writeNewLog($source, $msg, Log::ERROR);
-    }
 }

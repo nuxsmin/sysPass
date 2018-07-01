@@ -27,11 +27,11 @@ namespace SP\Repositories\Account;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountFileRepository
@@ -94,7 +94,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
     /**
      * @param $id
      *
-     * @return FileExtData
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -118,7 +118,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -126,7 +126,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param int $id
      *
-     * @return FileExtData
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -153,7 +153,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -161,36 +161,37 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param int $id
      *
-     * @return FileData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT AF.id,
-            AF.name,
-            AF.size,
-            AF.type,
-            AF.accountId,
-            AF.content,
-            AF.thumb,
-            AF.extension
-            FROM AccountFile AF
-            WHERE accountId = ?';
+            'SELECT id,
+            `name`,
+            size,
+            type,
+            accountId,
+            content,
+            thumb,
+            extension
+            FROM AccountFile
+            WHERE accountId = ?
+            ORDER BY `name`';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(FileData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return FileExtData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -209,13 +210,14 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             C.name AS clientName
             FROM AccountFile AF
             INNER JOIN Account A ON A.id = AF.accountId
-            INNER JOIN Client C ON A.clientId = C.id';
+            INNER JOIN Client C ON A.clientId = C.id
+            ORDER BY AF.name';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(FileExtData::class);
         $queryData->setQuery($query);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -223,12 +225,16 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param array $ids
      *
-     * @return array
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return new QueryResult();
+        }
+
         $query = /** @lang SQL */
             'SELECT AF.id,
             AF.name,
@@ -250,7 +256,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doQuery($queryData)->getDataAsArray();
+        return $this->db->doQuery($queryData);
     }
 
     /**
@@ -258,8 +264,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param $id
      *
-     * @return AccountFileRepository
-     * @throws NoSuchItemException
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -273,11 +278,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el archivo'));
 
-        if ($this->db->doQuery($queryData)->getAffectedNumRows() === 0) {
-            throw new NoSuchItemException(__u('Archivo no encontrado'));
-        }
-
-        return $this;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -291,6 +292,10 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountFile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
@@ -342,7 +347,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(FileExtData::class);
-        $queryData->setSelect('AF.id, AF.name, CONCAT(ROUND(AF.size/1000, 2), "KB") AS size, AF.thumb, AF.type, A.name as accountName, C.name as clientName');
+        $queryData->setSelect('AF.id, AF.accountId, AF.name, AF.size, AF.thumb, AF.type, AF.extension, A.name as accountName, C.name as clientName');
         $queryData->setFrom('AccountFile AF INNER JOIN Account A ON A.id = AF.accountId INNER JOIN Client C ON A.clientId = C.id');
         $queryData->setOrder('A.name');
 

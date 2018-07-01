@@ -789,6 +789,6 @@ class AccountAclServiceTest extends DatabaseTestCase
      */
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_acl.xml');
+        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountAcl.xml');
     }
 }

@@ -259,15 +259,18 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetByLogin()
     {
-        $user = self::$repository->getByLogin('demo');
+        $result = self::$repository->getByLogin('demo');
 
-        $this->assertInstanceOf(UserData::class, $user);
-        $this->assertEquals('sysPass demo', $user->getName());
-        $this->assertEquals('demo', $user->getLogin());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->expectException(NoSuchItemException::class);
+        /** @var UserData $data */
+        $data = $result->getData();
 
-        self::$repository->getByLogin('prueba');
+        $this->assertInstanceOf(UserData::class, $data);
+        $this->assertEquals('sysPass demo', $data->getName());
+        $this->assertEquals('demo', $data->getLogin());
+
+        $this->assertEquals(0, self::$repository->getByLogin('prueba')->getNumRows());
     }
 
     /**

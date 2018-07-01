@@ -24,7 +24,6 @@
 
 namespace SP\Repositories;
 
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Storage\Database\DBUtil;
@@ -52,7 +51,7 @@ trait RepositoryItemTrait
         foreach ($items as $key => $item) {
             try {
                 $this->delete($item->getId());
-            } catch (SPException $e) {
+            } catch (\Exception $e) {
                 unset($items[$key]);
             }
         }

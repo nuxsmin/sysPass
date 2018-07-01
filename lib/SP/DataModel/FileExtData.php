@@ -34,7 +34,7 @@ class FileExtData extends FileData
     /**
      * @var string
      */
-    public $customerName = '';
+    public $clientName = '';
     /**
      * @var string
      */
@@ -43,17 +43,17 @@ class FileExtData extends FileData
     /**
      * @return string
      */
-    public function getCustomerName()
+    public function getClientName()
     {
-        return $this->customerName;
+        return $this->clientName;
     }
 
     /**
-     * @param string $customerName
+     * @param string $clientName
      */
-    public function setCustomerName($customerName)
+    public function setClientName($clientName)
     {
-        $this->customerName = $customerName;
+        $this->clientName = $clientName;
     }
 
     /**

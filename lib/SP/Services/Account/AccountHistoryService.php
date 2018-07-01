@@ -27,6 +27,7 @@ namespace SP\Services\Account;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
@@ -56,17 +57,6 @@ class AccountHistoryService extends Service
      * @var AccountToUserRepository
      */
     protected $accountToUserRepository;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function initialize()
-    {
-        $this->accountHistoryRepository = $this->dic->get(AccountHistoryRepository::class);
-        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
-        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
-    }
 
     /**
      * Returns the item for given id
@@ -166,16 +156,15 @@ class AccountHistoryService extends Service
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
+     * @param AccountHistoryCreateDto $dto
      *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($itemData)
+    public function create(AccountHistoryCreateDto $dto)
     {
-        return $this->accountHistoryRepository->create($itemData);
+        return $this->accountHistoryRepository->create($dto);
     }
 
     /**
@@ -240,6 +229,17 @@ class AccountHistoryService extends Service
      */
     public function getAll()
     {
-        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getAll()->getDataAsArray());
+        return $this->accountHistoryRepository->getAll()->getDataAsArray();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->accountHistoryRepository = $this->dic->get(AccountHistoryRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
     }
 }

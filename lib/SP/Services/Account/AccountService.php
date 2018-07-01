@@ -35,6 +35,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountPassData;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountRepository;
@@ -307,12 +308,12 @@ class AccountService extends Service implements AccountServiceInterface
         $accountHistoryRepository = $this->dic->get(AccountHistoryService::class);
         $configService = $this->dic->get(ConfigService::class);
 
-        return $accountHistoryRepository->create([
-            'id' => $accountId,
-            'isDelete' => (int)$isDelete,
-            'isModify' => (int)!$isDelete,
-            'masterPassHash' => $configService->getByParam('masterPwd')
-        ]);
+        return $accountHistoryRepository->create(new AccountHistoryCreateDto(
+                $accountId,
+                $isDelete,
+                !$isDelete,
+                $configService->getByParam('masterPwd'))
+        );
     }
 
     /**

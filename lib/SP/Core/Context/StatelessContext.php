@@ -50,6 +50,7 @@ class StatelessContext extends ContextBase
      *
      * @param string $key   El nombre de la variable
      * @param mixed  $value El valor de la variable
+     *
      * @return mixed
      */
     protected function setContextKey($key, $value)
@@ -90,6 +91,7 @@ class StatelessContext extends ContextBase
      *
      * @param string $key
      * @param mixed  $default
+     *
      * @return mixed
      */
     protected function getContextKey($key, $default = null)
@@ -151,6 +153,7 @@ class StatelessContext extends ContextBase
 
     /**
      * @param $sk
+     *
      * @return mixed
      */
     public function setSecurityKey($sk)
@@ -245,5 +248,13 @@ class StatelessContext extends ContextBase
     public function getConfigTime()
     {
         return $this->getContextKey('configTime');
+    }
+
+    /**
+     * @return null
+     */
+    public function getAccountsCache()
+    {
+        return null;
     }
 }

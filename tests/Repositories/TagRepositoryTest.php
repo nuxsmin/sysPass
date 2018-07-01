@@ -101,9 +101,7 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $tag = self::$repository->getById(10);
-
-        $this->assertCount(0, $tag);
+        $this->assertNull(self::$repository->getById(10));
 
         $tag = self::$repository->getById(1);
 

@@ -27,6 +27,7 @@ namespace SP\Core\Context;
 use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Vault;
+use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
@@ -87,6 +88,7 @@ class SessionContext extends ContextBase
      *
      * @param string $key
      * @param mixed  $default
+     *
      * @return mixed
      */
     protected function getContextKey($key, $default = null)
@@ -115,6 +117,7 @@ class SessionContext extends ContextBase
      *
      * @param string $key   El nombre de la variable
      * @param mixed  $value El valor de la variable
+     *
      * @return mixed
      */
     protected function setContextKey($key, $value)
@@ -292,6 +295,7 @@ class SessionContext extends ContextBase
 
     /**
      * @param $sk
+     *
      * @return mixed
      */
     public function setSecurityKey($sk)
@@ -343,6 +347,7 @@ class SessionContext extends ContextBase
      * Establecer el timeout de la sesión
      *
      * @param int $timeout El valor en segundos
+     *
      * @return int
      */
     public function setSessionTimeout($timeout)
@@ -386,6 +391,7 @@ class SessionContext extends ContextBase
      * Establece la hora de creación del SID
      *
      * @param $time int La marca de hora
+     *
      * @return int
      */
     public function setSidStartTime($time)
@@ -409,6 +415,7 @@ class SessionContext extends ContextBase
      * Establece la hora de inicio de actividad
      *
      * @param $time int La marca de hora
+     *
      * @return int
      */
     public function setStartActivity($time)
@@ -520,10 +527,12 @@ class SessionContext extends ContextBase
 
     /**
      * Devuelve la cache de cuentas
+     *
+     * @return AccountCache[]
      */
     public function getAccountsCache()
     {
-        $this->getContextKey('accountsCache');
+        return $this->getContextKey('accountsCache');
     }
 
     /**

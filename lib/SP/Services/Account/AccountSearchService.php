@@ -54,7 +54,7 @@ class AccountSearchService extends Service
      * Regex filters for special searching
      */
     const FILTERS_REGEX_IS = '#(?<filter>(?:is|not):(?:expired|private))#';
-    const FILTERS_REGEX = '#(?<type>id|user|group|file|owner|maingroup):"?(?<filter>[\w\.]+)"?#';
+    const FILTERS_REGEX = '#(?<type>id|user|group|file|owner|maingroup):(?:"(?<filter_quoted>[\w\s\.]+)"|(?<filter>[\w\.]+))#';
     const FILTERS_REGEX_OPERATOR = '#op:(?<operator>and|or)#';
 
     const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
@@ -137,7 +137,11 @@ class AccountSearchService extends Service
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
         $accountSearchFilter->setStringFilters($this->analyzeQueryFilters($accountSearchFilter->getTxtSearch()));
-        $accountSearchFilter->setFilterOperator($this->filterOperator);
+
+        if ($accountSearchFilter->getFilterOperator() === null) {
+            $accountSearchFilter->setFilterOperator($this->filterOperator);
+        }
+
         $accountSearchFilter->setCleanTxtSearch($this->cleanString);
 
         $accountSearchResponse = $this->accountRepository->getByFilter($accountSearchFilter);
@@ -146,7 +150,7 @@ class AccountSearchService extends Service
         $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
 
         $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
-        $favorites = $this->dic->get(AccountFavoriteService::class)->getForUserId($this->context->getUserData()->getId());
+        $favorites = $this->dic->get(AccountToFavoriteService::class)->getForUserId($this->context->getUserData()->getId());
 
         $accountAclService = $this->dic->get(AccountAclService::class);
 
@@ -178,7 +182,7 @@ class AccountSearchService extends Service
             $accountsData[] = $accountsSearchItem;
         }
 
-        return (new QueryResult($accountsData))->setTotalNumRows($accountSearchResponse->getCount());
+        return QueryResult::fromResults($accountsData, $accountSearchResponse->getCount());
     }
 
     /**
@@ -202,6 +206,18 @@ class AccountSearchService extends Service
             return $queryCondition;
         }
 
+        $this->extractFilterOperator($string);
+        $this->extractFilterIs($string, $queryCondition);
+        $this->extractFilterItems($string, $queryCondition);
+
+        return $queryCondition;
+    }
+
+    /**
+     * @param $string
+     */
+    private function extractFilterOperator($string)
+    {
         if (preg_match(self::FILTERS_REGEX_OPERATOR, $string, $matches)) {
             // Removes the operator from the string to increase regex performance
             $this->cleanString = trim(str_replace($matches[0], '', $this->cleanString));
@@ -215,7 +231,14 @@ class AccountSearchService extends Service
                     break;
             }
         }
+    }
 
+    /**
+     * @param string         $string
+     * @param QueryCondition $queryCondition
+     */
+    private function extractFilterIs($string, QueryCondition $queryCondition)
+    {
         if (preg_match_all(self::FILTERS_REGEX_IS, $string, $matches, PREG_SET_ORDER) > 0) {
             foreach ($matches as $filter) {
                 // Removes the current filter from the string to increase regex performance
@@ -237,21 +260,31 @@ class AccountSearchService extends Service
                 }
             }
         }
+    }
 
+    /**
+     * @param string         $string
+     * @param QueryCondition $queryCondition
+     */
+    private function extractFilterItems($string, QueryCondition $queryCondition)
+    {
         if (preg_match_all(self::FILTERS_REGEX, $string, $matches, PREG_SET_ORDER) > 0) {
             foreach ($matches as $filter) {
                 // Removes the current filter from the string to increase regex performance
                 $this->cleanString = trim(str_replace($filter[0], '', $this->cleanString));
 
-                if (($text = $filter['filter']) !== '') {
-                    try {
+                $text = !empty($filter['filter_quoted']) ? $filter['filter_quoted'] : $filter['filter'];
 
+                if ($text !== '') {
+                    try {
                         switch ($filter['type']) {
                             case 'user':
                                 if (is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text)))) {
                                     $queryCondition->addFilter(
-                                        'Account.userId = ? OR Account.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = Account.id AND AU.userId = ? 
-                                        UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = Account.id AND AUG.userGroupId = ?)',
+                                        'Account.userId = ? OR Account.id IN 
+                                        (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = ? 
+                                        UNION ALL 
+                                        SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = ?)',
                                         [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]);
                                 }
                                 break;
@@ -261,15 +294,15 @@ class AccountSearchService extends Service
                             case 'group':
                                 if (is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text)))) {
                                     $queryCondition->addFilter(
-                                        'Account.userGroupId = ? OR Account.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                                        'Account.userGroupId = ? OR Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = ?)',
                                         [$userGroupData->getId(), $userGroupData->getId()]);
                                 }
                                 break;
                             case 'maingroup':
-                                $queryCondition->addFilter('Account.userGroupName = ?', ['%' . $text . '%']);
+                                $queryCondition->addFilter('Account.userGroupName LIKE ?', ['%' . $text . '%']);
                                 break;
                             case 'file':
-                                $queryCondition->addFilter('Account.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)', ['%' . $text . '%']);
+                                $queryCondition->addFilter('Account.id IN (SELECT AccountFile.accountId FROM AccountFile WHERE AccountFile.name LIKE ?)', ['%' . $text . '%']);
                                 break;
                             case 'id':
                                 $queryCondition->addFilter('Account.id = ?', [(int)$text]);
@@ -277,12 +310,11 @@ class AccountSearchService extends Service
                         }
 
                     } catch (\Exception $e) {
+                        processException($e);
                     }
                 }
             }
         }
-
-        return $queryCondition;
     }
 
     /**
@@ -301,7 +333,10 @@ class AccountSearchService extends Service
         /** @var AccountCache[] $cache */
         $cache = $this->context->getAccountsCache();
 
-        if (!isset($cache[$accountId])
+        $hasCache = $cache !== null;
+
+        if ($cache === false
+            || !isset($cache[$accountId])
             || $cache[$accountId]->getTime() < (int)strtotime($accountSearchData->getDateEdit())
         ) {
             $cache[$accountId] = new AccountCache(
@@ -309,7 +344,9 @@ class AccountSearchService extends Service
                 $this->accountToUserRepository->getUsersByAccountId($accountId),
                 $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId));
 
-            $this->context->setAccountsCache($cache);
+            if ($hasCache) {
+                $this->context->setAccountsCache($cache);
+            }
         }
 
         return $cache[$accountId];

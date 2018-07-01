@@ -27,7 +27,7 @@ namespace SP\Tests\Repositories;
 use DI\DependencyException;
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\ConstraintException;
-use SP\Repositories\Account\AccountFavoriteRepository;
+use SP\Repositories\Account\AccountToFavoriteRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -37,10 +37,10 @@ use function SP\Tests\setupContext;
  *
  * @package SP\Tests\Repositories
  */
-class AccountFavoriteRepositoryTest extends DatabaseTestCase
+class AccountToFavoriteRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var AccountFavoriteRepository
+     * @var AccountToFavoriteRepository
      */
     private static $repository;
 
@@ -57,7 +57,7 @@ class AccountFavoriteRepositoryTest extends DatabaseTestCase
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$repository = $dic->get(AccountFavoriteRepository::class);
+        self::$repository = $dic->get(AccountToFavoriteRepository::class);
     }
 
     /**
@@ -113,6 +113,6 @@ class AccountFavoriteRepositoryTest extends DatabaseTestCase
      */
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_favorite.xml');
+        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountFavorite.xml');
     }
 }

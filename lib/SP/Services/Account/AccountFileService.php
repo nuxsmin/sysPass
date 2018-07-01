@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountFileRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\QueryResult;
@@ -48,19 +49,11 @@ class AccountFileService extends Service
     protected $accountFileRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function initialize()
-    {
-        $this->accountFileRepository = $this->dic->get(AccountFileRepository::class);
-    }
-
-    /**
      * Creates an item
      *
      * @param FileData $itemData
-     * @return mixed
+     *
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -85,7 +78,7 @@ class AccountFileService extends Service
      */
     public function getInfoById($id)
     {
-        return $this->accountFileRepository->getInfoById($id);
+        return $this->accountFileRepository->getInfoById($id)->getData();
     }
 
     /**
@@ -99,7 +92,7 @@ class AccountFileService extends Service
      */
     public function getById($id)
     {
-        return $this->accountFileRepository->getById($id);
+        return $this->accountFileRepository->getById($id)->getData();
     }
 
     /**
@@ -111,7 +104,7 @@ class AccountFileService extends Service
      */
     public function getAll()
     {
-        return $this->accountFileRepository->getAll();
+        return $this->accountFileRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -119,19 +112,20 @@ class AccountFileService extends Service
      *
      * @param array $ids
      *
-     * @return array
+     * @return FileExtData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
-        return $this->accountFileRepository->getByIdBatch($ids);
+        return $this->accountFileRepository->getByIdBatch($ids)->getDataAsArray();
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -150,14 +144,16 @@ class AccountFileService extends Service
      * Deletes an item
      *
      * @param $id
+     *
      * @return AccountFileService
-     * @throws SPException
-     * @throws ServiceException
+     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
         if ($this->accountFileRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Archivo no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Archivo no encontrado'));
         }
 
         return $this;
@@ -188,6 +184,15 @@ class AccountFileService extends Service
      */
     public function getByAccountId($id)
     {
-        return $this->accountFileRepository->getByAccountId($id);
+        return $this->accountFileRepository->getByAccountId($id)->getDataAsArray();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->accountFileRepository = $this->dic->get(AccountFileRepository::class);
     }
 }

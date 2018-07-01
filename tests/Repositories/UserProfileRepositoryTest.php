@@ -212,8 +212,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $this->assertEquals('Demo', $profile->getName());
         $this->assertNotEmpty($profile->getProfile());
 
-        $profile = self::$repository->getById(4);
-        $this->assertCount(0, $profile);
+        $this->assertNull(self::$repository->getById(4));
     }
 
     /**

@@ -30,6 +30,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountPassData;
+use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -104,13 +105,13 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
+     * @param AccountHistoryCreateDto $dto
      *
      * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create($itemData)
+    public function create($dto)
     {
         $queryData = new QueryData();
         $query = /** @lang SQL */
@@ -161,10 +162,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             ?,?,? FROM Account WHERE id = ?';
 
         $queryData->setQuery($query);
-        $queryData->addParam($itemData['isModify']);
-        $queryData->addParam($itemData['isDelete']);
-        $queryData->addParam($itemData['masterPassHash']);
-        $queryData->addParam($itemData['id']);
+        $queryData->addParam((int)$dto->isModify());
+        $queryData->addParam((int)$dto->isDelete());
+        $queryData->addParam($dto->getMasterPassHash());
+        $queryData->addParam($dto->getAccountId());
         $queryData->setOnErrorMessage(__u('Error al actualizar el historial'));
 
         return $this->db->doQuery($queryData)->getLastId();

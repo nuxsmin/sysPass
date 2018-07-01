@@ -72,9 +72,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $category = self::$repository->getByName('Prueba');
-
-        $this->assertCount(0, $category);
+        $this->assertNull(self::$repository->getByName('Prueba'));
 
         $category = self::$repository->getByName('Web');
 
@@ -133,9 +131,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $category = self::$repository->getById(10);
-
-        $this->assertCount(0, $category);
+        $this->assertNull(self::$repository->getById(10));
 
         $category = self::$repository->getById(1);
 

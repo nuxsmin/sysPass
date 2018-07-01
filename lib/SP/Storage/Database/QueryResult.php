@@ -34,7 +34,7 @@ class QueryResult
     /**
      * @var array
      */
-    private $data = [];
+    private $data;
     /**
      * @var int
      */
@@ -70,6 +70,23 @@ class QueryResult
     }
 
     /**
+     * @param array $data
+     * @param null  $totalNumRows
+     *
+     * @return QueryResult
+     */
+    public static function fromResults(array $data, $totalNumRows = null)
+    {
+        $result = new self($data);
+
+        if ($totalNumRows !== null) {
+            $result->totalNumRows = $totalNumRows;
+        }
+
+        return $result;
+    }
+
+    /**
      * @return mixed
      */
     public function getData()
@@ -79,7 +96,7 @@ class QueryResult
             return $this->data[0];
         }
 
-        return $this->data;
+        return null;
     }
 
     /**
@@ -89,7 +106,7 @@ class QueryResult
      */
     public function getDataAsArray(): array
     {
-        return $this->data;
+        return (array)$this->data;
     }
 
     /**
@@ -179,5 +196,4 @@ class QueryResult
 
         return $this;
     }
-
 }

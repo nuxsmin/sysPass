@@ -174,9 +174,9 @@ class Util
         $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
         if (!Checks::curlIsAvailable()) {
-            $Log = LogUtil::extensionNotLoaded('CURL', __FUNCTION__);
+            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
 
-            throw new SPException($Log->getDescription(), SPException::WARNING);
+            throw new SPException(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
         }
 
         $ch = curl_init($url);

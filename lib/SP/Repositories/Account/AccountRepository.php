@@ -641,15 +641,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryJoins = new QueryJoin();
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
-            $queryJoins->addJoin('INNER JOIN AccountToFavorite AF ON (AF.accountId = Account.id AND AF.userId = ?)', [$this->context->getUserData()->getId()]);
+            $queryJoins->addJoin('INNER JOIN AccountToFavorite ON (AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = ?)', [$this->context->getUserData()->getId()]);
         }
 
         if ($accountSearchFilter->hasTags()) {
-            $queryJoins->addJoin('INNER JOIN AccountToTag AT ON AT.accountId = Account.id');
-            $queryFilters->addFilter('AT.tagId IN (' . $this->getParamsFromArray($accountSearchFilter->getTagsId()) . ')', $accountSearchFilter->getTagsId());
+            $queryJoins->addJoin('INNER JOIN AccountToTag ON AccountToTag.accountId = Account.id');
+            $queryFilters->addFilter('AccountToTag.tagId IN (' . $this->getParamsFromArray($accountSearchFilter->getTagsId()) . ')', $accountSearchFilter->getTagsId());
 
             if (QueryCondition::CONDITION_AND === $accountSearchFilter->getFilterOperator()) {
-                $queryData->setGroupBy('Account.id HAVING COUNT(DISTINCT AT.tagId) = ' . count($accountSearchFilter->getTagsId()));
+                $queryData->setGroupBy('Account.id HAVING COUNT(DISTINCT AccountToTag.tagId) = ' . count($accountSearchFilter->getTagsId()));
             }
         }
 

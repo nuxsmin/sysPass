@@ -68,12 +68,12 @@ class FileUtil
     }
 
     /**
-     * @param FileData $FileData
+     * @param FileData $fileData
      *
      * @return bool
      */
-    public static function isImage(FileData $FileData)
+    public static function isImage(FileData $fileData)
     {
-        return in_array(mb_strtoupper($FileData->getExtension()), self::$imageExtensions, true);
+        return in_array(mb_strtoupper($fileData->getExtension()), self::$imageExtensions, true);
     }
 }

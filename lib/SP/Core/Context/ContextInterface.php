@@ -25,6 +25,7 @@
 namespace SP\Core\Context;
 
 use SP\Config\ConfigData;
+use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
@@ -109,7 +110,6 @@ interface ContextInterface
 
     /**
      * @param $sk
-     * @return mixed
      */
     public function setSecurityKey($sk);
 
@@ -154,4 +154,9 @@ interface ContextInterface
      * @return bool
      */
     public function resetAppStatus();
+
+    /**
+     * @return AccountCache[]|null
+     */
+    public function getAccountsCache();
 }

@@ -26,6 +26,7 @@ namespace SP\Tests\Repositories;
 
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Services\Account\AccountPasswordRequest;
@@ -142,13 +143,16 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $result = self::$repository->create(['id' => 2, 'isModify' => 1, 'isDelete' => 0, 'masterPassHash' => Util::generateRandomBytes()]);
+        $result = self::$repository->create(new AccountHistoryCreateDto(2, true, false, Util::generateRandomBytes()));
         $this->assertEquals(8, $result);
 
-        $result = self::$repository->create(['id' => 10, 'isModify' => 1, 'isDelete' => 0, 'masterPassHash' => Util::generateRandomBytes()]);
+        $result = self::$repository->create(new AccountHistoryCreateDto(2, true, true, Util::generateRandomBytes()));
+        $this->assertEquals(9, $result);
+
+        $result = self::$repository->create(new AccountHistoryCreateDto(10, true, false, Util::generateRandomBytes()));
         $this->assertEquals(0, $result);
 
-        $this->assertEquals(6, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(7, $this->conn->getRowCount('AccountHistory'));
     }
 
     /**

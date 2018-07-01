@@ -105,8 +105,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $this->assertEquals('Demo', $group->getName());
         $this->assertEmpty($group->getDescription());
 
-        $group = self::$repository->getByName('Prueba');
-        $this->assertCount(0, $group);
+        $this->assertNull(self::$repository->getByName('Prueba'));
     }
 
     /**
@@ -164,8 +163,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $this->assertEquals('Demo', $group->getName());
         $this->assertEmpty($group->getDescription());
 
-        $group = self::$repository->getById(4);
-        $this->assertCount(0, $group);
+        $this->assertNull(self::$repository->getById(4));
     }
 
     /**

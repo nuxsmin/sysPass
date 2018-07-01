@@ -22,35 +22,35 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Repositories\Account;
+namespace SP\Services\Account;
 
-use SP\Repositories\Repository;
-use SP\Storage\Database\QueryData;
+use SP\Repositories\Account\AccountToFavoriteRepository;
+use SP\Services\Service;
 
 /**
- * Class AccountFavoriteRepository
+ * Class AccountFavoriteService
  *
- * @package SP\Repositories\Account
+ * @package SP\Services\Account
  */
-class AccountFavoriteRepository extends Repository
+class AccountToFavoriteService extends Service
 {
+    /**
+     * @var AccountToFavoriteRepository
+     */
+    protected $accountFavoriteRepository;
+
     /**
      * Obtener un array con los Ids de cuentas favoritas
      *
      * @param $id int El Id de usuario
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return array
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getForUserId($id)
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT accountId, userId FROM AccountToFavorite WHERE userId = ?');
-        $queryData->addParam($id);
-        $queryData->setUseKeyPair(true);
-
-        return $this->db->doQuery($queryData);
+        return $this->accountFavoriteRepository->getForUserId($id)->getDataAsArray();
     }
 
     /**
@@ -59,18 +59,13 @@ class AccountFavoriteRepository extends Repository
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
      *
-     * @return int
+     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function add($accountId, $userId)
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO AccountToFavorite SET accountId = ?, userId = ?');
-        $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al añadir favorito'));
-
-        return $this->db->doQuery($queryData)->getLastId();
+        return $this->accountFavoriteRepository->add($accountId, $userId);
     }
 
     /**
@@ -85,11 +80,15 @@ class AccountFavoriteRepository extends Repository
      */
     public function delete($accountId, $userId)
     {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?');
-        $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al eliminar favorito'));
+        return $this->accountFavoriteRepository->delete($accountId, $userId);
+    }
 
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->accountFavoriteRepository = $this->dic->get(AccountToFavoriteRepository::class);
     }
 }

@@ -359,7 +359,9 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('clientName');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('type');
-        $GridData->addDataRowSource('size');
+        $GridData->addDataRowSource('size', false, function ($value) {
+            return sprintf('%.2f KB', $value / 1000);
+        });
         $GridData->setData($queryResult);
 
         // Grid

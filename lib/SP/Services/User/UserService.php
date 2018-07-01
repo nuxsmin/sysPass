@@ -32,6 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\DuplicatedItemException;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -153,7 +154,13 @@ class UserService extends Service
      */
     public function getByLogin($login)
     {
-        return $this->userRepository->getByLogin($login);
+        $result = $this->userRepository->getByLogin($login);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**

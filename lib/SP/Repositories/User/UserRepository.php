@@ -513,9 +513,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * @param $login string
      *
-     * @return UserData
+     * @return QueryResult
      * @throws ConstraintException
-     * @throws NoSuchItemException
      * @throws QueryException
      */
     public function getByLogin($login)
@@ -556,13 +555,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$login, $login]);
         $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
 
-        $result = $this->db->doSelect($queryData);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
-        }
-
-        return $result->getData();
+        return$this->db->doSelect($queryData);
     }
 
     /**

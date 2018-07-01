@@ -24,6 +24,7 @@
 
 namespace SP\Util;
 
+use SP\Core\Exceptions\InvalidImageException;
 use SP\Log\LogUtil;
 
 defined('APP_ROOT') || die();
@@ -39,13 +40,13 @@ class ImageUtil
      * Convertir un texto a imagen
      *
      * @param $text string El texto a convertir
+     *
      * @return bool|string
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function convertText($text)
     {
         if (!Checks::gdIsAvailable()) {
-            LogUtil::extensionNotLoaded('GD');
+            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
 
             return false;
         }
@@ -89,18 +90,21 @@ class ImageUtil
      * Crear miniatura de una imagen
      *
      * @param $image string La imagen a redimensionar
+     *
      * @return bool|string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws InvalidImageException
      */
     public static function createThumbnail($image)
     {
         if (!Checks::gdIsAvailable()) {
-            LogUtil::extensionNotLoaded('GD', __FUNCTION__);
+            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
 
             return false;
         }
 
-        $im = imagecreatefromstring($image);
+        if (($im = @imagecreatefromstring($image)) === false) {
+            throw new InvalidImageException(__u('Imagen no válida'));
+        }
 
         $width = imagesx($im);
         $height = imagesy($im);

@@ -127,7 +127,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $this->assertEquals('1234', $clearPassword);
 
         // Comprobar que se devuelve un array vacío
-        $this->assertCount(0, self::$repository->getPasswordForId(10));
+        $this->assertNull(self::$repository->getPasswordForId(10));
     }
 
     /**
