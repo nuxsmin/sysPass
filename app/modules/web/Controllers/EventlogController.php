@@ -76,6 +76,8 @@ class EventlogController extends ControllerBase
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
+        $itemsGridHelper->setQueryTimeStart(microtime(true));
+
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getEventLogGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
