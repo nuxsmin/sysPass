@@ -229,7 +229,7 @@ class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('encryption');
 
-        $numAccounts = $this->dic->get(AccountService::class)->getTotalNumAccounts()->num;
+        $numAccounts = $this->dic->get(AccountService::class)->getTotalNumAccounts();
         $template->assign('numAccounts', $numAccounts);
 
         if ($numAccounts > 500) {

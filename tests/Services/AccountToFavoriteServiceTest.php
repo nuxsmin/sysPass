@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Services;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Services\Account\AccountToFavoriteService;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -36,7 +35,7 @@ use function SP\Tests\setupContext;
  *
  * @package SP\Tests\Services
  */
-class AccountFavoriteServiceTest extends DatabaseTestCase
+class AccountToFavoriteServiceTest extends DatabaseTestCase
 {
     /**
      * @var AccountToFavoriteService
@@ -51,6 +50,8 @@ class AccountFavoriteServiceTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountFavorite.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -99,15 +100,5 @@ class AccountFavoriteServiceTest extends DatabaseTestCase
         self::$service->add(3, 1);
 
         self::$service->add(1, 3);
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountFavorite.xml');
     }
 }

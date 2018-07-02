@@ -175,6 +175,8 @@ class AccountToUserRepository extends Repository
      * @return ItemData[] con los id de usuarios de la cuenta
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     *
+     * @todo change returned type
      */
     public function getUsersByAccountId($id)
     {

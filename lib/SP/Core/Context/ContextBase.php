@@ -40,9 +40,60 @@ abstract class ContextBase implements ContextInterface
      * @var ContextCollection
      */
     private $context;
+    /**
+     * @var ContextCollection
+     */
+    private $trasient;
+
+    /**
+     * ContextBase constructor.
+     *
+     * @param ContextCollection $trasient
+     */
+    public function __construct(ContextCollection $trasient)
+    {
+        $this->trasient = new ContextCollection();
+    }
+
+    /**
+     * Sets an arbitrary key in the trasient collection.
+     * This key is not bound to any known method or type
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     * @throws ContextException
+     */
+    public function setTrasientKey(string $key, $value)
+    {
+        // If the key starts with "_" it's a protected key, thus cannot be overwritten
+        if (strpos($key, '_') === 0 && $this->trasient->exists($key)) {
+            throw new ContextException(__u('No es posible cambiar el valor de la clave'));
+        }
+
+        $this->trasient->set($key, $value);
+
+        return $value;
+    }
+
+    /**
+     * Gets an arbitrary key from the trasient collection.
+     * This key is not bound to any known method or type
+     *
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getTrasientKey(string $key, $default = null)
+    {
+        return is_numeric($default) ? (int)$this->trasient->get($key, $default) : $this->trasient->get($key, $default);
+    }
 
     /**
      * @param $context
+     *
      * @throws ContextException
      */
     final protected function setContextReference(&$context)
@@ -65,6 +116,7 @@ abstract class ContextBase implements ContextInterface
 
     /**
      * @param ContextCollection $contextCollection
+     *
      * @throws ContextException
      */
     final protected function setContext(ContextCollection $contextCollection)
@@ -81,35 +133,15 @@ abstract class ContextBase implements ContextInterface
      *
      * @param string $key
      * @param mixed  $default
-     * @return mixed
-     * @throws ContextException
-     */
-    protected function getContextKey($key, $default = null)
-    {
-        $this->checkContext();
-
-        if (isset($this->context[$key])) {
-            return is_numeric($default) ? (int)$this->context[$key] : $this->context[$key];
-        }
-
-        return $default;
-    }
-
-    /**
-     * Establecer una variable de contexto
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
      * @return mixed
      * @throws ContextException
      */
-    protected function setContextKey($key, $value)
+    protected function getContextKey(string $key, $default = null)
     {
         $this->checkContext();
 
-        $this->context[$key] = $value;
-
-        return $value;
+        return is_numeric($default) ? (int)$this->context->get($key, $default) : $this->context->get($key, $default);
     }
 
     /**
@@ -120,5 +152,23 @@ abstract class ContextBase implements ContextInterface
         if ($this->context === null) {
             throw new ContextException(__u('Contexto no inicializado'));
         }
+    }
+
+    /**
+     * Establecer una variable de contexto
+     *
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
+     *
+     * @return mixed
+     * @throws ContextException
+     */
+    protected function setContextKey(string $key, $value)
+    {
+        $this->checkContext();
+
+        $this->context->set($key, $value);
+
+        return $value;
     }
 }

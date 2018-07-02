@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Repositories;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
@@ -55,6 +54,8 @@ class EventlogRepositoryTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_eventlog.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -149,15 +150,5 @@ class EventlogRepositoryTest extends DatabaseTestCase
         $this->expectException(ConstraintException::class);
 
         self::$repository->create(new EventlogData());
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_eventlog.xml');
     }
 }

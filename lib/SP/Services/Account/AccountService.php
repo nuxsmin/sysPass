@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountUtil;
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
@@ -42,6 +43,7 @@ use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -73,18 +75,6 @@ class AccountService extends Service implements AccountServiceInterface
      * @var AccountToTagRepository
      */
     protected $accountToTagRepository;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function initialize()
-    {
-        $this->accountRepository = $this->dic->get(AccountRepository::class);
-        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
-        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
-        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
-    }
 
     /**
      * @param int $id
@@ -122,7 +112,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse)
     {
-        $accountDetailsResponse->setUserGroups($this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId()));
+        $accountDetailsResponse->setUserGroups($this->accountToUserGroupRepository->getUserGroupsByAccountId($accountDetailsResponse->getId())->getDataAsArray());
 
         return $this;
     }
@@ -136,7 +126,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function withTagsById(AccountDetailsResponse $accountDetailsResponse)
     {
-        $accountDetailsResponse->setTags($this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId()));
+        $accountDetailsResponse->setTags($this->accountToTagRepository->getTagsByAccountId($accountDetailsResponse->getId())->getDataAsArray());
 
         return $this;
     }
@@ -171,10 +161,17 @@ class AccountService extends Service implements AccountServiceInterface
      * @return \SP\DataModel\AccountPassData
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws NoSuchItemException
      */
     public function getPasswordForId($id)
     {
-        return $this->accountRepository->getPasswordForId($id);
+        $result = $this->accountRepository->getPasswordForId($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Cuenta no encontrada'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -216,18 +213,28 @@ class AccountService extends Service implements AccountServiceInterface
     public function getPasswordEncrypted($pass, $masterPass = null)
     {
         try {
-            $masterPass = $masterPass ?: CryptSession::getSessionKey($this->context);
+            if ($masterPass === null) {
+                if ($this->context instanceof SessionContext) {
+                    $masterPass = CryptSession::getSessionKey($this->context);
+                } else {
+                    $masterPass = $this->context->getTrasientKey('_masterpass');
+                }
+            }
+
+            if (empty($masterPass)) {
+                throw new ServiceException(__u('Clave maestra no establecida'));
+            }
 
             $out['key'] = Crypt::makeSecuredKey($masterPass);
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
 
-            if (strlen($pass) > 1000 || strlen($out['key']) > 1000) {
-                throw new ServiceException(__u('Error interno'), SPException::ERROR);
+            if (strlen($out['pass']) > 1000 || strlen($out['key']) > 1000) {
+                throw new ServiceException(__u('Error interno'));
             }
 
             return $out;
         } catch (CryptoException $e) {
-            throw new ServiceException(__u('Error interno'), SPException::ERROR);
+            throw new ServiceException(__u('Error interno'));
         }
     }
 
@@ -253,7 +260,7 @@ class AccountService extends Service implements AccountServiceInterface
                 }
 
                 if (is_array($accountRequest->usersEdit) && !empty($accountRequest->usersEdit)) {
-                    $this->accountToUserRepository->add($accountRequest);
+                    $this->accountToUserRepository->addEdit($accountRequest);
                 }
             }
 
@@ -363,7 +370,7 @@ class AccountService extends Service implements AccountServiceInterface
                 }
             }
         } catch (SPException $e) {
-            debugLog($e->getMessage());
+            processException($e);
         }
     }
 
@@ -392,16 +399,18 @@ class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
+     * Updates an already encrypted password data from a master password changing action
+     *
      * @param AccountPasswordRequest $accountRequest
      *
-     * @throws SPException
+     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
      */
     public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
     {
-        $this->accountRepository->updatePassword($accountRequest);
+        return $this->accountRepository->updatePassword($accountRequest);
     }
-
 
     /**
      * @param $historyId
@@ -424,13 +433,14 @@ class AccountService extends Service implements AccountServiceInterface
      * @param $id
      *
      * @return AccountService
-     * @throws SPException
-     * @throws ServiceException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function delete($id)
     {
         if ($this->accountRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Cuenta no encontrada'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Cuenta no encontrada'));
         }
 
         return $this;
@@ -446,7 +456,7 @@ class AccountService extends Service implements AccountServiceInterface
     public function deleteByIdBatch(array $ids)
     {
         if ($this->accountRepository->deleteByIdBatch($ids) === 0) {
-            throw new ServiceException(__u('Error al eliminar las cuentas'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error al eliminar las cuentas'));
         }
 
         return $this;
@@ -531,7 +541,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getTotalNumAccounts()
     {
-        return $this->accountRepository->getTotalNumAccounts();
+        return $this->accountRepository->getTotalNumAccounts()->num;
     }
 
     /**
@@ -546,7 +556,13 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getDataForLink($id)
     {
-        return $this->accountRepository->getDataForLink($id);
+        $result = $this->accountRepository->getDataForLink($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('La cuenta no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -574,5 +590,17 @@ class AccountService extends Service implements AccountServiceInterface
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
         return $this->accountRepository->getByFilter($accountSearchFilter);
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->accountRepository = $this->dic->get(AccountRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
     }
 }

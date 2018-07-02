@@ -81,6 +81,7 @@ function setupContext()
     $context = $dic->get(ContextInterface::class);
     $context->initialize();
     $context->setConfig(new ConfigData());
+    $context->setTrasientKey('_masterpass', '12345678900');
 
     $userData = new UserLoginResponse();
     $userData->setId(1);

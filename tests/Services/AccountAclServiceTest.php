@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Services;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Account\AccountAcl;
 use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextInterface;
@@ -86,6 +85,8 @@ class AccountAclServiceTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountAcl.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -780,15 +781,5 @@ class AccountAclServiceTest extends DatabaseTestCase
         $service = self::$service->call($this);
 
         $this->assertNull($service->getAclFromCache(1, 10));
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountAcl.xml');
     }
 }

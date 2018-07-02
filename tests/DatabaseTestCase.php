@@ -47,6 +47,10 @@ abstract class DatabaseTestCase extends TestCase
      */
     protected static $databaseConnectionData;
     /**
+     * @var string
+     */
+    protected static $dataset = 'syspass.xml';
+    /**
      * @var \PDO
      */
     private static $pdo;
@@ -81,6 +85,6 @@ abstract class DatabaseTestCase extends TestCase
      */
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.xml');
+        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . self::$dataset);
     }
 }

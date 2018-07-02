@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Repositories;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
@@ -55,6 +54,8 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountHistory.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -236,15 +237,5 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
 
         $request->id = 10;
         $this->assertEquals(0, self::$repository->updatePassword($request));
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountHistory.xml');
     }
 }

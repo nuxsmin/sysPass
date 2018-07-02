@@ -44,7 +44,7 @@ class AccountToUserGroupRepository extends Repository
      *
      * @param int $id con el Id de la cuenta
      *
-     * @return ItemData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -62,7 +62,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -70,7 +70,7 @@ class AccountToUserGroupRepository extends Repository
      *
      * @param $id
      *
-     * @return ItemData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -88,7 +88,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -125,7 +125,7 @@ class AccountToUserGroupRepository extends Repository
     /**
      * @param $id int
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -168,7 +168,7 @@ class AccountToUserGroupRepository extends Repository
     /**
      * @param AccountRequest $accountRequest
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -182,7 +182,7 @@ class AccountToUserGroupRepository extends Repository
     /**
      * @param $id int
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -199,7 +199,7 @@ class AccountToUserGroupRepository extends Repository
     /**
      * @param AccountRequest $accountRequest
      *
-     * @return int Last ID inserted
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

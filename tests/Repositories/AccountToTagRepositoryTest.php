@@ -71,8 +71,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      */
     public function testGetTagsByAccountId()
     {
-        $this->assertCount(1, self::$repository->getTagsByAccountId(1));
-        $this->assertCount(0, self::$repository->getTagsByAccountId(10));
+        $this->assertEquals(1, self::$repository->getTagsByAccountId(1)->getNumRows());
+        $this->assertEquals(0, self::$repository->getTagsByAccountId(10)->getNumRows());
     }
 
     /**
@@ -90,12 +90,13 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(2, self::$repository->add($accountRequest));
 
-        $tags = self::$repository->getTagsByAccountId($accountRequest->id);
+        $result = self::$repository->getTagsByAccountId($accountRequest->id);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(3, $tags);
-        $this->assertInstanceOf(ItemData::class, $tags[0]);
-        $this->assertInstanceOf(ItemData::class, $tags[1]);
-        $this->assertInstanceOf(ItemData::class, $tags[2]);
+        $this->assertCount(3, $result);
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
+        $this->assertInstanceOf(ItemData::class, $data[2]);
 
         $this->expectException(ConstraintException::class);
 
@@ -119,7 +120,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->deleteByAccountId(1));
 
-        $this->assertCount(0, self::$repository->getTagsByAccountId(1));
+        $this->assertEquals(0, self::$repository->getTagsByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteByAccountId(10));
     }
@@ -139,10 +140,11 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
 
         self::$repository->update($accountRequest);
 
-        $tags = self::$repository->getTagsByAccountId($accountRequest->id);
+        $result = self::$repository->getTagsByAccountId($accountRequest->id);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $tags);
-        $this->assertInstanceOf(ItemData::class, $tags[0]);
-        $this->assertInstanceOf(ItemData::class, $tags[1]);
+        $this->assertEquals(2, $result);
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
     }
 }

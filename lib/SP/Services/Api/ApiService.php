@@ -64,15 +64,12 @@ class ApiService extends Service
      * @var AuthTokenData
      */
     protected $authTokenData;
-    /**
-     * @var string
-     */
-    protected $masterPass;
 
     /**
      * Sets up API
      *
      * @param $actionId
+     *
      * @throws ServiceException
      * @throws \Exception
      */
@@ -97,7 +94,7 @@ class ApiService extends Service
         if ($actionId === ActionsInterface::ACCOUNT_VIEW_PASS
             || $actionId === ActionsInterface::ACCOUNT_CREATE
         ) {
-            $this->masterPass = $this->getMasterPassFromVault();
+            $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
         }
     }
 
@@ -124,8 +121,9 @@ class ApiService extends Service
      * Devolver el valor de un parámetro
      *
      * @param string $param
-     * @param bool $required Si es requerido
-     * @param mixed $default Valor por defecto
+     * @param bool   $required Si es requerido
+     * @param mixed  $default  Valor por defecto
+     *
      * @return int|string
      * @throws ServiceException
      */
@@ -149,6 +147,7 @@ class ApiService extends Service
      * Devuelve la ayuda para una acción
      *
      * @param string $action
+     *
      * @return array
      */
     public function getHelp($action)
@@ -329,8 +328,9 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool $required
-     * @param null $default
+     * @param bool   $required
+     * @param null   $default
+     *
      * @return int|string
      * @throws ServiceException
      */
@@ -341,8 +341,9 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool $required
-     * @param null $default
+     * @param bool   $required
+     * @param null   $default
+     *
      * @return int|string
      * @throws ServiceException
      */
@@ -353,8 +354,9 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool $required
-     * @param null $default
+     * @param bool   $required
+     * @param null   $default
+     *
      * @return int|string
      * @throws ServiceException
      */
@@ -365,8 +367,9 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool $required
-     * @param null $default
+     * @param bool   $required
+     * @param null   $default
+     *
      * @return int|string
      * @throws ServiceException
      */
@@ -380,11 +383,12 @@ class ApiService extends Service
      */
     public function getMasterPass()
     {
-        return $this->masterPass;
+        return $this->context->getTrasientKey('_masterpass');
     }
 
     /**
      * @param ApiRequest $apiRequest
+     *
      * @return ApiService
      */
     public function setApiRequest(ApiRequest $apiRequest)

@@ -63,6 +63,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
+        self::$dataset = 'syspass_account.xml';
+        
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -120,14 +122,14 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar que la modificación de la clave es correcta
         $this->assertEquals(1, self::$repository->editPassword($accountRequest));
 
-        $accountPassData = self::$repository->getPasswordForId(2);
+        $accountPassData = self::$repository->getPasswordForId(2)->getData();
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente
         $this->assertEquals('1234', $clearPassword);
 
-        // Comprobar que se devuelve un array vacío
-        $this->assertNull(self::$repository->getPasswordForId(10));
+        // Comprobar que no devuelve resultados
+        $this->assertEquals(0, self::$repository->getPasswordForId(10)->getNumRows());
     }
 
     /**
@@ -311,7 +313,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar que la modificación de la clave es correcta
         $this->assertTrue(self::$repository->updatePassword($accountRequest));
 
-        $accountPassData = self::$repository->getPasswordForId(2);
+        $accountPassData = self::$repository->getPasswordForId(2)->getData();
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente

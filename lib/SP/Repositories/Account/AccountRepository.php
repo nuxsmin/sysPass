@@ -80,7 +80,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * @param $id
      *
-     * @return AccountPassData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -97,7 +97,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setWhere($queryFilter->getFilters());
         $queryData->setParams($queryFilter->getParams());
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -557,8 +557,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id
      *
-     * @return AccountExtData
-     * @throws NoSuchItemException
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -584,13 +583,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
 
-        $result = $this->db->doSelect($queryData, true);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
-        }
-
-        return $result->getData();
+        return $this->db->doSelect($queryData, true);
     }
 
     /**

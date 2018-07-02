@@ -25,7 +25,6 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Repositories\Account\AccountToFavoriteRepository;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -52,6 +51,8 @@ class AccountToFavoriteRepositoryTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountFavorite.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -104,15 +105,5 @@ class AccountToFavoriteRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->delete(1, 3));
         $this->assertEquals(0, self::$repository->delete(10, 1));
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountFavorite.xml');
     }
 }

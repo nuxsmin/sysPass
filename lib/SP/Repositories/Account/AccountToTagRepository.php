@@ -44,7 +44,7 @@ class AccountToTagRepository extends Repository
      *
      * @param int $id
      *
-     * @return ItemData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -62,7 +62,7 @@ class AccountToTagRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**

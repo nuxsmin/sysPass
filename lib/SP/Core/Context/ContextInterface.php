@@ -159,4 +159,27 @@ interface ContextInterface
      * @return AccountCache[]|null
      */
     public function getAccountsCache();
+
+    /**
+     * Sets an arbitrary key in the trasient collection.
+     * This key is not bound to any known method or type
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     * @throws ContextException
+     */
+    public function setTrasientKey(string $key, $value);
+
+    /**
+     * Gets an arbitrary key from the trasient collection.
+     * This key is not bound to any known method or type
+     *
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getTrasientKey(string $key, $default = null);
 }

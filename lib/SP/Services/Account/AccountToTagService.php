@@ -49,7 +49,7 @@ class AccountToTagService extends Service
      */
     public function getTagsByAccountId($id)
     {
-        return $this->accountToTagRepository->getTagsByAccountId($id);
+        return $this->accountToTagRepository->getTagsByAccountId($id)->getDataAsArray();
     }
 
     /**

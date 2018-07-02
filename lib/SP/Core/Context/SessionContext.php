@@ -91,7 +91,7 @@ class SessionContext extends ContextBase
      *
      * @return mixed
      */
-    protected function getContextKey($key, $default = null)
+    protected function getContextKey(string $key, $default = null)
     {
         try {
             return parent::getContextKey($key, $default);
@@ -120,7 +120,7 @@ class SessionContext extends ContextBase
      *
      * @return mixed
      */
-    protected function setContextKey($key, $value)
+    protected function setContextKey(string $key, $value)
     {
         try {
             if (self::$isLocked) {

@@ -138,7 +138,7 @@ class AccountHistoryService extends Service
      */
     public function getUserGroupsByAccountId($id)
     {
-        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id);
+        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray();
     }
 
     /**

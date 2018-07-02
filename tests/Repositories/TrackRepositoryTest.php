@@ -25,7 +25,6 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\DataModel\TrackData;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
@@ -54,6 +53,8 @@ class TrackRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
+        self::$dataset = 'syspass_track.xml';
+        
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -173,15 +174,5 @@ class TrackRepositoryTest extends DatabaseTestCase
         $result = self::$repository->getTracksForClientFromTime($data);
 
         $this->assertEquals(0, $result->getNumRows());
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_track.xml');
     }
 }

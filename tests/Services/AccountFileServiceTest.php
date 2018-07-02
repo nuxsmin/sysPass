@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Services;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\InvalidImageException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
@@ -56,6 +55,8 @@ class AccountFileServiceTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountFile.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -321,15 +322,5 @@ class AccountFileServiceTest extends DatabaseTestCase
         $this->expectException(ServiceException::class);
 
         self::$service->deleteByIdBatch([10]);
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountFile.xml');
     }
 }

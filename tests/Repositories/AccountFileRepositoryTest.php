@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Repositories;
 
-use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -53,6 +52,8 @@ class AccountFileRepositoryTest extends DatabaseTestCase
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
+
+        self::$dataset = 'syspass_accountFile.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -301,15 +302,5 @@ class AccountFileRepositoryTest extends DatabaseTestCase
 
         $result = self::$repository->getByIdBatch([]);
         $this->assertEquals(0, $result->getNumRows());
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass_accountFile.xml');
     }
 }

@@ -173,7 +173,7 @@ class AccountSearchService extends Service
                 $accountsSearchItem->setUserGroups($cache->getUserGroups());
             }
 
-            $accountsSearchItem->setTags($this->accountToTagRepository->getTagsByAccountId($accountSearchData->getId()));
+            $accountsSearchItem->setTags($this->accountToTagRepository->getTagsByAccountId($accountSearchData->getId())->getDataAsArray());
             $accountsSearchItem->setTextMaxLength($maxTextLength);
             $accountsSearchItem->setColor($this->pickAccountColor($accountSearchData->getClientId()));
             $accountsSearchItem->setLink($accountLinkEnabled);
@@ -342,7 +342,7 @@ class AccountSearchService extends Service
             $cache[$accountId] = new AccountCache(
                 $accountId,
                 $this->accountToUserRepository->getUsersByAccountId($accountId),
-                $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId));
+                $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray());
 
             if ($hasCache) {
                 $this->context->setAccountsCache($cache);

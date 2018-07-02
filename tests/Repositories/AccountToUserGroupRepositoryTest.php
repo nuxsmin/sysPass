@@ -71,43 +71,43 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      */
     public function testGetUserGroupsByAccountId()
     {
-        $userGroups = self::$repository->getUserGroupsByAccountId(1);
+        $result = self::$repository->getUserGroupsByAccountId(1);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(1, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertInstanceOf(ItemData::class, $data[0]);
 
-        $userGroupsView = array_filter($userGroups, function ($user) {
+        $userGroupsView = array_filter($data, function ($user) {
             return (int)$user->isEdit === 0;
         });
 
         $this->assertCount(0, $userGroupsView);
 
-        $userGroupsEdit = array_filter($userGroups, function ($user) {
+        $userGroupsEdit = array_filter($data, function ($user) {
             return (int)$user->isEdit === 1;
         });
 
         $this->assertCount(1, $userGroupsEdit);
 
-        $userGroups = self::$repository->getUserGroupsByAccountId(2);
+        $result = self::$repository->getUserGroupsByAccountId(2);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(1, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertInstanceOf(ItemData::class, $data[0]);
 
-        $userGroupsView = array_filter($userGroups, function ($user) {
+        $userGroupsView = array_filter($data, function ($user) {
             return (int)$user->isEdit === 0;
         });
 
         $this->assertCount(1, $userGroupsView);
 
-        $userGroupsEdit = array_filter($userGroups, function ($user) {
+        $userGroupsEdit = array_filter($data, function ($user) {
             return (int)$user->isEdit === 1;
         });
 
         $this->assertCount(0, $userGroupsEdit);
 
-        $userGroups = self::$repository->getUserGroupsByAccountId(3);
-
-        $this->assertCount(0, $userGroups);
+        $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(3)->getNumRows());
     }
 
     /**
@@ -125,15 +125,16 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(3, self::$repository->update($accountRequest));
 
-        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(3, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
-        $this->assertEquals(0, (int)$userGroups[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
-        $this->assertEquals(0, (int)$userGroups[1]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $userGroups[2]);
-        $this->assertEquals(0, (int)$userGroups[2]->isEdit);
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertEquals(0, (int)$data[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
+        $this->assertEquals(0, (int)$data[1]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $data[2]);
+        $this->assertEquals(0, (int)$data[2]->isEdit);
 
         $this->expectException(ConstraintException::class);
 
@@ -162,13 +163,14 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(3, self::$repository->updateEdit($accountRequest));
 
-        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
-        $this->assertEquals(1, (int)$userGroups[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
-        $this->assertEquals(1, (int)$userGroups[1]->isEdit);
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertEquals(1, (int)$data[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
+        $this->assertEquals(1, (int)$data[1]->isEdit);
 
         $this->expectException(ConstraintException::class);
 
@@ -194,7 +196,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     public function testDeleteByAccountId()
     {
         $this->assertEquals(1, self::$repository->deleteByAccountId(1));
-        $this->assertCount(0, self::$repository->getUserGroupsByAccountId(1));
+        $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteByAccountId(10));
 
@@ -216,12 +218,13 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         self::$repository->addEdit($accountRequest);
 
-        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(3, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
-        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
-        $this->assertInstanceOf(ItemData::class, $userGroups[2]);
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
+        $this->assertInstanceOf(ItemData::class, $data[2]);
 
         $this->expectException(ConstraintException::class);
 
@@ -283,7 +286,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     public function testDeleteEditByAccountId()
     {
         $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
-        $this->assertCount(0, self::$repository->getUserGroupsByAccountId(1));
+        $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
 
@@ -298,17 +301,11 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      */
     public function testGetUserGroupsByUserGroupId()
     {
-        $userGroups = self::$repository->getUserGroupsByUserGroupId(2);
+        $this->assertCount(2, self::$repository->getUserGroupsByUserGroupId(2)->getNumRows());
 
-        $this->assertCount(2, $userGroups);
+        $this->assertCount(0, self::$repository->getUserGroupsByUserGroupId(3)->getNumRows());
 
-        $userGroups = self::$repository->getUserGroupsByUserGroupId(3);
-
-        $this->assertCount(0, $userGroups);
-
-        $userGroups = self::$repository->getUserGroupsByUserGroupId(10);
-
-        $this->assertCount(0, $userGroups);
+        $this->assertCount(0, self::$repository->getUserGroupsByUserGroupId(10)->getNumRows());
     }
 
     /**
