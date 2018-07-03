@@ -41,7 +41,6 @@ use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryAssignment;
 use SP\Mvc\Model\QueryCondition;
 use SP\Mvc\Model\QueryJoin;
-use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -103,7 +102,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * @param QueryCondition $queryCondition
      *
-     * @return AccountPassData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -126,7 +125,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryCondition->getParams());
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -399,8 +398,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return AccountVData
-     * @throws NoSuchItemException
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -412,19 +410,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
 
-        $result = $this->db->doSelect($queryData);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
-        }
-
-        return $result->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return AccountData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -434,7 +426,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(AccountData::class);
         $queryData->setQuery('SELECT * FROM Account ORDER BY id');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -564,17 +556,18 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getDataForLink($id)
     {
         $query = /** @lang SQL */
-            'SELECT Account.name,
+            'SELECT Account.id, 
+            Account.name,
             Account.login,
             Account.pass,
             Account.key,
             Account.url,
             Account.notes,
-            C.name AS clientName,
-            C2.name AS categoryName
+            Client.name AS clientName,
+            Category.name AS categoryName
             FROM Account
-            INNER JOIN Client C ON Account.clientId = C.id
-            INNER JOIN Category C2 ON Account.categoryId = C2.id 
+            INNER JOIN Client ON Account.clientId = Client.id
+            INNER JOIN Category ON Account.categoryId = Category.id 
             WHERE Account.id = ? LIMIT 1';
 
         $queryData = new QueryData();
@@ -583,7 +576,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
 
-        return $this->db->doSelect($queryData, true);
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -672,7 +665,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * @param QueryCondition $queryFilter
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -689,29 +682,29 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * @param QueryCondition $queryFilter
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getLinked(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
-            'SELECT Account.id, Account.name, C.name AS clientName 
+            'SELECT Account.id, Account.name, Client.name AS clientName 
             FROM Account
-            INNER JOIN Client C ON Account.clientId = C.id 
-            WHERE ' . $queryFilter->getFilters() . ' ORDER  BY name';
+            INNER JOIN Client ON Account.clientId = Client.id 
+            WHERE ' . $queryFilter->getFilters() . ' ORDER  BY Account.name';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**

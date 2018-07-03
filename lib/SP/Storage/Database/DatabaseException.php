@@ -24,36 +24,14 @@
 
 namespace SP\Storage\Database;
 
+use SP\Core\Exceptions\SPException;
+
 /**
- * Interface DBStorageInterface
+ * Class DatabaseException
  *
- * @package SP\Storage
+ * @package SP\Storage\Database
  */
-interface DBStorageInterface
+class DatabaseException extends SPException
 {
-    /**
-     * Obtener una conexión PDO
-     *
-     * @return \PDO
-     */
-    public function getConnection();
 
-    /**
-     * Obtener una conexión PDO sin seleccionar la BD
-     *
-     * @return \PDO
-     */
-    public function getConnectionSimple();
-
-    /**
-     * Devolcer el estado de la BD
-     *
-     * @return int
-     */
-    public function getDbStatus();
-
-    /**
-     * @return mixed
-     */
-    public function getConnectionUri();
 }

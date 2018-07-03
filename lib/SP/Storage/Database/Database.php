@@ -26,6 +26,9 @@ namespace SP\Storage\Database;
 
 use PDO;
 use PDOStatement;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -57,15 +60,21 @@ class Database implements DatabaseInterface
      * @var int Último Id de elemento insertado/actualizado
      */
     private $lastId;
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
 
     /**
      * DB constructor.
      *
      * @param DBStorageInterface $dbHandler
+     * @param EventDispatcher    $eventDispatcher
      */
-    public function __construct(DBStorageInterface $dbHandler)
+    public function __construct(DBStorageInterface $dbHandler, EventDispatcher $eventDispatcher)
     {
         $this->dbHandler = $dbHandler;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -110,7 +119,7 @@ class Database implements DatabaseInterface
 
     /**
      * @param QueryData $queryData
-     * @param bool $fullCount
+     * @param bool      $fullCount
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -169,15 +178,13 @@ class Database implements DatabaseInterface
         /** @var PDOStatement $stmt */
         $stmt = $this->prepareQueryData($queryData);
 
+        $this->eventDispatcher->notifyEvent('database.query',
+            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery())));
+
         if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {
             $this->numFields = $stmt->columnCount();
 
             return new QueryResult($stmt->fetchAll());
-
-//            $this->lastResult = $stmt->fetchAll();
-//            $this->numRows = count($this->lastResult);
-//
-//            $queryData->setQueryNumRows($this->numRows);
         }
 
         return (new QueryResult())
@@ -311,38 +318,50 @@ class Database implements DatabaseInterface
      * Iniciar una transacción
      *
      * @return bool
-     * @throws SPException
      */
     public function beginTransaction()
     {
         $conn = $this->dbHandler->getConnection();
 
-        return !$conn->inTransaction() && $conn->beginTransaction();
+        $result = !$conn->inTransaction() && $conn->beginTransaction();
+
+        $this->eventDispatcher->notifyEvent('database.transaction.begin',
+            new Event($this, EventMessage::factory()->addData('result', $result)));
+
+        return $result;
     }
 
     /**
      * Finalizar una transacción
      *
      * @return bool
-     * @throws SPException
      */
     public function endTransaction()
     {
         $conn = $this->dbHandler->getConnection();
 
-        return $conn->inTransaction() && $conn->commit();
+        $result = $conn->inTransaction() && $conn->commit();
+
+        $this->eventDispatcher->notifyEvent('database.transaction.end',
+            new Event($this, EventMessage::factory()->addData('result', $result)));
+
+        return $result;
     }
 
     /**
      * Rollback de una transacción
      *
      * @return bool
-     * @throws SPException
      */
     public function rollbackTransaction()
     {
         $conn = $this->dbHandler->getConnection();
 
-        return $conn->inTransaction() && $conn->rollBack();
+        $result = $conn->inTransaction() && $conn->rollBack();
+
+        $this->eventDispatcher->notifyEvent('database.transaction.rollback',
+            new Event($this, EventMessage::factory()->addData('result', $result)));
+
+        return $result;
     }
 }

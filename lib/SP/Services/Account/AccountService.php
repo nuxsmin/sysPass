@@ -48,6 +48,7 @@ use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\Database;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -86,7 +87,13 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getById($id)
     {
-        return new AccountDetailsResponse($id, $this->accountRepository->getById($id));
+        $result = $this->accountRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('La cuenta no existe'));
+        }
+
+        return new AccountDetailsResponse($id, $result->getData());
     }
 
     /**
@@ -277,26 +284,36 @@ class AccountService extends Service implements AccountServiceInterface
      *
      * @param AccountRequest $accountRequest
      *
-     * @throws QueryException
-     * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws ServiceException
+     * @throws \Exception
      */
     public function update(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
+        $database = $this->dic->get(Database::class);
 
-        // Cambiar el grupo principal si el usuario es Admin
-        $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
-            && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
+        if ($database->beginTransaction()) {
+            try {
+                $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
-        $this->addHistory($accountRequest->id);
+                // Cambiar el grupo principal si el usuario es Admin
+                $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
+                    && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
 
-        $this->accountRepository->update($accountRequest);
+                $this->addHistory($accountRequest->id);
 
-        $this->updateItems($accountRequest);
+                $this->accountRepository->update($accountRequest);
+
+                $this->updateItems($accountRequest);
+
+                $database->endTransaction();
+            } catch (\Exception $e) {
+                $database->rollbackTransaction();
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
+        }
     }
 
     /**
@@ -315,7 +332,8 @@ class AccountService extends Service implements AccountServiceInterface
         $accountHistoryRepository = $this->dic->get(AccountHistoryService::class);
         $configService = $this->dic->get(ConfigService::class);
 
-        return $accountHistoryRepository->create(new AccountHistoryCreateDto(
+        return $accountHistoryRepository->create(
+            new AccountHistoryCreateDto(
                 $accountId,
                 $isDelete,
                 !$isDelete,
@@ -327,75 +345,81 @@ class AccountService extends Service implements AccountServiceInterface
      * Updates external items for the account
      *
      * @param AccountRequest $accountRequest
+     *
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     protected function updateItems(AccountRequest $accountRequest)
     {
-        try {
-
-            if ($accountRequest->changePermissions) {
-                if ($accountRequest->updateUserGroupPermissions) {
-                    if (!empty($accountRequest->userGroupsView)) {
-                        $this->accountToUserGroupRepository->update($accountRequest);
-                    } else {
-                        $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
-                    }
-
-                    if (!empty($accountRequest->userGroupsEdit)) {
-                        $this->accountToUserGroupRepository->updateEdit($accountRequest);
-                    } else {
-                        $this->accountToUserGroupRepository->deleteEditByAccountId($accountRequest->id);
-                    }
-                }
-
-                if ($accountRequest->updateUserPermissions) {
-                    if (!empty($accountRequest->usersView)) {
-                        $this->accountToUserRepository->update($accountRequest);
-                    } else {
-                        $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
-                    }
-
-                    if (!empty($accountRequest->usersEdit)) {
-                        $this->accountToUserRepository->updateEdit($accountRequest);
-                    } else {
-                        $this->accountToUserRepository->deleteEditByAccountId($accountRequest->id);
-                    }
-                }
-            }
-
-            if ($accountRequest->updateTags) {
-                if (!empty($accountRequest->tags)) {
-                    $this->accountToTagRepository->update($accountRequest);
+        if ($accountRequest->changePermissions) {
+            if ($accountRequest->updateUserGroupPermissions) {
+                if (!empty($accountRequest->userGroupsView)) {
+                    $this->accountToUserGroupRepository->update($accountRequest);
                 } else {
-                    $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+                    $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
+                }
+
+                if (!empty($accountRequest->userGroupsEdit)) {
+                    $this->accountToUserGroupRepository->updateEdit($accountRequest);
+                } else {
+                    $this->accountToUserGroupRepository->deleteEditByAccountId($accountRequest->id);
                 }
             }
-        } catch (SPException $e) {
-            processException($e);
+
+            if ($accountRequest->updateUserPermissions) {
+                if (!empty($accountRequest->usersView)) {
+                    $this->accountToUserRepository->update($accountRequest);
+                } else {
+                    $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
+                }
+
+                if (!empty($accountRequest->usersEdit)) {
+                    $this->accountToUserRepository->updateEdit($accountRequest);
+                } else {
+                    $this->accountToUserRepository->deleteEditByAccountId($accountRequest->id);
+                }
+            }
+        }
+
+        if ($accountRequest->updateTags) {
+            if (!empty($accountRequest->tags)) {
+                $this->accountToTagRepository->update($accountRequest);
+            } else {
+                $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+            }
         }
     }
 
     /**
      * @param AccountRequest $accountRequest
-     * @param bool           $addHistory
      *
-     * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws ServiceException
+     * @throws \Exception
      */
-    public function editPassword(AccountRequest $accountRequest, $addHistory = true)
+    public function editPassword(AccountRequest $accountRequest)
     {
-        if ($addHistory) {
-            $this->addHistory($accountRequest->id);
+        $database = $this->dic->get(Database::class);
+
+        if ($database->beginTransaction()) {
+            try {
+                $this->addHistory($accountRequest->id);
+
+                $pass = $this->getPasswordEncrypted($accountRequest->pass);
+
+                $accountRequest->pass = $pass['pass'];
+                $accountRequest->key = $pass['key'];
+
+                $this->accountRepository->editPassword($accountRequest);
+
+                $database->endTransaction();
+            } catch (\Exception $e) {
+                $database->rollbackTransaction();
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
         }
-
-        $pass = $this->getPasswordEncrypted($accountRequest->pass);
-
-        $accountRequest->pass = $pass['pass'];
-        $accountRequest->key = $pass['key'];
-
-        $this->accountRepository->editPassword($accountRequest);
     }
 
     /**
@@ -416,17 +440,30 @@ class AccountService extends Service implements AccountServiceInterface
      * @param $historyId
      * @param $accountId
      *
-     * @throws QueryException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws ServiceException
+     * @throws \Exception
      */
     public function editRestore($historyId, $accountId)
     {
-        $this->addHistory($accountId);
+        $database = $this->dic->get(Database::class);
 
-        $this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId());
+        if ($database->beginTransaction()) {
+            try {
+                $this->addHistory($accountId);
+
+                if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
+                    throw new ServiceException(__u('Error al restaurar cuenta'));
+                }
+
+                $database->endTransaction();
+            } catch (\Exception $e) {
+                $database->rollbackTransaction();
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
+        }
     }
 
     /**
@@ -477,7 +514,7 @@ class AccountService extends Service implements AccountServiceInterface
             $queryFilter->addFilter('Account.id <> ? AND (Account.parentId = 0 OR Account.parentId IS NULL)', [$accountId]);
         }
 
-        return $this->accountRepository->getForUser($queryFilter);
+        return $this->accountRepository->getForUser($queryFilter)->getDataAsArray();
     }
 
     /**
@@ -492,7 +529,7 @@ class AccountService extends Service implements AccountServiceInterface
         $queryFilter = AccountUtil::getAccountFilterUser($this->context)
             ->addFilter('Account.parentId = ?', [$accountId]);
 
-        return $this->accountRepository->getLinked($queryFilter);
+        return $this->accountRepository->getLinked($queryFilter)->getDataAsArray();
     }
 
     /**
@@ -501,13 +538,20 @@ class AccountService extends Service implements AccountServiceInterface
      * @return AccountPassData
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws NoSuchItemException
      */
     public function getPasswordHistoryForId($id)
     {
         $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->context)
             ->addFilter('AccountHistory.id = ?', [$id]);
 
-        return $this->accountRepository->getPasswordHistoryForId($queryFilter);
+        $result = $this->accountRepository->getPasswordHistoryForId($queryFilter);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('La cuenta no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -517,7 +561,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getAllBasic()
     {
-        return $this->accountRepository->getAll();
+        return $this->accountRepository->getAll()->getDataAsArray();
     }
 
     /**

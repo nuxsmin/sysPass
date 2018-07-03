@@ -56,6 +56,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
+        self::$dataset = 'syspass.xml';
+
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -255,12 +257,16 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(3, self::$repository->add($accountRequest));
 
-        $userGroups = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $result  = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
-        $this->assertCount(3, $userGroups);
-        $this->assertInstanceOf(ItemData::class, $userGroups[0]);
-        $this->assertInstanceOf(ItemData::class, $userGroups[1]);
-        $this->assertInstanceOf(ItemData::class, $userGroups[2]);
+        $this->assertEquals(3, $result->getNumRows());
+
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(3, $data);
+        $this->assertInstanceOf(ItemData::class, $data[0]);
+        $this->assertInstanceOf(ItemData::class, $data[1]);
+        $this->assertInstanceOf(ItemData::class, $data[2]);
 
         $this->expectException(ConstraintException::class);
 
@@ -301,11 +307,11 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      */
     public function testGetUserGroupsByUserGroupId()
     {
-        $this->assertCount(2, self::$repository->getUserGroupsByUserGroupId(2)->getNumRows());
+        $this->assertEquals(2, self::$repository->getUserGroupsByUserGroupId(2)->getNumRows());
 
-        $this->assertCount(0, self::$repository->getUserGroupsByUserGroupId(3)->getNumRows());
+        $this->assertEquals(0, self::$repository->getUserGroupsByUserGroupId(3)->getNumRows());
 
-        $this->assertCount(0, self::$repository->getUserGroupsByUserGroupId(10)->getNumRows());
+        $this->assertEquals(0, self::$repository->getUserGroupsByUserGroupId(10)->getNumRows());
     }
 
     /**

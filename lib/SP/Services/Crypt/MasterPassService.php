@@ -85,31 +85,31 @@ class MasterPassService extends Service
     {
         $db = $this->dic->get(Database::class);
 
-        try {
-            if (!$db->beginTransaction()) {
-                throw new ServiceException(__u('No es posible iniciar una transacción'), ServiceException::ERROR);
+        if (!$db->beginTransaction()) {
+            try {
+                $this->accountCryptService->updateMasterPassword($request);
+
+                $this->accountCryptService->updateHistoryMasterPassword($request);
+
+                $this->customFieldCryptService->updateMasterPassword($request);
+
+                if (!$db->endTransaction()) {
+                    throw new ServiceException(__u('No es posible finalizar una transacción'));
+                }
+            } catch (\Exception $e) {
+                if ($db->rollbackTransaction()) {
+                    $this->eventDispatcher->notifyEvent('update.masterPassword.rollback',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Rollback')))
+                    );
+
+                    debugLog('Rollback');
+                }
+
+                throw $e;
             }
-
-            $this->accountCryptService->updateMasterPassword($request);
-
-            $this->accountCryptService->updateHistoryMasterPassword($request);
-
-            $this->customFieldCryptService->updateMasterPassword($request);
-
-            if (!$db->endTransaction()) {
-                throw new ServiceException(__u('No es posible finalizar una transacción'), ServiceException::ERROR);
-            }
-        } catch (\Exception $e) {
-            if ($db->rollbackTransaction()) {
-                $this->eventDispatcher->notifyEvent('update.masterPassword.rollback',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Rollback')))
-                );
-
-                debugLog('Rollback');
-            }
-
-            throw $e;
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
         }
     }
 

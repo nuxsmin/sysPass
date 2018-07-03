@@ -57,6 +57,8 @@ class CategoryRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
+        self::$dataset = 'syspass.xml';
+
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 

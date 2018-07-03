@@ -87,4 +87,25 @@ interface DatabaseInterface
      * @return int
      */
     public function getLastId();
+
+    /**
+     * Iniciar una transacción
+     *
+     * @return bool
+     */
+    public function beginTransaction();
+
+    /**
+     * Finalizar una transacción
+     *
+     * @return bool
+     */
+    public function endTransaction();
+
+    /**
+     * Rollback de una transacción
+     *
+     * @return bool
+     */
+    public function rollbackTransaction();
 }

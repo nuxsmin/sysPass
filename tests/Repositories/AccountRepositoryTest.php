@@ -29,6 +29,7 @@ use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
@@ -64,7 +65,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $dic = setupContext();
 
         self::$dataset = 'syspass_account.xml';
-        
+
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -139,14 +140,17 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $account = self::$repository->getById(1);
+        $result = self::$repository->getById(1);
 
-        $this->assertInstanceOf(AccountVData::class, $account);
-        $this->assertEquals(1, $account->getId());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->expectException(SPException::class);
+        /** @var AccountVData $data */
+        $data = $result->getData();
 
-        self::$repository->getById(100);
+        $this->assertInstanceOf(AccountVData::class, $data);
+        $this->assertEquals(1, $data->getId());
+
+        $this->assertEquals(0, self::$repository->getById(10)->getNumRows());
     }
 
     /**
@@ -172,23 +176,29 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->update($accountRequest));
 
-        $account = self::$repository->getById(1);
+        $result = self::$repository->getById(1);
 
-        $this->assertEquals($accountRequest->name, $account->getName());
-        $this->assertEquals($accountRequest->login, $account->getLogin());
-        $this->assertEquals($accountRequest->url, $account->getUrl());
-        $this->assertEquals($accountRequest->notes, $account->getNotes());
-        $this->assertEquals($accountRequest->userEditId, $account->getUserEditId());
-        $this->assertEquals($accountRequest->passDateChange, $account->getPassDateChange());
-        $this->assertEquals($accountRequest->clientId, $account->getClientId());
-        $this->assertEquals($accountRequest->categoryId, $account->getCategoryId());
-        $this->assertEquals($accountRequest->isPrivate, $account->getIsPrivate());
-        $this->assertEquals($accountRequest->isPrivateGroup, $account->getIsPrivateGroup());
-        $this->assertEquals($accountRequest->parentId, $account->getParentId());
+        $this->assertEquals(1, $result->getNumRows());
+
+        /** @var AccountVData $data */
+        $data = $result->getData();
+
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals($accountRequest->name, $data->getName());
+        $this->assertEquals($accountRequest->login, $data->getLogin());
+        $this->assertEquals($accountRequest->url, $data->getUrl());
+        $this->assertEquals($accountRequest->notes, $data->getNotes());
+        $this->assertEquals($accountRequest->userEditId, $data->getUserEditId());
+        $this->assertEquals($accountRequest->passDateChange, $data->getPassDateChange());
+        $this->assertEquals($accountRequest->clientId, $data->getClientId());
+        $this->assertEquals($accountRequest->categoryId, $data->getCategoryId());
+        $this->assertEquals($accountRequest->isPrivate, $data->getIsPrivate());
+        $this->assertEquals($accountRequest->isPrivateGroup, $data->getIsPrivateGroup());
+        $this->assertEquals($accountRequest->parentId, $data->getParentId());
 
         // El grupo no debe de cambiar si el usuario no tiene permisos
-        $this->assertNotEquals($accountRequest->userGroupId, $account->getUserGroupId());
-        $this->assertEquals(1, $account->getUserGroupId());
+        $this->assertNotEquals($accountRequest->userGroupId, $data->getUserGroupId());
+        $this->assertEquals(1, $data->getUserGroupId());
     }
 
     /**
@@ -264,7 +274,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $filter = new QueryCondition();
         $filter->addFilter('Account.parentId = 1');
 
-        $this->assertCount(0, self::$repository->getLinked($filter));
+        $this->assertEquals(1, self::$repository->getLinked($filter)->getNumRows());
     }
 
     /**
@@ -277,11 +287,13 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testIncrementViewCounter()
     {
-        $accountBefore = self::$repository->getById(1);
+        /** @var AccountVData $accountBefore */
+        $accountBefore = self::$repository->getById(1)->getData();
 
         $this->assertTrue(self::$repository->incrementViewCounter(1));
 
-        $accountAfter = self::$repository->getById(1);
+        /** @var AccountVData $accountAfter */
+        $accountAfter = self::$repository->getById(1)->getData();
 
         $this->assertEquals($accountBefore->getCountView() + 1, $accountAfter->getCountView());
     }
@@ -294,7 +306,18 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $this->assertCount(2, self::$repository->getAll());
+        $result = self::$repository->getAll();
+
+        $this->assertEquals(2, $result->getNumRows());
+
+        /** @var AccountData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(2, $data);
+        $this->assertInstanceOf(AccountData::class, $data[0]);
+        $this->assertEquals(1, $data[0]->getId());
+        $this->assertInstanceOf(AccountData::class, $data[1]);
+        $this->assertEquals(2, $data[1]->getId());
     }
 
     /**
@@ -330,11 +353,13 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testIncrementDecryptCounter()
     {
-        $accountBefore = self::$repository->getById(1);
+        /** @var AccountVData $accountBefore */
+        $accountBefore = self::$repository->getById(1)->getData();
 
         $this->assertTrue(self::$repository->incrementDecryptCounter(1));
 
-        $accountAfter = self::$repository->getById(1);
+        /** @var AccountVData $accountAfter */
+        $accountAfter = self::$repository->getById(1)->getData();
 
         $this->assertEquals($accountBefore->getCountDecrypt() + 1, $accountAfter->getCountDecrypt());
     }
@@ -347,15 +372,33 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetTotalNumAccounts()
     {
-        $this->assertEquals(2, self::$repository->getTotalNumAccounts()->num);
+        $this->assertEquals(7, self::$repository->getTotalNumAccounts()->num);
     }
 
     /**
-     * No implementado
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetDataForLink()
     {
-        $this->markTestSkipped('Not implemented');
+        $result = self::$repository->getDataForLink(1);
+
+        $this->assertEquals(1, $result->getNumRows());
+
+        $data = $result->getData();
+
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals('Google', $data->getName());
+        $this->assertEquals('admin', $data->getLogin());
+        $this->assertEquals(pack('H*', '6465663530323030656135663361636362366237656462653536343938666234313231616635323237363539663162346532383963386361346565323732656530636238333632316436393736353665373631393435623033353236616164333730336662306531333535626437333638653033666137623565633364306365323634663863643436393436633365353234316534373338376130393133663935303736396364613365313234643432306636393834386434613262316231306138'), $data->getPass());
+        $this->assertEquals(pack('H*', '6465663130303030646566353032303065646434636466636231333437613739616166313734343462343839626362643364353664376664356562373233363235653130316261666432323539343633336664626639326630613135373461653562613562323535353230393236353237623863633534313862653363376361376536366139356366353366356162663031623064343236613234336162643533643837643239636633643165326532663732626664396433366133653061343534656664373134633661366237616338363966636263366435303166613964316338386365623264303861333438626633656638653135356538633865353838623938636465653061306463313835646636366535393138393831653366303464323139386236383738333539616563653034376434643637663835313235636661313237633138373865643530616630393434613934616363356265316130323566623065633362663831613933626365366365343734336164363562656638353131343466343332323837356438323339303236656363613866643862376330396563356465373233666466313636656166386336356539666537353436333535333664393766383366316366663931396530386339373730636166633136376661656364306366656262323931666334343831333238333662366432'), $data->getKey());
+        $this->assertEquals('http://google.com', $data->getUrl());
+        $this->assertEquals('aaaa', $data->getNotes());
+        $this->assertEquals('Google', $data->getClientName());
+        $this->assertEquals('Web', $data->getCategoryName());
+
+        $this->assertEquals(0, self::$repository->getDataForLink(10)->getNumRows());
     }
 
     /**
@@ -369,7 +412,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $queryCondition = new QueryCondition();
         $queryCondition->addFilter('Account.isPrivate = 1');
 
-        $this->assertCount(0, self::$repository->getForUser($queryCondition));
+        $this->assertCount(0, self::$repository->getForUser($queryCondition)->getDataAsArray());
     }
 
     /**

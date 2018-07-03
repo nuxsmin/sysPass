@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Storage\Database;
 
 use PDO;
-use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
 
@@ -82,8 +81,8 @@ class MySQLHandler implements DBStorageInterface
      * Realizar la conexión con la BBDD.
      * Esta función utiliza PDO para conectar con la base de datos.
      *
-     * @throws \SP\Core\Exceptions\SPException
      * @return PDO
+     * @throws DatabaseException
      */
     public function getConnection()
     {
@@ -93,9 +92,9 @@ class MySQLHandler implements DBStorageInterface
                 || null === $this->connectionData->getDbName()
                 || (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket())
             ) {
-                throw new SPException(
+                throw new DatabaseException(
                     __u('No es posible conectar con la BD'),
-                    SPException::CRITICAL,
+                    DatabaseException::CRITICAL,
                     __u('Compruebe los datos de conexión'));
             }
 
@@ -113,9 +112,9 @@ class MySQLHandler implements DBStorageInterface
 
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
-                throw new SPException(
+                throw new DatabaseException(
                     __u('No es posible conectar con la BD'),
-                    SPException::CRITICAL,
+                    DatabaseException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),
                     $e
@@ -158,15 +157,15 @@ class MySQLHandler implements DBStorageInterface
      * Obtener una conexión PDO sin seleccionar la BD
      *
      * @return \PDO
-     * @throws SPException
+     * @throws DatabaseException
      */
     public function getConnectionSimple()
     {
         if (!$this->db) {
             if (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket()) {
-                throw new SPException(
+                throw new DatabaseException(
                     __u('No es posible conectar con la BD'),
-                    SPException::CRITICAL,
+                    DatabaseException::CRITICAL,
                     __u('Compruebe los datos de conexión'));
             }
 
@@ -176,9 +175,9 @@ class MySQLHandler implements DBStorageInterface
                 $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
-                throw new SPException(
+                throw new DatabaseException(
                     __u('No es posible conectar con la BD'),
-                    SPException::CRITICAL,
+                    DatabaseException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),
                     $e

@@ -77,6 +77,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function testUpdateMasterPassword()
     {
@@ -109,6 +110,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function testUpdateHistoryMasterPassword()
     {

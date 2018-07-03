@@ -56,6 +56,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
+        self::$dataset = 'syspass.xml';
+
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -93,7 +95,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $result = self::$repository->getTagsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
 
-        $this->assertCount(3, $result);
+        $this->assertCount(3, $data);
         $this->assertInstanceOf(ItemData::class, $data[0]);
         $this->assertInstanceOf(ItemData::class, $data[1]);
         $this->assertInstanceOf(ItemData::class, $data[2]);
@@ -143,7 +145,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $result = self::$repository->getTagsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
 
-        $this->assertEquals(2, $result);
+        $this->assertEquals(2, $result->getNumRows());
         $this->assertInstanceOf(ItemData::class, $data[0]);
         $this->assertInstanceOf(ItemData::class, $data[1]);
     }
