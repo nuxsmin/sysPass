@@ -24,8 +24,6 @@
 
 namespace SP\Providers\Log;
 
-use Monolog\Handler\SyslogHandler;
-use Monolog\Logger;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\EventlogData;
@@ -39,7 +37,7 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-class LogHandler extends Provider implements EventReceiver
+class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
@@ -144,28 +142,6 @@ class LogHandler extends Provider implements EventReceiver
     public function getEvents()
     {
         return self::EVENTS;
-    }
-
-    /**
-     * @param string $eventType
-     * @param Event $event
-     */
-    protected function sendToSyslog($eventType, Event $event)
-    {
-        $logger = $this->dic->get(Logger::class);
-        $logger->pushHandler(new SyslogHandler('syspass'));
-        $logger->info($eventType . ';' . $event->getEventMessage()->composeText(';'));
-    }
-
-    /**
-     * @param string $eventType
-     * @param Event $event
-     */
-    protected function sendToRemoteSyslog($eventType, Event $event)
-    {
-        $logger = $this->dic->get(Logger::class);
-        $logger->pushHandler(new SyslogHandler('syspass'));
-        $logger->info($eventType . ';' . $event->getEventMessage()->composeText(';'));
     }
 
     protected function initialize()

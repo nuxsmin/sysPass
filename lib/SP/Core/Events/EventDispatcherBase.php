@@ -44,9 +44,11 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * Attach an SplObserver
      *
      * @link  http://php.net/manual/en/splsubject.attach.php
+     *
      * @param SplObserver $observer <p>
      *                              The <b>SplObserver</b> to attach.
      *                              </p>
+     *
      * @since 5.1.0
      */
     public function attach(SplObserver $observer)
@@ -67,9 +69,11 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * Detach an observer
      *
      * @link  http://php.net/manual/en/splsubject.detach.php
+     *
      * @param SplObserver $observer <p>
      *                              The <b>SplObserver</b> to detach.
      *                              </p>
+     *
      * @throws InvalidClassException
      * @since 5.1.0
      */
@@ -109,8 +113,8 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
         foreach ($this->observers as $observer) {
             $events = $observer->getEventsString();
 
-            if ($events === '*'
-                || preg_match('/' . $events . '/i', $eventType)
+            if (!empty($events)
+                && ($events === '*' || preg_match('/' . $events . '/i', $eventType))
             ) {
                 // FIXME: update receivers Event
                 $observer->updateEvent($eventType, $event);

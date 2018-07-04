@@ -34,7 +34,7 @@ use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Providers\Log\LogHandler;
+use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
 use SP\Services\Config\ConfigService;
@@ -147,7 +147,7 @@ class ConfigManagerController extends ControllerBase
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
-        $template->assign('logEvents', SelectItemAdapter::factory(LogHandler::EVENTS)
+        $template->assign('logEvents', SelectItemAdapter::factory(DatabaseLogHandler::EVENTS)
             ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
         );
 
