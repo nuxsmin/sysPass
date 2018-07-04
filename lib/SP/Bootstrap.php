@@ -118,6 +118,7 @@ class Bootstrap
      * Bootstrap constructor.
      *
      * @param Container $container
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -158,7 +159,7 @@ class Bootstrap
             '@/api\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
-                    $apiRequest = (new ApiRequest())->getRequestData();
+                    $apiRequest = self::$container->get(ApiRequest::class);
 
                     list($controller, $action) = explode('/', $apiRequest->getMethod());
 
@@ -429,6 +430,7 @@ class Bootstrap
     /**
      * @param Container $container
      * @param string    $module
+     *
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

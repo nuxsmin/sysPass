@@ -24,15 +24,12 @@
 
 namespace SP\Services\Api;
 
-use SP\Core\DataCollection;
-use SP\Services\ServiceException;
-
 /**
  * Class ApiRequest
  *
  * @package SP\Services\Api
  */
-class ApiRequest extends DataCollection
+class ApiRequest
 {
     /**
      * @var string
@@ -42,6 +39,107 @@ class ApiRequest extends DataCollection
      * @var int
      */
     protected $id;
+    /**
+     * @var ApiRequestData
+     */
+    protected $data;
+
+    /**
+     * ApiRequest constructor.
+     *
+     * @param string $request
+     *
+     * @throws ApiRequestException
+     */
+    public function __construct($request = null)
+    {
+        if ($request === null) {
+            $this->getRequestJsonData($this->getRequestContent());
+        } else {
+            $this->getRequestJsonData($request);
+        }
+    }
+
+    /**
+     * Obtener los datos de la petición
+     *
+     * Comprueba que el JSON esté bien formado
+     *
+     * @param null $request
+     *
+     * @return ApiRequest
+     * @throws ApiRequestException
+     */
+    public function getRequestJsonData($request)
+    {
+        $data = json_decode($request, true);
+
+        if ($data === null) {
+            throw new ApiRequestException(
+                __u('Datos inválidos'),
+                ApiRequestException::ERROR,
+                json_last_error_msg(),
+                -32700
+            );
+        }
+
+        if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id'], $data['params']['authToken'])) {
+            throw new ApiRequestException(
+                __u('Fomato incorrecto'),
+                ApiRequestException::ERROR,
+                null,
+                -32600
+            );
+        }
+
+        $this->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
+        $this->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
+        $this->data = new ApiRequestData();
+        $this->data->replace($data['params']);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     * @throws ApiRequestException
+     */
+    public function getRequestContent()
+    {
+        $content = file_get_contents('php://input');
+
+        if ($content === false || empty($content)) {
+            throw new ApiRequestException(
+                __u('Datos inválidos'),
+                ApiRequestException::ERROR,
+                null,
+                -32700
+            );
+        }
+
+        return $content;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function get(string $key, $default = null)
+    {
+        return $this->data->get($key, $default);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function exists(string $key)
+    {
+        return $this->data->exists($key);
+    }
 
     /**
      * @return string
@@ -57,41 +155,5 @@ class ApiRequest extends DataCollection
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Obtener los datos de la petición
-     *
-     * Comprueba que el JSON esté bien formado
-     *
-     * @throws ServiceException
-     */
-    public function getRequestData()
-    {
-        if (($request = file_get_contents('php://input')) === false
-            || ($data = json_decode($request, true)) === null
-        ) {
-            throw new ServiceException(
-                __u('Datos inválidos'),
-                ServiceException::ERROR,
-                null,
-                -32700
-            );
-        }
-
-        if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id'], $data['params']['authToken'])) {
-            throw new ServiceException(
-                __u('Fomato incorrecto'),
-                ServiceException::ERROR,
-                null,
-                -32600
-            );
-        }
-
-        $this->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
-        $this->id = filter_var($data['id'], FILTER_VALIDATE_INT);
-        $this->attributes = $data['params'];
-
-        return $this;
     }
 }

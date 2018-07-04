@@ -1,0 +1,23 @@
+{
+  "jsonrpc" : 2.0,
+  "method": "account/search",
+  "params":
+  {
+    "authToken": "ce4e5f2e5700d9032b0cbb0769a6d7cf8557484da492d3c32626a74bb28fb44b",
+    "tokenPass": "1234",
+    "id": "10",
+    "text": "API",
+    "name": "API Test",
+    "clientId": "1",
+    "categoryId": "4",
+    "login": "toor",
+    "url": "http://www.google.com",
+    "notes": "bla bla bla\nbla bla",
+    "private": "0",
+    "privateGroup": "0",
+    "expireDate": "0",
+    "parentId": "0",
+    "pass": "erfwerfreqfgqer%&/()=?="
+  },
+  "id": 1
+}

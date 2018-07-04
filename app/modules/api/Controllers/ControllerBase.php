@@ -29,7 +29,6 @@ use Klein\Klein;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
-use SP\Services\Api\ApiRequest;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Api\ApiService;
 use SP\Services\Api\JsonRpcResponse;
@@ -78,20 +77,19 @@ abstract class ControllerBase
     /**
      * Constructor
      *
-     * @param Container  $container
-     * @param string     $actionName
-     * @param ApiRequest $apiRequest
+     * @param Container $container
+     * @param string    $actionName
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    public final function __construct(Container $container, $actionName, ApiRequest $apiRequest)
+    public final function __construct(Container $container, $actionName)
     {
         $this->dic = $container;
         $this->context = $container->get(StatelessContext::class);
         $this->eventDispatcher = $container->get(EventDispatcher::class);
         $this->router = $container->get(Klein::class);
-
-        $this->apiService = $container->get(ApiService::class)->setApiRequest($apiRequest);
+        $this->apiService = $container->get(ApiService::class);
 
         $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
@@ -121,6 +119,7 @@ abstract class ControllerBase
 
     /**
      * @param int $actionId
+     *
      * @throws \Exception
      * @throws \SP\Services\ServiceException
      */
@@ -137,6 +136,7 @@ abstract class ControllerBase
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      *
      * @param \SP\Services\Api\ApiResponse $apiResponse
+     *
      * @return string La cadena en formato JSON
      */
     final protected function returnResponse(ApiResponse $apiResponse)
@@ -159,6 +159,7 @@ abstract class ControllerBase
 
     /**
      * @param \Exception $e
+     *
      * @return string
      */
     final protected function returnResponseException(\Exception $e)

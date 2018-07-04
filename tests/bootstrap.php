@@ -108,3 +108,14 @@ function setupContext()
 
     return $dic;
 }
+
+/**
+ * @param $dir
+ * @param $file
+ *
+ * @return string
+ */
+function getResource($dir, $file)
+{
+    return file_get_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
+}

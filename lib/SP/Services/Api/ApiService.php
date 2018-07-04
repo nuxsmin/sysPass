@@ -175,7 +175,7 @@ class ApiService extends Service
                     'text' => __('Texto a buscar'),
                     'count' => __('Número de resultados a mostrar'),
                     'categoryId' => __('Id de categoría a filtrar'),
-                    'customerId' => __('Id de cliente a filtrar')
+                    'clientId' => __('Id de cliente a filtrar')
                 ]
             ],
             'account/view' => [
@@ -414,5 +414,6 @@ class ApiService extends Service
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
         $this->trackService = $this->dic->get(TrackService::class);
         $this->trackRequest = TrackService::getTrackRequest('api');
+        $this->apiRequest = $this->dic->get(ApiRequest::class);
     }
 }

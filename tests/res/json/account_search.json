@@ -1,0 +1,13 @@
+{
+  "jsonrpc" : 2.0,
+  "method": "account/search",
+  "params":
+  {
+    "authToken": "ce4e5f2e5700d9032b0cbb0769a6d7cf8557484da492d3c32626a74bb28fb44b",
+    "text": "API",
+    "count": 5,
+    "categoryId": 1,
+    "clientId": 1
+  },
+  "id": 10
+}

@@ -25,7 +25,6 @@
 namespace SP\Http;
 
 use Klein\Klein;
-use phpseclib\Crypt\RSA;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Html\Html;
@@ -47,6 +46,7 @@ class Request
      * Devolver las cabeceras enviadas desde el cliente.
      *
      * @param string $header nombre de la cabecera a devolver
+     *
      * @return array|string
      */
     public static function getRequestHeaders($header = '')
@@ -89,6 +89,7 @@ class Request
      * Analizar un valor encriptado y devolverlo desencriptado
      *
      * @param $param
+     *
      * @return string
      */
     public static function analyzeEncrypted($param)
@@ -100,25 +101,29 @@ class Request
         }
 
         try {
-            // FIXME: DIC???
             // Desencriptar con la clave RSA
-            if (($clearData = (new CryptPKI(Bootstrap::getContainer()->get(RSA::class)))->decryptRSA(base64_decode($encryptedData))) === false) {
+            $clearData = Bootstrap::getContainer()->get(CryptPKI::class)
+                ->decryptRSA(base64_decode($encryptedData));
+
+            // Desencriptar con la clave RSA
+            if ($clearData === false) {
                 debugLog('No RSA encrypted data from request');
 
                 return $encryptedData;
             }
+
+            return $clearData;
         } catch (\Exception $e) {
             processException($e);
 
             return $encryptedData;
         }
-
-        return $clearData;
     }
 
     /**
      * @param $param
      * @param $default
+     *
      * @return string
      */
     public static function analyzeString($param, $default = null)
@@ -133,6 +138,7 @@ class Request
     /**
      * @param $param
      * @param $default
+     *
      * @return string
      */
     public static function analyzeEmail($param, $default = null)
@@ -153,6 +159,7 @@ class Request
      * @param bool   $check    comprobar si el parámetro está presente
      * @param mixed  $force    valor devuelto si el parámeto está definido
      * @param bool   $sanitize escapar/eliminar carácteres especiales
+     *
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      * @deprecated
      */
@@ -179,6 +186,7 @@ class Request
      * @param $value     mixed  valor a analizar
      * @param $default   mixed  tipo por defecto a devolver
      * @param $sanitize  bool   limpiar una cadena de caracteres
+     *
      * @return mixed
      * @deprecated
      */
@@ -210,6 +218,7 @@ class Request
      * @param string        $param
      * @param callable|null $mapper
      * @param mixed         $default
+     *
      * @return mixed
      */
     public static function analyzeArray($param, callable $mapper = null, $default = null)
@@ -234,6 +243,7 @@ class Request
     /**
      * @param $param
      * @param $default
+     *
      * @return int
      */
     public static function analyzeInt($param, $default = null)
@@ -248,6 +258,7 @@ class Request
     /**
      * @param $param
      * @param $default
+     *
      * @return bool
      */
     public static function analyzeBool($param, $default = null)
@@ -262,6 +273,7 @@ class Request
     /**
      * @param $param
      * @param $default
+     *
      * @return string
      */
     public static function analyzePassword($param, $default = '')
@@ -277,6 +289,7 @@ class Request
      * Comprobar si se realiza una recarga de la página
      *
      * @param Klein $router
+     *
      * @return bool
      */
     public static function checkReload(Klein $router)
@@ -308,6 +321,7 @@ class Request
      *
      * @param      $file
      * @param null $base
+     *
      * @return string
      */
     public static function getSecureAppFile($file, $base = null)
@@ -320,6 +334,7 @@ class Request
      *
      * @param        $path
      * @param string $base
+     *
      * @return string
      */
     public static function getSecureAppPath($path, $base = null)
