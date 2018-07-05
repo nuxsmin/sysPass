@@ -121,27 +121,27 @@ class TrackService extends Service
     public function checkTracking(TrackRequest $trackRequest)
     {
         try {
-            $attempts = count($this->getTracksForClientFromTime($trackRequest));
+            $attempts = $this->getTracksForClientFromTime($trackRequest);
+
+            if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
+//            $this->add($trackRequest);
+
+                $this->eventDispatcher->notifyEvent('track.delay',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
+                        ->addDetail(__u('Segundos'), self::TIME_SLEEP * $attempts))
+                );
+
+                debugLog('Tracking delay: ' . self::TIME_SLEEP * $attempts . 's');
+
+                sleep(self::TIME_SLEEP * $attempts);
+
+                return true;
+            }
         } catch (\Exception $e) {
             processException($e);
 
             throw $e;
-        }
-
-        if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
-//            $this->add($trackRequest);
-
-            $this->eventDispatcher->notifyEvent('track.delay',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
-                    ->addDetail(__u('Segundos'), self::TIME_SLEEP * $attempts))
-            );
-
-            debugLog('Tracking delay: ' . self::TIME_SLEEP * $attempts . 's');
-
-            sleep(self::TIME_SLEEP * $attempts);
-
-            return true;
         }
 
         return false;
@@ -152,13 +152,13 @@ class TrackService extends Service
      *
      * @param TrackRequest $trackRequest
      *
-     * @return array
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
     {
-        return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getDataAsArray();
+        return $this->trackRepository->getTracksForClientFromTime($trackRequest)->getNumRows();
     }
 
     /**

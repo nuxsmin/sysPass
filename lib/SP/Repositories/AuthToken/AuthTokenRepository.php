@@ -424,7 +424,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
      *
-     * @return false|AuthTokenData
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -441,8 +441,6 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([$actionId, $token]);
 
-        $result = $this->db->doSelect($queryData);
-
-        return $result->getNumRows() === 1 ? $result->getData() : false;
+        return $this->db->doSelect($queryData);
     }
 }

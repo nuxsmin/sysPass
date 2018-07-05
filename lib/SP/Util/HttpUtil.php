@@ -169,6 +169,10 @@ class HttpUtil
      */
     public static function getClientAddress($fullForwarded = false)
     {
+        if (APP_MODULE === 'tests') {
+            return '127.0.0.1';
+        }
+
         $forwarded = self::getForwardedFor();
 
         if (is_array($forwarded)) {

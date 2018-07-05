@@ -269,10 +269,17 @@ class AuthTokenService extends Service
      * @return false|AuthTokenData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
      */
     public function getTokenByToken($actionId, $token)
     {
-        return $this->authTokenRepository->getTokenByToken($actionId, $token);
+        $result = $this->authTokenRepository->getTokenByToken($actionId, $token);
+
+        if ($result->getNumRows() === 0) {
+            throw new ServiceException(__u('Error interno'));
+        }
+
+        return $result->getData();
     }
 
     /**

@@ -47,23 +47,27 @@ class ApiService extends Service
     /**
      * @var AuthTokenService
      */
-    protected $authTokenService;
+    private $authTokenService;
     /**
      * @var TrackService
      */
-    protected $trackService;
+    private $trackService;
     /**
      * @var ApiRequest
      */
-    protected $apiRequest;
+    private $apiRequest;
     /**
      * @var TrackRequest
      */
-    protected $trackRequest;
+    private $trackRequest;
     /**
      * @var AuthTokenData
      */
-    protected $authTokenData;
+    private $authTokenData;
+    /**
+     * @var bool
+     */
+    private $initialized = false;
 
     /**
      * Sets up API
@@ -71,10 +75,14 @@ class ApiService extends Service
      * @param $actionId
      *
      * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \Exception
      */
     public function setup($actionId)
     {
+        $this->initialized = false;
+        $this->apiRequest = $this->dic->get(ApiRequest::class);
+
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
 
@@ -86,8 +94,11 @@ class ApiService extends Service
             );
         }
 
-        (($this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'))) === false
-            || $this->authTokenData->getActionId() !== $actionId) && $this->accessDenied();
+        $this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'));
+
+        if ($this->authTokenData->getActionId() !== $actionId) {
+            $this->accessDenied();
+        }
 
         $this->setupUser();
 
@@ -96,6 +107,8 @@ class ApiService extends Service
         ) {
             $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
         }
+
+        $this->initialized = true;
     }
 
     /**
@@ -129,9 +142,8 @@ class ApiService extends Service
      */
     public function getParam($param, $required = false, $default = null)
     {
-        if (null === $this->apiRequest
-            || ($required === true && !$this->apiRequest->exists($param))
-        ) {
+        if ($this->apiRequest === null
+            || ($required && !$this->apiRequest->exists($param))) {
             throw new ServiceException(
                 __u('Parámetros incorrectos'),
                 ServiceException::ERROR,
@@ -407,6 +419,14 @@ class ApiService extends Service
     }
 
     /**
+     * @return bool
+     */
+    public function isInitialized(): bool
+    {
+        return $this->initialized;
+    }
+
+    /**
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function initialize()
@@ -414,6 +434,5 @@ class ApiService extends Service
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
         $this->trackService = $this->dic->get(TrackService::class);
         $this->trackRequest = TrackService::getTrackRequest('api');
-        $this->apiRequest = $this->dic->get(ApiRequest::class);
     }
 }

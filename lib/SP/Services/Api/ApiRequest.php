@@ -54,9 +54,9 @@ class ApiRequest
     public function __construct($request = null)
     {
         if ($request === null) {
-            $this->getRequestJsonData($this->getRequestContent());
+            $this->requestFromJsonData($this->getDataFromRequest());
         } else {
-            $this->getRequestJsonData($request);
+            $this->requestFromJsonData($request);
         }
     }
 
@@ -70,7 +70,7 @@ class ApiRequest
      * @return ApiRequest
      * @throws ApiRequestException
      */
-    public function getRequestJsonData($request)
+    public function requestFromJsonData($request)
     {
         $data = json_decode($request, true);
 
@@ -104,7 +104,7 @@ class ApiRequest
      * @return string
      * @throws ApiRequestException
      */
-    public function getRequestContent()
+    public function getDataFromRequest()
     {
         $content = file_get_contents('php://input');
 

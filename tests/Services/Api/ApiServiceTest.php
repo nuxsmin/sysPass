@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,9 +25,12 @@
 namespace SP\Tests\Services\Api;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Services\Api\ApiRequest;
 use SP\Services\Api\ApiService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use function SP\Tests\getResource;
 use function SP\Tests\setupContext;
 
 /**
@@ -37,10 +40,18 @@ use function SP\Tests\setupContext;
  */
 class ApiServiceTest extends DatabaseTestCase
 {
+    const ADMIN_TOKEN = '2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146';
+    const ADMIN_PASS = '123456';
+    const DEMO_TOKEN = '12b9027d24efff7bfbaca8bd774a4c34b45de35e033d2b192a88f4dfaee5c233';
+
     /**
      * @var ApiService
      */
     private static $service;
+    /**
+     * @var \Closure
+     */
+    private static $changeRequest;
 
     /**
      * @throws \DI\NotFoundException
@@ -51,70 +62,137 @@ class ApiServiceTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_account.xml';
+        self::$dataset = 'syspass_authToken.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el servicio
         self::$service = $dic->get(ApiService::class);
+
+        self::$changeRequest = function (string $request) use ($dic) {
+            $dic->set(ApiRequest::class, new ApiRequest($request));
+        };
     }
 
     /**
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function testSetup()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
+
         self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$service->setup(ActionsInterface::ACCOUNT_VIEW);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$service->setup(ActionsInterface::ACCOUNT_DELETE);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        self::$changeRequest->call($this, getResource('json', 'account_viewPass.json'));
+
+        self::$service->setup(ActionsInterface::ACCOUNT_VIEW_PASS);
+
+        $this->assertTrue(self::$service->isInitialized());
+
+        $this->expectException(ServiceException::class);
+
+        self::$service->setup(ActionsInterface::ACCOUNT_CREATE);
     }
 
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testGetParam()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
+        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals('2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146', self::$service->getParam('authToken'));
+        $this->assertEquals('API', self::$service->getParam('text'));
+        $this->assertEquals('5', self::$service->getParam('count'));
+        $this->assertEquals('1', self::$service->getParam('categoryId'));
+        $this->assertEquals('1', self::$service->getParam('clientId'));
+
+        $this->assertNull(self::$service->getParam('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionCode(-32602);
+
+        self::$service->getParam('test', true);
     }
 
-    public function testGetHelp()
-    {
-
-    }
-
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testGetParamInt()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
+        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals(1, self::$service->getParamInt('categoryId'));
+        $this->assertEquals(0, self::$service->getParamInt('text'));
     }
 
+    /**
+     */
     public function testGetParamEmail()
     {
-
+        $this->markTestSkipped('TODO');
     }
 
-    public function testSetApiRequest()
-    {
-
-    }
-
-    public function testGetActions()
-    {
-
-    }
-
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testGetParamString()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_add.json'));
 
+        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&amp;/()=&iquest;&ordf;&ordm;", self::$service->getParamString('notes'));
+        $this->assertEmpty(self::$service->getParamString('test'));
     }
 
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testGetParamRaw()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_add.json'));
 
+        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals("bla bla blabla bla~!?|.$%&/()=¿ªº", self::$service->getParamRaw('notes'));
     }
 
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
     public function testGetRequestId()
     {
+        self::$changeRequest->call($this, getResource('json', 'account_search.json'));
 
+        self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
+
+        $this->assertEquals(10, self::$service->getRequestId());
     }
 
     public function testGetMasterPass()
     {
-
+        $this->assertEquals('12345678900', self::$service->getMasterPass());
     }
 }

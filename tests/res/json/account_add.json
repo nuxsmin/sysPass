@@ -3,7 +3,7 @@
   "method": "account/search",
   "params":
   {
-    "authToken": "ce4e5f2e5700d9032b0cbb0769a6d7cf8557484da492d3c32626a74bb28fb44b",
+    "authToken": "2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146",
     "tokenPass": "1234",
     "id": "10",
     "text": "API",
@@ -12,7 +12,7 @@
     "categoryId": "4",
     "login": "toor",
     "url": "http://www.google.com",
-    "notes": "bla bla bla\nbla bla",
+    "notes": "bla bla bla\nbla bla~!?|.$%&/()=¿ªº",
     "private": "0",
     "privateGroup": "0",
     "expireDate": "0",

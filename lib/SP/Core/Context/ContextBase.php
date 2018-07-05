@@ -68,7 +68,10 @@ abstract class ContextBase implements ContextInterface
     public function setTrasientKey(string $key, $value)
     {
         // If the key starts with "_" it's a protected key, thus cannot be overwritten
-        if (strpos($key, '_') === 0 && $this->trasient->exists($key)) {
+        if (strpos($key, '_') === 0
+            && $this->trasient->exists($key)
+            && $this->trasient->get($key) !== $value
+        ) {
             throw new ContextException(__u('No es posible cambiar el valor de la clave'));
         }
 

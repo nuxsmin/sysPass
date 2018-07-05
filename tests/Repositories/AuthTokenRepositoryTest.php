@@ -112,15 +112,18 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testGetTokenByToken()
     {
-        $authToken = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        /** @var AuthTokenData $data */
+        $data = $result->getData();
 
-        $this->assertEquals(2, $authToken->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $authToken->getActionId());
-        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $authToken->getHash()));
-        $this->assertNotEmpty($authToken->getVault());
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertEquals(2, $data->getId());
+        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
+        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
+        $this->assertNotEmpty($data->getVault());
 
         /** @var Vault $vault */
-        $vault = Util::unserialize(Vault::class, $authToken->getVault());
+        $vault = Util::unserialize(Vault::class, $data->getVault());
         $this->assertEquals('12345678900', $vault->getData(self::AUTH_TOKEN_PASS . self::AUTH_TOKEN));
 
         $this->expectException(CryptoException::class);
@@ -143,14 +146,18 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->refreshVaultByUserId(1, $vault, $hash));
 
-        $authToken = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_VIEW_PASS, self::AUTH_TOKEN);
+        /** @var AuthTokenData $data */
+        $data = $result->getData();
 
-        $this->assertInstanceOf(AuthTokenData::class, $authToken);
-        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $authToken->getHash()));
-        $this->assertEquals($vault, $authToken->getVault());
+        $this->assertEquals(1, $result->getNumRows());
+
+        $this->assertInstanceOf(AuthTokenData::class, $result);
+        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
+        $this->assertEquals($vault, $data->getVault());
 
         /** @var Vault $vault */
-        $vault = Util::unserialize(Vault::class, $authToken->getVault());
+        $vault = Util::unserialize(Vault::class, $data->getVault());
         $this->assertEquals('prueba', $vault->getData(self::AUTH_TOKEN_PASS));
     }
 
@@ -200,12 +207,15 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->update($authTokenData));
 
         $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_CREATE, $token);
+        /** @var AuthTokenData $data */
+        $data = $result->getData();
 
+        $this->assertEquals(1, $result->getNumRows());
         $this->assertInstanceOf(AuthTokenData::class, $result);
-        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $result->getActionId());
-        $this->assertEquals($hash, $result->getHash());
-        $this->assertEquals(2, $result->getUserId());
-        $this->assertEquals($vault->getSerialized(), $result->getVault());
+        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
+        $this->assertEquals($hash, $data->getHash());
+        $this->assertEquals(2, $data->getUserId());
+        $this->assertEquals($vault->getSerialized(), $data->getVault());
 
         $this->expectException(DuplicatedItemException::class);
 
@@ -310,13 +320,16 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertEquals(3, $this->conn->getRowCount('AuthToken'));
 
         $result = self::$repository->getTokenByToken(ActionsInterface::ACCOUNT_CREATE, $token);
+        /** @var AuthTokenData $data */
+        $data = $result->getData();
 
+        $this->assertEquals(1, $result->getNumRows());
         $this->assertInstanceOf(AuthTokenData::class, $result);
-        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $result->getActionId());
-        $this->assertEquals($hash, $result->getHash());
-        $this->assertEquals(3, $result->getId());
-        $this->assertEquals(2, $result->getUserId());
-        $this->assertEquals($vault->getSerialized(), $result->getVault());
+        $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
+        $this->assertEquals($hash, $data->getHash());
+        $this->assertEquals(3, $data->getId());
+        $this->assertEquals(2, $data->getUserId());
+        $this->assertEquals($vault->getSerialized(), $data->getVault());
 
         $this->expectException(DuplicatedItemException::class);
 
