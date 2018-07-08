@@ -29,6 +29,7 @@ use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Storage\Database\Database;
 
 /**
  * Class Service
@@ -72,6 +73,38 @@ abstract class Service
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
+        }
+    }
+
+    /**
+     * Bubbles a Closure in a database transaction
+     *
+     * @param \Closure  $closure
+     *
+     * @return mixed
+     * @throws ServiceException
+     * @throws \Exception
+     */
+    protected function transactionAware(\Closure $closure)
+    {
+        $database = $this->dic->get(Database::class);
+
+        if ($database->beginTransaction()) {
+            try {
+                $result = $closure->call($this);
+
+                $database->endTransaction();
+
+                return $result;
+            } catch (\Exception $e) {
+                $database->rollbackTransaction();
+
+                debugLog('Transaction:Rollback');
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
         }
     }
 }

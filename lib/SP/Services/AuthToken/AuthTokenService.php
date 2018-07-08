@@ -245,7 +245,7 @@ class AuthTokenService extends Service
             $this->authTokenRepository->refreshVaultByUserId($itemData->getUserId(), $vault, Hash::hashKey($itemData->getHash()));
 
             $this->update($itemData, $token);
-        }, $this->dic);
+        });
     }
 
     /**

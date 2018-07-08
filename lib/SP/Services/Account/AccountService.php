@@ -299,7 +299,7 @@ class AccountService extends Service implements AccountServiceInterface
             $this->accountRepository->update($accountRequest);
 
             $this->updateItems($accountRequest);
-        }, $this->dic);
+        });
     }
 
     /**
@@ -392,7 +392,7 @@ class AccountService extends Service implements AccountServiceInterface
             $accountRequest->key = $pass['key'];
 
             $this->accountRepository->editPassword($accountRequest);
-        }, $this->dic);
+        });
     }
 
     /**
@@ -423,7 +423,7 @@ class AccountService extends Service implements AccountServiceInterface
             if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
                 throw new ServiceException(__u('Error al restaurar cuenta'));
             }
-        }, $this->dic);
+        });
     }
 
     /**
