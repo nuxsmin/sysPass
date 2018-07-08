@@ -35,6 +35,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\UI\Theme;
+use SP\Http\Request;
 use SP\Mvc\Controller\ControllerTrait;
 
 /**
@@ -86,6 +87,10 @@ abstract class SimpleControllerBase
      * @var ConfigData
      */
     protected $configData;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * SimpleControllerBase constructor.
@@ -109,6 +114,7 @@ abstract class SimpleControllerBase
         $this->theme = $this->dic->get(Theme::class);
         $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
         $this->router = $this->dic->get(Klein::class);
+        $this->request = $this->dic->get(Request::class);
         $this->acl = $this->dic->get(Acl::class);
 
         if (method_exists($this, 'initialize')) {
@@ -121,8 +127,12 @@ abstract class SimpleControllerBase
      */
     protected function checks()
     {
-        $this->checkLoggedInSession($this->session, $this->router);
-        $this->checkSecurityToken($this->session);
+        $this->checkLoggedInSession($this->session, $this->request, function ($redirect) {
+            $this->router->response()
+                ->redirect($redirect)
+                ->send(true);
+        });
+        $this->checkSecurityToken($this->session, $this->request);
     }
 
     /**

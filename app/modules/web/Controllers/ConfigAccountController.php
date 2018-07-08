@@ -30,7 +30,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
@@ -52,27 +51,27 @@ class ConfigAccountController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // Accounts
-        $configData->setGlobalSearch(Request::analyzeBool('account_globalsearch_enabled', false));
-        $configData->setAccountPassToImage(Request::analyzeBool('account_passtoimage_enabled', false));
-        $configData->setAccountLink(Request::analyzeBool('account_link_enabled', false));
-        $configData->setAccountFullGroupAccess(Request::analyzeBool('account_fullgroup_access_enabled', false));
-        $configData->setAccountCount(Request::analyzeInt('account_count', 10));
-        $configData->setResultsAsCards(Request::analyzeBool('account_resultsascards_enabled', false));
-        $configData->setAccountExpireEnabled(Request::analyzeBool('account_expire_enabled', false));
-        $configData->setAccountExpireTime(Request::analyzeInt('account_expire_time', 10368000) * 24 * 3600);
+        $configData->setGlobalSearch($this->request->analyzeBool('account_globalsearch_enabled', false));
+        $configData->setAccountPassToImage($this->request->analyzeBool('account_passtoimage_enabled', false));
+        $configData->setAccountLink($this->request->analyzeBool('account_link_enabled', false));
+        $configData->setAccountFullGroupAccess($this->request->analyzeBool('account_fullgroup_access_enabled', false));
+        $configData->setAccountCount($this->request->analyzeInt('account_count', 10));
+        $configData->setResultsAsCards($this->request->analyzeBool('account_resultsascards_enabled', false));
+        $configData->setAccountExpireEnabled($this->request->analyzeBool('account_expire_enabled', false));
+        $configData->setAccountExpireTime($this->request->analyzeInt('account_expire_time', 10368000) * 24 * 3600);
 
         // Files
-        $filesEnabled = Request::analyzeBool('files_enabled', false);
+        $filesEnabled = $this->request->analyzeBool('files_enabled', false);
 
         if ($filesEnabled) {
-            $filesAllowedSize = Request::analyzeInt('files_allowed_size', 1024);
+            $filesAllowedSize = $this->request->analyzeInt('files_allowed_size', 1024);
 
             if ($filesAllowedSize >= 16384) {
                 $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('El tamaño máximo por archivo es de 16MB'));
             }
 
             $configData->setFilesEnabled(true);
-            $configData->setFilesAllowedExts(ConfigUtil::filesExtsAdapter(Request::analyzeString('files_allowed_exts')));
+            $configData->setFilesAllowedExts(ConfigUtil::filesExtsAdapter($this->request->analyzeString('files_allowed_exts')));
             $configData->setFilesAllowedSize($filesAllowedSize);
 
             if ($configData->isFilesEnabled() === false) {
@@ -85,13 +84,13 @@ class ConfigAccountController extends SimpleControllerBase
         }
 
         // Public Links
-        $pubLinksEnabled = Request::analyzeBool('publiclinks_enabled', false);
+        $pubLinksEnabled = $this->request->analyzeBool('publiclinks_enabled', false);
 
         if ($pubLinksEnabled === true) {
             $configData->setPublinksEnabled(true);
-            $configData->setPublinksImageEnabled(Request::analyzeBool('publiclinks_image_enabled', false));
-            $configData->setPublinksMaxTime(Request::analyzeInt('publiclinks_maxtime', 10) * 60);
-            $configData->setPublinksMaxViews(Request::analyzeInt('publiclinks_maxviews', 3));
+            $configData->setPublinksImageEnabled($this->request->analyzeBool('publiclinks_image_enabled', false));
+            $configData->setPublinksMaxTime($this->request->analyzeInt('publiclinks_maxtime', 10) * 60);
+            $configData->setPublinksMaxViews($this->request->analyzeInt('publiclinks_maxviews', 3));
 
             if ($configData->isPublinksEnabled() === false) {
                 $eventMessage->addDescription(__u('Enlaces públicos habilitados'));

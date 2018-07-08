@@ -28,6 +28,7 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -52,12 +53,18 @@ class LoginController extends ControllerBase
     public function loginAction()
     {
         try {
-            $from = Request::analyzeString('from');
-
             $loginService = $this->dic->get(LoginService::class);
 
-            if ($from && Hash::checkMessage($from, $this->configData->getPasswordSalt(), Request::analyzeString('h'))) {
-                $loginService->setFrom($from);
+            $from = $this->request->analyzeString('from');
+
+            if ($from) {
+                try {
+                    $this->request->verifySignature($this->configData->getPasswordSalt(), 'from');
+
+                    $loginService->setFrom($from);
+                } catch (SPException $e) {
+                    processException($e);
+                }
             }
 
             $loginResponmse = $loginService->doLogin();
@@ -134,12 +141,17 @@ class LoginController extends ControllerBase
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
 //        $this->view->assign('updated', SessionFactory::getAppUpdated());
 
-        $from = Request::analyzeString('from');
-        $hash = Request::analyzeString('h');
+        $from = $this->request->analyzeString('from');
 
-        if ($from && Hash::checkMessage($from, $this->configData->getPasswordSalt(), $hash)) {
-            $this->view->assign('from', $from);
-            $this->view->assign('from_hash', $hash);
+        if ($from) {
+            try {
+                $this->request->verifySignature($this->configData->getPasswordSalt());
+
+                $this->view->assign('from', $from);
+                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+            } catch (SPException $e) {
+                processException($e);
+            }
         }
 
         $this->view();

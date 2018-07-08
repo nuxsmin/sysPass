@@ -30,7 +30,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
 use SP\Services\MailService;
@@ -53,16 +52,16 @@ class ConfigMailController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         // Mail
-        $mailEnabled = Request::analyzeBool('mail_enabled', false);
-        $mailServer = Request::analyzeString('mail_server');
-        $mailPort = Request::analyzeInt('mail_port', 25);
-        $mailUser = Request::analyzeString('mail_user');
-        $mailPass = Request::analyzeEncrypted('mail_pass');
-        $mailSecurity = Request::analyzeString('mail_security');
-        $mailFrom = Request::analyzeEmail('mail_from');
-        $mailRequests = Request::analyzeBool('mail_requests_enabled', false);
-        $mailAuth = Request::analyzeBool('mail_auth_enabled', false);
-        $mailRecipients = ConfigUtil::mailAddressesAdapter(Request::analyzeString('mail_recipients'));
+        $mailEnabled = $this->request->analyzeBool('mail_enabled', false);
+        $mailServer = $this->request->analyzeString('mail_server');
+        $mailPort = $this->request->analyzeInt('mail_port', 25);
+        $mailUser = $this->request->analyzeString('mail_user');
+        $mailPass = $this->request->analyzeEncrypted('mail_pass');
+        $mailSecurity = $this->request->analyzeString('mail_security');
+        $mailFrom = $this->request->analyzeEmail('mail_from');
+        $mailRequests = $this->request->analyzeBool('mail_requests_enabled', false);
+        $mailAuth = $this->request->analyzeBool('mail_auth_enabled', false);
+        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom || count($mailRecipients) === 0)) {
@@ -77,7 +76,7 @@ class ConfigMailController extends SimpleControllerBase
             $configData->setMailSecurity($mailSecurity);
             $configData->setMailFrom($mailFrom);
             $configData->setMailRecipients($mailRecipients);
-            $configData->setMailEvents(Request::analyzeArray('mail_events', function ($items) {
+            $configData->setMailEvents($this->request->analyzeArray('mail_events', function ($items) {
                 return ConfigUtil::eventsAdapter($items);
             }));
 
@@ -114,12 +113,12 @@ class ConfigMailController extends SimpleControllerBase
     public function checkAction()
     {
         $mailParams = new MailParams();
-        $mailParams->server = Request::analyzeString('mail_server');
-        $mailParams->port = Request::analyzeInt('mail_port', 25);
-        $mailParams->security = Request::analyzeString('mail_security');
-        $mailParams->from = Request::analyzeEmail('mail_from');
-        $mailParams->mailAuthenabled = Request::analyzeBool('mail_authenabled', false);
-        $mailRecipients = ConfigUtil::mailAddressesAdapter(Request::analyzeString('mail_recipients'));
+        $mailParams->server = $this->request->analyzeString('mail_server');
+        $mailParams->port = $this->request->analyzeInt('mail_port', 25);
+        $mailParams->security = $this->request->analyzeString('mail_security');
+        $mailParams->from = $this->request->analyzeEmail('mail_from');
+        $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_authenabled', false);
+        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
         if (!$mailParams->server || empty($mailParams->from) || empty($mailRecipients)) {
@@ -127,8 +126,8 @@ class ConfigMailController extends SimpleControllerBase
         }
 
         if ($mailParams->mailAuthenabled) {
-            $mailParams->user = Request::analyzeString('mail_user');
-            $mailParams->pass = Request::analyzeEncrypted('mail_pass');
+            $mailParams->user = $this->request->analyzeString('mail_user');
+            $mailParams->pass = $this->request->analyzeEncrypted('mail_pass');
         }
 
         try {

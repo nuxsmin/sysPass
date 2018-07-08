@@ -28,7 +28,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -58,7 +57,7 @@ class AccountHistoryManagerController extends ControllerBase
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -74,7 +73,7 @@ class AccountHistoryManagerController extends ControllerBase
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getAccountsHistoryGrid($this->accountHistoryService->search($itemSearchData)), $itemSearchData);
     }
@@ -88,7 +87,7 @@ class AccountHistoryManagerController extends ControllerBase
     {
         try {
             if ($id === null) {
-                $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->eventDispatcher->notifyEvent('delete.accountHistory.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))

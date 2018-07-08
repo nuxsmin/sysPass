@@ -24,11 +24,11 @@
 
 namespace SP\Mvc\Controller;
 
-use Klein\Klein;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Util\Checks;
+use SP\Http\Uri;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -54,41 +54,52 @@ trait ControllerTrait
      * Comprobar si la sesión está activa
      *
      * @param ContextInterface $context
-     * @param Klein            $router
+     * @param Request          $request
+     * @param \Closure         $onRedirect
      */
-    protected function checkLoggedInSession(ContextInterface $context, Klein $router)
+    protected function checkLoggedInSession(ContextInterface $context, Request $request, \Closure $onRedirect)
     {
         if (!$context->isLoggedIn()) {
-            if (Checks::isJson($router)) {
+            if ($request->isJson()) {
                 $JsonResponse = new JsonResponse();
                 $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
                 $JsonResponse->setStatus(10);
+
                 Json::returnJson($JsonResponse);
-            } elseif (Checks::isAjax($router)) {
+            } elseif ($request->isAjax()) {
                 Util::logout();
             } else {
-                $route = Request::analyzeString('r');
-                $hash = Request::analyzeString('h');
+                try {
+                    $route = $request->analyzeString('r');
+                    $hash = $request->analyzeString('h');
 
-                if ($route && $hash) {
-                    $redirect = 'index.php?r=login&from=' . urlencode($route) . '&h=' . $hash;
-                } else {
-                    $redirect = 'index.php?r=login';
+                    $uri = new Uri('index.php');
+                    $uri->addParam('_r', 'login');
+
+                    if ($route && $hash) {
+                        $key = $context->getConfig()->getPasswordSalt();
+                        $request->verifySignature($key);
+
+                        $uri->addParam('from', $route);
+
+                        $onRedirect->call($this, $uri->getUriSigned($key));
+                    } else {
+                        $onRedirect->call($this, $uri->getUri());
+                    }
+                } catch (SPException $e) {
+                    processException($e);
                 }
-
-                $router->response()
-                    ->redirect($redirect)
-                    ->send(true);
             }
         }
     }
 
     /**
      * @param ContextInterface $context
+     * @param Request          $request
      */
-    protected function checkSecurityToken(ContextInterface $context)
+    protected function checkSecurityToken(ContextInterface $context, Request $request)
     {
-        $sk = Request::analyzeString('sk');
+        $sk = $request->analyzeString('sk');
         $sessionKey = $context->getSecurityKey();
 
         if (!$sk || (null !== $sessionKey && $sessionKey !== $sk)) {

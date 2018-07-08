@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -30,7 +30,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
@@ -81,8 +80,8 @@ class ConfigBackupController extends SimpleControllerBase
      */
     public function xmlExportAction()
     {
-        $exportPassword = Request::analyzeEncrypted('exportPwd');
-        $exportPasswordR = Request::analyzeEncrypted('exportPwdR');
+        $exportPassword = $this->request->analyzeEncrypted('exportPwd');
+        $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves no coinciden'));

@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -72,7 +71,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -88,7 +87,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getUserGroupsGrid($this->userGroupService->search($itemSearchData)), $itemSearchData);
     }
@@ -201,7 +200,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
         try {
             if ($id === null) {
-                $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
@@ -247,7 +246,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $id = $this->userGroupService->create($groupData, $groupData->getUsers());
 
-            $this->addCustomFieldsForItem(Acl::GROUP, $id);
+            $this->addCustomFieldsForItem(Acl::GROUP, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('create.userGroup',
                 new Event($this, EventMessage::factory()
@@ -287,7 +286,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $this->userGroupService->update($groupData);
 
-            $this->updateCustomFieldsForItem(Acl::GROUP, $id);
+            $this->updateCustomFieldsForItem(Acl::GROUP, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()

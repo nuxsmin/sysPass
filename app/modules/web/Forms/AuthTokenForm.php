@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
-use SP\Http\Request;
 
 /**
  * Class ApiTokenForm
@@ -72,13 +71,13 @@ class AuthTokenForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->refresh = Request::analyzeBool('refreshtoken', false);
+        $this->refresh = $this->request->analyzeBool('refreshtoken', false);
 
         $this->authTokenData = new AuthTokenData();
         $this->authTokenData->setId($this->itemId);
-        $this->authTokenData->setUserId(Request::analyzeInt('users'));
-        $this->authTokenData->setActionId(Request::analyzeInt('actions'));
-        $this->authTokenData->setHash(Request::analyzeEncrypted('pass'));
+        $this->authTokenData->setUserId($this->request->analyzeInt('users'));
+        $this->authTokenData->setActionId($this->request->analyzeInt('actions'));
+        $this->authTokenData->setHash($this->request->analyzeEncrypted('pass'));
     }
 
     /**

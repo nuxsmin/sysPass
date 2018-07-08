@@ -30,7 +30,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
@@ -51,15 +50,15 @@ class ConfigGeneralController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // General
-        $siteLang = Request::analyzeString('sitelang');
-        $siteTheme = Request::analyzeString('sitetheme', 'material-blue');
-        $sessionTimeout = Request::analyzeInt('session_timeout', 300);
-        $httpsEnabled = Request::analyzeBool('https_enabled', false);
-        $debugEnabled = Request::analyzeBool('debug_enabled', false);
-        $maintenanceEnabled = Request::analyzeBool('maintenance_enabled', false);
-        $checkUpdatesEnabled = Request::analyzeBool('check_updates_enabled', false);
-        $checkNoticesEnabled = Request::analyzeBool('check_notices_enabled', false);
-        $encryptSessionEnabled = Request::analyzeBool('encrypt_session_enabled', false);
+        $siteLang = $this->request->analyzeString('sitelang');
+        $siteTheme = $this->request->analyzeString('sitetheme', 'material-blue');
+        $sessionTimeout = $this->request->analyzeInt('session_timeout', 300);
+        $httpsEnabled = $this->request->analyzeBool('https_enabled', false);
+        $debugEnabled = $this->request->analyzeBool('debug_enabled', false);
+        $maintenanceEnabled = $this->request->analyzeBool('maintenance_enabled', false);
+        $checkUpdatesEnabled = $this->request->analyzeBool('check_updates_enabled', false);
+        $checkNoticesEnabled = $this->request->analyzeBool('check_notices_enabled', false);
+        $encryptSessionEnabled = $this->request->analyzeBool('encrypt_session_enabled', false);
 
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);
@@ -72,14 +71,14 @@ class ConfigGeneralController extends SimpleControllerBase
         $configData->setEncryptSession($encryptSessionEnabled);
 
         // Events
-        $logEnabled = Request::analyzeBool('log_enabled', false);
-        $syslogEnabled = Request::analyzeBool('syslog_enabled', false);
-        $remoteSyslogEnabled = Request::analyzeBool('remotesyslog_enabled', false);
-        $syslogServer = Request::analyzeString('remotesyslog_server');
-        $syslogPort = Request::analyzeInt('remotesyslog_port', 0);
+        $logEnabled = $this->request->analyzeBool('log_enabled', false);
+        $syslogEnabled = $this->request->analyzeBool('syslog_enabled', false);
+        $remoteSyslogEnabled = $this->request->analyzeBool('remotesyslog_enabled', false);
+        $syslogServer = $this->request->analyzeString('remotesyslog_server');
+        $syslogPort = $this->request->analyzeInt('remotesyslog_port', 0);
 
         $configData->setLogEnabled($logEnabled);
-        $configData->setLogEvents(Request::analyzeArray('log_events', function ($items) {
+        $configData->setLogEvents($this->request->analyzeArray('log_events', function ($items) {
             return ConfigUtil::eventsAdapter($items);
         }, []));
 
@@ -104,11 +103,11 @@ class ConfigGeneralController extends SimpleControllerBase
         }
 
         // Proxy
-        $proxyEnabled = Request::analyzeBool('proxy_enabled', false);
-        $proxyServer = Request::analyzeString('proxy_server');
-        $proxyPort = Request::analyzeInt('proxy_port', 8080);
-        $proxyUser = Request::analyzeString('proxy_user');
-        $proxyPass = Request::analyzeEncrypted('proxy_pass');
+        $proxyEnabled = $this->request->analyzeBool('proxy_enabled', false);
+        $proxyServer = $this->request->analyzeString('proxy_server');
+        $proxyPort = $this->request->analyzeInt('proxy_port', 8080);
+        $proxyUser = $this->request->analyzeString('proxy_user');
+        $proxyPass = $this->request->analyzeEncrypted('proxy_pass');
 
 
         // Valores para Proxy
@@ -136,11 +135,11 @@ class ConfigGeneralController extends SimpleControllerBase
         }
 
         // Autentificación
-        $authBasicEnabled = Request::analyzeBool('authbasic_enabled', false);
-        $authBasicAutologinEnabled = Request::analyzeBool('authbasicautologin_enabled', false);
-        $authBasicDomain = Request::analyzeString('authbasic_domain');
-        $authSsoDefaultGroup = Request::analyzeInt('sso_defaultgroup');
-        $authSsoDefaultProfile = Request::analyzeInt('sso_defaultprofile');
+        $authBasicEnabled = $this->request->analyzeBool('authbasic_enabled', false);
+        $authBasicAutologinEnabled = $this->request->analyzeBool('authbasicautologin_enabled', false);
+        $authBasicDomain = $this->request->analyzeString('authbasic_domain');
+        $authSsoDefaultGroup = $this->request->analyzeInt('sso_defaultgroup');
+        $authSsoDefaultProfile = $this->request->analyzeInt('sso_defaultprofile');
 
         // Valores para Autentificación
         if ($authBasicEnabled) {

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Upgrade\UpgradeAppService;
@@ -58,11 +57,11 @@ class UpgradeController extends ControllerBase
      */
     public function upgradeAction()
     {
-        if (Request::analyzeBool('chkConfirm', false) === false) {
+        if ($this->request->analyzeBool('chkConfirm', false) === false) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Es necesario confirmar la actualización'));
         }
 
-        if (Request::analyzeString('key') !== $this->configData->getUpgradeKey()) {
+        if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Código de seguridad incorrecto'));
         }
 

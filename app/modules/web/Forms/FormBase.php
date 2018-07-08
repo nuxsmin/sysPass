@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Dic\InjectableTrait;
+use SP\Http\Request;
 
 /**
  * Class FormBase
@@ -55,11 +56,16 @@ abstract class FormBase
      * @var SessionContext
      */
     protected $context;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * FormBase constructor.
      *
      * @param $itemId
+     *
      * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct($itemId = null)
@@ -73,12 +79,14 @@ abstract class FormBase
     /**
      * @param Config           $config
      * @param ContextInterface $session
+     * @param Request          $request
      */
-    public function inject(Config $config, ContextInterface $session)
+    public function inject(Config $config, ContextInterface $session, Request $request)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
         $this->context = $session;
+        $this->request = $request;
     }
 
     /**

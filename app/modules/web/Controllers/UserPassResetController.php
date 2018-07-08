@@ -29,7 +29,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Repositories\Track\TrackRequest;
@@ -82,8 +81,8 @@ class UserPassResetController extends ControllerBase
         try {
             $this->checkTracking();
 
-            $login = Request::analyzeString('login');
-            $email = Request::analyzeEmail('email');
+            $login = $this->request->analyzeString('login');
+            $email = $this->request->analyzeEmail('email');
 
             $userData = $this->dic->get(UserService::class)->getByLogin($login);
 
@@ -163,8 +162,8 @@ class UserPassResetController extends ControllerBase
         try {
             $this->checkTracking();
 
-            $pass = Request::analyzeEncrypted('password');
-            $passR = Request::analyzeEncrypted('password_repeat');
+            $pass = $this->request->analyzeEncrypted('password');
+            $passR = $this->request->analyzeEncrypted('password_repeat');
 
             if (!$pass || !$passR) {
                 throw new ValidationException(__u('La clave no puede estar en blanco'));
@@ -174,7 +173,7 @@ class UserPassResetController extends ControllerBase
                 throw new ValidationException(__u('Las claves no coinciden'));
             }
 
-            $hash = Request::analyzeString('hash');
+            $hash = $this->request->analyzeString('hash');
 
             $userPassRecoverService = $this->dic->get(UserPassRecoverService::class);
             $userId = $userPassRecoverService->getUserIdForHash($hash);

@@ -26,7 +26,6 @@ namespace SP\Util;
 
 defined('APP_ROOT') || die();
 
-
 /**
  * Class Filter para el filtrado de datos
  *
@@ -38,10 +37,41 @@ class Filter
      * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares
      *
      * @param $string
+     *
      * @return mixed
      */
     public static function safeSearchString($string)
     {
         return str_replace(['/', '[', '\\', ']', '%', '{', '}', '*', '$'], '', (string)$string);
+    }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    public static function getString($value): string
+    {
+        return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+    }
+
+    /**
+     * @param $value
+     *
+     * @return int
+     */
+    public static function getInt($value): int
+    {
+        return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+    }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    public static function getEmail($value): string
+    {
+        return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
     }
 }

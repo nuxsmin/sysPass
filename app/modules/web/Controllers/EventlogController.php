@@ -78,7 +78,7 @@ class EventlogController extends ControllerBase
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemsGridHelper->setQueryTimeStart(microtime(true));
 
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getEventLogGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
     }

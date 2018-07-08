@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,6 +31,7 @@ use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
+use SP\Http\Request;
 use SP\Mvc\View\Template;
 
 /**
@@ -64,6 +65,10 @@ abstract class HelperBase
      * @var ContainerInterface
      */
     protected $dic;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Constructor
@@ -77,6 +82,7 @@ abstract class HelperBase
     final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
     {
         $this->dic = $container;
+        $this->request = $this->dic->get(Request::class);
         $this->view = $template;
         $this->config = $config;
         $this->configData = $config->getConfigData();

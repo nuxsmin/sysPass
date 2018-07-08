@@ -29,7 +29,6 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -106,15 +105,15 @@ class InstallController extends ControllerBase
     public function installAction()
     {
         $installData = new InstallData();
-        $installData->setSiteLang(Request::analyzeString('sitelang', 'en_US'));
-        $installData->setAdminLogin(Request::analyzeString('adminlogin', 'admin'));
-        $installData->setAdminPass(Request::analyzeEncrypted('adminpass'));
-        $installData->setMasterPassword(Request::analyzeEncrypted('masterpassword'));
-        $installData->setDbAdminUser(Request::analyzeString('dbuser', 'root'));
-        $installData->setDbAdminPass(Request::analyzeEncrypted('dbpass'));
-        $installData->setDbName(Request::analyzeString('dbname', 'syspass'));
-        $installData->setDbHost(Request::analyzeString('dbhost', 'localhost'));
-        $installData->setHostingMode(Request::analyzeBool('hostingmode', false));
+        $installData->setSiteLang($this->request->analyzeString('sitelang', 'en_US'));
+        $installData->setAdminLogin($this->request->analyzeString('adminlogin', 'admin'));
+        $installData->setAdminPass($this->request->analyzeEncrypted('adminpass'));
+        $installData->setMasterPassword($this->request->analyzeEncrypted('masterpassword'));
+        $installData->setDbAdminUser($this->request->analyzeString('dbuser', 'root'));
+        $installData->setDbAdminPass($this->request->analyzeEncrypted('dbpass'));
+        $installData->setDbName($this->request->analyzeString('dbname', 'syspass'));
+        $installData->setDbHost($this->request->analyzeString('dbhost', 'localhost'));
+        $installData->setHostingMode($this->request->analyzeBool('hostingmode', false));
 
         try {
             $this->dic->get(Installer::class)->run($installData);

@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\AuthToken\AuthTokenService;
@@ -103,7 +102,7 @@ class AccessManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.itemlist.accesses', new Event($this));
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ACCESS_MANAGE), Request::analyzeInt('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(Acl::ACCESS_MANAGE), $this->request->analyzeInt('tabIndex', 0));
 
         $this->view();
     }

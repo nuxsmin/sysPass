@@ -32,7 +32,6 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -70,7 +69,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -86,7 +85,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getPublicLinksGrid($this->publicLinkService->search($itemSearchData)), $itemSearchData);
     }
@@ -224,7 +223,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
         try {
             if ($id === null) {
-                $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::PUBLICLINK, $id);
 

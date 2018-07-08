@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
-use SP\Http\Request;
 
 /**
  * Class CustomFieldDefForm
@@ -70,12 +69,12 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     {
         $this->customFieldDefData = new CustomFieldDefinitionData();
         $this->customFieldDefData->setId($this->itemId);
-        $this->customFieldDefData->setName(Request::analyzeString('name'));
-        $this->customFieldDefData->setTypeId(Request::analyzeInt('type'));
-        $this->customFieldDefData->setModuleId(Request::analyzeInt('module'));
-        $this->customFieldDefData->setHelp(Request::analyzeString('help'));
-        $this->customFieldDefData->setRequired(Request::analyzeBool('required', false));
-        $this->customFieldDefData->setIsEncrypted(Request::analyzeBool('encrypted', false));
+        $this->customFieldDefData->setName($this->request->analyzeString('name'));
+        $this->customFieldDefData->setTypeId($this->request->analyzeInt('type'));
+        $this->customFieldDefData->setModuleId($this->request->analyzeInt('module'));
+        $this->customFieldDefData->setHelp($this->request->analyzeString('help'));
+        $this->customFieldDefData->setRequired($this->request->analyzeBool('required', false));
+        $this->customFieldDefData->setIsEncrypted($this->request->analyzeBool('encrypted', false));
     }
 
     /**

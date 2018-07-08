@@ -86,7 +86,7 @@ class ChecksController implements ItemControllerInterface
         $ldapBase = Request::analyze('ldap_base');
         $ldapGroup = Request::analyze('ldap_group');
         $ldapBindUser = Request::analyze('ldap_binduser');
-        $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
+        $ldapBindPass = Request::_analyzeEncrypted('ldap_bindpass');
 
         if (!$ldapServer || !$ldapBase || !$ldapBindUser || !$ldapBindPass) {
             $this->JsonResponse->setDescription(__('Los parámetros de LDAP no están configurados', false));
@@ -121,7 +121,7 @@ class ChecksController implements ItemControllerInterface
     {
         $dokuWikiUrl = Request::analyze('dokuwiki_url');
         $dokuWikiUser = Request::analyze('dokuwiki_user');
-        $dokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
+        $dokuWikiPass = Request::_analyzeEncrypted('dokuwiki_pass');
 
         if (!$dokuWikiUrl) {
             $this->JsonResponse->setDescription(__('Los parámetros de DokuWiki no están configurados', false));

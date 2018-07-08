@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
-use SP\Http\Request;
 
 /**
  * Class UserGroupForm
@@ -70,9 +69,9 @@ class UserGroupForm extends FormBase implements FormInterface
     {
         $this->groupData = new UserGroupData();
         $this->groupData->setId($this->itemId);
-        $this->groupData->setName(Request::analyzeString('name'));
-        $this->groupData->setDescription(Request::analyzeString('description'));
-        $this->groupData->setUsers(Request::analyzeArray('users'));
+        $this->groupData->setName($this->request->analyzeString('name'));
+        $this->groupData->setDescription($this->request->analyzeString('description'));
+        $this->groupData->setUsers($this->request->analyzeArray('users'));
     }
 
     /**

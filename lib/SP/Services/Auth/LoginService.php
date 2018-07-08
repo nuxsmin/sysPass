@@ -37,7 +37,6 @@ use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
 use SP\Providers\Auth\AuthProvider;
-use SP\Providers\Auth\AuthResult;
 use SP\Providers\Auth\AuthUtil;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
@@ -104,23 +103,10 @@ class LoginService extends Service
      * @var string
      */
     protected $from;
-
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @var Request
      */
-    public function initialize()
-    {
-        $this->configData = $this->config->getConfigData();
-        $this->theme = $this->dic->get(Theme::class);
-        $this->userService = $this->dic->get(UserService::class);
-        $this->language = $this->dic->get(Language::class);
-        $this->trackService = $this->dic->get(TrackService::class);
-
-        $this->userLoginData = new UserLoginData();
-        $this->trackRequest = TrackService::getTrackRequest('login');
-    }
+    protected $request;
 
     /**
      * Ejecutar las acciones de login
@@ -137,8 +123,8 @@ class LoginService extends Service
      */
     public function doLogin()
     {
-        $this->userLoginData->setLoginUser(Request::analyzeString('user'));
-        $this->userLoginData->setLoginPass(Request::analyzeEncrypted('pass'));
+        $this->userLoginData->setLoginUser($this->request->analyzeString('user'));
+        $this->userLoginData->setLoginPass($this->request->analyzeEncrypted('pass'));
 
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
@@ -154,9 +140,9 @@ class LoginService extends Service
         if (($result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData)) !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
             foreach ($result as $authResult) {
-                /** @var AuthResult $authResult */
                 if ($authResult->isAuthGranted() === true
-                    && $this->{$authResult->getAuth()}($authResult->getData()) === true) {
+                    && $this->{$authResult->getAuth()}($authResult->getData()) === true
+                ) {
                     break;
                 }
             }
@@ -267,8 +253,8 @@ class LoginService extends Service
         $temporaryMasterPass = $this->dic->get(TemporaryMasterPassService::class);
         $userPassService = $this->dic->get(UserPassService::class);
 
-        $masterPass = Request::analyzeEncrypted('mpass');
-        $oldPass = Request::analyzeEncrypted('oldpass');
+        $masterPass = $this->request->analyzeString('mpass');
+        $oldPass = $this->request->analyzeString('oldpass');
 
         try {
             if ($masterPass) {
@@ -413,9 +399,28 @@ class LoginService extends Service
     }
 
     /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
+    protected function initialize()
+    {
+        $this->configData = $this->config->getConfigData();
+        $this->theme = $this->dic->get(Theme::class);
+        $this->userService = $this->dic->get(UserService::class);
+        $this->language = $this->dic->get(Language::class);
+        $this->trackService = $this->dic->get(TrackService::class);
+        $this->request = $this->dic->get(Request::class);
+
+        $this->userLoginData = new UserLoginData();
+        $this->trackRequest = TrackService::getTrackRequest('login');
+    }
+
+    /**
      * Autentificación LDAP
      *
      * @param LdapAuthData $authData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
@@ -525,6 +530,7 @@ class LoginService extends Service
      * Autentificación en BD
      *
      * @param DatabaseAuthData $authData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
@@ -566,6 +572,7 @@ class LoginService extends Service
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
      * @param BrowserAuthData $authData
+     *
      * @return mixed
      * @throws AuthException
      */

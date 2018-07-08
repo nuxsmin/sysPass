@@ -29,7 +29,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
@@ -50,10 +49,10 @@ class ConfigWikiController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         // Wiki
-        $wikiEnabled = Request::analyzeBool('wiki_enabled', false);
-        $wikiSearchUrl = Request::analyzeString('wiki_searchurl');
-        $wikiPageUrl = Request::analyzeString('wiki_pageurl');
-        $wikiFilter = Request::analyzeString('wiki_filter');
+        $wikiEnabled = $this->request->analyzeBool('wiki_enabled', false);
+        $wikiSearchUrl = $this->request->analyzeString('wiki_searchurl');
+        $wikiPageUrl = $this->request->analyzeString('wiki_pageurl');
+        $wikiFilter = $this->request->analyzeString('wiki_filter');
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
@@ -76,12 +75,12 @@ class ConfigWikiController extends SimpleControllerBase
         }
 
         // DokuWiki
-        $dokuWikiEnabled = Request::analyzeBool('dokuwiki_enabled', false);
-        $dokuWikiUrl = Request::analyzeString('dokuwiki_url');
-        $dokuWikiUrlBase = Request::analyzeString('dokuwiki_urlbase');
-        $dokuWikiUser = Request::analyzeString('dokuwiki_user');
-        $dokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
-        $dokuWikiNamespace = Request::analyzeString('dokuwiki_namespace');
+        $dokuWikiEnabled = $this->request->analyzeBool('dokuwiki_enabled', false);
+        $dokuWikiUrl = $this->request->analyzeString('dokuwiki_url');
+        $dokuWikiUrlBase = $this->request->analyzeString('dokuwiki_urlbase');
+        $dokuWikiUser = $this->request->analyzeString('dokuwiki_user');
+        $dokuWikiPass = $this->request->analyzeEncrypted('dokuwiki_pass');
+        $dokuWikiNamespace = $this->request->analyzeString('dokuwiki_namespace');
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {

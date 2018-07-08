@@ -35,7 +35,6 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeaderSort;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridSort;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountSearchService;
@@ -82,8 +81,7 @@ class AccountSearchHelper extends HelperBase
     /**
      * Obtener los datos para la caja de búsqueda
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getSearchBox()
@@ -98,7 +96,9 @@ class AccountSearchHelper extends HelperBase
     /**
      * Obtener los resultados de una búsqueda
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountSearch()
     {
@@ -303,7 +303,7 @@ class AccountSearchHelper extends HelperBase
     {
         $accountSearchFilter = $this->context->getSearchFilters();
 
-        if ($accountSearchFilter !== null && empty(Request::analyzeString('sk'))) {
+        if ($accountSearchFilter !== null && empty($this->request->analyzeString('sk'))) {
             // Obtener el filtro de búsqueda desde la sesión
             return $accountSearchFilter;
         }
@@ -312,16 +312,16 @@ class AccountSearchHelper extends HelperBase
         $limitCount = ($userPreferences->getResultsPerPage() > 0) ? $userPreferences->getResultsPerPage() : $this->configData->getAccountCount();
 
         $accountSearchFilter = new AccountSearchFilter();
-        $accountSearchFilter->setSortKey(Request::analyzeInt('skey', 0));
-        $accountSearchFilter->setSortOrder(Request::analyzeInt('sorder', 0));
-        $accountSearchFilter->setLimitStart(Request::analyzeInt('start', 0));
-        $accountSearchFilter->setLimitCount(Request::analyzeInt('rpp', $limitCount));
-        $accountSearchFilter->setGlobalSearch(Request::analyzeBool('gsearch', false));
-        $accountSearchFilter->setClientId(Request::analyzeInt('client'));
-        $accountSearchFilter->setCategoryId(Request::analyzeInt('category'));
-        $accountSearchFilter->setTagsId(Request::analyzeArray('tags'));
-        $accountSearchFilter->setSearchFavorites(Request::analyzeBool('searchfav', false));
-        $accountSearchFilter->setTxtSearch(Request::analyzeString('search'));
+        $accountSearchFilter->setSortKey($this->request->analyzeInt('skey', 0));
+        $accountSearchFilter->setSortOrder($this->request->analyzeInt('sorder', 0));
+        $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));
+        $accountSearchFilter->setLimitCount($this->request->analyzeInt('rpp', $limitCount));
+        $accountSearchFilter->setGlobalSearch($this->request->analyzeBool('gsearch', false));
+        $accountSearchFilter->setClientId($this->request->analyzeInt('client'));
+        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category'));
+        $accountSearchFilter->setTagsId($this->request->analyzeArray('tags'));
+        $accountSearchFilter->setSearchFavorites($this->request->analyzeBool('searchfav', false));
+        $accountSearchFilter->setTxtSearch($this->request->analyzeString('search'));
         $accountSearchFilter->setSortViews($userPreferences->isSortViews());
 
         return $accountSearchFilter;

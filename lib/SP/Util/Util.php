@@ -28,7 +28,6 @@ use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
-use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -49,6 +48,7 @@ class Util
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @param bool $checKStrength
+     *
      * @return string
      */
     public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true, $checKStrength = true)
@@ -119,6 +119,7 @@ class Util
      * Generar una cadena aleatoria usuando criptografía.
      *
      * @param int $length opcional, con la longitud de la cadena
+     *
      * @return string
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
@@ -133,6 +134,7 @@ class Util
      *
      * @param string $s con el nombre de la variable
      * @param string $d con el valor por defecto
+     *
      * @return string con el valor de la variable
      */
     public static function init_var($s, $d = '')
@@ -163,6 +165,7 @@ class Util
      * @param array     $data
      * @param bool|null $useCookie
      * @param bool      $weak
+     *
      * @return bool|string
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -295,6 +298,7 @@ class Util
      * Devuelve información sobre la aplicación.
      *
      * @param string $index con la key a devolver
+     *
      * @return array|string con las propiedades de la aplicación
      */
     public static function getAppInfo($index = null)
@@ -334,6 +338,7 @@ class Util
      *
      * @param string       $currentVersion
      * @param array|string $upgradeableVersion
+     *
      * @return bool True si la versión es menor.
      */
     public static function checkVersion($currentVersion, $upgradeableVersion)
@@ -366,6 +371,7 @@ class Util
      * Devuelve una versión normalizada para poder ser comparada
      *
      * @param string $versionIn
+     *
      * @return string
      */
     private static function normalizeVersionForCompare($versionIn)
@@ -441,9 +447,11 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
+     *
      * @param mixed $in     The variable to check
      * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
+     *
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
     public static function boolval($in, $strict = false)
@@ -468,6 +476,7 @@ class Util
      * Recorrer un array y escapar los carácteres no válidos en Javascript.
      *
      * @param $array
+     *
      * @return array
      */
     public static function arrayJSEscape(&$array)
@@ -497,6 +506,7 @@ class Util
      * @param string        $dstClass Class name
      * @param string|object $serialized
      * @param string        $srcClass Nombre de la clase serializada
+     *
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
@@ -537,6 +547,7 @@ class Util
      *
      * @param $object
      * @param $class
+     *
      * @return mixed
      */
     public static function castToClass($object, $class)
@@ -554,6 +565,7 @@ class Util
      * Devuelve la última función llamada tras un error
      *
      * @param string $function La función utilizada como base
+     *
      * @return string
      */
     public static function traceLastCall($function = null)
@@ -578,6 +590,7 @@ class Util
      *
      * @param int    $userId
      * @param string $subject
+     *
      * @return bool
      */
     public static function lockApp($userId, $subject)
@@ -632,15 +645,5 @@ class Util
         }
 
         return [0, 0];
-    }
-
-    /**
-     * @param string     $route
-     * @param ConfigData $configData
-     * @return string
-     */
-    public static function getSecureLink($route, ConfigData $configData)
-    {
-        return 'index.php?r=' . urlencode($route) . '&h=' . Hash::signMessage($route, $configData->getPasswordSalt());
     }
 }

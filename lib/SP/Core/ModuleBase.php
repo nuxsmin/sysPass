@@ -30,6 +30,7 @@ use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
+use SP\Http\Request;
 use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Log\RemoteSyslogHandler;
 use SP\Providers\Log\SyslogHandler;
@@ -61,11 +62,16 @@ abstract class ModuleBase
      * @var Container
      */
     protected $container;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Module constructor.
      *
      * @param Container $container
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -75,10 +81,12 @@ abstract class ModuleBase
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
         $this->router = $container->get(Klein::class);
+        $this->request = $container->get(Request::class);
     }
 
     /**
      * @param string $controller
+     *
      * @return mixed
      */
     abstract public function initialize($controller);
@@ -89,6 +97,7 @@ abstract class ModuleBase
      * Devuelve un error 503 y un reintento de 120s al cliente.
      *
      * @param ContextInterface $context
+     *
      * @return bool
      */
     public function checkMaintenanceMode(ContextInterface $context)

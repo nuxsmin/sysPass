@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
-use SP\Http\Request;
 
 /**
  * Class CategoryForm
@@ -70,8 +69,8 @@ class CategoryForm extends FormBase implements FormInterface
     {
         $this->categoryData = new CategoryData();
         $this->categoryData->setId($this->itemId);
-        $this->categoryData->setName(Request::analyzeString('name'));
-        $this->categoryData->setDescription(Request::analyzeString('description'));
+        $this->categoryData->setName($this->request->analyzeString('name'));
+        $this->categoryData->setDescription($this->request->analyzeString('description'));
     }
 
     /**

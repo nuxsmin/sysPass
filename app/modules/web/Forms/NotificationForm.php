@@ -28,7 +28,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\NotificationData;
-use SP\Http\Request;
 
 /**
  * Class NotificationForm
@@ -71,15 +70,15 @@ class NotificationForm extends FormBase implements FormInterface
     {
         $this->notificationData = new NotificationData();
         $this->notificationData->setId($this->itemId);
-        $this->notificationData->setType(Request::analyzeString('notification_type'));
-        $this->notificationData->setComponent(Request::analyzeString('notification_component'));
-        $this->notificationData->setDescription(NotificationMessage::factory()->addDescription(Request::analyzeString('notification_description')));
-        $this->notificationData->setUserId(Request::analyzeInt('notification_user'));
-        $this->notificationData->setChecked(Request::analyzeBool('notification_checkout', false));
+        $this->notificationData->setType($this->request->analyzeString('notification_type'));
+        $this->notificationData->setComponent($this->request->analyzeString('notification_component'));
+        $this->notificationData->setDescription(NotificationMessage::factory()->addDescription($this->request->analyzeString('notification_description')));
+        $this->notificationData->setUserId($this->request->analyzeInt('notification_user'));
+        $this->notificationData->setChecked($this->request->analyzeBool('notification_checkout', false));
 
         if ($this->context->getUserData()->getIsAdminApp() && $this->notificationData->getUserId() === 0) {
-            $this->notificationData->setOnlyAdmin(Request::analyzeBool('notification_onlyadmin', false));
-            $this->notificationData->setSticky(Request::analyzeBool('notification_sticky', false));
+            $this->notificationData->setOnlyAdmin($this->request->analyzeBool('notification_onlyadmin', false));
+            $this->notificationData->setSticky($this->request->analyzeBool('notification_sticky', false));
         }
     }
 

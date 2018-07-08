@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -67,7 +66,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -83,7 +82,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getAuthTokensGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
     }
@@ -196,7 +195,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
 
         try {
             if ($id === null) {
-                $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::AUTHTOKEN, $id);
 
@@ -245,7 +244,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
 
             $id = $this->authTokenService->create($apiTokenData);
 
-            $this->addCustomFieldsForItem(Acl::AUTHTOKEN, $id);
+            $this->addCustomFieldsForItem(Acl::AUTHTOKEN, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('create.authToken', new Event($this));
 
@@ -297,7 +296,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
                 );
             }
 
-            $this->updateCustomFieldsForItem(Acl::AUTHTOKEN, $id);
+            $this->updateCustomFieldsForItem(Acl::AUTHTOKEN, $id, $this->request);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización actualizada'));
         } catch (ValidationException $e) {

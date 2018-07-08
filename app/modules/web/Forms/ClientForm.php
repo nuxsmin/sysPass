@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
-use SP\Http\Request;
 
 /**
  * Class ClientForm
@@ -70,9 +69,9 @@ class ClientForm extends FormBase implements FormInterface
     {
         $this->clientData = new ClientData();
         $this->clientData->setId($this->itemId);
-        $this->clientData->setName(Request::analyzeString('name'));
-        $this->clientData->setDescription(Request::analyzeString('description'));
-        $this->clientData->setIsGlobal(Request::analyzeBool('isglobal', false));
+        $this->clientData->setName($this->request->analyzeString('name'));
+        $this->clientData->setDescription($this->request->analyzeString('description'));
+        $this->clientData->setIsGlobal($this->request->analyzeBool('isglobal', false));
     }
 
     /**

@@ -34,7 +34,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
@@ -63,12 +62,12 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         $mastePassService = $this->dic->get(MasterPassService::class);
 
-        $currentMasterPass = Request::analyzeEncrypted('current_masterpass');
-        $newMasterPass = Request::analyzeEncrypted('new_masterpass');
-        $newMasterPassR = Request::analyzeEncrypted('new_masterpass_repeat');
-        $confirmPassChange = Request::analyzeBool('confirm_masterpass_change', false);
-        $noAccountPassChange = Request::analyzeBool('no_account_change', false);
-        $taskId = Request::analyzeString('taskId');
+        $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');
+        $newMasterPass = $this->request->analyzeEncrypted('new_masterpass');
+        $newMasterPassR = $this->request->analyzeEncrypted('new_masterpass_repeat');
+        $confirmPassChange = $this->request->analyzeBool('confirm_masterpass_change', false);
+        $noAccountPassChange = $this->request->analyzeBool('no_account_change', false);
+        $taskId = $this->request->analyzeString('taskId');
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Clave maestra actualizada'), [__u('Reinicie la sesión para cambiarla')]);
@@ -185,10 +184,10 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
-            $key = $temporaryMasterPassService->create(Request::analyzeInt('temporary_masterpass_maxtime', 3600));
+            $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
 
-            $groupId = Request::analyzeInt('temporary_masterpass_group');
-            $sendEmail = Request::analyzeBool('temporary_masterpass_email');
+            $groupId = $this->request->analyzeInt('temporary_masterpass_group');
+            $sendEmail = $this->request->analyzeBool('temporary_masterpass_email');
 
             if ($this->configData->isMailEnabled() && $sendEmail && $groupId) {
                 $mailMessage = new MailMessage();

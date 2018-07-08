@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Language;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -60,7 +59,7 @@ class UserSettingsManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.userSettings', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::USERSETTINGS), Request::analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::USERSETTINGS), $this->request->analyzeInt('tabIndex', 0));
 
         $this->view();
     }

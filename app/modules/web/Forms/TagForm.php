@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
-use SP\Http\Request;
 
 /**
  * Class TagForm
@@ -70,7 +69,7 @@ class TagForm extends FormBase implements FormInterface
     {
         $this->tagData = new TagData();
         $this->tagData->setId($this->itemId);
-        $this->tagData->setName(Request::analyzeString('name'));
+        $this->tagData->setName($this->request->analyzeString('name'));
     }
 
     /**

@@ -30,7 +30,6 @@ use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -122,7 +121,7 @@ class ConfigManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.config', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::CONFIG), Request::analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::CONFIG), $this->request->analyzeInt('tabIndex', 0));
 
         $this->view();
     }

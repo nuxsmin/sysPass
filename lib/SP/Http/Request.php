@@ -24,10 +24,14 @@
 
 namespace SP\Http;
 
+use Klein\DataCollection\DataCollection;
 use Klein\Klein;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
+use SP\Util\Filter;
 use SP\Util\Util;
 
 /**
@@ -41,6 +45,37 @@ class Request
      * @var array Directorios seguros para include
      */
     const SECURE_DIRS = ['css', 'js'];
+    /**
+     * @var \Klein\Request
+     */
+    private $request;
+    /**
+     * @var DataCollection
+     */
+    private $params;
+
+    /**
+     * Request constructor.
+     *
+     * @param Klein $klein
+     */
+    public function __construct(Klein $klein)
+    {
+        $this->request = $klein->request();
+        $this->params = $this->getParamsByMethod();
+    }
+
+    /**
+     * @return DataCollection
+     */
+    private function getParamsByMethod()
+    {
+        if ($this->request->method('GET')) {
+            return $this->request->paramsGet();
+        } else {
+            return $this->request->paramsPost();
+        }
+    }
 
     /**
      * Devolver las cabeceras enviadas desde el cliente.
@@ -83,71 +118,6 @@ class Request
         }
 
         return $headers;
-    }
-
-    /**
-     * Analizar un valor encriptado y devolverlo desencriptado
-     *
-     * @param $param
-     *
-     * @return string
-     */
-    public static function analyzeEncrypted($param)
-    {
-        $encryptedData = self::analyzeString($param);
-
-        if ($encryptedData === null) {
-            return '';
-        }
-
-        try {
-            // Desencriptar con la clave RSA
-            $clearData = Bootstrap::getContainer()->get(CryptPKI::class)
-                ->decryptRSA(base64_decode($encryptedData));
-
-            // Desencriptar con la clave RSA
-            if ($clearData === false) {
-                debugLog('No RSA encrypted data from request');
-
-                return $encryptedData;
-            }
-
-            return $clearData;
-        } catch (\Exception $e) {
-            processException($e);
-
-            return $encryptedData;
-        }
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return string
-     */
-    public static function analyzeString($param, $default = null)
-    {
-        if (!isset($_REQUEST[$param])) {
-            return $default;
-        }
-
-        return filter_var(trim($_REQUEST[$param]), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return string
-     */
-    public static function analyzeEmail($param, $default = null)
-    {
-        if (!isset($_REQUEST[$param])) {
-            return $default;
-        }
-
-        return filter_var(trim($_REQUEST[$param]), FILTER_SANITIZE_EMAIL);
     }
 
     /**
@@ -215,89 +185,6 @@ class Request
     }
 
     /**
-     * @param string        $param
-     * @param callable|null $mapper
-     * @param mixed         $default
-     *
-     * @return mixed
-     */
-    public static function analyzeArray($param, callable $mapper = null, $default = null)
-    {
-        if (isset($_REQUEST[$param]) && is_array($_REQUEST[$param])) {
-            if (is_callable($mapper)) {
-                return $mapper($_REQUEST[$param]);
-            }
-
-            return array_map(function ($value) {
-                if (is_numeric($value)) {
-                    return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-                } else {
-                    return (string)filter_var(trim($value), FILTER_SANITIZE_STRING);
-                }
-            }, $_REQUEST[$param]);
-        }
-
-        return $default;
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return int
-     */
-    public static function analyzeInt($param, $default = null)
-    {
-        if (!isset($_REQUEST[$param])) {
-            return (int)$default;
-        }
-
-        return (int)filter_var($_REQUEST[$param], FILTER_SANITIZE_NUMBER_INT);
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return bool
-     */
-    public static function analyzeBool($param, $default = null)
-    {
-        if (!isset($_REQUEST[$param])) {
-            return (bool)$default;
-        }
-
-        return Util::boolval($_REQUEST[$param]);
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return string
-     */
-    public static function analyzePassword($param, $default = '')
-    {
-        if (!isset($_REQUEST[$param])) {
-            return (string)$default;
-        }
-
-        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
-    }
-
-    /**
-     * Comprobar si se realiza una recarga de la página
-     *
-     * @param Klein $router
-     *
-     * @return bool
-     */
-    public static function checkReload(Klein $router)
-    {
-        return $router->request()->headers()->get('Cache-Control') === 'max-age=0';
-    }
-
-    /**
      * Comprobar si existen parámetros pasados por POST para enviarlos por GET
      */
     public static function importUrlParamsToGet()
@@ -354,5 +241,192 @@ class Request
         }
 
         return $realPath;
+    }
+
+    /**
+     * Comprobar si se realiza una recarga de la página
+     *
+     * @return bool
+     */
+    public function checkReload()
+    {
+        return $this->request->headers()->get('Cache-Control') === 'max-age=0';
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     *
+     * @return string
+     * @deprecated
+     */
+    public function analyzeEmail($param, $default = null)
+    {
+        if (!$this->params->exists($param)) {
+            return $default;
+        }
+
+        return Filter::getEmail($this->params->get($param));
+    }
+
+    /**
+     * Analizar un valor encriptado y devolverlo desencriptado
+     *
+     * @param $param
+     *
+     * @return string
+     */
+    public function analyzeEncrypted($param)
+    {
+        $encryptedData = $this->analyzeString($param);
+
+        if ($encryptedData === null) {
+            return '';
+        }
+
+        try {
+            // Desencriptar con la clave RSA
+            $clearData = Bootstrap::getContainer()->get(CryptPKI::class)
+                ->decryptRSA(base64_decode($encryptedData));
+
+            // Desencriptar con la clave RSA
+            if ($clearData === false) {
+                debugLog('No RSA encrypted data from request');
+
+                return $encryptedData;
+            }
+
+            return $clearData;
+        } catch (\Exception $e) {
+            processException($e);
+
+            return $encryptedData;
+        }
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     *
+     * @return string
+     */
+    public function analyzeString($param, $default = null)
+    {
+        if (!$this->params->exists($param)) {
+            return $default;
+        }
+
+        return Filter::getString($this->params->get($param));
+    }
+
+    /**
+     * @param string        $param
+     * @param callable|null $mapper
+     * @param mixed         $default
+     *
+     * @return mixed
+     */
+    public function analyzeArray($param, callable $mapper = null, $default = null)
+    {
+        if ($this->params->exists($param)
+            && is_array($this->params->get($param))
+        ) {
+            if (is_callable($mapper)) {
+                return $mapper($this->params->get($param));
+            }
+
+            return array_map(function ($value) {
+                return is_numeric($value) ? $this->analyzeInt($value) : $this->analyzeString($value);
+            }, $this->params->get($param));
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     *
+     * @return int
+     */
+    public function analyzeInt($param, $default = null): int
+    {
+        if (!$this->params->exists($param)) {
+            return (int)$default;
+        }
+
+        return Filter::getInt($this->params->get($param));
+    }
+
+    /**
+     * Comprobar si la petición es en formato JSON
+     *
+     * @return bool
+     */
+    public function isJson()
+    {
+        return strpos($this->request->headers()->get('Accept'), 'application/json') !== false;
+    }
+
+    /**
+     * Comprobar si la petición es Ajax
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return $this->request->headers()->get('X-Requested-With') === 'XMLHttpRequest'
+            || $this->analyzeInt('isAjax', 0) === 1;
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return array|null
+     */
+    public function getFile(string $file)
+    {
+        return $this->request->files()->get($file);
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     *
+     * @return bool
+     */
+    public function analyzeBool($param, $default = null)
+    {
+        if (!$this->params->exists($param)) {
+            return (bool)$default;
+        }
+
+        return Util::boolval($this->params->get($param));
+    }
+
+    /**
+     * @param string $key
+     * @param string $param Checks the signature only for the given param
+     *
+     * @throws SPException
+     */
+    public function verifySignature($key, $param = null)
+    {
+        $result = false;
+
+        if (($hash = $this->params->get('h')) !== null) {
+            if ($param === null) {
+                $uri = str_replace('&h=' . $hash, '', $this->request->uri());
+                $uri = substr($uri, strpos($uri, '?') + 1);
+            } else {
+                $uri = $this->params->get($param, '');
+            }
+
+            $result = Hash::checkMessage($uri, $key, $hash);
+        }
+
+        if ($result === false) {
+            throw new SPException('URI string altered');
+        }
     }
 }

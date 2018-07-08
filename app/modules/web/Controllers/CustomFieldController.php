@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -67,7 +66,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -83,7 +82,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getCustomFieldsGrid($this->customFieldService->search($itemSearchData)), $itemSearchData);
     }
@@ -193,7 +192,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
         try {
             if ($id === null) {
-                $this->customFieldService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->customFieldService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->eventDispatcher->notifyEvent('delete.customField.selection',
                     new Event($this, EventMessage::factory()->addDescription(__u('Campos eliminados')))

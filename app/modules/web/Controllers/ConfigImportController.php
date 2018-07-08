@@ -32,7 +32,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Import\FileImport;
 use SP\Services\Import\ImportParams;
@@ -58,11 +57,11 @@ class ConfigImportController extends SimpleControllerBase
         }
 
         $importParams = new ImportParams();
-        $importParams->setDefaultUser(Request::analyzeInt('import_defaultuser', $this->session->getUserData()->getId()));
-        $importParams->setDefaultGroup(Request::analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()));
-        $importParams->setImportPwd(Request::analyzeEncrypted('importPwd'));
-        $importParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));
-        $importParams->setCsvDelimiter(Request::analyzeString('csvDelimiter'));
+        $importParams->setDefaultUser($this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId()));
+        $importParams->setDefaultGroup($this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()));
+        $importParams->setImportPwd($this->request->analyzeEncrypted('importPwd'));
+        $importParams->setImportMasterPwd($this->request->analyzeEncrypted('importMasterPwd'));
+        $importParams->setCsvDelimiter($this->request->analyzeString('csvDelimiter'));
 
         try {
 
@@ -71,7 +70,7 @@ class ConfigImportController extends SimpleControllerBase
             SessionContext::close();
 
             $counter = $this->dic->get(ImportService::class)
-                ->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
+                ->doImport($importParams, new FileImport($this->request->getFile('inFile')));
 
             $this->eventDispatcher->notifyEvent('run.import.end',
                 new Event($this, EventMessage::factory()->addDetail(__u('Cuentas importadas'), $counter))

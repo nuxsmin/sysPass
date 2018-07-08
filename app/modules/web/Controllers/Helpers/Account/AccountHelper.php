@@ -32,6 +32,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -47,7 +48,6 @@ use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
-use SP\Util\Util;
 
 /**
  * Class AccountHelper
@@ -272,7 +272,12 @@ class AccountHelper extends HelperBase
      */
     private function getDeepLink()
     {
-        return Util::getSecureLink(Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : ''), $this->configData);
+        $route = Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : '');
+
+        $uri = new Uri('index.php');
+        $uri->addParam('r', $route);
+
+        return $uri->getUriSigned($this->configData->getPasswordSalt());
     }
 
     /**

@@ -31,7 +31,6 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -66,7 +65,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -82,7 +81,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getUserProfilesGrid($this->userProfileService->search($itemSearchData)), $itemSearchData);
     }
@@ -196,7 +195,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
         try {
             if ($id === null) {
-                $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
@@ -242,7 +241,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $id = $this->userProfileService->create($profileData);
 
-            $this->addCustomFieldsForItem(Acl::PROFILE, $id);
+            $this->addCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
 
@@ -279,7 +278,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->userProfileService->update($profileData);
 //            $this->userProfileService->logAction($id, Acl::PROFILE_EDIT);
 
-            $this->updateCustomFieldsForItem(Acl::PROFILE, $id);
+            $this->updateCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('edit.userProfile', new Event($this));
 

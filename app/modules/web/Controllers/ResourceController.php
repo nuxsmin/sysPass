@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Exceptions\SPException;
 use SP\Html\Minify;
-use SP\Http\Request;
 
 /**
  * Class ResourceController
@@ -42,11 +42,14 @@ class ResourceController extends SimpleControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws SPException
      */
     public function cssAction()
     {
-        $file = Request::analyzeString('f');
-        $base = Request::analyzeString('b');
+        $this->request->verifySignature($this->configData->getPasswordSalt());
+
+        $file = $this->request->analyzeString('f');
+        $base = $this->request->analyzeString('b');
 
         $minify = $this->dic->get(Minify::class);
 
@@ -73,11 +76,14 @@ class ResourceController extends SimpleControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws SPException
      */
     public function jsAction()
     {
-        $file = Request::analyzeString('f');
-        $base = Request::analyzeString('b');
+        $this->request->verifySignature($this->configData->getPasswordSalt());
+
+        $file = $this->request->analyzeString('f');
+        $base = $this->request->analyzeString('b');
 
         $minify = $this->dic->get(Minify::class);
 
@@ -90,7 +96,7 @@ class ResourceController extends SimpleControllerBase
             $minify->setType(Minify::FILETYPE_JS)
                 ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
 
-            $group = Request::analyzeInt('g', 0);
+            $group = $this->request->analyzeInt('g', 0);
 
             if ($group === 0) {
                 $minify->addFiles([

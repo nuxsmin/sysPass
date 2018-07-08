@@ -27,8 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Account\AccountRequest;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\AccountPermissionData;
-use SP\Http\Request;
 
 /**
  * Class AccountForm
@@ -80,32 +78,32 @@ class AccountForm extends FormBase implements FormInterface
     {
         $this->accountRequest = new AccountRequest();
         $this->accountRequest->id = $this->itemId;
-        $this->accountRequest->name = Request::analyzeString('name');
-        $this->accountRequest->clientId = Request::analyzeInt('client_id', 0);
-        $this->accountRequest->categoryId = Request::analyzeInt('category_id', 0);
-        $this->accountRequest->login = Request::analyzeString('login');
-        $this->accountRequest->url = Request::analyzeString('url');
-        $this->accountRequest->notes = Request::analyzeString('notes');
+        $this->accountRequest->name = $this->request->analyzeString('name');
+        $this->accountRequest->clientId = $this->request->analyzeInt('client_id', 0);
+        $this->accountRequest->categoryId = $this->request->analyzeInt('category_id', 0);
+        $this->accountRequest->login = $this->request->analyzeString('login');
+        $this->accountRequest->url = $this->request->analyzeString('url');
+        $this->accountRequest->notes = $this->request->analyzeString('notes');
         $this->accountRequest->userEditId = $this->context->getUserData()->getId();
-        $this->accountRequest->otherUserEdit = (int)Request::analyzeBool('other_user_edit_enabled', false);
-        $this->accountRequest->otherUserGroupEdit = (int)Request::analyzeBool('other_usergroup_edit_enabled', false);
-        $this->accountRequest->pass = Request::analyzeEncrypted('password');
-        $this->accountRequest->isPrivate = (int)Request::analyzeBool('private_enabled', false);
-        $this->accountRequest->isPrivateGroup = (int)Request::analyzeBool('private_group_enabled', false);
-        $this->accountRequest->passDateChange = Request::analyzeInt('password_date_expire_unix');
-        $this->accountRequest->parentId = Request::analyzeInt('parent_account_id');
-        $this->accountRequest->userGroupId = Request::analyzeInt('main_usergroup_id');
+        $this->accountRequest->otherUserEdit = (int)$this->request->analyzeBool('other_user_edit_enabled', false);
+        $this->accountRequest->otherUserGroupEdit = (int)$this->request->analyzeBool('other_usergroup_edit_enabled', false);
+        $this->accountRequest->pass = $this->request->analyzeEncrypted('password');
+        $this->accountRequest->isPrivate = (int)$this->request->analyzeBool('private_enabled', false);
+        $this->accountRequest->isPrivateGroup = (int)$this->request->analyzeBool('private_group_enabled', false);
+        $this->accountRequest->passDateChange = $this->request->analyzeInt('password_date_expire_unix');
+        $this->accountRequest->parentId = $this->request->analyzeInt('parent_account_id');
+        $this->accountRequest->userGroupId = $this->request->analyzeInt('main_usergroup_id');
 
         // Arrays
-        $accountOtherGroupsView = Request::analyzeArray('other_usergroups_view');
-        $accountOtherGroupsEdit = Request::analyzeArray('other_usergroups_edit');
-        $accountOtherUsersView = Request::analyzeArray('other_users_view');
-        $accountOtherUsersEdit = Request::analyzeArray('other_users_edit');
-        $accountTags = Request::analyzeArray('tags');
+        $accountOtherGroupsView = $this->request->analyzeArray('other_usergroups_view');
+        $accountOtherGroupsEdit = $this->request->analyzeArray('other_usergroups_edit');
+        $accountOtherUsersView = $this->request->analyzeArray('other_users_view');
+        $accountOtherUsersEdit = $this->request->analyzeArray('other_users_edit');
+        $accountTags = $this->request->analyzeArray('tags');
 
-        $this->accountRequest->updateUserGroupPermissions = Request::analyzeInt('other_usergroups_view_update') === 1 || Request::analyzeInt('other_usergroups_edit_update') === 1;
-        $this->accountRequest->updateUserPermissions = Request::analyzeInt('other_users_view_update') === 1 || Request::analyzeInt('other_users_edit_update') === 1;
-        $this->accountRequest->updateTags = Request::analyzeInt('tags_update') === 1;
+        $this->accountRequest->updateUserGroupPermissions = $this->request->analyzeInt('other_usergroups_view_update') === 1 || $this->request->analyzeInt('other_usergroups_edit_update') === 1;
+        $this->accountRequest->updateUserPermissions = $this->request->analyzeInt('other_users_view_update') === 1 || $this->request->analyzeInt('other_users_edit_update') === 1;
+        $this->accountRequest->updateTags = $this->request->analyzeInt('tags_update') === 1;
 
         if ($accountOtherUsersView) {
             $this->accountRequest->usersView = $accountOtherUsersView;
@@ -140,7 +138,7 @@ class AccountForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Es necesaria una clave'));
         }
 
-        if (Request::analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
+        if ($this->request->analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
             throw new ValidationException(__u('Las claves no coinciden'));
         }
     }

@@ -83,7 +83,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getNotificationsGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
     }
@@ -241,9 +241,9 @@ class NotificationController extends ControllerBase implements CrudControllerInt
         try {
             if ($id === null) {
                 if ($this->userData->getIsAdminApp()) {
-                    $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest());
+                    $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
                 } else {
-                    $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest());
+                    $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
                 }
 
                 $this->eventDispatcher->notifyEvent('delete.notification.selection',

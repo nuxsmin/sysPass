@@ -65,7 +65,8 @@ class AuthProvider extends Provider
      * Probar los métodos de autentificación
      *
      * @param UserLoginData $userLoginData
-     * @return bool|array
+     *
+     * @return false|AuthResult[]
      */
     public function doAuth(UserLoginData $userLoginData)
     {
@@ -73,16 +74,16 @@ class AuthProvider extends Provider
 
         $auths = [];
 
-        /** @var AuthDataBase $pAuth */
-        foreach ($this->auths as $pAuth) {
-            $pResult = $this->$pAuth();
+        foreach ($this->auths as $authType) {
+            /** @var AuthDataBase $authDataBase */
+            $authDataBase = $this->$authType();
 
-            if ($pResult !== false) {
-                $auths[] = new AuthResult($pAuth, $pResult);
+            if ($authDataBase !== false) {
+                $auths[] = new AuthResult($authType, $authDataBase);
             }
         }
 
-        return (count($auths) > 0) ? $auths : false;
+        return count($auths) > 0 ? $auths : false;
     }
 
     /**
@@ -172,16 +173,17 @@ class AuthProvider extends Provider
      * Registrar un método de autentificación primarios
      *
      * @param string $auth Función de autentificación
+     *
      * @throws AuthException
      */
     protected function registerAuth($auth)
     {
-        if (array_key_exists($auth, $this->auths)) {
-            throw new AuthException(__u('Método ya inicializado'), AuthException::ERROR, __FUNCTION__);
-        }
-
         if (!method_exists($this, $auth)) {
             throw new AuthException(__u('Método no disponible'), AuthException::ERROR, __FUNCTION__);
+        }
+
+        if (array_key_exists($auth, $this->auths)) {
+            throw new AuthException(__u('Método ya inicializado'), AuthException::ERROR, __FUNCTION__);
         }
 
         $this->auths[$auth] = $auth;

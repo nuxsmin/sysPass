@@ -95,15 +95,17 @@ trait ItemTrait
      *
      * @param int       $moduleId
      * @param int|int[] $itemId
+     * @param Request   $request
+     *
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    protected function addCustomFieldsForItem($moduleId, $itemId)
+    protected function addCustomFieldsForItem($moduleId, $itemId, Request $request)
     {
-        if ($customFields = Request::analyzeArray('customfield')) {
+        if ($customFields = $request->analyzeArray('customfield')) {
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
@@ -147,15 +149,15 @@ trait ItemTrait
      *
      * @param int       $moduleId
      * @param int|int[] $itemId
+     * @param Request   $request
+     *
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    protected function updateCustomFieldsForItem($moduleId, $itemId)
+    protected function updateCustomFieldsForItem($moduleId, $itemId, Request $request)
     {
-        if ($customFields = Request::analyzeArray('customfield')) {
+        if ($customFields = $request->analyzeArray('customfield')) {
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
@@ -177,24 +179,28 @@ trait ItemTrait
     /**
      * Returns search data object for the current request
      *
-     * @param int $limitCount
+     * @param int     $limitCount
+     * @param Request $request
+     *
      * @return ItemSearchData
      */
-    protected function getSearchData($limitCount)
+    protected function getSearchData($limitCount, Request $request)
     {
         $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString(Request::analyzeString('search'));
-        $itemSearchData->setLimitStart(Request::analyzeInt('start'));
-        $itemSearchData->setLimitCount(Request::analyzeInt('count', $limitCount));
+        $itemSearchData->setSeachString($request->analyzeString('search'));
+        $itemSearchData->setLimitStart($request->analyzeInt('start', 0));
+        $itemSearchData->setLimitCount($request->analyzeInt('count', $limitCount));
 
         return $itemSearchData;
     }
 
     /**
+     * @param Request $request
+     *
      * @return mixed
      */
-    protected function getItemsIdFromRequest()
+    protected function getItemsIdFromRequest(Request $request)
     {
-        return Request::analyzeArray('items');
+        return $request->analyzeArray('items');
     }
 }

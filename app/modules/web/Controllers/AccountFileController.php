@@ -31,7 +31,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Html\Html;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -253,7 +252,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -269,7 +268,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getFilesGrid($this->accountFileService->search($itemSearchData)), $itemSearchData);
     }
@@ -301,7 +300,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     {
         try {
             if ($id === null) {
-                $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->eventDispatcher->notifyEvent('delete.accountFile.selection',
                     new Event($this, EventMessage::factory()
@@ -361,7 +360,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         try {
             $this->view->addTemplate('files-list', 'account');
 
-            $this->view->assign('deleteEnabled', Request::analyzeInt('del', false));
+            $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
             $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
             $this->view->assign('sk', $this->session->getSecurityKey());
             $this->view->assign('fileViewRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_VIEW));

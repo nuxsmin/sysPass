@@ -38,6 +38,7 @@ use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\Theme;
 use SP\DataModel\ProfileData;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\Controller\ControllerTrait;
 use SP\Mvc\View\Template;
@@ -123,12 +124,17 @@ abstract class ControllerBase
      * @var
      */
     protected $isAjax = false;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Constructor
      *
      * @param Container $container
      * @param           $actionName
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -147,6 +153,7 @@ abstract class ControllerBase
         $this->acl = $this->dic->get(Acl::class);
         $this->router = $this->dic->get(Klein::class);
         $this->view = $this->dic->get(Template::class);
+        $this->request = $this->dic->get(Request::class);
 
         $this->view->setBase(strtolower($this->controllerName));
 
@@ -272,13 +279,18 @@ abstract class ControllerBase
             }
         }
 
-        $this->checkLoggedInSession($this->session, $this->router);
+        $this->checkLoggedInSession($this->session, $this->request, function ($redirect) {
+            $this->router->response()
+                ->redirect($redirect)
+                ->send(true);
+        });
     }
 
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
      * @param null $action La acción a comprobar
+     *
      * @return bool
      */
     protected function checkAccess($action)

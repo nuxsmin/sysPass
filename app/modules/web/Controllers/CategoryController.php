@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -65,7 +64,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyzeInt('activetab', 0));
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -81,7 +80,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getCategoriesGrid($this->categoryService->search($itemSearchData)), $itemSearchData);
     }
@@ -192,7 +191,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
         try {
             if ($id === null) {
-                $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
 
@@ -244,7 +243,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $id = $this->categoryService->create($itemData);
 
-            $this->addCustomFieldsForItem(Acl::CATEGORY, $id);
+            $this->addCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this,
@@ -286,7 +285,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->categoryService->update($itemData);
 
-            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id);
+            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
 
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this,

@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
-use SP\Http\Request;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\Util;
@@ -76,8 +75,8 @@ class PublicLinkForm extends FormBase implements FormInterface
         $this->publicLinkData = new PublicLinkData();
         $this->publicLinkData->setId($this->itemId);
         $this->publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
-        $this->publicLinkData->setItemId(Request::analyzeInt('accountId'));
-        $this->publicLinkData->setNotify(Request::analyzeBool('notify', false));
+        $this->publicLinkData->setItemId($this->request->analyzeInt('accountId'));
+        $this->publicLinkData->setNotify($this->request->analyzeBool('notify', false));
         $this->publicLinkData->setHash(Util::generateRandomBytes());
     }
 

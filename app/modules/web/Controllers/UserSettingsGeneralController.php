@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\User\UserService;
 
@@ -52,14 +51,14 @@ class UserSettingsGeneralController extends SimpleControllerBase
         $userPreferencesData = clone $userData->getPreferences();
 
         $userPreferencesData->setUserId($userData->getId());
-        $userPreferencesData->setLang(Request::analyzeString('userlang'));
-        $userPreferencesData->setTheme(Request::analyzeString('usertheme', 'material-blue'));
-        $userPreferencesData->setResultsPerPage(Request::analyzeInt('resultsperpage', 12));
-        $userPreferencesData->setAccountLink(Request::analyzeBool('account_link', false));
-        $userPreferencesData->setSortViews(Request::analyzeBool('sort_views', false));
-        $userPreferencesData->setTopNavbar(Request::analyzeBool('top_navbar', false));
-        $userPreferencesData->setOptionalActions(Request::analyzeBool('optional_actions', false));
-        $userPreferencesData->setResultsAsCards(Request::analyzeBool('resultsascards', false));
+        $userPreferencesData->setLang($this->request->analyzeString('userlang'));
+        $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
+        $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
+        $userPreferencesData->setAccountLink($this->request->analyzeBool('account_link', false));
+        $userPreferencesData->setSortViews($this->request->analyzeBool('sort_views', false));
+        $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
+        $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
+        $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
 
         try {
             $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);

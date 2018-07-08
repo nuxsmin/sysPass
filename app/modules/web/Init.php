@@ -35,7 +35,6 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
-use SP\Http\Request;
 use SP\Services\Crypt\SecureSessionService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
@@ -109,7 +108,7 @@ class Init extends ModuleBase
         $this->initSession($this->configData->isEncryptSession());
 
         // Volver a cargar la configuración si se recarga la página
-        if (Request::checkReload($this->router) === false) {
+        if ($this->request->checkReload() === false) {
             // Cargar la configuración
             $this->config->loadConfig($this->context);
 

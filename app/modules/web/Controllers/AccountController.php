@@ -36,7 +36,6 @@ use SP\Core\Exceptions\ValidationException;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
@@ -680,7 +679,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $accountId = $this->accountService->create($itemData);
 
-            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId);
+            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId, $this->request);
 
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
@@ -726,7 +725,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $this->accountService->update($itemData);
 
-            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id);
+            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
@@ -846,7 +845,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             if ($id === null) {
-                $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest());
+                $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
@@ -889,7 +888,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveRequestAction($id)
     {
         try {
-            $description = Request::analyzeString('description');
+            $description = $this->request->analyzeString('description');
 
             if (empty($description)) {
                 throw new ValidationException(__u('Es necesaria una descripción'));
