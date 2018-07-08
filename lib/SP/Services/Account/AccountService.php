@@ -48,7 +48,6 @@ use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
-use SP\Storage\Database\Database;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -284,36 +283,23 @@ class AccountService extends Service implements AccountServiceInterface
      *
      * @param AccountRequest $accountRequest
      *
-     * @throws ServiceException
      * @throws \Exception
      */
     public function update(AccountRequest $accountRequest)
     {
-        $database = $this->dic->get(Database::class);
+        $this->transactionAware(function () use ($accountRequest) {
+            $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
-        if ($database->beginTransaction()) {
-            try {
-                $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
+            // Cambiar el grupo principal si el usuario es Admin
+            $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
+                && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
 
-                // Cambiar el grupo principal si el usuario es Admin
-                $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
-                    && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
+            $this->addHistory($accountRequest->id);
 
-                $this->addHistory($accountRequest->id);
+            $this->accountRepository->update($accountRequest);
 
-                $this->accountRepository->update($accountRequest);
-
-                $this->updateItems($accountRequest);
-
-                $database->endTransaction();
-            } catch (\Exception $e) {
-                $database->rollbackTransaction();
-
-                throw $e;
-            }
-        } else {
-            throw new ServiceException(__u('No es posible iniciar una transacción'));
-        }
+            $this->updateItems($accountRequest);
+        }, $this->dic);
     }
 
     /**
@@ -393,33 +379,20 @@ class AccountService extends Service implements AccountServiceInterface
     /**
      * @param AccountRequest $accountRequest
      *
-     * @throws ServiceException
      * @throws \Exception
      */
     public function editPassword(AccountRequest $accountRequest)
     {
-        $database = $this->dic->get(Database::class);
+        $this->transactionAware(function () use ($accountRequest) {
+            $this->addHistory($accountRequest->id);
 
-        if ($database->beginTransaction()) {
-            try {
-                $this->addHistory($accountRequest->id);
+            $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
-                $pass = $this->getPasswordEncrypted($accountRequest->pass);
+            $accountRequest->pass = $pass['pass'];
+            $accountRequest->key = $pass['key'];
 
-                $accountRequest->pass = $pass['pass'];
-                $accountRequest->key = $pass['key'];
-
-                $this->accountRepository->editPassword($accountRequest);
-
-                $database->endTransaction();
-            } catch (\Exception $e) {
-                $database->rollbackTransaction();
-
-                throw $e;
-            }
-        } else {
-            throw new ServiceException(__u('No es posible iniciar una transacción'));
-        }
+            $this->accountRepository->editPassword($accountRequest);
+        }, $this->dic);
     }
 
     /**
@@ -440,30 +413,17 @@ class AccountService extends Service implements AccountServiceInterface
      * @param $historyId
      * @param $accountId
      *
-     * @throws ServiceException
      * @throws \Exception
      */
     public function editRestore($historyId, $accountId)
     {
-        $database = $this->dic->get(Database::class);
+        $this->transactionAware(function () use ($historyId, $accountId) {
+            $this->addHistory($accountId);
 
-        if ($database->beginTransaction()) {
-            try {
-                $this->addHistory($accountId);
-
-                if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
-                    throw new ServiceException(__u('Error al restaurar cuenta'));
-                }
-
-                $database->endTransaction();
-            } catch (\Exception $e) {
-                $database->rollbackTransaction();
-
-                throw $e;
+            if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
+                throw new ServiceException(__u('Error al restaurar cuenta'));
             }
-        } else {
-            throw new ServiceException(__u('No es posible iniciar una transacción'));
-        }
+        }, $this->dic);
     }
 
     /**

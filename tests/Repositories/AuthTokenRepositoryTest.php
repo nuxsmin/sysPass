@@ -77,21 +77,27 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $authToken = self::$repository->getById(1);
+        $result = self::$repository->getById(1);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertInstanceOf(AuthTokenData::class, $authToken);
-        $this->assertEquals(1, $authToken->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $authToken->getActionId());
-        $this->assertEquals(self::AUTH_TOKEN, $authToken->getToken());
-        $this->assertNull($authToken->getHash());
+        $data = $result->getData();
 
-        $authToken = self::$repository->getById(2);
+        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $data->getActionId());
+        $this->assertEquals(self::AUTH_TOKEN, $data->getToken());
+        $this->assertNull($data->getHash());
 
-        $this->assertInstanceOf(AuthTokenData::class, $authToken);
-        $this->assertEquals(2, $authToken->getId());
-        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $authToken->getActionId());
-        $this->assertEquals(self::AUTH_TOKEN, $authToken->getToken());
-        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $authToken->getHash()));
+        $result = self::$repository->getById(2);
+        $this->assertEquals(1, $result->getNumRows());
+        
+        $data = $result->getData();
+
+        $this->assertInstanceOf(AuthTokenData::class, $data);
+        $this->assertEquals(2, $data->getId());
+        $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $data->getActionId());
+        $this->assertEquals(self::AUTH_TOKEN, $data->getToken());
+        $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
     }
 
     /**
@@ -211,7 +217,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(AuthTokenData::class, $result);
+        $this->assertInstanceOf(AuthTokenData::class, $data);
         $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertEquals($hash, $data->getHash());
         $this->assertEquals(2, $data->getUserId());
@@ -324,7 +330,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(AuthTokenData::class, $result);
+        $this->assertInstanceOf(AuthTokenData::class, $data);
         $this->assertEquals(ActionsInterface::ACCOUNT_CREATE, $data->getActionId());
         $this->assertEquals($hash, $data->getHash());
         $this->assertEquals(3, $data->getId());

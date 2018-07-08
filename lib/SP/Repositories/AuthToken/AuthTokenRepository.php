@@ -66,7 +66,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return AuthTokenData
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -78,6 +78,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             actionId,
             createdBy,
             startDate,
+            vault,
             token,
             `hash` 
             FROM AuthToken 
@@ -88,7 +89,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -431,7 +432,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
     public function getTokenByToken($actionId, $token)
     {
         $query = /** @lang SQL */
-            'SELECT id, actionId, userId, vault, `hash`
+            'SELECT id, actionId, userId, vault, `hash`, token
             FROM AuthToken
             WHERE actionId = ? 
             AND token = ? LIMIT 1';

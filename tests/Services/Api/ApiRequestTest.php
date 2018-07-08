@@ -44,7 +44,7 @@ class ApiRequestTest extends TestCase
         $apiRequest = new ApiRequest(getResource('json', 'account_search.json'));
         $this->assertEquals(10, $apiRequest->getId());
         $this->assertEquals('account/search', $apiRequest->getMethod());
-        $this->assertEquals('ce4e5f2e5700d9032b0cbb0769a6d7cf8557484da492d3c32626a74bb28fb44b', $apiRequest->get('authToken'));
+        $this->assertEquals('2cee8b224f48e01ef48ac172e879cc7825800a9d7ce3b23783212f4758f1c146', $apiRequest->get('authToken'));
         $this->assertEquals('API', $apiRequest->get('text'));
         $this->assertEquals(5, $apiRequest->get('count'));
         $this->assertEquals(1, $apiRequest->get('clientId'));

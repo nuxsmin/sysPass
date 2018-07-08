@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,10 @@
 
 namespace SP\Services;
 
+use DI\Container;
 use SP\Bootstrap;
 use SP\DataModel\DataModelInterface;
+use SP\Storage\Database\Database;
 
 /**
  * Trait ServiceItemTrait
@@ -52,4 +54,37 @@ trait ServiceItemTrait
      * @return mixed
      */
     abstract public function getAllBasic();
+
+    /**
+     * Bubbles a Closure in a database transaction
+     *
+     * @param \Closure  $closure
+     * @param Container $container
+     *
+     * @return mixed
+     * @throws ServiceException
+     * @throws \Exception
+     */
+    private function transactionAware(\Closure $closure, Container $container)
+    {
+        $database = $container->get(Database::class);
+
+        if ($database->beginTransaction()) {
+            try {
+                $result = $closure->call($this);
+
+                $database->endTransaction();
+
+                return $result;
+            } catch (\Exception $e) {
+                $database->rollbackTransaction();
+
+                debugLog('Rollback');
+
+                throw $e;
+            }
+        } else {
+            throw new ServiceException(__u('No es posible iniciar una transacción'));
+        }
+    }
 }

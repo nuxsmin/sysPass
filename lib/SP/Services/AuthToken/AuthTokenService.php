@@ -33,6 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\AuthToken\AuthTokenRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -103,27 +104,27 @@ class AuthTokenService extends Service
     /**
      * @param $id
      *
-     * @return mixed
+     * @return AuthTokenData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        return $this->authTokenRepository->getById($id);
+        return $this->authTokenRepository->getById($id)->getData();
     }
 
     /**
      * @param $id
      *
      * @return AuthTokenService
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function delete($id)
     {
         if ($this->authTokenRepository->delete($id) === 0) {
-            throw new SPException(__u('Token no encontrado'), SPException::INFO);
+            throw new NoSuchItemException(__u('Token no encontrado'));
         }
 
         return $this;
@@ -220,6 +221,11 @@ class AuthTokenService extends Service
      */
     private function getSecureData($token, $key)
     {
+        if (($mKey = $this->context->getTrasientKey('_masterpass')) !== null) {
+            return (new Vault())
+                ->saveData($mKey, $key . $token);
+        }
+
         return (new Vault())
             ->saveData(CryptSession::getSessionKey($this->context), $key . $token);
     }
@@ -227,29 +233,25 @@ class AuthTokenService extends Service
     /**
      * @param AuthTokenData $itemData
      *
-     * @return mixed
-     * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \Exception
      */
     public function refreshAndUpdate(AuthTokenData $itemData)
     {
-        $token = $this->generateToken();
-        $vault = serialize($this->getSecureData($token, $itemData->getHash()));
+        $this->transactionAware(function () use ($itemData) {
+            $token = $this->generateToken();
+            $vault = serialize($this->getSecureData($token, $itemData->getHash()));
 
-        $this->authTokenRepository->refreshTokenByUserId($itemData->getUserId(), $token);
-        $this->authTokenRepository->refreshVaultByUserId($itemData->getUserId(), $vault, Hash::hashKey($itemData->getHash()));
+            $this->authTokenRepository->refreshTokenByUserId($itemData->getUserId(), $token);
+            $this->authTokenRepository->refreshVaultByUserId($itemData->getUserId(), $vault, Hash::hashKey($itemData->getHash()));
 
-        return $this->update($itemData, $token);
+            $this->update($itemData, $token);
+        }, $this->dic);
     }
 
     /**
      * @param AuthTokenData $itemData
      * @param string        $token
      *
-     * @return mixed
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -257,7 +259,9 @@ class AuthTokenService extends Service
      */
     public function update(AuthTokenData $itemData, $token = null)
     {
-        return $this->authTokenRepository->update($this->injectSecureData($itemData, $token));
+        if ($this->authTokenRepository->update($this->injectSecureData($itemData, $token)) === 0) {
+            throw new NoSuchItemException(__u('Token no encontrado'));
+        }
     }
 
     /**
