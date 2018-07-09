@@ -83,6 +83,7 @@ function setupContext()
     $context->setConfig(new ConfigData());
     $context->setTrasientKey('_masterpass', '12345678900');
 
+
     $userData = new UserLoginResponse();
     $userData->setId(1);
     $userData->setUserGroupId(1);

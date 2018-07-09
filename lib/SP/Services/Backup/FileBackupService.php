@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,9 +24,6 @@
 
 namespace SP\Services\Backup;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -51,36 +48,53 @@ class FileBackupService extends Service
      * @var ConfigData
      */
     protected $configData;
+    /**
+     * @var string
+     */
+    protected $path;
+    /**
+     * @var string
+     */
+    protected $backupFileApp;
+    /**
+     * @var string
+     */
+    protected $backupFileDb;
+
 
     /**
      * Realizar backup de la BBDD y aplicación.
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @param string $path
+     *
      * @throws ServiceException
      */
-    public function doBackup()
+    public function doBackup(string $path)
     {
+        $this->path = $path;
+
+        $this->checkBackupDir();
+
         $siteName = Util::getAppInfo('appname');
 
         // Generar hash unico para evitar descargas no permitidas
         $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
-        $this->configData->setBackupHash($backupUniqueHash);
-        $this->config->saveConfig($this->configData);
 
-        $bakFileApp = BACKUP_PATH . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
-        $bakFileDB = BACKUP_PATH . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
+        $this->backupFileApp = $this->path . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
+        $this->backupFileDb = $this->path . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
 
         try {
-            $this->checkBackupDir();
             $this->deleteOldBackups();
 
             $this->eventDispatcher->notifyEvent('run.backup.start',
                 new Event($this,
                     EventMessage::factory()->addDescription(__u('Realizar Backup'))));
 
-            $this->backupTables('*', new FileHandler($bakFileDB));
-            $this->backupApp($bakFileApp);
+            $this->backupTables('*', new FileHandler($this->backupFileDb));
+            $this->backupApp($this->backupFileApp);
+
+            $this->configData->setBackupHash($backupUniqueHash);
+            $this->config->saveConfig($this->configData);
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -102,12 +116,14 @@ class FileBackupService extends Service
      */
     private function checkBackupDir()
     {
-        if (@mkdir(BACKUP_PATH, 0750) === false && is_dir(BACKUP_PATH) === false) {
+        if (is_dir($this->path) === false
+            && @mkdir($this->path, 0750) === false
+        ) {
             throw new ServiceException(
-                sprintf(__('No es posible crear el directorio de backups ("%s")'), BACKUP_PATH));
+                sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->path));
         }
 
-        if (!is_writable(BACKUP_PATH)) {
+        if (!is_writable($this->path)) {
             throw new ServiceException(
                 __u('Compruebe los permisos del directorio de backups'));
         }
@@ -120,8 +136,8 @@ class FileBackupService extends Service
      */
     private function deleteOldBackups()
     {
-        array_map('unlink', glob(BACKUP_PATH . DIRECTORY_SEPARATOR . '*.tar.gz'));
-        array_map('unlink', glob(BACKUP_PATH . DIRECTORY_SEPARATOR . '*.sql'));
+        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.tar.gz'));
+        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.sql'));
     }
 
     /**
@@ -130,6 +146,7 @@ class FileBackupService extends Service
      *
      * @param string|array $tables
      * @param FileHandler  $fileHandler
+     *
      * @throws \Exception
      * @throws \SP\Storage\FileException
      */
@@ -154,13 +171,17 @@ class FileBackupService extends Service
 
         $lineSeparator = PHP_EOL . PHP_EOL;
 
-        $dbname = $this->configData->getDbName();
+        $dbname = $db->getDbHandler()->getDatabaseName();
 
-        $sqlOut = '--' . PHP_EOL;
+        $sqlOut = '-- ' . PHP_EOL;
         $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (START)' . PHP_EOL;
-        $sqlOut .= '--' . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL;
         $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-        $sqlOut .= '--' . PHP_EOL . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL;
+        $sqlOut .= 'SET AUTOCOMMIT = 0;' . PHP_EOL;
+        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 0;' . PHP_EOL;
+        $sqlOut .= 'SET UNIQUE_CHECKS = 0;' . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL;
         $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
         $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
 
@@ -174,7 +195,7 @@ class FileBackupService extends Service
             $queryData->setQuery('SHOW CREATE TABLE ' . $tableName);
 
             // Consulta para crear la tabla
-            $txtCreate = $db->doQuery($queryData);
+            $txtCreate = $db->doQuery($queryData)->getData();
 
             if (isset($txtCreate->{'Create Table'})) {
                 $sqlOut = '-- ' . PHP_EOL;
@@ -184,7 +205,7 @@ class FileBackupService extends Service
                 $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
 
                 $fileHandler->write($sqlOut);
-            } elseif ($txtCreate->{'Create View'}) {
+            } elseif (isset($txtCreate->{'Create View'})) {
                 $sqlOutViews .= '-- ' . PHP_EOL;
                 $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
                 $sqlOutViews .= '-- ' . PHP_EOL;
@@ -234,11 +255,15 @@ class FileBackupService extends Service
             }
         }
 
-        $sqlOut = '--' . PHP_EOL;
+        $sqlOut = '-- ' . PHP_EOL;
+        $sqlOut .= 'SET AUTOCOMMIT = 1;' . PHP_EOL;
+        $sqlOut .= 'SET FOREIGN_KEY_CHECKS = 1;' . PHP_EOL;
+        $sqlOut .= 'SET UNIQUE_CHECKS = 1;' . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL;
         $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
-        $sqlOut .= '--' . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL;
         $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-        $sqlOut .= '--' . PHP_EOL . PHP_EOL;
+        $sqlOut .= '-- ' . PHP_EOL . PHP_EOL;
 
         $fileHandler->write($sqlOut);
         $fileHandler->close();
@@ -248,6 +273,7 @@ class FileBackupService extends Service
      * Realizar un backup de la aplicación y comprimirlo.
      *
      * @param string $backupFile nombre del archivo de backup
+     *
      * @return bool
      * @throws ServiceException
      */
@@ -277,7 +303,7 @@ class FileBackupService extends Service
         }
 
         $archive = new \PharData($backupFile);
-        $archive->buildFromDirectory(Bootstrap::$SERVERROOT, '/^(?!backup).*$/');
+        $archive->buildFromDirectory(APP_ROOT, '/^(?!backup).*$/');
         $archive->compress(\Phar::GZ);
 
         unlink($backupFile);
@@ -289,16 +315,33 @@ class FileBackupService extends Service
      * Realizar un backup de la aplicación y comprimirlo usando aplicaciones del SO Linux.
      *
      * @param string $backupFile nombre del archivo de backup
+     *
      * @return int Con el código de salida del comando ejecutado
      */
     private function backupAppLegacyLinux($backupFile)
     {
         $compressedFile = $backupFile . '.gz';
 
-        $command = 'tar czf ' . $compressedFile . ' ' . BASE_PATH . ' --exclude "' . BACKUP_PATH . '" 2>&1';
+        $command = 'tar czf ' . $compressedFile . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';
         exec($command, $resOut, $resBakApp);
 
         return $resBakApp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackupFileApp(): string
+    {
+        return $this->backupFileApp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackupFileDb(): string
+    {
+        return $this->backupFileDb;
     }
 
     /**

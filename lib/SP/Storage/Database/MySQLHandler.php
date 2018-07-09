@@ -187,4 +187,12 @@ class MySQLHandler implements DBStorageInterface
 
         return $this->db;
     }
+
+    /**
+     * @return string
+     */
+    public function getDatabaseName()
+    {
+        return $this->connectionData->getDbName();
+    }
 }

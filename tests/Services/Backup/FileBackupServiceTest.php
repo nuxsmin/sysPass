@@ -22,43 +22,32 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage\Database;
+namespace SP\Tests\Services\Backup;
+
+use PHPUnit\Framework\TestCase;
+use SP\Services\Backup\FileBackupService;
+use function SP\Tests\setupContext;
 
 /**
- * Interface DBStorageInterface
+ * Class FileBackupServiceTest
  *
- * @package SP\Storage
+ * @package SP\Tests\Services\Backup
  */
-interface DBStorageInterface
+class FileBackupServiceTest extends TestCase
 {
     /**
-     * Obtener una conexión PDO
-     *
-     * @return \PDO
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Context\ContextException
+     * @throws \SP\Services\ServiceException
      */
-    public function getConnection();
+    public function testDoBackup()
+    {
+        $dic = setupContext();
+        $service = $dic->get(FileBackupService::class);
+        $service->doBackup(RESOURCE_DIR);
 
-    /**
-     * Obtener una conexión PDO sin seleccionar la BD
-     *
-     * @return \PDO
-     */
-    public function getConnectionSimple();
-
-    /**
-     * Devolcer el estado de la BD
-     *
-     * @return int
-     */
-    public function getDbStatus();
-
-    /**
-     * @return mixed
-     */
-    public function getConnectionUri();
-
-    /**
-     * @return string
-     */
-    public function getDatabaseName();
+        $this->assertFileExists($service->getBackupFileApp() . '.gz');
+        $this->assertFileExists($service->getBackupFileDb());
+    }
 }

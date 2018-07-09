@@ -49,7 +49,7 @@ class ConfigController extends ControllerBase
             $this->setupApi(ActionsInterface::BACKUP_CONFIG);
 
             $this->dic->get(FileBackupService::class)
-                ->doBackup();
+                ->doBackup(BACKUP_PATH);
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()
