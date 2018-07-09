@@ -31,6 +31,8 @@ namespace SP\Providers\Auth\Ldap;
  */
 class LdapParams
 {
+    const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
+
     /**
      * @var string
      */
@@ -64,11 +66,12 @@ class LdapParams
      * Devolver el puerto del servidor si está establecido
      *
      * @param $server
+     *
      * @return array|false
      */
     public static function getServerAndPort($server)
     {
-        return preg_match('#(?P<server>(?:(?:ldap|ldaps)://)?[\w\.]+)(:(?P<port>\d+))?#i', $server, $matches) ? $matches : false;
+        return preg_match('#' . self::REGEX_SERVER . '#i', $server, $matches) ? $matches : false;
     }
 
     /**
@@ -81,11 +84,13 @@ class LdapParams
 
     /**
      * @param int $port
+     *
      * @return LdapParams
      */
     public function setPort($port)
     {
         $this->port = $port;
+
         return $this;
     }
 
@@ -99,6 +104,7 @@ class LdapParams
 
     /**
      * @param string $searchBase
+     *
      * @return LdapParams
      */
     public function setSearchBase($searchBase)
@@ -117,6 +123,7 @@ class LdapParams
 
     /**
      * @param string $bindDn
+     *
      * @return LdapParams
      */
     public function setBindDn($bindDn)
@@ -135,6 +142,7 @@ class LdapParams
 
     /**
      * @param string $bindPass
+     *
      * @return LdapParams
      */
     public function setBindPass($bindPass)
@@ -153,6 +161,7 @@ class LdapParams
 
     /**
      * @param string $group
+     *
      * @return LdapParams
      */
     public function setGroup($group)
@@ -171,11 +180,13 @@ class LdapParams
 
     /**
      * @param string $server
+     *
      * @return LdapParams
      */
     public function setServer($server)
     {
         $this->server = $server;
+
         return $this;
     }
 
@@ -189,11 +200,13 @@ class LdapParams
 
     /**
      * @param bool $ads
+     *
      * @return LdapParams
      */
     public function setAds($ads)
     {
         $this->ads = (bool)$ads;
+
         return $this;
     }
 
