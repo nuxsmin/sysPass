@@ -158,7 +158,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertInstanceOf(AuthTokenData::class, $result);
+        $this->assertInstanceOf(AuthTokenData::class, $data);
         $this->assertTrue(Hash::checkHashKey(self::AUTH_TOKEN_PASS, $data->getHash()));
         $this->assertEquals($vault, $data->getVault());
 

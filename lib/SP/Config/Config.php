@@ -47,7 +47,7 @@ class Config
     /**
      * @var bool
      */
-    private static $configLoaded = false;
+    private $configLoaded = false;
     /**
      * @var ConfigData
      */
@@ -71,6 +71,7 @@ class Config
      * @param XmlFileStorageInterface $fileStorage
      * @param ContextInterface        $session
      * @param Container               $dic
+     *
      * @throws ConfigException
      */
     public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
@@ -87,7 +88,7 @@ class Config
      */
     private function initialize()
     {
-        if (!self::$configLoaded) {
+        if (!$this->configLoaded) {
             try {
 
                 $this->configData = $this->loadConfigFromFile();
@@ -104,7 +105,9 @@ class Config
             }
 
             self::$timeUpdated = $this->configData->getConfigDate();
-            self::$configLoaded = true;
+            $this->configLoaded = true;
+
+            debugLog('Config loaded');
         }
     }
 
@@ -143,6 +146,7 @@ class Config
      *
      * @param ConfigData $configData
      * @param bool       $backup
+     *
      * @return Config
      */
     public function saveConfig(ConfigData $configData, $backup = true)
@@ -177,6 +181,7 @@ class Config
      * Commits a config data
      *
      * @param ConfigData $configData
+     *
      * @return Config
      */
     public function updateConfig(ConfigData $configData)
@@ -197,6 +202,7 @@ class Config
      *
      * @param ContextInterface $context
      * @param bool             $reload
+     *
      * @return ConfigData
      */
     public function loadConfig(ContextInterface $context, $reload = false)
@@ -217,6 +223,7 @@ class Config
      * Guardar la configuración en la sesión
      *
      * @param ContextInterface $context
+     *
      * @return ConfigData
      */
     private function saveConfigInSession(ContextInterface $context)

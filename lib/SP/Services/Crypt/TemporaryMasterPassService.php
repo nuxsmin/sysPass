@@ -26,6 +26,7 @@ namespace SP\Services\Crypt;
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Config\ConfigService;
@@ -68,8 +69,10 @@ class TemporaryMasterPassService extends Service
 
             // Encriptar la clave maestra con hash aleatorio generado
             $randomKey = Util::generateRandomBytes(32);
+            $secureKey = Crypt::makeSecuredKey($randomKey);
 
-            $this->configService->save('tempmaster_passkey', Crypt::makeSecuredKey($randomKey));
+            $this->configService->save('tempmaster_pass', Crypt::encrypt(Session::getSessionKey($this->context), $secureKey, $randomKey));
+            $this->configService->save('tempmaster_passkey', $secureKey);
             $this->configService->save('tempmaster_passhash', Hash::hashKey($randomKey));
             $this->configService->save('tempmaster_passtime', time());
             $this->configService->save('tempmaster_maxtime', $this->maxTime);
@@ -145,6 +148,7 @@ class TemporaryMasterPassService extends Service
      */
     protected function expire()
     {
+        $this->configService->save('tempmaster_pass', '');
         $this->configService->save('tempmaster_passkey', '');
         $this->configService->save('tempmaster_passhash', '');
         $this->configService->save('tempmaster_maxtime', '');

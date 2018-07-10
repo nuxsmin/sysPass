@@ -1,6 +1,29 @@
 <?xml version="1.0"?>
 <mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <database name="syspass">
+	<table_data name="Client">
+		<row>
+			<field name="id">1</field>
+			<field name="name">Google</field>
+			<field name="hash" xsi:type="xs:hexBinary">6338323263316236333835336564323733623839363837616335303566396661</field>
+			<field name="description">Google Inc.</field>
+			<field name="isGlobal">0</field>
+		</row>
+		<row>
+			<field name="id">2</field>
+			<field name="name">Apple</field>
+			<field name="hash" xsi:type="xs:hexBinary">3166333837306265323734663663343962336533316130633637323839353766</field>
+			<field name="description">Apple Inc.</field>
+			<field name="isGlobal">0</field>
+		</row>
+		<row>
+			<field name="id">3</field>
+			<field name="name">Microsoft</field>
+			<field name="hash" xsi:type="xs:hexBinary">3566353332613366633466316561343033663337303730663539613761353361</field>
+			<field name="description">Microsoft Inc.</field>
+			<field name="isGlobal">1</field>
+		</row>
+	</table_data>
 	<table_data name="AccountFile">
 	<row>
 		<field name="id">1</field>

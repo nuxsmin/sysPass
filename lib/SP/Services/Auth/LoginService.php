@@ -253,8 +253,8 @@ class LoginService extends Service
         $temporaryMasterPass = $this->dic->get(TemporaryMasterPassService::class);
         $userPassService = $this->dic->get(UserPassService::class);
 
-        $masterPass = $this->request->analyzeString('mpass');
-        $oldPass = $this->request->analyzeString('oldpass');
+        $masterPass = $this->request->analyzeEncrypted('mpass');
+        $oldPass = $this->request->analyzeEncrypted('oldpass');
 
         try {
             if ($masterPass) {
