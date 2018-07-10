@@ -154,7 +154,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return CategoryData
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -165,7 +165,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -173,7 +173,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      *
      * @param string $name
      *
-     * @return CategoryData
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -187,13 +187,13 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($name, $this->db->getDbHandler())
         ]);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return CategoryData[]
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -203,7 +203,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(CategoryData::class);
         $queryData->setQuery('SELECT id, `name`, description, `hash` FROM Category ORDER BY `name`');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -211,14 +211,14 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return array
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
         if (empty($ids)) {
-            return [];
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -229,7 +229,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -243,6 +243,10 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (empty($ids)) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);

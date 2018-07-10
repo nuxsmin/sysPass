@@ -75,23 +75,23 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $this->assertNull(self::$repository->getByName('Amazon'));
+        $this->assertNull(self::$repository->getByName('Amazon')->getData());
 
-        $client = self::$repository->getByName('Google');
+        $data = self::$repository->getByName('Google')->getData();
 
-        $this->assertEquals(1, $client->getId());
-        $this->assertEquals('Google Inc.', $client->getDescription());
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals('Google Inc.', $data->getDescription());
 
-        $client = self::$repository->getByName('Apple');
+        $data = self::$repository->getByName('Apple')->getData();
 
-        $this->assertEquals(2, $client->getId());
-        $this->assertEquals('Apple Inc.', $client->getDescription());
+        $this->assertEquals(2, $data->getId());
+        $this->assertEquals('Apple Inc.', $data->getDescription());
 
         // Se comprueba que el hash generado es el mismo en para el nombre 'Web'
-        $client = self::$repository->getByName(' google. ');
+        $data = self::$repository->getByName(' google. ')->getData();
 
-        $this->assertEquals(1, $client->getId());
-        $this->assertEquals('Google Inc.', $client->getDescription());
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals('Google Inc.', $data->getDescription());
     }
 
     /**
@@ -133,17 +133,17 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $this->assertNull(self::$repository->getById(10));
+        $this->assertNull(self::$repository->getById(10)->getData());
 
-        $client = self::$repository->getById(1);
+        $data = self::$repository->getById(1)->getData();
 
-        $this->assertEquals('Google', $client->getName());
-        $this->assertEquals('Google Inc.', $client->getDescription());
+        $this->assertEquals('Google', $data->getName());
+        $this->assertEquals('Google Inc.', $data->getDescription());
 
-        $client = self::$repository->getById(2);
+        $data = self::$repository->getById(2)->getData();
 
-        $this->assertEquals('Apple', $client->getName());
-        $this->assertEquals('Apple Inc.', $client->getDescription());
+        $this->assertEquals('Apple', $data->getName());
+        $this->assertEquals('Apple Inc.', $data->getDescription());
     }
 
     /**
@@ -157,17 +157,19 @@ class ClientRepositoryTest extends DatabaseTestCase
         $count = $this->conn->getRowCount('Client');
 
         $results = self::$repository->getAll();
+        /** @var ClientData[] $data */
+        $data = $results->getDataAsArray();
 
-        $this->assertCount($count, $results);
+        $this->assertCount($count, $data);
 
-        $this->assertInstanceOf(ClientData::class, $results[0]);
-        $this->assertEquals('Apple', $results[0]->getName());
+        $this->assertInstanceOf(ClientData::class, $data[0]);
+        $this->assertEquals('Apple', $data[0]->getName());
 
-        $this->assertInstanceOf(ClientData::class, $results[1]);
-        $this->assertEquals('Google', $results[1]->getName());
+        $this->assertInstanceOf(ClientData::class, $data[1]);
+        $this->assertEquals('Google', $data[1]->getName());
 
-        $this->assertInstanceOf(ClientData::class, $results[2]);
-        $this->assertEquals('Microsoft', $results[2]->getName());
+        $this->assertInstanceOf(ClientData::class, $data[2]);
+        $this->assertEquals('Microsoft', $data[2]->getName());
     }
 
     /**
@@ -182,26 +184,26 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $clientData = new ClientData();
-        $clientData->id = 1;
-        $clientData->name = 'Cliente prueba';
-        $clientData->description = 'Descripción cliente prueba';
+        $data = new ClientData();
+        $data->id = 1;
+        $data->name = 'Cliente prueba';
+        $data->description = 'Descripción cliente prueba';
 
-        self::$repository->update($clientData);
+        self::$repository->update($data);
 
-        $category = self::$repository->getById(1);
+        $result = self::$repository->getById(1)->getData();
 
-        $this->assertEquals($category->getName(), $clientData->name);
-        $this->assertEquals($category->getDescription(), $clientData->description);
+        $this->assertEquals($data->name, $result->getName());
+        $this->assertEquals($data->description, $result->getDescription());
 
         // Comprobar la a actualización con un nombre duplicado comprobando su hash
-        $clientData = new ClientData();
-        $clientData->id = 1;
-        $clientData->name = ' apple.';
+        $data = new ClientData();
+        $data->id = 1;
+        $data->name = ' apple.';
 
         $this->expectException(DuplicatedItemException::class);
 
-        self::$repository->update($clientData);
+        self::$repository->update($data);
     }
 
     /**
@@ -238,22 +240,27 @@ class ClientRepositoryTest extends DatabaseTestCase
     {
         $countBefore = $this->conn->getRowCount('Client');
 
-        $clientData = new ClientData();
-        $clientData->name = 'Cliente prueba';
-        $clientData->description = 'Descripción prueba';
-        $clientData->isGlobal = 1;
+        $data = new ClientData();
+        $data->name = 'Cliente prueba';
+        $data->description = 'Descripción prueba';
+        $data->isGlobal = 1;
 
-        $id = self::$repository->create($clientData);
+        $id = self::$repository->create($data);
 
         // Comprobar que el Id devuelto corresponde con el cliente creado
-        $client = self::$repository->getById($id);
+        /** @var ClientData $result */
+        $result = self::$repository->getById($id)->getData();
 
-        $this->assertEquals($clientData->name, $client->getName());
-        $this->assertEquals($clientData->isGlobal, $client->getIsGlobal());
+        $this->assertEquals($data->name, $result->getName());
+        $this->assertEquals($data->isGlobal, $result->getIsGlobal());
 
         $countAfter = $this->conn->getRowCount('Client');
 
         $this->assertEquals($countBefore + 1, $countAfter);
+
+        $this->expectException(DuplicatedItemException::class);
+
+        self::$repository->create($data);
     }
 
     /**
@@ -300,6 +307,6 @@ class ClientRepositoryTest extends DatabaseTestCase
         $filter = new QueryCondition();
         $filter->addFilter('Account.isPrivate = 0');
 
-        $this->assertCount(3, self::$repository->getAllForFilter($filter));
+        $this->assertEquals(3, self::$repository->getAllForFilter($filter)->getNumRows());
     }
 }

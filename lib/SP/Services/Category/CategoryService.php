@@ -29,6 +29,7 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Repositories\DuplicatedItemException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -49,15 +50,6 @@ class CategoryService extends Service
     protected $categoryRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function initialize()
-    {
-        $this->categoryRepository = $this->dic->get(CategoryRepository::class);
-    }
-
-    /**
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
@@ -73,12 +65,19 @@ class CategoryService extends Service
      * @param int $id
      *
      * @return CategoryData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        return $this->categoryRepository->getById($id);
+        $result = $this->categoryRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -89,24 +88,31 @@ class CategoryService extends Service
      * @return CategoryData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getByName($name)
     {
-        return $this->categoryRepository->getByName($name);
+        $result = $this->categoryRepository->getByName($name);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
      * @param $id
      *
      * @return $this
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function delete($id)
     {
         if ($this->categoryRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Categoría no encontrada'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -124,8 +130,8 @@ class CategoryService extends Service
      */
     public function deleteByIdBatch(array $ids)
     {
-        if (($count = $this->categoryRepository->deleteByIdBatch($ids)) === count($ids)) {
-            throw new ServiceException(__u('Error al eliminar la categoría'), ServiceException::WARNING);
+        if (($count = $this->categoryRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar las categorías'), ServiceException::WARNING);
         }
 
         return $count;
@@ -165,6 +171,15 @@ class CategoryService extends Service
      */
     public function getAllBasic()
     {
-        return $this->categoryRepository->getAll();
+        return $this->categoryRepository->getAll()->getDataAsArray();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->categoryRepository = $this->dic->get(CategoryRepository::class);
     }
 }

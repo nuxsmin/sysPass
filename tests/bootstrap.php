@@ -48,7 +48,7 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunc
 /**
  * Función para llamadas a gettext
  */
-if (!function_exists('gettext')) {
+if (!function_exists('\gettext')) {
     /**
      * @param $str
      *

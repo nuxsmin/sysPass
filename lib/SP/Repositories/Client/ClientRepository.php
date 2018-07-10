@@ -165,7 +165,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return ClientData
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -176,7 +176,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -184,7 +184,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param string $name
      *
-     * @return ClientData
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -198,13 +198,13 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($name, $this->db->getDbHandler())
         ]);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return ClientData[]
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -214,7 +214,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client ORDER BY `name`');
         $queryData->setMapClassName(ClientData::class);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -334,7 +334,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param QueryCondition $queryFilter
      *
-     * @return ItemData[]
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -359,6 +359,6 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

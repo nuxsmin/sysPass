@@ -50,7 +50,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     /**
      * @var \Closure
      */
-    private static $setUpUser;
+    private static $setupUser;
 
     /**
      * @throws \DI\NotFoundException
@@ -71,7 +71,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $context = $dic->get(ContextInterface::class);
 
-        self::$setUpUser = function (UserLoginResponse $response) use ($context) {
+        self::$setupUser = function (UserLoginResponse $response) use ($context) {
             $response->setLastUpdate(time());
 
             $context->setUserData($response);
@@ -91,7 +91,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $userData->setIsAdminApp(1);
         $userData->setPreferences(new UserPreferencesData());
 
-        self::$setUpUser->call($this, $userData);
+        self::$setupUser->call($this, $userData);
 
         $this->checkCategoryById(1, [1]);
         $this->checkNonExistantCategory();
@@ -366,7 +366,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $userData->setUserGroupId(2);
         $userData->setPreferences(new UserPreferencesData());
 
-        self::$setUpUser->call($this, $userData);
+        self::$setupUser->call($this, $userData);
 
         $this->checkCategoryById(1, [1]);
         $this->checkNonExistantCategory();
@@ -413,7 +413,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $userData->setUserGroupId(3);
         $userData->setPreferences(new UserPreferencesData());
 
-        self::$setUpUser->call($this, $userData);
+        self::$setupUser->call($this, $userData);
 
         $this->checkCategoryById(1, [1]);
         $this->checkNonExistantCategory();
@@ -459,7 +459,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $userData->setUserGroupId(3);
         $userData->setPreferences(new UserPreferencesData());
 
-        self::$setUpUser->call($this, $userData);
+        self::$setupUser->call($this, $userData);
 
         $this->checkCategoryById(1);
         $this->checkNonExistantCategory();

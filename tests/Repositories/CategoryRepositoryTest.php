@@ -74,23 +74,26 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $this->assertNull(self::$repository->getByName('Prueba'));
+        $this->assertEquals(0, self::$repository->getByName('Prueba')->getNumRows());
 
-        $category = self::$repository->getByName('Web');
+        $result = self::$repository->getByName('Web');
+        $data = $result->getData();
 
-        $this->assertEquals(1, $category->getId());
-        $this->assertEquals('Web sites', $category->getDescription());
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals('Web sites', $data->getDescription());
 
-        $category = self::$repository->getByName('Linux');
+        $result = self::$repository->getByName('Linux');
+        $data = $result->getData();
 
-        $this->assertEquals(2, $category->getId());
-        $this->assertEquals('Linux server', $category->getDescription());
+        $this->assertEquals(2, $data->getId());
+        $this->assertEquals('Linux server', $data->getDescription());
 
         // Se comprueba que el hash generado es el mismo en para el nombre 'Web'
-        $category = self::$repository->getByName(' web. ');
+        $result = self::$repository->getByName(' web. ');
+        $data = $result->getData();
 
-        $this->assertEquals(1, $category->getId());
-        $this->assertEquals('Web sites', $category->getDescription());
+        $this->assertEquals(1, $data->getId());
+        $this->assertEquals('Web sites', $data->getDescription());
     }
 
     /**
@@ -133,17 +136,19 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $this->assertNull(self::$repository->getById(10));
+        $this->assertEquals(0, self::$repository->getById(10)->getNumRows());
 
-        $category = self::$repository->getById(1);
+        $result = self::$repository->getById(1);
+        $data = $result->getData();
 
-        $this->assertEquals('Web', $category->getName());
-        $this->assertEquals('Web sites', $category->getDescription());
+        $this->assertEquals('Web', $data->getName());
+        $this->assertEquals('Web sites', $data->getDescription());
 
-        $category = self::$repository->getById(2);
+        $result = self::$repository->getById(2);
+        $data = $result->getData();
 
-        $this->assertEquals('Linux', $category->getName());
-        $this->assertEquals('Linux server', $category->getDescription());
+        $this->assertEquals('Linux', $data->getName());
+        $this->assertEquals('Linux server', $data->getDescription());
     }
 
     /**
@@ -156,18 +161,21 @@ class CategoryRepositoryTest extends DatabaseTestCase
     {
         $count = $this->conn->getRowCount('Category');
 
-        $results = self::$repository->getAll();
+        $result = self::$repository->getAll();
+        $this->assertEquals($count, $result->getNumRows());
 
-        $this->assertCount($count, $results);
+        /** @var CategoryData[] $data */
+        $data = $result->getDataAsArray();
+        $this->assertCount($count, $data);
 
-        $this->assertInstanceOf(CategoryData::class, $results[0]);
-        $this->assertEquals('Linux', $results[0]->getName());
+        $this->assertInstanceOf(CategoryData::class, $data[0]);
+        $this->assertEquals('Linux', $data[0]->getName());
 
-        $this->assertInstanceOf(CategoryData::class, $results[1]);
-        $this->assertEquals('SSH', $results[1]->getName());
+        $this->assertInstanceOf(CategoryData::class, $data[1]);
+        $this->assertEquals('SSH', $data[1]->getName());
 
-        $this->assertInstanceOf(CategoryData::class, $results[2]);
-        $this->assertEquals('Web', $results[2]->getName());
+        $this->assertInstanceOf(CategoryData::class, $data[2]);
+        $this->assertEquals('Web', $data[2]->getName());
     }
 
     /**
@@ -189,10 +197,11 @@ class CategoryRepositoryTest extends DatabaseTestCase
 
         self::$repository->update($categoryData);
 
-        $category = self::$repository->getById(1);
+        $result = self::$repository->getById(1);
+        $data = $result->getData();
 
-        $this->assertEquals($category->getName(), $categoryData->name);
-        $this->assertEquals($category->getDescription(), $categoryData->description);
+        $this->assertEquals($categoryData->name, $data->getName());
+        $this->assertEquals($categoryData->description, $data->getDescription());
 
         // Comprobar la a actualización con un nombre duplicado comprobando su hash
         $categoryData = new CategoryData();
@@ -245,9 +254,10 @@ class CategoryRepositoryTest extends DatabaseTestCase
         $id = self::$repository->create($categoryData);
 
         // Comprobar que el Id devuelto corresponde con la categoría creada
-        $category = self::$repository->getById($id);
+        $result = self::$repository->getById($id);
+        $data = $result->getData();
 
-        $this->assertEquals($categoryData->name, $category->getName());
+        $this->assertEquals($categoryData->name, $data->getName());
 
         $countAfter = $this->conn->getRowCount('Category');
 
@@ -284,8 +294,8 @@ class CategoryRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
-        $this->assertCount(0, self::$repository->getByIdBatch([]));
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3])->getDataAsArray());
+        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5])->getDataAsArray());
+        $this->assertCount(0, self::$repository->getByIdBatch([])->getDataAsArray());
     }
 }

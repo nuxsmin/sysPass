@@ -31,6 +31,7 @@ use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
 use SP\Repositories\DuplicatedItemException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -65,12 +66,17 @@ class ClientService extends Service
      * @param int $id
      *
      * @return ClientData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        return $this->clientRepository->getById($id);
+        if (($result = $this->clientRepository->getById($id))->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -81,21 +87,27 @@ class ClientService extends Service
      * @return ClientData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getByName($name)
     {
-        return $this->clientRepository->getByName($name);
+        if (($result = $this->clientRepository->getByName($name))->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
      * @param $id
+     *
      * @return $this
      * @throws SPException
      */
     public function delete($id)
     {
         if ($this->clientRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Cliente no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -103,6 +115,7 @@ class ClientService extends Service
 
     /**
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -119,6 +132,7 @@ class ClientService extends Service
 
     /**
      * @param $itemData
+     *
      * @return int
      * @throws SPException
      * @throws DuplicatedItemException
@@ -130,7 +144,8 @@ class ClientService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     *
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -149,7 +164,7 @@ class ClientService extends Service
      */
     public function getAllBasic()
     {
-        return $this->clientRepository->getAll();
+        return $this->clientRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -161,7 +176,7 @@ class ClientService extends Service
      */
     public function getAllForUser()
     {
-        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->context));
+        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->context))->getDataAsArray();
     }
 
     /**
