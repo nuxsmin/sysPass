@@ -41,8 +41,7 @@ class FileLogHandler extends Provider implements EventReceiver
     use EventsTrait;
 
     const EVENTS = [
-        'database.',
-        'exception'
+        'database.'
     ];
 
     /**
@@ -66,7 +65,11 @@ class FileLogHandler extends Provider implements EventReceiver
      */
     public function updateEvent($eventType, Event $event)
     {
-        debugLog($event->getEventMessage()->composeText(';'));
+        if (($e = $event->getSource()) instanceof \Exception) {
+            debugLog($e->getMessage());
+        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
+            debugLog($event->getEventMessage()->composeText(';'));
+        }
     }
 
     /**
