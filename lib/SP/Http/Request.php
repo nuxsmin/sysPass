@@ -336,7 +336,7 @@ class Request
             }
 
             return array_map(function ($value) {
-                return is_numeric($value) ? $this->analyzeInt($value) : $this->analyzeString($value);
+                return is_numeric($value) ? Filter::getInt($value) : Filter::getString($value);
             }, $this->params->get($param));
         }
 

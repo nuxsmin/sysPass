@@ -179,7 +179,10 @@ class Database implements DatabaseInterface
         $stmt = $this->prepareQueryData($queryData);
 
         $this->eventDispatcher->notifyEvent('database.query',
-            new Event($this, EventMessage::factory()->addDescription($queryData->getQuery())));
+            new Event($this, EventMessage::factory()
+                ->addDescription($queryData->getQuery())
+            )
+        );
 
         if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {
             $this->numFields = $stmt->columnCount();

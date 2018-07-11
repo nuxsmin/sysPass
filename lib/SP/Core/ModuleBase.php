@@ -32,6 +32,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Http\Request;
 use SP\Providers\Log\DatabaseLogHandler;
+use SP\Providers\Log\FileLogHandler;
 use SP\Providers\Log\RemoteSyslogHandler;
 use SP\Providers\Log\SyslogHandler;
 use SP\Providers\Mail\MailHandler;
@@ -128,7 +129,9 @@ abstract class ModuleBase
 
         if ($this->configData->isLogEnabled()) {
             $eventDispatcher->attach($this->container->get(DatabaseLogHandler::class));
-//            $eventDispatcher->attach($this->container->get(FileLogHandler::class));
+            if (DEBUG) {
+                $eventDispatcher->attach($this->container->get(FileLogHandler::class));
+            }
         }
 
         if ($this->configData->isMailEnabled()) {
