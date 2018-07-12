@@ -59,9 +59,9 @@ class ConfigUtil
      */
     public static function mailAddressesAdapter($mailAddresses)
     {
-        return array_map(function ($value) {
-            return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : null;
-        }, explode(',', $mailAddresses));
+        return array_filter(explode(',', $mailAddresses), function ($value) {
+            return filter_var($value, FILTER_VALIDATE_EMAIL);
+        });
     }
 
     /**
@@ -72,9 +72,9 @@ class ConfigUtil
      */
     public static function eventsAdapter(array $events)
     {
-        return array_map(function ($value) {
-            return preg_match('/^(?:[a-z]+(?:\.)?)+$/i', $value) ? $value : null;
-        }, $events);
+        return array_filter($events, function ($value) {
+            return preg_match('/^[a-z][a-z\.]+$/i', $value);
+        });
     }
 
     /**

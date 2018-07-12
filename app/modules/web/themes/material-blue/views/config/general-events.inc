@@ -98,7 +98,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Eventos'); ?></div>
 
-            <select id="log_events" name="log_events[]" multiple="multiple" class="select-box">
+            <select id="log_events" name="log_events[]" multiple="multiple" class="select-box" data-create="true">
                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $logEvents */
                 foreach ($logEvents as $logEvent): ?>
                     <option

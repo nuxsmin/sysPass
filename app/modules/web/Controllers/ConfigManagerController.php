@@ -146,7 +146,7 @@ class ConfigManagerController extends ControllerBase
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
-        $template->assign('logEvents', SelectItemAdapter::factory(DatabaseLogHandler::EVENTS)
+        $template->assign('logEvents', SelectItemAdapter::factory(array_merge(DatabaseLogHandler::EVENTS, $this->configData->getLogEvents()))
             ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
         );
 
@@ -209,7 +209,7 @@ class ConfigManagerController extends ControllerBase
         $template->assign('mailSecurity', ['SSL', 'TLS']);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
-        $template->assign('mailEvents', SelectItemAdapter::factory(MailHandler::EVENTS)
+        $template->assign('mailEvents', SelectItemAdapter::factory(array_merge(MailHandler::EVENTS, $this->configData->getMailEvents()))
             ->getItemsFromArraySelected($this->configData->getMailEvents(), true)
         );
 

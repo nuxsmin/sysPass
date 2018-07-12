@@ -39,6 +39,11 @@ sysPass.Triggers = function (Common) {
 
         $container.find(".select-box").each(function (e) {
             const $this = $(this);
+            const self_options = {};
+
+            if ($this.data("create") === true) {
+                self_options.create = true;
+            }
 
             options.plugins = $this.hasClass("select-box-deselect") ? {"clear_selection": {title: Common.config().LANG[51]}} : {};
 
@@ -56,7 +61,7 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            $this.selectize(options);
+            $this.selectize($.extend(self_options, options));
         });
 
         $container.find("#allowed_exts").selectize({
