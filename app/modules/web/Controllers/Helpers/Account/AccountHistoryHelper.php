@@ -81,7 +81,6 @@ class AccountHistoryHelper extends HelperBase
      * @throws UpdatedMasterPassException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
     {
@@ -114,8 +113,9 @@ class AccountHistoryHelper extends HelperBase
 
     /**
      * @throws UnauthorizedPageException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws UpdatedMasterPassException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     protected function checkActionAccess()
     {

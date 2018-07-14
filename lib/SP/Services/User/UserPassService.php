@@ -72,6 +72,7 @@ class UserPassService extends Service
      *
      * @param string        $oldUserPass
      * @param UserLoginData $userLoginData $UserData
+     *
      * @return UserPassResponse
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -94,6 +95,7 @@ class UserPassService extends Service
      *
      * @param UserLoginData $userLoginData
      * @param string        $key Clave de cifrado
+     *
      * @return UserPassResponse
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -152,6 +154,7 @@ class UserPassService extends Service
      * @param string     $userLogin
      * @param string     $userPass
      * @param ConfigData $configData
+     *
      * @return string con la clave de cifrado
      */
     public static function makeKeyForUser($userLogin, $userPass, ConfigData $configData)
@@ -164,6 +167,7 @@ class UserPassService extends Service
      *
      * @param string        $userMPass     con la clave maestra
      * @param UserLoginData $userLoginData $userLoginData
+     *
      * @return UserPassResponse
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -205,6 +209,7 @@ class UserPassService extends Service
      * @param string $masterPass
      * @param string $userLogin
      * @param string $userPass
+     *
      * @return UserPassResponse
      * @throws CryptoException
      * @throws SPException
@@ -239,6 +244,7 @@ class UserPassService extends Service
     /**
      * @param int    $id
      * @param string $userPass
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

@@ -307,11 +307,10 @@ class AccountService extends Service implements AccountServiceInterface
      * @param bool $isDelete
      *
      * @return bool
+     * @throws NoSuchItemException
      * @throws QueryException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function addHistory($accountId, $isDelete = false)
     {

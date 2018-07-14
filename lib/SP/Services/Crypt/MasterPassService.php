@@ -56,8 +56,10 @@ class MasterPassService extends Service
 
     /**
      * @param int $userMPassTime
+     *
      * @return bool
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws ServiceException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function checkUserUpdateMPass($userMPassTime)
     {
@@ -69,8 +71,10 @@ class MasterPassService extends Service
 
     /**
      * @param string $masterPassword
+     *
      * @return bool
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws ServiceException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function checkMasterPassword($masterPassword)
     {

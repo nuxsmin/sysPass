@@ -190,9 +190,10 @@ class AccountHelper extends HelperBase
     }
 
     /**
+     * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Services\ServiceException
      */
     public function checkActionAccess()
     {
@@ -286,11 +287,12 @@ class AccountHelper extends HelperBase
      * @param $actionId
      *
      * @return void
+     * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Services\ServiceException
      */
     public function setViewForBlank($actionId)
     {
@@ -335,11 +337,10 @@ class AccountHelper extends HelperBase
      * @param int                    $actionId
      *
      * @return bool
+     * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Services\ServiceException
      */
     public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {

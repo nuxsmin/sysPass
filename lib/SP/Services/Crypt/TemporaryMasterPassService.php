@@ -29,8 +29,9 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\DataModel\Dto\ConfigRequest;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
-use SP\Services\Config\ParameterNotFoundException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Util\Util;
@@ -59,6 +60,7 @@ class TemporaryMasterPassService extends Service
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
      * @param int $maxTime El tiempo máximo de validez de la clave
+     *
      * @return string
      * @throws ServiceException
      */
@@ -71,12 +73,15 @@ class TemporaryMasterPassService extends Service
             $randomKey = Util::generateRandomBytes(32);
             $secureKey = Crypt::makeSecuredKey($randomKey);
 
-            $this->configService->save('tempmaster_pass', Crypt::encrypt(Session::getSessionKey($this->context), $secureKey, $randomKey));
-            $this->configService->save('tempmaster_passkey', $secureKey);
-            $this->configService->save('tempmaster_passhash', Hash::hashKey($randomKey));
-            $this->configService->save('tempmaster_passtime', time());
-            $this->configService->save('tempmaster_maxtime', $this->maxTime);
-            $this->configService->save('tempmaster_attempts', 0);
+            $configRequest = new ConfigRequest();
+            $configRequest->add('tempmaster_pass', Crypt::encrypt(Session::getSessionKey($this->context), $secureKey, $randomKey));
+            $configRequest->add('tempmaster_passkey', $secureKey);
+            $configRequest->add('tempmaster_passhash', Hash::hashKey($randomKey));
+            $configRequest->add('tempmaster_passtime', time());
+            $configRequest->add('tempmaster_maxtime', $this->maxTime);
+            $configRequest->add('tempmaster_attempts', 0);
+
+            $this->configService->saveBatch($configRequest);
 
             // Guardar la clave temporal hasta que finalice la sesión
             $this->context->setTemporaryMasterPass($randomKey);
@@ -98,6 +103,7 @@ class TemporaryMasterPassService extends Service
      * Comprueba si la clave temporal es válida
      *
      * @param string $pass clave a comprobar
+     *
      * @return bool
      * @throws ServiceException
      */
@@ -133,7 +139,7 @@ class TemporaryMasterPassService extends Service
             }
 
             return $isValid;
-        } catch (ParameterNotFoundException $e) {
+        } catch (NoSuchItemException $e) {
             return false;
         } catch (\Exception $e) {
             processException($e);
@@ -143,16 +149,19 @@ class TemporaryMasterPassService extends Service
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
      */
     protected function expire()
     {
-        $this->configService->save('tempmaster_pass', '');
-        $this->configService->save('tempmaster_passkey', '');
-        $this->configService->save('tempmaster_passhash', '');
-        $this->configService->save('tempmaster_maxtime', '');
-        $this->configService->save('tempmaster_attempts', 0);
+        $configRequest = new ConfigRequest();
+        $configRequest->add('tempmaster_pass', '');
+        $configRequest->add('tempmaster_passkey', '');
+        $configRequest->add('tempmaster_passhash', '');
+        $configRequest->add('tempmaster_passtime', 0);
+        $configRequest->add('tempmaster_maxtime', 0);
+        $configRequest->add('tempmaster_attempts', 0);
+
+        $this->configService->saveBatch($configRequest);
 
         $this->eventDispatcher->notifyEvent('expire.tempMasterPassword',
             new Event($this, EventMessage::factory()
@@ -164,9 +173,11 @@ class TemporaryMasterPassService extends Service
      * Devuelve la clave maestra que ha sido encriptada con la clave temporal
      *
      * @param $key string con la clave utilizada para encriptar
+     *
      * @return string con la clave maestra desencriptada
+     * @throws NoSuchItemException
+     * @throws ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function getUsingKey($key)
     {

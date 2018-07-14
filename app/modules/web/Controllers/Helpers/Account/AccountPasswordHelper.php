@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -51,6 +51,7 @@ class AccountPasswordHelper extends HelperBase
      * @param AccountPassData  $account
      * @param \SP\Core\Acl\Acl $acl
      * @param                  $type
+     *
      * @return string|null
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -76,10 +77,12 @@ class AccountPasswordHelper extends HelperBase
      * Returns account's password
      *
      * @param AccountPassData $accountData
+     *
      * @return string
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     protected function getPasswordClear(AccountPassData $accountData)
     {
@@ -98,6 +101,7 @@ class AccountPasswordHelper extends HelperBase
 
     /**
      * @param AccountPassData $accountData
+     *
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException

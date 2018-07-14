@@ -35,7 +35,7 @@ class ConfigData
     /**
      * @var string
      */
-    public $param;
+    public $parameter;
     /**
      * @var string
      */
@@ -49,24 +49,24 @@ class ConfigData
      */
     public function __construct($param, $value)
     {
-        $this->param = $param;
+        $this->parameter = $param;
         $this->value = $value;
     }
 
     /**
      * @return string
      */
-    public function getParam()
+    public function getParameter()
     {
-        return $this->param;
+        return $this->parameter;
     }
 
     /**
-     * @param string $param
+     * @param string $parameter
      */
-    public function setParam($param)
+    public function setParameter($parameter)
     {
-        $this->param = $param;
+        $this->parameter = $parameter;
     }
 
     /**

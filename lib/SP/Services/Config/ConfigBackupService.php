@@ -24,8 +24,11 @@
 
 namespace SP\Services\Config;
 
+use SP\Config\ConfigData;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Util\Util;
 
 /**
  * Class ConfigBackupService
@@ -40,12 +43,14 @@ class ConfigBackupService extends Service
     protected $configService;
 
     /**
-     * Backups the config data into the database
+     * Backs up the config data into the database
+     *
+     * @param ConfigData $configData
      */
-    public function backup()
+    public function backup(ConfigData $configData)
     {
         try {
-            $this->configService->save('config_backup', bin2hex(gzcompress(serialize($this->config->getConfigData()))));
+            $this->configService->save('config_backup', $this->packConfigData($configData));
             $this->configService->save('config_backup_date', time());
         } catch (\Exception $e) {
             processException($e);
@@ -53,11 +58,44 @@ class ConfigBackupService extends Service
     }
 
     /**
+     * @param ConfigData $configData
+     *
+     * @return string
+     */
+    private function packConfigData(ConfigData $configData)
+    {
+        return bin2hex(gzcompress(serialize($configData)));
+    }
+
+    /**
+     * @return ConfigData
      * @throws ServiceException
      */
     public function restore()
     {
-        throw new ServiceException('Not implemented');
+        try {
+            $data = $this->configService->getByParam('config_backup');
+
+            if ($data === null) {
+                throw new ServiceException(__u('No es posible restaurar la configuración'));
+            }
+
+            return $this->config->saveConfig($this->unpackConfigData($data))->getConfigData();
+        } catch (NoSuchItemException $e) {
+            processException($e);
+
+            throw new ServiceException(__u('No es posible restaurar la configuración'));
+        }
+    }
+
+    /**
+     * @param string $configData
+     *
+     * @return ConfigData
+     */
+    private function unpackConfigData(string $configData)
+    {
+        return Util::unserialize(ConfigData::class, gzuncompress(hex2bin($configData)));
     }
 
     protected function initialize()

@@ -38,29 +38,6 @@ use SP\Storage\Database\QueryData;
 class ConfigRepository extends Repository
 {
     /**
-     * @param ConfigData[] $data
-     *
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function updateBatch(array $data)
-    {
-        $this->db->beginTransaction();
-
-        try {
-            foreach ($data as $configData) {
-                $this->update($configData);
-            }
-        } catch (QueryException $e) {
-            debugLog($e->getMessage());
-        } catch (ConstraintException $e) {
-            debugLog($e->getMessage());
-        } finally {
-            return $this->db->endTransaction();
-        }
-    }
-
-    /**
      * @param ConfigData $configData
      *
      * @return bool
@@ -71,7 +48,7 @@ class ConfigRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Config SET `value` = ? WHERE parameter = ?');
-        $queryData->setParams([$configData->getValue(), $configData->getParam()]);
+        $queryData->setParams([$configData->getValue(), $configData->getParameter()]);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -86,8 +63,8 @@ class ConfigRepository extends Repository
     public function create(ConfigData $configData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO Config SET parameter = ?, value = ?');
-        $queryData->setParams([$configData->getParam(), $configData->getValue()]);
+        $queryData->setQuery('INSERT INTO Config SET parameter = ?, `value` = ?');
+        $queryData->setParams([$configData->getParameter(), $configData->getValue()]);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -95,32 +72,32 @@ class ConfigRepository extends Repository
     /**
      * Obtener un array con la configuración almacenada en la BBDD.
      *
-     * @return ConfigData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT parameter, value FROM Config');
+        $queryData->setQuery('SELECT parameter, `value` FROM Config ORDER BY parameter');
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * @param string $param
      *
-     * @return mixed
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getByParam($param)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT value FROM Config WHERE parameter = ? LIMIT 1');
+        $queryData->setQuery('SELECT parameter, `value` FROM Config WHERE parameter = ? LIMIT 1');
         $queryData->addParam($param);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -142,7 +119,7 @@ class ConfigRepository extends Repository
     /**
      * @param $param
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

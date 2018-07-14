@@ -154,7 +154,7 @@ class Config
         try {
             if ($backup) {
                 $this->dic->get(ConfigBackupService::class)
-                    ->backup();
+                    ->backup($configData);
             }
 
             $configData->setConfigDate(time());
@@ -162,6 +162,8 @@ class Config
             $configData->setConfigHash();
 
             $this->fileStorage->save($configData, 'config');
+
+            $this->configData = $configData;
         } catch (\Exception $e) {
             processException($e);
         }

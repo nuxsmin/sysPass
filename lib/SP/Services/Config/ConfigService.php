@@ -29,6 +29,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\Config\ConfigRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 
@@ -46,32 +47,39 @@ class ConfigService extends Service
 
     /**
      * @param string $param
-     * @param null   $default
+     * @param mixed  $default
+     *
      * @return mixed
-     * @throws ParameterNotFoundException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getByParam($param, $default = null)
     {
-        $query = $this->configRepository->getByParam($param);
+        try {
+            /** @var ConfigData $data */
+            $data = $this->configRepository->getByParam($param)->getData();
+        } catch (\Exception $e) {
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
+        }
 
-        if (empty($query)) {
+
+        if (empty($data)) {
             if ($default !== null) {
                 return $default;
             }
 
-            throw new ParameterNotFoundException(
-                sprintf(__('Parámetro no encontrado (%s)'),
-                    ParameterNotFoundException::ERROR,
-                    $param)
+            throw new NoSuchItemException(
+                sprintf(__('Parámetro no encontrado (%s)'), $param)
             );
         }
 
-        return empty($query->value) ? $default : $query->value;
+        return empty($data->value) ? $default : $data->value;
     }
 
     /**
      * @param ConfigData $configData
-     * @return bool
+     *
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -82,28 +90,28 @@ class ConfigService extends Service
 
     /**
      * @param ConfigRequest $configRequest
+     *
      * @throws ServiceException
      */
     public function saveBatch(ConfigRequest $configRequest)
     {
-        foreach ($configRequest->getData() as $param => $value) {
-            try {
-                $this->save($param, $value);
-            } catch (ConstraintException $e) {
-                processException($e);
+        try {
+            $this->transactionAware(function () use ($configRequest) {
+                foreach ($configRequest->getData() as $param => $value) {
+                    $this->save($param, $value);
+                }
+            });
+        } catch (\Exception $e) {
+            processException($e);
 
-                throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
-            } catch (QueryException $e) {
-                processException($e);
-
-                throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
-            }
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
         }
     }
 
     /**
      * @param string $param
      * @param string $value
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -121,21 +129,27 @@ class ConfigService extends Service
      * Obtener un array con la configuración almacenada en la BBDD.
      *
      * @return ConfigData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
-        return $this->configRepository->getAll();
+        return $this->configRepository->getAll()->getDataAsArray();
     }
 
     /**
      * @param $param
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     *
+     * @return void
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function deleteByParam($param)
     {
-        return $this->configRepository->deleteByParam($param);
+        if ($this->configRepository->deleteByParam($param) === 0) {
+            throw new NoSuchItemException(sprintf(__('Parámetro no encontrado (%s)'), $param));
+        }
     }
 
     /**

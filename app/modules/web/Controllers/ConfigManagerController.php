@@ -62,7 +62,6 @@ class ConfigManagerController extends ControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
@@ -75,7 +74,6 @@ class ConfigManagerController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function getTabs()
@@ -220,7 +218,8 @@ class ConfigManagerController extends ControllerBase
      * @return DataTab
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     protected function getEncryptionConfig()
     {
@@ -322,7 +321,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     protected function getInfo()
     {
@@ -332,7 +332,7 @@ class ConfigManagerController extends ControllerBase
 
         $template->assign('dbInfo', DBUtil::getDBinfo($this->dic->get(MySQLHandler::class)));
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
-        $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backupdate', 0)));
+        $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0)));
         $template->assign('plugins', PluginUtil::getLoadedPlugins());
         $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('No instalado')));
         $template->assign('securedSession', CryptSessionHandler::$isSecured);

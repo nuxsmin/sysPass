@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
@@ -54,9 +52,8 @@ class ConfigEncryptionController extends SimpleControllerBase
     use JsonTrait;
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     public function saveAction()
     {
