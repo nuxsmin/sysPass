@@ -55,6 +55,7 @@ class CustomFieldService extends Service
      * Returns the form Id for a given name
      *
      * @param $name
+     *
      * @return string
      */
     public static function getFormIdForName($name)
@@ -65,15 +66,16 @@ class CustomFieldService extends Service
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @param string $data
-     * @param string $key
+     * @param string         $data
+     * @param string         $key
      * @param SessionContext $sessionContext
+     *
      * @return string
      * @throws CryptoException
      */
     public static function decryptData($data, $key, SessionContext $sessionContext)
     {
-        if ($data !== '' && $key !== '') {
+        if (!empty($data) && empty($key)) {
             return self::formatValue(Crypt::decrypt($data, $key, CryptSession::getSessionKey($sessionContext)));
         }
 
@@ -84,6 +86,7 @@ class CustomFieldService extends Service
      * Formatear el valor del campo
      *
      * @param $value string El valor del campo
+     *
      * @return string
      */
     public static function formatValue($value)
@@ -100,6 +103,7 @@ class CustomFieldService extends Service
      *
      * @param $moduleId
      * @param $itemId
+     *
      * @return array
      */
     public function getForModuleById($moduleId, $itemId)
@@ -111,6 +115,7 @@ class CustomFieldService extends Service
      * Updates an item
      *
      * @param CustomFieldData $customFieldData
+     *
      * @return bool
      * @throws CryptoException
      * @throws QueryException
@@ -144,6 +149,7 @@ class CustomFieldService extends Service
      * @param int $id
      * @param int $moduleId
      * @param int $definitionId
+     *
      * @return bool
      * @throws SPException
      */
@@ -183,7 +189,8 @@ class CustomFieldService extends Service
 
     /**
      * @param CustomFieldData $customFieldData
-     * @param null $key
+     * @param null            $key
+     *
      * @throws CryptoException
      * @throws ServiceException
      */
@@ -204,6 +211,7 @@ class CustomFieldService extends Service
      * Eliminar los datos de los campos personalizados del módulo
      *
      * @param int $definitionId
+     *
      * @return int
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -217,7 +225,8 @@ class CustomFieldService extends Service
      * Eliminar los datos de los campos personalizados del módulo
      *
      * @param int[] $ids
-     * @param int $moduleId
+     * @param int   $moduleId
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -231,6 +240,7 @@ class CustomFieldService extends Service
      * Eliminar los datos de los elementos de una definición
      *
      * @param array $definitionIds
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -244,7 +254,8 @@ class CustomFieldService extends Service
      * Updates an item
      *
      * @param CustomFieldData $customFieldData
-     * @param string $masterPass
+     * @param string          $masterPass
+     *
      * @return bool
      * @throws CryptoException
      * @throws QueryException
@@ -260,18 +271,22 @@ class CustomFieldService extends Service
 
     /**
      * @return CustomFieldData[]
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAll()
     {
-        return $this->customFieldRepository->getAll();
+        return $this->customFieldRepository->getAll()->getDataAsArray();
     }
 
     /**
      * @return CustomFieldData[]
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAllEncrypted()
     {
-        return $this->customFieldRepository->getAllEncrypted();
+        return $this->customFieldRepository->getAllEncrypted()->getDataAsArray();
     }
 
     /**

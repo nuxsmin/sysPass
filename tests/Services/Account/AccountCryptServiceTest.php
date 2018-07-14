@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -43,7 +43,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
 {
     const CURRENT_MASTERPASS = '12345678900';
     const NEW_MASTERPASS = '00123456789';
-    const CURRENT_HASH = '$2y$10$p/x8ECCP1Lz/SjbGQy.6/OJ/.OLICBLGkXPiVkaA5Kf1.1HvRQOWG';
+    const CURRENT_HASH = '$2y$10$xtsuN2PUvgSH/0mrfBlsbOActVgCjYcqDqC6L3T9QraNxZC4RXGYa';
     /**
      * @var AccountService
      */
@@ -114,7 +114,7 @@ class AccountCryptServiceTest extends DatabaseTestCase
      */
     public function testUpdateHistoryMasterPassword()
     {
-        $request = new UpdateMasterPassRequest(self::CURRENT_MASTERPASS, self::NEW_MASTERPASS, '$2y$10$xtsuN2PUvgSH/0mrfBlsbOActVgCjYcqDqC6L3T9QraNxZC4RXGYa');
+        $request = new UpdateMasterPassRequest(self::CURRENT_MASTERPASS, self::NEW_MASTERPASS, self::CURRENT_HASH);
 
         self::$service->updateHistoryMasterPassword($request);
 

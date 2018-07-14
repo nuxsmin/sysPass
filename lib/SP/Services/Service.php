@@ -28,7 +28,9 @@ use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventMessage;
 use SP\Storage\Database\Database;
 
 /**
@@ -61,6 +63,7 @@ abstract class Service
      * Service constructor.
      *
      * @param Container $dic
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -79,7 +82,7 @@ abstract class Service
     /**
      * Bubbles a Closure in a database transaction
      *
-     * @param \Closure  $closure
+     * @param \Closure $closure
      *
      * @return mixed
      * @throws ServiceException
@@ -100,6 +103,11 @@ abstract class Service
                 $database->rollbackTransaction();
 
                 debugLog('Transaction:Rollback');
+
+                $this->eventDispatcher->notifyEvent('database.rollback',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Rollback')))
+                );
 
                 throw $e;
             }

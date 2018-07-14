@@ -276,9 +276,9 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     /**
      * Returns all the items
      *
-     * @return CustomFieldData[]
-     * @throws QueryException
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -286,13 +286,13 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(CustomFieldData::class);
         $queryData->setQuery('SELECT * FROM CustomFieldData');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items that were encryptes
      *
-     * @return CustomFieldData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -302,7 +302,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(CustomFieldData::class);
         $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**

@@ -25,14 +25,11 @@
 namespace SP\Services\Crypt;
 
 use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
 use SP\Services\Account\AccountCryptService;
 use SP\Services\Config\ConfigService;
 use SP\Services\CustomField\CustomFieldCryptService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\Database\Database;
 
 /**
  * Class MasterPassService
@@ -41,6 +38,9 @@ use SP\Storage\Database\Database;
  */
 class MasterPassService extends Service
 {
+    const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
+    const PARAM_MASTER_PASS_HASH = 'masterPwd';
+
     /**
      * @var ConfigService
      */
@@ -63,9 +63,7 @@ class MasterPassService extends Service
      */
     public function checkUserUpdateMPass($userMPassTime)
     {
-        $lastUpdateMPass = $this->configService->getByParam('lastupdatempass');
-
-        return $userMPassTime >= $lastUpdateMPass;
+        return $userMPassTime >= $this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, 0);
 
     }
 
@@ -78,43 +76,37 @@ class MasterPassService extends Service
      */
     public function checkMasterPassword($masterPassword)
     {
-        return Hash::checkHashKey($masterPassword, $this->configService->getByParam('masterPwd'));
+        return Hash::checkHashKey($masterPassword, $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH));
     }
 
     /**
      * @param UpdateMasterPassRequest $request
+     *
      * @throws \Exception
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request)
     {
-        $db = $this->dic->get(Database::class);
+        $this->transactionAware(function () use ($request) {
+            $this->accountCryptService->updateMasterPassword($request);
 
-        if (!$db->beginTransaction()) {
-            try {
-                $this->accountCryptService->updateMasterPassword($request);
+            $this->accountCryptService->updateHistoryMasterPassword($request);
 
-                $this->accountCryptService->updateHistoryMasterPassword($request);
+            $this->customFieldCryptService->updateMasterPassword($request);
 
-                $this->customFieldCryptService->updateMasterPassword($request);
+            $this->updateConfig($request->getHash());
+        });
+    }
 
-                if (!$db->endTransaction()) {
-                    throw new ServiceException(__u('No es posible finalizar una transacción'));
-                }
-            } catch (\Exception $e) {
-                if ($db->rollbackTransaction()) {
-                    $this->eventDispatcher->notifyEvent('update.masterPassword.rollback',
-                        new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Rollback')))
-                    );
-
-                    debugLog('Rollback');
-                }
-
-                throw $e;
-            }
-        } else {
-            throw new ServiceException(__u('No es posible iniciar una transacción'));
-        }
+    /**
+     * @param $hash
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updateConfig($hash)
+    {
+        $this->configService->save(self::PARAM_MASTER_PASS_HASH, $hash);
+        $this->configService->save(self::PARAM_MASTER_PASS_TIME, time());
     }
 
     /**

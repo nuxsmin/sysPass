@@ -52,6 +52,10 @@ class SecureSessionService extends Service
      * @var string
      */
     protected $seed;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Returns the encryption key
@@ -134,6 +138,7 @@ class SecureSessionService extends Service
     protected function initialize()
     {
         $this->fileCache = $this->dic->get(FileCache::class);
+        $this->request = $this->dic->get(Request::class);
         $this->seed = $this->config->getConfigData()->getPasswordSalt();
     }
 }

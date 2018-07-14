@@ -30,16 +30,13 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\MailService;
 use SP\Services\Task\TaskFactory;
-use SP\Services\User\UserService;
 use SP\Util\Util;
 
 /**
@@ -101,19 +98,17 @@ class ConfigEncryptionController extends SimpleControllerBase
 
             $task = $taskId !== null ? TaskFactory::create(__FUNCTION__, $taskId) : null;
 
-            $request = new UpdateMasterPassRequest(
-                $currentMasterPass,
-                $newMasterPass,
-                $configService->getByParam('masterPwd'),
-                $task
-            );
-
             try {
+                $request = new UpdateMasterPassRequest(
+                    $currentMasterPass,
+                    $newMasterPass,
+                    $configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH),
+                    $task
+                );
+
                 $this->eventDispatcher->notifyEvent('update.masterPassword.start', new Event($this));
 
                 $mastePassService->changeMasterPassword($request);
-                $configService->save('masterPwd', $request->getHash());
-                $configService->save('lastupdatempass', time());
 
                 $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
             } catch (\Exception $e) {
@@ -133,8 +128,7 @@ class ConfigEncryptionController extends SimpleControllerBase
             try {
                 $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
 
-                $configService->save('masterPwd', Hash::hashKey($newMasterPass));
-                $configService->save('lastupdatempass', time());
+                $mastePassService->updateConfig(Hash::hashKey($newMasterPass));
             } catch (\Exception $e) {
                 processException($e);
 
@@ -157,10 +151,10 @@ class ConfigEncryptionController extends SimpleControllerBase
         }
 
         try {
-            $configService = $this->dic->get(ConfigService::class);
-            $configService->save('masterPwd', Hash::hashKey(CryptSession::getSessionKey($this->session)));
+            $masterPassService = $this->dic->get(MasterPassService::class);
+            $masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
-            $this->eventDispatcher->notifyEvent('refresh.masterPassword',
+            $this->eventDispatcher->notifyEvent('refresh.masterPassword.hash',
                 new Event($this, EventMessage::factory()->addDescription(__u('Hash de clave maestra actualizado'))));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Hash de clave maestra actualizado'));
@@ -184,25 +178,13 @@ class ConfigEncryptionController extends SimpleControllerBase
             $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
 
             $groupId = $this->request->analyzeInt('temporary_masterpass_group');
-            $sendEmail = $this->request->analyzeBool('temporary_masterpass_email');
+            $sendEmail = $this->configData->isMailEnabled()
+                && $this->request->analyzeBool('temporary_masterpass_email')
+                && $groupId > 0;
 
-            if ($this->configData->isMailEnabled() && $sendEmail && $groupId) {
-                $mailMessage = new MailMessage();
-                $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
-                $mailMessage->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
-                $mailMessage->addDescriptionLine();
-                $mailMessage->addDescription(sprintf(__('La nueva clave es: %s'), $key));
-                $mailMessage->addDescriptionLine();
-                $mailMessage->addDescription(sprintf(__('Esta clave estará activa hasta: %s'), date('r', $temporaryMasterPassService->getMaxTime())));
-                $mailMessage->addDescriptionLine();
-                $mailMessage->addDescription(__('No olvide acceder lo antes posible para guardar los cambios.'));
-
+            if ($sendEmail) {
                 try {
-                    $emails = array_map(function ($value) {
-                        return $value->email;
-                    }, $this->dic->get(UserService::class)->getUserEmailForGroup($groupId));
-
-                    $this->dic->get(MailService::class)->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+                    $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
 
                     $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'), [__u('Email enviado')]);
                 } catch (\Exception $e) {

@@ -56,22 +56,20 @@ class ConfigService extends Service
     public function getByParam($param, $default = null)
     {
         try {
-            /** @var ConfigData $data */
-            $data = $this->configRepository->getByParam($param)->getData();
+            $result = $this->configRepository->getByParam($param);
         } catch (\Exception $e) {
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
         }
 
 
-        if (empty($data)) {
-            if ($default !== null) {
-                return $default;
-            }
-
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(
                 sprintf(__('Parámetro no encontrado (%s)'), $param)
             );
         }
+
+        /** @var ConfigData $data */
+        $data = $result->getData();
 
         return empty($data->value) ? $default : $data->value;
     }
