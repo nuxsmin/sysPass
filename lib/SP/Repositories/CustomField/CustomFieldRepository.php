@@ -67,7 +67,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             $itemData->getData(),
             $itemData->getKey(),
             $itemData->getModuleId(),
-            $itemData->getId(),
+            $itemData->getItemId(),
             $itemData->getDefinitionId()
         ]);
 
@@ -132,7 +132,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
-            $itemData->getId(),
+            $itemData->getItemId(),
             $itemData->getModuleId(),
             $itemData->getDefinitionId(),
             $itemData->getData(),
@@ -148,7 +148,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param int $id
      * @param int $moduleId
      *
-     * @return bool
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -173,7 +173,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param int $moduleId
      * @param int $definitionId
      *
-     * @return bool
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */

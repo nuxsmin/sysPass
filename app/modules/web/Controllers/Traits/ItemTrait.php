@@ -111,7 +111,7 @@ trait ItemTrait
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData = new CustomFieldData();
-                    $customFieldData->setId($itemId);
+                    $customFieldData->setItemId($itemId);
                     $customFieldData->setModuleId($moduleId);
                     $customFieldData->setDefinitionId($id);
                     $customFieldData->setData($value);
@@ -164,12 +164,12 @@ trait ItemTrait
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData = new CustomFieldData();
-                    $customFieldData->setId($itemId);
+                    $customFieldData->setItemId($itemId);
                     $customFieldData->setModuleId($moduleId);
                     $customFieldData->setDefinitionId($id);
                     $customFieldData->setData($value);
 
-                    if ($customFieldService->update($customFieldData) !== 1) {
+                    if ($customFieldService->updateOrCreateData($customFieldData) === false) {
                         throw new SPException(__u('Error al actualizar los datos del campo personalizado'));
                     }
                 }

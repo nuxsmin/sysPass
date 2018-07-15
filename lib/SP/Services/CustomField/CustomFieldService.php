@@ -122,17 +122,17 @@ class CustomFieldService extends Service
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws SPException
      */
-    public function update(CustomFieldData $customFieldData)
+    public function updateOrCreateData(CustomFieldData $customFieldData)
     {
         $exists = $this->customFieldRepository->checkExists($customFieldData);
 
         // Deletes item's custom field data if value is left blank
-        if ($exists && $customFieldData->getData() === '') {
-            return $this->deleteCustomFieldData($customFieldData->getId(), $customFieldData->getModuleId(), $customFieldData->getDefinitionId());
+        if ($exists && empty($customFieldData->getData())) {
+            return $this->deleteCustomFieldData($customFieldData->getId(), $customFieldData->getModuleId(), $customFieldData->getDefinitionId()) === 1;
         }
 
         // Create item's custom field data if value is set
-        if (!$exists && $customFieldData->getData() !== '') {
+        if (!$exists) {
             return $this->create($customFieldData);
         }
 
@@ -140,7 +140,7 @@ class CustomFieldService extends Service
             $this->setSecureData($customFieldData);
         }
 
-        return $this->customFieldRepository->update($customFieldData);
+        return $this->customFieldRepository->update($customFieldData) === 1;
     }
 
     /**
@@ -150,7 +150,7 @@ class CustomFieldService extends Service
      * @param int $moduleId
      * @param int $definitionId
      *
-     * @return bool
+     * @return int
      * @throws SPException
      */
     public function deleteCustomFieldData($id, $moduleId, $definitionId = null)
@@ -176,7 +176,7 @@ class CustomFieldService extends Service
      */
     public function create(CustomFieldData $customFieldData)
     {
-        if ($customFieldData->getData() === '') {
+        if (empty($customFieldData->getData())) {
             return true;
         }
 
@@ -184,7 +184,7 @@ class CustomFieldService extends Service
             $this->setSecureData($customFieldData);
         }
 
-        return $this->customFieldRepository->create($customFieldData);
+        return $this->customFieldRepository->create($customFieldData) > 0;
     }
 
     /**
