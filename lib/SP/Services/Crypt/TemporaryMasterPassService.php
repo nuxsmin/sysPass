@@ -26,7 +26,6 @@ namespace SP\Services\Crypt;
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
@@ -86,7 +85,7 @@ class TemporaryMasterPassService extends Service
             $secureKey = Crypt::makeSecuredKey($randomKey);
 
             $configRequest = new ConfigRequest();
-            $configRequest->add(self::PARAM_PASS, Crypt::encrypt(Session::getSessionKey($this->context), $secureKey, $randomKey));
+            $configRequest->add(self::PARAM_PASS, Crypt::encrypt($this->getMasterKeyFromContext(), $secureKey, $randomKey));
             $configRequest->add(self::PARAM_KEY, $secureKey);
             $configRequest->add(self::PARAM_HASH, Hash::hashKey($randomKey));
             $configRequest->add(self::PARAM_TIME, time());
@@ -123,9 +122,7 @@ class TemporaryMasterPassService extends Service
     {
         try {
             $isValid = false;
-            $passTime = (int)$this->configService->getByParam(self::PARAM_TIME);
             $passMaxTime = (int)$this->configService->getByParam(self::PARAM_MAX_TIME);
-            $attempts = (int)$this->configService->getByParam(self::PARAM_ATTEMPTS);
 
             // Comprobar si el tiempo de validez o los intentos se han superado
             if ($passMaxTime === 0) {
@@ -135,6 +132,9 @@ class TemporaryMasterPassService extends Service
 
                 return $isValid;
             }
+
+            $passTime = (int)$this->configService->getByParam(self::PARAM_TIME);
+            $attempts = (int)$this->configService->getByParam(self::PARAM_ATTEMPTS);
 
             if ((!empty($passTime) && time() > $passMaxTime)
                 || $attempts >= self::MAX_ATTEMPTS
@@ -197,7 +197,8 @@ class TemporaryMasterPassService extends Service
             return $value->email;
         }, $this->dic->get(UserService::class)->getUserEmailForGroup($groupId));
 
-        $this->dic->get(MailService::class)->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+        $this->dic->get(MailService::class)
+            ->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
     }
 
     /**

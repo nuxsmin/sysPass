@@ -393,10 +393,11 @@ class ApiService extends Service
 
     /**
      * @return string
+     * @throws ServiceException
      */
     public function getMasterPass()
     {
-        return $this->context->getTrasientKey('_masterpass');
+        return $this->getMasterKeyFromContext();
     }
 
     /**

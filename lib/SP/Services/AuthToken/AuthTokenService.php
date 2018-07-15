@@ -27,7 +27,6 @@ namespace SP\Services\AuthToken;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
@@ -217,17 +216,12 @@ class AuthTokenService extends Service
      * @param string $key
      *
      * @return Vault
+     * @throws ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     private function getSecureData($token, $key)
     {
-        if (($mKey = $this->context->getTrasientKey('_masterpass')) !== null) {
-            return (new Vault())
-                ->saveData($mKey, $key . $token);
-        }
-
-        return (new Vault())
-            ->saveData(CryptSession::getSessionKey($this->context), $key . $token);
+        return (new Vault())->saveData($this->getMasterKeyFromContext(), $key . $token);
     }
 
     /**

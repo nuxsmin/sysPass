@@ -268,11 +268,11 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * Establece la clave maestra temporal
+     * Sets a temporary master password
      *
      * @param string $password
      */
-    public function setTemporaryMasterPass($password)
+    public function setTemporaryMasterPass(string $password)
     {
         $this->setContextKey('tempmasterpass', $password);
     }

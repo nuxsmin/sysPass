@@ -28,9 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountUtil;
-use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
@@ -220,11 +218,7 @@ class AccountService extends Service implements AccountServiceInterface
     {
         try {
             if ($masterPass === null) {
-                if ($this->context instanceof SessionContext) {
-                    $masterPass = CryptSession::getSessionKey($this->context);
-                } else {
-                    $masterPass = $this->context->getTrasientKey('_masterpass');
-                }
+                $masterPass = $this->getMasterKeyFromContext();
             }
 
             if (empty($masterPass)) {

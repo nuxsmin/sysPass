@@ -182,4 +182,11 @@ interface ContextInterface
      * @return mixed
      */
     public function getTrasientKey(string $key, $default = null);
+
+    /**
+     * Sets a temporary master password
+     *
+     * @param string $password
+     */
+    public function setTemporaryMasterPass(string $password);
 }

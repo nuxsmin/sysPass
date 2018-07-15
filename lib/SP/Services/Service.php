@@ -24,10 +24,13 @@
 
 namespace SP\Services;
 
+use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContext;
+use SP\Core\Crypt\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
@@ -113,6 +116,31 @@ abstract class Service
             }
         } else {
             throw new ServiceException(__u('No es posible iniciar una transacción'));
+        }
+    }
+
+    /**
+     * @return string
+     * @throws ServiceException
+     */
+    protected final function getMasterKeyFromContext(): String
+    {
+        try {
+            if ($this->context instanceof SessionContext) {
+                $key = Session::getSessionKey($this->context);
+            } else {
+                $key = $this->context->getTrasientKey('_masterpass');
+            }
+
+            if (empty($key)) {
+                throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
+            }
+
+            return $key;
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
         }
     }
 }

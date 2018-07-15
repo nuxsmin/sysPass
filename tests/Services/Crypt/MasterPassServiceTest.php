@@ -72,7 +72,6 @@ class MasterPassServiceTest extends DatabaseTestCase
         self::$service = $dic->get(MasterPassService::class);
         self::$accountService = $dic->get(AccountService::class);
         self::$customFieldService = $dic->get(CustomFieldService::class);
-
     }
 
     /**

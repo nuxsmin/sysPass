@@ -56,6 +56,7 @@ class MailService extends Service
      *
      * @param MailParams $mailParams
      * @param string     $to
+     *
      * @throws ServiceException
      */
     public function check(MailParams $mailParams, $to)
@@ -104,6 +105,7 @@ class MailService extends Service
 
     /**
      * @param $action
+     *
      * @return string
      */
     protected function getSubjectForAction($action)
@@ -115,6 +117,7 @@ class MailService extends Service
      * @param string      $subject
      * @param string      $to
      * @param MailMessage $mailMessage
+     *
      * @throws ServiceException
      */
     public function send($subject, $to, MailMessage $mailMessage)
@@ -134,7 +137,7 @@ class MailService extends Service
     {
         try {
             $this->mailer->send();
-
+            
             $this->eventDispatcher->notifyEvent('send.mail',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Correo enviado'))
@@ -155,6 +158,7 @@ class MailService extends Service
      * @param string      $subject
      * @param array       $to
      * @param MailMessage $mailMessage
+     *
      * @throws ServiceException
      */
     public function sendBatch($subject, array $to, MailMessage $mailMessage)

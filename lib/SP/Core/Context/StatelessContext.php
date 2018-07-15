@@ -257,4 +257,16 @@ class StatelessContext extends ContextBase
     {
         return null;
     }
+
+    /**
+     * Sets a temporary master password
+     *
+     * @param string $password
+     *
+     * @throws ContextException
+     */
+    public function setTemporaryMasterPass(string $password)
+    {
+        $this->setTrasientKey('_tempmasterpass', $password);
+    }
 }
