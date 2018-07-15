@@ -88,17 +88,23 @@ class Language
      * @var  SessionContext
      */
     protected $context;
+    /**
+     * @var Request
+     */
+    private $request;
 
     /**
      * Language constructor.
      *
      * @param ContextInterface $session
      * @param Config           $config
+     * @param Request          $request
      */
-    public function __construct(ContextInterface $session, Config $config)
+    public function __construct(ContextInterface $session, Config $config, Request $request)
     {
         $this->context = $session;
         $this->configData = $config->getConfigData();
+        $this->request = $request;
 
         ksort(self::$langs);
     }
@@ -175,15 +181,16 @@ class Language
      */
     private function getBrowserLang()
     {
-        $lang = Request::getRequestHeaders('HTTP_ACCEPT_LANGUAGE');
+        $lang = $this->request->getHeader('HTTP_ACCEPT_LANGUAGE');
 
-        return $lang ? str_replace('-', '_', substr($lang, 0, 5)) : '';
+        return !empty($lang) ? str_replace('-', '_', substr($lang, 0, 5)) : '';
     }
 
     /**
      * Comprobar si el archivo de lenguaje existe
      *
      * @param string $lang El lenguaje a comprobar
+     *
      * @return bool
      */
     private function checkLangFile($lang)

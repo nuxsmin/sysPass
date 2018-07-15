@@ -68,6 +68,7 @@ function processException(\Exception $exception)
 
 /**
  * @param $trace
+ *
  * @return string
  */
 function formatTrace($trace)
@@ -92,6 +93,7 @@ function formatTrace($trace)
  *
  * @param string $message
  * @param bool   $translate Si es necesario traducir
+ *
  * @return string
  */
 function __($message, $translate = true)
@@ -103,6 +105,7 @@ function __($message, $translate = true)
  * Returns an untranslated string (gettext placeholder)
  *
  * @param string $message
+ *
  * @return string
  */
 function __u($message)
@@ -116,6 +119,7 @@ function __u($message)
  * @param string $domain
  * @param string $message
  * @param bool   $translate
+ *
  * @return string
  */
 function _t($domain, $message, $translate = true)
@@ -127,6 +131,7 @@ function _t($domain, $message, $translate = true)
  * Capitalización de cadenas multi byte
  *
  * @param $string
+ *
  * @return string
  */
 function mb_ucfirst($string)
@@ -139,6 +144,7 @@ function mb_ucfirst($string)
  * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
  *
  * @param float $from
+ *
  * @returns float con el tiempo actual
  * @return float
  */
@@ -174,6 +180,7 @@ function initModule($module)
 /**
  * @param $dir
  * @param $levels
+ *
  * @return bool|string
  */
 function nDirname($dir, $levels)
@@ -189,6 +196,7 @@ function nDirname($dir, $levels)
 
 /**
  * @param Exception $exception
+ *
  * @throws ReflectionException
  */
 function flattenExceptionBacktrace(\Exception $exception)
@@ -217,6 +225,16 @@ function flattenExceptionBacktrace(\Exception $exception)
         $traceProperty->setValue($exception, $trace);
     } while ($exception = $exception->getPrevious());
     $traceProperty->setAccessible(false);
+}
+
+/**
+ * Prints a fancy trace info using Xdebug extension
+ */
+function printTraceInfo()
+{
+    if (DEBUG && extension_loaded('xdebug')) {
+        xdebug_print_function_stack();
+    }
 }
 
 //set_exception_handler('\flattenExceptionBacktrace');

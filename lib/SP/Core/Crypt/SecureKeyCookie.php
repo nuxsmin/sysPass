@@ -27,7 +27,6 @@ namespace SP\Core\Crypt;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use SP\Http\Request;
-use SP\Util\HttpUtil;
 
 /**
  * Class SecureKeyCookie
@@ -48,23 +47,30 @@ class SecureKeyCookie extends Cookie
     protected $securedKey;
 
     /**
+     * @param Request $request
+     *
+     * @return SecureKeyCookie
+     */
+    public static function factory(Request $request) {
+        return new self(self::COOKIE_NAME, $request);
+    }
+
+    /**
      * Obtener una llave de encriptación
      *
      * @return Key|false|string
      */
-    public static function getKey()
+    public function getKey()
     {
-        $secureKeyCookie = new self(self::COOKIE_NAME);
+        $key = $this->getCypher();
 
-        $key = $secureKeyCookie->getCypher();
-
-        if (($cookie = $secureKeyCookie->getCookie())) {
-            $data = $secureKeyCookie->getCookieData($cookie, $key);
+        if (($cookie = $this->getCookie())) {
+            $data = $this->getCookieData($cookie, $key);
 
             if ($data === false) {
                 debugLog('Cookie verification error.');
 
-                return $secureKeyCookie->saveKey($key);
+                return $this->saveKey($key);
             }
 
             /** @var Vault $vault */
@@ -81,10 +87,10 @@ class SecureKeyCookie extends Cookie
                     return false;
                 }
             }
-        } elseif (($secureKeyCookie->getSecuredKey() instanceof Key) === true) {
-            return $secureKeyCookie->getSecuredKey();
+        } elseif (($this->getSecuredKey() instanceof Key) === true) {
+            return $this->getSecuredKey();
         } else {
-            return $secureKeyCookie->saveKey($key);
+            return $this->saveKey($key);
         }
 
         return false;
@@ -97,13 +103,14 @@ class SecureKeyCookie extends Cookie
      */
     private function getCypher()
     {
-        return md5(Request::getRequestHeaders('User-Agent') . HttpUtil::getClientAddress());
+        return md5($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
     }
 
     /**
      * Guardar una llave de encriptación
      *
      * @param $key
+     *
      * @return Key|false
      */
     public function saveKey($key)

@@ -36,7 +36,6 @@ use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Http\Uri;
 use SP\Services\Install\Installer;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 /**
@@ -109,7 +108,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('logoNoText', Bootstrap::$WEBURI . '/public/images/logo_icon.svg');
         $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');
         $this->view->assign('logonobg', Bootstrap::$WEBURI . '/public/images/logo_full_nobg.png');
-        $this->view->assign('httpsEnabled', Checks::httpsEnabled());
+        $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
 
         $this->loggedIn = $this->context->isLoggedIn();

@@ -27,10 +27,10 @@ namespace SP\Services\Track;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\TrackData;
+use SP\Http\Request;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Service;
-use SP\Util\HttpUtil;
 
 /**
  * Class TrackService
@@ -50,18 +50,24 @@ class TrackService extends Service
      * @var TrackRepository
      */
     protected $trackRepository;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
-     * @param $source
+     * @param string  $source
+     *
+     * @param Request $request
      *
      * @return TrackRequest
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
-    public static function getTrackRequest($source)
+    public static function getTrackRequest($source, Request $request)
     {
         $trackRequest = new TrackRequest();
         $trackRequest->time = time() - self::TIME_TRACKING;
-        $trackRequest->setTrackIp(HttpUtil::getClientAddress());
+        $trackRequest->setTrackIp($request->getClientAddress());
         $trackRequest->source = $source;
 
         return $trackRequest;
@@ -99,15 +105,6 @@ class TrackService extends Service
     public function getAll()
     {
         return $this->trackRepository->getAll()->getDataAsArray();
-    }
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function initialize()
-    {
-        $this->trackRepository = $this->dic->get(TrackRepository::class);
     }
 
     /**
@@ -173,7 +170,17 @@ class TrackService extends Service
 
         $this->eventDispatcher->notifyEvent('track.add',
             new Event($this, EventMessage::factory()
-                ->addDescription(HttpUtil::getClientAddress(true)))
+                ->addDescription($this->request->getClientAddress(true)))
         );
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->trackRepository = $this->dic->get(TrackRepository::class);
+        $this->request = $this->dic->get(Request::class);
     }
 }

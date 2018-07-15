@@ -27,10 +27,10 @@ namespace SP\Providers\Mail;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
+use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Services\MailService;
-use SP\Util\HttpUtil;
 use SplSubject;
 
 /**
@@ -63,6 +63,10 @@ class MailHandler extends Provider implements EventReceiver
      * @var string
      */
     protected $events;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Inicialización del observador
@@ -88,7 +92,7 @@ class MailHandler extends Provider implements EventReceiver
                 $mailMessage = new MailMessage();
                 $mailMessage->addDescription($eventMessage->composeText());
                 $mailMessage->addDescription(sprintf(__('Realizado por: %s (%s)'), $userData->getName(), $userData->getLogin()));
-                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), HttpUtil::getClientAddress(true)));
+                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), $this->request->getClientAddress(true)));
 
                 $this->mailService->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
             } catch (\Exception $e) {
@@ -121,9 +125,11 @@ class MailHandler extends Provider implements EventReceiver
      * Receive update from subject
      *
      * @link  http://php.net/manual/en/splobserver.update.php
+     *
      * @param SplSubject $subject <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
+     *
      * @return void
      * @since 5.1.0
      */
@@ -135,6 +141,7 @@ class MailHandler extends Provider implements EventReceiver
     protected function initialize()
     {
         $this->mailService = $this->dic->get(MailService::class);
+        $this->request = $this->dic->get(Request::class);
 
         $configEvents = $this->config->getConfigData()->getMailEvents();
 

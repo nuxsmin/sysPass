@@ -45,7 +45,6 @@ use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Auth\AuthException;
 use SP\Services\User\UserLoginResponse;
-use SP\Util\Checks;
 
 /**
  * Clase base para los controladores
@@ -157,7 +156,7 @@ abstract class ControllerBase
 
         $this->view->setBase(strtolower($this->controllerName));
 
-        $this->isAjax = Checks::isAjax($this->router);
+        $this->isAjax = $this->request->isAjax();
 
         if ($this->session->isLoggedIn()) {
             $this->userData = clone $this->session->getUserData();

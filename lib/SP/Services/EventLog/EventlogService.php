@@ -26,10 +26,10 @@ namespace SP\Services\EventLog;
 
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
+use SP\Http\Request;
 use SP\Repositories\EventLog\EventlogRepository;
 use SP\Services\Service;
 use SP\Storage\Database\QueryResult;
-use SP\Util\HttpUtil;
 
 /**
  * Class EventlogService
@@ -42,6 +42,10 @@ class EventlogService extends Service
      * @var EventlogRepository
      */
     protected $eventLogRepository;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * @param ItemSearchData $itemSearchData
@@ -78,7 +82,7 @@ class EventlogService extends Service
 
         $eventlogData->setUserId($userData->getId());
         $eventlogData->setLogin($userData->getLogin() ?: '-');
-        $eventlogData->setIpAddress(HttpUtil::getClientAddress());
+        $eventlogData->setIpAddress($this->request->getClientAddress());
 
         return $this->eventLogRepository->create($eventlogData);
     }
@@ -90,5 +94,6 @@ class EventlogService extends Service
     protected function initialize()
     {
         $this->eventLogRepository = $this->dic->get(EventlogRepository::class);
+        $this->request = $this->dic->get(Request::class);
     }
 }

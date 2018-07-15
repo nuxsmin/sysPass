@@ -32,6 +32,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
@@ -78,6 +79,7 @@ class Init extends ModuleBase
      * Init constructor.
      *
      * @param Container $container
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -95,6 +97,7 @@ class Init extends ModuleBase
      * Initialize Web App
      *
      * @param string $controller
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\SPException
@@ -133,7 +136,7 @@ class Init extends ModuleBase
         }
 
         // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps($this->configData);
+        HttpUtil::checkHttps($this->configData, $this->request);
 
         if (in_array($controller, self::PARTIAL_INIT, true) === false) {
             // Checks if sysPass is installed
@@ -195,13 +198,14 @@ class Init extends ModuleBase
      * Iniciar la sesión PHP
      *
      * @param bool $encrypt Encriptar la sesión de PHP
+     *
      * @throws ContextException
      */
     private function initSession($encrypt = false)
     {
         if ($encrypt === true
             && Bootstrap::$checkPhpVersion
-            && ($key = $this->secureSessionService->getKey()) !== false) {
+            && ($key = $this->secureSessionService->getKey(UUIDCookie::factory($this->request))) !== false) {
             session_set_save_handler(new CryptSessionHandler($key), true);
         }
 

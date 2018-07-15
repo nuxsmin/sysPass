@@ -38,6 +38,7 @@ use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
+use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
 use SP\Services\Api\ApiRequest;
@@ -45,7 +46,6 @@ use SP\Services\Api\JsonRpcResponse;
 use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
-use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -106,6 +106,10 @@ class Bootstrap
      */
     protected $language;
     /**
+     * @var Request
+     */
+    protected $request;
+    /**
      * @var Config
      */
     private $config;
@@ -129,6 +133,7 @@ class Bootstrap
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
         $this->router = $container->get(Klein::class);
+        $this->request = $container->get(Request::class);
         $this->language = $container->get(Language::class);
 
         $this->initRouter();
@@ -380,7 +385,7 @@ class Bootstrap
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        self::$WEBURI = HttpUtil::getHttpHost() . self::$WEBROOT;
+        self::$WEBURI = $this->request->getHttpHost() . self::$WEBROOT;
     }
 
     /**
@@ -444,13 +449,13 @@ class Bootstrap
                 debugLog('------------');
                 debugLog('Boostrap:web');
 
-                $bs->router->dispatch();
+                $bs->router->dispatch($bs->request->getRequest());
                 break;
             case 'api':
                 debugLog('------------');
                 debugLog('Boostrap:api');
 
-                $bs->router->dispatch();
+                $bs->router->dispatch($bs->request->getRequest());
                 break;
             default;
                 throw new InitializationException('Unknown module');

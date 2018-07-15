@@ -30,7 +30,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Auth\LoginService;
@@ -69,12 +68,12 @@ class LoginController extends ControllerBase
 
             $loginResponmse = $loginService->doLogin();
 
-            $forward = Request::getRequestHeaders('X-Forwarded-For');
+            $forward = $this->request->getForwardedFor();
 
-            if ($forward) {
+            if ($forward !== null) {
                 $this->eventDispatcher->notifyEvent('login.info',
                     new Event($this, EventMessage::factory()
-                        ->addDetail('X-Forwarded-For', $this->configData->isDemoEnabled() ? '***' : $forward))
+                        ->addDetail('Forwarded', $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)))
                 );
             }
 

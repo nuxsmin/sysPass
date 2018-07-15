@@ -32,7 +32,6 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
-use SP\Util\HttpUtil;
 
 /**
  * Class SecureSessionService
@@ -56,22 +55,34 @@ class SecureSessionService extends Service
      * @var Request
      */
     protected $request;
+    /**
+     * @var UUIDCookie
+     */
+    protected $cookie;
+    /**
+     * @var string
+     */
+    private $filename;
 
     /**
      * Returns the encryption key
      *
+     * @param UUIDCookie $cookie
+     *
      * @return Key|false
      */
-    public function getKey()
+    public function getKey(UUIDCookie $cookie)
     {
+        $this->cookie = $cookie;
+
         try {
-            if ($this->fileCache->isExpired($this->getFileName(), self::CACHE_EXPIRE_TIME)) {
+            if ($this->fileCache->isExpired($this->getFileNameFromCookie(), self::CACHE_EXPIRE_TIME)) {
                 debugLog('Session key expired or does not exist.');
 
                 return $this->saveKey();
             }
 
-            if (($vault = $this->fileCache->load($this->getFileName())) instanceof Vault) {
+            if (($vault = $this->fileCache->load($this->getFileNameFromCookie())) instanceof Vault) {
                 return Key::loadFromAsciiSafeString($vault->getData($this->getCypher()));
             }
         } catch (FileException $e) {
@@ -89,14 +100,19 @@ class SecureSessionService extends Service
      * @return string
      * @throws ServiceException
      */
-    private function getFileName()
+    private function getFileNameFromCookie()
     {
-        if (($uuid = UUIDCookie::loadCookie($this->seed)) === false
-            && ($uuid = UUIDCookie::createCookie($this->seed)) === false) {
-            throw new ServiceException('Unable to get UUID for filename.');
+        if (!$this->filename) {
+            if (($uuid = $this->cookie->loadCookie($this->seed)) === false
+                && ($uuid = $this->cookie->createCookie($this->seed)) === false
+            ) {
+                throw new ServiceException('Unable to get UUID for filename.');
+            }
+
+            $this->filename = self::CACHE_PATH . DIRECTORY_SEPARATOR . $uuid;
         }
 
-        return self::CACHE_PATH . DIRECTORY_SEPARATOR . $uuid;
+        return $this->filename;
     }
 
     /**
@@ -108,7 +124,7 @@ class SecureSessionService extends Service
     {
         try {
             $securedKey = Key::createNewRandomKey();
-            $this->fileCache->save($this->getFileName(), (new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
+            $this->fileCache->save($this->getFileNameFromCookie(), (new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
 
             debugLog('Saved session key.');
 
@@ -128,11 +144,19 @@ class SecureSessionService extends Service
     private function getCypher()
     {
         return hash_pbkdf2('sha1',
-            sha1(Request::getRequestHeaders('User-Agent') . HttpUtil::getClientAddress()),
+            sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress()),
             $this->seed,
             500,
             32
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename(): string
+    {
+        return $this->filename;
     }
 
     protected function initialize()

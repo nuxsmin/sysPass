@@ -40,8 +40,6 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Storage\Database\QueryResult;
-use SP\Util\Checks;
-use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**
@@ -61,6 +59,10 @@ class PublicLinkService extends Service
      * @var PublicLinkRepository
      */
     protected $publicLinkRepository;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Returns an HTTP URL for given hash
@@ -294,7 +296,7 @@ class PublicLinkService extends Service
     {
         /** @var array $useInfo */
         $useInfo = unserialize($publicLinkData->getUseInfo());
-        $useInfo[] = self::getUseInfo($publicLinkData->getHash());
+        $useInfo[] = self::getUseInfo($publicLinkData->getHash(), $this->request);
         $publicLinkData->setUseInfo($useInfo);
 
         // FIXME
@@ -317,18 +319,20 @@ class PublicLinkService extends Service
     /**
      * Actualizar la información de uso
      *
-     * @param $hash
+     * @param string  $hash
+     *
+     * @param Request $request
      *
      * @return array
      */
-    public static function getUseInfo($hash)
+    public static function getUseInfo($hash, Request $request)
     {
         return [
-            'who' => HttpUtil::getClientAddress(true),
+            'who' => $request->getClientAddress(true),
             'time' => time(),
             'hash' => $hash,
-            'agent' => Request::getRequestHeaders('HTTP_USER_AGENT'),
-            'https' => Checks::httpsEnabled()
+            'agent' => $request->getHeader('HTTP_USER_AGENT'),
+            'https' => $request->isHttps()
         ];
     }
 
@@ -392,5 +396,6 @@ class PublicLinkService extends Service
     protected function initialize()
     {
         $this->publicLinkRepository = $this->dic->get(PublicLinkRepository::class);
+        $this->request = $this->dic->get(Request::class);
     }
 }

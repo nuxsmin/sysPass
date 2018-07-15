@@ -25,6 +25,7 @@
 namespace SP\Util;
 
 use SP\Config\ConfigData;
+use SP\Html\Html;
 use SP\Http\Request;
 
 /**
@@ -38,147 +39,78 @@ class HttpUtil
      * Comprobar y forzar (si es necesario) la conexión HTTPS
      *
      * @param ConfigData $configData
+     * @param Request    $request
      */
-    public static function checkHttps(ConfigData $configData)
+    public static function checkHttps(ConfigData $configData, Request $request)
     {
-        if ($configData->isHttpsEnabled() && !Checks::httpsEnabled()) {
-            $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $host = str_replace('http', 'https', self::getHttpHost());
+        if ($configData->isHttpsEnabled() && !$request->isHttps()) {
+            $serverPort = $request->getServerPort();
+
+            $port = $serverPort !== 443 ? ':' . $serverPort : '';
+            $host = str_replace('http', 'https', $request->getHttpHost());
 
             header('Location: ' . $host . $port . $_SERVER['REQUEST_URI']);
         }
     }
 
     /**
-     * Returns the URI used by the browser and checks for the protocol used
+     * Devolver las cabeceras enviadas desde el cliente.
      *
-     * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return string
-     */
-    public static function getHttpHost()
-    {
-        $forwarded = self::getForwardedData();
-
-        // Check in style of RFC 7239
-        if (null !== $forwarded) {
-            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
-        }
-
-        $xForward = self::getXForwardedData();
-
-        // Check (deprecated) de facto standard
-        if (null !== $xForward) {
-            return strtolower($xForward['proto'] . '://' . $xForward['host']);
-        }
-
-        // We got called directly
-        if (Checks::httpsEnabled()) {
-            return 'https://' . $_SERVER['HTTP_HOST'];
-        }
-
-        return 'http://' . $_SERVER['HTTP_HOST'];
-    }
-
-    /**
-     * Devolver datos de forward RFC 7239
-     *
-     * @see https://tools.ietf.org/html/rfc7239#section-7.5
-     * @return array|null
-     */
-    public static function getForwardedData()
-    {
-        $forwarded = Request::getRequestHeaders('HTTP_FORWARDED');
-
-        // Check in style of RFC 7239
-        if ($forwarded !== ''
-            && preg_match('/proto=(\w+);/i', $forwarded, $matchesProto)
-            && preg_match('/host=(\w+);/i', $forwarded, $matchesHost)
-        ) {
-            $data = [
-                'host ' => $matchesHost[0],
-                'proto' => $matchesProto[0],
-                'for' => self::getForwardedFor()
-            ];
-
-            // Check if protocol and host are not empty
-            if (!empty($data['proto']) && !empty($data['host'])) {
-                return $data;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Devolver la dirección IP del cliente a través de proxy o directo
+     * @param string $header nombre de la cabecera a devolver
      *
      * @return array|string
      */
-    public static function getForwardedFor()
+    public static function getRequestHeaders($header = '')
     {
-        if (preg_match_all('/for="?\[?([\w.:]+)"?\]?[,;]?/i',
-            Request::getRequestHeaders('HTTP_FORWARDED'), $matchesFor)) {
-            return $matchesFor[1];
+        if (!empty($header)) {
+            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
+
+            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
         }
 
-        $matchesFor = preg_split('/(?<=[\w])+,/i',
-            Request::getRequestHeaders('HTTP_X_FORWARDED_FOR'),
-            -1,
-            PREG_SPLIT_NO_EMPTY);
-
-        if (count($matchesFor) > 0) {
-            return $matchesFor;
-        }
-
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+        return self::getApacheHeaders();
     }
 
     /**
-     * Devolver datos de x-forward
+     * Función que sustituye a apache_request_headers
      *
-     * @return array|null
+     * @return array
      */
-    public static function getXForwardedData()
+    private static function getApacheHeaders()
     {
-        $forwardedHost = Request::getRequestHeaders('HTTP_X_FORWARDED_HOST');
-        $forwardedProto = Request::getRequestHeaders('HTTP_X_FORWARDED_PROTO');
+        if (function_exists('\apache_request_headers')) {
+            return apache_request_headers();
+        }
 
-        // Check (deprecated) de facto standard
-        if (!empty($forwardedHost) && !empty($forwardedProto)) {
-            $data = [
-                'host' => trim(str_replace('"', '', $forwardedHost)),
-                'proto' => trim(str_replace('"', '', $forwardedProto)),
-                'for' => self::getForwardedFor()
-            ];
+        $headers = [];
 
-            // Check if protocol and host are not empty
-            if (!empty($data['host']) && !empty($data['proto'])) {
-                return $data;
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
+                $headers[$key] = $value;
+            } else {
+                $headers[$key] = $value;
             }
         }
 
-        return null;
+        return $headers;
     }
 
     /**
-     * Devolver la dirección IP del cliente
-     *
-     * @param bool $fullForwarded Devolver la cadena de forward completa
-     *
-     * @return string|array
+     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
      */
-    public static function getClientAddress($fullForwarded = false)
+    public static function importUrlParamsToGet()
     {
-        if (APP_MODULE === 'tests') {
-            return '127.0.0.1';
+        $params = [];
+
+        foreach ($_REQUEST as $param => $value) {
+            $param = Filter::getString($param);
+
+            if (strpos($param, 'g_') !== false) {
+                $params[] = substr($param, 2) . '=' . Html::sanitize($value);
+            }
         }
 
-        $forwarded = self::getForwardedFor();
-
-        if (is_array($forwarded)) {
-            return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
-        }
-
-        return $forwarded;
+        return count($params) > 0 ? '?' . implode('&', $params) : '';
     }
 }

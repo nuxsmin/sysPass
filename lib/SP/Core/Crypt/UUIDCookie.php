@@ -24,6 +24,8 @@
 
 namespace SP\Core\Crypt;
 
+use SP\Http\Request;
+
 /**
  * Class SecureCookie
  *
@@ -37,17 +39,27 @@ class UUIDCookie extends Cookie
     const COOKIE_NAME = 'SYSPASS_UUID';
 
     /**
+     * @param Request $request
+     *
+     * @return UUIDCookie
+     */
+    public static function factory(Request $request)
+    {
+        return new self(self::COOKIE_NAME, $request);
+    }
+
+    /**
      * Creates a cookie and sets its data
      *
      * @param string $signKey Signing key
+     *
      * @return string
      */
-    public static function createCookie($signKey)
+    public function createCookie($signKey)
     {
         $uuid = uniqid('', true);
 
-        $cookie = new self(self::COOKIE_NAME);
-        if ($cookie->setCookie($cookie->sign($uuid, $signKey))) {
+        if ($this->setCookie($this->sign($uuid, $signKey))) {
             return $uuid;
         }
 
@@ -58,13 +70,13 @@ class UUIDCookie extends Cookie
      * Loads cookie data
      *
      * @param string $signKey Signing key
+     *
      * @return bool|string
      */
-    public static function loadCookie($signKey)
+    public function loadCookie($signKey)
     {
-        $cookie = new self(self::COOKIE_NAME);
-        $data = $cookie->getCookie();
+        $data = $this->getCookie();
 
-        return $data !== false ? $cookie->getCookieData($data, $signKey) : false;
+        return $data !== false ? $this->getCookieData($data, $signKey) : false;
     }
 }

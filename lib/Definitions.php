@@ -27,6 +27,7 @@ use function DI\object;
 
 return [
     \Klein\Klein::class => object(\Klein\Klein::class),
+    \SP\Http\Request::class => object(\SP\Http\Request::class)->constructor(\Klein\Request::createFromGlobals()),
     \SP\Core\Context\ContextInterface::class => function (\Interop\Container\ContainerInterface $c) {
         switch (APP_MODULE) {
             case 'web':

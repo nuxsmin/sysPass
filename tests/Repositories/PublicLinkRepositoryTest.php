@@ -31,7 +31,6 @@ use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
-use SP\Services\PublicLink\PublicLinkService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
@@ -253,9 +252,17 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     {
         $hash = pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635');
 
+        $useInfo = [
+            'who' => '127.0.0.1',
+            'time' => time(),
+            'hash' => $hash,
+            'agent' => 'Mozilla/Firefox',
+            'https' => true
+        ];
+
         $data = new PublicLinkData();
         $data->setHash($hash);
-        $data->setUseInfo(PublicLinkService::getUseInfo($hash));
+        $data->setUseInfo($useInfo);
 
         $this->assertEquals(1, self::$repository->addLinkView($data));
 

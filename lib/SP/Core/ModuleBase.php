@@ -37,7 +37,6 @@ use SP\Providers\Log\RemoteSyslogHandler;
 use SP\Providers\Log\SyslogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Providers\Notification\NotificationHandler;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 /**
@@ -106,7 +105,7 @@ abstract class ModuleBase
         if ($this->configData->isMaintenance()) {
             Bootstrap::$LOCK = Util::getAppLock();
 
-            return (Checks::isAjax($this->router)
+            return ($this->request->isAjax()
                     || (Bootstrap::$LOCK !== false
                         && Bootstrap::$LOCK->userId > 0
                         && $context->isLoggedIn()

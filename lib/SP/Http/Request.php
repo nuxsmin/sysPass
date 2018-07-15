@@ -25,12 +25,10 @@
 namespace SP\Http;
 
 use Klein\DataCollection\DataCollection;
-use Klein\Klein;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\Html\Html;
 use SP\Util\Filter;
 use SP\Util\Util;
 
@@ -46,6 +44,10 @@ class Request
      */
     const SECURE_DIRS = ['css', 'js'];
     /**
+     * @var \Klein\DataCollection\HeaderDataCollection
+     */
+    protected $headers;
+    /**
      * @var \Klein\Request
      */
     private $request;
@@ -53,16 +55,26 @@ class Request
      * @var DataCollection
      */
     private $params;
+    /**
+     * @var string
+     */
+    private $method;
+    /**
+     * @var bool
+     */
+    private $https;
 
     /**
      * Request constructor.
      *
-     * @param Klein $klein
+     * @param \Klein\Request $request
      */
-    public function __construct(Klein $klein)
+    public function __construct(\Klein\Request $request)
     {
-        $this->request = $klein->request();
+        $this->request = $request;
+        $this->headers = $this->request->headers();
         $this->params = $this->getParamsByMethod();
+        $this->detectHttps();
     }
 
     /**
@@ -71,147 +83,32 @@ class Request
     private function getParamsByMethod()
     {
         if ($this->request->method('GET')) {
+            $this->method = 'GET';
             return $this->request->paramsGet();
         } else {
+            $this->method = 'POST';
             return $this->request->paramsPost();
         }
     }
 
     /**
-     * Devolver las cabeceras enviadas desde el cliente.
-     *
-     * @param string $header nombre de la cabecera a devolver
-     *
-     * @return array|string
+     * Detects if the connection is done through HTTPS
      */
-    public static function getRequestHeaders($header = '')
+    private function detectHttps()
     {
-        if (!empty($header)) {
-            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
-
-            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
-        }
-
-        return self::getApacheHeaders();
-    }
-
-    /**
-     * Función que sustituye a apache_request_headers
-     *
-     * @return array
-     */
-    private static function getApacheHeaders()
-    {
-        if (function_exists('\apache_request_headers')) {
-            return apache_request_headers();
-        }
-
-        $headers = [];
-
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
-                $headers[$key] = $value;
-            } else {
-                $headers[$key] = $value;
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Obtener los valores de variables $_GET y $_POST
-     * y devolverlos limpios con el tipo correcto o esperado.
-     *
-     * @param string $param    con el parámetro a consultar
-     * @param mixed  $default  valor por defecto a devolver
-     * @param bool   $check    comprobar si el parámetro está presente
-     * @param mixed  $force    valor devuelto si el parámeto está definido
-     * @param bool   $sanitize escapar/eliminar carácteres especiales
-     *
-     * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
-     * @deprecated
-     */
-    public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
-    {
-        if (!isset($_REQUEST[$param])) {
-            return $force ? !$force : $default;
-        }
-
-        if ($check) {
-            return true;
-        }
-
-        if ($force) {
-            return $force;
-        }
-
-        return self::parse($_REQUEST[$param], $default, $sanitize);
-    }
-
-    /**
-     * Devolver el valor con el tipo correcto o requerido.
-     *
-     * @param $value     mixed  valor a analizar
-     * @param $default   mixed  tipo por defecto a devolver
-     * @param $sanitize  bool   limpiar una cadena de caracteres
-     *
-     * @return mixed
-     * @deprecated
-     */
-    public static function parse(&$value, $default, $sanitize)
-    {
-        if (is_array($value)) {
-            foreach ($value as &$data) {
-                $data = self::parse($data, $default, $sanitize);
-            }
-
-            return $value;
-        }
-
-        if ((is_numeric($value) || is_numeric($default))
-            && !is_string($default)
-        ) {
-            return (int)$value;
-        }
-
-        if (is_string($value)
-        ) {
-            return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Comprobar si existen parámetros pasados por POST para enviarlos por GET
-     */
-    public static function importUrlParamsToGet()
-    {
-        $params = [];
-
-        foreach ($_REQUEST as $param => $value) {
-            Html::sanitize($param);
-            Html::sanitize($value);
-
-            if (strpos($param, 'g_') !== false) {
-                $params[] = substr($param, 2) . '=' . $value;
-            }
-        }
-
-        return count($params) > 0 ? '?' . implode('&', $params) : '';
+        $this->https = ($this->request->server()->exists('HTTPS') && $this->request->server()->get('HTTPS') !== 'off')
+            || $this->request->server()->get('SERVER_PORT', 0) === 443;
     }
 
     /**
      * Devuelve un nombre de archivo seguro
      *
-     * @param      $file
-     * @param null $base
+     * @param string $file
+     * @param string $base
      *
      * @return string
      */
-    public static function getSecureAppFile($file, $base = null)
+    public static function getSecureAppFile(string $file, string $base = null)
     {
         return basename(self::getSecureAppPath($file, $base));
     }
@@ -219,12 +116,12 @@ class Request
     /**
      * Devolver una ruta segura para
      *
-     * @param        $path
+     * @param string $path
      * @param string $base
      *
      * @return string
      */
-    public static function getSecureAppPath($path, $base = null)
+    public static function getSecureAppPath(string $path, string $base = null)
     {
         if ($base === null) {
             $base = APP_ROOT;
@@ -244,23 +141,71 @@ class Request
     }
 
     /**
+     * @param bool $fullForwarded
+     *
+     * @return array|array[]|mixed|string
+     */
+    public function getClientAddress(bool $fullForwarded = false)
+    {
+        if (APP_MODULE === 'tests') {
+            return '127.0.0.1';
+        }
+
+        if (($forwarded = $this->getForwardedFor()) !== null) {
+            return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
+        }
+
+        return $this->request->server()->get('REMOTE_ADDR', '');
+    }
+
+    /**
+     * @return string[]|null
+     */
+    public function getForwardedFor()
+    {
+        // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
+        if (($forwarded = $this->headers->get('HTTP_FORWARDED')) !== null &&
+            preg_match_all('/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
+                $forwarded, $matches)
+        ) {
+            return array_filter(array_merge($matches[1], $matches[2]), function ($value) {
+                return !empty($value);
+            });
+        }
+
+        // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
+        if (($xForwarded = $this->headers->exists('HTTP_X_FORWARDED_FOR')) !== null) {
+            $matches = preg_split('/(?<=[\w])+,\s?/i',
+                $xForwarded,
+                -1,
+                PREG_SPLIT_NO_EMPTY);
+
+            if (count($matches) > 0) {
+                return $matches;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Comprobar si se realiza una recarga de la página
      *
      * @return bool
      */
     public function checkReload()
     {
-        return $this->request->headers()->get('Cache-Control') === 'max-age=0';
+        return $this->headers->get('Cache-Control') === 'max-age=0';
     }
 
     /**
-     * @param $param
-     * @param $default
+     * @param string $param
+     * @param string $default
      *
      * @return string
      * @deprecated
      */
-    public function analyzeEmail($param, $default = null)
+    public function analyzeEmail(string $param, string $default = null)
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -272,11 +217,11 @@ class Request
     /**
      * Analizar un valor encriptado y devolverlo desencriptado
      *
-     * @param $param
+     * @param string $param
      *
      * @return string
      */
-    public function analyzeEncrypted($param)
+    public function analyzeEncrypted(string $param)
     {
         $encryptedData = $this->analyzeString($param);
 
@@ -310,7 +255,7 @@ class Request
      *
      * @return string
      */
-    public function analyzeString($param, $default = null)
+    public function analyzeString(string $param, string $default = null)
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -326,36 +271,23 @@ class Request
      *
      * @return mixed
      */
-    public function analyzeArray($param, callable $mapper = null, $default = null)
+    public function analyzeArray(string $param, callable $mapper = null, $default = null)
     {
-        if ($this->params->exists($param)
-            && is_array($this->params->get($param))
+        $requestValue = $this->params->get($param);
+
+        if ($requestValue !== null
+            && is_array($requestValue)
         ) {
             if (is_callable($mapper)) {
-                return $mapper($this->params->get($param));
+                return $mapper($requestValue);
             }
 
             return array_map(function ($value) {
                 return is_numeric($value) ? Filter::getInt($value) : Filter::getString($value);
-            }, $this->params->get($param));
+            }, $requestValue);
         }
 
         return $default;
-    }
-
-    /**
-     * @param $param
-     * @param $default
-     *
-     * @return int
-     */
-    public function analyzeInt($param, $default = null): int
-    {
-        if (!$this->params->exists($param)) {
-            return (int)$default;
-        }
-
-        return Filter::getInt($this->params->get($param));
     }
 
     /**
@@ -365,7 +297,7 @@ class Request
      */
     public function isJson()
     {
-        return strpos($this->request->headers()->get('Accept'), 'application/json') !== false;
+        return strpos($this->headers->get('Accept'), 'application/json') !== false;
     }
 
     /**
@@ -375,8 +307,23 @@ class Request
      */
     public function isAjax()
     {
-        return $this->request->headers()->get('X-Requested-With') === 'XMLHttpRequest'
+        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest'
             || $this->analyzeInt('isAjax', 0) === 1;
+    }
+
+    /**
+     * @param string $param
+     * @param int    $default
+     *
+     * @return int
+     */
+    public function analyzeInt(string $param, int $default = null): int
+    {
+        if (!$this->params->exists($param)) {
+            return (int)$default;
+        }
+
+        return Filter::getInt($this->params->get($param));
     }
 
     /**
@@ -390,12 +337,12 @@ class Request
     }
 
     /**
-     * @param $param
-     * @param $default
+     * @param string $param
+     * @param bool   $default
      *
      * @return bool
      */
-    public function analyzeBool($param, $default = null)
+    public function analyzeBool(string $param, bool $default = null)
     {
         if (!$this->params->exists($param)) {
             return (bool)$default;
@@ -410,7 +357,7 @@ class Request
      *
      * @throws SPException
      */
-    public function verifySignature($key, $param = null)
+    public function verifySignature(string $key, string $param = null)
     {
         $result = false;
 
@@ -428,5 +375,134 @@ class Request
         if ($result === false) {
             throw new SPException('URI string altered');
         }
+    }
+
+    /**
+     * Returns the URI used by the browser and checks for the protocol used
+     *
+     * @see https://tools.ietf.org/html/rfc7239#section-7.5
+     * @return string
+     */
+    public function getHttpHost(): string
+    {
+        $forwarded = $this->getForwardedData();
+
+        // Check in style of RFC 7239
+        if (null !== $forwarded) {
+            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
+        }
+
+        $xForward = $this->getXForwardedData();
+
+        // Check (deprecated) de facto standard
+        if (null !== $xForward) {
+            return strtolower($xForward['proto'] . '://' . $xForward['host']);
+        }
+
+        // We got called directly
+        if ($this->https) {
+            return 'https://' . $this->request->server()->get('HTTP_HOST');
+        }
+
+        return 'http://' . $this->request->server()->get('HTTP_HOST');
+    }
+
+    /**
+     * Devolver datos de forward RFC 7239
+     *
+     * @see https://tools.ietf.org/html/rfc7239#section-7.5
+     * @return array|null
+     */
+    public function getForwardedData()
+    {
+        $forwarded = $this->getHeader('HTTP_FORWARDED');
+
+        // Check in style of RFC 7239
+        if (!empty($forwarded)
+            && preg_match('/proto=(\w+);/i', $forwarded, $matchesProto)
+            && preg_match('/host=(\w+);/i', $forwarded, $matchesHost)
+        ) {
+            $data = [
+                'host ' => $matchesHost[0],
+                'proto' => $matchesProto[0],
+                'for' => $this->getForwardedFor()
+            ];
+
+            // Check if protocol and host are not empty
+            if (!empty($data['proto']) && !empty($data['host'])) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $header
+     *
+     * @return string
+     */
+    public function getHeader(string $header): string
+    {
+        return $this->headers->get($header, '');
+    }
+
+    /**
+     * Devolver datos de x-forward
+     *
+     * @return array|null
+     */
+    public function getXForwardedData()
+    {
+        $forwardedHost = $this->getHeader('HTTP_X_FORWARDED_HOST');
+        $forwardedProto = $this->getHeader('HTTP_X_FORWARDED_PROTO');
+
+        // Check (deprecated) de facto standard
+        if (!empty($forwardedHost) && !empty($forwardedProto)) {
+            $data = [
+                'host' => trim(str_replace('"', '', $forwardedHost)),
+                'proto' => trim(str_replace('"', '', $forwardedProto)),
+                'for' => $this->getForwardedFor()
+            ];
+
+            // Check if protocol and host are not empty
+            if (!empty($data['host']) && !empty($data['proto'])) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHttps(): bool
+    {
+        return $this->https;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServerPort(): int
+    {
+        return (int)$this->request->server()->get('SERVER_PORT', 80);
+    }
+
+    /**
+     * @return \Klein\Request
+     */
+    public function getRequest(): \Klein\Request
+    {
+        return $this->request;
     }
 }

@@ -24,8 +24,6 @@
 
 namespace SP\Util;
 
-use Klein\Klein;
-
 /**
  * Class Checks utilidades de comprobación
  *
@@ -84,7 +82,6 @@ class Checks
     {
         $modsNeed = [
             'ldap',
-            'mcrypt',
             'curl',
             'SimpleXML',
             'Phar',
@@ -139,42 +136,5 @@ class Checks
     public static function gdIsAvailable()
     {
         return extension_loaded('gd');
-    }
-
-    /**
-     * Comprobar si se utiliza HTTPS
-     *
-     * @return bool
-     */
-    public static function httpsEnabled()
-    {
-        return
-            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-            || (!empty($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
-    }
-
-    /**
-     * Comprobar si la petición es Ajax
-     *
-     * @param Klein $router
-     *
-     * @return bool
-     */
-    public static function isAjax(Klein $router)
-    {
-        return $router->request()->headers()->get('X-Requested-With') === 'XMLHttpRequest'
-            || (int)$router->request()->param('isAjax') === 1;
-    }
-
-    /**
-     * Comprobar si la petición es en formato JSON
-     *
-     * @param Klein $router
-     *
-     * @return bool
-     */
-    public static function isJson(Klein $router)
-    {
-        return strpos($router->request()->headers()->get('Accept'), 'application/json') !== false;
     }
 }

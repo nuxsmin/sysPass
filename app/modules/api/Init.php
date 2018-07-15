@@ -91,7 +91,7 @@ class Init extends ModuleBase
         $this->language->setLanguage();
 
         // Checks if it needs to switch the request over HTTPS
-        HttpUtil::checkHttps($this->configData);
+        HttpUtil::checkHttps($this->configData, $this->request);
 
         // Checks if sysPass is installed
         if (!$this->checkInstalled()) {

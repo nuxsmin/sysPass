@@ -481,23 +481,10 @@ class Util
      */
     public static function arrayJSEscape(&$array)
     {
-        array_walk($array, function (&$value, $index) {
+        array_walk($array, function (&$value) {
             $value = str_replace(['\'', '"'], '\\\'', $value);
         });
         return $array;
-    }
-
-    /**
-     * Obtener la URL de acceso al servidor
-     *
-     * @return string
-     */
-    public static function getServerUrl()
-    {
-        $urlScheme = Checks::httpsEnabled() ? 'https://' : 'http://';
-        $urlPort = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-
-        return $urlScheme . $_SERVER['SERVER_NAME'] . $urlPort;
     }
 
     /**
