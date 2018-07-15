@@ -237,10 +237,11 @@ class ConfigManagerController extends ControllerBase
         $configService = $this->dic->get(ConfigService::class);
 
         $template->assign('lastUpdateMPass', $configService->getByParam('lastupdatempass', 0));
-        $template->assign('tempMasterPassTime', $configService->getByParam('tempmaster_passtime', 0));
-        $template->assign('tempMasterMaxTime', $configService->getByParam('tempmaster_maxtime', 0));
 
-        $tempMasterAttempts = sprintf('%d/%d', $configService->getByParam('tempmaster_attempts', 0), TemporaryMasterPassService::MAX_ATTEMPTS);
+        $template->assign('tempMasterPassTime', $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0));
+        $template->assign('tempMasterMaxTime', $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0));
+
+        $tempMasterAttempts = sprintf('%d/%d', $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0), TemporaryMasterPassService::MAX_ATTEMPTS);
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
         $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());

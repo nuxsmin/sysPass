@@ -63,9 +63,13 @@ class ConfigService extends Service
 
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(
-                sprintf(__('Parámetro no encontrado (%s)'), $param)
-            );
+            if ($default === null) {
+                throw new NoSuchItemException(
+                    sprintf(__('Parámetro no encontrado (%s)'), $param)
+                );
+            }
+
+            return $default;
         }
 
         /** @var ConfigData $data */
