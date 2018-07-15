@@ -96,7 +96,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams([
             $itemData->getModuleId(),
-            $itemData->getId(),
+            $itemData->getItemId(),
             $itemData->getDefinitionId()
         ]);
 
