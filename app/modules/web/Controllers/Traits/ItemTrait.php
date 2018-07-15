@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Bootstrap;
-use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
@@ -44,14 +43,15 @@ trait ItemTrait
     /**
      * Obtener la lista de campos personalizados y sus valores
      *
-     * @param int            $moduleId
-     * @param int            $itemId
-     * @param SessionContext $sessionContext
+     * @param int $moduleId
+     * @param int $itemId
+     *
      * @return array
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    protected function getCustomFieldsForItem($moduleId, $itemId, SessionContext $sessionContext)
+    protected function getCustomFieldsForItem($moduleId, $itemId)
     {
         $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
         $customFields = [];
@@ -75,7 +75,7 @@ trait ItemTrait
                     && $item->key !== null
                 ) {
                     $customField->isValueEncrypted = true;
-                    $customField->value = CustomFieldService::decryptData($item->data, $item->key, $sessionContext);
+                    $customField->value = $customFieldService->decryptData($item->data, $item->key);
                 } else {
                     $customField->isValueEncrypted = false;
                     $customField->value = $item->data;
@@ -129,6 +129,7 @@ trait ItemTrait
      *
      * @param int       $moduleId
      * @param int|int[] $itemId
+     *
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -168,7 +169,9 @@ trait ItemTrait
                     $customFieldData->setDefinitionId($id);
                     $customFieldData->setData($value);
 
-                    $customFieldService->update($customFieldData);
+                    if ($customFieldService->update($customFieldData) !== 1) {
+                        throw new SPException(__u('Error al actualizar los datos del campo personalizado'));
+                    }
                 }
             } catch (CryptoException $e) {
                 throw new SPException(__u('Error interno'), SPException::ERROR);

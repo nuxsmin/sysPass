@@ -131,12 +131,16 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     public function testGetAllEncrypted()
     {
         $result = self::$repository->getAllEncrypted();
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(1, $result);
-        $this->assertInstanceOf(CustomFieldData::class, $result[0]);
-        $this->assertEquals(1, $result[0]->getItemId());
-        $this->assertEquals(ActionsInterface::ACCOUNT, $result[0]->getModuleId());
-        $this->assertEquals(1, $result[0]->getItemId());
+        /** @var CustomFieldData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(CustomFieldData::class, $data[0]);
+        $this->assertEquals(1, $data[0]->getItemId());
+        $this->assertEquals(ActionsInterface::ACCOUNT, $data[0]->getModuleId());
+        $this->assertEquals(1, $data[0]->getItemId());
     }
 
     /**
@@ -159,10 +163,13 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     public function testGetAll()
     {
         $result = self::$repository->getAll();
+        $this->assertEquals(2, $result->getNumRows());
 
-        $this->assertCount(2, $result);
-        $this->assertInstanceOf(CustomFieldData::class, $result[0]);
-        $this->assertInstanceOf(CustomFieldData::class, $result[1]);
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(2, $data);
+        $this->assertInstanceOf(CustomFieldData::class, $data[0]);
+        $this->assertInstanceOf(CustomFieldData::class, $data[1]);
     }
 
     /**

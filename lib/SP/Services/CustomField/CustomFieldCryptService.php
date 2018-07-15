@@ -27,7 +27,6 @@ namespace SP\Services\CustomField;
 defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\OldCrypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CustomFieldData;
@@ -53,35 +52,10 @@ class CustomFieldCryptService extends Service
     protected $request;
 
     /**
-     * Actualizar los datos encriptados con una nueva clave
-     *
-     * @param UpdateMasterPassRequest $request
-     * @throws ServiceException
-     */
-    public function updateMasterPasswordOld(UpdateMasterPassRequest $request)
-    {
-        $this->request = $request;
-
-        try {
-            $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
-                return OldCrypt::getDecrypt($customFieldData->getData(), $customFieldData->getKey(), $this->request->getCurrentMasterPass());
-            });
-        } catch (ServiceException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            throw new ServiceException(
-                __u('Errores al actualizar datos de campos personalizados'),
-                ServiceException::ERROR,
-                null,
-                $e->getCode(),
-                $e);
-        }
-    }
-
-    /**
      * @param callable $decryptor
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function processUpdateMasterPassword(callable $decryptor)
     {
@@ -173,6 +147,5 @@ class CustomFieldCryptService extends Service
     protected function initialize()
     {
         $this->customFieldService = $this->dic->get(CustomFieldService::class);
-
     }
 }

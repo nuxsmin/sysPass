@@ -300,7 +300,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldData::class);
-        $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
+        $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL ORDER BY definitionId');
 
         return $this->db->doSelect($queryData);
     }

@@ -28,6 +28,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -45,6 +46,10 @@ class CustomFieldDefService extends Service
      * @var CustomFieldDefRepository
      */
     protected $customFieldDefRepository;
+    /**
+     * @var CustomFieldService
+     */
+    protected $customFieldService;
 
     /**
      * @param $id
@@ -91,31 +96,19 @@ class CustomFieldDefService extends Service
     /**
      * @param $id
      *
-     * @return \SP\DataModel\CustomFieldDefinitionData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     */
-    public function getById($id)
-    {
-        return $this->customFieldDefRepository->getById($id);
-    }
-
-    /**
-     * @param $id
-     *
      * @return CustomFieldDefService
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if ($this->dic->get(CustomFieldService::class)->deleteCustomFieldDefinitionData($id) === 0
-            || $this->customFieldDefRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Campo no encontrado'), ServiceException::INFO);
-        }
+        $this->transactionAware(function () use ($id) {
+            $this->dic->get(CustomFieldService::class)
+                ->deleteCustomFieldDefinitionData($id);
+
+            if ($this->customFieldDefRepository->delete($id) === 0) {
+                throw new NoSuchItemException(__u('Campo no encontrado'), NoSuchItemException::INFO);
+            }
+        });
 
         return $this;
     }
@@ -125,22 +118,18 @@ class CustomFieldDefService extends Service
      *
      * @param array $ids
      *
-     * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function deleteByIdBatch(array $ids)
     {
-        $numIds = count($ids);
+        $this->transactionAware(function () use ($ids) {
+            $this->dic->get(CustomFieldService::class)
+                ->deleteCustomFieldDefinitionDataBatch($ids);
 
-        if ($this->dic->get(CustomFieldService::class)->deleteCustomFieldDefinitionDataBatch($ids) !== $numIds
-            || ($count = $this->customFieldDefRepository->deleteByIdBatch($ids)) !== $numIds) {
-            throw new ServiceException(__u('Error al eliminar los campos'), ServiceException::WARNING);
-        }
-
-        return $count;
+            if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
+                throw new ServiceException(__u('Error al eliminar los campos'), ServiceException::WARNING);
+            }
+        });
     }
 
     /**
@@ -156,15 +145,39 @@ class CustomFieldDefService extends Service
     }
 
     /**
-     * @param $itemData
+     * @param CustomFieldDefinitionData $itemData
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
      */
     public function update(CustomFieldDefinitionData $itemData)
     {
-        return $this->customFieldDefRepository->update($itemData);
+        return $this->transactionAware(function () use ($itemData) {
+            $customFieldDefinitionData = $this->getById($itemData->getId());
+
+            // Delete the data used by the items using the previous definition
+            if ($customFieldDefinitionData->getModuleId() !== $itemData->moduleId) {
+                $this->dic->get(CustomFieldService::class)
+                    ->deleteCustomFieldDefinitionData($customFieldDefinitionData->getId());
+            }
+
+            if ($this->customFieldDefRepository->update($itemData) !== 1) {
+                throw new ServiceException(__u('Error al actualizar el campo personalizado'));
+            }
+        });
+    }
+
+    /**
+     * @param $id
+     *
+     * @return \SP\DataModel\CustomFieldDefinitionData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     */
+    public function getById($id)
+    {
+        return $this->customFieldDefRepository->getById($id);
     }
 
     /**
@@ -176,7 +189,7 @@ class CustomFieldDefService extends Service
      */
     public function getAllBasic()
     {
-        return $this->customFieldDefRepository->getAll();
+        return $this->customFieldDefRepository->getAll()->getDataAsArray();
     }
 
     /**

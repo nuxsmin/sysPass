@@ -141,7 +141,11 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $data = self::$repository->getByIdBatch([1, 2]);
+        $result = self::$repository->getByIdBatch([1, 2]);
+
+        $this->assertEquals(2, $result->getNumRows());
+
+        $data = $result->getDataAsArray();
 
         $this->assertCount(2, $data);
         $this->assertInstanceOf(CustomFieldDefinitionData::class, $data[0]);
@@ -170,9 +174,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals($expected, $data[1]);
 
-        $this->assertCount(0, self::$repository->getByIdBatch([10]));
+        $this->assertEquals(0, self::$repository->getByIdBatch([10])->getNumRows());
 
-        $this->assertCount(0, self::$repository->getByIdBatch([]));
+        $this->assertEquals(0, self::$repository->getByIdBatch([])->getNumRows());
     }
 
     /**
@@ -205,7 +209,10 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     {
         self::$repository->resetCollection();
 
-        $data = self::$repository->getAll();
+        $result = self::$repository->getAll();
+        $this->assertEquals(3, $result->getNumRows());
+
+        $data = $result->getDataAsArray();
 
         $this->assertCount(3, $data);
 

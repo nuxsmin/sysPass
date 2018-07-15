@@ -25,9 +25,7 @@
 namespace SP\Services\CustomField;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
@@ -66,17 +64,17 @@ class CustomFieldService extends Service
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @param string         $data
-     * @param string         $key
-     * @param SessionContext $sessionContext
+     * @param string $data
+     * @param string $key
      *
      * @return string
      * @throws CryptoException
+     * @throws ServiceException
      */
-    public static function decryptData($data, $key, SessionContext $sessionContext)
+    public function decryptData($data, $key)
     {
-        if (!empty($data) && empty($key)) {
-            return self::formatValue(Crypt::decrypt($data, $key, CryptSession::getSessionKey($sessionContext)));
+        if (!empty($data) && !empty($key)) {
+            return self::formatValue(Crypt::decrypt($data, $key, $this->getMasterKeyFromContext()));
         }
 
         return '';
@@ -105,6 +103,8 @@ class CustomFieldService extends Service
      * @param $itemId
      *
      * @return array
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getForModuleById($moduleId, $itemId)
     {
@@ -196,7 +196,7 @@ class CustomFieldService extends Service
      */
     protected function setSecureData(CustomFieldData $customFieldData, $key = null)
     {
-        $key = $key ?: CryptSession::getSessionKey($this->context);
+        $key = $key ?: $this->getMasterKeyFromContext();
         $securedKey = Crypt::makeSecuredKey($key);
 
         if (strlen($securedKey) > 1000) {

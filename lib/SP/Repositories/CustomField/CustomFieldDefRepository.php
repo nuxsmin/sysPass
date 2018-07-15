@@ -32,6 +32,7 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class CustomFieldDefRepository
@@ -87,9 +88,20 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      */
     public function update($itemData)
     {
+        if ($this->customFieldDefCollection->exists($itemData->getId())) {
+            $this->customFieldDefCollection->remove($itemData->getId());
+        }
+
         $query = /** @lang SQL */
             'UPDATE CustomFieldDefinition 
-              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, isEncrypted = ?, field = NULL 
+              SET `name` = ?, 
+              moduleId = ?, 
+              required = ?, 
+              `help` = ?, 
+              showInList = ?, 
+              typeId = ?, 
+              isEncrypted = ?, 
+              field = NULL 
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
@@ -126,7 +138,14 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         }
 
         $query = /** @lang SQL */
-            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId, isEncrypted
+            'SELECT id, 
+              `name`, 
+              moduleId, 
+              required, 
+              `help`, 
+              showInList, 
+              typeId, 
+              isEncrypted
               FROM CustomFieldDefinition
               WHERE id = ? LIMIT 1';
 
@@ -149,7 +168,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     /**
      * Returns all the items
      *
-     * @return CustomFieldDefinitionData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -164,7 +183,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -172,14 +191,14 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      *
      * @param array $ids
      *
-     * @return CustomFieldDefinitionData[]
+     * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
         if (empty($ids)) {
-            return [];
+            return new QueryResult();
         }
 
         $query = /** @lang SQL */
@@ -193,7 +212,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
