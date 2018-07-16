@@ -33,6 +33,7 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
+use SP\Services\Export\XmlVerifyService;
 
 /**
  * Class ConfigBackupController
@@ -95,12 +96,34 @@ class ConfigBackupController extends SimpleControllerBase
 
             SessionContext::close();
 
-            $this->dic->get(XmlExportService::class)
-                ->doExport($exportPassword);
+            $export = $this->dic->get(XmlExportService::class);
+            $export->doExport(BACKUP_PATH, $exportPassword);
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Proceso de exportación finalizado')))
+            );
+
+            $verify = $this->dic->get(XmlVerifyService::class);
+
+            if ($export->isEncrypted()) {
+                $verifyResult = $verify->verifyEncrypted($export->getExportFile(), $exportPassword);
+            } else {
+                $verifyResult = $verify->verify($export->getExportFile());
+            }
+
+            $nodes = $verifyResult->getNodes();
+
+            $this->eventDispatcher->notifyEvent('run.export.verify',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Verificación de datos exportados finalizada'))
+                    ->addDetail(__u('Versión'), $verifyResult->getVersion())
+                    ->addDetail(__u('Encriptado'), $verifyResult->isEncrypted() ? __u('Sí') : __u('No'))
+                    ->addDetail(__u('Cuentas'), $nodes['Account'])
+                    ->addDetail(__u('Clientes'), $nodes['Client'])
+                    ->addDetail(__u('Categorías'), $nodes['Category'])
+                    ->addDetail(__u('Etiquetas'), $nodes['Tag'])
+                )
             );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));

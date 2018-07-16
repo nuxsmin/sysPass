@@ -37,6 +37,7 @@ define('APP_MODULE', 'tests');
 define('APP_ROOT', dirname(__DIR__));
 define('TEST_ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');
 define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
+define('TMP_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');

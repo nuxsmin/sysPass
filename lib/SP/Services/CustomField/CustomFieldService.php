@@ -106,9 +106,9 @@ class CustomFieldService extends Service
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function getForModuleById($moduleId, $itemId)
+    public function getForModuleAndItemId($moduleId, $itemId)
     {
-        return $this->customFieldRepository->getForModuleById($moduleId, $itemId);
+        return $this->customFieldRepository->getForModuleAndItemId($moduleId, $itemId)->getDataAsArray();
     }
 
     /**
@@ -146,19 +146,19 @@ class CustomFieldService extends Service
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
-     * @param int $id
+     * @param int $itemId
      * @param int $moduleId
      * @param int $definitionId
      *
      * @return int
      * @throws SPException
      */
-    public function deleteCustomFieldData($id, $moduleId, $definitionId = null)
+    public function deleteCustomFieldData($itemId, $moduleId, $definitionId = null)
     {
         if ($definitionId === null) {
-            return $this->customFieldRepository->deleteCustomFieldData($id, $moduleId);
+            return $this->customFieldRepository->deleteCustomFieldData($itemId, $moduleId);
         } else {
-            return $this->customFieldRepository->deleteCustomFieldDataForDefinition($id, $moduleId, $definitionId);
+            return $this->customFieldRepository->deleteCustomFieldDataForDefinition($itemId, $moduleId, $definitionId);
         }
     }
 

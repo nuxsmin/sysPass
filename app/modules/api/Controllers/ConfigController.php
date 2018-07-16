@@ -33,6 +33,7 @@ use SP\Services\Export\XmlExportService;
 
 /**
  * Class ConfigController
+ *
  * @package SP\Modules\Api\Controllers
  */
 class ConfigController extends ControllerBase
@@ -83,7 +84,7 @@ class ConfigController extends ControllerBase
             );
 
             $this->dic->get(XmlExportService::class)
-                ->doExport($password);
+                ->doExport(BACKUP_PATH, $password);
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()

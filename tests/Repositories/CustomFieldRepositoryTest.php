@@ -196,81 +196,90 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
      */
     public function testGetForModuleById()
     {
-        $result = self::$repository->getForModuleById(ActionsInterface::ACCOUNT, 1);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::ACCOUNT, 1);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(1, $result);
-        $this->assertEquals('Prueba', $result[0]->definitionName);
-        $this->assertEquals(1, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::ACCOUNT, $result[0]->moduleId);
-        $this->assertEquals(1, $result[0]->required);
-        $this->assertEquals(0, $result[0]->showInList);
-        $this->assertEquals('Ayuda', $result[0]->help);
-        $this->assertEquals(1, $result[0]->isEncrypted);
-        $this->assertEquals(1, $result[0]->typeId);
-        $this->assertEquals('text', $result[0]->typeName);
-        $this->assertEquals('Texto', $result[0]->typeText);
-        $this->assertNotEmpty($result[0]->data);
-        $this->assertNotEmpty($result[0]->key);
+        $data = $result->getDataAsArray();
 
-        $result = self::$repository->getForModuleById(ActionsInterface::ACCOUNT, 2);
+        $this->assertCount(1, $data);
+        $this->assertEquals('Prueba', $data[0]->definitionName);
+        $this->assertEquals(1, $data[0]->definitionId);
+        $this->assertEquals(ActionsInterface::ACCOUNT, $data[0]->moduleId);
+        $this->assertEquals(1, $data[0]->required);
+        $this->assertEquals(0, $data[0]->showInList);
+        $this->assertEquals('Ayuda', $data[0]->help);
+        $this->assertEquals(1, $data[0]->isEncrypted);
+        $this->assertEquals(1, $data[0]->typeId);
+        $this->assertEquals('text', $data[0]->typeName);
+        $this->assertEquals('Texto', $data[0]->typeText);
+        $this->assertNotEmpty($data[0]->data);
+        $this->assertNotEmpty($data[0]->key);
 
-        $this->assertCount(1, $result);
-        $this->assertEquals('Prueba', $result[0]->definitionName);
-        $this->assertEquals(1, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::ACCOUNT, $result[0]->moduleId);
-        $this->assertEquals(1, $result[0]->required);
-        $this->assertEquals(0, $result[0]->showInList);
-        $this->assertEquals('Ayuda', $result[0]->help);
-        $this->assertEquals(1, $result[0]->isEncrypted);
-        $this->assertEquals(1, $result[0]->typeId);
-        $this->assertEquals('text', $result[0]->typeName);
-        $this->assertEquals('Texto', $result[0]->typeText);
-        $this->assertEmpty($result[0]->data);
-        $this->assertEmpty($result[0]->key);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::ACCOUNT, 2);
+        $this->assertEquals(1, $result->getNumRows());
+        $data = $result->getDataAsArray();
 
-        $result = self::$repository->getForModuleById(ActionsInterface::ACCOUNT, 3);
+        $this->assertCount(1, $data);
+        $this->assertEquals('Prueba', $data[0]->definitionName);
+        $this->assertEquals(1, $data[0]->definitionId);
+        $this->assertEquals(ActionsInterface::ACCOUNT, $data[0]->moduleId);
+        $this->assertEquals(1, $data[0]->required);
+        $this->assertEquals(0, $data[0]->showInList);
+        $this->assertEquals('Ayuda', $data[0]->help);
+        $this->assertEquals(1, $data[0]->isEncrypted);
+        $this->assertEquals(1, $data[0]->typeId);
+        $this->assertEquals('text', $data[0]->typeName);
+        $this->assertEquals('Texto', $data[0]->typeText);
+        $this->assertNotEmpty($data[0]->data);
+        $this->assertNotEmpty($data[0]->key);
 
-        $this->assertCount(1, $result);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::ACCOUNT, 3);
 
-        $result = self::$repository->getForModuleById(ActionsInterface::CATEGORY, 1);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(2, $result);
-        $this->assertEquals('RSA', $result[0]->definitionName);
-        $this->assertEquals(2, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[0]->moduleId);
-        $this->assertEquals(0, $result[0]->required);
-        $this->assertEquals(0, $result[0]->showInList);
-        $this->assertEquals(null, $result[0]->help);
-        $this->assertEquals(0, $result[0]->isEncrypted);
-        $this->assertEquals(2, $result[0]->typeId);
-        $this->assertEquals('password', $result[0]->typeName);
-        $this->assertEquals('Clave', $result[0]->typeText);
-        $this->assertNotEmpty($result[0]->data);
-        $this->assertNull($result[0]->key);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::CATEGORY, 1);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $result = self::$repository->getForModuleById(ActionsInterface::CATEGORY, 2);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $result);
-        $this->assertEquals('RSA', $result[0]->definitionName);
-        $this->assertEquals(2, $result[0]->definitionId);
-        $this->assertEquals(ActionsInterface::CATEGORY, $result[0]->moduleId);
-        $this->assertEquals(0, $result[0]->required);
-        $this->assertEquals(0, $result[0]->showInList);
-        $this->assertEquals(null, $result[0]->help);
-        $this->assertEquals(0, $result[0]->isEncrypted);
-        $this->assertEquals(2, $result[0]->typeId);
-        $this->assertEquals('password', $result[0]->typeName);
-        $this->assertEquals('Clave', $result[0]->typeText);
-        $this->assertNull($result[0]->data);
-        $this->assertNull($result[0]->key);
+        $this->assertCount(2, $data);
+        $this->assertEquals('RSA', $data[0]->definitionName);
+        $this->assertEquals(2, $data[0]->definitionId);
+        $this->assertEquals(ActionsInterface::CATEGORY, $data[0]->moduleId);
+        $this->assertEquals(0, $data[0]->required);
+        $this->assertEquals(0, $data[0]->showInList);
+        $this->assertEquals(null, $data[0]->help);
+        $this->assertEquals(0, $data[0]->isEncrypted);
+        $this->assertEquals(2, $data[0]->typeId);
+        $this->assertEquals('password', $data[0]->typeName);
+        $this->assertEquals('Clave', $data[0]->typeText);
+        $this->assertNotEmpty($data[0]->data);
+        $this->assertNull($data[0]->key);
 
-        $result = self::$repository->getForModuleById(ActionsInterface::CATEGORY, 3);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::CATEGORY, 2);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(2, $result);
+        $data = $result->getDataAsArray();
 
-        $result = self::$repository->getForModuleById(ActionsInterface::USER, 1);
+        $this->assertCount(2, $data);
+        $this->assertEquals('RSA', $data[0]->definitionName);
+        $this->assertEquals(2, $data[0]->definitionId);
+        $this->assertEquals(ActionsInterface::CATEGORY, $data[0]->moduleId);
+        $this->assertEquals(0, $data[0]->required);
+        $this->assertEquals(0, $data[0]->showInList);
+        $this->assertEquals(null, $data[0]->help);
+        $this->assertEquals(0, $data[0]->isEncrypted);
+        $this->assertEquals(2, $data[0]->typeId);
+        $this->assertEquals('password', $data[0]->typeName);
+        $this->assertEquals('Clave', $data[0]->typeText);
+        $this->assertNull($data[0]->data);
+        $this->assertNull($data[0]->key);
 
-        $this->assertCount(0, $result);
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::CATEGORY, 3);
+        $this->assertEquals(2, $result->getNumRows());
+
+        $result = self::$repository->getForModuleAndItemId(ActionsInterface::USER, 1);
+        $this->assertEquals(0, $result->getNumRows());
     }
 
     /**

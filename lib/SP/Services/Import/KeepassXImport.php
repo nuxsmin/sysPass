@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde KeePassX
  *
- * @todo Use xmlDOM
+ * @todo Use xml
  */
 class KeepassXImport extends XmlImportBase implements ImportInterface
 {

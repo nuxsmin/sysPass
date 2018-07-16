@@ -67,7 +67,7 @@ class ClientServiceTest extends DatabaseTestCase
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
-        // Inicializar el repositorio
+        // Inicializar el servicio
         self::$service = $dic->get(ClientService::class);
 
         self::$setupUser = function (UserLoginResponse $response) use ($dic) {

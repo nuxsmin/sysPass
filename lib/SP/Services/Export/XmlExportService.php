@@ -24,6 +24,7 @@
 
 namespace SP\Services\Export;
 
+use DOMXPath;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
@@ -73,70 +74,58 @@ class XmlExportService extends Service
     /**
      * @var string
      */
-    private $exportDir = '';
+    private $exportPath;
     /**
      * @var string
      */
-    private $exportFile = '';
+    private $exportFile;
 
     /**
      * Realiza la exportación de las cuentas a XML
      *
-     * @param null $pass string La clave de exportación
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @param string $exportPath
+     * @param string $pass string La clave de exportación
+     *
      * @throws ServiceException
      */
-    public function doExport($pass = null)
+    public function doExport(string $exportPath, string $pass = null)
     {
         if (!empty($pass)) {
-            $this->setExportPass($pass);
-            $this->setEncrypted(true);
+            $this->exportPass = $pass;
+            $this->encrypted = true;
         }
 
-        $this->setExportDir(BACKUP_PATH);
-        $this->setExportFile();
+        $this->setExportPath($exportPath);
+        $this->exportFile = $this->generateExportFilename();
         $this->deleteOldExports();
         $this->makeXML();
     }
 
     /**
-     * Establecer la clave de exportación
+     * @param string $exportPath
      *
-     * @param string $exportPass
+     * @throws ServiceException
      */
-    public function setExportPass($exportPass)
+    private function setExportPath(string $exportPath)
     {
-        $this->exportPass = $exportPass;
-    }
+        if (!is_dir($exportPath) && @mkdir($exportPath, 0700, true) === false) {
+            throw new ServiceException(sprintf(__('No es posible crear el directorio (%s)'), $exportPath));
+        }
 
-    /**
-     * @param boolean $encrypted
-     */
-    public function setEncrypted($encrypted)
-    {
-        $this->encrypted = $encrypted;
-    }
-
-    /**
-     * @param string $exportDir
-     */
-    public function setExportDir($exportDir)
-    {
-        $this->exportDir = $exportDir;
+        $this->exportPath = $exportPath;
     }
 
     /**
      * Genera el nombre del archivo usado para la exportación.
      */
-    private function setExportFile()
+    private function generateExportFilename(): string
     {
         // Generar hash unico para evitar descargas no permitidas
         $exportUniqueHash = sha1(uniqid('sysPassExport', true));
         $this->configData->setExportHash($exportUniqueHash);
         $this->config->saveConfig($this->configData);
 
-        $this->exportFile = $this->exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+        return $this->exportPath . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
     }
 
     /**
@@ -144,7 +133,7 @@ class XmlExportService extends Service
      */
     private function deleteOldExports()
     {
-        array_map('unlink', glob($this->exportDir . DIRECTORY_SEPARATOR . '*.xml'));
+        array_map('unlink', glob($this->exportPath . DIRECTORY_SEPARATOR . '*.xml'));
     }
 
     /**
@@ -154,10 +143,9 @@ class XmlExportService extends Service
      * @throws NotFoundExceptionInterface
      * @throws ServiceException
      */
-    public function makeXML()
+    private function makeXML()
     {
         try {
-            $this->checkExportDir();
             $this->createRoot();
             $this->createMeta();
             $this->createCategories();
@@ -177,27 +165,6 @@ class XmlExportService extends Service
                 $e
             );
         }
-    }
-
-    /**
-     * Comprobar y crear el directorio de exportación.
-     *
-     * @throws ServiceException
-     * @return bool
-     */
-    private function checkExportDir()
-    {
-        if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
-            throw new ServiceException(sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
-        }
-
-        clearstatcache(true, $this->exportDir);
-
-        if (!is_writable($this->exportDir)) {
-            throw new ServiceException(__u('Compruebe los permisos del directorio de backups'));
-        }
-
-        return true;
     }
 
     /**
@@ -299,6 +266,7 @@ class XmlExportService extends Service
      * Añadir un nuevo nodo al árbol raíz
      *
      * @param \DOMElement $node El nodo a añadir
+     *
      * @throws ServiceException
      */
     private function appendNode(\DOMElement $node)
@@ -346,6 +314,7 @@ class XmlExportService extends Service
      * Escapar carácteres no válidos en XML
      *
      * @param $data string Los datos a escapar
+     *
      * @return mixed
      */
     private function escapeChars($data)
@@ -523,36 +492,35 @@ class XmlExportService extends Service
     private function createHash()
     {
         try {
-            if ($this->encrypted === true) {
-                $hash = sha1($this->getNodeXML('Encrypted'));
-            } else {
-                $hash = sha1($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
-            }
+            $hash = self::generateHashFromNodes($this->xml);
 
-            $metaHash = $this->xml->createElement('Hash', $hash);
+            $hashNode = $this->xml->createElement('Hash', $hash);
+            $hashNode->appendChild($this->xml->createAttribute('sign'));
+            $hashNode->setAttribute('sign', Hash::signMessage($hash, $this->configData->getConfigHash()));
 
-            $nodeMeta = $this->root->getElementsByTagName('Meta')->item(0);
-            $nodeMeta->appendChild($metaHash);
+            $this->root
+                ->getElementsByTagName('Meta')
+                ->item(0)
+                ->appendChild($hashNode);
         } catch (\Exception $e) {
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
     /**
-     * Devuelve el código XML de un nodo
+     * @param \DOMDocument $document
      *
-     * @param $node string El nodo a devolver
      * @return string
-     * @throws ServiceException
      */
-    private function getNodeXML($node)
+    public static function generateHashFromNodes(\DOMDocument $document): string
     {
-        try {
-            $nodeXML = $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
-            return $nodeXML;
-        } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+        $data = '';
+
+        foreach ((new DOMXPath($document))->query('/Root/*[not(self::Meta)]') as $node) {
+            $data .= $document->saveXML($node);
         }
+
+        return sha1($data);
     }
 
     /**
@@ -575,12 +543,45 @@ class XmlExportService extends Service
     }
 
     /**
+     * @return string
+     */
+    public function getExportFile(): string
+    {
+        return $this->exportFile;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEncrypted(): bool
+    {
+        return $this->encrypted;
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function initialize()
+    protected function initialize()
     {
         $this->configData = $this->config->getConfigData();
         $this->xml = new \DOMDocument('1.0', 'UTF-8');
+    }
+
+    /**
+     * Devuelve el código XML de un nodo
+     *
+     * @param $node string El nodo a devolver
+     *
+     * @return string
+     * @throws ServiceException
+     */
+    private function getNodeXML($node)
+    {
+        try {
+            return $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
+        } catch (\Exception $e) {
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
+        }
     }
 }

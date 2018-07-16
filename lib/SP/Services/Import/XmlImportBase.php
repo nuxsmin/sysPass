@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ use SP\Core\Events\EventDispatcher;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
+use SP\Services\Config\ConfigService;
 use SP\Services\Tag\TagService;
 
 /**
@@ -52,6 +53,10 @@ abstract class XmlImportBase
      * @var EventDispatcher
      */
     protected $eventDispatcher;
+    /**
+     * @var ConfigService
+     */
+    protected $configService;
 
     /**
      * ImportBase constructor.
@@ -59,6 +64,7 @@ abstract class XmlImportBase
      * @param Container     $dic
      * @param XmlFileImport $xmlFileImport
      * @param ImportParams  $importParams
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -73,6 +79,7 @@ abstract class XmlImportBase
         $this->clientService = $dic->get(ClientService::class);
         $this->tagService = $dic->get(TagService::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
+        $this->configService = $dic->get(ConfigService::class);
     }
 
     /**
@@ -82,6 +89,7 @@ abstract class XmlImportBase
      * @param string   $childNodeName Nombre de los nodos hijos
      * @param callable $callback      Método a ejecutar
      * @param bool     $required      Indica si el nodo es requerido
+     *
      * @throws ImportException
      */
     protected function getNodesData($nodeName, $childNodeName, $callback, $required = true)

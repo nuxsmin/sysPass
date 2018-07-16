@@ -56,7 +56,7 @@ trait ItemTrait
         $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
         $customFields = [];
 
-        foreach ($customFieldService->getForModuleById($moduleId, $itemId) as $item) {
+        foreach ($customFieldService->getForModuleAndItemId($moduleId, $itemId) as $item) {
             try {
                 $customField = new CustomFieldItem();
                 $customField->required = (bool)$item->required;

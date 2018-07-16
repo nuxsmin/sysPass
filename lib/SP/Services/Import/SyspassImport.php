@@ -27,7 +27,6 @@ namespace SP\Services\Import;
 use Defuse\Crypto\Exception\CryptoException;
 use DOMXPath;
 use SP\Account\AccountRequest;
-use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\OldCrypt;
@@ -59,7 +58,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
             );
 
             if ($this->importParams->getImportMasterPwd() !== '') {
-                $this->mPassValidHash = Hash::checkHashKey($this->importParams->getImportMasterPwd(), ConfigDB::getValue('masterPwd'));
+                $this->mPassValidHash = Hash::checkHashKey($this->importParams->getImportMasterPwd(), $this->configService->getByParam('masterPwd'));
             }
 
             $this->version = $this->getXmlVersion();
@@ -375,6 +374,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
      * Procesar las etiquetas de la cuenta
      *
      * @param \DOMNodeList $nodes
+     *
      * @return array
      */
     protected function processAccountTags(\DOMNodeList $nodes)

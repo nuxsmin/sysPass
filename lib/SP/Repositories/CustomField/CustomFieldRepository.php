@@ -145,14 +145,14 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
-     * @param int $id
+     * @param int $itemId
      * @param int $moduleId
      *
      * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function deleteCustomFieldData($id, $moduleId)
+    public function deleteCustomFieldData($itemId, $moduleId)
     {
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldData
@@ -161,7 +161,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setParams([$id, $moduleId]);
+        $queryData->setParams([$itemId, $moduleId]);
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -359,11 +359,11 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param $moduleId
      * @param $itemId
      *
-     * @return array
+     * @return \SP\Storage\Database\QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getForModuleById($moduleId, $itemId)
+    public function getForModuleAndItemId($moduleId, $itemId)
     {
         $query = /** @lang SQL */
             'SELECT CFD.name AS definitionName,
@@ -388,7 +388,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams([$itemId, $moduleId]);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
