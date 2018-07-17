@@ -70,7 +70,7 @@ class ConfigImportController extends SimpleControllerBase
             SessionContext::close();
 
             $counter = $this->dic->get(ImportService::class)
-                ->doImport($importParams, new FileImport($this->request->getFile('inFile')));
+                ->doImport($importParams, FileImport::fromRequest('inFile', $this->request));
 
             $this->eventDispatcher->notifyEvent('run.import.end',
                 new Event($this, EventMessage::factory()->addDetail(__u('Cuentas importadas'), $counter))

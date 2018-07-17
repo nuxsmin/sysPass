@@ -37,7 +37,7 @@ class FileHandler
      */
     protected $file;
     /**
-     * @var
+     * @var resource
      */
     protected $handle;
 
@@ -55,6 +55,7 @@ class FileHandler
      * Writes data into file
      *
      * @param $data
+     *
      * @return FileHandler
      * @throws FileException
      */
@@ -64,7 +65,7 @@ class FileHandler
             $this->open('wb');
         }
 
-        if (fwrite($this->handle, $data) === false) {
+        if (@fwrite($this->handle, $data) === false) {
             throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $this->file));
         }
 
@@ -75,12 +76,13 @@ class FileHandler
      * Opens the file
      *
      * @param $mode
+     *
      * @return resource
      * @throws FileException
      */
-    public function open($mode)
+    public function open($mode = 'r')
     {
-        if (($this->handle = fopen($this->file, $mode)) === false) {
+        if (($this->handle = @fopen($this->file, $mode)) === false) {
             throw new FileException(sprintf(__('No es posible abrir el archivo (%s)'), $this->file));
         }
 
@@ -93,9 +95,23 @@ class FileHandler
      * @return string Data read from file
      * @throws FileException
      */
-    public function readString()
+    public function readToString(): string
     {
         if (($data = file_get_contents($this->file)) === false) {
+            throw new FileException(sprintf(__('No es posible leer desde el archivo (%s)'), $this->file));
+        }
+
+        return $data;
+    }
+
+    /**
+     * Reads data from file into an array
+     *
+     * @throws FileException
+     */
+    public function readToArray(): array
+    {
+        if (($data = @file($this->file, FILE_SKIP_EMPTY_LINES)) === false) {
             throw new FileException(sprintf(__('No es posible leer desde el archivo (%s)'), $this->file));
         }
 
@@ -133,7 +149,7 @@ class FileHandler
      */
     public function close()
     {
-        if (!is_resource($this->handle) || fclose($this->handle) === false) {
+        if (!is_resource($this->handle) || @fclose($this->handle) === false) {
             throw new FileException(sprintf(__('No es posible cerrar el archivo (%s)'), $this->file));
         }
 
@@ -150,21 +166,6 @@ class FileHandler
     {
         if (!is_writable($this->file) && @touch($this->file) === false) {
             throw new FileException(sprintf(__('No es posible escribir el archivo (%s)'), $this->file));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Checks if the file is readable
-     *
-     * @throws FileException
-     * @return FileHandler
-     */
-    public function checkIsReadable()
-    {
-        if (!is_readable($this->file)) {
-            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
         }
 
         return $this;
@@ -195,6 +196,7 @@ class FileHandler
 
     /**
      * @param bool $isExceptionOnZero
+     *
      * @return int
      * @throws FileException
      */
@@ -231,6 +233,34 @@ class FileHandler
     {
         if (@unlink($this->file) === false) {
             throw new FileException(sprintf(__('No es posible eliminar el archivo (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the content type in MIME format
+     *
+     * @return string
+     * @throws FileException
+     */
+    public function getFileType(): string
+    {
+        $this->checkIsReadable();
+
+        return mime_content_type($this->file);
+    }
+
+    /**
+     * Checks if the file is readable
+     *
+     * @throws FileException
+     * @return FileHandler
+     */
+    public function checkIsReadable()
+    {
+        if (!is_readable($this->file)) {
+            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
         }
 
         return $this;

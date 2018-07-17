@@ -78,6 +78,7 @@ abstract class CsvImportBase
      * @param Container    $dic
      * @param FileImport   $fileImport
      * @param ImportParams $importParams
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -113,14 +114,16 @@ abstract class CsvImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws ImportException
+     * @throws \SP\Storage\FileException
      */
     protected function processAccounts()
     {
         $line = 0;
 
-        foreach ($this->fileImport->getFileContent() as $data) {
+        $handler = $this->fileImport->getFileHandler()->open();
+
+        while (($fields = fgetcsv($handler, 0, $this->importParams->getCsvDelimiter())) !== false) {
             $line++;
-            $fields = str_getcsv($data, $this->importParams->getCsvDelimiter(), '"');
             $numfields = count($fields);
 
             // Comprobar el número de campos de la línea
@@ -152,9 +155,10 @@ abstract class CsvImportBase
 
                 $this->addAccount($accountRequest);
 
-                $this->eventDispatcher->notifyEvent('run.import.csv.account',
+                $this->eventDispatcher->notifyEvent('run.import.csv.process.account',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                        ->addDetail(__u('Cuenta importada'), $accountName)
+                        ->addDetail(__u('Cliente'), $clientName))
                 );
             } catch (\Exception $e) {
                 processException($e);
@@ -165,6 +169,16 @@ abstract class CsvImportBase
                         ->addDetail(__u('Error procesando línea'), $line))
                 );
             }
+        }
+
+        $this->fileImport->getFileHandler()->close();
+
+        if ($line === 0) {
+            throw new ImportException(
+                sprintf(__('El número de campos es incorrecto (%d)'), 0),
+                ImportException::ERROR,
+                sprintf(__('Compruebe el formato del archivo CSV en línea %s'), 0)
+            );
         }
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,9 @@
 
 namespace SP\Services\Import;
 
-use SP\Core\Exceptions\SPException;
+use SP\Http\Request;
+use SP\Storage\FileException;
+use SP\Storage\FileHandler;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -37,53 +39,54 @@ defined('APP_ROOT') || die();
 class FileImport
 {
     /**
-     * Contenido del archivo leído
-     *
-     * @var string|array
+     * @var FileHandler
      */
-    protected $fileContent;
-
-    /**
-     * Archivo temporal utilizado en la subida HTML
-     *
-     * @var string
-     */
-    protected $tmpFile;
-
-    /**
-     * Tipo Mime del archivo
-     *
-     * @var string
-     */
-    protected $fileType;
+    private $fileHandler;
 
     /**
      * FileImport constructor.
      *
-     * @param array $fileData Datos del archivo a importar
-     * @throws SPException
+     * @param FileHandler $fileHandler Datos del archivo a importar
      */
-    public function __construct($fileData)
+    private function __construct(FileHandler $fileHandler)
     {
-        try {
-            $this->checkFile($fileData);
-        } catch (SPException $e) {
-            throw $e;
+        $this->fileHandler = $fileHandler;
+    }
+
+    /**
+     * @param string  $filename
+     * @param Request $request
+     *
+     * @return FileImport
+     * @throws FileException
+     */
+    public static function fromRequest(string $filename, Request $request)
+    {
+        if (($file = $request->getFile($filename)) === null) {
+            throw new FileException(
+                __u('Archivo no subido correctamente'),
+                FileException::ERROR,
+                __u('Verifique los permisos del usuario del servidor web')
+            );
         }
+
+        return new self(new FileHandler(self::checkFile($file)));
     }
 
     /**
      * Leer los datos del archivo.
      *
      * @param array $fileData con los datos del archivo
-     * @throws SPException
+     *
+     * @return string
+     * @throws FileException
      */
-    private function checkFile($fileData)
+    private static function checkFile($fileData): string
     {
         if (!is_array($fileData)) {
-            throw new SPException(
+            throw new FileException(
                 __u('Archivo no subido correctamente'),
-                SPException::ERROR,
+                FileException::ERROR,
                 __u('Verifique los permisos del usuario del servidor web')
             );
         }
@@ -93,70 +96,69 @@ class FileImport
             $fileExtension = mb_strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
 
             if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
-                throw new SPException(
+                throw new FileException(
                     __u('Tipo de archivo no soportado'),
-                    SPException::ERROR,
+                    FileException::ERROR,
                     __u('Compruebe la extensión del archivo')
                 );
             }
         }
 
         // Variables con información del archivo
-        $this->tmpFile = $fileData['tmp_name'];
-        $this->fileType = strtolower($fileData['type']);
+//        $this->tmpFile = $fileData['tmp_name'];
+//        $this->fileType = strtolower($fileData['type']);
 
-        if (!file_exists($this->tmpFile) || !is_readable($this->tmpFile)) {
+        if (!file_exists($fileData['tmp_name']) || !is_readable($fileData['tmp_name'])) {
             // Registramos el máximo tamaño permitido por PHP
             debugLog('Max. upload size: ' . Util::getMaxUpload());
 
-            throw new SPException(
+            throw new FileException(
                 __u('Error interno al leer el archivo'),
-                SPException::ERROR,
+                FileException::ERROR,
                 __u('Compruebe la configuración de PHP para subir archivos')
             );
         }
+
+        return $fileData['tmp_name'];
     }
 
     /**
-     * @return array
+     * @param string $path
+     *
+     * @return FileImport
      */
-    public function getFileContent()
+    public static function fromFilesystem(string $path)
     {
-        return $this->fileContent;
+        return new self(new FileHandler($path));
     }
 
     /**
      * @return string
      */
-    public function getTmpFile()
+    public function getFilePath()
     {
-        return $this->tmpFile;
+        return $this->fileHandler->getFile();
     }
 
     /**
      * @return string
+     * @throws FileException
      */
     public function getFileType()
     {
-        return $this->fileType;
+        return $this->fileHandler->getFileType();
     }
 
     /**
      * Leer los datos de un archivo subido a un array
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws FileException
      */
-    public function readFileToArray()
+    public function readFileToArray(): array
     {
         $this->autodetectEOL();
 
-        if (($this->fileContent = file($this->tmpFile, FILE_SKIP_EMPTY_LINES)) === false) {
-            throw new SPException(
-                __u('Error interno al leer el archivo'),
-                SPException::ERROR,
-                __u('Compruebe los permisos del directorio temporal')
-            );
-        }
+        return $this->fileHandler->readToArray();
     }
 
     /**
@@ -170,18 +172,20 @@ class FileImport
     /**
      * Leer los datos de un archivo subido a una cadena
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws FileException
      */
-    public function readFileToString()
+    public function readFileToString(): string
     {
         $this->autodetectEOL();
 
-        if (($this->fileContent = file_get_contents($this->tmpFile)) === false) {
-            throw new SPException(
-                __u('Error interno al leer el archivo'),
-                SPException::ERROR,
-                __u('Compruebe los permisos del directorio temporal')
-            );
-        }
+        return $this->fileHandler->readToString();
+    }
+
+    /**
+     * @return FileHandler
+     */
+    public function getFileHandler(): FileHandler
+    {
+        return $this->fileHandler;
     }
 }

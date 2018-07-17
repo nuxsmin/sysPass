@@ -25,6 +25,7 @@
 namespace SP\Services\Import;
 
 use DI\Container;
+use SP\Config\ConfigData;
 use SP\Core\Events\EventDispatcher;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -57,6 +58,10 @@ abstract class XmlImportBase
      * @var ConfigService
      */
     protected $configService;
+    /**
+     * @var ConfigData
+     */
+    protected $configData;
 
     /**
      * ImportBase constructor.
@@ -74,6 +79,7 @@ abstract class XmlImportBase
         $this->importParams = $importParams;
         $this->xmlDOM = $xmlFileImport->getXmlDOM();
 
+        $this->configData = $dic->get(ConfigData::class);
         $this->accountService = $dic->get(AccountService::class);
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);
@@ -96,15 +102,7 @@ abstract class XmlImportBase
     {
         $nodeList = $this->xmlDOM->getElementsByTagName($nodeName);
 
-        if ($nodeList->length === 0) {
-            if ($required === true) {
-                throw new ImportException(
-                    __u('Formato de XML inválido'),
-                    ImportException::WARNING,
-                    sprintf(__('El nodo "%s" no existe'), $nodeName)
-                );
-            }
-        } else {
+        if ($nodeList->length > 0) {
             if (!is_callable($callback)) {
                 throw new ImportException(__u('Método inválido'), ImportException::WARNING);
             }
@@ -116,6 +114,12 @@ abstract class XmlImportBase
                     $callback($node);
                 }
             }
+        } elseif ($required === true) {
+            throw new ImportException(
+                __u('Formato de XML inválido'),
+                ImportException::WARNING,
+                sprintf(__('El nodo "%s" no existe'), $nodeName)
+            );
         }
     }
 }

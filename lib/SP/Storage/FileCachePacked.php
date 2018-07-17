@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -73,7 +73,8 @@ class FileCachePacked implements FileStorageInterface
 
     /**
      * @param string $path
-     * @param mixed $data
+     * @param mixed  $data
+     *
      * @return FileStorageInterface
      */
     public function save($path, $data = null)
@@ -134,6 +135,7 @@ class FileCachePacked implements FileStorageInterface
      * Gets key data from cache
      *
      * @param $key
+     *
      * @return mixed
      */
     public function get($key)
@@ -158,5 +160,18 @@ class FileCachePacked implements FileStorageInterface
         }
 
         $this->data[$key] = ['time' => time(), 'data' => serialize($data)];
+    }
+
+    /**
+     * Returns whether the file is expired
+     *
+     * @param string $path
+     * @param int    $time
+     *
+     * @return mixed
+     */
+    public function isExpired($path, $time = 86400)
+    {
+        // TODO: Implement isExpired() method.
     }
 }

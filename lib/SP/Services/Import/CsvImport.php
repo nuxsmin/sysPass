@@ -37,9 +37,11 @@ defined('APP_ROOT') || die();
 class CsvImport extends CsvImportBase implements ImportInterface
 {
     /**
-     * Iniciar la importación desde XML.
+     * Iniciar la importación desde CSV
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @return $this|ImportInterface
+     * @throws ImportException
+     * @throws \SP\Storage\FileException
      */
     public function doImport()
     {
@@ -48,7 +50,6 @@ class CsvImport extends CsvImportBase implements ImportInterface
                 ->addDescription(sprintf(__('Formato detectado: %s'), 'CSV')))
         );
 
-        $this->fileImport->readFileToArray();
         $this->processAccounts();
 
         return $this;

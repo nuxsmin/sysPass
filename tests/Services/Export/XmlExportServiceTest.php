@@ -24,11 +24,12 @@
 
 namespace SP\Tests\Services\Export;
 
-use PHPUnit\Framework\TestCase;
 use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
 use SP\Services\ServiceException;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
 use function SP\Tests\setupContext;
 
@@ -37,15 +38,23 @@ use function SP\Tests\setupContext;
  *
  * @package SP\Tests\Services\Export
  */
-class XmlExportServiceTest extends TestCase
+class XmlExportServiceTest extends DatabaseTestCase
 {
     /**
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Context\ContextException
      */
     public static function setUpBeforeClass()
     {
         array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*.xml'));
+
+        $dic = setupContext();
+
+        self::$dataset = 'syspass_import.xml';
+
+        // Datos de conexión a la BBDD
+        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
     }
 
     /**

@@ -81,9 +81,12 @@ function setupContext()
     // Inicializar el contexto
     $context = $dic->get(ContextInterface::class);
     $context->initialize();
-    $context->setConfig(new ConfigData());
-    $context->setTrasientKey('_masterpass', '12345678900');
 
+    $configData = new ConfigData();
+    $configData->setPasswordSalt('fd1058ca0bbaf967d08184ed22ee2c8d5675ca0c9d569c1f237f23fefadf');
+
+    $context->setConfig($configData);
+    $context->setTrasientKey('_masterpass', '12345678900');
 
     $userData = new UserLoginResponse();
     $userData->setId(1);
@@ -103,7 +106,7 @@ function setupContext()
         ->setDbPass('syspass');
 
     // Inicializar la configuración
-    $dic->set(ConfigData::class, $context->getConfig());
+    $dic->set(ConfigData::class, $configData);
 
     // Inicializar los datos de conexión a la BBDD
     $dic->set(DatabaseConnectionData::class, $databaseConnectionData);

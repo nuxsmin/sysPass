@@ -70,7 +70,7 @@ class XmlVerifyService extends Service
 
         $this->setup();
 
-        $this->checkXmlHash($this->xml);
+        self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
 
         return new VerifyResult($this->getXmlVersion(), false, $this->countItemNodes($this->xml));
     }
@@ -111,16 +111,18 @@ class XmlVerifyService extends Service
      *
      * @param DOMDocument $document
      *
+     * @param string      $key
+     *
      * @return void
      * @throws ServiceException
      */
-    private function checkXmlHash(DOMDocument $document)
+    public static function checkXmlHash(DOMDocument $document, string $key)
     {
-        $DOMXPath = new DOMXPath($this->xml);
+        $DOMXPath = new DOMXPath($document);
         $hash = $DOMXPath->query('/Root/Meta/Hash')->item(0)->nodeValue;
         $hmac = $DOMXPath->query('/Root/Meta/Hash/@sign')->item(0)->nodeValue;
 
-        if (!Hash::checkMessage($hash, $this->config->getConfigData()->getConfigHash(), $hmac)
+        if (!Hash::checkMessage($hash, $key, $hmac)
             || $hash !== XmlExportService::generateHashFromNodes($document)
         ) {
             throw new ServiceException(__u('Fallo en la verificación del hash de integridad'));
@@ -169,7 +171,7 @@ class XmlVerifyService extends Service
 
         $this->checkPassword();
 
-        $this->checkXmlHash($this->xml);
+        self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
 
         return new VerifyResult($this->getXmlVersion(), $this->detectEncrypted(), $this->countItemNodes($this->processEncrypted()));
     }

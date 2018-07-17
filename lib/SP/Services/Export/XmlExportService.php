@@ -224,7 +224,7 @@ class XmlExportService extends Service
     private function createCategories()
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process',
+            $this->eventDispatcher->notifyEvent('run.export.process.category',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exportando categorías')))
             );
@@ -336,7 +336,7 @@ class XmlExportService extends Service
     private function createClients()
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process',
+            $this->eventDispatcher->notifyEvent('run.export.process.client',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exportando clientes')))
             );
@@ -382,7 +382,7 @@ class XmlExportService extends Service
     private function createTags()
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process',
+            $this->eventDispatcher->notifyEvent('run.export.process.tag',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exportando etiquetas')))
             );
@@ -426,7 +426,7 @@ class XmlExportService extends Service
     private function createAccounts()
     {
         try {
-            $this->eventDispatcher->notifyEvent('run.export.process',
+            $this->eventDispatcher->notifyEvent('run.export.process.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Exportando cuentas')))
             );
@@ -496,7 +496,7 @@ class XmlExportService extends Service
 
             $hashNode = $this->xml->createElement('Hash', $hash);
             $hashNode->appendChild($this->xml->createAttribute('sign'));
-            $hashNode->setAttribute('sign', Hash::signMessage($hash, $this->configData->getConfigHash()));
+            $hashNode->setAttribute('sign', Hash::signMessage($hash, $this->configData->getPasswordSalt()));
 
             $this->root
                 ->getElementsByTagName('Meta')

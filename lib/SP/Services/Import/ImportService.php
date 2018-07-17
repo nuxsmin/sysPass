@@ -25,10 +25,7 @@
 
 namespace SP\Services\Import;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
 use SP\Services\Service;
-use SP\Storage\Database\Database;
 
 defined('APP_ROOT') || die();
 
@@ -50,8 +47,9 @@ class ImportService extends Service
      * Iniciar la importación de cuentas.
      *
      * @param ImportParams $importParams
-     * @param FileImport $fileImport
-     * @return int
+     * @param FileImport   $fileImport
+     *
+     * @return int Returns the total number of imported items
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -61,47 +59,26 @@ class ImportService extends Service
         $this->importParams = $importParams;
         $this->fileImport = $fileImport;
 
-        $import = $this->selectImportType();
-
-        $db = $this->dic->get(Database::class);
-
-        try {
-            if (!$db->beginTransaction()) {
-                throw new ImportException(__u('No es posible iniciar una transacción'));
-            }
-
-            $counter = $import->doImport()->getCounter();
-
-            if (!$db->endTransaction()) {
-                throw new ImportException(__u('No es posible finalizar una transacción'));
-            }
-
-            return $counter;
-        } catch (\Exception $e) {
-            if ($db->rollbackTransaction()) {
-                $this->eventDispatcher->notifyEvent('run.import.rollback',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Rollback')))
-                );
-
-                debugLog('Rollback');
-            }
-
-            throw $e;
-        }
+        return $this->transactionAware(function () {
+            return $this->selectImportType()
+                ->doImport()
+                ->getCounter();
+        });
     }
 
     /**
      * @return ImportInterface
      * @throws ImportException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\FileException
      */
     protected function selectImportType()
     {
-        switch ($this->fileImport->getFileType()) {
-            case 'text/csv':
-            case 'application/vnd.ms-excel':
+        $fileType = $this->fileImport->getFileType();
+
+        switch ($fileType) {
+            case 'text/plain':
                 return new CsvImport($this->dic, $this->fileImport, $this->importParams);
                 break;
             case 'text/xml':
@@ -110,7 +87,7 @@ class ImportService extends Service
         }
 
         throw new ImportException(
-            sprintf(__('Tipo mime no soportado ("%s")'), $this->fileImport->getFileType()),
+            sprintf(__('Tipo mime no soportado ("%s")'), $fileType),
             ImportException::ERROR,
             __u('Compruebe el formato del archivo')
         );

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -44,38 +44,32 @@ class XmlFileImport
      * XmlFileImport constructor.
      *
      * @param FileImport $fileImport
+     *
+     * @throws ImportException
+     * @throws \SP\Storage\FileException
      */
     public function __construct(FileImport $fileImport)
     {
         $this->fileImport = $fileImport;
+
+        $this->readXMLFile();
     }
 
     /**
      * Detectar la aplicación que generó el XML.
      *
+     * @return string
      * @throws ImportException
      */
     public function detectXMLFormat()
     {
-        $this->readXMLFile();
-
         $nodes = $this->xmlDOM->getElementsByTagName('Generator');
 
-        /** @var \DOMElement[] $nodes */
-        foreach ($nodes as $node) {
-            if ($node->nodeValue === 'KeePass' || $node->nodeValue === 'sysPass') {
-                return strtolower($node->nodeValue);
-            }
-        }
+        if ($nodes->length > 0) {
+            $value = strtolower($nodes->item(0)->nodeValue);
 
-        if ($xmlApp = $this->parseFileHeader()) {
-            switch ($xmlApp) {
-                case 'keepassx_database':
-                    return 'keepassx';
-                case 'revelationdata':
-                    return 'revelation';
-                default:
-                    break;
+            if ($value === 'keepass' || $value === 'syspass') {
+                return $value;
             }
         }
 
@@ -90,13 +84,16 @@ class XmlFileImport
      * Leer el archivo a un objeto XML.
      *
      * @throws ImportException
+     * @throws \SP\Storage\FileException
      */
     protected function readXMLFile()
     {
         // Cargar el XML con DOM
         $this->xmlDOM = new \DOMDocument();
+        $this->xmlDOM->formatOutput = false;
+        $this->xmlDOM->preserveWhiteSpace = false;
 
-        if ($this->xmlDOM->load($this->fileImport->getTmpFile()) === false) {
+        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString()) === false) {
             throw new ImportException(
                 __u('Error interno'),
                 ImportException::ERROR,
@@ -106,11 +103,19 @@ class XmlFileImport
     }
 
     /**
+     * @return \DOMDocument
+     */
+    public function getXmlDOM()
+    {
+        return $this->xmlDOM;
+    }
+
+    /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
      */
     protected function parseFileHeader()
     {
-        if (($handle = @fopen($this->fileImport->getTmpFile(), 'r')) !== false) {
+        if (($handle = @fopen($this->fileImport->getFilePath(), 'r')) !== false) {
             // No. de líneas a leer como máximo
             $maxLines = 5;
             $count = 0;
@@ -127,13 +132,5 @@ class XmlFileImport
         }
 
         return null;
-    }
-
-    /**
-     * @return \DOMDocument
-     */
-    public function getXmlDOM()
-    {
-        return $this->xmlDOM;
     }
 }

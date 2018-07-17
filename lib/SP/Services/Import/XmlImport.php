@@ -70,18 +70,19 @@ class XmlImport implements ImportInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @return ImportInterface
+     * @throws \SP\Storage\FileException
      */
     public function doImport()
     {
         $format = $this->xmlFileImport->detectXMLFormat();
 
-//        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), mb_strtoupper($format)));
         return $this->selectImportType($format)->doImport();
     }
 
     /**
      * @param $format
-     * @return KeepassImport|KeepassXImport|SyspassImport
+     *
+     * @return KeepassImport|SyspassImport
      * @throws ImportException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -93,8 +94,6 @@ class XmlImport implements ImportInterface
                 return new SyspassImport($this->dic, $this->xmlFileImport, $this->importParams);
             case 'keepass':
                 return new KeepassImport($this->dic, $this->xmlFileImport, $this->importParams);
-            case 'keepassx':
-                return new KeepassXImport($this->dic, $this->xmlFileImport, $this->importParams);
         }
 
         throw new ImportException(__u('Formato no detectado'));

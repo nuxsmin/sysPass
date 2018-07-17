@@ -112,7 +112,7 @@ trait ImportTrait
         $accountRequest->userId = $this->importParams->getDefaultUser();
         $accountRequest->userGroupId = $this->importParams->getDefaultGroup();
 
-        if ($this->mPassValidHash === false && $this->importParams->getImportMasterPwd() !== '') {
+        if ($this->mPassValidHash === false && !empty($this->importParams->getImportMasterPwd())) {
             if ($this->version >= 210) {
                 $pass = Crypt::decrypt($accountRequest->pass, $accountRequest->key, $this->importParams->getImportMasterPwd());
             } else {

@@ -59,7 +59,7 @@ class FileHandlerTest extends TestCase
     {
         $handler = new FileHandler(self::$validFile);
         $handler->write('valid_file');
-        $this->assertEquals('valid_file', $handler->readString());
+        $this->assertEquals('valid_file', $handler->readToString());
         $handler->close();
 
         $this->assertFileExists(self::$validFile);
@@ -129,7 +129,7 @@ class FileHandlerTest extends TestCase
         $handler = new FileHandler(self::$validFile);
         $handler->open('rb');
         $this->assertEquals('valid_file', $handler->read());
-        $this->assertEquals('valid_file', $handler->readString());
+        $this->assertEquals('valid_file', $handler->readToString());
     }
 
     /**

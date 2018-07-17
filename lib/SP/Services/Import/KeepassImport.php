@@ -47,17 +47,12 @@ class KeepassImport extends XmlImportBase implements ImportInterface
      */
     public function doImport()
     {
-        $this->eventDispatcher->notifyEvent('run.import.keepass.start',
+        $this->eventDispatcher->notifyEvent('run.import.keepass',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Importación XML KeePass')))
         );
 
         $this->process();
-
-        $this->eventDispatcher->notifyEvent('run.import.keepass.end',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Importación XML KeePass')))
-        );
 
         return $this;
     }
@@ -71,7 +66,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
     {
         $clientId = $this->addClient(new ClientData(null, 'KeePass'));
 
-        $this->eventDispatcher->notifyEvent('run.import.keepass.client',
+        $this->eventDispatcher->notifyEvent('run.import.keepass.process.client',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('Cliente creado'), 'KeePass'))
         );
@@ -80,7 +75,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group));
 
-                $this->eventDispatcher->notifyEvent('run.import.keepass.category',
+                $this->eventDispatcher->notifyEvent('run.import.keepass.process.category',
                     new Event($this, EventMessage::factory()
                         ->addDetail(__u('Categoría importada'), $group))
                 );
@@ -98,10 +93,9 @@ class KeepassImport extends XmlImportBase implements ImportInterface
 
                         $this->addAccount($accountRequest);
 
-                        $this->eventDispatcher->notifyEvent('run.import.keepass.account',
-                            new Event($this,
-                                EventMessage::factory()
-                                    ->addDetail(__u('Cuenta importada'), $accountRequest->name))
+                        $this->eventDispatcher->notifyEvent('run.import.keepass.process.account',
+                            new Event($this, EventMessage::factory()
+                                ->addDetail(__u('Cuenta importada'), $accountRequest->name))
                         );
                     }
                 }
