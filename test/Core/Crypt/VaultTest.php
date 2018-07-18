@@ -1,0 +1,115 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Test\Core\Crypt;
+
+use PHPUnit\Framework\TestCase;
+use SP\Core\Crypt\Vault;
+use SP\Util\Util;
+
+/**
+ * Class VaultTest
+ *
+ * @package SP\Tests
+ */
+class VaultTest extends TestCase
+{
+    /**
+     * @var string
+     */
+    private $key;
+
+    /**
+     * Sets up the fixture, for example, open a network connection.
+     * This method is called before a test is executed.
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    protected function setUp()
+    {
+        $this->key = Util::generateRandomBytes();
+    }
+
+    /**
+     * @covers \SP\Core\Crypt\Vault::saveData()
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    public function testGetData()
+    {
+        $vault = new Vault();
+        $vault->saveData('prueba', $this->key);
+        $this->assertEquals('prueba', $vault->getData($this->key));
+
+        $randomData = Util::generateRandomBytes();
+
+        $vault = new Vault();
+        $vault->saveData($randomData, $this->key);
+        $this->assertEquals($randomData, $vault->getData($this->key));
+    }
+
+
+    /**
+     * @covers \SP\Core\Crypt\Vault::saveData()
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    public function testGetTimeSet()
+    {
+        $vault = new Vault();
+        $vault->saveData('test', $this->key);
+        $this->assertTrue($vault->getTimeSet() !== 0);
+    }
+
+    /**
+     * @covers \SP\Core\Crypt\Vault::saveData()
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    public function testReKey()
+    {
+        $vault = new Vault();
+        $vault->saveData('prueba', $this->key);
+
+        $this->assertEquals('prueba', $vault->getData($this->key));
+
+        $vault->reKey(1234, $this->key);
+
+        $this->assertEquals('prueba', $vault->getData(1234));
+    }
+
+    /**
+     * @covers \SP\Core\Crypt\Vault::saveData()
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    public function testGetTimeUpdated()
+    {
+        $vault = new Vault();
+        $vault->saveData('test', $this->key);
+
+        $this->assertTrue($vault->getTimeUpdated() === 0);
+
+        $vault->reKey(1234, $this->key);
+
+        $this->assertTrue(is_int($vault->getTimeUpdated()));
+        $this->assertTrue($vault->getTimeUpdated() > 0);
+    }
+}
