@@ -24,6 +24,7 @@
 
 namespace SP\Providers\Auth;
 
+use DI\Container;
 use SP\Config\ConfigData;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\Browser\Browser;
@@ -60,6 +61,14 @@ class AuthProvider extends Provider
      * @var ConfigData
      */
     protected $configData;
+    /**
+     * @var Browser
+     */
+    protected $browser;
+    /**
+     * @var Database
+     */
+    protected $database;
 
     /**
      * Probar los métodos de autentificación
@@ -136,7 +145,7 @@ class AuthProvider extends Provider
      */
     public function authDatabase()
     {
-        return $this->dic->get(Database::class)->authenticate($this->userLoginData);
+        return $this->database->authenticate($this->userLoginData);
     }
 
     /**
@@ -146,20 +155,25 @@ class AuthProvider extends Provider
      */
     public function authBrowser()
     {
-        return $this->dic->get(Browser::class)->authenticate($this->userLoginData);
+        return $this->browser->authenticate($this->userLoginData);
     }
 
     /**
      * Auth constructor.
      *
+     * @param Container $dic
+     *
      * @throws AuthException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    protected function initialize()
+    protected function initialize(Container $dic)
     {
         $this->configData = $this->config->getConfigData();
 
         if ($this->configData->isAuthBasicEnabled()) {
             $this->registerAuth('authBrowser');
+            $this->browser = $dic->get(Browser::class);
         }
 
         if ($this->configData->isLdapEnabled()) {
@@ -167,6 +181,7 @@ class AuthProvider extends Provider
         }
 
         $this->registerAuth('authDatabase');
+        $this->database = $dic->get(Database::class);
     }
 
     /**

@@ -24,16 +24,19 @@
 
 namespace SP\Providers\Log;
 
+use DI\Container;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Language;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SplSubject;
 
 /**
  * Class RemoteSyslogHandler
+ *
  * @package SP\Providers\Log
  */
 class RemoteSyslogHandler extends Provider implements EventReceiver
@@ -64,6 +67,8 @@ class RemoteSyslogHandler extends Provider implements EventReceiver
         'show.authToken'
     ];
 
+    const MESSAGE_FORMAT = '%s;%s';
+
     /**
      * @var string
      */
@@ -72,6 +77,10 @@ class RemoteSyslogHandler extends Provider implements EventReceiver
      * @var Logger
      */
     protected $logger;
+    /**
+     * @var Language
+     */
+    protected $language;
 
     /**
      * Inicialización del observador
@@ -85,11 +94,20 @@ class RemoteSyslogHandler extends Provider implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param Event  $event     Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
     {
-        $this->logger->debug($eventType . ';' . $event->getEventMessage()->composeText(';'));
+        $this->language->setAppLocales();
+
+        if (($e = $event->getSource()) instanceof \Exception) {
+            /** @var \Exception $e */
+            $this->logger->error(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
+        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
+            $this->logger->debug(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
+        }
+
+        $this->language->unsetAppLocales();
     }
 
     /**
@@ -114,10 +132,13 @@ class RemoteSyslogHandler extends Provider implements EventReceiver
 
     /**
      * Receive update from subject
-     * @link http://php.net/manual/en/splobserver.update.php
+     *
+     * @link  http://php.net/manual/en/splobserver.update.php
+     *
      * @param SplSubject $subject <p>
-     * The <b>SplSubject</b> notifying the observer of an update.
-     * </p>
+     *                            The <b>SplSubject</b> notifying the observer of an update.
+     *                            </p>
+     *
      * @return void
      * @since 5.1.0
      */
@@ -126,21 +147,29 @@ class RemoteSyslogHandler extends Provider implements EventReceiver
         // TODO: Implement update() method.
     }
 
-    protected function initialize()
+    /**
+     * @param Container $dic
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    protected function initialize(Container $dic)
     {
+        $this->language = $dic->get(Language::class);
+
         $configData = $this->config->getConfigData();
 
-        $this->logger = $this->dic->get(Logger::class)
+        $this->logger = $dic->get(Logger::class)
             ->pushHandler(
-            new SyslogUdpHandler(
-                $configData->getSyslogServer(),
-                $configData->getSyslogPort(),
-                LOG_USER,
-                Logger::DEBUG,
-                true,
-                'syspass'
-            )
-        );
+                new SyslogUdpHandler(
+                    $configData->getSyslogServer(),
+                    $configData->getSyslogPort(),
+                    LOG_USER,
+                    Logger::DEBUG,
+                    true,
+                    'syspass'
+                )
+            );
 
         $configEvents = $configData->getLogEvents();
 

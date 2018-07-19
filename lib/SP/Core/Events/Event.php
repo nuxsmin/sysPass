@@ -68,7 +68,7 @@ class Event
     }
 
     /**
-     * @return EventMessage
+     * @return EventMessage|null
      */
     public function getEventMessage()
     {

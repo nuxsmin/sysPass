@@ -358,6 +358,7 @@ class LoginService extends Service
         // Cargar las variables de ussuario en la sesión
         $this->context->setUserData($userLoginResponse);
         $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
+        $this->context->setLocale($userLoginResponse->getPreferences()->getLang());
 
         if ($this->configData->isDemoEnabled()) {
             $userLoginResponse->setPreferences(new UserPreferencesData());

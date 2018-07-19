@@ -69,7 +69,6 @@ class Language
     private static $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
-        'en' => 'English',
         'en_US' => 'English (US)',
         'en_GB' => 'English (GB)',
         'de_DE' => 'Deutsch',
@@ -212,7 +211,12 @@ class Language
 
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
-        setlocale(LC_ALL, $locales);
+
+        if (!($result = setlocale(LC_ALL, $locales))) {
+            debugLog('Could not set locales');
+            debugLog('Domain path: ' . LOCALES_PATH);
+        }
+
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');

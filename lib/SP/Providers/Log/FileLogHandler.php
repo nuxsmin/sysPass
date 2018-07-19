@@ -25,8 +25,10 @@
 namespace SP\Providers\Log;
 
 
+use DI\Container;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Language;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SplSubject;
@@ -44,10 +46,16 @@ class FileLogHandler extends Provider implements EventReceiver
         'database.'
     ];
 
+    const MESSAGE_FORMAT = '%s;%s';
+
     /**
      * @var string
      */
     protected $events;
+    /**
+     * @var Language
+     */
+    protected $language;
 
     /**
      * Inicialización del observador
@@ -65,11 +73,15 @@ class FileLogHandler extends Provider implements EventReceiver
      */
     public function updateEvent($eventType, Event $event)
     {
+        $this->language->setAppLocales();
+
         if (($e = $event->getSource()) instanceof \Exception) {
-            debugLog($e->getMessage());
+            debugLog(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            debugLog($event->getEventMessage()->composeText(';'));
+            debugLog(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
         }
+
+        $this->language->unsetAppLocales();
     }
 
     /**
@@ -109,8 +121,15 @@ class FileLogHandler extends Provider implements EventReceiver
         // TODO: Implement update() method.
     }
 
-    protected function initialize()
+    /**
+     * @param Container $dic
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    protected function initialize(Container $dic)
     {
+        $this->language = $dic->get(Language::class);
         $this->events = $this->parseEventsToRegex(self::EVENTS);
     }
 }

@@ -24,6 +24,7 @@
 
 namespace SP\Providers\Mail;
 
+use DI\Container;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
@@ -138,10 +139,16 @@ class MailHandler extends Provider implements EventReceiver
         // TODO: Implement update() method.
     }
 
-    protected function initialize()
+    /**
+     * @param Container $dic
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    protected function initialize(Container $dic)
     {
-        $this->mailService = $this->dic->get(MailService::class);
-        $this->request = $this->dic->get(Request::class);
+        $this->mailService = $dic->get(MailService::class);
+        $this->request = $dic->get(Request::class);
 
         $configEvents = $this->config->getConfigData()->getMailEvents();
 

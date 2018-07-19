@@ -54,16 +54,17 @@ abstract class Provider
     /**
      * @var ContainerInterface
      */
-    protected $dic;
+    private $dic;
 
     /**
      * Provider constructor.
      *
      * @param Container $dic
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
-    public function __construct(Container $dic)
+    final public function __construct(Container $dic)
     {
         $this->dic = $dic;
         $this->config = $dic->get(Config::class);
@@ -71,7 +72,7 @@ abstract class Provider
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {
-            $this->initialize();
+            $this->initialize($dic);
         }
     }
 }

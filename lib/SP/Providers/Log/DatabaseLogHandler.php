@@ -24,8 +24,10 @@
 
 namespace SP\Providers\Log;
 
+use DI\Container;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Language;
 use SP\DataModel\EventlogData;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
@@ -73,14 +75,20 @@ class DatabaseLogHandler extends Provider implements EventReceiver
      * @var string
      */
     protected $events;
+    /**
+     * @var Language
+     */
+    protected $language;
 
     /**
      * Receive update from subject
      *
      * @link  http://php.net/manual/en/splobserver.update.php
+     *
      * @param SplSubject $subject <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
      *                            </p>
+     *
      * @return void
      * @since 5.1.0
      */
@@ -101,19 +109,21 @@ class DatabaseLogHandler extends Provider implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param Event  $event     Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
     {
+        $this->language->setAppLocales();
+
         $eventlogData = new EventlogData();
         $eventlogData->setAction($eventType);
-        $eventlogData->setLevel('INFO');
 
         if (($e = $event->getSource()) instanceof \Exception) {
             /** @var \Exception $e */
-            $eventlogData->setDescription(__($e->getMessage()));
             $eventlogData->setLevel('ERROR');
+            $eventlogData->setDescription(__($e->getMessage()));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
+            $eventlogData->setLevel('INFO');
             $eventlogData->setDescription($eventMessage->composeText());
         }
 
@@ -122,6 +132,8 @@ class DatabaseLogHandler extends Provider implements EventReceiver
         } catch (\Exception $e) {
             processException($e);
         }
+
+        $this->language->unsetAppLocales();
     }
 
     /**
@@ -144,9 +156,16 @@ class DatabaseLogHandler extends Provider implements EventReceiver
         return self::EVENTS;
     }
 
-    protected function initialize()
+    /**
+     * @param Container $dic
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    protected function initialize(Container $dic)
     {
-        $this->eventlogService = $this->dic->get(EventlogService::class);
+        $this->language = $dic->get(Language::class);
+        $this->eventlogService = $dic->get(EventlogService::class);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 

@@ -24,6 +24,7 @@
 
 namespace SP\Providers\Mail;
 
+use DI\Container;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Providers\Provider;
 use SP\Util\Util;
@@ -36,6 +37,10 @@ use SP\Util\Util;
 class MailProvider extends Provider
 {
     /**
+     * @var  PHPMailer
+     */
+    protected $mailer;
+    /**
      * @var bool
      */
     private $debug = false;
@@ -44,6 +49,7 @@ class MailProvider extends Provider
      * Inicializar la clase PHPMailer.
      *
      * @param MailParams $mailParams
+     *
      * @return PHPMailer
      * @throws MailProviderException
      */
@@ -52,33 +58,32 @@ class MailProvider extends Provider
         $appName = Util::getAppInfo('appname');
 
         try {
-            $mailer = $this->dic->get(PHPMailer::class);
-            $mailer->SMTPAutoTLS = false;
-            $mailer->isSMTP();
-            $mailer->CharSet = 'utf-8';
-            $mailer->Host = $mailParams->server;
-            $mailer->Port = $mailParams->port;
+            $this->mailer->SMTPAutoTLS = false;
+            $this->mailer->isSMTP();
+            $this->mailer->CharSet = 'utf-8';
+            $this->mailer->Host = $mailParams->server;
+            $this->mailer->Port = $mailParams->port;
 
             if ($mailParams->mailAuthenabled) {
-                $mailer->SMTPAuth = true;
-                $mailer->Username = $mailParams->user;
-                $mailer->Password = $mailParams->pass;
+                $this->mailer->SMTPAuth = true;
+                $this->mailer->Username = $mailParams->user;
+                $this->mailer->Password = $mailParams->pass;
             }
 
-            $mailer->SMTPSecure = strtolower($mailParams->security);
+            $this->mailer->SMTPSecure = strtolower($mailParams->security);
 
             if ($this->debug) {
-                $mailer->SMTPDebug = 2;
-                $mailer->Debugoutput = function ($str, $level) {
+                $this->mailer->SMTPDebug = 2;
+                $this->mailer->Debugoutput = function ($str, $level) {
                     debugLog($str);
                 };
             }
 
-            $mailer->setFrom($mailParams->from, $appName);
-            $mailer->addReplyTo($mailParams->from, $appName);
-            $mailer->WordWrap = 100;
+            $this->mailer->setFrom($mailParams->from, $appName);
+            $this->mailer->addReplyTo($mailParams->from, $appName);
+            $this->mailer->WordWrap = 100;
 
-            return $mailer;
+            return $this->mailer;
         } catch (\Exception $e) {
             processException($e);
 
@@ -106,5 +111,16 @@ class MailProvider extends Provider
     public function setDebug($debug)
     {
         $this->debug = (bool)$debug;
+    }
+
+    /**
+     * @param Container $dic
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    protected function initialize(Container $dic)
+    {
+        $this->mailer = $dic->get(PHPMailer::class);
     }
 }
