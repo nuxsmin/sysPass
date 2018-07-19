@@ -70,7 +70,6 @@ class XmlImport implements ImportInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @return ImportInterface
-     * @throws \SP\Storage\FileException
      */
     public function doImport()
     {

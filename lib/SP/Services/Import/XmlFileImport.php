@@ -56,6 +56,34 @@ class XmlFileImport
     }
 
     /**
+     * Leer el archivo a un objeto XML.
+     *
+     * @throws ImportException
+     * @throws \SP\Storage\FileException
+     */
+    protected function readXMLFile()
+    {
+        libxml_use_internal_errors(true);
+
+        // Cargar el XML con DOM
+        $this->xmlDOM = new \DOMDocument();
+        $this->xmlDOM->formatOutput = false;
+        $this->xmlDOM->preserveWhiteSpace = false;
+
+        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString()) === false) {
+            foreach (libxml_get_errors() as $error) {
+                debugLog(__METHOD__ . ' - ' . $error->message);
+            }
+
+            throw new ImportException(
+                __u('Error interno'),
+                ImportException::ERROR,
+                __u('No es posible procesar el archivo XML')
+            );
+        }
+    }
+
+    /**
      * Detectar la aplicación que generó el XML.
      *
      * @return string
@@ -78,28 +106,6 @@ class XmlFileImport
             ImportException::ERROR,
             __u('No es posible detectar la aplicación que exportó los datos')
         );
-    }
-
-    /**
-     * Leer el archivo a un objeto XML.
-     *
-     * @throws ImportException
-     * @throws \SP\Storage\FileException
-     */
-    protected function readXMLFile()
-    {
-        // Cargar el XML con DOM
-        $this->xmlDOM = new \DOMDocument();
-        $this->xmlDOM->formatOutput = false;
-        $this->xmlDOM->preserveWhiteSpace = false;
-
-        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString()) === false) {
-            throw new ImportException(
-                __u('Error interno'),
-                ImportException::ERROR,
-                __u('No es posible procesar el archivo XML')
-            );
-        }
     }
 
     /**

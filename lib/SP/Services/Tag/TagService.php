@@ -71,6 +71,18 @@ class TagService extends Service
     }
 
     /**
+     * @param string $name
+     *
+     * @return TagData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function getByName($name)
+    {
+        return $this->tagRepository->getByName($name)->getData();
+    }
+
+    /**
      * @param $id
      *
      * @return $this
@@ -106,7 +118,9 @@ class TagService extends Service
      * @param $itemData
      *
      * @return int
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\DuplicatedItemException
      */
     public function create($itemData)
     {

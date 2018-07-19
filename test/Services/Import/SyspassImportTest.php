@@ -81,7 +81,7 @@ class SyspassImportTest extends DatabaseTestCase
 
         $params = new ImportParams();
         $params->setDefaultUser(1);
-        $params->setDefaultGroup(1);
+        $params->setDefaultGroup(2);
 
         $import = new SyspassImport(self::$dic, new XmlFileImport(FileImport::fromFilesystem($file)), $params);
         $import->doImport();
@@ -113,11 +113,68 @@ class SyspassImportTest extends DatabaseTestCase
         $accountService = self::$dic->get(AccountService::class);
 
         // 1st account
-        $data = $accountService->getById(5)->getAccountVData();
+        $result = $accountService->getById(3);
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(3, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(2, $data->getUserGroupId());
+        $this->assertEquals('Google', $data->getName());
+        $this->assertEquals('Google', $data->getClientName());
+        $this->assertEquals('Web', $data->getCategoryName());
+        $this->assertEquals('https://google.com', $data->getUrl());
+        $this->assertEmpty($data->getNotes());
+        $this->assertEquals('admin', $data->getLogin());
+
+        $accountService->withTagsById($result);
+
+        $expectedTags = [7, 8, 9];
+        $i = 0;
+
+        foreach ($result->getTags() as $tag) {
+            $this->assertEquals($expectedTags[$i], $tag->getId());
+            $i++;
+        }
+
+        $pass = $accountService->getPasswordForId($data->getId());
+
+        $this->assertEquals('-{?^··\mjC<c', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
+
+        // 1st account
+        $result = $accountService->getById(4);
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(4, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(2, $data->getUserGroupId());
+        $this->assertEquals('Google', $data->getName());
+        $this->assertEquals('Google', $data->getClientName());
+        $this->assertEquals('Web', $data->getCategoryName());
+        $this->assertEquals('https://google.com', $data->getUrl());
+        $this->assertEquals('blablacar', $data->getNotes());
+        $this->assertEquals('admin', $data->getLogin());
+
+        $accountService->withTagsById($result);
+
+        $expectedTags = [8, 9, 1];
+        $i = 0;
+
+        foreach ($result->getTags() as $tag) {
+            $this->assertEquals($expectedTags[$i], $tag->getId());
+            $i++;
+        }
+
+        $pass = $accountService->getPasswordForId($data->getId());
+
+        $this->assertEquals('\'ynHRMJy-fRa', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
+
+        // 1st account
+        $result = $accountService->getById(5);
+        $data = $result->getAccountVData();
 
         $this->assertEquals(5, $data->getId());
         $this->assertEquals(1, $data->getUserId());
-        $this->assertEquals(1, $data->getUserGroupId());
+        $this->assertEquals(2, $data->getUserGroupId());
         $this->assertEquals('Test CSV 1', $data->getName());
         $this->assertEquals('CSV Client 1', $data->getClientName());
         $this->assertEquals('CSV Category 1', $data->getCategoryName());
@@ -130,12 +187,12 @@ class SyspassImportTest extends DatabaseTestCase
         $this->assertEquals('csv_pass1', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         // 2nd account
-
-        $data = $accountService->getById(6)->getAccountVData();
+        $result = $accountService->getById(6);
+        $data = $result->getAccountVData();
 
         $this->assertEquals(6, $data->getId());
         $this->assertEquals(1, $data->getUserId());
-        $this->assertEquals(1, $data->getUserGroupId());
+        $this->assertEquals(2, $data->getUserGroupId());
         $this->assertEquals('Test CSV 2', $data->getName());
         $this->assertEquals('Google', $data->getClientName());
         $this->assertEquals('Linux', $data->getCategoryName());
@@ -148,11 +205,12 @@ class SyspassImportTest extends DatabaseTestCase
         $this->assertEquals('csv_pass2', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         // 3rd account
-        $data = $accountService->getById(7)->getAccountVData();
+        $result = $accountService->getById(7);
+        $data = $result->getAccountVData();
 
         $this->assertEquals(7, $data->getId());
         $this->assertEquals(1, $data->getUserId());
-        $this->assertEquals(1, $data->getUserGroupId());
+        $this->assertEquals(2, $data->getUserGroupId());
         $this->assertEquals('Test CSV 3', $data->getName());
         $this->assertEquals('Apple', $data->getClientName());
         $this->assertEquals('SSH', $data->getCategoryName());

@@ -92,12 +92,18 @@ class XmlVerifyService extends Service
      */
     protected function readXmlFile()
     {
+        libxml_use_internal_errors(true);
+
         // Cargar el XML con DOM
         $this->xml = new DOMDocument();
         $this->xml->formatOutput = false;
         $this->xml->preserveWhiteSpace = false;
 
         if ($this->xml->loadXML((new FileHandler($this->xmlFile))->read()) === false) {
+            foreach (libxml_get_errors() as $error) {
+                debugLog(__METHOD__ . ' - ' . $error->message);
+            }
+            
             throw new ServiceException(
                 __u('Error interno'),
                 ServiceException::ERROR,

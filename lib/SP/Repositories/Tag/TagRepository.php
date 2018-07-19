@@ -162,6 +162,25 @@ class TagRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
+     * Returns the item for given id
+     *
+     * @param string $name
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByName($name)
+    {
+        $queryData = new QueryData();
+        $queryData->setMapClassName(TagData::class);
+        $queryData->setQuery('SELECT id, `name` FROM Tag WHERE `hash` = ? OR `name` = ? ORDER BY  `name` LIMIT 1');
+        $queryData->setParams([$this->makeItemHash($name, $this->db->getDbHandler()), $name]);
+
+        return $this->db->doSelect($queryData);
+    }
+
+    /**
      * Returns all the items
      *
      * @return TagData[]

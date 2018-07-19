@@ -93,6 +93,7 @@ trait ImportTrait
      * Añadir una cuenta desde un archivo importado.
      *
      * @param AccountRequest $accountRequest
+     *
      * @throws ImportException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -132,6 +133,7 @@ trait ImportTrait
      * Añadir una categoría y devolver el Id
      *
      * @param CategoryData $categoryData
+     *
      * @return int
      * @throws SPException
      * @throws DuplicatedItemException
@@ -158,6 +160,7 @@ trait ImportTrait
     /**
      * @param string $type
      * @param string $value
+     *
      * @return int|null
      */
     protected function getWorkingItem($type, $value)
@@ -173,6 +176,7 @@ trait ImportTrait
      * @param string $type
      * @param string $value
      * @param int    $id
+     *
      * @return int|bool
      */
     protected function addWorkingItem($type, $value, $id)
@@ -218,11 +222,26 @@ trait ImportTrait
      * Añadir una etiqueta y devolver el Id
      *
      * @param TagData $tagData
+     *
      * @return int
      * @throws SPException
      */
     protected function addTag(TagData $tagData)
     {
-        return $this->tagService->create($tagData);
+        try {
+            if ($tagId = $this->getWorkingItem('tag', $tagData->getName()) === null) {
+                return $this->tagService->create($tagData);
+            }
+
+            return $tagId;
+        } catch (DuplicatedItemException $e) {
+            $itemData = $this->tagService->getByName($tagData->getName());
+
+            if (empty($itemData)) {
+                throw $e;
+            }
+
+            return $this->addWorkingItem('tag', $itemData->getName(), $itemData->getId());
+        }
     }
 }

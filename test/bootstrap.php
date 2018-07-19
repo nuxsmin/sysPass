@@ -42,6 +42,7 @@ define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
+define('LOG_FILE', TMP_DIR . DIRECTORY_SEPARATOR . 'test.log');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
