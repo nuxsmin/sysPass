@@ -95,7 +95,9 @@ class MySQL implements DatabaseSetupInterface
             throw new SPException(
                 __u('No es posible conectar con la BD'),
                 SPException::ERROR,
-                __('Compruebe los datos de conexión') . '<br>' . $e->getHint()
+                __('Compruebe los datos de conexión') . '<br>' . $e->getHint(),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -105,8 +107,6 @@ class MySQL implements DatabaseSetupInterface
      */
     public function setupDbUser()
     {
-        debugLog(__METHOD__);
-
         $user = substr(uniqid('sp_'), 0, 16);
         $pass = Util::randomPassword();
 
@@ -126,7 +126,9 @@ class MySQL implements DatabaseSetupInterface
             throw new SPException(
                 sprintf(__('No es posible comprobar el usuario de sysPass (%s)'), $user),
                 SPException::CRITICAL,
-                __u('Compruebe los permisos del usuario de conexión a la BD')
+                __u('Compruebe los permisos del usuario de conexión a la BD'),
+                $e->getCode(),
+                $e
             );
         }
 
@@ -162,7 +164,10 @@ class MySQL implements DatabaseSetupInterface
 
             throw new SPException(
                 sprintf(__u('Error al crear el usuario de conexión a MySQL \'%s\''), $user),
-                SPException::CRITICAL, $e->getMessage()
+                SPException::CRITICAL,
+                $e->getMessage(),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -192,7 +197,10 @@ class MySQL implements DatabaseSetupInterface
                 throw new SPException(
                     sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
-                    __u('Verifique los permisos del usuario de la Base de Datos'));
+                    __u('Verifique los permisos del usuario de la Base de Datos'),
+                    $e->getCode(),
+                    $e
+                );
             }
 
             $query = /** @lang SQL */
@@ -215,7 +223,9 @@ class MySQL implements DatabaseSetupInterface
                 throw new SPException(
                     sprintf(__('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
-                    __u('Verifique los permisos del usuario de la Base de Datos')
+                    __u('Verifique los permisos del usuario de la Base de Datos'),
+                    $e->getCode(),
+                    $e
                 );
             }
         } else {
@@ -227,7 +237,9 @@ class MySQL implements DatabaseSetupInterface
                 throw new SPException(
                     __u('La BBDD no existe'),
                     SPException::ERROR,
-                    __u('Es necesario crearla y asignar los permisos necesarios')
+                    __u('Es necesario crearla y asignar los permisos necesarios'),
+                    $e->getCode(),
+                    $e
                 );
             }
         }
@@ -291,7 +303,9 @@ class MySQL implements DatabaseSetupInterface
             throw new SPException(
                 sprintf(__('Error al seleccionar la BBDD') . ' \'%s\' (%s)', $this->installData->getDbName(), $e->getMessage()),
                 SPException::CRITICAL,
-                __u('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.')
+                __u('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'),
+                $e->getCode(),
+                $e
             );
         }
 
@@ -310,7 +324,9 @@ class MySQL implements DatabaseSetupInterface
                 throw new SPException(
                     sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
-                    __u('Error al crear la estructura de la Base de Datos.')
+                    __u('Error al crear la estructura de la Base de Datos.'),
+                    $e->getCode(),
+                    $e
                 );
             }
         }

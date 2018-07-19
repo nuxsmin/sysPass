@@ -35,7 +35,8 @@ use SP\Storage\Database\DatabaseConnectionData;
 define('APP_MODULE', 'tests');
 
 define('APP_ROOT', dirname(__DIR__));
-define('TEST_ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'test');
+define('TEST_ROOT', APP_ROOT . DIRECTORY_SEPARATOR . 'test');
+define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
 define('TMP_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
@@ -43,9 +44,13 @@ define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
 define('LOG_FILE', TMP_DIR . DIRECTORY_SEPARATOR . 'test.log');
+define('SELF_IP_ADDRESS', '172.17.0.4');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+
+// Delete tmp dir ...
+array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*'));
 
 /**
  * Función para llamadas a gettext

@@ -27,13 +27,13 @@ namespace SP\Services\Install;
 
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Hash;
-use SP\Core\Dic;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
+use SP\Http\Request;
 use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Services\User\UserService;
@@ -49,14 +49,12 @@ defined('APP_ROOT') || die();
  */
 class Installer extends Service
 {
-    use Dic\InjectableTrait;
-
     /**
      * Versión y número de compilación de sysPass
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18071701;
+    const BUILD = 18071902;
 
     /**
      * @var ConfigService
@@ -66,6 +64,10 @@ class Installer extends Service
      * @var DatabaseSetupInterface
      */
     protected $dbs;
+    /**
+     * @var Request
+     */
+    private $request;
     /**
      * @var InstallData
      */
@@ -77,6 +79,7 @@ class Installer extends Service
 
     /**
      * @param InstallData $installData
+     *
      * @return static
      * @throws InvalidArgumentException
      * @throws SPException
@@ -99,21 +102,21 @@ class Installer extends Service
      */
     private function checkData()
     {
-        if (!$this->installData->getAdminLogin()) {
+        if (empty($this->installData->getAdminLogin())) {
             throw new InvalidArgumentException(
                 __u('Indicar nombre de usuario admin'),
                 SPException::ERROR,
                 __u('Usuario admin para acceso a la aplicación'));
         }
 
-        if (!$this->installData->getAdminPass()) {
+        if (empty($this->installData->getAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Indicar la clave de admin'),
                 SPException::ERROR,
                 __u('Clave del usuario admin de la aplicación'));
         }
 
-        if (!$this->installData->getMasterPassword()) {
+        if (empty($this->installData->getMasterPassword())) {
             throw new InvalidArgumentException(
                 __u('Indicar la clave maestra'),
                 SPException::ERROR,
@@ -127,21 +130,21 @@ class Installer extends Service
                 __u('La longitud de la clave maestra ha de ser mayor de 11 caracteres'));
         }
 
-        if (!$this->installData->getDbAdminUser()) {
+        if (empty($this->installData->getDbAdminUser())) {
             throw new InvalidArgumentException(
                 __u('Indicar el usuario de la BBDD'),
                 SPException::CRITICAL,
                 __u('Usuario con permisos de administrador de la Base de Datos'));
         }
 
-        if (!$this->installData->getDbAdminPass()) {
+        if (empty($this->installData->getDbAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Indicar la clave de la BBDD'),
                 SPException::ERROR,
                 __u('Clave del usuario administrador de la Base de Datos'));
         }
 
-        if (!$this->installData->getDbName()) {
+        if (empty($this->installData->getDbName())) {
             throw new InvalidArgumentException(
                 __u('Indicar el nombre de la BBDD'),
                 SPException::ERROR,
@@ -155,7 +158,7 @@ class Installer extends Service
                 __u('Elimine los puntos del nombre de la Base de Datos'));
         }
 
-        if (!$this->installData->getDbHost()) {
+        if (empty($this->installData->getDbHost())) {
             throw new InvalidArgumentException(
                 __u('Indicar el servidor de la BBDD'),
                 SPException::ERROR,
@@ -211,8 +214,14 @@ class Installer extends Service
         if (strpos('localhost', $this->installData->getDbHost()) === false
             && strpos('127.0.0.1', $this->installData->getDbHost()) === false
         ) {
-            $this->installData->setDbAuthHost($_SERVER['SERVER_ADDR']);
-            $this->installData->setDbAuthHostDns(gethostbyaddr($_SERVER['SERVER_ADDR']));
+            if (APP_MODULE === 'tests') {
+                $address = SELF_IP_ADDRESS;
+            } else {
+                $address = $this->request->getServer('SERVER_ADDR');
+            }
+
+            $this->installData->setDbAuthHost($address);
+            $this->installData->setDbAuthHostDns(gethostbyaddr($address));
         } else {
             $this->installData->setDbAuthHost('localhost');
         }
@@ -247,6 +256,7 @@ class Installer extends Service
 
     /**
      * @param string $type
+     *
      * @throws SPException
      */
     private function setupDb($type = 'mysql')
@@ -299,7 +309,9 @@ class Installer extends Service
             throw new SPException(
                 $e->getMessage(),
                 SPException::CRITICAL,
-                __u('Informe al desarrollador')
+                __u('Informe al desarrollador'),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -335,9 +347,11 @@ class Installer extends Service
             $userData->setName('sysPass Admin');
             $userData->setIsAdminApp(1);
 
-            $userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
+            $id = $userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
 
-//                    __u('Error al actualizar la clave maestra del usuario "admin"'),
+            if ($id === 0) {
+                throw new SPException(__u('Error al crear el usuario \'admin\''));
+            }
         } catch (\Exception $e) {
             processException($e);
 
@@ -346,7 +360,9 @@ class Installer extends Service
             throw new SPException(
                 $e->getMessage(),
                 SPException::CRITICAL,
-                __u('Informe al desarrollador')
+                __u('Informe al desarrollador'),
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -358,5 +374,6 @@ class Installer extends Service
     {
         $this->configData = $this->config->getConfigData();
         $this->configService = $this->dic->get(ConfigService::class);
+        $this->request = $this->dic->get(Request::class);
     }
 }

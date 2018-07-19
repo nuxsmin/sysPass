@@ -505,4 +505,14 @@ class Request
     {
         return $this->request;
     }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    public function getServer(string $key): string
+    {
+        return $this->request->server()->get($key, '');
+    }
 }
