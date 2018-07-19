@@ -190,9 +190,10 @@ trait ImportTrait
      * Añadir un cliente y devolver el Id
      *
      * @param ClientData $clientData
+     *
      * @return int
-     * @throws SPException
      * @throws DuplicatedItemException
+     * @throws SPException
      */
     protected function addClient(ClientData $clientData)
     {

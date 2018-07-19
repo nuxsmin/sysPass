@@ -116,6 +116,8 @@ class SyspassImportTest extends DatabaseTestCase
         $data = $accountService->getById(5)->getAccountVData();
 
         $this->assertEquals(5, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(1, $data->getUserGroupId());
         $this->assertEquals('Test CSV 1', $data->getName());
         $this->assertEquals('CSV Client 1', $data->getClientName());
         $this->assertEquals('CSV Category 1', $data->getCategoryName());
@@ -132,6 +134,8 @@ class SyspassImportTest extends DatabaseTestCase
         $data = $accountService->getById(6)->getAccountVData();
 
         $this->assertEquals(6, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(1, $data->getUserGroupId());
         $this->assertEquals('Test CSV 2', $data->getName());
         $this->assertEquals('Google', $data->getClientName());
         $this->assertEquals('Linux', $data->getCategoryName());
@@ -147,6 +151,8 @@ class SyspassImportTest extends DatabaseTestCase
         $data = $accountService->getById(7)->getAccountVData();
 
         $this->assertEquals(7, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(1, $data->getUserGroupId());
         $this->assertEquals('Test CSV 3', $data->getName());
         $this->assertEquals('Apple', $data->getClientName());
         $this->assertEquals('SSH', $data->getCategoryName());
