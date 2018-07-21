@@ -26,6 +26,7 @@ namespace SP\Services\Notification;
 
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Notification\NotificationRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -91,14 +92,14 @@ class NotificationService extends Service
      * @param $id
      *
      * @return NotificationService
-     * @throws ServiceException
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
         if ($this->notificationRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Notificación no encontrada'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Notificación no encontrada'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -110,14 +111,14 @@ class NotificationService extends Service
      * @param $id
      *
      * @return NotificationService
-     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function deleteAdmin($id)
     {
         if ($this->notificationRepository->deleteAdmin($id) === 0) {
-            throw new ServiceException(__u('Notificación no encontrada'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Notificación no encontrada'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -169,10 +170,17 @@ class NotificationService extends Service
      * @return NotificationData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
-        return $this->notificationRepository->getById($id)->getData();
+        $result = $this->notificationRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Notificación no encontrada'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -192,13 +200,15 @@ class NotificationService extends Service
      *
      * @param $id
      *
-     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function setCheckedById($id)
     {
-        return $this->notificationRepository->setCheckedById($id);
+        if ($this->notificationRepository->setCheckedById($id) === 0) {
+            throw new NoSuchItemException(__u('Notificación no encontrada'), NoSuchItemException::INFO);
+        }
     }
 
     /**

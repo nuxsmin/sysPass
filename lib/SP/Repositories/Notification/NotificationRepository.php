@@ -486,7 +486,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             sticky,
             onlyAdmin 
             FROM Notification 
-            WHERE (userId = ? OR userId IS NULL OR sticky = 1)
+            WHERE (userId = ? OR (userId IS NULL AND sticky = 1))
             AND onlyAdmin = 0 
             ORDER BY `date` DESC ';
 
