@@ -31,10 +31,11 @@ use SP\Core\Exceptions\SPException;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\DBUtil;
 use SP\Storage\Database\MySQLHandler;
 use function SP\Test\setupContext;
+
+require_once 'DbTestUtilTrait.php';
 
 /**
  * Class InstallerTest
@@ -43,6 +44,8 @@ use function SP\Test\setupContext;
  */
 class InstallerTest extends TestCase
 {
+    use DbTestUtilTrait;
+
     const DB_NAME = 'syspass_test';
 
     /**
@@ -96,43 +99,6 @@ class InstallerTest extends TestCase
         $this->dropDatabase(self::DB_NAME);
         $this->dropUser($configData->getDbUser(), SELF_IP_ADDRESS);
         $this->dropUser($configData->getDbUser(), SELF_HOSTNAME);
-    }
-
-    /**
-     * @param $database
-     *
-     * @throws \SP\Storage\Database\DatabaseException
-     */
-    private function dropDatabase($database)
-    {
-        $this->getConnection()
-            ->query(sprintf('DROP DATABASE `%s`', $database));
-    }
-
-    /**
-     * @return \PDO
-     * @throws \SP\Storage\Database\DatabaseException
-     */
-    private function getConnection()
-    {
-        $data = (new DatabaseConnectionData())
-            ->setDbHost('syspass-db')
-            ->setDbUser('root')
-            ->setDbPass('syspass');
-
-        return (new MySQLHandler($data))->getConnectionSimple();
-    }
-
-    /**
-     * @param $user
-     * @param $host
-     *
-     * @throws \SP\Storage\Database\DatabaseException
-     */
-    private function dropUser($user, $host)
-    {
-        $this->getConnection()
-            ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
     }
 
     /**
@@ -310,30 +276,6 @@ class InstallerTest extends TestCase
 
         $this->dropDatabase(self::DB_NAME);
         $this->dropUser('syspass_user', SELF_IP_ADDRESS);
-    }
-
-    /**
-     * @param $database
-     *
-     * @throws \SP\Storage\Database\DatabaseException
-     */
-    private function createDatabase($database)
-    {
-        $this->getConnection()
-            ->query(sprintf('CREATE DATABASE `%s`', $database));
-    }
-
-    /**
-     * @param $user
-     * @param $pass
-     * @param $database
-     *
-     * @throws \SP\Storage\Database\DatabaseException
-     */
-    private function createUser($user, $pass, $database)
-    {
-        $this->getConnection()
-            ->query(sprintf('GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'', $database, $user, SELF_IP_ADDRESS, $pass));
     }
 
     protected function tearDown()

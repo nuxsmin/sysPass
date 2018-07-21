@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -70,6 +70,7 @@ class DBUtil
      *
      * @param string             $str string con la cadena a escapar
      * @param DBStorageInterface $DBStorage
+     *
      * @return string con la cadena escapada
      */
     public static function escape($str, DBStorageInterface $DBStorage)
@@ -87,6 +88,7 @@ class DBUtil
      * Obtener la información del servidor de base de datos
      *
      * @param DBStorageInterface $DBStorage
+     *
      * @return array
      */
     public static function getDBinfo(DBStorageInterface $DBStorage)
@@ -120,24 +122,25 @@ class DBUtil
      *
      * @param DBStorageInterface $DBStorage
      * @param string             $dbName
+     *
      * @return bool
      */
     public static function checkDatabaseExist(DBStorageInterface $DBStorage, $dbName)
     {
         try {
-            $tables = array_map(function ($value) {
+            $tables = implode(',', array_map(function ($value) {
                 return '\'' . $value . '\'';
-            }, self::$tables);
+            }, self::$tables));
 
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
                 WHERE table_schema = \'' . $dbName . '\'
-                AND `table_name` IN (' . implode(',', $tables) . ')';
+                AND `table_name` IN (' . $tables . ')';
 
-            $numTables = $DBStorage->getConnection()->query($query)->fetchColumn();
+            $numTables = (int)$DBStorage->getConnection()->query($query)->fetchColumn();
 
-            return (int)$numTables === count(self::$tables);
+            return $numTables === count(self::$tables);
         } catch (\Exception $e) {
             processException($e);
         }
