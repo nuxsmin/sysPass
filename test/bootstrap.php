@@ -44,7 +44,8 @@ define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
 define('LOG_FILE', TMP_DIR . DIRECTORY_SEPARATOR . 'test.log');
-define('SELF_IP_ADDRESS', '172.17.0.4');
+define('SELF_IP_ADDRESS', getRealIpAddress());
+define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
@@ -65,6 +66,14 @@ if (!function_exists('\gettext')) {
     {
         return $str;
     }
+}
+
+/**
+ * @return string
+ */
+function getRealIpAddress()
+{
+    return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1'));
 }
 
 /**

@@ -26,10 +26,13 @@ namespace SP\Tests\Services\Install;
 
 use DI\Container;
 use PHPUnit\Framework\TestCase;
+use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
+use SP\Services\Crypt\MasterPassService;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DBUtil;
 use SP\Storage\Database\MySQLHandler;
 use function SP\Test\setupContext;
 
@@ -40,6 +43,8 @@ use function SP\Test\setupContext;
  */
 class InstallerTest extends TestCase
 {
+    const DB_NAME = 'syspass_test';
+
     /**
      * @var Container
      */
@@ -67,41 +72,67 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('root');
         $params->setDbAdminPass('syspass');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('syspass-db');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
         $installer->run($params);
 
-        $dbData = self::$dic->get(DatabaseConnectionData::class);
+        $configData = self::$dic->get(Config::class)->getConfigData();
 
-        $this->assertEquals($params->getDbName(), $dbData->getDbName());
-        $this->assertEquals($params->getDbHost(), $dbData->getDbHost());
-        $this->assertEquals(3306, $dbData->getDbPort());
-        $this->assertTrue(preg_match('/sp_\w+/', $dbData->getDbUser()) === 1);
-        $this->assertNotEmpty($dbData->getDbPass());
+        $this->assertEquals($params->getDbName(), $configData->getDbName());
+        $this->assertEquals($params->getDbHost(), $configData->getDbHost());
+        $this->assertEquals(3306, $configData->getDbPort());
+        $this->assertTrue(preg_match('/sp_\w+/', $configData->getDbUser()) === 1);
+        $this->assertNotEmpty($configData->getDbPass());
+        $this->assertEquals($params->getSiteLang(), $configData->getSiteLang());
 
-        $this->dropDatabase();
+        $this->assertTrue(self::$dic->get(MasterPassService::class)->checkMasterPassword($params->getMasterPassword()));
+
+        $this->dropDatabase(self::DB_NAME);
+        $this->dropUser($configData->getDbUser(), SELF_IP_ADDRESS);
+        $this->dropUser($configData->getDbUser(), SELF_HOSTNAME);
     }
 
     /**
+     * @param $database
+     *
      * @throws \SP\Storage\Database\DatabaseException
      */
-    private function dropDatabase()
+    private function dropDatabase($database)
     {
-        $data = new DatabaseConnectionData();
-        $data->setDbHost('syspass-db');
-        $data->setDbUser('root');
-        $data->setDbPass('syspass');
+        $this->getConnection()
+            ->query(sprintf('DROP DATABASE `%s`', $database));
+    }
 
-        $mysql = new MySQLHandler($data);
-        $mysql->getConnectionSimple()
-            ->query('DROP DATABASE syspass_test');
+    /**
+     * @return \PDO
+     * @throws \SP\Storage\Database\DatabaseException
+     */
+    private function getConnection()
+    {
+        $data = (new DatabaseConnectionData())
+            ->setDbHost('syspass-db')
+            ->setDbUser('root')
+            ->setDbPass('syspass');
+
+        return (new MySQLHandler($data))->getConnectionSimple();
+    }
+
+    /**
+     * @param $user
+     * @param $host
+     *
+     * @throws \SP\Storage\Database\DatabaseException
+     */
+    private function dropUser($user, $host)
+    {
+        $this->getConnection()
+            ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
     }
 
     /**
@@ -116,13 +147,12 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('root');
         $params->setDbAdminPass('syspass');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('fail');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
 
@@ -144,13 +174,12 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('root');
         $params->setDbAdminPass('syspass');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('192.168.0.1');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
 
@@ -172,13 +201,12 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('root');
         $params->setDbAdminPass('syspass');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('syspass-db:3307');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
 
@@ -200,13 +228,12 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('toor');
         $params->setDbAdminPass('syspass');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('syspass-db');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
 
@@ -228,13 +255,12 @@ class InstallerTest extends TestCase
         $params = new InstallData();
         $params->setDbAdminUser('root');
         $params->setDbAdminPass('test');
-        $params->setDbName('syspass_test');
+        $params->setDbName(self::DB_NAME);
         $params->setDbHost('syspass-db');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
         $params->setSiteLang('en_US');
-        $params->setHostingMode(false);
 
         $installer = self::$dic->get(Installer::class);
 
@@ -242,6 +268,72 @@ class InstallerTest extends TestCase
         $this->expectExceptionCode(1045);
 
         $installer->run($params);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testHostingMode()
+    {
+        $this->createDatabase(self::DB_NAME);
+        $this->createUser('syspass_user', '123456', self::DB_NAME);
+
+        $params = new InstallData();
+        $params->setDbAdminUser('syspass_user');
+        $params->setDbAdminPass('123456');
+        $params->setDbName(self::DB_NAME);
+        $params->setDbHost('syspass-db');
+        $params->setAdminLogin('admin');
+        $params->setAdminPass('syspass_admin');
+        $params->setMasterPassword('00123456789');
+        $params->setSiteLang('en_US');
+        $params->setHostingMode(true);
+
+        $installer = self::$dic->get(Installer::class);
+        $installer->run($params);
+
+        $this->assertTrue(DBUtil::checkDatabaseExist(self::$dic->get(MySQLHandler::class), self::DB_NAME));
+
+        $configData = self::$dic->get(Config::class)->getConfigData();
+
+        $this->assertEquals($params->getDbName(), $configData->getDbName());
+        $this->assertEquals($params->getDbHost(), $configData->getDbHost());
+        $this->assertEquals(3306, $configData->getDbPort());
+        $this->assertNotEmpty($configData->getDbPass());
+        $this->assertEquals($params->getSiteLang(), $configData->getSiteLang());
+
+        $this->assertTrue(self::$dic->get(MasterPassService::class)->checkMasterPassword($params->getMasterPassword()));
+
+        $this->dropDatabase(self::DB_NAME);
+        $this->dropUser('syspass_user', SELF_IP_ADDRESS);
+    }
+
+    /**
+     * @param $database
+     *
+     * @throws \SP\Storage\Database\DatabaseException
+     */
+    private function createDatabase($database)
+    {
+        $this->getConnection()
+            ->query(sprintf('CREATE DATABASE `%s`', $database));
+    }
+
+    /**
+     * @param $user
+     * @param $pass
+     * @param $database
+     *
+     * @throws \SP\Storage\Database\DatabaseException
+     */
+    private function createUser($user, $pass, $database)
+    {
+        $this->getConnection()
+            ->query(sprintf('GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'', $database, $user, SELF_IP_ADDRESS, $pass));
     }
 
     protected function tearDown()
