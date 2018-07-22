@@ -29,9 +29,9 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Config\ConfigService;
 use SP\Services\Service;
@@ -94,13 +94,13 @@ class UserPassService extends Service
      * Comprueba la clave maestra del usuario.
      *
      * @param UserLoginData $userLoginData
-     * @param string        $key Clave de cifrado
+     * @param string        $userPass Clave de cifrado
      *
      * @return UserPassResponse
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public function loadUserMPass(UserLoginData $userLoginData, $key = null)
+    public function loadUserMPass(UserLoginData $userLoginData, $userPass = null)
     {
         $userLoginResponse = $userLoginData->getUserLoginResponse();
 
@@ -117,23 +117,22 @@ class UserPassService extends Service
             return new UserPassResponse(self::MPASS_CHANGED);
         }
 
-        // FIXME
 //        if ($userLoginResponse->getIsMigrate() === 1) {
-//            return UpgradeUser::upgradeMasterKey($userLoginData, $this) ? new UserPassResponse(self::MPASS_OK) : new UserPassResponse(self::MPASS_WRONG);
+//            $key = $this->makeKeyForUserOld($userLoginData->getLoginUser(), $userPass ?: $userLoginData->getLoginPass());
 //        }
 
-        if ($key === null && $userLoginResponse->getIsChangedPass() === 1) {
+        if ($userPass === null && $userLoginResponse->getIsChangedPass() === 1) {
             return new UserPassResponse(self::MPASS_CHECKOLD);
         }
 
         try {
-            $key = self::makeKeyForUser($userLoginData->getLoginUser(), $key ?: $userLoginData->getLoginPass(), $this->configData);
+            $key = $this->makeKeyForUser($userLoginData->getLoginUser(), $userPass ?: $userLoginData->getLoginPass());
 
             $clearMPass = Crypt::decrypt($userLoginResponse->getMPass(), $userLoginResponse->getMKey(), $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($clearMPass, $configHashMPass)) {
-                CryptSession::saveSessionKey($clearMPass, $this->context);
+                $this->setMasterKeyInContext($clearMPass);
 
                 $response = new UserPassResponse(self::MPASS_OK, $clearMPass);
                 $response->setCryptMasterPass($userLoginResponse->getMPass());
@@ -151,15 +150,19 @@ class UserPassService extends Service
     /**
      * Obtener una clave de cifrado basada en la clave del usuario y un salt.
      *
-     * @param string     $userLogin
-     * @param string     $userPass
-     * @param ConfigData $configData
+     * @param string $userLogin
+     * @param string $userPass
      *
      * @return string con la clave de cifrado
      */
-    public static function makeKeyForUser($userLogin, $userPass, ConfigData $configData)
+    public function makeKeyForUser($userLogin, $userPass)
     {
-        return $userPass . $userLogin . $configData->getPasswordSalt();
+        // Use always the most recent config data
+        if (Config::getTimeUpdated() > $this->configData->getConfigDate()) {
+            return trim($userPass . $userLogin . $this->config->getConfigData()->getPasswordSalt());
+        } else {
+            return trim($userPass . $userLogin . $this->configData->getPasswordSalt());
+        }
     }
 
     /**
@@ -195,7 +198,7 @@ class UserPassService extends Service
 
             $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());
 
-            CryptSession::saveSessionKey($userMPass, $this->context);
+            $this->setMasterKeyInContext($userMPass);
 
             return $response;
         }
@@ -216,12 +219,7 @@ class UserPassService extends Service
      */
     public function createMasterPass($masterPass, $userLogin, $userPass)
     {
-        // Use always the most recent config data
-        if (Config::getTimeUpdated() > $this->configData->getConfigDate()) {
-            $key = self::makeKeyForUser($userLogin, $userPass, $this->config->getConfigData());
-        } else {
-            $key = self::makeKeyForUser($userLogin, $userPass, $this->configData);
-        }
+        $key = $this->makeKeyForUser($userLogin, $userPass);
 
         $securedKey = Crypt::makeSecuredKey($key);
         $cryptMPass = Crypt::encrypt($masterPass, $securedKey, $key);
@@ -245,13 +243,15 @@ class UserPassService extends Service
      * @param int    $id
      * @param string $userPass
      *
-     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function migrateUserPassById($id, $userPass)
     {
-        return $this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass)));
+        if ($this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass))) === 0) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
+        }
     }
 
     /**

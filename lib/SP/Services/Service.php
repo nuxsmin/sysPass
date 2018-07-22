@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session;
@@ -141,6 +142,30 @@ abstract class Service
             debugLog($e->getMessage());
 
             throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
+        }
+    }
+
+    /**
+     * @param string $masterPass
+     *
+     * @throws ServiceException
+     */
+    protected final function setMasterKeyInContext(string $masterPass)
+    {
+        try {
+            if ($this->context instanceof SessionContext) {
+                Session::saveSessionKey($masterPass, $this->context);
+            } else {
+                $this->context->setTrasientKey('_masterpass', $masterPass);
+            }
+        } catch (ContextException $e) {
+            debugLog($e->getMessage());
+
+            throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
         }
     }
 }

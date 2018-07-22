@@ -25,7 +25,6 @@
 namespace SP\Tests\Services\Track;
 
 use SP\DataModel\TrackData;
-use SP\Http\Request;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Track\TrackService;
@@ -40,7 +39,6 @@ use function SP\Test\setupContext;
  */
 class TrackServiceTest extends DatabaseTestCase
 {
-    private static $request;
     /**
      * @var TrackService
      */
@@ -62,7 +60,6 @@ class TrackServiceTest extends DatabaseTestCase
 
         // Inicializar el servicio
         self::$service = $dic->get(TrackService::class);
-        self::$request = $dic->get(Request::class);
     }
 
     /**
