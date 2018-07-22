@@ -57,18 +57,16 @@ class TrackService extends Service
     protected $request;
 
     /**
-     * @param string  $source
-     *
-     * @param Request $request
+     * @param string $source
      *
      * @return TrackRequest
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
-    public static function getTrackRequest($source, Request $request)
+    public function getTrackRequest($source)
     {
         $trackRequest = new TrackRequest();
         $trackRequest->time = time() - self::TIME_TRACKING;
-        $trackRequest->setTrackIp($request->getClientAddress());
+        $trackRequest->setTrackIp($this->request->getClientAddress());
         $trackRequest->source = $source;
 
         return $trackRequest;

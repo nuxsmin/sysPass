@@ -29,7 +29,6 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Repositories\Track\TrackRequest;
@@ -204,6 +203,6 @@ class UserPassResetController extends ControllerBase
     protected function initialize()
     {
         $this->trackService = $this->dic->get(TrackService::class);
-        $this->trackRequest = TrackService::getTrackRequest('userPassReset', $this->dic->get(Request::class));
+        $this->trackRequest = $this->trackService->getTrackRequest($this->controllerName);
     }
 }

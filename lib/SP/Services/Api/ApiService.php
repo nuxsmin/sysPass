@@ -29,7 +29,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\AuthTokenData;
-use SP\Http\Request;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\Service;
@@ -435,6 +434,6 @@ class ApiService extends Service
     {
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
         $this->trackService = $this->dic->get(TrackService::class);
-        $this->trackRequest = TrackService::getTrackRequest('api', $this->dic->get(Request::class));
+        $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
     }
 }

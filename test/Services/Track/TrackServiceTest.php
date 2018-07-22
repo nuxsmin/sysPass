@@ -152,13 +152,13 @@ class TrackServiceTest extends DatabaseTestCase
      */
     public function testCheckTracking()
     {
-        $this->assertFalse(self::$service->checkTracking(TrackService::getTrackRequest('TEST', self::$request)));
+        $this->assertFalse(self::$service->checkTracking(self::$service->getTrackRequest(__CLASS__)));
 
         for ($i = 1; $i <= 10; $i++) {
-            self::$service->add(TrackService::getTrackRequest('TEST', self::$request));
+            self::$service->add(self::$service->getTrackRequest(__CLASS__));
         }
 
-        $this->assertTrue(self::$service->checkTracking(TrackService::getTrackRequest('TEST', self::$request)));
+        $this->assertTrue(self::$service->checkTracking(self::$service->getTrackRequest(__CLASS__)));
     }
 
     /**

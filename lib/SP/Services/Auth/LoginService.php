@@ -414,7 +414,7 @@ class LoginService extends Service
         $this->request = $this->dic->get(Request::class);
 
         $this->userLoginData = new UserLoginData();
-        $this->trackRequest = TrackService::getTrackRequest('login', $this->request);
+        $this->trackRequest = $this->trackService->getTrackRequest(__CLASS__);
     }
 
     /**
