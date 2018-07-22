@@ -107,5 +107,19 @@
             <field name="preferences" xsi:nil="true" />
         </row>
     </table_data>
+    <table_data name="Config">
+        <row>
+            <field name="parameter">lastupdatempass</field>
+            <field name="VALUE">1528236611</field>
+        </row>
+        <row>
+            <field name="parameter">masterPwd</field>
+            <field name="VALUE">$2y$10$xtsuN2PUvgSH/0mrfBlsbOActVgCjYcqDqC6L3T9QraNxZC4RXGYa</field>
+        </row>
+        <row>
+            <field name="parameter">version</field>
+            <field name="VALUE">300.18053101</field>
+        </row>
+    </table_data>
 </database>
 </mysqldump>

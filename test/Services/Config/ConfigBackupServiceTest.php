@@ -28,6 +28,8 @@ use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Services\Config\ConfigBackupService;
+use function SP\Test\getResource;
+use function SP\Test\saveResource;
 use function SP\Test\setupContext;
 
 /**
@@ -37,6 +39,20 @@ use function SP\Test\setupContext;
  */
 class ConfigBackupServiceTest extends TestCase
 {
+    protected static $currentConfig;
+
+    public static function setUpBeforeClass()
+    {
+        self::$currentConfig = getResource('config', 'config.xml');
+    }
+
+    /**
+     * This method is called after the last test of this test class is run.
+     */
+    public static function tearDownAfterClass()
+    {
+        saveResource('config', 'config.xml', self::$currentConfig);
+    }
 
     /**
      * @throws \DI\DependencyException
@@ -67,8 +83,6 @@ class ConfigBackupServiceTest extends TestCase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Core\Exceptions\ConfigException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Storage\FileException
      */

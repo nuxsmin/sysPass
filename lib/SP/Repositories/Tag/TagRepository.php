@@ -298,7 +298,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setFrom('Tag');
         $queryData->setOrder('name');
 
-        if (empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';

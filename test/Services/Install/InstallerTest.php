@@ -33,6 +33,8 @@ use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 use SP\Storage\Database\DBUtil;
 use SP\Storage\Database\MySQLHandler;
+use function SP\Test\getResource;
+use function SP\Test\saveResource;
 use function SP\Test\setupContext;
 
 require_once 'DbTestUtilTrait.php';
@@ -48,6 +50,8 @@ class InstallerTest extends TestCase
 
     const DB_NAME = 'syspass_test';
 
+    private static $currentConfig;
+
     /**
      * @var Container
      */
@@ -61,6 +65,16 @@ class InstallerTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$dic = setupContext();
+
+        self::$currentConfig = getResource('config', 'config.xml');
+    }
+
+    /**
+     * This method is called after the last test of this test class is run.
+     */
+    public static function tearDownAfterClass()
+    {
+        saveResource('config', 'config.xml', self::$currentConfig);
     }
 
     /**

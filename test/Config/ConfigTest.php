@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,6 +31,8 @@ use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
+use function SP\Test\getResource;
+use function SP\Test\saveResource;
 use function SP\Test\setupContext;
 
 /**
@@ -46,6 +48,10 @@ class ConfigTest extends TestCase
      * @var Container
      */
     protected static $dic;
+    /**
+     * @var string
+     */
+    protected static $currentConfig;
 
     /**
      * @throws DependencyException
@@ -55,6 +61,8 @@ class ConfigTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$dic = setupContext();
+
+        self::$currentConfig = getResource('config', 'config.xml');
     }
 
     /**
@@ -62,7 +70,7 @@ class ConfigTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-        @unlink(CONFIG_FILE);
+        saveResource('config', 'config.xml', self::$currentConfig);
     }
 
     /**
