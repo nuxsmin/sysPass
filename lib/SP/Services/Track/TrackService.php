@@ -28,6 +28,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\TrackData;
 use SP\Http\Request;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Service;
@@ -76,13 +77,15 @@ class TrackService extends Service
     /**
      * @param $id int|array
      *
-     * @return mixed
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws NoSuchItemException
      */
     public function delete($id)
     {
-        return $this->trackRepository->delete($id);
+        if ($this->trackRepository->delete($id) === 0) {
+            throw new NoSuchItemException(__u('Track no encontrado'));
+        }
     }
 
     /**
@@ -91,10 +94,17 @@ class TrackService extends Service
      * @return TrackData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
-        return $this->trackRepository->getById($id)->getData();
+        $result = $this->trackRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Track no encontrado'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -121,8 +131,6 @@ class TrackService extends Service
             $attempts = $this->getTracksForClientFromTime($trackRequest);
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
-//            $this->add($trackRequest);
-
                 $this->eventDispatcher->notifyEvent('track.delay',
                     new Event($this, EventMessage::factory()
                         ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
@@ -161,17 +169,20 @@ class TrackService extends Service
     /**
      * @param TrackRequest $trackRequest
      *
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function add(TrackRequest $trackRequest)
     {
-        $this->trackRepository->add($trackRequest);
+        $result = $this->trackRepository->add($trackRequest);
 
         $this->eventDispatcher->notifyEvent('track.add',
             new Event($this, EventMessage::factory()
                 ->addDescription($this->request->getClientAddress(true)))
         );
+
+        return $result;
     }
 
     /**

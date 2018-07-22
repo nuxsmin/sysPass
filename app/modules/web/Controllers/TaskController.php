@@ -87,7 +87,7 @@ class TaskController
     {
         $task = TaskFactory::create($taskId, Task::genTaskId($taskId));
 
-        TaskFactory::update($task->getTaskId(), TaskFactory::createMessage($task->getTaskId(), 'Prueba Tarea'));
+        TaskFactory::update($task->getTaskId(), TaskFactory::createMessage($task->getTaskId(), 'Test Task'));
 
         echo $task->getTaskId();
     }

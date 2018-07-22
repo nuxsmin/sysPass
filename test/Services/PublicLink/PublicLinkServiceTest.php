@@ -70,7 +70,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
-        // Inicializar el repositorio
+        // Inicializar el servicio
         self::$service = $dic->get(PublicLinkService::class);
 
         self::$salt = $dic->get(ConfigData::class)->getPasswordSalt();
