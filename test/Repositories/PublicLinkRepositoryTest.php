@@ -253,7 +253,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $hash = pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635');
 
         $useInfo = [
-            'who' => '127.0.0.1',
+            'who' => SELF_IP_ADDRESS,
             'time' => time(),
             'hash' => $hash,
             'agent' => 'Mozilla/Firefox',

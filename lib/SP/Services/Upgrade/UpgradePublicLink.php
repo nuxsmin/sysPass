@@ -49,8 +49,6 @@ class UpgradePublicLink extends Service
 
     /**
      * upgrade_300_18010101
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function upgrade_300_18010101()
     {

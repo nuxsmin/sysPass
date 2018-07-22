@@ -28,6 +28,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PluginData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -81,10 +82,17 @@ class PluginService extends Service
      * @return PluginData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
-        return $this->pluginRepository->getById($id)->getData();
+        $result = $this->pluginRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -125,7 +133,9 @@ class PluginService extends Service
      */
     public function deleteByIdBatch(array $ids)
     {
-        $this->pluginRepository->deleteByIdBatch($ids);
+        if ($this->pluginRepository->deleteByIdBatch($ids) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los plugins'));
+        }
     }
 
     /**
@@ -140,7 +150,7 @@ class PluginService extends Service
     public function delete($id)
     {
         if ($this->pluginRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Plugin no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
         }
     }
 
@@ -164,12 +174,19 @@ class PluginService extends Service
      * @param string $name
      *
      * @return PluginData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
-        return $this->pluginRepository->getByName($name)->getData();
+        $result = $this->pluginRepository->getByName($name);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -178,13 +195,16 @@ class PluginService extends Service
      * @param $id
      * @param $enabled
      *
-     * @return bool
+     * @return void
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function toggleEnabled($id, $enabled)
     {
-        return $this->pluginRepository->toggleEnabled($id, $enabled);
+        if ($this->pluginRepository->toggleEnabled($id, $enabled) === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
     }
 
     /**
@@ -193,13 +213,16 @@ class PluginService extends Service
      * @param $name
      * @param $enabled
      *
-     * @return bool
+     * @return void
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function toggleEnabledByName($name, $enabled)
     {
-        return $this->pluginRepository->toggleEnabledByName($name, $enabled);
+        if ($this->pluginRepository->toggleEnabledByName($name, $enabled) === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
     }
 
     /**
@@ -208,13 +231,15 @@ class PluginService extends Service
      * @param $id
      * @param $available
      *
-     * @return bool
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function toggleAvailable($id, $available)
     {
-        return $this->pluginRepository->toggleAvailable($id, $available);
+        if ($this->pluginRepository->toggleAvailable($id, $available) === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
     }
 
     /**
@@ -223,13 +248,15 @@ class PluginService extends Service
      * @param $name
      * @param $available
      *
-     * @return bool
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function toggleAvailableByName($name, $available)
     {
-        return $this->pluginRepository->toggleAvailableByName($name, $available);
+        if ($this->pluginRepository->toggleAvailableByName($name, $available) === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
     }
 
     /**
@@ -238,12 +265,17 @@ class PluginService extends Service
      * @param int $id Id del plugin
      *
      * @return bool
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function resetById($id)
     {
-        return $this->pluginRepository->resetById($id);
+        if (($count = $this->pluginRepository->resetById($id)) === 0) {
+            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $count;
     }
 
     /**

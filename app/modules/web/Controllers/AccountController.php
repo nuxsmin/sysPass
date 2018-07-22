@@ -195,7 +195,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 $vault = unserialize($publicLinkData->getData());
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkService::getKeyForHash($this->config->getConfigData()->getPasswordSalt(), $publicLinkData)));
+                $accountData = Util::unserialize(AccountExtData::class, $vault->getData($publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey()));
 
                 $this->view->assign('title',
                     [

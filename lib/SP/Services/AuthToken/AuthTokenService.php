@@ -170,6 +170,7 @@ class AuthTokenService extends Service
      * @param string        $token
      *
      * @return AuthTokenData
+     * @throws ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException

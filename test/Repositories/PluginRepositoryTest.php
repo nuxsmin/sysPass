@@ -137,7 +137,7 @@ class PluginRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $data->getAvailable());
         $this->assertEquals(0, $data->getEnabled());
 
-        $this->assertEquals(0, self::$repository->getById('Authenticator 2')->getNumRows());
+        $this->assertEquals(0, self::$repository->getByName('Authenticator 2')->getNumRows());
     }
 
     /**
@@ -258,6 +258,16 @@ class PluginRepositoryTest extends DatabaseTestCase
         $this->expectException(ConstraintException::class);
 
         self::$repository->create($data);
+    }
+
+    /**
+     * @depends testGetById
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testCreateBlank()
+    {
+        $this->expectException(ConstraintException::class);
 
         self::$repository->create(new PluginData());
     }

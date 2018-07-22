@@ -209,7 +209,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Plugin WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error al eliminar los plugins'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

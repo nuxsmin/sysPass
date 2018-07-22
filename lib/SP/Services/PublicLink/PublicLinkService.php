@@ -27,11 +27,11 @@ namespace SP\Services\PublicLink;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
+use SP\DataModel\PublicLinkListData;
 use SP\Http\Request;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
@@ -40,7 +40,6 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Storage\Database\QueryResult;
-use SP\Util\Util;
 
 /**
  * Class PublicLinkService
@@ -87,6 +86,17 @@ class PublicLinkService extends Service
     }
 
     /**
+     * @param string         $salt
+     * @param PublicLinkData $publicLinkData
+     *
+     * @return string
+     */
+    public static function getKeyForHash($salt, PublicLinkData $publicLinkData)
+    {
+        return sha1($salt . $publicLinkData->getHash());
+    }
+
+    /**
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
@@ -106,7 +116,13 @@ class PublicLinkService extends Service
      */
     public function getById($id)
     {
-        return $this->publicLinkRepository->getById($id)->getData();
+        $result = $this->publicLinkRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Enlace no encontrado'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -123,18 +139,17 @@ class PublicLinkService extends Service
      */
     public function refresh($id)
     {
-        $salt = $this->config->getConfigData()->getPasswordSalt();
-        $key = self::getNewKey($salt);
-
         $result = $this->publicLinkRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El enlace no existe'));
+            throw new NoSuchItemException(__u('Enlace no encontrado'));
         }
+
+        $key = $this->getPublicLinkKey();
 
         /** @var PublicLinkData $publicLinkData */
         $publicLinkData = $result->getData();
-        $publicLinkData->setHash(self::getHashForKey($key, $salt));
+        $publicLinkData->setHash($key->getHash());
         $publicLinkData->setData($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
         $publicLinkData->setDateExpire(self::calcDateExpire($this->config));
         $publicLinkData->setCountViews($this->config->getConfigData()->getPublinksMaxViews());
@@ -143,52 +158,39 @@ class PublicLinkService extends Service
     }
 
     /**
-     * @param string $salt
+     * @param string|null $hash
      *
-     * @return string
+     * @return PublicLinkKey
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    public static function getNewKey($salt)
+    public function getPublicLinkKey(string $hash = null)
     {
-        return $salt . Util::generateRandomBytes();
-    }
-
-    /**
-     * Returns the hash from a composed key
-     *
-     * @param string $key
-     * @param string $salt
-     *
-     * @return mixed
-     */
-    public static function getHashForKey($key, $salt)
-    {
-        return str_replace($salt, '', $key);
+        return new PublicLinkKey($this->config->getConfigData()->getPasswordSalt(), $hash);
     }
 
     /**
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
-     * @param int    $itemId
-     * @param string $linkKey
+     * @param int           $itemId
+     * @param PublicLinkKey $key
      *
      * @return Vault
+     * @throws NoSuchItemException
+     * @throws ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    protected function getSecuredLinkData($itemId, $linkKey)
+    private function getSecuredLinkData($itemId, PublicLinkKey $key)
     {
         // Obtener los datos de la cuenta
         $accountData = $this->dic->get(AccountService::class)->getDataForLink($itemId);
 
         // Desencriptar la clave de la cuenta
-        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
+        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), $this->getMasterKeyFromContext()));
         $accountData->setKey(null);
 
-        $vault = new Vault();
-        return serialize($vault->saveData(serialize($accountData), $linkKey));
+        return (new Vault())->saveData(serialize($accountData), $key->getKey())->getSerialized();
     }
 
     /**
@@ -207,14 +209,14 @@ class PublicLinkService extends Service
      * @param $id
      *
      * @return $this
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
         if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Enlace no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Enlace no encontrado'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -252,7 +254,10 @@ class PublicLinkService extends Service
      */
     public function create(PublicLinkData $itemData)
     {
-        $itemData->setData($this->getSecuredLinkData($itemData->getItemId(), self::getKeyForHash($this->config->getConfigData()->getPasswordSalt(), $itemData)));
+        $key = $this->getPublicLinkKey();
+
+        $itemData->setHash($key->getHash());
+        $itemData->setData($this->getSecuredLinkData($itemData->getItemId(), $key));
         $itemData->setDateExpire(self::calcDateExpire($this->config));
         $itemData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
         $itemData->setUserId($this->context->getUserData()->getId());
@@ -261,20 +266,9 @@ class PublicLinkService extends Service
     }
 
     /**
-     * @param string         $salt
-     * @param PublicLinkData $publicLinkData
-     *
-     * @return string
-     */
-    public static function getKeyForHash($salt, PublicLinkData $publicLinkData)
-    {
-        return $salt . $publicLinkData->getHash();
-    }
-
-    /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return PublicLinkListData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -288,7 +282,7 @@ class PublicLinkService extends Service
      *
      * @param PublicLinkData $publicLinkData
      *
-     * @return bool
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -313,7 +307,9 @@ class PublicLinkService extends Service
 //            Email::sendEmail($LogMessage);
 //        }
 
-        return $this->publicLinkRepository->addLinkView($publicLinkData);
+        if ($this->publicLinkRepository->addLinkView($publicLinkData) === 0) {
+            throw new NoSuchItemException(__u('Enlace no encontrado'));
+        }
     }
 
     /**
@@ -347,7 +343,7 @@ class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getByHash($hash);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El enlace no existe'));
+            throw new NoSuchItemException(__u('Enlace no encontrado'));
         }
 
         return $result->getData();
@@ -368,7 +364,7 @@ class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getHashForItem($itemId);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El enlace no existe'));
+            throw new NoSuchItemException(__u('Enlace no encontrado'));
         }
 
         return $result->getData();
