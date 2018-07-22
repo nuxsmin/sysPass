@@ -27,6 +27,7 @@ namespace SP\Services\Tag;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Tag\TagRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -62,38 +63,52 @@ class TagService extends Service
      * @param $id
      *
      * @return TagData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        return $this->tagRepository->getById($id);
+        $result = $this->tagRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
      * @param string $name
      *
      * @return TagData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
-        return $this->tagRepository->getByName($name)->getData();
+        $result = $this->tagRepository->getByName($name);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
      * @param $id
      *
      * @return $this
-     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function delete($id)
     {
         if ($this->tagRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Etiqueta no encontrada'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
         }
 
         return $this;

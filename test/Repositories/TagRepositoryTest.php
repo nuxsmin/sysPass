@@ -25,6 +25,7 @@
 namespace SP\Test\Repositories;
 
 use SP\Core\Exceptions\QueryException;
+use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
@@ -103,15 +104,17 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $this->assertNull(self::$repository->getById(10));
+        $this->assertNull(self::$repository->getById(10)->getData());
 
-        $tag = self::$repository->getById(1);
+        /** @var CategoryData $data */
+        $data = self::$repository->getById(1)->getData();
 
-        $this->assertEquals('www', $tag->getName());
+        $this->assertEquals('www', $data->getName());
 
-        $tag = self::$repository->getById(2);
+        /** @var CategoryData $data */
+        $data = self::$repository->getById(2)->getData();
 
-        $this->assertEquals('windows', $tag->getName());
+        $this->assertEquals('windows', $data->getName());
     }
 
     /**
@@ -155,9 +158,10 @@ class TagRepositoryTest extends DatabaseTestCase
 
         self::$repository->update($tagData);
 
-        $category = self::$repository->getById(1);
+        /** @var CategoryData $data */
+        $data = self::$repository->getById(1)->getData();
 
-        $this->assertEquals($category->getName(), $tagData->name);
+        $this->assertEquals($data->getName(), $tagData->name);
 
         // Comprobar la a actualización con un nombre duplicado comprobando su hash
         $tagData = new TagData();
@@ -200,9 +204,9 @@ class TagRepositoryTest extends DatabaseTestCase
         $id = self::$repository->create($tagData);
 
         // Comprobar que el Id devuelto corresponde con la etiqueta creada
-        $tag = self::$repository->getById($id);
+        $data = self::$repository->getById($id)->getData();
 
-        $this->assertEquals($tagData->name, $tag->getName());
+        $this->assertEquals($tagData->name, $data->getName());
 
         $countAfter = $this->conn->getRowCount('Tag');
 

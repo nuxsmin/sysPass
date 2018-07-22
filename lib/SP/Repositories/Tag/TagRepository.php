@@ -147,7 +147,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return TagData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -158,7 +158,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name` FROM Tag WHERE id = ?  ORDER BY  `name` LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -298,7 +298,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setFrom('Tag');
         $queryData->setOrder('name');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
