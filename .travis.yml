@@ -24,4 +24,5 @@ env:
   - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=
 
 before_install:
-  - mysql < $TRAVIS_BUILD_DIR/schemas/dbstructure.sql
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+  - mysql $DB_NAME < $TRAVIS_BUILD_DIR/schemas/dbstructure.sql
