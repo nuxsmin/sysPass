@@ -78,13 +78,15 @@ trait DbTestUtilTrait
     /**
      * @param $user
      * @param $host
-     *
-     * @throws \SP\Storage\Database\DatabaseException
      */
     private function dropUser($user, $host)
     {
-        $this->getConnection()
-            ->query(sprintf('DROP USER IF EXISTS \'%s\'@\'%s\'', $user, $host));
+        try {
+            $this->getConnection()
+                ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
+        } catch (\Exception $e) {
+            processException($e);
+        }
     }
 
     /**
