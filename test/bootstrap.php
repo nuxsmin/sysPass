@@ -50,8 +50,21 @@ define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
+// Setup directories
+if (!is_dir(TMP_DIR)) {
+    mkdir(TMP_DIR);
+}
+
+if (is_dir(CONFIG_PATH)
+    && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
+) {
+    chmod(CONFIG_PATH, 750);
+}
+
 // Delete tmp dir ...
 array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*'));
+
+print 'APP_ROOT=' . APP_ROOT;
 
 /**
  * Función para llamadas a gettext
@@ -151,5 +164,3 @@ function saveResource($dir, $file, $data)
 {
     return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }
-
-print 'APP_ROOT=' . APP_ROOT;
