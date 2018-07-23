@@ -33,6 +33,7 @@ use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 use SP\Storage\Database\DBUtil;
 use SP\Storage\Database\MySQLHandler;
+use SP\Util\Util;
 use function SP\Test\getResource;
 use function SP\Test\saveResource;
 use function SP\Test\setupContext;
@@ -111,8 +112,12 @@ class InstallerTest extends TestCase
         $this->assertTrue(self::$dic->get(MasterPassService::class)->checkMasterPassword($params->getMasterPassword()));
 
         $this->dropDatabase(self::DB_NAME);
-        $this->dropUser($configData->getDbUser(), SELF_IP_ADDRESS);
-        $this->dropUser($configData->getDbUser(), SELF_HOSTNAME);
+
+        $this->dropUser($configData->getDbUser(), $params->getDbAuthHost());
+
+        if ($params->getDbAuthHostDns()) {
+            $this->dropUser($configData->getDbUser(), $params->getDbAuthHostDns());
+        }
     }
 
     /**
@@ -259,12 +264,15 @@ class InstallerTest extends TestCase
      */
     public function testHostingMode()
     {
+        $pass = Util::randomPassword();
+
+        $this->dropDatabase(self::DB_NAME);
         $this->createDatabase(self::DB_NAME);
-        $this->createUser('syspass_user', '123456', self::DB_NAME);
+        $this->createUser('syspass_user', $pass, self::DB_NAME);
 
         $params = new InstallData();
         $params->setDbAdminUser('syspass_user');
-        $params->setDbAdminPass('123456');
+        $params->setDbAdminPass($pass);
         $params->setDbName(self::DB_NAME);
         $params->setDbHost(getenv('DB_SERVER'));
         $params->setAdminLogin('admin');
@@ -290,6 +298,7 @@ class InstallerTest extends TestCase
 
         $this->dropDatabase(self::DB_NAME);
         $this->dropUser('syspass_user', SELF_IP_ADDRESS);
+        $this->dropUser('syspass_user', SELF_HOSTNAME);
     }
 
     protected function tearDown()

@@ -57,21 +57,6 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\Database\DatabaseException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function testCheckDatabaseExist()
-    {
-        $this->createDatabase(self::DB_NAME);
-
-        $mysql = new MySQL($this->getParams(), new ConfigData());
-
-        $this->assertTrue($mysql->checkDatabaseExist());
-
-        $this->dropDatabase(self::DB_NAME);
-    }
-
-    /**
      * @return InstallData
      */
     private function getParams()
@@ -89,6 +74,21 @@ class MySQLTest extends TestCase
         $params->setSiteLang('en_US');
 
         return $params;
+    }
+
+    /**
+     * @throws \SP\Storage\Database\DatabaseException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCheckDatabaseExist()
+    {
+        $this->createDatabase(self::DB_NAME);
+
+        $mysql = new MySQL($this->getParams(), new ConfigData());
+
+        $this->assertTrue($mysql->checkDatabaseExist());
+
+        $this->dropDatabase(self::DB_NAME);
     }
 
     /**

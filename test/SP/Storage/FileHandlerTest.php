@@ -151,10 +151,6 @@ class FileHandlerTest extends TestCase
         (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkIsReadable();
-
-        (new FileHandler(self::$immutableFile))
-            ->clearCache()
-            ->checkIsReadable();
     }
 
     /**

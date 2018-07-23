@@ -68,8 +68,11 @@ trait DbTestUtilTrait
      */
     private function createUser($user, $pass, $database)
     {
-        $this->getConnection()
-            ->query(sprintf('GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'', $database, $user, SELF_IP_ADDRESS, $pass));
+        $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'';
+
+        $conn = $this->getConnection();
+        $conn->query(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
+        $conn->query(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
     }
 
     /**
@@ -81,7 +84,7 @@ trait DbTestUtilTrait
     private function dropUser($user, $host)
     {
         $this->getConnection()
-            ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
+            ->query(sprintf('DROP USER IF EXISTS \'%s\'@\'%s\'', $user, $host));
     }
 
     /**
