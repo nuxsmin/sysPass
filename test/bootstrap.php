@@ -151,3 +151,5 @@ function saveResource($dir, $file, $data)
 {
     return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }
+
+print 'APP_ROOT=' . APP_ROOT;
