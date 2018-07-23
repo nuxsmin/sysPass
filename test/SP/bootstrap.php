@@ -34,8 +34,8 @@ use SP\Storage\Database\DatabaseConnectionData;
 
 define('APP_MODULE', 'tests');
 
-define('APP_ROOT', dirname(__DIR__));
-define('TEST_ROOT', APP_ROOT . DIRECTORY_SEPARATOR . 'test');
+define('APP_ROOT', dirname(__DIR__, 2));
+define('TEST_ROOT', dirname(__DIR__));
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
 define('TMP_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
@@ -51,6 +51,7 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autol
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
+print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
 
 // Setup directories
 if (!is_dir(TMP_DIR)) {

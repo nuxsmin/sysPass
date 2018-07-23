@@ -42,7 +42,7 @@
       "SP\\": "lib/SP/",
       "SP\\Modules\\Web\\": "app/modules/web/",
       "SP\\Modules\\Api\\": "app/modules/api/",
-      "SP\\Test\\": "test"
+      "SP\\Test\\": "test/SP/"
     }
   },
   "config": {

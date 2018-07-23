@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="./test/bootstrap.php"
+         bootstrap="./test/SP/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -10,9 +10,7 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix=".php">./test</directory>
-            <exclude>./test/res</exclude>
-            <exclude>./test/tmp</exclude>
+            <directory suffix=".php">./test/SP</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -20,12 +18,4 @@
             <directory suffix=".php">./lib</directory>
         </whitelist>
     </filter>
-    <!--<php>-->
-        <!--<env name="APP_ENV" value="testing"/>-->
-        <!--<env name="BCRYPT_ROUNDS" value="4"/>-->
-        <!--<env name="CACHE_DRIVER" value="array"/>-->
-        <!--<env name="SESSION_DRIVER" value="array"/>-->
-        <!--<env name="QUEUE_DRIVER" value="sync"/>-->
-        <!--<env name="MAIL_DRIVER" value="array"/>-->
-    <!--</php>-->
 </phpunit>
