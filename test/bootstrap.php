@@ -115,10 +115,10 @@ function setupContext()
 
     // Establecer configuración de conexión con la BBDD
     $databaseConnectionData = (new DatabaseConnectionData())
-        ->setDbHost('syspass-db')
-        ->setDbName('syspass')
-        ->setDbUser('root')
-        ->setDbPass('syspass');
+        ->setDbHost(getenv('DB_SERVER'))
+        ->setDbName(getenv('DB_NAME'))
+        ->setDbUser(getenv('DB_USER'))
+        ->setDbPass(getenv('DB_PASS'));
 
     // Inicializar la configuración
     $dic->set(ConfigData::class, $configData);
@@ -143,6 +143,7 @@ function getResource($dir, $file)
 /**
  * @param $dir
  * @param $file
+ * @param $data
  *
  * @return string
  */
