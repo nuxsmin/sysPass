@@ -11,7 +11,7 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: ./vendor/bin/phpunit --bootstrap ./test/bootstrap.php ./test
+script: ./vendor/bin/phpunit -c ./phpunit.xml
 
 notifications:
     on_success: never

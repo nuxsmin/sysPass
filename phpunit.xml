@@ -1,0 +1,12 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
+        bootstrap="./test/bootstrap.php">
+</phpunit>
+<testsuites>
+    <testsuite name="sysPass">
+        <directory suffix=".php">./test</directory>
+        <exclude>./test/res</exclude>
+        <exclude>./test/tmp</exclude>
+    </testsuite>
+</testsuites>

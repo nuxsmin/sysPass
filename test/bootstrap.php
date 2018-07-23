@@ -50,21 +50,27 @@ define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
+print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
+
 // Setup directories
 if (!is_dir(TMP_DIR)) {
+    print 'Creating ' . TMP_DIR . PHP_EOL;
+
     mkdir(TMP_DIR);
+} else {
+    print 'Deleting ' . TMP_DIR . PHP_EOL;
+
+    // Delete tmp dir ...
+    array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*'));
 }
 
 if (is_dir(CONFIG_PATH)
     && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
 ) {
+    print 'Setting permissions for ' . CONFIG_PATH . PHP_EOL;
+
     chmod(CONFIG_PATH, 750);
 }
-
-// Delete tmp dir ...
-array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*'));
-
-print 'APP_ROOT=' . APP_ROOT;
 
 /**
  * Función para llamadas a gettext
