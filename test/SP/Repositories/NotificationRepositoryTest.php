@@ -247,7 +247,7 @@ class NotificationRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(0, self::$repository->update($data));
+        self::$repository->update($data);
     }
 
     /**

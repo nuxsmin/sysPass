@@ -394,7 +394,7 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $this->assertEquals(0, self::$service->update($data));
+        self::$service->update($data);
     }
 
     /**

@@ -45,6 +45,16 @@ class MySQLTest extends TestCase
     const DB_NAME = 'syspass_test';
 
     /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCheckDatabaseNotExist()
+    {
+        $mysql = new MySQL($this->getParams(), new ConfigData());
+
+        $this->assertFalse($mysql->checkDatabaseExist());
+    }
+
+    /**
      * @throws \SP\Storage\Database\DatabaseException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -77,16 +87,6 @@ class MySQLTest extends TestCase
         $params->setSiteLang('en_US');
 
         return $params;
-    }
-
-    /**
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function testCheckDatabaseNotExist()
-    {
-        $mysql = new MySQL($this->getParams(), new ConfigData());
-
-        $this->assertFalse($mysql->checkDatabaseExist());
     }
 
     /**

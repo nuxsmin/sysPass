@@ -78,6 +78,7 @@ if (is_dir(CONFIG_PATH)
  */
 if (!function_exists('\gettext')) {
     /**
+     *
      * @param $str
      *
      * @return string
@@ -134,7 +135,7 @@ function setupContext()
     $context->setUserProfile(new ProfileData());
 
     // Establecer configuración de conexión con la BBDD
-    $databaseConnectionData = (new DatabaseConnectionData())
+    $connectionData = (new DatabaseConnectionData())
         ->setDbHost(getenv('DB_SERVER'))
         ->setDbName(getenv('DB_NAME'))
         ->setDbUser(getenv('DB_USER'))
@@ -144,7 +145,7 @@ function setupContext()
     $dic->set(ConfigData::class, $configData);
 
     // Inicializar los datos de conexión a la BBDD
-    $dic->set(DatabaseConnectionData::class, $databaseConnectionData);
+    $dic->set(DatabaseConnectionData::class, $connectionData);
 
     return $dic;
 }

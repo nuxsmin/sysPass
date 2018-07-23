@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -34,12 +34,12 @@ use SP\Storage\FileHandler;
  */
 class MySQLFileParser implements DatabaseFileInterface
 {
-
     /**
      * Parses a database script file and returns an array of lines parsed
      *
      * @param FileHandler $fileHandler
      * @param string      $delimiter
+     *
      * @return array
      * @throws FileException
      */
@@ -61,14 +61,13 @@ class MySQLFileParser implements DatabaseFileInterface
                 // CHecks if delimiter based EOL is reached
                 $end = strrpos($buffer, $delimiter) === $length - $delimiterLength;
                 // Checks if line is an SQL statement wrapped by a comment
-                $setComment = preg_match(/** @lang RegExp */
-                    '#^(?P<statement>/\*!\d+.*\*/)#', $buffer, $matches);
+                $setComment = preg_match('#^(?<stmt>/\*!\d+.*\*/)#', $buffer, $matches);
 
                 if ($setComment) {
                     if (!$end) {
-                        $query .= $matches['statement'] . PHP_EOL;
+                        $query .= $matches['stmt'] . PHP_EOL;
                     } else {
-                        $queries[] = $query . $matches['statement'];
+                        $queries[] = $query . $matches['stmt'];
 
                         $query = '';
                     }

@@ -45,7 +45,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['300.18010101'];
+    const UPGRADES = ['300.18010101', '300.18072302'];
 
     /**
      * @var Database
@@ -144,6 +144,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * @param int $version con la versión a actualizar
      *
      * @returns bool
+     * @return bool
      * @throws UpgradeException
      */
     private function applyUpgrade($version)

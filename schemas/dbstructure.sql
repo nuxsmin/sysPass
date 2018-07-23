@@ -21,8 +21,8 @@ CREATE TABLE `Account` (
   `categoryId`         mediumint(8) unsigned NOT NULL,
   `login`              varchar(50)                    DEFAULT NULL,
   `url`                varchar(255)                   DEFAULT NULL,
-  `pass`               varbinary(1000)       NOT NULL,
-  `key`                varbinary(1000)       NOT NULL,
+  `pass`               varbinary(2000)       NOT NULL,
+  `key`                varbinary(2000)       NOT NULL,
   `notes`              text                           DEFAULT NULL,
   `countView`          int(10) unsigned      NOT NULL DEFAULT 0,
   `countDecrypt`       int(10) unsigned      NOT NULL DEFAULT 0,
@@ -86,8 +86,8 @@ CREATE TABLE `AccountHistory` (
   `categoryId`         mediumint(8) unsigned NOT NULL,
   `login`              varchar(50)                    DEFAULT NULL,
   `url`                varchar(255)                   DEFAULT NULL,
-  `pass`               varbinary(1000)       NOT NULL,
-  `key`                varbinary(1000)       NOT NULL,
+  `pass`               varbinary(2000)       NOT NULL,
+  `key`                varbinary(2000)       NOT NULL,
   `notes`              text                  NOT NULL,
   `countView`          int(10) unsigned      NOT NULL DEFAULT 0,
   `countDecrypt`       int(10) unsigned      NOT NULL DEFAULT 0,
@@ -204,12 +204,12 @@ DROP TABLE IF EXISTS `AuthToken`;
 CREATE TABLE `AuthToken` (
   `id`        int(11)              NOT NULL AUTO_INCREMENT,
   `userId`    smallint(5) unsigned NOT NULL,
-  `token`     varbinary(100)       NOT NULL,
+  `token`     varbinary(255)       NOT NULL,
   `actionId`  smallint(5) unsigned NOT NULL,
   `createdBy` smallint(5) unsigned NOT NULL,
   `startDate` int(10) unsigned     NOT NULL,
   `vault`     varbinary(2000)               DEFAULT NULL,
-  `hash`      varbinary(1000)               DEFAULT NULL,
+  `hash`      varbinary(500)                DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_AuthToken_01` (`token`, `actionId`),
   KEY `idx_AuthToken_01` (`userId`, `actionId`, `token`),
@@ -255,7 +255,7 @@ DROP TABLE IF EXISTS `Config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Config` (
   `parameter` varchar(50) NOT NULL,
-  `VALUE`     varchar(4000) DEFAULT NULL,
+  `value`     varchar(4000) DEFAULT NULL,
   PRIMARY KEY (`parameter`)
 )
   ENGINE = InnoDB
@@ -270,7 +270,7 @@ CREATE TABLE `CustomFieldData` (
   `itemId`       int(10) unsigned     NOT NULL,
   `definitionId` int(10) unsigned     NOT NULL,
   `data`         longblob                      DEFAULT NULL,
-  `key`          varbinary(1000)               DEFAULT NULL,
+  `key`          varbinary(2000)               DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_CustomFieldData_01` (`definitionId`),
   KEY `idx_CustomFieldData_02` (`itemId`, `moduleId`),
@@ -288,7 +288,6 @@ CREATE TABLE `CustomFieldDefinition` (
   `id`          int(10) unsigned              NOT NULL AUTO_INCREMENT,
   `name`        varchar(100)                  NOT NULL,
   `moduleId`    smallint(5) unsigned          NOT NULL,
-  `field`       blob                                   DEFAULT NULL,
   `required`    tinyint(1) unsigned                    DEFAULT NULL,
   `help`        varchar(255)                           DEFAULT NULL,
   `showInList`  tinyint(1) unsigned                    DEFAULT NULL,
@@ -362,7 +361,7 @@ DROP TABLE IF EXISTS `Plugin`;
 CREATE TABLE `Plugin` (
   `id`        int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name`      varchar(100)     NOT NULL,
-  `data`      varbinary(5000)           DEFAULT NULL,
+  `data`      mediumblob                DEFAULT NULL,
   `enabled`   tinyint(1)       NOT NULL DEFAULT 0,
   `available` tinyint(1)                DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -378,7 +377,7 @@ CREATE TABLE `PublicLink` (
   `id`              int(10) unsigned     NOT NULL AUTO_INCREMENT,
   `itemId`          int(10) unsigned     NOT NULL,
   `hash`            varbinary(100)       NOT NULL,
-  `data`            longblob                      DEFAULT NULL,
+  `data`            mediumblob                    DEFAULT NULL,
   `userId`          smallint(5) unsigned NOT NULL,
   `typeId`          int(10) unsigned     NOT NULL,
   `notify`          tinyint(1)                    DEFAULT 0,
@@ -438,9 +437,9 @@ CREATE TABLE `User` (
   `userGroupId`     smallint(5) unsigned NOT NULL,
   `login`           varchar(50)          NOT NULL,
   `ssoLogin`        varchar(100)                  DEFAULT NULL,
-  `pass`            varbinary(1000)      NOT NULL,
-  `mPass`           varbinary(1000)               DEFAULT NULL,
-  `mKey`            varbinary(1000)               DEFAULT NULL,
+  `pass`            varbinary(500)       NOT NULL,
+  `mPass`           varbinary(2000)               DEFAULT NULL,
+  `mKey`            varbinary(2000)               DEFAULT NULL,
   `email`           varchar(80)                   DEFAULT NULL,
   `notes`           text                          DEFAULT NULL,
   `loginCount`      int(10) unsigned     NOT NULL DEFAULT 0,
@@ -452,7 +451,7 @@ CREATE TABLE `User` (
   `isAdminAcc`      tinyint(1)                    DEFAULT 0,
   `isLdap`          tinyint(1)                    DEFAULT 0,
   `isDisabled`      tinyint(1)                    DEFAULT 0,
-  `hashSalt`        varbinary(128)       NOT NULL,
+  `hashSalt`        varbinary(255)       NOT NULL,
   `isMigrate`       tinyint(1)                    DEFAULT 0,
   `isChangePass`    tinyint(1)                    DEFAULT 0,
   `isChangedPass`   tinyint(1)                    DEFAULT 0,
@@ -486,7 +485,7 @@ DROP TABLE IF EXISTS `UserPassRecover`;
 CREATE TABLE `UserPassRecover` (
   `id`     int(10) unsigned     NOT NULL AUTO_INCREMENT,
   `userId` smallint(5) unsigned NOT NULL,
-  `hash`   varbinary(128)       NOT NULL,
+  `hash`   varbinary(255)       NOT NULL,
   `date`   int(10) unsigned     NOT NULL,
   `used`   tinyint(1)                    DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -606,8 +605,8 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results = utf8 */;
 /*!50001 SET collation_connection = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM = UNDEFINED */
-/*!50013 SQL SECURITY DEFINER */
-/*!50001 VIEW `account_data_v` AS
+  /*!50013 SQL SECURITY DEFINER */
+  /*!50001 VIEW `account_data_v` AS
   select
     `Account`.`id`                              AS `id`,
     `Account`.`name`                            AS `name`,
@@ -655,8 +654,8 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results = utf8 */;
 /*!50001 SET collation_connection = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM = UNDEFINED */
-/*!50013 SQL SECURITY DEFINER */
-/*!50001 VIEW `account_search_v` AS
+  /*!50013 SQL SECURITY DEFINER */
+  /*!50001 VIEW `account_search_v` AS
   SELECT
     `Account`.`id`                                       AS `id`,
     `Account`.`clientId`                                 AS `clientId`,

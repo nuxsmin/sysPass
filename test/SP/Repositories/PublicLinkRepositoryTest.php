@@ -336,12 +336,12 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
         $data->setId(3);
 
-        $this->assertEquals(0, self::$repository->refresh($data));
+        self::$repository->refresh($data);
 
         $data->setId(1);
         $data->setHash(null);
 
-        $this->assertEquals(0, self::$repository->refresh($data));
+        self::$repository->refresh($data);
     }
 
     /**

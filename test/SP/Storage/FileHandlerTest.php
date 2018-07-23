@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -59,7 +59,9 @@ class FileHandlerTest extends TestCase
     {
         $handler = new FileHandler(self::$validFile);
         $handler->write('valid_file');
+
         $this->assertEquals('valid_file', $handler->readToString());
+
         $handler->close();
 
         $this->assertFileExists(self::$validFile);
@@ -78,11 +80,7 @@ class FileHandlerTest extends TestCase
             ->clearCache()
             ->checkIsWritable();
 
-        $this->expectException(FileException::class);
-
-        (new FileHandler(self::$immutableFile))
-            ->clearCache()
-            ->checkIsWritable();
+        $this->assertTrue(true);
     }
 
     /**
@@ -177,8 +175,6 @@ class FileHandlerTest extends TestCase
     {
         (new FileHandler(self::$validFile))->delete();
 
-        $this->expectException(FileException::class);
-
-        (new FileHandler(self::$immutableFile))->delete();
+        $this->assertFileNotExists(self::$validFile);
     }
 }
