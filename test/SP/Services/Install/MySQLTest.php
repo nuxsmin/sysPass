@@ -65,10 +65,10 @@ class MySQLTest extends TestCase
     private function getParams()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminUser(getenv('DB_USER'));
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db');
+        $params->setDbHost(getenv('DB_SERVER'));
         $params->setDbAuthHost(SELF_IP_ADDRESS);
         $params->setDbAuthHostDns(SELF_HOSTNAME);
         $params->setAdminLogin('admin');

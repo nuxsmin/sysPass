@@ -87,10 +87,10 @@ class InstallerTest extends TestCase
     public function testRun()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminUser(getenv('DB_USER'));
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db');
+        $params->setDbHost(getenv('DB_SERVER'));
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
@@ -125,8 +125,8 @@ class InstallerTest extends TestCase
     public function testFailDbHostName()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminUser(getenv('DB_USER'));
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
         $params->setDbHost('fail');
         $params->setAdminLogin('admin');
@@ -152,8 +152,8 @@ class InstallerTest extends TestCase
     public function testFailDbHostIp()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminUser(getenv('DB_USER'));
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
         $params->setDbHost('192.168.0.1');
         $params->setAdminLogin('admin');
@@ -179,10 +179,10 @@ class InstallerTest extends TestCase
     public function testFailDbHostPort()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminUser(getenv('DB_USER'));
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db:3307');
+        $params->setDbHost(getenv('DB_SERVER') . ':3307');
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
@@ -207,9 +207,9 @@ class InstallerTest extends TestCase
     {
         $params = new InstallData();
         $params->setDbAdminUser('toor');
-        $params->setDbAdminPass('syspass');
+        $params->setDbAdminPass(getenv('DB_PASS'));
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db');
+        $params->setDbHost(getenv('DB_SERVER'));
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
@@ -233,10 +233,10 @@ class InstallerTest extends TestCase
     public function testFailDbPass()
     {
         $params = new InstallData();
-        $params->setDbAdminUser('root');
+        $params->setDbAdminUser(getenv('DB_USER'));
         $params->setDbAdminPass('test');
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db');
+        $params->setDbHost(getenv('DB_SERVER'));
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
@@ -266,7 +266,7 @@ class InstallerTest extends TestCase
         $params->setDbAdminUser('syspass_user');
         $params->setDbAdminPass('123456');
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost('syspass-db');
+        $params->setDbHost(getenv('DB_SERVER'));
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');

@@ -52,9 +52,9 @@ trait DbTestUtilTrait
     private function getConnection()
     {
         $data = (new DatabaseConnectionData())
-            ->setDbHost('syspass-db')
-            ->setDbUser('root')
-            ->setDbPass('syspass');
+            ->setDbHost(getenv('DB_SERVER'))
+            ->setDbUser(getenv('DB_USER'))
+            ->setDbPass(getenv('DB_PASS'));
 
         return (new MySQLHandler($data))->getConnectionSimple();
     }
