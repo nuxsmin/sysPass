@@ -148,7 +148,7 @@ class ApiServiceTest extends DatabaseTestCase
      */
     public function testGetParamEmail()
     {
-        $this->markTestSkipped('TODO');
+        $this->markTestIncomplete();
     }
 
     /**

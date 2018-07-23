@@ -100,7 +100,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testEditRestore()
     {
-        $this->markTestSkipped('Not implemented');
+        $this->markTestIncomplete();
     }
 
     /**
@@ -204,7 +204,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testCheckDuplicatedOnAdd()
     {
-        $this->markTestSkipped('Not implemented');
+        $this->markTestIncomplete();
     }
 
     /**
@@ -462,7 +462,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $this->markTestSkipped('Not implemented');
+        $this->markTestIncomplete();
     }
 
     /**
@@ -470,7 +470,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testCheckDuplicatedOnUpdate()
     {
-        $this->markTestSkipped('Not implemented');
+        $this->markTestIncomplete();
     }
 
     /**
@@ -478,7 +478,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetPasswordHistoryForId()
     {
-        $this->markTestSkipped('Not implemented');
+        $this->markTestIncomplete();
     }
 
     /**

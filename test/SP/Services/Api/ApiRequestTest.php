@@ -101,9 +101,4 @@ class ApiRequestTest extends TestCase
             $this->assertEquals(-32600, $e->getCode());
         }
     }
-
-    public function testGetRequestContent()
-    {
-        $this->markTestSkipped('Should be an HTTP test');
-    }
 }
