@@ -66,13 +66,14 @@ trait DbTestUtilTrait
      *
      * @throws \SP\Storage\Database\DatabaseException
      */
-    private function createUser($user, $pass, $database)
+    private function createUser($user, $pass, $database, $host)
     {
         $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'';
 
         $conn = $this->getConnection();
         $conn->query(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
         $conn->query(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+        $conn->query(sprintf($query, $database, $user, $host, $pass));
     }
 
     /**

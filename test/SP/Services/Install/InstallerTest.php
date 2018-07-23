@@ -265,10 +265,11 @@ class InstallerTest extends TestCase
     public function testHostingMode()
     {
         $pass = Util::randomPassword();
+        $host = getenv('DB_SERVER');
 
         $this->dropDatabase(self::DB_NAME);
         $this->createDatabase(self::DB_NAME);
-        $this->createUser('syspass_user', $pass, self::DB_NAME);
+        $this->createUser('syspass_user', $pass, self::DB_NAME, $host);
 
         $params = new InstallData();
         $params->setDbAdminUser('syspass_user');
@@ -299,6 +300,7 @@ class InstallerTest extends TestCase
         $this->dropDatabase(self::DB_NAME);
         $this->dropUser('syspass_user', SELF_IP_ADDRESS);
         $this->dropUser('syspass_user', SELF_HOSTNAME);
+        $this->dropUser('syspass_user', $host);
     }
 
     protected function tearDown()
