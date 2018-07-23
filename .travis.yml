@@ -21,10 +21,7 @@ services:
   - mysql
 
 env:
-  - DB_SERVER=127.0.0.1
-  - DB_NAME=syspass
-  - DB_USER=root
-  - DB_PASS=
+  - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=
 
 before_install:
   - mysql < $TRAVIS_BUILD_DIR/schemas/dbstructure.sql
