@@ -70,7 +70,7 @@ if (is_dir(CONFIG_PATH)
 ) {
     print 'Setting permissions for ' . CONFIG_PATH . PHP_EOL;
 
-    chmod(CONFIG_PATH, 750);
+    chmod(CONFIG_PATH, 0750);
 }
 
 /**
