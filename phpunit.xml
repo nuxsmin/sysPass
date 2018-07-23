@@ -1,12 +1,31 @@
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.3/phpunit.xsd"
-        bootstrap="./test/bootstrap.php">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="./test/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory suffix=".php">./test</directory>
+            <exclude>./test/res</exclude>
+            <exclude>./test/tmp</exclude>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./lib</directory>
+        </whitelist>
+    </filter>
+    <!--<php>-->
+        <!--<env name="APP_ENV" value="testing"/>-->
+        <!--<env name="BCRYPT_ROUNDS" value="4"/>-->
+        <!--<env name="CACHE_DRIVER" value="array"/>-->
+        <!--<env name="SESSION_DRIVER" value="array"/>-->
+        <!--<env name="QUEUE_DRIVER" value="sync"/>-->
+        <!--<env name="MAIL_DRIVER" value="array"/>-->
+    <!--</php>-->
 </phpunit>
-<testsuites>
-    <testsuite name="sysPass">
-        <directory suffix=".php">./test</directory>
-        <exclude>./test/res</exclude>
-        <exclude>./test/tmp</exclude>
-    </testsuite>
-</testsuites>
