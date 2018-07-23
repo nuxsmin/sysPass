@@ -137,7 +137,7 @@ class Installer extends Service
                 __u('Usuario con permisos de administrador de la Base de Datos'));
         }
 
-        if (empty($this->installData->getDbAdminPass())) {
+        if (empty($this->installData->getDbAdminPass()) && APP_MODULE !== 'tests') {
             throw new InvalidArgumentException(
                 __u('Indicar la clave de la BBDD'),
                 SPException::ERROR,

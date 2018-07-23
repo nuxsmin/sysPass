@@ -52,6 +52,7 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunc
 
 print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
 print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
+print 'SELF_IP_ADDRESS=' . SELF_IP_ADDRESS . PHP_EOL;
 
 // Setup directories
 if (!is_dir(TMP_DIR)) {
@@ -94,7 +95,7 @@ if (!function_exists('\gettext')) {
  */
 function getRealIpAddress()
 {
-    return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1'));
+    return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
 }
 
 /**
