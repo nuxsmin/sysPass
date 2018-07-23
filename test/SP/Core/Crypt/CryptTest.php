@@ -71,7 +71,6 @@ class CryptTest extends TestCase
      * Comprobar el desbloqueo de una llave de cifrado
      *
      * @depends testMakeSecuredKey
-     * @covers  \SP\Core\Crypt\Crypt::unlockSecuredKey
      *
      * @param string $key LLave de cifrado
      *
@@ -88,8 +87,6 @@ class CryptTest extends TestCase
      * Comprobar la encriptación y desencriptado de datos
      *
      * @depends testMakeSecuredKey
-     * @covers  \SP\Core\Crypt\Crypt::encrypt
-     * @covers  \SP\Core\Crypt\Crypt::decrypt
      *
      * @param string $key LLave de cifrado
      *
@@ -106,8 +103,6 @@ class CryptTest extends TestCase
      * Comprobar la encriptación y desencriptado de datos
      *
      * @depends testMakeSecuredKey
-     * @covers  \SP\Core\Crypt\Crypt::encrypt
-     * @covers  \SP\Core\Crypt\Crypt::decrypt
      *
      * @param string $key LLave de cifrado
      *

@@ -70,8 +70,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar si es posible escribir en el archivo
      *
-     * @depends testWrite
-     * @doesNotPerformAssertions
      * @throws FileException
      */
     public function testCheckIsWritable()
@@ -86,7 +84,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar el tamaño del archivo
      *
-     * @depends testWrite
      * @throws FileException
      */
     public function testGetFileSize()
@@ -99,7 +96,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar un archivo válido
      *
-     * @depends testWrite
      * @doesNotPerformAssertions
      * @throws FileException
      */
@@ -119,7 +115,6 @@ class FileHandlerTest extends TestCase
     /**
      * Abrir un archivo
      *
-     * @depends testWrite
      * @throws FileException
      */
     public function testOpenAndRead()
@@ -133,7 +128,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar a cerrar un archivo
      *
-     * @depends testWrite
      * @throws FileException
      */
     public function testClose()
@@ -149,7 +143,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar si es posible leer el archivo
      *
-     * @depends testWrite
      * @doesNotPerformAssertions
      * @throws FileException
      */
@@ -167,8 +160,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar la eliminación de un archivo
      *
-     * @depends testWrite
-     * @doesNotPerformAssertions
      * @throws FileException
      */
     public function testDelete()

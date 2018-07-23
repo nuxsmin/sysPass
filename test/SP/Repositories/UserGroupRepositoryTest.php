@@ -129,7 +129,6 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * Comprobar la actualización de grupos
      *
-     * @covers \SP\Repositories\UserGroup\UserGroupRepository::checkDuplicatedOnUpdate()
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
@@ -171,7 +170,6 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * Comprobar la creación de grupos
      *
-     * @covers \SP\Repositories\UserGroup\UserGroupRepository::checkDuplicatedOnAdd()
      * @throws ConstraintException
      * @throws QueryException
      * @throws \SP\Core\Exceptions\SPException

@@ -144,8 +144,6 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de etiquetas
      *
-     * @depends testGetById
-     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -189,8 +187,6 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de etiquetas
      *
-     * @depends testGetById
-     * @covers  \SP\Repositories\Category\CategoryRepository::checkDuplicatedOnAdd()
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\SPException
      */

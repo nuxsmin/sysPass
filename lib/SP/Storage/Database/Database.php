@@ -267,8 +267,8 @@ class Database implements DatabaseInterface
         } catch (\Exception $e) {
             processException($e);
 
-            switch ($e->getCode()) {
-                case '23000':
+            switch ((int)$e->getCode()) {
+                case 23000:
                     throw new ConstraintException(
                         __u('Restricción de integridad'),
                         ConstraintException::ERROR,

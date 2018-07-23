@@ -175,8 +175,6 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de clientes
      *
-     * @depends testGetById
-     * @covers  \SP\Repositories\Client\ClientRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -231,8 +229,6 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de clientes
      *
-     * @depends testGetById
-     * @covers  \SP\Repositories\Client\ClientRepository::checkDuplicatedOnAdd()
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\SPException
      */

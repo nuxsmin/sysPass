@@ -80,7 +80,6 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de etiquetas asociadas a las cuentas
      *
-     * @depends testGetTagsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -130,7 +129,6 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de etiquetas por Id de cuenta
      *
-     * @depends testGetTagsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

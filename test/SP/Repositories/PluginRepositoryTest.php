@@ -141,7 +141,6 @@ class PluginRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetByName
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -234,7 +233,6 @@ class PluginRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -261,7 +259,6 @@ class PluginRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -273,7 +270,6 @@ class PluginRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

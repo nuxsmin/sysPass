@@ -32,3 +32,7 @@ ALTER TABLE User
 
 ALTER TABLE UserPassRecover
   MODIFY hash varbinary(255) NOT NULL;
+
+ALTER TABLE Notification
+  ADD CONSTRAINT fk_Notificationt_userId
+FOREIGN KEY (userId) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -89,7 +89,6 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws NoSuchItemException

@@ -88,7 +88,6 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar la carga de un archivo XML
      *
-     * @depends testSave
      * @throws FileException
      */
     public function testLoad()
@@ -108,7 +107,6 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar el guardado de un archivo XML
      *
-     * @depends testLoad
      * @throws FileException
      */
     public function testSaveNoItems()

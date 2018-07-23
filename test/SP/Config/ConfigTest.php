@@ -76,8 +76,6 @@ class ConfigTest extends TestCase
     /**
      * Comprobar la carga de la configuración
      *
-     * @covers \SP\Config\ConfigUtil::checkConfigDir()
-     * @covers \SP\Config\Config::loadConfigFromFile()
      * @throws DependencyException
      * @throws NotFoundException
      */

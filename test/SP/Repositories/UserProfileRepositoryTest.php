@@ -118,7 +118,6 @@ class UserProfileRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de perfiles
      *
-     * @covers \SP\Repositories\UserGroup\UserGroupRepository::checkDuplicatedOnUpdate()
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException

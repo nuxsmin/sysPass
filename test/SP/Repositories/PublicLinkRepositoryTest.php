@@ -150,7 +150,6 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Repositories\PublicLink\PublicLinkRepository::checkDuplicatedOnAdd()
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -307,7 +306,6 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends  testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -334,12 +332,26 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $data->setId(3);
+        $data->setId(2);
 
         self::$repository->refresh($data);
+    }
 
-        $data->setId(1);
+    /**
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testRefreshNullHash()
+    {
+        $data = new PublicLinkData();
         $data->setHash(null);
+        $data->setDateExpire(time() + 3600);
+        $data->setMaxCountViews(6);
+        $data->setData('data_new');
+        $data->setId(1);
+
+        $this->expectException(ConstraintException::class);
 
         self::$repository->refresh($data);
     }

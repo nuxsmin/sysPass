@@ -115,7 +115,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -152,7 +151,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -189,7 +187,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de usuarios por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -206,7 +203,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -242,7 +238,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de usuarios por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -278,7 +273,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUsersByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

@@ -73,9 +73,6 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Services\Account\AccountService::withTagsById()
-     * @covers \SP\Services\Account\AccountService::withUsersById()
-     * @covers \SP\Services\Account\AccountService::withUserGroupsById()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -290,12 +287,11 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Services\Account\AccountService::getPasswordForId()
      * @throws NoSuchItemException
-     * @throws ServiceException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \Exception
      */
     public function testEditPassword()
     {
@@ -322,7 +318,6 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Services\Account\AccountService::getById()
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

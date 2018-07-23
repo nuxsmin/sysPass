@@ -49,6 +49,8 @@ class MySQLTest extends TestCase
      */
     public function testCheckDatabaseNotExist()
     {
+        $this->dropDatabase(self::DB_NAME);
+
         $mysql = new MySQL($this->getParams(), new ConfigData());
 
         $this->assertFalse($mysql->checkDatabaseExist());

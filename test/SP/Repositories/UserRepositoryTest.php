@@ -76,7 +76,6 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios
      *
-     * @covers \SP\Repositories\User\UserRepository::checkDuplicatedOnUpdate()
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -352,7 +351,6 @@ class UserRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws QueryException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -374,7 +372,6 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de usuarios
      *
-     * @covers \SP\Repositories\User\UserRepository::checkDuplicatedOnAdd()
      * @throws \SP\Core\Exceptions\SPException
      */
     public function testCreate()

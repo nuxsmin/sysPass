@@ -52,7 +52,6 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @covers \SP\Core\Crypt\Vault::saveData()
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function testGetData()
@@ -70,7 +69,6 @@ class VaultTest extends TestCase
 
 
     /**
-     * @covers \SP\Core\Crypt\Vault::saveData()
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function testGetTimeSet()
@@ -81,7 +79,6 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @covers \SP\Core\Crypt\Vault::saveData()
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function testReKey()
@@ -97,7 +94,6 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @covers \SP\Core\Crypt\Vault::saveData()
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function testGetTimeUpdated()

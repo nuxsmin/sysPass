@@ -115,7 +115,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de grupos de usuarios por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -153,7 +152,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -191,7 +189,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos de usuarios por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -208,7 +205,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -245,7 +241,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de grupos de usuarios por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -285,7 +280,6 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @depends testGetUserGroupsByAccountId
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

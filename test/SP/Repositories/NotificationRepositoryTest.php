@@ -134,7 +134,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends  testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -217,7 +216,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -387,8 +385,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testSetCheckedById
-     *
      * @throws ConstraintException
      * @throws QueryException
      */

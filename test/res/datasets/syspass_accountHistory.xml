@@ -21,6 +21,23 @@
                 <field name="hash" xsi:type="xs:hexBinary">3137383764373634363330346335643938376366346536346133393733646337</field>
             </row>
         </table_data>
+        <table_data name="UserGroup">
+            <row>
+                <field name="id">1</field>
+                <field name="name">Admins</field>
+                <field name="description">sysPass Admins</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">Demo</field>
+                <field name="description"/>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="name">Usuarios</field>
+                <field name="description">Grupo Usuarios</field>
+            </row>
+        </table_data>
         <table_data name="Account">
             <row>
                 <field name="id">1</field>

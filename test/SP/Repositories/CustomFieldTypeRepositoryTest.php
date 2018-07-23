@@ -132,7 +132,6 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -149,7 +148,6 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException

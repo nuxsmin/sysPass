@@ -106,7 +106,6 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la modificación de una clave de cuenta
      *
-     * @covers \SP\Repositories\Account\AccountRepository::getPasswordForId()
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -154,7 +153,6 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetById
      * @throws SPException
      */
     public function testUpdate()
@@ -280,7 +278,6 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar en incremento del contador de vistas
      *
-     * @depends testGetById
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws SPException
@@ -321,7 +318,6 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Repositories\Account\AccountRepository::getPasswordForId()
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -346,7 +342,6 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar en incremento del contador de desencriptado
      *
-     * @depends testGetById
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

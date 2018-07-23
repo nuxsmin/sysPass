@@ -138,7 +138,6 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetTokenByToken
      * @throws CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -168,7 +167,6 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testGetTokenByUserId
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -187,8 +185,6 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @covers  \SP\Repositories\AuthToken\AuthTokenRepository::checkDuplicatedOnUpdate()
-     * @depends testGetTokenByToken
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -300,8 +296,6 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @covers \SP\Repositories\AuthToken\AuthTokenRepository::checkDuplicatedOnAdd()
-     *
      * @throws CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException

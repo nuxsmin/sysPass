@@ -100,8 +100,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
               `help` = ?, 
               showInList = ?, 
               typeId = ?, 
-              isEncrypted = ?, 
-              field = NULL 
+              isEncrypted = ?
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();

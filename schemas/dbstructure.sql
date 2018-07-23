@@ -350,9 +350,11 @@ CREATE TABLE `Notification` (
   `onlyAdmin`   tinyint(1)                DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idx_Notification_01` (`userId`, `checked`, `date`),
-  KEY `idx_Notification_02` (`component`, `date`, `checked`, `userId`)
+  KEY `idx_Notification_02` (`component`, `date`, `checked`, `userId`),
+  KEY `fk_Notification_userId` (`userId`),
+  CONSTRAINT `fk_Notification_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Plugin`;
@@ -367,7 +369,7 @@ CREATE TABLE `Plugin` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_Plugin_01` (`name`)
 )
-  ENGINE = MyISAM
+  ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `PublicLink`;
