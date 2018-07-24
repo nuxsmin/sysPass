@@ -1,4 +1,4 @@
-![sysPass logo](https://syspass.org/assets/imgs/syspass.png)
+![sysPass logo](https://syspass.org/assets/imgs/syspass_bg_bluegrey.png)
 
 ## #sysPass - Systems Password Manager
 
