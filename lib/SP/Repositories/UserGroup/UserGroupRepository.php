@@ -94,7 +94,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id int
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -117,7 +117,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParams(array_fill(0, 4, (int)$id));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -125,7 +125,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id int
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -152,7 +152,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParams([(int)$id, (int)$id]);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -160,7 +160,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return UserGroupData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -171,7 +171,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -179,7 +179,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param string $name
      *
-     * @return UserGroupData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -190,13 +190,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE name = ? LIMIT 1');
         $queryData->addParam($name);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return UserGroupData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -206,7 +206,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserGroupData::class);
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup ORDER BY name');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**

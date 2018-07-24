@@ -244,7 +244,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $groupData = $form->getItemData();
 
-            $id = $this->userGroupService->create($groupData, $groupData->getUsers());
+            $id = $this->userGroupService->create($groupData);
 
             $this->addCustomFieldsForItem(Acl::GROUP, $id, $this->request);
 

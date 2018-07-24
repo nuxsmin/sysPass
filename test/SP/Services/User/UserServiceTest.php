@@ -54,11 +54,6 @@ class UserServiceTest extends DatabaseTestCase
     private static $configData;
 
     /**
-     * @var \Closure
-     */
-    private static $getUserLoginResponse;
-
-    /**
      * @var UserService
      */
     private static $service;
@@ -82,10 +77,6 @@ class UserServiceTest extends DatabaseTestCase
         self::$service = $dic->get(UserService::class);
 
         self::$configData = $dic->get(ConfigData::class);
-
-        self::$getUserLoginResponse = function ($login) use ($dic) {
-            return UserService::mapUserLoginResponse($dic->get(UserService::class)->getByLogin($login));
-        };
     }
 
     /**

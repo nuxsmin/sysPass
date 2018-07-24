@@ -28,6 +28,7 @@ namespace SP\Services\UserGroup;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\UserGroup\UserGroupRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -69,10 +70,17 @@ class UserGroupService extends Service
      * @return UserGroupData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
-        return $this->userGroupRepository->getById($id);
+        $result = $this->userGroupRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -84,7 +92,7 @@ class UserGroupService extends Service
     public function delete($id)
     {
         if ($this->userGroupRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Grupo no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -109,35 +117,35 @@ class UserGroupService extends Service
 
     /**
      * @param UserGroupData $itemData
-     * @param array         $users
      *
      * @return int
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
      */
-    public function create($itemData, array $users = [])
+    public function create($itemData)
     {
-        $userGroupId = $this->userGroupRepository->create($itemData);
+        return $this->transactionAware(function () use($itemData) {
+            $id = $this->userGroupRepository->create($itemData);
 
-        if (count($users) > 0) {
-            $this->userToUserGroupService->add($userGroupId, $users);
-        }
+            if (count($itemData->getUsers()) > 0) {
+                $this->userToUserGroupService->add($id, $itemData->getUsers());
+            }
 
-        return $userGroupId;
+            return $id;
+        });
     }
 
     /**
      * @param UserGroupData $itemData
      *
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
      */
     public function update($itemData)
     {
-        $this->userGroupRepository->update($itemData);
-        $this->userToUserGroupService->update($itemData->getId(), $itemData->getUsers());
+        $this->transactionAware(function () use ($itemData) {
+            $this->userGroupRepository->update($itemData);
+
+            $this->userToUserGroupService->update($itemData->getId(), $itemData->getUsers());
+        });
     }
 
     /**
@@ -149,7 +157,7 @@ class UserGroupService extends Service
      */
     public function getAllBasic()
     {
-        return $this->userGroupRepository->getAll();
+        return $this->userGroupRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -158,12 +166,19 @@ class UserGroupService extends Service
      * @param string $name
      *
      * @return UserGroupData
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
-        return $this->userGroupRepository->getByName($name);
+        $result = $this->userGroupRepository->getByName($name);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -177,7 +192,7 @@ class UserGroupService extends Service
      */
     public function getUsage($id)
     {
-        return $this->userGroupRepository->getUsage($id);
+        return $this->userGroupRepository->getUsage($id)->getDataAsArray();
     }
 
     /**
@@ -191,7 +206,7 @@ class UserGroupService extends Service
      */
     public function getUsageByUsers($id)
     {
-        return $this->userGroupRepository->getUsageByUsers($id);
+        return $this->userGroupRepository->getUsageByUsers($id)->getDataAsArray();
     }
 
     /**

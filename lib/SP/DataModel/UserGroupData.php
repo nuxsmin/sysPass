@@ -40,11 +40,11 @@ class UserGroupData extends DataModelBase implements DataModelInterface
     /**
      * @var string
      */
-    public $name = '';
+    public $name;
     /**
      * @var string
      */
-    public $description = '';
+    public $description;
     /**
      * @var array
      */

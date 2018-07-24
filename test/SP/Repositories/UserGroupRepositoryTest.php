@@ -58,7 +58,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
+        self::$dataset = 'syspass_userGroup.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -75,9 +75,11 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetUsageByUsers()
     {
-        $this->assertCount(2, self::$repository->getUsageByUsers(1));
-        $this->assertCount(5, self::$repository->getUsageByUsers(2));
-        $this->assertCount(0, self::$repository->getUsageByUsers(3));
+        $this->assertEquals(2, self::$repository->getUsageByUsers(1)->getNumRows());
+
+        $this->assertEquals(5, self::$repository->getUsageByUsers(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->getUsageByUsers(3)->getNumRows());
     }
 
     /**
@@ -89,7 +91,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     public function testCheckInUse()
     {
         $this->assertTrue(self::$repository->checkInUse(1));
+
         $this->assertTrue(self::$repository->checkInUse(2));
+
         $this->assertFalse(self::$repository->checkInUse(5));
     }
 
@@ -101,29 +105,52 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $group = self::$repository->getByName('Demo');
+        $result = self::$repository->getByName('Demo');
 
-        $this->assertInstanceOf(UserGroupData::class, $group);
-        $this->assertEquals('Demo', $group->getName());
-        $this->assertEmpty($group->getDescription());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertNull(self::$repository->getByName('Prueba'));
+        /** @var UserGroupData $data */
+        $data = $result->getData();
+
+        $this->assertInstanceOf(UserGroupData::class, $data);
+        $this->assertEquals('Demo', $data->getName());
+        $this->assertEmpty($data->getDescription());
+
+        $this->assertEquals(0, self::$repository->getByName('Prueba')->getNumRows());
     }
 
     /**
-     * Comprobar la eliminación de grupos en lote
-     *
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
+        $this->assertEquals(2, self::$repository->deleteByIdBatch([4, 5]));
+
+        $this->assertEquals(3, $this->conn->getRowCount('UserGroup'));
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteByIdBatchUsed()
+    {
         // Se lanza excepción en caso de restricción relacional
         $this->expectException(ConstraintException::class);
 
-        $result = self::$repository->deleteByIdBatch([1, 2, 3]);
+        self::$repository->deleteByIdBatch([1, 2]);
+    }
 
-        $this->assertEquals(1, $result);
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteByIdBatchUnknown()
+    {
+        $this->assertEquals(2, self::$repository->deleteByIdBatch([4, 5, 10]));
+
+        $this->assertEquals(3, $this->conn->getRowCount('UserGroup'));
     }
 
     /**
@@ -135,18 +162,18 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $userGroupData = new UserGroupData();
-        $userGroupData->setId(2);
-        $userGroupData->setName('Grupo demo');
-        $userGroupData->setDescription('Grupo para usuarios demo');
+        $data = new UserGroupData();
+        $data->setId(2);
+        $data->setName('Grupo demo');
+        $data->setDescription('Grupo para usuarios demo');
 
-        $this->assertEquals(1, self::$repository->update($userGroupData));
+        $this->assertEquals(1, self::$repository->update($data));
 
         $this->expectException(DuplicatedItemException::class);
 
-        $userGroupData->setName('Admins');
+        $data->setName('Admins');
 
-        self::$repository->update($userGroupData);
+        self::$repository->update($data);
 
     }
 
@@ -158,13 +185,18 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $group = self::$repository->getById(2);
+        $result = self::$repository->getById(2);
 
-        $this->assertInstanceOf(UserGroupData::class, $group);
-        $this->assertEquals('Demo', $group->getName());
-        $this->assertEmpty($group->getDescription());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertNull(self::$repository->getById(4));
+        /** @var UserGroupData $data */
+        $data = $result->getData();
+
+        $this->assertInstanceOf(UserGroupData::class, $data);
+        $this->assertEquals('Demo', $data->getName());
+        $this->assertEmpty($data->getDescription());
+
+        $this->assertEquals(0, self::$repository->getById(10)->getNumRows());
     }
 
     /**
@@ -176,17 +208,30 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $userGroupData = new UserGroupData();
-        $userGroupData->setName('Grupo Prueba');
-        $userGroupData->setDescription('Grupo de prueba para usuarios');
+        $data = new UserGroupData();
+        $data->setId(6);
+        $data->setName('Grupo Prueba');
+        $data->setDescription('Grupo de prueba para usuarios');
 
-        $this->assertEquals(4, self::$repository->create($userGroupData));
+        $this->assertEquals($data->getId(), self::$repository->create($data));
+
+        $this->assertEquals($data, self::$repository->getById($data->getId())->getData());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCreateDuplicated()
+    {
+        $data = new UserGroupData();
+        $data->setName('Admins');
+        $data->setDescription('Group for demo users');
 
         $this->expectException(DuplicatedItemException::class);
 
-        $userGroupData->setName('Admins');
-
-        self::$repository->create($userGroupData);
+        self::$repository->create($data);
     }
 
     /**
@@ -197,13 +242,22 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $groups = self::$repository->getAll();
+        $result = self::$repository->getAll();
 
-        $this->assertCount(3, $groups);
-        $this->assertInstanceOf(UserGroupData::class, $groups[0]);
-        $this->assertEquals('Admins', $groups[0]->getName());
-        $this->assertInstanceOf(UserGroupData::class, $groups[1]);
-        $this->assertEquals('Demo', $groups[1]->getName());
+        $this->assertEquals(5, $result->getNumRows());
+
+        /** @var UserGroupData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(5, $data);
+
+        $this->assertInstanceOf(UserGroupData::class, $data[0]);
+        $this->assertEquals('Admins', $data[0]->getName());
+        $this->assertEquals('sysPass Admins', $data[0]->getDescription());
+        $this->assertInstanceOf(UserGroupData::class, $data[1]);
+
+        $this->assertEquals('Demo', $data[1]->getName());
+        $this->assertEmpty($data[1]->getDescription());
     }
 
     /**
@@ -213,15 +267,23 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $result = self::$repository->delete(3);
+        $this->assertEquals(1, self::$repository->delete(3));
 
-        $this->assertEquals(1, $result);
-        $this->assertEquals(2, $this->conn->getRowCount('UserGroup'));
+        $this->assertEquals(4, $this->conn->getRowCount('UserGroup'));
 
+        $this->assertEquals(0, self::$repository->delete(10));
+    }
+
+    /**
+     * Comprobar la eliminación de grupos
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testDeleteUsed()
+    {
         $this->expectException(ConstraintException::class);
 
         self::$repository->delete(1);
-        self::$repository->delete(2);
     }
 
     /**
@@ -232,8 +294,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetUsage()
     {
-        $this->assertCount(7, self::$repository->getUsage(2));
-        $this->assertCount(0, self::$repository->getUsage(3));
+        $this->assertEquals(7, self::$repository->getUsage(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->getUsage(3)->getNumRows());
     }
 
     /**
@@ -244,13 +307,17 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetByIdBatch()
     {
-        $groups = self::$repository->getByIdBatch([1, 2, 5]);
+        $data = self::$repository->getByIdBatch([1, 2, 10]);
 
-        $this->assertCount(2, $groups);
-        $this->assertInstanceOf(UserGroupData::class, $groups[0]);
-        $this->assertEquals(1, $groups[0]->getId());
-        $this->assertEquals('Admins', $groups[0]->getName());
-        $this->assertInstanceOf(UserGroupData::class, $groups[1]);
+        $this->assertCount(2, $data);
+        $this->assertInstanceOf(UserGroupData::class, $data[0]);
+        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals('Admins', $data[0]->getName());
+        $this->assertEquals('sysPass Admins', $data[0]->getDescription());
+
+        $this->assertInstanceOf(UserGroupData::class, $data[1]);
+        $this->assertEquals('Demo', $data[1]->getName());
+        $this->assertEmpty($data[1]->getDescription());
     }
 
     /**
