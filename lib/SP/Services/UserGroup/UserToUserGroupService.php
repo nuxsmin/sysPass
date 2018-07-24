@@ -24,6 +24,8 @@
 
 namespace SP\Services\UserGroup;
 
+use SP\DataModel\UserToUserGroupData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
 use SP\Services\Service;
 
@@ -43,19 +45,26 @@ class UserToUserGroupService extends Service
      * @param $id
      *
      * @return \SP\DataModel\UserToUserGroupData[]
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        return $this->userToUserGroupRepository->getById($id);
+        $result = $this->userToUserGroupRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+        }
+
+        return $result->getDataAsArray();
     }
 
     /**
      * @param       $id
      * @param array $users
      *
-     * @return UserToUserGroupRepository
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -68,7 +77,7 @@ class UserToUserGroupService extends Service
      * @param int   $id
      * @param array $users
      *
-     * @return UserToUserGroupRepository
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -92,7 +101,8 @@ class UserToUserGroupService extends Service
     {
         $usersId = [];
 
-        foreach ($this->userToUserGroupRepository->getById($id) as $userToUserGroupData) {
+        /** @var UserToUserGroupData $userToUserGroupData */
+        foreach ($this->userToUserGroupRepository->getById($id)->getDataAsArray() as $userToUserGroupData) {
             $usersId[] = $userToUserGroupData->getUserId();
         }
 
@@ -125,7 +135,7 @@ class UserToUserGroupService extends Service
      */
     public function getGroupsForUser($userId)
     {
-        return $this->userToUserGroupRepository->getGroupsForUser($userId);
+        return $this->userToUserGroupRepository->getGroupsForUser($userId)->getDataAsArray();
     }
 
     /**

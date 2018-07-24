@@ -519,6 +519,7 @@ CREATE TABLE `UserToUserGroup` (
   `userGroupId` smallint(5) unsigned NOT NULL,
   KEY `idx_UserToUserGroup_01` (`userId`),
   KEY `fk_UserToGroup_userGroupId` (`userGroupId`),
+  UNIQUE KEY `uk_UserToUserGroup_01` (`userId`, `userGroupId`),
   CONSTRAINT `fk_UserToGroup_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,

@@ -81,6 +81,10 @@
             <field name="userId">2</field>
             <field name="userGroupId">1</field>
         </row>
+        <row>
+            <field name="userId">2</field>
+            <field name="userGroupId">3</field>
+        </row>
     </table_data>
 </database>
 </mysqldump>

@@ -62,7 +62,7 @@ class UserToUserGroupRepository extends Repository
      *
      * @param $userId
      *
-     * @return array
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -72,7 +72,7 @@ class UserToUserGroupRepository extends Repository
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userId = ?');
         $queryData->addParam($userId);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -81,7 +81,7 @@ class UserToUserGroupRepository extends Repository
      * @param int   $id
      * @param array $users
      *
-     * @return UserToUserGroupRepository
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -96,7 +96,7 @@ class UserToUserGroupRepository extends Repository
      *
      * @param $id int
      *
-     * @return $this
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -107,9 +107,7 @@ class UserToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios del grupo'));
 
-        $this->db->doQuery($queryData);
-
-        return $this;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -118,12 +116,16 @@ class UserToUserGroupRepository extends Repository
      * @param int   $groupId
      * @param array $users
      *
-     * @return UserToUserGroupRepository
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function add($groupId, array $users)
     {
+        if (empty($users)) {
+            return 0;
+        }
+
         $query = /** @lang SQL */
             'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES ' . $this->getParamsFromArray($users, '(?,?)');
 
@@ -137,9 +139,7 @@ class UserToUserGroupRepository extends Repository
 
         $queryData->setOnErrorMessage(__u('Error al asignar los usuarios al grupo'));
 
-        $this->db->doQuery($queryData);
-
-        return $this;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -147,7 +147,7 @@ class UserToUserGroupRepository extends Repository
      *
      * @param $id int
      *
-     * @return UserToUserGroupData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -158,6 +158,6 @@ class UserToUserGroupRepository extends Repository
         $queryData->setQuery('SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }
