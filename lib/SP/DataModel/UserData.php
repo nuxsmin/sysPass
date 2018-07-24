@@ -385,7 +385,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return bool
      */
-    public function isIsChangedPass()
+    public function isChangedPass()
     {
         return (int)$this->isChangedPass;
     }

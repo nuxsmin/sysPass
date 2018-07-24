@@ -31,7 +31,6 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -192,8 +191,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return UserData
-     * @throws NoSuchItemException
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -235,13 +233,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
 
-        $result = $this->db->doSelect($queryData);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
-        }
-
-        return $result->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -561,7 +553,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns items' basic information
      *
-     * @return UserData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -584,7 +576,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -709,7 +701,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param $groupId
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -729,7 +721,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([$groupId, $groupId]);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -737,7 +729,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -784,6 +776,6 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams(array_fill(0, 5, (int)$id));
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

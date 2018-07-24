@@ -83,7 +83,7 @@ class UserService extends Service
             ->setIsAdminAcc($userData->isAdminAcc())
             ->setIsAdminApp($userData->isAdminApp())
             ->setIsMigrate($userData->isMigrate())
-            ->setIsChangedPass($userData->isIsChangedPass())
+            ->setIsChangedPass($userData->isChangedPass())
             ->setIsChangePass($userData->isChangePass())
             ->setIsDisabled($userData->isDisabled())
             ->setLastUpdate((int)strtotime($userData->getLastUpdate()));
@@ -110,13 +110,20 @@ class UserService extends Service
      *
      * @param $id int El id del usuario
      *
-     * @return bool
-     * @throws QueryException
+     * @return int
      * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function updateLastLoginById($id)
     {
-        return $this->userRepository->updateLastLoginById($id);
+        $result = $this->userRepository->updateLastLoginById($id);
+
+        if ($this->userRepository->updateLastLoginById($id) === 0) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
+        }
+
+        return $result;
     }
 
     /**
@@ -136,12 +143,18 @@ class UserService extends Service
      *
      * @param int $id
      *
-     * @return mixed
+     * @return UserData
      * @throws SPException
      */
     public function getById($id)
     {
-        return $this->userRepository->getById($id);
+        $result = $this->userRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
+        }
+
+        return $result->getData();
     }
 
     /**
@@ -169,14 +182,14 @@ class UserService extends Service
      * @param $id
      *
      * @return UserService
-     * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function delete($id)
     {
         if ($this->userRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Usuario no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Usuario no encontrado'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -237,7 +250,7 @@ class UserService extends Service
      * @return int
      * @throws SPException
      */
-    public function create($itemData)
+    public function create(UserData $itemData)
     {
         $itemData->setPass(Hash::hashKey($itemData->getPass()));
 
@@ -255,16 +268,16 @@ class UserService extends Service
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function createWithMasterPass($itemData, $userPass, $masterPass)
+    public function createWithMasterPass(UserData $itemData, $userPass, $masterPass)
     {
         $response = $this->userPassService->createMasterPass($masterPass, $itemData->getLogin(), $userPass);
 
-        $itemData->setPass(Hash::hashKey($userPass));
         $itemData->setMPass($response->getCryptMasterPass());
         $itemData->setMKey($response->getCryptSecuredKey());
         $itemData->setLastUpdateMPass(time());
+        $itemData->setPass($userPass);
 
-        return $this->userRepository->create($itemData);
+        return $this->create($itemData);
     }
 
     /**
@@ -286,10 +299,10 @@ class UserService extends Service
      *
      * @param UserData $itemData
      *
-     * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function update($itemData)
     {
@@ -304,9 +317,9 @@ class UserService extends Service
      * @param int    $userId
      * @param string $pass
      *
-     * @return int
      * @throws ConstraintException
      * @throws QueryException
+     * @throws ServiceException
      */
     public function updatePass($userId, $pass)
     {
@@ -314,7 +327,9 @@ class UserService extends Service
         $passRequest->setIsChangePass(0);
         $passRequest->setIsChangedPass(1);
 
-        return $this->userRepository->updatePassById($userId, $passRequest);
+        if ($this->userRepository->updatePassById($userId, $passRequest) === 0) {
+            throw new ServiceException(__u('Error al modificar la clave'));
+        }
     }
 
     /**
@@ -358,7 +373,7 @@ class UserService extends Service
      */
     public function getAllBasic()
     {
-        return $this->userRepository->getBasicInfo();
+        return $this->userRepository->getBasicInfo()->getDataAsArray();
     }
 
     /**
@@ -372,7 +387,7 @@ class UserService extends Service
      */
     public function getUserEmailForGroup($groupId)
     {
-        return $this->userRepository->getUserEmailForGroup($groupId);
+        return $this->userRepository->getUserEmailForGroup($groupId)->getDataAsArray();
     }
 
     /**
@@ -386,7 +401,7 @@ class UserService extends Service
      */
     public function getUsageForUser($id)
     {
-        return $this->userRepository->getUsageForUser($id);
+        return $this->userRepository->getUsageForUser($id)->getDataAsArray();
     }
 
     /**

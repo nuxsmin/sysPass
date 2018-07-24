@@ -33,7 +33,6 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\DuplicatedItemException;
-use SP\Repositories\NoSuchItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\User\UpdatePassRequest;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -118,7 +117,7 @@ class UserRepositoryTest extends DatabaseTestCase
     public function testUpdatePreferencesById()
     {
         $preferences = new UserPreferencesData();
-        $preferences->setLang('es_ED');
+        $preferences->setLang('es_ES');
         $preferences->setAccountLink(true);
         $preferences->setOptionalActions(true);
         $preferences->setResultsAsCards(true);
@@ -134,15 +133,20 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $user = self::$repository->getById(2);
+        $result = self::$repository->getById(2);
 
-        $this->assertInstanceOf(UserData::class, $user);
-        $this->assertEquals('sysPass demo', $user->getName());
-        $this->assertEquals('demo', $user->getLogin());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->expectException(NoSuchItemException::class);
+        /** @var UserData $data */
+        $data = $result->getData();
 
-        self::$repository->getById(5);
+        $this->assertInstanceOf(UserData::class, $data);
+        $this->assertEquals('sysPass demo', $data->getName());
+        $this->assertEquals('demo', $data->getLogin());
+
+        $result = self::$repository->getById(5);
+
+        $this->assertEquals(0, $result->getNumRows());
     }
 
     /**
@@ -165,7 +169,11 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetUsageForUser()
     {
-        $this->assertCount(2, self::$repository->getUsageForUser(2));
+        $result = self::$repository->getUsageForUser(2);
+
+        $this->assertEquals(2, $result->getNumRows());
+
+        $this->assertCount(2, $result->getDataAsArray());
     }
 
     /**
@@ -177,11 +185,17 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testUpdatePassById()
     {
-        $result = self::$repository->updatePassById(2, new UpdatePassRequest(Hash::hashKey('prueba123')));
+        $result = self::$repository->updatePassById(2, new UpdatePassRequest(Hash::hashKey('test123')));
 
         $this->assertEquals(1, $result);
 
-        $result = self::$repository->updatePassById(10, new UpdatePassRequest(Hash::hashKey('prueba123')));
+        /** @var UserData $data */
+        $data = self::$repository->getById(2)->getData();
+
+        $this->assertTrue(Hash::checkHashKey('test123', $data->getPass()));
+
+        $result = self::$repository->updatePassById(10, new UpdatePassRequest(Hash::hashKey('test123')));
+
         $this->assertEquals(0, $result);
     }
 
@@ -300,10 +314,14 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetBasicInfo()
     {
-        $users = self::$repository->getBasicInfo();
+        $result = self::$repository->getBasicInfo();
 
-        $this->assertCount(4, $users);
-        $this->assertInstanceOf(UserData::class, $users[0]);
+        $this->assertEquals(4, $result->getNumRows());
+
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(4, $data);
+        $this->assertInstanceOf(UserData::class, $data[0]);
     }
 
     /**
@@ -363,10 +381,15 @@ class UserRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->updateMasterPassById(3, $pass, $key));
 
-        $user = self::$repository->getById(3);
+        $result = self::$repository->getById(3);
 
-        $this->assertEquals($pass, $user->getMPass());
-        $this->assertEquals($key, $user->getMKey());
+        $this->assertEquals(1, $result->getNumRows());
+
+        /** @var UserData $data */
+        $data = $result->getData();
+
+        $this->assertEquals($pass, $data->getMPass());
+        $this->assertEquals($key, $data->getMKey());
     }
 
     /**
@@ -413,6 +436,8 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetUserEmailForGroup()
     {
-        $this->assertCount(4, self::$repository->getUserEmailForGroup(2));
+        $this->assertEquals(4, self::$repository->getUserEmailForGroup(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->getUserEmailForGroup(10)->getNumRows());
     }
 }

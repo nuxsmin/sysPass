@@ -58,8 +58,8 @@
   <ldapBase></ldapBase>
   <ldapBindPass></ldapBindPass>
   <ldapBindUser></ldapBindUser>
-  <ldapDefaultGroup></ldapDefaultGroup>
-  <ldapDefaultProfile></ldapDefaultProfile>
+  <ldapDefaultGroup>2</ldapDefaultGroup>
+  <ldapDefaultProfile>2</ldapDefaultProfile>
   <ldapEnabled>0</ldapEnabled>
   <ldapGroup></ldapGroup>
   <ldapProxyUser></ldapProxyUser>
@@ -93,8 +93,8 @@
   <sessionTimeout>300</sessionTimeout>
   <siteLang></siteLang>
   <siteTheme>material-blue</siteTheme>
-  <ssoDefaultGroup></ssoDefaultGroup>
-  <ssoDefaultProfile></ssoDefaultProfile>
+  <ssoDefaultGroup>3</ssoDefaultGroup>
+  <ssoDefaultProfile>3</ssoDefaultProfile>
   <syslogEnabled>0</syslogEnabled>
   <syslogPort>514</syslogPort>
   <syslogRemoteEnabled>0</syslogRemoteEnabled>
