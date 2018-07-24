@@ -35,8 +35,7 @@
     "phpunit/phpunit": "^6",
     "phpunit/dbunit": "^3",
     "pdepend/pdepend" : "@stable",
-    "phpmd/phpmd" : "@stable",
-    "codeclimate/php-test-reporter": "^0.4.4"
+    "phpmd/phpmd" : "@stable"
   },
   "autoload": {
     "psr-4": {
