@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Lib\Mvc\View;
+namespace SP\Mvc\View;
 
 /**
  * Class View

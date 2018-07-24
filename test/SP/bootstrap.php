@@ -47,8 +47,8 @@ define('LOG_FILE', TMP_DIR . DIRECTORY_SEPARATOR . 'test.log');
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
 print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;

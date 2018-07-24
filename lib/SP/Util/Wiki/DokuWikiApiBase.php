@@ -30,8 +30,6 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Http\XMLRPCResponseParse;
-use SP\Log\Log;
-use SP\Log\LogLevel;
 use SP\Util\Util;
 
 /**
@@ -41,8 +39,6 @@ use SP\Util\Util;
  */
 abstract class DokuWikiApiBase
 {
-    use SP\Core\Dic\InjectableTrait;
-
     /**
      * @var string
      */
@@ -205,21 +201,7 @@ abstract class DokuWikiApiBase
      */
     protected function logException(SPException $e, $source = null)
     {
-        $Log = new Log();
-        $LogMessgae = $Log->getLogMessage();
-        $LogMessgae->setAction('DokuWiki API');
-        $LogMessgae->addDescription($e->getMessage());
-
-        if ($e->getHint()) {
-            $LogMessgae->addDetails(__('Error', false), $e->getHint());
-        }
-
-        if (null !== $source) {
-            $LogMessgae->addDetails(__('Origen', false), $source);
-        }
-
-        $Log->setLogLevel(LogLevel::ERROR);
-        $Log->writeLog();
+        processException($e);
     }
 
     /**

@@ -51,41 +51,6 @@ class LogMessage extends MessageBase
     protected $detailsCounter = 0;
 
     /**
-     * Devuelve la acción realizada
-     *
-     * @param bool $translate
-     * @return string
-     */
-    public function getAction($translate = false)
-    {
-        return $translate === true ? __($this->action) : $this->action;
-    }
-
-    /**
-     * Establece la acción realizada
-     *
-     * @param string $action
-     * @return $this
-     */
-    public function setAction($action)
-    {
-        $this->action = $this->formatString($action);
-
-        return $this;
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags($string);
-    }
-
-    /**
      * Devuelve la descripción de la acción realizada en formato HTML
      *
      * @param bool $translate
@@ -193,15 +158,51 @@ class LogMessage extends MessageBase
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
      * @return string
      */
-    public function composeText()
+    public function composeText($delimiter = PHP_EOL)
     {
         $message[] = $this->getAction(true);
         $message[] = $this->getDescription(true);
         $message[] = $this->getDetails(true);
 
         return implode(PHP_EOL, $message);
+    }
+
+    /**
+     * Devuelve la acción realizada
+     *
+     * @param bool $translate
+     * @return string
+     */
+    public function getAction($translate = false)
+    {
+        return $translate === true ? __($this->action) : $this->action;
+    }
+
+    /**
+     * Establece la acción realizada
+     *
+     * @param string $action
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->action = $this->formatString($action);
+
+        return $this;
+    }
+
+    /**
+     * Formatear una cadena para guardarla en el registro
+     *
+     * @param $string string La cadena a formatear
+     * @return string
+     */
+    private function formatString($string)
+    {
+        return strip_tags($string);
     }
 
     /**
@@ -233,7 +234,7 @@ class LogMessage extends MessageBase
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool  $translate
+     * @param bool $translate
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
