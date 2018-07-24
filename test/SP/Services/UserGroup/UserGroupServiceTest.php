@@ -192,7 +192,9 @@ class UserGroupServiceTest extends DatabaseTestCase
     {
         $this->assertCount(7, self::$service->getUsage(2));
 
-        $this->assertCount(0, self::$service->getUsage(3));
+        $this->assertCount(1, self::$service->getUsage(3));
+
+        $this->assertCount(0,  self::$service->getUsage(4));
     }
 
     /**
@@ -311,6 +313,6 @@ class UserGroupServiceTest extends DatabaseTestCase
 
         $this->assertCount(5, self::$service->getUsageByUsers(2));
 
-        $this->assertCount(0, self::$service->getUsageByUsers(3));
+        $this->assertCount(0, self::$service->getUsageByUsers(4));
     }
 }

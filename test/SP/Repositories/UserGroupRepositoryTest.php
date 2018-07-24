@@ -79,7 +79,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
 
         $this->assertEquals(5, self::$repository->getUsageByUsers(2)->getNumRows());
 
-        $this->assertEquals(0, self::$repository->getUsageByUsers(3)->getNumRows());
+        $this->assertEquals(0, self::$repository->getUsageByUsers(4)->getNumRows());
     }
 
     /**
@@ -296,7 +296,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     {
         $this->assertEquals(7, self::$repository->getUsage(2)->getNumRows());
 
-        $this->assertEquals(0, self::$repository->getUsage(3)->getNumRows());
+        $this->assertEquals(1, self::$repository->getUsage(3)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->getUsage(4)->getNumRows());
     }
 
     /**
