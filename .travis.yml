@@ -8,7 +8,7 @@ php:
 #  - '7.2'
 
 addons:
-  mariadb: '10.0'
+  mariadb: '10.1'
   code_climate:
     repo_token:
       secure: 'c6PDxJm5j8GrykIp0YdqIuLHsGIj1sGF5wX2gvH4wdWxtKGS5scjldOLnn0DBt/p9kpN74Ew1wpJCEXw4cHtsI9bQnzfNCmT33ZhbloVMO2HlRBwrGMgOCmSBHIYOKrCUD/vPYjPrI7H5IZiLNzB9oqRESWDDjqNSs3Vym7KAUZsAqkEHJ3KBYK0gb2YxxB5buv+ciecjYT/mDCfOXiHjJywphXd9rJdYmuPYEv3oRHNVbnj4q/ywONRGzE5n03SF6xpr+eNgV40cHd2ZWad+Sr3bYaY4TdNC1r6VlzU0uXhTbf+8hsJXb86l7v34W8ibm501iCL62dxQ4v9jtjSVONg1s0S409vpV4bGEcD1sUXQdE0WjBIv62EWxrfMRsZleeH71rQTVgnEGST4YlSoYhcVlPklr5wQuwUOe4f4UdDzCKNeOtY2rcEtK9eMeuxnbOI805Ik7Eef32I49vRJlvO6EWdDYZVcRFXFpS0R3tlREVm5Gfs3l6QMmilCVqhmxicr0qU3X6paO2GBkCGL21BiRmbRDU64r2JZQrOX6CP/eh6cpTPvP9ldAJLGBzZIzePoUY0SQkbP+Tf+HU2H4kJdIaL/dl3BiDuex5U22S27N4k27PwBAfUgSF2QLn2wKGjldFRN6GW6foyJHg2JZ1t2jVCllkX0i9BxAiJeIo='
@@ -26,8 +26,8 @@ notifications:
     on_success: never
     on_failure: always
 
-services:
-  - mysql
+#services:
+#  - mysql
 
 env:
   - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=
@@ -38,4 +38,4 @@ before_install:
 
 cache:
   directories:
-  - $HOME/vendor
+  - vendor
