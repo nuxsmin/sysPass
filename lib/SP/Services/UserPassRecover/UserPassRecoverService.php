@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,6 +56,7 @@ class UserPassRecoverService extends Service
 
     /**
      * @param $hash
+     *
      * @return MailMessage
      */
     public static function getMailMessage($hash)
@@ -75,6 +76,7 @@ class UserPassRecoverService extends Service
 
     /**
      * @param $hash
+     *
      * @return void
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\SPException
@@ -88,6 +90,7 @@ class UserPassRecoverService extends Service
 
     /**
      * @param int $id
+     *
      * @return string
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -111,6 +114,7 @@ class UserPassRecoverService extends Service
      * Comprobar el límite de recuperaciones de clave.
      *
      * @param int $userId
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -123,6 +127,7 @@ class UserPassRecoverService extends Service
     /**
      * @param $userId
      * @param $hash
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

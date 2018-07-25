@@ -76,13 +76,20 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $profiles = self::$repository->getAll();
+        $result = self::$repository->getAll();
 
-        $this->assertCount(3, $profiles);
-        $this->assertInstanceOf(UserProfileData::class, $profiles[0]);
-        $this->assertEquals('Admin', $profiles[0]->getName());
-        $this->assertInstanceOf(UserProfileData::class, $profiles[1]);
-        $this->assertEquals('Demo', $profiles[1]->getName());
+        $this->assertEquals(3, $result->getNumRows());
+
+        /** @var UserProfileData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(3, $data);
+
+        $this->assertInstanceOf(UserProfileData::class, $data[0]);
+        $this->assertEquals('Admin', $data[0]->getName());
+
+        $this->assertInstanceOf(UserProfileData::class, $data[1]);
+        $this->assertEquals('Demo', $data[1]->getName());
     }
 
     /**
@@ -124,17 +131,17 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $userProfileData = new UserProfileData();
-        $userProfileData->setId(2);
-        $userProfileData->setName('Perfil Demo');
+        $data = new UserProfileData();
+        $data->setId(2);
+        $data->setName('Test Profile Demo');
 
-        $this->assertEquals(1, self::$repository->update($userProfileData));
+        $this->assertEquals(1, self::$repository->update($data));
 
         $this->expectException(DuplicatedItemException::class);
 
-        $userProfileData->setName('Admin');
+        $data->setName('Admin');
 
-        self::$repository->update($userProfileData);
+        self::$repository->update($data);
     }
 
     /**
@@ -153,7 +160,6 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $this->expectException(ConstraintException::class);
 
         self::$repository->delete(1);
-        self::$repository->delete(2);
     }
 
     /**
@@ -183,20 +189,36 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $profileData->setAccDelete(true);
         $profileData->setConfigBackup(true);
 
-        $userProfileData = new UserProfileData();
-        $userProfileData->setName('Prueba');
-        $userProfileData->setProfile($profileData);
+        $data = new UserProfileData();
+        $data->setId(4);
+        $data->setName('Prueba');
+        $data->setProfile($profileData);
 
-        $result = self::$repository->create($userProfileData);
+        $result = self::$repository->create($data);
 
-        $this->assertEquals(4, $result);
+        $this->assertEquals($data->getId(), $result);
         $this->assertEquals(4, $this->conn->getRowCount('UserProfile'));
+
+        /** @var UserProfileData $resultData */
+        $resultData = self::$repository->getById($result)->getData();
+
+        $this->assertEquals($data->getId(), $resultData->getId());
+        $this->assertEquals($data->getName(), $resultData->getName());
+        $this->assertEquals(serialize($data->getProfile()), $resultData->getProfile());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCreateDuplicated()
+    {
+        $data = new UserProfileData();
+        $data->setName('Admin');
+        $data->setProfile(new ProfileData());
 
         $this->expectException(DuplicatedItemException::class);
 
-        $userProfileData->setName('Demo');
-
-        self::$repository->create($userProfileData);
+        self::$repository->create($data);
     }
 
     /**
@@ -207,13 +229,18 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $profile = self::$repository->getById(2);
+        $result = self::$repository->getById(2);
 
-        $this->assertInstanceOf(UserProfileData::class, $profile);
-        $this->assertEquals('Demo', $profile->getName());
-        $this->assertNotEmpty($profile->getProfile());
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertNull(self::$repository->getById(4));
+        /** @var UserProfileData $data */
+        $data = $result->getData();
+
+        $this->assertInstanceOf(UserProfileData::class, $data);
+        $this->assertEquals('Demo', $data->getName());
+        $this->assertNotEmpty($data->getProfile());
+
+        $this->assertEquals(0, self::$repository->getById(4)->getNumRows());
     }
 
     /**
@@ -224,8 +251,9 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      */
     public function testGetUsersForProfile()
     {
-        $this->assertCount(1, self::$repository->getUsersForProfile(2));
-        $this->assertCount(0, self::$repository->getUsersForProfile(3));
+        $this->assertEquals(1, self::$repository->getUsersForProfile(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->getUsersForProfile(3)->getNumRows());
     }
 
     /**

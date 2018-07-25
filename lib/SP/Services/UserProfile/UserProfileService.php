@@ -28,6 +28,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\UserProfile\UserProfileRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -54,10 +55,17 @@ class UserProfileService extends Service
      * @return UserProfileData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
      */
     public function getById($id)
     {
-        $userProfileData = $this->userProfileRepository->getById($id);
+        $result = $this->userProfileRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Perfil no encontrado'));
+        }
+
+        $userProfileData = $result->getData();
         $userProfileData->setProfile(Util::unserialize(ProfileData::class, $userProfileData->getProfile()));
 
         return $userProfileData;
@@ -79,12 +87,14 @@ class UserProfileService extends Service
      * @param $id
      *
      * @return $this
-     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
         if ($this->userProfileRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Perfil no encontrado'), ServiceException::INFO);
+            throw new NoSuchItemException(__u('Perfil no encontrado'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -121,14 +131,15 @@ class UserProfileService extends Service
     /**
      * @param $itemData
      *
-     * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
-        return $this->userProfileRepository->update($itemData);
+        if ($this->userProfileRepository->update($itemData) === 0) {
+            throw new ServiceException(__u('Error al modificar perfil'));
+        }
     }
 
     /**
@@ -140,19 +151,19 @@ class UserProfileService extends Service
      */
     public function getUsersForProfile($id)
     {
-        return $this->userProfileRepository->getUsersForProfile($id);
+        return $this->userProfileRepository->getUsersForProfile($id)->getDataAsArray();
     }
 
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return UserProfileData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
-        return $this->userProfileRepository->getAll();
+        return $this->userProfileRepository->getAll()->getDataAsArray();
     }
 
     /**

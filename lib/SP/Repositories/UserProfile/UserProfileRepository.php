@@ -49,7 +49,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param $id int El id del perfil
      *
-     * @return array
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -59,7 +59,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT login FROM User WHERE userProfileId = ?');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
@@ -104,7 +104,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param int $id
      *
-     * @return UserProfileData
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -115,13 +115,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return $this->db->doSelect($queryData)->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return UserProfileData[]
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -131,7 +131,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(UserProfileData::class);
         $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**
