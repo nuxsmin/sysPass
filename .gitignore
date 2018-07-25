@@ -56,7 +56,7 @@ app/temp/*
 app/modules/web/plugins/*
 vendor/*
 doc/*
-test/_output/
+test/_output/*
 
 .phpstorm.meta.php
 composer.phar
