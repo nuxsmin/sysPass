@@ -42,7 +42,7 @@ use SP\Services\Category\CategoryService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class CategoryController extends ControllerBase implements CrudControllerInterface
+final class CategoryController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -236,7 +236,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         }
 
         try {
-            $form = new CategoryForm();
+            $form = new CategoryForm($this->dic);
             $form->validate(Acl::CATEGORY_CREATE);
 
             $itemData = $form->getItemData();
@@ -278,7 +278,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         }
 
         try {
-            $form = new CategoryForm($id);
+            $form = new CategoryForm($this->dic, $id);
             $form->validate(Acl::CATEGORY_EDIT);
 
             $itemData = $form->getItemData();

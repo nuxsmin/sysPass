@@ -37,7 +37,7 @@ use SP\Services\Task\TaskService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class TaskController
+final class TaskController
 {
     /**
      * @var Container

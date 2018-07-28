@@ -33,7 +33,7 @@ use SP\DataModel\UserData;
  *
  * @package SP\Modules\Web\Forms
  */
-class UserForm extends FormBase implements FormInterface
+final class UserForm extends FormBase implements FormInterface
 {
     /**
      * @var UserData

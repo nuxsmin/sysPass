@@ -39,7 +39,7 @@ use SP\Services\Mail\MailService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigMailController extends SimpleControllerBase
+final class ConfigMailController extends SimpleControllerBase
 {
     use ConfigTrait;
 

@@ -43,7 +43,7 @@ use SP\Services\Ldap\LdapImportService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigLdapController extends SimpleControllerBase
+final class ConfigLdapController extends SimpleControllerBase
 {
     use ConfigTrait;
 

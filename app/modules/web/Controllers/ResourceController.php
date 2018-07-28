@@ -32,7 +32,7 @@ use SP\Html\Minify;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ResourceController extends SimpleControllerBase
+final class ResourceController extends SimpleControllerBase
 {
     /**
      * @var Minify

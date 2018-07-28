@@ -40,7 +40,7 @@ use SP\Services\UserProfile\UserProfileService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccessManagerController extends ControllerBase
+final class AccessManagerController extends ControllerBase
 {
     /**
      * @var ItemSearchData

@@ -43,7 +43,7 @@ use SP\Util\ErrorUtil;
  *
  * @package SP\Modules\Web\Controllers
  */
-class UserPassResetController extends ControllerBase
+final class UserPassResetController extends ControllerBase
 {
     use JsonTrait;
     /**

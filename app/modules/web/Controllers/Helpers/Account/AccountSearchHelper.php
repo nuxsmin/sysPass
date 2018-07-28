@@ -47,7 +47,7 @@ use SP\Services\Tag\TagService;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class AccountSearchHelper extends HelperBase
+final class AccountSearchHelper extends HelperBase
 {
     /**
      * @var bool Indica si el filtrado de cuentas está activo

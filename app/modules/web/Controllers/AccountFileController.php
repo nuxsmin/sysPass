@@ -46,7 +46,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccountFileController extends ControllerBase implements CrudControllerInterface
+final class AccountFileController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 

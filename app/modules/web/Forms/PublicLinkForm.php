@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Services\PublicLink\PublicLinkService;
 
 /**
@@ -35,7 +34,7 @@ use SP\Services\PublicLink\PublicLinkService;
  *
  * @package SP\Modules\Web\Forms
  */
-class PublicLinkForm extends FormBase implements FormInterface
+final class PublicLinkForm extends FormBase implements FormInterface
 {
     /**
      * @var PublicLinkData
@@ -46,9 +45,9 @@ class PublicLinkForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws ValidationException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function validate($action)
     {

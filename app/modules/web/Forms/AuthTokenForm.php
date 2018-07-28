@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,7 +33,7 @@ use SP\DataModel\AuthTokenData;
  *
  * @package SP\Modules\Web\Forms
  */
-class AuthTokenForm extends FormBase implements FormInterface
+final class AuthTokenForm extends FormBase implements FormInterface
 {
     /**
      * @var AuthTokenData
@@ -48,6 +48,7 @@ class AuthTokenForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return AuthTokenForm
      * @throws \SP\Core\Exceptions\ValidationException
      */

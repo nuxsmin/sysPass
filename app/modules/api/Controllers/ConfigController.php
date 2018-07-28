@@ -36,7 +36,7 @@ use SP\Services\Export\XmlExportService;
  *
  * @package SP\Modules\Api\Controllers
  */
-class ConfigController extends ControllerBase
+final class ConfigController extends ControllerBase
 {
     /**
      * backupAction

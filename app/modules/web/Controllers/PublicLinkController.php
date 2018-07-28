@@ -47,7 +47,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class PublicLinkController extends ControllerBase implements CrudControllerInterface
+final class PublicLinkController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -266,7 +266,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         }
 
         try {
-            $form = new PublicLinkForm();
+            $form = new PublicLinkForm($this->dic);
             $form->validate(Acl::PUBLICLINK_CREATE);
 
             $this->publicLinkService->create($form->getItemData());

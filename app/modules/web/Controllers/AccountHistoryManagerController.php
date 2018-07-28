@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -35,9 +35,10 @@ use SP\Services\Account\AccountHistoryService;
 
 /**
  * Class AccountHistoryManagerController
+ *
  * @package SP\Modules\Web\Controllers
  */
-class AccountHistoryManagerController extends ControllerBase
+final class AccountHistoryManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 

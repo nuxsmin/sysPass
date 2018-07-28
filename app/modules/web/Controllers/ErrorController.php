@@ -36,7 +36,7 @@ use SP\Mvc\View\Template;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ErrorController
+final class ErrorController
 {
     /**
      * @var Template
@@ -56,6 +56,7 @@ class ErrorController
      *
      * @param Container $container
      * @param string    $actionName
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */

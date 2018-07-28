@@ -33,11 +33,9 @@ use RuntimeException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
-use SP\Core\UI\Theme;
 use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
@@ -46,6 +44,7 @@ use SP\Services\Api\JsonRpcResponse;
 use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
+use SP\Util\Filter;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -58,10 +57,6 @@ defined('APP_ROOT') || die();
 final class Bootstrap
 {
     /**
-     * @var string The installation path on the server (e.g. /srv/www/syspass)
-     */
-    public static $SERVERROOT = '';
-    /**
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
      */
     public static $WEBROOT = '';
@@ -70,9 +65,9 @@ final class Bootstrap
      */
     public static $WEBURI = '';
     /**
-     * @var bool True if sysPass has been updated. Only for notices.
+     * @var string
      */
-    public static $UPDATED = false;
+    public static $SUBURI = '';
     /**
      * @var mixed
      */
@@ -82,33 +77,21 @@ final class Bootstrap
      */
     public static $checkPhpVersion;
     /**
-     * @var string
-     */
-    public static $SUBURI = '';
-    /**
      * @var ContainerInterface|Container
      */
-    protected static $container;
-    /**
-     * @var ContextInterface
-     */
-    protected $context;
-    /**
-     * @var Theme
-     */
-    protected $theme;
+    private static $container;
     /**
      * @var Klein
      */
-    protected $router;
+    private $router;
     /**
      * @var Language
      */
-    protected $language;
+    private $language;
     /**
      * @var Request
      */
-    protected $request;
+    private $request;
     /**
      * @var Config
      */
@@ -145,9 +128,6 @@ final class Bootstrap
     protected function initRouter()
     {
         $oops = "Oops, it looks like this content doesn't exist...";
-
-        // Update request when we have a subdirectory
-//        $_SERVER['REQUEST_URI'] = self::$WEBROOT;
 
         $this->router->onError(function ($router, $err_msg, $type, $err) {
             debugLog('Routing error: ' . $err_msg);
@@ -201,26 +181,16 @@ final class Bootstrap
             function ($request, $response, $service) use ($oops) {
                 try {
                     /** @var \Klein\Request $request */
-                    $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
+                    $route = Filter::getString($request->param('r', 'index/index'));
 
-                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $matches)) {
+                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>/[a-zA-Z\d]+)?#', $route, $matches)) {
                         throw new RuntimeException($oops);
                     }
 
 //                    $app = $matches['app'][0] ?: 'web';
                     $controller = $matches['controller'][0];
                     $method = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
-                    $params = [];
-
-                    if (!empty($matches['params'][0])) {
-                        foreach (explode('/', $matches['params'][0]) as $value) {
-                            if (is_numeric($value)) {
-                                $params[] = (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-                            } elseif (!empty($value)) {
-                                $params[] = filter_var($value, FILTER_SANITIZE_STRING);
-                            }
-                        }
-                    }
+                    $params = !empty($matches['params'][0]) ? Filter::getArray(explode('/', trim($matches['params'][0], '/'))) : [];
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
@@ -326,7 +296,9 @@ final class Bootstrap
     public function initPHPVars()
     {
         // Establecer el modo debug si una sesión de xdebug está activa
-        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
+        if ($this->router->request()->cookies()->get('XDEBUG_SESSION')
+            && !defined('DEBUG')
+        ) {
             define('DEBUG', true);
         }
 
@@ -338,7 +310,10 @@ final class Bootstrap
             ini_set('display_errors', 'Off');
         }
 
-        if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
+        if (!file_exists(LOG_FILE)
+            && touch(LOG_FILE)
+            && chmod(LOG_FILE, 0600)
+        ) {
             debugLog('Setup log file: ' . LOG_FILE);
         }
 
@@ -358,14 +333,13 @@ final class Bootstrap
      */
     private function initPaths()
     {
-        self::$SERVERROOT = dirname(BASE_PATH);
+        self::$SUBURI = str_replace("\\", '/', substr(realpath($this->request->getServer('SCRIPT_FILENAME')), strlen(APP_ROOT)));
 
-        self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(self::$SERVERROOT)));
-
-        $scriptName = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $scriptName = $this->request->getServer('REQUEST_URI');
 
         if (substr($scriptName, -1) === '/') {
             $scriptName .= 'index.php';
+
             // Asegurar que suburi sigue las mismas reglas que scriptName
             if (substr(self::$SUBURI, -9) !== 'index.php') {
                 if (substr(self::$SUBURI, -1) !== '/') {

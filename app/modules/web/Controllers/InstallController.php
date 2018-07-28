@@ -41,7 +41,7 @@ use SP\Util\Checks;
  *
  * @package SP\Modules\Web\Controllers
  */
-class InstallController extends ControllerBase
+final class InstallController extends ControllerBase
 {
     use JsonTrait;
 

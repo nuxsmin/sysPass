@@ -54,7 +54,7 @@ use SP\Services\UserGroup\UserGroupService;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class AccountHelper extends HelperBase
+final class AccountHelper extends HelperBase
 {
     use ItemTrait;
 

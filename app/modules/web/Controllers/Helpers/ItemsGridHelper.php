@@ -49,7 +49,7 @@ use SP\Util\DateUtil;
  *
  * @package SP\Controller
  */
-class ItemsGridHelper extends HelperBase
+final class ItemsGridHelper extends HelperBase
 {
     /**
      * @var float

@@ -34,7 +34,7 @@ use SP\DataModel\UserProfileData;
  *
  * @package SP\Modules\Web\Forms
  */
-class UserProfileForm extends FormBase implements FormInterface
+final class UserProfileForm extends FormBase implements FormInterface
 {
     /**
      * @var UserProfileData
@@ -45,6 +45,7 @@ class UserProfileForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ValidationException
      */

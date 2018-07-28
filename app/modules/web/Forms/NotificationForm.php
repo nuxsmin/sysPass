@@ -34,7 +34,7 @@ use SP\DataModel\NotificationData;
  *
  * @package SP\Modules\Web\Forms
  */
-class NotificationForm extends FormBase implements FormInterface
+final class NotificationForm extends FormBase implements FormInterface
 {
     /**
      * @var NotificationData
@@ -45,6 +45,7 @@ class NotificationForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ValidationException
      */

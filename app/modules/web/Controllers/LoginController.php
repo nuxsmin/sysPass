@@ -39,7 +39,7 @@ use SP\Services\Auth\LoginService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class LoginController extends ControllerBase
+final class LoginController extends ControllerBase
 {
     use JsonTrait;
 

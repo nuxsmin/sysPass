@@ -43,7 +43,7 @@ use SP\Services\Tag\TagService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ItemManagerController extends ControllerBase
+final class ItemManagerController extends ControllerBase
 {
     /**
      * @var ItemSearchData

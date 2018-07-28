@@ -41,7 +41,7 @@ use SP\Services\Plugin\PluginService;
  *
  * @package web\Controllers
  */
-class PluginController extends ControllerBase
+final class PluginController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 

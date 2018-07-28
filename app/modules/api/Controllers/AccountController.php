@@ -38,7 +38,7 @@ use SP\Services\Api\ApiResponse;
  *
  * @package SP\Modules\Api\Controllers
  */
-class AccountController extends ControllerBase
+final class AccountController extends ControllerBase
 {
     /**
      * @var AccountService

@@ -40,7 +40,7 @@ use SP\Services\Export\XmlVerifyService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigBackupController extends SimpleControllerBase
+final class ConfigBackupController extends SimpleControllerBase
 {
     use ConfigTrait;
 

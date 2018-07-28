@@ -43,7 +43,7 @@ use SP\Services\UserProfile\UserProfileService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class UserProfileController extends ControllerBase implements CrudControllerInterface
+final class UserProfileController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -234,7 +234,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $form = new UserProfileForm();
+            $form = new UserProfileForm($this->dic);
             $form->validate(Acl::PROFILE_CREATE);
 
             $profileData = $form->getItemData();
@@ -270,7 +270,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $form = new UserProfileForm($id);
+            $form = new UserProfileForm($this->dic, $id);
             $form->validate(Acl::PROFILE_EDIT);
 
             $profileData = $form->getItemData();

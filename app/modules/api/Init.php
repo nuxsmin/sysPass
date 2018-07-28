@@ -42,7 +42,7 @@ use SP\Util\HttpUtil;
  *
  * @package api
  */
-class Init extends ModuleBase
+final class Init extends ModuleBase
 {
     /**
      * @var StatelessContext

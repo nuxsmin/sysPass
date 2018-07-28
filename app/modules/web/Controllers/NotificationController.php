@@ -45,7 +45,7 @@ use SP\Services\User\UserService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class NotificationController extends ControllerBase implements CrudControllerInterface
+final class NotificationController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -315,7 +315,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
         }
 
         try {
-            $form = new NotificationForm();
+            $form = new NotificationForm($this->dic);
             $form->validate(Acl::NOTIFICATION_CREATE);
 
             $this->notificationService->create($form->getItemData());
@@ -346,7 +346,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
         }
 
         try {
-            $form = new NotificationForm($id);
+            $form = new NotificationForm($this->dic, $id);
             $form->validate(Acl::NOTIFICATION_EDIT);
 
             $this->notificationService->update($form->getItemData());

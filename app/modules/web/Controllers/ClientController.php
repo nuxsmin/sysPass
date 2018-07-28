@@ -43,7 +43,7 @@ use SP\Services\Client\ClientService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ClientController extends ControllerBase implements CrudControllerInterface
+final class ClientController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -232,7 +232,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new ClientForm();
+            $form = new ClientForm($this->dic);
             $form->validate(Acl::CLIENT_CREATE);
 
             $itemData = $form->getItemData();
@@ -268,7 +268,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new ClientForm($id);
+            $form = new ClientForm($this->dic, $id);
             $form->validate(Acl::CLIENT_EDIT);
 
             $this->clientService->update($form->getItemData());

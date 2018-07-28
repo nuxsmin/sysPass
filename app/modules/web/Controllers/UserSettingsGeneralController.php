@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -30,9 +30,10 @@ use SP\Services\User\UserService;
 
 /**
  * Class UserSettingsGeneralController
+ *
  * @package SP\Modules\Web\Controllers
  */
-class UserSettingsGeneralController extends SimpleControllerBase
+final class UserSettingsGeneralController extends SimpleControllerBase
 {
     use JsonTrait;
 

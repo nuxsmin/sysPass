@@ -47,7 +47,7 @@ use SP\Services\UserProfile\UserProfileService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class UserController extends ControllerBase implements CrudControllerInterface
+final class UserController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait;
     use ItemTrait;
@@ -299,7 +299,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new UserForm();
+            $form = new UserForm($this->dic);
             $form->validate(Acl::USER_CREATE);
 
             $itemData = $form->getItemData();
@@ -360,7 +360,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new UserForm($id);
+            $form = new UserForm($this->dic, $id);
             $form->validate(Acl::USER_EDIT);
 
             $itemData = $form->getItemData();
@@ -399,7 +399,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new UserForm($id);
+            $form = new UserForm($this->dic, $id);
             $form->validate(Acl::USER_EDIT_PASS);
 
             $itemData = $form->getItemData();

@@ -31,7 +31,7 @@ use Throwable;
  * Class HelperException
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class HelperException extends Exception
+final class HelperException extends Exception
 {
     /**
      * Construct the exception. Note: The message is NOT binary safe.

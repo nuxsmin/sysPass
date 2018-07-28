@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,7 +33,7 @@ use SP\DataModel\TagData;
  *
  * @package SP\Modules\Web\Forms
  */
-class TagForm extends FormBase implements FormInterface
+final class TagForm extends FormBase implements FormInterface
 {
     /**
      * @var TagData
@@ -44,6 +44,7 @@ class TagForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ValidationException
      */

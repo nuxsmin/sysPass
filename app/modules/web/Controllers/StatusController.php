@@ -34,7 +34,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class StatusController extends SimpleControllerBase
+final class StatusController extends SimpleControllerBase
 {
     use JsonTrait;
 

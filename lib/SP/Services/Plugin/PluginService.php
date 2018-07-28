@@ -245,8 +245,8 @@ final class PluginService extends Service
     /**
      * Cambiar el estado del plugin
      *
-     * @param $name
-     * @param $available
+     * @param string $name
+     * @param int    $available
      *
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException

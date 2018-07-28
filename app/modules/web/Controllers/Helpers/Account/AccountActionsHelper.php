@@ -38,7 +38,7 @@ use SP\Services\Account\AccountSearchItem;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class AccountActionsHelper extends HelperBase
+final class AccountActionsHelper extends HelperBase
 {
     /**
      * @var ThemeIcons

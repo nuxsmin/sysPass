@@ -37,7 +37,7 @@ use SP\Services\Upgrade\UpgradeUtil;
  *
  * @package SP\Modules\Web\Controllers
  */
-class UpgradeController extends ControllerBase
+final class UpgradeController extends ControllerBase
 {
     use JsonTrait;
 

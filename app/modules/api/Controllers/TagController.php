@@ -34,9 +34,10 @@ use SP\Services\Tag\TagService;
 
 /**
  * Class TagController
+ *
  * @package SP\Modules\Api\Controllers
  */
-class TagController extends ControllerBase
+final class TagController extends ControllerBase
 {
     /**
      * @var TagService

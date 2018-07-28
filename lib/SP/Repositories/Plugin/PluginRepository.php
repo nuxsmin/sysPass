@@ -343,7 +343,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE id = ? LIMIT 1');
-        $queryData->setParams([$enabled, $id]);
+        $queryData->setParams([(int)$enabled, $id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -363,7 +363,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE name = ? LIMIT 1');
-        $queryData->setParams([$enabled, $name]);
+        $queryData->setParams([(int)$enabled, $name]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -382,8 +382,8 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     public function toggleAvailable($id, $available)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE Plugin SET available = ? WHERE id = ? LIMIT 1');
-        $queryData->setParams([$available, $id]);
+        $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE id = ? LIMIT 1');
+        $queryData->setParams([(int)$available, $id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -402,8 +402,8 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     public function toggleAvailableByName($name, $available)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE Plugin SET available = ? WHERE `name` = ? LIMIT 1');
-        $queryData->setParams([$available, $name]);
+        $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE `name` = ? LIMIT 1');
+        $queryData->setParams([(int)$available, $name]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
@@ -439,7 +439,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemData::class);
-        $queryData->setQuery('SELECT id, `name` FROM Plugin WHERE enabled = 1 ORDER BY id');
+        $queryData->setQuery('SELECT id, `name` FROM Plugin WHERE available = 1 AND enabled = 1 ORDER BY id');
 
         return $this->db->doSelect($queryData);
     }

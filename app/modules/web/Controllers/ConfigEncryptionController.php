@@ -44,7 +44,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigEncryptionController extends SimpleControllerBase
+final class ConfigEncryptionController extends SimpleControllerBase
 {
     use JsonTrait;
 

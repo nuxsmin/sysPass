@@ -36,6 +36,7 @@ use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
+use SP\Plugin\PluginManager;
 use SP\Services\Crypt\SecureSessionService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
@@ -50,7 +51,7 @@ use SP\Util\HttpUtil;
  *
  * @package SP\Modules\Web
  */
-class Init extends ModuleBase
+final class Init extends ModuleBase
 {
     /**
      * List of controllers that don't need to perform fully initialization
@@ -61,19 +62,23 @@ class Init extends ModuleBase
     /**
      * @var SessionContext
      */
-    protected $context;
+    private $context;
     /**
      * @var Theme
      */
-    protected $theme;
+    private $theme;
     /**
      * @var Language
      */
-    protected $language;
+    private $language;
     /**
      * @var SecureSessionService
      */
-    protected $secureSessionService;
+    private $secureSessionService;
+    /**
+     * @var PluginManager
+     */
+    private $pluginManager;
 
     /**
      * Init constructor.
@@ -91,6 +96,7 @@ class Init extends ModuleBase
         $this->theme = $container->get(Theme::class);
         $this->language = $container->get(Language::class);
         $this->secureSessionService = $container->get(SecureSessionService::class);
+        $this->pluginManager = $container->get(PluginManager::class);
     }
 
     /**
@@ -176,10 +182,7 @@ class Init extends ModuleBase
             $this->initUserSession();
 
             // Load plugins
-//            PluginUtil::loadPlugins();
-
-            // Comprobar acciones en URL
-//        $this->checkPreLoginActions();
+            $this->pluginManager->loadPlugins();
 
             if ($this->context->isLoggedIn() && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
                 debugLog('Reload user profile');

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,7 +32,7 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
  *
  * @package SP\Modules\Web\Controllers
  */
-class IndexController extends ControllerBase
+final class IndexController extends ControllerBase
 {
     /**
      * Index action

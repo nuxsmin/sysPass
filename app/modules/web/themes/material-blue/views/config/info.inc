@@ -117,7 +117,7 @@
             <div class="lowres-title"><?php echo __('Plugins Cargados'); ?></div>
 
             <ul class="mdl-list">
-                <?php /** @var \SP\Core\Plugin\PluginInterface[] $plugins */
+                <?php /** @var \SP\Plugin\PluginInterface[] $plugins */
                 foreach ($plugins as $name => $plugin): ?>
                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">

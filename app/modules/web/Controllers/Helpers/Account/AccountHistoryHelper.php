@@ -45,7 +45,7 @@ use SP\Services\User\UpdatedMasterPassException;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class AccountHistoryHelper extends HelperBase
+final class AccountHistoryHelper extends HelperBase
 {
     /**
      * @var Acl
@@ -81,6 +81,8 @@ class AccountHistoryHelper extends HelperBase
      * @throws UpdatedMasterPassException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
     {

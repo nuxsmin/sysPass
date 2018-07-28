@@ -35,9 +35,10 @@ use SP\Services\Category\CategoryService;
 
 /**
  * Class CategoryController
+ *
  * @package SP\Modules\Api\Controllers
  */
-class CategoryController extends ControllerBase
+final class CategoryController extends ControllerBase
 {
     /**
      * @var CategoryService

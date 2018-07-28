@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Mvc\View\Components\DataTab;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class TabsHelper extends HelperBase
+final class TabsHelper extends HelperBase
 {
     /**
      * Máximo numero de acciones antes de agrupar

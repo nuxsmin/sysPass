@@ -29,10 +29,10 @@ use SP\Core\Acl\Acl;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
-use SP\Core\Plugin\PluginUtil;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Plugin\PluginManager;
 use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
@@ -52,7 +52,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigManagerController extends ControllerBase
+final class ConfigManagerController extends ControllerBase
 {
     /**
      * @var TabsHelper
@@ -334,7 +334,7 @@ class ConfigManagerController extends ControllerBase
         $template->assign('dbInfo', DatabaseUtil::getDBinfo($this->dic->get(MySQLHandler::class)));
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0)));
-        $template->assign('plugins', PluginUtil::getLoadedPlugins());
+        $template->assign('plugins', $this->dic->get(PluginManager::class)->getLoadedPlugins());
         $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('No instalado')));
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
 

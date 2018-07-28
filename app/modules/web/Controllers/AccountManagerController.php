@@ -38,7 +38,7 @@ use SP\Services\Account\AccountService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccountManagerController extends ControllerBase
+final class AccountManagerController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 

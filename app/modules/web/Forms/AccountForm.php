@@ -33,7 +33,7 @@ use SP\Services\Account\AccountRequest;
  *
  * @package SP\Account
  */
-class AccountForm extends FormBase implements FormInterface
+final class AccountForm extends FormBase implements FormInterface
 {
     /**
      * @var AccountRequest

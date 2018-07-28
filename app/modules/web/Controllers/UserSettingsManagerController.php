@@ -36,7 +36,7 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  *
  * @package web\Controllers
  */
-class UserSettingsManagerController extends ControllerBase
+final class UserSettingsManagerController extends ControllerBase
 {
     /**
      * @var TabsHelper

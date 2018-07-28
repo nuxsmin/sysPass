@@ -44,7 +44,7 @@ use SP\Services\User\UserService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AuthTokenController extends ControllerBase implements CrudControllerInterface
+final class AuthTokenController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -237,7 +237,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
         }
 
         try {
-            $form = new AuthTokenForm();
+            $form = new AuthTokenForm($this->dic);
             $form->validate(Acl::AUTHTOKEN_CREATE);
 
             $apiTokenData = $form->getItemData();
@@ -273,7 +273,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
         }
 
         try {
-            $form = new AuthTokenForm($id);
+            $form = new AuthTokenForm($this->dic, $id);
             $form->validate(Acl::AUTHTOKEN_EDIT);
 
             if ($form->isRefresh()) {

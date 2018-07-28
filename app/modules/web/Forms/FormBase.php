@@ -24,11 +24,11 @@
 
 namespace SP\Modules\Web\Forms;
 
+use DI\Container;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
-use SP\Core\Dic\InjectableTrait;
 use SP\Http\Request;
 
 /**
@@ -38,8 +38,6 @@ use SP\Http\Request;
  */
 abstract class FormBase
 {
-    use InjectableTrait;
-
     /**
      * @var int
      */
@@ -64,29 +62,20 @@ abstract class FormBase
     /**
      * FormBase constructor.
      *
-     * @param $itemId
+     * @param int       $itemId
+     * @param Container $container
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public function __construct($itemId = null)
+    public function __construct(Container $container, $itemId = null)
     {
-        // FIXME
-        $this->injectDependencies();
+        $this->config = $container->get(Config::class);
+        $this->configData = $this->config->getConfigData();
+        $this->context = $container->get(ContextInterface::class);
+        $this->request = $container->get(Request::class);
 
         $this->itemId = $itemId;
-    }
-
-    /**
-     * @param Config           $config
-     * @param ContextInterface $session
-     * @param Request          $request
-     */
-    public function inject(Config $config, ContextInterface $session, Request $request)
-    {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->context = $session;
-        $this->request = $request;
     }
 
     /**

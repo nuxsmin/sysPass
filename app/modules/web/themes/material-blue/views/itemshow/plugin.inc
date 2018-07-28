@@ -1,6 +1,6 @@
 <?php
 /** @var  \SP\DataModel\PluginData $plugin */
-/** @var  \SP\Core\Plugin\PluginInterface $pluginInfo */
+/** @var  \SP\Plugin\PluginInterface $pluginInfo */
 /** @var  \SP\Core\UI\ThemeIcons $icons */
 ?>
 <div id="box-popup">

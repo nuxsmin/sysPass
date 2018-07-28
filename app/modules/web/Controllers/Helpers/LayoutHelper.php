@@ -30,11 +30,11 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Http\Uri;
+use SP\Plugin\PluginManager;
 use SP\Services\Install\Installer;
 use SP\Util\Util;
 
@@ -186,7 +186,7 @@ class LayoutHelper extends HelperBase
         }
 
         // Cargar los recursos de los plugins
-        foreach (PluginUtil::getLoadedPlugins() as $plugin) {
+        foreach ($this->dic->get(PluginManager::class)->getLoadedPlugins() as $plugin) {
             $base = str_replace(BASE_PATH, '', $plugin->getBase());
             $jsResources = $plugin->getJsResources();
             $cssResources = $plugin->getCssResources();

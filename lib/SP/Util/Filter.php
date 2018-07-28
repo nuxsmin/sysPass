@@ -50,9 +50,29 @@ final class Filter
      *
      * @return string
      */
-    public static function getString($value): string
+    public static function getEmail($value): string
     {
-        return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function getArray(array $array): array
+    {
+        return array_map(function ($value) {
+            if ($value !== null) {
+                if (is_numeric($value)) {
+                    return Filter::getInt($value);
+                } else {
+                    return Filter::getString($value);
+                }
+            }
+
+            return null;
+        }, $array);
     }
 
     /**
@@ -70,8 +90,8 @@ final class Filter
      *
      * @return string
      */
-    public static function getEmail($value): string
+    public static function getString($value): string
     {
-        return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
+        return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }
 }

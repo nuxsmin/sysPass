@@ -34,9 +34,10 @@ use SP\Services\Client\ClientService;
 
 /**
  * Class ClientController
+ *
  * @package SP\Modules\Api\Controllers
  */
-class ClientController extends ControllerBase
+final class ClientController extends ControllerBase
 {
     /**
      * @var ClientService

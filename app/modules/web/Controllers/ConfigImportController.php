@@ -42,7 +42,7 @@ use SP\Services\Import\ImportService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigImportController extends SimpleControllerBase
+final class ConfigImportController extends SimpleControllerBase
 {
     use JsonTrait;
 

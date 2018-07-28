@@ -37,7 +37,7 @@ use SP\Modules\Web\Controllers\Traits\ConfigTrait;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ConfigAccountController extends SimpleControllerBase
+final class ConfigAccountController extends SimpleControllerBase
 {
     use ConfigTrait;
 

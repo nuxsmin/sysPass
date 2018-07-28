@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -41,7 +41,7 @@ use SP\Services\Tag\TagService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class TagController extends ControllerBase implements CrudControllerInterface
+final class TagController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -145,6 +145,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -174,6 +175,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -218,7 +220,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new TagForm();
+            $form = new TagForm($this->dic);
             $form->validate(Acl::TAG_CREATE);
 
             $this->tagService->create($form->getItemData());
@@ -247,7 +249,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
         }
 
         try {
-            $form = new TagForm($id);
+            $form = new TagForm($this->dic, $id);
             $form->validate(Acl::TAG_EDIT);
 
             $this->tagService->update($form->getItemData());
@@ -268,6 +270,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

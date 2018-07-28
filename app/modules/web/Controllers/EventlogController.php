@@ -38,7 +38,7 @@ use SP\Services\EventLog\EventlogService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class EventlogController extends ControllerBase
+final class EventlogController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 

@@ -38,7 +38,7 @@ use SP\Util\Json;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ItemsController extends SimpleControllerBase
+final class ItemsController extends SimpleControllerBase
 {
     /**
      * Devolver las cuentas visibles por el usuario

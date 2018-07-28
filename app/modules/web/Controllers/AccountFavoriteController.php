@@ -33,7 +33,7 @@ use SP\Services\Account\AccountToFavoriteService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccountFavoriteController extends SimpleControllerBase
+final class AccountFavoriteController extends SimpleControllerBase
 {
     use JsonTrait;
 

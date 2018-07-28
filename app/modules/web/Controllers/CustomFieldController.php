@@ -44,7 +44,7 @@ use SP\Services\CustomField\CustomFieldTypeService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class CustomFieldController extends ControllerBase implements CrudControllerInterface
+final class CustomFieldController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -223,7 +223,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $form = new CustomFieldDefForm();
+            $form = new CustomFieldDefForm($this->dic);
             $form->validate(Acl::CUSTOMFIELD_CREATE);
 
             $itemData = $form->getItemData();
@@ -258,7 +258,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $form = new CustomFieldDefForm($id);
+            $form = new CustomFieldDefForm($this->dic, $id);
             $form->validate(Acl::CUSTOMFIELD_EDIT);
 
             $itemData = $form->getItemData();

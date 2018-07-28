@@ -59,7 +59,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccountController extends ControllerBase implements CrudControllerInterface
+final class AccountController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -530,7 +530,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @param int $id Account's ID
      * @param int $parentId
      */
-    public function viewPassAction($id, $parentId)
+    public function viewPassAction($id, $parentId = 0)
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
@@ -671,7 +671,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveCreateAction()
     {
         try {
-            $form = new AccountForm();
+            $form = new AccountForm($this->dic);
             $form->validate(Acl::ACCOUNT_CREATE);
 
             $itemData = $form->getItemData();
@@ -718,7 +718,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveEditAction($id)
     {
         try {
-            $form = new AccountForm($id);
+            $form = new AccountForm($this->dic, $id);
             $form->validate(Acl::ACCOUNT_EDIT);
 
             $itemData = $form->getItemData();
@@ -764,7 +764,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveEditPassAction($id)
     {
         try {
-            $form = new AccountForm($id);
+            $form = new AccountForm($this->dic, $id);
             $form->validate(Acl::ACCOUNT_EDIT_PASS);
 
             $this->accountService->editPassword($form->getItemData());

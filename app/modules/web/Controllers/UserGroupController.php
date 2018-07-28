@@ -45,7 +45,7 @@ use SP\Services\UserGroup\UserToUserGroupService;
  *
  * @package SP\Modules\Web\Controllers
  */
-class UserGroupController extends ControllerBase implements CrudControllerInterface
+final class UserGroupController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -239,7 +239,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         }
 
         try {
-            $form = new UserGroupForm();
+            $form = new UserGroupForm($this->dic);
             $form->validate(Acl::GROUP_CREATE);
 
             $groupData = $form->getItemData();
@@ -279,7 +279,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         }
 
         try {
-            $form = new UserGroupForm($id);
+            $form = new UserGroupForm($this->dic, $id);
             $form->validate(Acl::GROUP_EDIT);
 
             $groupData = $form->getItemData();

@@ -39,7 +39,7 @@ use SP\Util\ImageUtil;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class AccountPasswordHelper extends HelperBase
+final class AccountPasswordHelper extends HelperBase
 {
     const TYPE_NORMAL = 0;
     const TYPE_FULL = 1;

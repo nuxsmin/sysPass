@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,7 +36,7 @@ use SP\Providers\Auth\Browser\Browser;
  *
  * @package SP\Modules\Web\Controllers
  */
-class BootstrapController extends SimpleControllerBase
+final class BootstrapController extends SimpleControllerBase
 {
     /**
      * Returns environment data
@@ -48,7 +48,7 @@ class BootstrapController extends SimpleControllerBase
     {
         $configData = $this->config->getConfigData();
 
-        $checkStatus= $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled());
+        $checkStatus = $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled());
 
         $data = [
             'lang' => require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc',
