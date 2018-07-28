@@ -32,7 +32,7 @@ use SP\Core\Messages\MailMessage;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
-use SP\Services\MailService;
+use SP\Services\Mail\MailService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\User\UserService;
@@ -43,7 +43,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Crypt
  */
-class TemporaryMasterPassService extends Service
+final class TemporaryMasterPassService extends Service
 {
     /**
      * Número máximo de intentos

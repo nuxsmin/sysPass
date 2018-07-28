@@ -72,7 +72,7 @@ class CsvImportTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImport()
     {
@@ -164,7 +164,7 @@ class CsvImportTest extends DatabaseTestCase
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImportInvalidData()
     {

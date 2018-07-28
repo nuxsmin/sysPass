@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,6 +53,7 @@ final class Container implements DicInterface
      *
      * @param string   $name
      * @param callable $callable
+     *
      * @internal param callable|string $class
      */
     public function share($name, $callable = null)
@@ -65,6 +66,7 @@ final class Container implements DicInterface
      *
      * @param string   $name
      * @param callable $callable
+     *
      * @internal param callable|string $class
      */
     public function add($name, $callable = null)
@@ -76,6 +78,7 @@ final class Container implements DicInterface
      * Inject object
      *
      * @param $context
+     *
      * @return mixed
      * @throws \Psr\Container\ContainerExceptionInterface
      */
@@ -156,6 +159,7 @@ final class Container implements DicInterface
 
     /**
      * @param $id
+     *
      * @return mixed
      * @throws ContainerExceptionInterface
      */
@@ -178,6 +182,7 @@ final class Container implements DicInterface
 
     /**
      * @param $id
+     *
      * @return mixed
      */
     private function getSharedObject($id)

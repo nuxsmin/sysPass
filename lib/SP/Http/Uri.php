@@ -31,7 +31,7 @@ use SP\Core\Crypt\Hash;
  *
  * @package SP\Http
  */
-class Uri
+final class Uri
 {
     /**
      * @var string

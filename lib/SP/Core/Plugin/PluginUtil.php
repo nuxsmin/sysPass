@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -84,6 +84,7 @@ class PluginUtil
      * Cargar un plugin
      *
      * @param string $name Nombre del plugin
+     *
      * @return bool|PluginInterface
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -149,6 +150,7 @@ class PluginUtil
      * Obtener la información de un plugin
      *
      * @param string $name Nombre del plugin
+     *
      * @return bool|PluginInterface
      * @throws \SP\Core\Exceptions\SPException
      */

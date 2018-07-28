@@ -24,10 +24,10 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
+use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\QueryData;
 
 /**
@@ -35,7 +35,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Account
  */
-class AccountToTagRepository extends Repository
+final class AccountToTagRepository extends Repository
 {
     use RepositoryItemTrait;
 

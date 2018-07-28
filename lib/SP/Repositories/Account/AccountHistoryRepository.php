@@ -24,12 +24,10 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Account\AccountUtil;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
-use SP\DataModel\AccountPassData;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
@@ -44,7 +42,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package Services
  */
-class AccountHistoryRepository extends Repository implements RepositoryItemInterface
+final class AccountHistoryRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -74,30 +72,6 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
-
-        return $this->db->doSelect($queryData);
-    }
-
-    /**
-     * @param $id
-     *
-     * @return QueryResult
-     * @throws QueryException
-     * @throws ConstraintException
-     * @deprecated
-     */
-    public function getPasswordForHistoryId($id)
-    {
-        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->context);
-        $queryWhere->addFilter('AccountHistory.id = ?', [$id]);
-
-        $queryData = new QueryData();
-        $queryData->setMapClassName(AccountPassData::class);
-        $queryData->setSelect('AccountHistory.id, AccountHistory.name, AccountHistory.login, AccountHistory.pass, AccountHistory.key, AccountHistory.parentId');
-        $queryData->setFrom('AccountHistory AH');
-        $queryData->setWhere($queryWhere->getFilters());
-        $queryData->setLimit(1);
-
 
         return $this->db->doSelect($queryData);
     }

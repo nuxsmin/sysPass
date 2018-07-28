@@ -32,7 +32,7 @@ use SP\Html\Html;
  *
  * @package SP\Core\Events
  */
-class EventMessage implements MessageInterface
+final class EventMessage implements MessageInterface
 {
     /**
      * @var array Detalles de la acción en formato "detalle : descripción"
@@ -67,6 +67,7 @@ class EventMessage implements MessageInterface
      * Devuelve la descripción de la acción realizada en formato HTML
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getHtmlDescription($translate = false)
@@ -78,6 +79,7 @@ class EventMessage implements MessageInterface
      * Devuelve la descripción de la acción realizada
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getDescription($translate = false)
@@ -108,6 +110,7 @@ class EventMessage implements MessageInterface
      *
      * @param $key   string
      * @param $value string
+     *
      * @return $this
      */
     public function addDetailHtml($key, $value)
@@ -122,6 +125,7 @@ class EventMessage implements MessageInterface
      *
      * @param $key   string
      * @param $value string
+     *
      * @return $this
      */
     public function addDetail($key, $value)
@@ -141,6 +145,7 @@ class EventMessage implements MessageInterface
      * Formatear una cadena para guardarla en el registro
      *
      * @param $string string La cadena a formatear
+     *
      * @return string
      */
     private function formatString($string)
@@ -152,6 +157,7 @@ class EventMessage implements MessageInterface
      * Establece la descripción de la acción realizada en formato HTML
      *
      * @param string $description
+     *
      * @return $this
      */
     public function addDescriptionHtml($description = '')
@@ -165,6 +171,7 @@ class EventMessage implements MessageInterface
      * Establece la descripción de la acción realizada
      *
      * @param string $description
+     *
      * @return $this
      */
     public function addDescription($description = '')
@@ -188,6 +195,7 @@ class EventMessage implements MessageInterface
      * Componer un mensaje en formato texto
      *
      * @param string $delimiter
+     *
      * @return string
      */
     public function composeText($delimiter = PHP_EOL)
@@ -199,6 +207,7 @@ class EventMessage implements MessageInterface
      * Devuelve los detalles de la acción realizada
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getDetails($translate = false)
@@ -216,7 +225,8 @@ class EventMessage implements MessageInterface
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool $translate
+     * @param bool  $translate
+     *
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
@@ -259,6 +269,7 @@ class EventMessage implements MessageInterface
      * Devuelve los detalles en formato HTML
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getHtmlDetails($translate = false)
@@ -292,7 +303,8 @@ class EventMessage implements MessageInterface
 
     /**
      * @param string $type
-     * @param mixed $data
+     * @param mixed  $data
+     *
      * @return EventMessage
      */
     public function addData($type, $data)

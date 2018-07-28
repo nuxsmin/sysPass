@@ -29,7 +29,7 @@ namespace SP\Mvc\Model;
  *
  * @package SP\Mvc\Model
  */
-class QueryCondition
+final class QueryCondition
 {
     const CONDITION_AND = ' AND ';
     const CONDITION_OR = ' OR ';
@@ -46,6 +46,7 @@ class QueryCondition
     /**
      * @param string $query
      * @param array  $params
+     *
      * @return QueryCondition
      */
     public function addFilter($query, array $params = null)
@@ -61,6 +62,7 @@ class QueryCondition
 
     /**
      * @param string $type
+     *
      * @return string|null
      */
     public function getFilters($type = self::CONDITION_AND)

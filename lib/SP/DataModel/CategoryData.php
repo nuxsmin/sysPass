@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -74,6 +74,7 @@ class CategoryData extends DataModelBase implements DataModelInterface
 
     /**
      * @param int $id
+     *
      * @return $this
      */
     public function setId($id)

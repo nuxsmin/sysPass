@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,8 +33,10 @@ defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar el encriptado/desencriptado de claves
+ *
+ * @deprecated Since 2.1
  */
-class OldCrypt
+final class OldCrypt
 {
     public static $strInitialVector;
 
@@ -43,6 +45,7 @@ class OldCrypt
      *
      * @param string $pwd        con la clave a 'hashear'
      * @param bool   $prefixSalt Añadir el salt al hash
+     *
      * @return string con el hash de la clave
      */
     public static function mkHashPassword($pwd, $prefixSalt = true)
@@ -58,6 +61,7 @@ class OldCrypt
      *
      * @param string $salt
      * @param bool   $random
+     *
      * @return string con el salt creado
      */
     public static function makeHashSalt($salt = null, $random = true)
@@ -116,7 +120,8 @@ class OldCrypt
      *
      * @param string $customPwd con la clave a encriptar
      * @param string $masterPwd con la clave maestra
-     * @return string con la clave encriptada
+     *
+     * @return array con la clave encriptada
      */
     public static function mkCustomMPassEncrypt($customPwd, $masterPwd)
     {
@@ -132,6 +137,7 @@ class OldCrypt
      * @param string $strValue    con los datos a encriptar
      * @param string $strPassword con la clave maestra
      * @param string $cryptIV     con el IV
+     *
      * @return string con los datos encriptados
      */
     private static function encrypt($strValue, $strPassword, $cryptIV)
@@ -154,6 +160,7 @@ class OldCrypt
      *
      * @param mixed  $data string Los datos a encriptar
      * @param string $pwd  La clave de encriptación
+     *
      * @return array
      * @throws SPException
      */
@@ -201,6 +208,7 @@ class OldCrypt
      *
      * @param string $data      con los datos a encriptar
      * @param string $masterPwd con la clave maestra
+     *
      * @return bool
      */
     public static function mkEncrypt($data, $masterPwd)
@@ -216,6 +224,7 @@ class OldCrypt
      * @param string $cryptData Los datos a desencriptar
      * @param string $cryptIV   con el IV
      * @param string $password  La clave maestra
+     *
      * @return string con los datos desencriptados
      */
     public static function getDecrypt($cryptData, $cryptIV, $password)
@@ -239,6 +248,7 @@ class OldCrypt
      *
      * @param string $string La cadena de la que deriva la key
      * @param null   $salt   El salt utilizado
+     *
      * @return string
      */
     public static function generateAesKey($string, $salt = null)

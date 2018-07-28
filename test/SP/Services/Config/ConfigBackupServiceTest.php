@@ -84,7 +84,7 @@ class ConfigBackupServiceTest extends TestCase
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testRestore(ConfigData $configData)
     {

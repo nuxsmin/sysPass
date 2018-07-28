@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,15 +29,16 @@ namespace SP\Util;
  *
  * @package SP\Util
  */
-class ArrayUtil
+final class ArrayUtil
 {
     /**
      * Buscar un objeto en un array según el valor de una propiedad
      *
-     * @param array $array
+     * @param array  $array
      * @param string $property Nombre de la propiedad
-     * @param string $value Valor de la propiedad
-     * @param object $default Valor por defecto
+     * @param string $value    Valor de la propiedad
+     * @param object $default  Valor por defecto
+     *
      * @return false|object
      */
     public static function searchInObject(array $array, $property, $value, $default = null)
@@ -57,9 +58,10 @@ class ArrayUtil
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $method
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return bool
      */
     public static function checkInObjectArrayMethod(array $objectArray, $method, $value)
@@ -76,9 +78,10 @@ class ArrayUtil
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $property, $value)

@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Plugin
  */
-class PluginRepository extends Repository implements RepositoryItemInterface
+final class PluginRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

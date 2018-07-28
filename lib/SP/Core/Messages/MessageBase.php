@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -62,6 +62,7 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param string $title
+     *
      * @return MessageBase
      */
     public function setTitle($title)
@@ -81,6 +82,7 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param array $description
+     *
      * @return MessageBase
      */
     public function setDescription(array $description)
@@ -92,6 +94,7 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param string $description
+     *
      * @return MessageBase
      */
     public function addDescription($description)
@@ -111,6 +114,7 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param array $footer
+     *
      * @return MessageBase
      */
     public function setFooter(array $footer)

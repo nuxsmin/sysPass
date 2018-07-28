@@ -102,6 +102,7 @@ abstract class AuthDataBase
 
     /**
      * @param bool $authenticated
+     *
      * @return $this
      */
     public function setAuthenticated($authenticated = null)

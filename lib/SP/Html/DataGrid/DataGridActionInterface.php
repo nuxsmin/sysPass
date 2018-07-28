@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -113,6 +113,7 @@ interface DataGridActionInterface
     /**
      * @param       $rowSource string
      * @param mixed $value     Valor a filtrar
+     *
      * @return
      */
     public function setFilterRowSource($rowSource, $value = 1);
@@ -141,6 +142,7 @@ interface DataGridActionInterface
      * Establecer atributos de datos
      *
      * @param array $data Los datos de los atributos
+     *
      * @return $this
      */
     public function setData(array $data);
@@ -162,6 +164,7 @@ interface DataGridActionInterface
      * Establecer atributos
      *
      * @param array $attributes Los datos de los atributos
+     *
      * @return $this
      */
     public function setAttributes(array $attributes);
@@ -186,6 +189,7 @@ interface DataGridActionInterface
      *
      * @param string $class
      * @param string $method
+     *
      * @return $this
      */
     public function setRuntimeFilter($class, $method);
@@ -215,6 +219,7 @@ interface DataGridActionInterface
      * Adds a new class
      *
      * @param mixed $value
+     *
      * @return $this
      */
     public function addClass($value);

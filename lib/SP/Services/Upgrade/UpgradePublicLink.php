@@ -30,7 +30,6 @@ use SP\DataModel\PublickLinkOldData;
 use SP\DataModel\PublicLinkData;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Service;
-use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\QueryData;
 use SP\Util\Util;
@@ -40,7 +39,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradePublicLink extends Service
+final class UpgradePublicLink extends Service
 {
     /**
      * @var Database
@@ -58,49 +57,41 @@ class UpgradePublicLink extends Service
                 ->addDescription(__FUNCTION__))
         );
 
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `data` FROM PublicLink');
-
         try {
-            $publicLinkService = $this->dic->get(PublicLinkService::class);
+            $this->transactionAware(function () {
+                $publicLinkService = $this->dic->get(PublicLinkService::class);
 
-            if (!$this->db->beginTransaction()) {
-                throw new ServiceException(__u('No es posible iniciar una transacción'));
-            }
+                $queryData = new QueryData();
+                $queryData->setQuery('SELECT id, `data` FROM PublicLink');
 
-            foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
-                /** @var PublickLinkOldData $data */
-                $data = Util::unserialize(PublickLinkOldData::class, $item->data, 'SP\DataModel\PublicLinkData');
+                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                    /** @var PublickLinkOldData $data */
+                    $data = Util::unserialize(PublickLinkOldData::class, $item->data, 'SP\DataModel\PublicLinkData');
 
-                $itemData = new PublicLinkData();
-                $itemData->setId($item->id);
-                $itemData->setItemId($data->getItemId());
-                $itemData->setHash($data->getLinkHash());
-                $itemData->setUserId($data->getUserId());
-                $itemData->setTypeId($data->getTypeId());
-                $itemData->setNotify($data->isNotify());
-                $itemData->setDateAdd($data->getDateAdd());
-                $itemData->setDateExpire($data->getDateExpire());
-                $itemData->setCountViews($data->getCountViews());
-                $itemData->setMaxCountViews($data->getCountViews());
-                $itemData->setUseInfo($data->getUseInfo());
-                $itemData->setData($data->getData());
+                    $itemData = new PublicLinkData();
+                    $itemData->setId($item->id);
+                    $itemData->setItemId($data->getItemId());
+                    $itemData->setHash($data->getLinkHash());
+                    $itemData->setUserId($data->getUserId());
+                    $itemData->setTypeId($data->getTypeId());
+                    $itemData->setNotify($data->isNotify());
+                    $itemData->setDateAdd($data->getDateAdd());
+                    $itemData->setDateExpire($data->getDateExpire());
+                    $itemData->setCountViews($data->getCountViews());
+                    $itemData->setMaxCountViews($data->getCountViews());
+                    $itemData->setUseInfo($data->getUseInfo());
+                    $itemData->setData($data->getData());
 
-                $publicLinkService->update($itemData);
+                    $publicLinkService->update($itemData);
 
-                $this->eventDispatcher->notifyEvent('upgrade.publicLink.process',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Enlace actualizado'))
-                        ->addDetail(__u('Enlace'), $item->id))
-                );
-            }
-
-            if (!$this->db->endTransaction()) {
-                throw new ServiceException(__u('No es posible finalizar una transacción'));
-            }
+                    $this->eventDispatcher->notifyEvent('upgrade.publicLink.process',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Enlace actualizado'))
+                            ->addDetail(__u('Enlace'), $item->id))
+                    );
+                }
+            });
         } catch (\Exception $e) {
-            $this->db->rollbackTransaction();
-
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

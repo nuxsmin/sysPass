@@ -39,7 +39,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\CustomField
  */
-class CustomFieldDefRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldDefRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
     /**

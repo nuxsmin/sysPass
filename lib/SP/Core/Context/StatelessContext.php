@@ -33,7 +33,7 @@ use SP\Services\User\UserLoginResponse;
  *
  * @package SP\Core\Context
  */
-class StatelessContext extends ContextBase
+final class StatelessContext extends ContextBase
 {
     /**
      * Establecer la configuración

@@ -38,7 +38,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Services
  */
-class CustomFieldRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

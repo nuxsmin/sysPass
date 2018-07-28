@@ -39,7 +39,7 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-class DatabaseLogHandler extends Provider implements EventReceiver
+final class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 

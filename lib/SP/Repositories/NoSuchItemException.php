@@ -32,7 +32,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Repositories
  */
-class NoSuchItemException extends SPException
+final class NoSuchItemException extends SPException
 {
 
 }

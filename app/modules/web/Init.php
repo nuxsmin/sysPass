@@ -42,7 +42,7 @@ use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\DatabaseUtil;
 use SP\Util\HttpUtil;
 
 /**
@@ -163,7 +163,7 @@ class Init extends ModuleBase
             }
 
             // Checks if the database is set up
-            if (!DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
+            if (!DatabaseUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
                 $this->router->response()
                     ->redirect('index.php?r=error/databaseError')
                     ->send();

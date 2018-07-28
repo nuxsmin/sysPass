@@ -34,14 +34,14 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class CsvImport extends CsvImportBase implements ImportInterface
+final class CsvImport extends CsvImportBase implements ImportInterface
 {
     /**
      * Iniciar la importación desde CSV
      *
      * @return $this|ImportInterface
      * @throws ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function doImport()
     {

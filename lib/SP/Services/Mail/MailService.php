@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services;
+namespace SP\Services\Mail;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Bootstrap;
@@ -33,6 +33,8 @@ use SP\Html\Html;
 use SP\Providers\Mail\MailParams;
 use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\MailProviderException;
+use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Util\Util;
 
 /**
@@ -40,7 +42,7 @@ use SP\Util\Util;
  *
  * @package SP\Services
  */
-class MailService extends Service
+final class MailService extends Service
 {
     /**
      * @var PHPMailer
@@ -137,7 +139,7 @@ class MailService extends Service
     {
         try {
             $this->mailer->send();
-            
+
             $this->eventDispatcher->notifyEvent('send.mail',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Correo enviado'))

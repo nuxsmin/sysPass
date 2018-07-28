@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Mvc\Model;
  *
  * @package SP\Mvc\Model
  */
-class QueryAssignment
+final class QueryAssignment
 {
     /**
      * @var array
@@ -43,6 +43,7 @@ class QueryAssignment
     /**
      * @param $field
      * @param $value
+     *
      * @return QueryAssignment
      */
     public function addField($field, $value)
@@ -58,6 +59,7 @@ class QueryAssignment
     /**
      * @param array $fields
      * @param array $values
+     *
      * @return QueryAssignment
      */
     public function setFields(array $fields, array $values)

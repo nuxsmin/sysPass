@@ -1,8 +1,8 @@
 <?php
 /**
- * @var \SP\Account\AccountAcl $accountAcl
- * @var \SP\DataModel\AccountExtData $accountData
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Config\ConfigData           $configData
  */
 
 $showLinked = $gotData && count($linkedAccounts) > 0;

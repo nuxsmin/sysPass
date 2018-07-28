@@ -150,6 +150,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param \SP\Core\Acl\ActionsInterface $action
+     *
      * @return $this
      */
     public function setOnCloseAction(ActionsInterface $action)
@@ -169,6 +170,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param $id string
+     *
      * @return $this
      */
     public function setId($id)
@@ -188,6 +190,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridHeaderInterface $header
+     *
      * @return $this
      */
     public function setHeader(DataGridHeaderInterface $header)
@@ -207,6 +210,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridDataInterface $data
+     *
      * @return $this
      */
     public function setData(DataGridDataInterface $data)
@@ -218,7 +222,8 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool $isMenu Añadir al menu de acciones
+     * @param bool                    $isMenu Añadir al menu de acciones
+     *
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false)
@@ -268,7 +273,8 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
+     *
      * @return $this
      */
     public function setDataHeaderTemplate($template, $base = null)
@@ -287,6 +293,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @param      $template
      * @param null $base
+     *
      * @return string
      * @throws FileNotFoundException
      */
@@ -316,6 +323,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para las acciones
      *
      * @param string $template El nombre de la plantilla a utilizar
+     *
      * @return $this
      */
     public function setDataActionsTemplate($template)
@@ -343,7 +351,8 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
+     *
      * @return $this
      */
     public function setDataPagerTemplate($template, $base = null)
@@ -369,7 +378,8 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
+     *
      * @return mixed
      */
     public function setDataRowTemplate($template, $base = null)
@@ -405,6 +415,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer el paginador
      *
      * @param DataGridPagerInterface $pager
+     *
      * @return $this
      */
     public function setPager(DataGridPagerInterface $pager)
@@ -436,6 +447,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param int $time
+     *
      * @return $this
      */
     public function setTime($time)
@@ -459,6 +471,7 @@ abstract class DataGridBase implements DataGridInterface
      * Devolver las acciones filtradas
      *
      * @param $filter
+     *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsFiltered($filter)
@@ -478,6 +491,7 @@ abstract class DataGridBase implements DataGridInterface
      * Devolver las acciones de menu filtradas
      *
      * @param $filter
+     *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenuFiltered($filter)
@@ -504,6 +518,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @param      $template
      * @param null $base
+     *
      * @return DataGridBase
      */
     public function setDataTableTemplate($template, $base = null)

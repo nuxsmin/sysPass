@@ -33,7 +33,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\UserPassRecover
  */
-class UserPassRecoverRepository extends Repository
+final class UserPassRecoverRepository extends Repository
 {
     /**
      * Checks recovery limit attempts by user's id and time

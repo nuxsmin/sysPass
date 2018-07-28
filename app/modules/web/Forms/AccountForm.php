@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Account\AccountRequest;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
+use SP\Services\Account\AccountRequest;
 
 /**
  * Class AccountForm
@@ -44,6 +44,7 @@ class AccountForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ValidationException
      */

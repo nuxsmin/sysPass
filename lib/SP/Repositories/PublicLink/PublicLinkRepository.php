@@ -42,7 +42,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\PublicLink
  */
-class PublicLinkRepository extends Repository implements RepositoryItemInterface
+final class PublicLinkRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

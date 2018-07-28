@@ -34,7 +34,7 @@ use SP\Core\Events\EventMessage;
  *
  * @package SP\Auth\Ldap
  */
-class LdapMsAds extends LdapBase
+final class LdapMsAds extends LdapBase
 {
     const userObjectFilter = '(|(objectCategory=person)(objectClass=user))';
     const groupObjectFilter = '(objectCategory=group)';

@@ -24,12 +24,12 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use SP\Account\AccountRequest;
-use SP\Account\AccountSearchFilter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Services\Account\AccountRequest;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\Api\ApiResponse;
 
@@ -166,7 +166,7 @@ class AccountController extends ControllerBase
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
             $accountSearchFilter->setSortOrder($this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT));
 
-            $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)->getData()));
+            $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 

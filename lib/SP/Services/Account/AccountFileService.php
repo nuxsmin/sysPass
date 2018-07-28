@@ -41,7 +41,7 @@ use SP\Util\ImageUtil;
  *
  * @package SP\Services\Account
  */
-class AccountFileService extends Service
+final class AccountFileService extends Service
 {
     /**
      * @var AccountFileRepository

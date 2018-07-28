@@ -32,7 +32,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Account
  */
-class AccountToFavoriteRepository extends Repository
+final class AccountToFavoriteRepository extends Repository
 {
     /**
      * Obtener un array con los Ids de cuentas favoritas

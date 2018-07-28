@@ -25,8 +25,8 @@
 namespace SP\Repositories;
 
 use SP\DataModel\DataModelInterface;
+use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\DBUtil;
 
 /**
  * Trait RepositoryItemTrait
@@ -74,7 +74,7 @@ trait RepositoryItemTrait
     {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 
-        return md5(strtolower(str_replace($charsSrc, '', DBUtil::escape($name, $DBStorage))));
+        return md5(strtolower(str_replace($charsSrc, '', DatabaseUtil::escape($name, $DBStorage))));
     }
 
     /**

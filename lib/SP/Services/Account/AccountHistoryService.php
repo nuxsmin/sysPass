@@ -43,7 +43,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Account
  */
-class AccountHistoryService extends Service
+final class AccountHistoryService extends Service
 {
     /**
      * @var AccountHistoryRepository

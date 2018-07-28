@@ -31,7 +31,7 @@ use SP\DataModel\DataModelBase;
  *
  * @package SP\Storage
  */
-class QueryData
+final class QueryData
 {
     /**
      * @var array

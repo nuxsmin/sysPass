@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Account\AccountSearchFilter;
-use SP\Account\AccountSearchItem;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Html\DataGrid\DataGrid;
@@ -37,6 +35,8 @@ use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridSort;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Account\AccountSearchFilter;
+use SP\Services\Account\AccountSearchItem;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -66,7 +66,7 @@ class AccountSearchHelper extends HelperBase
      */
     private $isAjax = false;
     /**
-     * @var  AccountSearchFilter
+     * @var  \SP\Services\Account\AccountSearchFilter
      */
     private $accountSearchFilter;
 
@@ -118,13 +118,13 @@ class AccountSearchHelper extends HelperBase
 
         AccountSearchItem::$accountLink = $userPreferences->isAccountLink();
         AccountSearchItem::$topNavbar = $userPreferences->isTopNavbar();
-        AccountSearchItem::$optionalActions = $userPreferences->isOptionalActions();
+        \SP\Services\Account\AccountSearchItem::$optionalActions = $userPreferences->isOptionalActions();
         AccountSearchItem::$wikiEnabled = $this->configData->isWikiEnabled();
         AccountSearchItem::$dokuWikiEnabled = $this->configData->isDokuwikiEnabled();
-        AccountSearchItem::$publicLinkEnabled = $this->configData->isPublinksEnabled();
+        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = $this->configData->isPublinksEnabled();
         AccountSearchItem::$isDemoMode = $this->configData->isDemoEnabled();
 
-        if (AccountSearchItem::$wikiEnabled) {
+        if (\SP\Services\Account\AccountSearchItem::$wikiEnabled) {
             $wikiFilter = array_map(function ($value) {
                 return preg_quote($value, '/');
             }, $this->configData->getWikiFilter());
@@ -213,35 +213,35 @@ class AccountSearchHelper extends HelperBase
         $GridSortCustomer = new DataGridSort();
         $GridSortCustomer->setName(__('Cliente'))
             ->setTitle(__('Ordenar por Cliente'))
-            ->setSortKey(AccountSearchFilter::SORT_CLIENT)
+            ->setSortKey(\SP\Services\Account\AccountSearchFilter::SORT_CLIENT)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $GridSortName = new DataGridSort();
         $GridSortName->setName(__('Nombre'))
             ->setTitle(__('Ordenar por Nombre'))
-            ->setSortKey(AccountSearchFilter::SORT_NAME)
+            ->setSortKey(\SP\Services\Account\AccountSearchFilter::SORT_NAME)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $GridSortCategory = new DataGridSort();
         $GridSortCategory->setName(__('Categoría'))
             ->setTitle(__('Ordenar por Categoría'))
-            ->setSortKey(AccountSearchFilter::SORT_CATEGORY)
+            ->setSortKey(\SP\Services\Account\AccountSearchFilter::SORT_CATEGORY)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $GridSortLogin = new DataGridSort();
         $GridSortLogin->setName(__('Usuario'))
             ->setTitle(__('Ordenar por Usuario'))
-            ->setSortKey(AccountSearchFilter::SORT_LOGIN)
+            ->setSortKey(\SP\Services\Account\AccountSearchFilter::SORT_LOGIN)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $GridSortUrl = new DataGridSort();
         $GridSortUrl->setName(__('URL / IP'))
             ->setTitle(__('Ordenar por URL / IP'))
-            ->setSortKey(AccountSearchFilter::SORT_URL)
+            ->setSortKey(\SP\Services\Account\AccountSearchFilter::SORT_URL)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
@@ -297,7 +297,7 @@ class AccountSearchHelper extends HelperBase
     /**
      * Set search filters
      *
-     * @return AccountSearchFilter
+     * @return \SP\Services\Account\AccountSearchFilter
      */
     private function getFilters()
     {

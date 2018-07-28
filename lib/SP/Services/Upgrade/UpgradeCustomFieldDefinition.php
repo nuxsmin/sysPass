@@ -30,7 +30,6 @@ use SP\DataModel\CustomFieldDefDataOld;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\Service;
-use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\QueryData;
 use SP\Util\Util;
@@ -40,7 +39,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeCustomFieldDefinition extends Service
+final class UpgradeCustomFieldDefinition extends Service
 {
     /**
      * @var \SP\Storage\Database\Database
@@ -49,8 +48,6 @@ class UpgradeCustomFieldDefinition extends Service
 
     /**
      * upgrade_300_18010101
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function upgrade_300_18010101()
     {
@@ -60,44 +57,36 @@ class UpgradeCustomFieldDefinition extends Service
                 ->addDescription(__FUNCTION__))
         );
 
-        $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
-
-        $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
-
         try {
-            if (!$this->db->beginTransaction()) {
-                throw new ServiceException(__u('No es posible iniciar una transacción'));
-            }
+            $this->transactionAware(function () {
+                $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
 
-            foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
-                /** @var CustomFieldDefDataOld $data */
-                $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
+                $queryData = new QueryData();
+                $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
 
-                $itemData = new CustomFieldDefinitionData();
-                $itemData->setId($item->id);
-                $itemData->setModuleId($item->moduleId);
-                $itemData->setName($data->getName());
-                $itemData->setHelp($data->getHelp());
-                $itemData->setRequired($data->isRequired());
-                $itemData->setShowInList($data->isShowInItemsList());
-                $itemData->setTypeId($data->getType());
+                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                    /** @var CustomFieldDefDataOld $data */
+                    $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
 
-                $customFieldDefService->update($itemData);
+                    $itemData = new CustomFieldDefinitionData();
+                    $itemData->setId($item->id);
+                    $itemData->setModuleId($item->moduleId);
+                    $itemData->setName($data->getName());
+                    $itemData->setHelp($data->getHelp());
+                    $itemData->setRequired($data->isRequired());
+                    $itemData->setShowInList($data->isShowInItemsList());
+                    $itemData->setTypeId($data->getType());
 
-                $this->eventDispatcher->notifyEvent('upgrade.customField.process',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Campo actualizado'))
-                        ->addDetail(__u('Campo'), $data->getName()))
-                );
-            }
+                    $customFieldDefService->update($itemData);
 
-            if (!$this->db->endTransaction()) {
-                throw new ServiceException(__u('No es posible finalizar una transacción'));
-            }
+                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Campo actualizado'))
+                            ->addDetail(__u('Campo'), $data->getName()))
+                    );
+                }
+            });
         } catch (\Exception $e) {
-            $this->db->rollbackTransaction();
-
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

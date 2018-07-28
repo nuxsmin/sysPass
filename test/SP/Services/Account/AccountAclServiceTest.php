@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,12 @@
 
 namespace SP\Test\Services\Account;
 
-use SP\Account\AccountAcl;
 use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountService;
 use SP\Services\User\UserLoginResponse;
@@ -156,6 +156,7 @@ class AccountAclServiceTest extends DatabaseTestCase
         $service->saveAclInCache($accountAcl);
 
         $this->assertTrue(AccountAclService::clearAcl(1));
+
         $this->assertFalse(AccountAclService::clearAcl(2));
     }
 
@@ -169,7 +170,7 @@ class AccountAclServiceTest extends DatabaseTestCase
         $this->checkAllowAll($this->setUpAccountEnvironment(1, 1, 1, 1));
         $this->checkAllowAll($this->setUpAccountEnvironment(2, 1, 1, 1));
 
-        $accountAcl = new AccountAcl(0);
+        $accountAcl = new \SP\Services\Account\AccountAcl(0);
         $accountAcl->setCompiledAccountAccess(true);
         $accountAcl->setCompiledShowAccess(true);
         $accountAcl->setResultView(true);
@@ -257,7 +258,7 @@ class AccountAclServiceTest extends DatabaseTestCase
 
             $accountAcl = $service->getAcl($action, $accountAclDto);
 
-            $this->assertInstanceOf(AccountAcl::class, $accountAcl);
+            $this->assertInstanceOf(\SP\Services\Account\AccountAcl::class, $accountAcl);
             $this->assertTrue($accountAcl->isCompiledAccountAccess());
             $this->assertTrue($accountAcl->isCompiledShowAccess());
 
@@ -749,7 +750,7 @@ class AccountAclServiceTest extends DatabaseTestCase
             ->reset()
             ->setAccFiles($profile);
 
-        $accountAcl = (new AccountAcl(0))
+        $accountAcl = (new \SP\Services\Account\AccountAcl(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($should['view'])

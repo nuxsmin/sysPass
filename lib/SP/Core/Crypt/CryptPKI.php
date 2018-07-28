@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -35,7 +35,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP
  */
-class CryptPKI
+final class CryptPKI
 {
     /**
      * @var RSA
@@ -44,6 +44,7 @@ class CryptPKI
 
     /**
      * @param RSA $rsa
+     *
      * @throws SPException
      */
     public function __construct(RSA $rsa)
@@ -96,6 +97,7 @@ class CryptPKI
      * Encriptar datos con la clave pública
      *
      * @param string $data los datos a encriptar
+     *
      * @return string
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
@@ -128,6 +130,7 @@ class CryptPKI
      * Desencriptar datos cifrados con la clave pública
      *
      * @param string $data los datos a desencriptar
+     *
      * @return string
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */

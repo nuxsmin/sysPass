@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Util;
 
 use SP\Core\Exceptions\InvalidImageException;
-use SP\Log\LogUtil;
 
 defined('APP_ROOT') || die();
 
@@ -34,7 +33,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class ImageUtil
+final class ImageUtil
 {
     /**
      * Convertir un texto a imagen

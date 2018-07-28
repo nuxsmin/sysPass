@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,21 +25,20 @@
 namespace SP\Test\Storage;
 
 use PHPUnit\Framework\TestCase;
-use SP\Storage\FileException;
-use SP\Storage\FileHandler;
-use SP\Storage\XmlHandler;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class XmlHandlerTest
  *
- * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\XmlHandler
+ * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\File\XmlHandler
  *
  * @package SP\Tests
  */
 class XmlHandlerTest extends TestCase
 {
     /**
-     * @var XmlHandler
+     * @var \SP\Storage\File\XmlHandler
      */
     protected static $xmlHandler;
     /**
@@ -54,7 +53,7 @@ class XmlHandlerTest extends TestCase
     public static function setUpBeforeClass()
     {
         $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml';
-        self::$xmlHandler = new XmlHandler(new FileHandler($file));
+        self::$xmlHandler = new \SP\Storage\File\XmlHandler(new FileHandler($file));
 
         self::$itemsData = new \stdClass();
         self::$itemsData->configString = 'Hello world.';
@@ -76,7 +75,7 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar la carga de un archivo XML
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testLoadMissingNode()
     {
@@ -88,7 +87,7 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar la carga de un archivo XML
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testLoad()
     {

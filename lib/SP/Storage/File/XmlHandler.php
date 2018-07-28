@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
 
 use DOMDocument;
 use DOMElement;
@@ -34,9 +34,9 @@ use RuntimeException;
 /**
  * Class XmlHandler para manejo básico de documentos XML
  *
- * @package SMD\Storage
+ * @package SP\Storage\File;
  */
-class XmlHandler implements XmlFileStorageInterface
+final class XmlHandler implements XmlFileStorageInterface
 {
     /**
      * @var mixed
@@ -69,6 +69,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Cargar un archivo XML
      *
      * @param string $node
+     *
      * @return XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
@@ -105,6 +106,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Leer de forma recursiva los nodos hijos y devolver un array multidimensional
      *
      * @param DOMNodeList $nodeList
+     *
      * @return array
      */
     protected function readChildNodes(DOMNodeList $nodeList)
@@ -139,6 +141,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Obtener un elemento del array
      *
      * @param $id
+     *
      * @return mixed
      */
     public function __get($id)
@@ -151,6 +154,7 @@ class XmlHandler implements XmlFileStorageInterface
      *
      * @param mixed  $data Data to be saved
      * @param string $node
+     *
      * @return XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
@@ -211,6 +215,7 @@ class XmlHandler implements XmlFileStorageInterface
      *
      * @param mixed $items
      * @param bool  $serialize
+     *
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)
@@ -233,6 +238,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Analizar un elemento del tipo objeto
      *
      * @param $object
+     *
      * @return array
      */
     protected function analyzeObject($object)
@@ -274,6 +280,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Establecer los elementos
      *
      * @param $items
+     *
      * @return XmlHandler
      */
     public function setItems($items)

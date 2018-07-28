@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Http;
  *
  * @package SP\Http
  */
-class Cookies
+final class Cookies
 {
     /**
      * Comprueba si las cookies están habilitadas

@@ -33,7 +33,7 @@ use SP\Http\Request;
  *
  * @package SP\Core\Crypt
  */
-class SecureKeyCookie extends Cookie
+final class SecureKeyCookie extends Cookie
 {
     /**
      * Nombre de la cookie
@@ -51,7 +51,8 @@ class SecureKeyCookie extends Cookie
      *
      * @return SecureKeyCookie
      */
-    public static function factory(Request $request) {
+    public static function factory(Request $request)
+    {
         return new self(self::COOKIE_NAME, $request);
     }
 

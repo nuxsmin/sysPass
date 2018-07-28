@@ -40,7 +40,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Account
  */
-class AccountCryptService extends Service
+final class AccountCryptService extends Service
 {
     /**
      * @var AccountService

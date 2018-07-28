@@ -25,12 +25,12 @@
 namespace SP\Services\Import;
 
 use DI\Container;
-use SP\Account\AccountRequest;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
+use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -114,7 +114,7 @@ abstract class CsvImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     protected function processAccounts()
     {

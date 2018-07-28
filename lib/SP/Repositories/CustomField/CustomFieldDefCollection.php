@@ -31,7 +31,7 @@ use SP\Core\DataCollection;
  *
  * @package SP\Repositories\CustomField
  */
-class CustomFieldDefCollection extends DataCollection
+final class CustomFieldDefCollection extends DataCollection
 {
 
 }

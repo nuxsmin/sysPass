@@ -28,10 +28,10 @@ use PDOException;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\MySQLHandler;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 /**
@@ -39,7 +39,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Install
  */
-class MySQL implements DatabaseSetupInterface
+final class MySQL implements DatabaseSetupInterface
 {
     /**
      * @var InstallData
@@ -277,7 +277,7 @@ class MySQL implements DatabaseSetupInterface
         $dbc = $this->dbs->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
-            foreach (DBUtil::$tables as $table) {
+            foreach (DatabaseUtil::$tables as $table) {
                 $dbc->exec('DROP TABLE IF EXISTS `' . $this->installData->getDbName() . '`.`' . $table . '`');
             }
         } else {
@@ -352,7 +352,7 @@ class MySQL implements DatabaseSetupInterface
      */
     public function checkConnection()
     {
-        if (!DBUtil::checkDatabaseExist($this->dbs, $this->installData->getDbName())) {
+        if (!DatabaseUtil::checkDatabaseExist($this->dbs, $this->installData->getDbName())) {
             $this->rollback();
 
             throw new SPException(

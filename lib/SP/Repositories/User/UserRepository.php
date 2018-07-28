@@ -43,7 +43,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\User
  */
-class UserRepository extends Repository implements RepositoryItemInterface
+final class UserRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -547,7 +547,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$login, $login]);
         $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
 
-        return$this->db->doSelect($queryData);
+        return $this->db->doSelect($queryData);
     }
 
     /**

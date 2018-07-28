@@ -38,7 +38,7 @@ use SP\Services\ServiceException;
  *
  * @package SP\Services\Config
  */
-class ConfigService extends Service
+final class ConfigService extends Service
 {
     /**
      * @var ConfigRepository

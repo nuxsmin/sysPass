@@ -22,10 +22,13 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
+namespace SP\Services\Account;
 
+use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
+use SP\DataModel\ProfileData;
 use SP\Mvc\Model\QueryCondition;
+use SP\Services\User\UserLoginResponse;
 
 defined('APP_ROOT') || die();
 
@@ -34,25 +37,51 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class AccountUtil
+final class AccountFilterUser
 {
+    /**
+     * @var ProfileData
+     */
+    private $userProfile;
+    /**
+     * @var ConfigData
+     */
+    private $configData;
+    /**
+     * @var UserLoginResponse
+     */
+    private $userData;
+    /**
+     * @var ContextInterface
+     */
+    private $context;
+
+    /**
+     * AccountFilterUser constructor.
+     *
+     * @param ContextInterface $context
+     */
+    public function __construct(ContextInterface $context)
+    {
+        $this->context = $context;
+    }
+
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param ContextInterface $context
-     * @param bool             $useGlobalSearch
+     * @param bool $useGlobalSearch
+     *
      * @return QueryCondition
      */
-    public static function getAccountHistoryFilterUser(ContextInterface $context, $useGlobalSearch = false)
+    public function getFilterHistory($useGlobalSearch = false)
     {
+        $this->setUp();
+
         $queryFilter = new QueryCondition();
 
-        $configData = $context->getConfig();
-        $userData = $context->getUserData();
-
-        if (!$userData->getIsAdminApp()
-            && !$userData->getIsAdminAcc()
-            && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
+        if (!$this->userData->getIsAdminApp()
+            && !$this->userData->getIsAdminAcc()
+            && !($this->configData->isGlobalSearch() && $useGlobalSearch && $this->userProfile->isAccGlobalSearch())
         ) {
             // Filtro usuario y grupo
             $filter = '(AccountHistory.userId = ? 
@@ -60,12 +89,16 @@ class AccountUtil
             OR AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = ?)
             OR AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = ?))';
 
-            $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
+            $params = [$this->userData->getId(),
+                $this->userData->getUserGroupId(),
+                $this->userData->getId(),
+                $this->userData->getUserGroupId(),
+                $this->userData->getId()];
 
-            if ($configData->isAccountFullGroupAccess()) {
+            if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filter .= PHP_EOL . 'OR AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = ? LIMIT 1)';
-                $params[] = $userData->getId();
+                $params[] = $this->userData->getId();
             }
 
             $queryFilter->addFilter($filter, $params);
@@ -73,29 +106,38 @@ class AccountUtil
 
         $queryFilter->addFilter(
             '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = ?)) AND (AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = ?))',
-            [$userData->getId(), $userData->getUserGroupId()]
+            [$this->userData->getId(), $this->userData->getUserGroupId()]
         );
 
         return $queryFilter;
     }
 
     /**
+     * setUp
+     */
+    private function setUp()
+    {
+        $this->configData = $this->context->getConfig();
+        $this->userData = $this->context->getUserData();
+        $this->userProfile = $this->context->getUserProfile();
+    }
+
+    /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param ContextInterface $context
-     * @param bool             $useGlobalSearch
+     * @param bool $useGlobalSearch
+     *
      * @return QueryCondition
      */
-    public static function getAccountFilterUser(ContextInterface $context, $useGlobalSearch = false)
+    public function getFilter($useGlobalSearch = false)
     {
+        $this->setUp();
+
         $queryFilter = new QueryCondition();
 
-        $configData = $context->getConfig();
-        $userData = $context->getUserData();
-
-        if (!$userData->getIsAdminApp()
-            && !$userData->getIsAdminAcc()
-            && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
+        if (!$this->userData->getIsAdminApp()
+            && !$this->userData->getIsAdminAcc()
+            && !($this->configData->isGlobalSearch() && $useGlobalSearch && $this->userProfile->isAccGlobalSearch())
         ) {
             // Filtro usuario y grupo
             $filter = '(Account.userId = ? 
@@ -103,12 +145,16 @@ class AccountUtil
             OR Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = ?)
             OR Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?))';
 
-            $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
+            $params = [$this->userData->getId(),
+                $this->userData->getUserGroupId(),
+                $this->userData->getId(),
+                $this->userData->getUserGroupId(),
+                $this->userData->getId()];
 
-            if ($configData->isAccountFullGroupAccess()) {
+            if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filter .= PHP_EOL . 'OR Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = ? LIMIT 1)';
-                $params[] = $userData->getId();
+                $params[] = $this->userData->getId();
             }
 
             $queryFilter->addFilter($filter, $params);
@@ -116,7 +162,7 @@ class AccountUtil
 
         $queryFilter->addFilter(
             '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = ?)) AND (Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = ?))',
-            [$userData->getId(), $userData->getUserGroupId()]
+            [$this->userData->getId(), $this->userData->getUserGroupId()]
         );
 
         return $queryFilter;

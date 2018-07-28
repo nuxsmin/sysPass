@@ -32,7 +32,7 @@ use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
-use SP\Services\MailService;
+use SP\Services\Mail\MailService;
 
 /**
  * Class ConfigMailController

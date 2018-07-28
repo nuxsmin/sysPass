@@ -30,8 +30,8 @@ use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Storage\FileCache;
-use SP\Storage\FileException;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -40,7 +40,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class Theme implements ThemeInterface
+final class Theme implements ThemeInterface
 {
     const ICONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'icons.cache';
     /**
@@ -105,6 +105,7 @@ class Theme implements ThemeInterface
 
     /**
      * @param bool $force
+     *
      * @throws InvalidClassException
      */
     public function initialize($force = false)
@@ -119,6 +120,7 @@ class Theme implements ThemeInterface
      * Inicializar el tema visual a utilizar
      *
      * @param bool $force Forzar la detección del tema para los inicios de sesión
+     *
      * @return void
      */
     public function initTheme($force = false)

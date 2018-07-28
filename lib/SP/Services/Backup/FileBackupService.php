@@ -31,9 +31,9 @@ use SP\Core\Exceptions\SPException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\QueryData;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileHandler;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -42,7 +42,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de realizar la copia de sysPass.
  */
-class FileBackupService extends Service
+final class FileBackupService extends Service
 {
     /**
      * @var ConfigData
@@ -144,11 +144,11 @@ class FileBackupService extends Service
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param string|array $tables
-     * @param FileHandler  $fileHandler
+     * @param string|array                 $tables
+     * @param \SP\Storage\File\FileHandler $fileHandler
      *
      * @throws \Exception
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     private function backupTables($tables = '*', FileHandler $fileHandler)
     {
@@ -164,7 +164,7 @@ class FileBackupService extends Service
         $queryData = new QueryData();
 
         if ($tables === '*') {
-            $resTables = DBUtil::$tables;
+            $resTables = DatabaseUtil::$tables;
         } else {
             $resTables = is_array($tables) ? $tables : explode(',', $tables);
         }
@@ -241,7 +241,7 @@ class FileBackupService extends Service
                     if (is_numeric($value)) {
                         $fileHandler->write($value);
                     } else {
-                        $fileHandler->write(DBUtil::escape($value, $db->getDbHandler()));
+                        $fileHandler->write(DatabaseUtil::escape($value, $db->getDbHandler()));
                     }
 
                     if ($field < $numColumns) {

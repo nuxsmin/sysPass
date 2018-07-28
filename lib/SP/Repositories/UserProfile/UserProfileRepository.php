@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\UserProfile
  */
-class UserProfileRepository extends Repository implements RepositoryItemInterface
+final class UserProfileRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

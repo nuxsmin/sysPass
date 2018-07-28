@@ -40,7 +40,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\UserProfile
  */
-class UserProfileService extends Service
+final class UserProfileService extends Service
 {
     use ServiceItemTrait;
 

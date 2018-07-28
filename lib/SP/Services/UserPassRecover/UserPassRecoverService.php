@@ -36,7 +36,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\UserPassRecover
  */
-class UserPassRecoverService extends Service
+final class UserPassRecoverService extends Service
 {
     /**
      * Tiempo máximo para recuperar la clave

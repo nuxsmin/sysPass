@@ -35,12 +35,13 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeAppService extends Service implements UpgradeInterface
+final class UpgradeAppService extends Service implements UpgradeInterface
 {
     const UPGRADES = ['300.18010101'];
 
     /**
      * @param $version
+     *
      * @return bool
      */
     public static function needsUpgrade($version)
@@ -49,8 +50,9 @@ class UpgradeAppService extends Service implements UpgradeInterface
     }
 
     /**
-     * @param $version
+     * @param            $version
      * @param ConfigData $configData
+     *
      * @throws UpgradeException
      */
     public function upgrade($version, ConfigData $configData)
@@ -88,6 +90,7 @@ class UpgradeAppService extends Service implements UpgradeInterface
      * Actualizaciones de la aplicación
      *
      * @param $version
+     *
      * @return bool
      */
     private function applyUpgrade($version)

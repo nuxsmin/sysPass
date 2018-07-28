@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data              \SP\Html\DataGrid\DataGridTab
- * @var $accountSearchItem \SP\Account\AccountSearchItem
+ * @var $accountSearchItem \SP\Services\Account\AccountSearchItem
  * @var $this              \SP\Mvc\View\Template
  * @var $action            \SP\Html\DataGrid\DataGridActionBase
  * @var $actionMenu        \SP\Html\DataGrid\DataGridActionBase
@@ -189,7 +189,7 @@
 
                         <?php if (isset($wikiFilter)): ?>
                             <?php if (preg_match('/^(' . $wikiFilter . ').*/i', $accountSearchData->getName())): ?>
-                                <?php if (\SP\Account\AccountSearchItem::$dokuWikiEnabled): ?>
+                                <?php if (\SP\Services\Account\AccountSearchItem::$dokuWikiEnabled): ?>
                                     <a href="<?php echo $wikiPageUrl, $accountSearchData->getName(); ?>"
                                        target="_blank">
                                         <i class="material-icons"

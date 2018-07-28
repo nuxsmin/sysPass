@@ -25,16 +25,16 @@
 namespace SP\Core\Acl;
 
 use SP\DataModel\ActionData;
-use SP\Storage\FileException;
-use SP\Storage\FileStorageInterface;
-use SP\Storage\XmlFileStorageInterface;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileStorageInterface;
+use SP\Storage\File\XmlFileStorageInterface;
 
 /**
  * Class Actions
  *
  * @package SP\Core\Acl
  */
-class Actions
+final class Actions
 {
     /**
      * Cache file name
@@ -53,7 +53,7 @@ class Actions
      */
     protected $actions;
     /**
-     * @var XmlFileStorageInterface
+     * @var \SP\Storage\File\XmlFileStorageInterface
      */
     protected $xmlFileStorage;
     /**
@@ -64,8 +64,8 @@ class Actions
     /**
      * Action constructor.
      *
-     * @param FileStorageInterface    $fileStorage
-     * @param XmlFileStorageInterface $xmlFileStorage
+     * @param FileStorageInterface                     $fileStorage
+     * @param \SP\Storage\File\XmlFileStorageInterface $xmlFileStorage
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */

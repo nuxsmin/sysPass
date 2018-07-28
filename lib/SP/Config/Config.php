@@ -29,8 +29,8 @@ use ReflectionObject;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Services\Config\ConfigBackupService;
-use SP\Storage\FileException;
-use SP\Storage\XmlFileStorageInterface;
+use SP\Storage\File\FileException;
+use SP\Storage\File\XmlFileStorageInterface;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -38,7 +38,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php
  */
-class Config
+final class Config
 {
     /**
      * @var int
@@ -53,7 +53,7 @@ class Config
      */
     private $configData;
     /**
-     * @var XmlFileStorageInterface
+     * @var \SP\Storage\File\XmlFileStorageInterface
      */
     private $fileStorage;
     /**
@@ -68,9 +68,9 @@ class Config
     /**
      * Config constructor.
      *
-     * @param XmlFileStorageInterface $fileStorage
-     * @param ContextInterface        $session
-     * @param Container               $dic
+     * @param \SP\Storage\File\XmlFileStorageInterface $fileStorage
+     * @param ContextInterface                         $session
+     * @param Container                                $dic
      *
      * @throws ConfigException
      */

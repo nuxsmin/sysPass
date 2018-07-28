@@ -37,7 +37,7 @@ use SP\Util\Util;
  *
  * @package SP
  */
-class Request
+final class Request
 {
     /**
      * @var array Directorios seguros para include

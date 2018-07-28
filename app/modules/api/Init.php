@@ -34,7 +34,7 @@ use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Storage\Database\Database;
-use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\DatabaseUtil;
 use SP\Util\HttpUtil;
 
 /**
@@ -57,6 +57,7 @@ class Init extends ModuleBase
      * Module constructor.
      *
      * @param Container $container
+     *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -70,6 +71,7 @@ class Init extends ModuleBase
 
     /**
      * @param string $controller
+     *
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -105,7 +107,7 @@ class Init extends ModuleBase
         $this->checkUpgrade();
 
         // Checks if the database is set up
-        DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+        DatabaseUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
 
         // Initialize event handlers
         $this->initEventHandlers();

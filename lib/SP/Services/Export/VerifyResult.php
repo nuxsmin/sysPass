@@ -30,7 +30,7 @@ namespace SP\Services\Export;
  *
  * @package SP\Services\Export
  */
-class VerifyResult
+final class VerifyResult
 {
     /**
      * @var string

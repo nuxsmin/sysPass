@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
+namespace SP\Services\Account;
 
 use SP\Mvc\Model\QueryCondition;
 use SP\Util\Filter;
@@ -33,7 +33,7 @@ use SP\Util\Filter;
  *
  * @package SP\Account
  */
-class AccountSearchFilter
+final class AccountSearchFilter
 {
     /**
      * Constantes de ordenación
@@ -118,6 +118,7 @@ class AccountSearchFilter
 
     /**
      * @param boolean $searchFavorites
+     *
      * @return $this
      */
     public function setSearchFavorites($searchFavorites)
@@ -137,6 +138,7 @@ class AccountSearchFilter
 
     /**
      * @param int $globalSearch
+     *
      * @return $this
      */
     public function setGlobalSearch($globalSearch)
@@ -156,6 +158,7 @@ class AccountSearchFilter
 
     /**
      * @param string $txtSearch
+     *
      * @return $this
      */
     public function setTxtSearch($txtSearch)
@@ -175,6 +178,7 @@ class AccountSearchFilter
 
     /**
      * @param int $clientId
+     *
      * @return $this
      */
     public function setClientId($clientId)
@@ -194,6 +198,7 @@ class AccountSearchFilter
 
     /**
      * @param int $categoryId
+     *
      * @return $this
      */
     public function setCategoryId($categoryId)
@@ -213,6 +218,7 @@ class AccountSearchFilter
 
     /**
      * @param int $sortOrder
+     *
      * @return $this
      */
     public function setSortOrder($sortOrder)
@@ -232,6 +238,7 @@ class AccountSearchFilter
 
     /**
      * @param int $limitStart
+     *
      * @return $this
      */
     public function setLimitStart($limitStart)
@@ -251,6 +258,7 @@ class AccountSearchFilter
 
     /**
      * @param int $limitCount
+     *
      * @return $this
      */
     public function setLimitCount($limitCount)
@@ -270,6 +278,7 @@ class AccountSearchFilter
 
     /**
      * @param array $tagsId
+     *
      * @return $this
      */
     public function setTagsId($tagsId)
@@ -353,6 +362,7 @@ class AccountSearchFilter
 
     /**
      * @param boolean $sortViews
+     *
      * @return $this
      */
     public function setSortViews($sortViews)
@@ -372,6 +382,7 @@ class AccountSearchFilter
 
     /**
      * @param int $sortKey
+     *
      * @return $this
      */
     public function setSortKey($sortKey)

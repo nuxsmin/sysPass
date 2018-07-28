@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Config\ConfigData;
  *
  * @package SP\Storage
  */
-class DatabaseConnectionData
+final class DatabaseConnectionData
 {
     /**
      * @var string
@@ -60,6 +60,7 @@ class DatabaseConnectionData
 
     /**
      * @param ConfigData $configData
+     *
      * @return mixed
      */
     public static function getFromConfig(ConfigData $configData)
@@ -75,6 +76,7 @@ class DatabaseConnectionData
 
     /**
      * @param ConfigData $configData
+     *
      * @return DatabaseConnectionData
      */
     public function refreshFromConfig(ConfigData $configData)
@@ -99,6 +101,7 @@ class DatabaseConnectionData
 
     /**
      * @param string $dbHost
+     *
      * @return DatabaseConnectionData
      */
     public function setDbHost($dbHost)
@@ -117,6 +120,7 @@ class DatabaseConnectionData
 
     /**
      * @param string $dbSocket
+     *
      * @return DatabaseConnectionData
      */
     public function setDbSocket($dbSocket)
@@ -135,6 +139,7 @@ class DatabaseConnectionData
 
     /**
      * @param int $dbPort
+     *
      * @return DatabaseConnectionData
      */
     public function setDbPort($dbPort)
@@ -153,6 +158,7 @@ class DatabaseConnectionData
 
     /**
      * @param string $dbName
+     *
      * @return DatabaseConnectionData
      */
     public function setDbName($dbName)
@@ -171,6 +177,7 @@ class DatabaseConnectionData
 
     /**
      * @param string $dbUser
+     *
      * @return DatabaseConnectionData
      */
     public function setDbUser($dbUser)
@@ -189,6 +196,7 @@ class DatabaseConnectionData
 
     /**
      * @param string $dbPass
+     *
      * @return DatabaseConnectionData
      */
     public function setDbPass($dbPass)

@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Repositories
  */
-class DuplicatedItemException extends SPException
+final class DuplicatedItemException extends SPException
 {
 
 }

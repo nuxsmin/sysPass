@@ -39,7 +39,7 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-class RemoteSyslogHandler extends Provider implements EventReceiver
+final class RemoteSyslogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 

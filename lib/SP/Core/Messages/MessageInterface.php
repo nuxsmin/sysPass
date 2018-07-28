@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -35,6 +35,7 @@ interface MessageInterface
      * Componer un mensaje en formato texto
      *
      * @param string $delimiter
+     *
      * @return string
      */
     public function composeText($delimiter = PHP_EOL);

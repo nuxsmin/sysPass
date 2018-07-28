@@ -32,7 +32,7 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Repositories\Track\TrackRequest;
-use SP\Services\MailService;
+use SP\Services\Mail\MailService;
 use SP\Services\Track\TrackService;
 use SP\Services\User\UserService;
 use SP\Services\UserPassRecover\UserPassRecoverService;

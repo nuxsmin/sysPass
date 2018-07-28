@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,11 +24,10 @@
 
 namespace SP\Test\Services\Account;
 
-use SP\Account\AccountSearchFilter;
-use SP\Account\AccountSearchItem;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\UserPreferencesData;
 use SP\Mvc\Model\QueryCondition;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -137,7 +136,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     {
         $rows = count($accountsId);
 
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId($id);
 
@@ -146,7 +145,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $this->assertInstanceOf(QueryResult::class, $result);
 
         if ($rows > 0) {
-            /** @var AccountSearchItem[] $data */
+            /** @var \SP\Services\Account\AccountSearchItem[] $data */
             $data = $result->getDataAsArray();
 
             $i = 0;
@@ -187,7 +186,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     {
         $rows = count($accountsId);
 
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId($id);
 
@@ -196,7 +195,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $this->assertEquals($rows, $result->getNumRows());
 
         if ($rows > 0) {
-            /** @var AccountSearchItem[] $data */
+            /** @var \SP\Services\Account\AccountSearchItem[] $data */
             $data = $result->getDataAsArray();
 
             $i = 0;
@@ -222,7 +221,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     {
         $rows = count($accountsId);
 
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setFilterOperator($operator);
         $searchFilter->setClientId($clientId);
@@ -234,7 +233,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var AccountSearchItem $item */
+        /** @var \SP\Services\Account\AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
             $i++;
@@ -248,7 +247,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     private function checkNonExistantClient()
     {
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
@@ -270,7 +269,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     {
         $rows = count($accountsId);
 
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setTxtSearch($string);
 
@@ -281,7 +280,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var AccountSearchItem $item */
+        /** @var \SP\Services\Account\AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
 
@@ -299,7 +298,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     private function checkFavorites($rows, array $accountsId = [])
     {
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
@@ -310,7 +309,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var AccountSearchItem $item */
+        /** @var \SP\Services\Account\AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
             $i++;
@@ -330,7 +329,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
     {
         $rows = count($accountsId);
 
-        $searchFilter = new AccountSearchFilter();
+        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setFilterOperator($operator);
         $searchFilter->setTagsId($tagsId);
@@ -338,7 +337,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $result = self::$service->processSearchResults($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
 
-        /** @var AccountSearchItem[] $data */
+        /** @var \SP\Services\Account\AccountSearchItem[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals($rows, $result->getNumRows());
@@ -359,7 +358,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     public function testProcessSearchResultsForUserDemo()
     {
-        AccountSearchItem::$publicLinkEnabled = false;
+        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(2);
@@ -406,7 +405,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     public function testProcessSearchResultsForUserA()
     {
-        AccountSearchItem::$publicLinkEnabled = false;
+        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(3);
@@ -452,7 +451,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     public function testProcessSearchResultsForUserB()
     {
-        AccountSearchItem::$publicLinkEnabled = false;
+        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(4);

@@ -38,7 +38,7 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-class FileLogHandler extends Provider implements EventReceiver
+final class FileLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 

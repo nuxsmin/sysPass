@@ -1,5 +1,5 @@
 <?php
-/** @var \SP\Account\AccountAcl $accountAcl */
+/** @var \SP\Services\Account\AccountAcl $accountAcl */
 /** @var \SP\DataModel\AccountHistoryData $accountData */
 /** @var \SP\Mvc\View\Template $this */
 ?>

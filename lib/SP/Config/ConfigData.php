@@ -31,7 +31,7 @@ use JsonSerializable;
  *
  * @package SP\Config
  */
-class ConfigData implements JsonSerializable
+final class ConfigData implements JsonSerializable
 {
     /**
      * @var string
@@ -416,6 +416,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $dokuwikiEnabled
+     *
      * @return $this
      */
     public function setDokuwikiEnabled($dokuwikiEnabled)
@@ -435,6 +436,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dokuwikiUrl
+     *
      * @return $this
      */
     public function setDokuwikiUrl($dokuwikiUrl)
@@ -454,6 +456,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dokuwikiUrlBase
+     *
      * @return $this
      */
     public function setDokuwikiUrlBase($dokuwikiUrlBase)
@@ -473,6 +476,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dokuwikiUser
+     *
      * @return $this
      */
     public function setDokuwikiUser($dokuwikiUser)
@@ -492,6 +496,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dokuwikiPass
+     *
      * @return $this
      */
     public function setDokuwikiPass($dokuwikiPass)
@@ -511,6 +516,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dokuwikiNamespace
+     *
      * @return $this
      */
     public function setDokuwikiNamespace($dokuwikiNamespace)
@@ -530,6 +536,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $ldapDefaultGroup
+     *
      * @return $this
      */
     public function setLdapDefaultGroup($ldapDefaultGroup)
@@ -549,6 +556,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $ldapDefaultProfile
+     *
      * @return $this
      */
     public function setLdapDefaultProfile($ldapDefaultProfile)
@@ -568,6 +576,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $proxyEnabled
+     *
      * @return $this
      */
     public function setProxyEnabled($proxyEnabled)
@@ -587,6 +596,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $proxyServer
+     *
      * @return $this
      */
     public function setProxyServer($proxyServer)
@@ -606,6 +616,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $proxyPort
+     *
      * @return $this
      */
     public function setProxyPort($proxyPort)
@@ -625,6 +636,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $proxyUser
+     *
      * @return $this
      */
     public function setProxyUser($proxyUser)
@@ -644,6 +656,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $proxyPass
+     *
      * @return $this
      */
     public function setProxyPass($proxyPass)
@@ -664,6 +677,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $publinksMaxViews
+     *
      * @return $this
      */
     public function setPublinksMaxViews($publinksMaxViews)
@@ -683,6 +697,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $publinksMaxTime
+     *
      * @return $this
      */
     public function setPublinksMaxTime($publinksMaxTime)
@@ -702,6 +717,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $syslogEnabled
+     *
      * @return $this
      */
     public function setSyslogEnabled($syslogEnabled)
@@ -721,6 +737,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $syslogRemoteEnabled
+     *
      * @return $this
      */
     public function setSyslogRemoteEnabled($syslogRemoteEnabled)
@@ -740,6 +757,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $syslogServer
+     *
      * @return $this
      */
     public function setSyslogServer($syslogServer)
@@ -759,6 +777,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $syslogPort
+     *
      * @return $this
      */
     public function setSyslogPort($syslogPort)
@@ -778,6 +797,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $backup_hash
+     *
      * @return $this
      */
     public function setBackupHash($backup_hash)
@@ -797,6 +817,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $export_hash
+     *
      * @return $this
      */
     public function setExportHash($export_hash)
@@ -816,6 +837,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapBindUser
+     *
      * @return $this
      */
     public function setLdapBindUser($ldapBindUser)
@@ -835,6 +857,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapProxyUser
+     *
      * @return $this
      */
     public function setLdapProxyUser($ldapProxyUser)
@@ -854,6 +877,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $accountCount
+     *
      * @return $this
      */
     public function setAccountCount($accountCount)
@@ -873,6 +897,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $accountLink
+     *
      * @return $this
      */
     public function setAccountLink($accountLink)
@@ -892,6 +917,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $checkUpdates
+     *
      * @return $this
      */
     public function setCheckUpdates($checkUpdates)
@@ -929,6 +955,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dbHost
+     *
      * @return $this
      */
     public function setDbHost($dbHost)
@@ -948,6 +975,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dbName
+     *
      * @return $this
      */
     public function setDbName($dbName)
@@ -967,6 +995,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dbPass
+     *
      * @return $this
      */
     public function setDbPass($dbPass)
@@ -986,6 +1015,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $dbUser
+     *
      * @return $this
      */
     public function setDbUser($dbUser)
@@ -1005,6 +1035,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $debug
+     *
      * @return $this
      */
     public function setDebug($debug)
@@ -1024,6 +1055,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $demoEnabled
+     *
      * @return $this
      */
     public function setDemoEnabled($demoEnabled)
@@ -1043,6 +1075,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param array $filesAllowedExts
+     *
      * @return $this
      */
     public function setFilesAllowedExts(array $filesAllowedExts = [])
@@ -1062,6 +1095,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $filesAllowedSize
+     *
      * @return $this
      */
     public function setFilesAllowedSize($filesAllowedSize)
@@ -1081,6 +1115,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $filesEnabled
+     *
      * @return $this
      */
     public function setFilesEnabled($filesEnabled)
@@ -1100,6 +1135,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $globalSearch
+     *
      * @return $this
      */
     public function setGlobalSearch($globalSearch)
@@ -1119,6 +1155,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $installed
+     *
      * @return $this
      */
     public function setInstalled($installed)
@@ -1138,6 +1175,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapBase
+     *
      * @return $this
      */
     public function setLdapBase($ldapBase)
@@ -1157,6 +1195,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $ldapEnabled
+     *
      * @return $this
      */
     public function setLdapEnabled($ldapEnabled)
@@ -1176,6 +1215,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapGroup
+     *
      * @return $this
      */
     public function setLdapGroup($ldapGroup)
@@ -1195,6 +1235,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapServer
+     *
      * @return $this
      */
     public function setLdapServer($ldapServer)
@@ -1214,6 +1255,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapUserattr
+     *
      * @return $this
      */
     public function setLdapUserattr($ldapUserattr)
@@ -1233,6 +1275,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $logEnabled
+     *
      * @return $this
      */
     public function setLogEnabled($logEnabled)
@@ -1252,6 +1295,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $mailAuthenabled
+     *
      * @return $this
      */
     public function setMailAuthenabled($mailAuthenabled)
@@ -1271,6 +1315,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $mailEnabled
+     *
      * @return $this
      */
     public function setMailEnabled($mailEnabled)
@@ -1290,6 +1335,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $mailFrom
+     *
      * @return $this
      */
     public function setMailFrom($mailFrom)
@@ -1309,6 +1355,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $mailPass
+     *
      * @return $this
      */
     public function setMailPass($mailPass)
@@ -1328,6 +1375,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $mailPort
+     *
      * @return $this
      */
     public function setMailPort($mailPort)
@@ -1347,6 +1395,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $mailRequestsEnabled
+     *
      * @return $this
      */
     public function setMailRequestsEnabled($mailRequestsEnabled)
@@ -1366,6 +1415,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $mailSecurity
+     *
      * @return $this
      */
     public function setMailSecurity($mailSecurity)
@@ -1385,6 +1435,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $mailServer
+     *
      * @return $this
      */
     public function setMailServer($mailServer)
@@ -1404,6 +1455,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $mailUser
+     *
      * @return $this
      */
     public function setMailUser($mailUser)
@@ -1423,6 +1475,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $maintenance
+     *
      * @return $this
      */
     public function setMaintenance($maintenance)
@@ -1442,6 +1495,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $passwordSalt
+     *
      * @return $this
      */
     public function setPasswordSalt($passwordSalt)
@@ -1461,6 +1515,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $resultsAsCards
+     *
      * @return $this
      */
     public function setResultsAsCards($resultsAsCards)
@@ -1480,6 +1535,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $sessionTimeout
+     *
      * @return $this
      */
     public function setSessionTimeout($sessionTimeout)
@@ -1499,6 +1555,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $siteLang
+     *
      * @return $this
      */
     public function setSiteLang($siteLang)
@@ -1518,6 +1575,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $siteTheme
+     *
      * @return $this
      */
     public function setSiteTheme($siteTheme)
@@ -1537,6 +1595,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $configVersion
+     *
      * @return $this
      */
     public function setConfigVersion($configVersion)
@@ -1556,6 +1615,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $wikiEnabled
+     *
      * @return $this
      */
     public function setWikiEnabled($wikiEnabled)
@@ -1575,6 +1635,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param array $wikiFilter
+     *
      * @return $this
      */
     public function setWikiFilter($wikiFilter)
@@ -1594,6 +1655,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $wikiPageurl
+     *
      * @return $this
      */
     public function setWikiPageurl($wikiPageurl)
@@ -1613,6 +1675,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $wikiSearchurl
+     *
      * @return $this
      */
     public function setWikiSearchurl($wikiSearchurl)
@@ -1632,6 +1695,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $ldapAds
+     *
      * @return $this
      */
     public function setLdapAds($ldapAds)
@@ -1651,6 +1715,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $ldapBindPass
+     *
      * @return $this
      */
     public function setLdapBindPass($ldapBindPass)
@@ -1670,6 +1735,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $publinksImageEnabled
+     *
      * @return $this
      */
     public function setPublinksImageEnabled($publinksImageEnabled)
@@ -1689,6 +1755,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $httpsEnabled
+     *
      * @return $this
      */
     public function setHttpsEnabled($httpsEnabled)
@@ -1708,6 +1775,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $checknotices
+     *
      * @return $this
      */
     public function setChecknotices($checknotices)
@@ -1727,6 +1795,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $accountPassToImage
+     *
      * @return $this
      */
     public function setAccountPassToImage($accountPassToImage)
@@ -1746,6 +1815,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $upgradeKey
+     *
      * @return $this
      */
     public function setUpgradeKey($upgradeKey)
@@ -1765,6 +1835,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $dbPort
+     *
      * @return $this
      */
     public function setDbPort($dbPort)
@@ -1784,6 +1855,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param boolean $publinksEnabled
+     *
      * @return $this
      */
     public function setPublinksEnabled($publinksEnabled)
@@ -1816,6 +1888,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $configSaver
+     *
      * @return $this
      */
     public function setConfigSaver($configSaver)
@@ -1851,6 +1924,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param bool $encryptSession
+     *
      * @return $this
      */
     public function setEncryptSession($encryptSession)
@@ -1870,6 +1944,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param bool $accountFullGroupAccess
+     *
      * @return $this
      */
     public function setAccountFullGroupAccess($accountFullGroupAccess)
@@ -2001,6 +2076,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param string $databaseVersion
+     *
      * @return ConfigData
      */
     public function setDatabaseVersion($databaseVersion)
@@ -2020,6 +2096,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $configDate
+     *
      * @return $this
      */
     public function setConfigDate($configDate)
@@ -2039,6 +2116,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param bool $accountExpireEnabled
+     *
      * @return ConfigData
      */
     public function setAccountExpireEnabled($accountExpireEnabled)
@@ -2058,6 +2136,7 @@ class ConfigData implements JsonSerializable
 
     /**
      * @param int $accountExpireTime
+     *
      * @return ConfigData
      */
     public function setAccountExpireTime($accountExpireTime)

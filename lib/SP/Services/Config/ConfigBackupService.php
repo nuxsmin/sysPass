@@ -35,7 +35,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Config
  */
-class ConfigBackupService extends Service
+final class ConfigBackupService extends Service
 {
     /**
      * @var ConfigService

@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Util
  */
-class Filter
+final class Filter
 {
     /**
      * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares

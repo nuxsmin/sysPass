@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -161,7 +161,7 @@ class AuthTokenData extends DataModelBase implements DataModelInterface
     {
         $this->startDate = (int)$startDate;
     }
-    
+
     /**
      * @return string
      */

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,6 +38,7 @@ interface ConfigInterface
      *
      * @param string $param   El valor a obtener
      * @param string $default El valor por defecto
+     *
      * @return string el valor o $default
      */
     public static function getValue($param, $default = null);
@@ -45,10 +46,11 @@ interface ConfigInterface
     /**
      * Guardar un parámetro de configuración
      *
-     * @param string $param El parámetro a guardar
-     * @param string $value El valor a guardar
-     * @param bool   $email enviar email?
+     * @param string $param     El parámetro a guardar
+     * @param string $value     El valor a guardar
+     * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
+     *
      * @return bool
      */
     public static function setValue($param, $value, $email = true, $hideValue = false);
@@ -57,6 +59,7 @@ interface ConfigInterface
      * Elimina un parámetro de la configuración.
      *
      * @param string $param clave
+     *
      * @return bool
      */
     public static function deleteParam($param);

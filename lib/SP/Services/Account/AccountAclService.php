@@ -24,7 +24,6 @@
 
 namespace SP\Services\Account;
 
-use SP\Account\AccountAcl;
 use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\Dto\AccountAclDto;
@@ -32,8 +31,8 @@ use SP\DataModel\ProfileData;
 use SP\Services\Service;
 use SP\Services\User\UserLoginResponse;
 use SP\Services\UserGroup\UserToUserGroupService;
-use SP\Storage\FileCache;
-use SP\Storage\FileException;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileException;
 use SP\Util\FileUtil;
 
 /**
@@ -41,12 +40,15 @@ use SP\Util\FileUtil;
  *
  * @package SP\Services\Account
  */
-class AccountAclService extends Service
+final class AccountAclService extends Service
 {
     /**
      * ACL's file base path
      */
     const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
+    /**
+     * @var bool
+     */
     public static $useCache = true;
     /**
      * @var AccountAclDto
@@ -61,7 +63,7 @@ class AccountAclService extends Service
      */
     private $acl;
     /**
-     * @var FileCache
+     * @var \SP\Storage\File\FileCache
      */
     private $fileCache;
     /**
@@ -161,10 +163,16 @@ class AccountAclService extends Service
     public function getAclFromCache($accountId, $actionId)
     {
         try {
-            return $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
+            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
+
+            if ($acl instanceof AccountAcl) {
+                return $acl;
+            }
         } catch (FileException $e) {
-            return null;
+            debugLog($e->getMessage());
         }
+
+        return null;
     }
 
     /**
@@ -376,7 +384,7 @@ class AccountAclService extends Service
      *
      * @param AccountAcl $accountAcl
      *
-     * @return null|\SP\Storage\FileStorageInterface
+     * @return null|\SP\Storage\File\FileStorageInterface
      */
     public function saveAclInCache(AccountAcl $accountAcl)
     {

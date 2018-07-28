@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use JsonSerializable;
  *
  * @package SP\Core\Messages
  */
-class TaskMessage implements MessageInterface, JsonSerializable
+final class TaskMessage implements MessageInterface, JsonSerializable
 {
     /**
      * @var string
@@ -80,6 +80,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $task
+     *
      * @return TaskMessage
      */
     public function setTask($task)
@@ -99,6 +100,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $message
+     *
      * @return TaskMessage
      */
     public function setMessage($message)
@@ -118,6 +120,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $time
+     *
      * @return TaskMessage
      */
     public function setTime($time)
@@ -137,6 +140,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $progress
+     *
      * @return TaskMessage
      */
     public function setProgress($progress)
@@ -156,6 +160,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $end
+     *
      * @return TaskMessage
      */
     public function setEnd($end)
@@ -169,6 +174,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
      * Componer un mensaje en formato texto
      *
      * @param string $delimiter
+     *
      * @return string
      */
     public function composeText($delimiter = ';')
@@ -231,6 +237,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $taskId
+     *
      * @return TaskMessage
      */
     public function setTaskId($taskId)

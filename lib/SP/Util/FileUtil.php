@@ -35,7 +35,7 @@ use SP\DataModel\FileData;
  *
  * @package SP\Util
  */
-class FileUtil
+final class FileUtil
 {
     /**
      * @var array

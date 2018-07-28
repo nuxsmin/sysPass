@@ -38,7 +38,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Storage
  */
-class Database implements DatabaseInterface
+final class Database implements DatabaseInterface
 {
     /**
      * @var int Número de registros obtenidos

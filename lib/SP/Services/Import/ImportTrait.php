@@ -24,7 +24,6 @@
 
 namespace SP\Services\Import;
 
-use SP\Account\AccountRequest;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\OldCrypt;
 use SP\Core\Exceptions\SPException;
@@ -32,6 +31,7 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
+use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;

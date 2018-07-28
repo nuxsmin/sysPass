@@ -35,7 +35,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\Ldap
  */
-class LdapCheckService extends Service
+final class LdapCheckService extends Service
 {
     /**
      * @var LdapBase
@@ -44,6 +44,7 @@ class LdapCheckService extends Service
 
     /**
      * @param LdapParams $ldapParams
+     *
      * @throws \SP\Providers\Auth\Ldap\LdapException
      */
     public function checkConnection(LdapParams $ldapParams)
@@ -59,6 +60,7 @@ class LdapCheckService extends Service
 
     /**
      * @param bool $includeGroups
+     *
      * @return array
      * @throws \SP\Providers\Auth\Ldap\LdapException
      */
@@ -90,6 +92,7 @@ class LdapCheckService extends Service
      *
      * @param array  $data
      * @param string $attribute
+     *
      * @return array
      */
     public function ldapResultsMapper($data, $attribute = 'dn')
@@ -111,6 +114,7 @@ class LdapCheckService extends Service
 
     /**
      * @param $filter
+     *
      * @return array
      * @throws \SP\Providers\Auth\Ldap\LdapException
      */

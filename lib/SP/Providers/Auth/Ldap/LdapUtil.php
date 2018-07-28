@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,12 +29,13 @@ namespace SP\Providers\Auth\Ldap;
  *
  * @package SP\Auth\Ldap
  */
-class LdapUtil
+final class LdapUtil
 {
     /**
      * Escapar carácteres especiales en el RDN de LDAP.
      *
      * @param string $dn con el RDN del usuario
+     *
      * @return string
      */
     public static function escapeLdapDN($dn)

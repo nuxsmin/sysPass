@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -102,6 +102,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param int $sortOrder
+     *
      * @return $this
      */
     public function setSortOrder($sortOrder)
@@ -113,6 +114,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param string $sk
+     *
      * @return $this
      */
     public function setSk($sk)
@@ -132,6 +134,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconPrev
+     *
      * @return $this
      */
     public function setIconPrev(IconInterface $iconPrev)
@@ -151,6 +154,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconNext
+     *
      * @return $this
      */
     public function setIconNext(IconInterface $iconNext)
@@ -170,6 +174,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconFirst
+     *
      * @return $this
      */
     public function setIconFirst(IconInterface $iconFirst)
@@ -189,6 +194,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param IconInterface $iconLast
+     *
      * @return $this
      */
     public function setIconLast(IconInterface $iconLast)
@@ -212,6 +218,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el campo de la búsqueda
      *
      * @param int $sortKey
+     *
      * @return $this
      */
     public function setSortKey($sortKey)
@@ -235,6 +242,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el registro de inicio de la página
      *
      * @param int $limitStart
+     *
      * @return $this
      */
     public function setLimitStart($limitStart)
@@ -258,6 +266,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el número de registros en una página
      *
      * @param int $limitCount
+     *
      * @return $this
      */
     public function setLimitCount($limitCount)
@@ -301,6 +310,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer el número total de registros obtenidos
      *
      * @param int $totalRows
+     *
      * @return $this
      */
     public function setTotalRows($totalRows)
@@ -324,6 +334,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer si está activado el filtro
      *
      * @param bool $filterOn
+     *
      * @return $this
      */
     public function setFilterOn($filterOn)
@@ -337,6 +348,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer la función javascript para paginar
      *
      * @param string $function
+     *
      * @return $this
      */
     public function setOnClickFunction($function)
@@ -376,6 +388,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      * Establecer los argumentos de la función OnClick
      *
      * @param mixed $args
+     *
      * @return $this
      */
     public function setOnClickArgs($args)
@@ -479,6 +492,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     /**
      * @param DataGridActionSearch $sourceAction
+     *
      * @return $this
      */
     public function setSourceAction($sourceAction)

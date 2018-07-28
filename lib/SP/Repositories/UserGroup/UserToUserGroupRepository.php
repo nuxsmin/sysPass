@@ -34,7 +34,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\UserGroup
  */
-class UserToUserGroupRepository extends Repository
+final class UserToUserGroupRepository extends Repository
 {
     use RepositoryItemTrait;
 

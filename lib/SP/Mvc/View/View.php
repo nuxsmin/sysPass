@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Mvc\View;
  *
  * @package SP\Lib\Mvc\View
  */
-class View implements ViewInterface
+final class View implements ViewInterface
 {
     /**
      * @var array
@@ -58,6 +58,7 @@ class View implements ViewInterface
 
     /**
      * View constructor.
+     *
      * @param \Twig_Environment $view
      */
     public function __construct(\Twig_Environment $view)
@@ -71,6 +72,7 @@ class View implements ViewInterface
      *
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     public function assign($name, $value)
@@ -88,6 +90,7 @@ class View implements ViewInterface
      * Establecer variables
      *
      * @param array $vars
+     *
      * @return $this
      */
     public function setVars(array $vars)
@@ -100,8 +103,9 @@ class View implements ViewInterface
     /**
      * Renderizar plantilla
      *
-     * @param $template
+     * @param        $template
      * @param string $path
+     *
      * @return string
      */
     public function render($template, $path = null)
@@ -119,6 +123,7 @@ class View implements ViewInterface
      * Establecer namespace para las plantillas
      *
      * @param $name
+     *
      * @return $this
      */
     public function setNamespace($name)
@@ -132,6 +137,7 @@ class View implements ViewInterface
      * Establecer el controlador
      *
      * @param $name
+     *
      * @return $this
      */
     public function setController($name)
@@ -205,6 +211,7 @@ class View implements ViewInterface
      * Devolver una variable
      *
      * @param $name
+     *
      * @return mixed
      */
     public function get($name)

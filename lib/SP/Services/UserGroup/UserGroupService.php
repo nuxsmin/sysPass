@@ -39,7 +39,7 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\UserGroup
  */
-class UserGroupService extends Service
+final class UserGroupService extends Service
 {
     use ServiceItemTrait;
 
@@ -123,7 +123,7 @@ class UserGroupService extends Service
      */
     public function create($itemData)
     {
-        return $this->transactionAware(function () use($itemData) {
+        return $this->transactionAware(function () use ($itemData) {
             $id = $this->userGroupRepository->create($itemData);
 
             if (count($itemData->getUsers()) > 0) {

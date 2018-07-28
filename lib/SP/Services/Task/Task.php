@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,7 +33,7 @@ use SP\Util\Util;
  *
  * @package SP\Core
  */
-class Task
+final class Task
 {
     /**
      * @var string Nombre de la tarea
@@ -127,6 +127,7 @@ class Task
      * Generar un ID de tarea
      *
      * @param $name
+     *
      * @return string
      */
     public static function genTaskId($name)
@@ -164,6 +165,7 @@ class Task
      * Escribir el tado de la tarea a un archivo
      *
      * @param TaskMessage $Message
+     *
      * @return bool
      */
     public function writeStatus(TaskMessage $Message)
@@ -183,6 +185,7 @@ class Task
      * Escribir el tado de la tarea a un archivo
      *
      * @param TaskMessage $Message
+     *
      * @return bool
      */
     public function writeStatusAndFlush(TaskMessage $Message)
@@ -196,6 +199,7 @@ class Task
      * Escribir un mensaje en el archivo de la tarea en formato JSON
      *
      * @param TaskMessage $Message
+     *
      * @return bool
      */
     public function writeJsonStatusAndFlush(TaskMessage $Message)
@@ -209,6 +213,7 @@ class Task
      * Iniciar la tarea
      *
      * @param bool $startSession
+     *
      * @return bool
      */
     public function end($startSession = true)
@@ -256,6 +261,7 @@ class Task
 
     /**
      * @param int $interval
+     *
      * @return Task
      */
     public function setInterval($interval)
@@ -287,6 +293,7 @@ class Task
      * Es necesario bloquear la sesión para permitir la ejecución de otros scripts
      *
      * @param bool $lockSession Bloquear la sesión
+     *
      * @return Task
      */
     public function register($lockSession = true)

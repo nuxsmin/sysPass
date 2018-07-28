@@ -27,7 +27,6 @@ namespace SP\Test\Repositories;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\Repositories\CustomField\CustomFieldTypeRepository;
-use SP\Repositories\NoSuchItemException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Test\DatabaseTestCase;
 use function SP\Test\setupContext;
@@ -105,17 +104,21 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     {
         $result = self::$repository->getAll();
 
-        $this->assertCount(10, $result);
-        $this->assertInstanceOf(CustomFieldTypeData::class, $result[0]);
-        $this->assertEquals(1, $result[0]->getId());
-        $this->assertEquals('text', $result[0]->getName());
-        $this->assertEquals('Texto', $result[0]->getText());
+        $this->assertEquals(10, $result->getNumRows());
+
+        /** @var CustomFieldTypeData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(10, $data);
+        $this->assertInstanceOf(CustomFieldTypeData::class, $data[0]);
+        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals('text', $data[0]->getName());
+        $this->assertEquals('Texto', $data[0]->getText());
     }
 
     /**
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
      */
     public function testGetById()
     {
@@ -124,11 +127,13 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
         $data->setName('textarea');
         $data->setText('Área de Texto');
 
-        $this->assertEquals($data, self::$repository->getById(10));
+        $result = self::$repository->getById(10);
 
-        $this->expectException(NoSuchItemException::class);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertEquals(0, self::$repository->getById(11));
+        $this->assertEquals($data, $result->getData());
+
+        $this->assertEquals(0, self::$repository->getById(11)->getNumRows());
     }
 
     /**
@@ -144,7 +149,8 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
         $data->setText('Prueba');
 
         $this->assertEquals(11, self::$repository->create($data));
-        $this->assertEquals($data, self::$repository->getById(11));
+
+        $this->assertEquals($data, self::$repository->getById(11)->getData());
     }
 
     /**
@@ -160,6 +166,7 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
         $data->setText('Prueba');
 
         $this->assertEquals(1, self::$repository->update($data));
-        $this->assertEquals($data, self::$repository->getById(10));
+
+        $this->assertEquals($data, self::$repository->getById(10)->getData());
     }
 }

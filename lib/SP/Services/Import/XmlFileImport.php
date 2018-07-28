@@ -29,7 +29,7 @@ namespace SP\Services\Import;
  *
  * @package Import
  */
-class XmlFileImport
+final class XmlFileImport
 {
     /**
      * @var FileImport
@@ -46,7 +46,7 @@ class XmlFileImport
      * @param FileImport $fileImport
      *
      * @throws ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function __construct(FileImport $fileImport)
     {
@@ -59,7 +59,7 @@ class XmlFileImport
      * Leer el archivo a un objeto XML.
      *
      * @throws ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     protected function readXMLFile()
     {

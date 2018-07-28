@@ -42,7 +42,7 @@ use SP\Services\UserGroup\UserGroupService;
  *
  * @package SP\Services\User
  */
-class LdapImportService extends Service
+final class LdapImportService extends Service
 {
     /**
      * @var int
@@ -84,8 +84,9 @@ class LdapImportService extends Service
     /**
      * Sincronizar usuarios de LDAP
      *
-     * @param LdapParams $ldapParams
+     * @param LdapParams       $ldapParams
      * @param LdapImportParams $ldapImportParams
+     *
      * @throws LdapException
      */
     public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams)
@@ -165,8 +166,9 @@ class LdapImportService extends Service
     }
 
     /**
-     * @param LdapParams $ldapParams
+     * @param LdapParams       $ldapParams
      * @param LdapImportParams $ldapImportParams
+     *
      * @throws LdapException
      */
     public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams)

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -46,9 +46,10 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * Constructor
      *
-     * @param string $url La URL de conexión
+     * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
+     *
      * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct($url = null, $user = null, $pass = null)
@@ -79,13 +80,14 @@ class DokuWikiApi extends DokuWikiApiBase
             throw new SPException($e->getMessage(), SPException::WARNING);
         }
     }
-    
+
     /**
      * Comprobar la conexión a DokuWiki
      *
-     * @param string $url La URL de conexión
+     * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
+     *
      * @return DokuWikiApi
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -126,6 +128,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * Realizar una búsqueda en la Wiki
      *
      * @param string $search El texto a buscar
+     *
      * @return array|bool
      */
     public function getSearch($search)
@@ -147,6 +150,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * Obtener una página de la Wiki
      *
      * @param string $page El nombre de la página a obtener
+     *
      * @return array|bool
      */
     public function getPage($page)
@@ -172,6 +176,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * Obtener una página de la Wiki en formato original
      *
      * @param string $page El nombre de la página a obtener
+     *
      * @return array|bool
      */
     public function getRawPage($page)
@@ -193,6 +198,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * Obtener la información de una página de la Wiki
      *
      * @param string $page El nombre de la página a obtener
+     *
      * @return array|bool
      */
     public function getPageInfo($page)
@@ -256,6 +262,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * Obtener los permisos de la página
      *
      * @param $page
+     *
      * @return array|bool
      */
     public function getAcl($page)

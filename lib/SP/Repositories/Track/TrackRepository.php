@@ -33,7 +33,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Track
  */
-class TrackRepository extends Repository
+final class TrackRepository extends Repository
 {
     /**
      * @param TrackRequest $trackRequest

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -55,6 +55,7 @@ trait XmlImportTrait
      * @param string $childNodeName Nombre de los nodos hijos
      * @param string $callback      Método a ejecutar
      * @param bool   $required      Indica si el nodo es requerido
+     *
      * @throws ImportException
      */
     protected function getNodesData($nodeName, $childNodeName, $callback, $required = true)

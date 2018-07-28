@@ -62,7 +62,7 @@ class XmlImportTest extends DatabaseTestCase
 
     /**
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImport()
     {

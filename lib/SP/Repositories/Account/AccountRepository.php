@@ -24,9 +24,6 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Account\AccountRequest;
-use SP\Account\AccountSearchFilter;
-use SP\Account\AccountUtil;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -35,7 +32,6 @@ use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
-use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryAssignment;
@@ -45,6 +41,8 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountPasswordRequest;
+use SP\Services\Account\AccountRequest;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
 
@@ -53,7 +51,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package Services
  */
-class AccountRepository extends Repository implements RepositoryItemInterface
+final class AccountRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -77,24 +75,24 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * @param $id
+     * @param                $id
+     * @param QueryCondition $queryCondition
      *
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getPasswordForId($id)
+    public function getPasswordForId($id, QueryCondition $queryCondition)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->context)
-            ->addFilter('Account.id = ?', [$id]);
+        $queryCondition->addFilter('Account.id = ?', [$id]);
 
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountPassData::class);
         $queryData->setLimit(1);
         $queryData->setSelect('Account.id, Account.name, Account.login, Account.pass, Account.key, Account.parentId');
         $queryData->setFrom('Account');
-        $queryData->setWhere($queryFilter->getFilters());
-        $queryData->setParams($queryFilter->getParams());
+        $queryData->setWhere($queryCondition->getFilters());
+        $queryData->setParams($queryCondition->getParams());
 
         return $this->db->doSelect($queryData);
     }
@@ -334,7 +332,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates an item
      *
-     * @param AccountRequest $itemData
+     * @param \SP\Services\Account\AccountRequest $itemData
      *
      * @return mixed
      * @throws SPException
@@ -583,13 +581,14 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Obtener las cuentas de una búsqueda.
      *
      * @param AccountSearchFilter $accountSearchFilter
+     * @param QueryCondition      $queryFilterUser
      *
-     * @return AccountSearchResponse
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function getByFilter(AccountSearchFilter $accountSearchFilter)
+    public function getByFilter(\SP\Services\Account\AccountSearchFilter $accountSearchFilter, QueryCondition $queryFilterUser)
     {
         $queryFilters = new QueryCondition();
 
@@ -616,8 +615,6 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         }
 
         $where = [];
-
-        $queryFilterUser = AccountUtil::getAccountFilterUser($this->context, $accountSearchFilter->getGlobalSearch());
 
         if ($queryFilterUser->hasFilters()) {
             $where[] = $queryFilterUser->getFilters();
@@ -659,7 +656,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         $queryData->setMapClassName(AccountSearchVData::class);
 
-        return new AccountSearchResponse($this->db->getFullRowCount($queryData), $this->db->doSelect($queryData)->getDataAsArray());
+        return $this->db->doSelect($queryData, true);
     }
 
     /**

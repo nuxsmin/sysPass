@@ -24,7 +24,6 @@
 
 namespace SP\Services\Client;
 
-use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
@@ -32,6 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
+use SP\Services\Account\AccountFilterUser;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -41,7 +41,7 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Client
  */
-class ClientService extends Service
+final class ClientService extends Service
 {
     use ServiceItemTrait;
 
@@ -176,7 +176,7 @@ class ClientService extends Service
      */
     public function getAllForUser()
     {
-        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->context))->getDataAsArray();
+        return $this->clientRepository->getAllForFilter($this->dic->get(AccountFilterUser::class)->getFilter())->getDataAsArray();
     }
 
     /**

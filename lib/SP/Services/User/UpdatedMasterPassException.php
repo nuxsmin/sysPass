@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Services\User
  */
-class UpdatedMasterPassException extends SPException
+final class UpdatedMasterPassException extends SPException
 {
     /**
      * SPException constructor.

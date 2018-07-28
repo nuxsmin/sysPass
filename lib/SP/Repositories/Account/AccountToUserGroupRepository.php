@@ -24,10 +24,10 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
+use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\QueryData;
 
 /**
@@ -35,7 +35,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Account
  */
-class AccountToUserGroupRepository extends Repository
+final class AccountToUserGroupRepository extends Repository
 {
     use RepositoryItemTrait;
 
@@ -109,13 +109,13 @@ class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param AccountRequest $accountRequest
+     * @param \SP\Services\Account\AccountRequest $accountRequest
      *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(AccountRequest $accountRequest)
+    public function update(\SP\Services\Account\AccountRequest $accountRequest)
     {
         $this->deleteByAccountId($accountRequest->id);
 
@@ -140,7 +140,7 @@ class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param AccountRequest $accountRequest
+     * @param \SP\Services\Account\AccountRequest $accountRequest
      *
      * @return int Last ID inserted
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -172,7 +172,7 @@ class AccountToUserGroupRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateEdit(AccountRequest $accountRequest)
+    public function updateEdit(\SP\Services\Account\AccountRequest $accountRequest)
     {
         $this->deleteEditByAccountId($accountRequest->id);
 
@@ -197,13 +197,13 @@ class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param AccountRequest $accountRequest
+     * @param \SP\Services\Account\AccountRequest $accountRequest
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addEdit(AccountRequest $accountRequest)
+    public function addEdit(\SP\Services\Account\AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 

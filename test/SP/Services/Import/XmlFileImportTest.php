@@ -39,7 +39,7 @@ class XmlFileImportTest extends TestCase
 
     /**
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDetectXMLFormat()
     {
@@ -58,7 +58,7 @@ class XmlFileImportTest extends TestCase
 
     /**
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testInvalidFile()
     {
@@ -71,7 +71,7 @@ class XmlFileImportTest extends TestCase
 
     /**
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testEmptyFile()
     {

@@ -31,7 +31,7 @@ use SP\DataModel\UserPreferencesData;
  *
  * @package SP\Services\User
  */
-class UserLoginResponse
+final class UserLoginResponse
 {
     /**
      * @var int
@@ -136,6 +136,7 @@ class UserLoginResponse
 
     /**
      * @param string $login
+     *
      * @return UserLoginResponse
      */
     public function setLogin($login)
@@ -154,6 +155,7 @@ class UserLoginResponse
 
     /**
      * @param string $ssoLogin
+     *
      * @return UserLoginResponse
      */
     public function setSsoLogin($ssoLogin)
@@ -172,6 +174,7 @@ class UserLoginResponse
 
     /**
      * @param string $name
+     *
      * @return UserLoginResponse
      */
     public function setName($name)
@@ -190,6 +193,7 @@ class UserLoginResponse
 
     /**
      * @param string $email
+     *
      * @return UserLoginResponse
      */
     public function setEmail($email)
@@ -208,6 +212,7 @@ class UserLoginResponse
 
     /**
      * @param int $userGroupId
+     *
      * @return UserLoginResponse
      */
     public function setUserGroupId($userGroupId)
@@ -226,6 +231,7 @@ class UserLoginResponse
 
     /**
      * @param int $userProfileId
+     *
      * @return UserLoginResponse
      */
     public function setUserProfileId($userProfileId)
@@ -244,6 +250,7 @@ class UserLoginResponse
 
     /**
      * @param int $isAdminApp
+     *
      * @return UserLoginResponse
      */
     public function setIsAdminApp($isAdminApp)
@@ -262,6 +269,7 @@ class UserLoginResponse
 
     /**
      * @param int $isAdminAcc
+     *
      * @return UserLoginResponse
      */
     public function setIsAdminAcc($isAdminAcc)
@@ -280,6 +288,7 @@ class UserLoginResponse
 
     /**
      * @param int $isDisabled
+     *
      * @return UserLoginResponse
      */
     public function setIsDisabled($isDisabled)
@@ -298,6 +307,7 @@ class UserLoginResponse
 
     /**
      * @param int $isChangePass
+     *
      * @return UserLoginResponse
      */
     public function setIsChangePass($isChangePass)
@@ -316,6 +326,7 @@ class UserLoginResponse
 
     /**
      * @param int $isChangedPass
+     *
      * @return UserLoginResponse
      */
     public function setIsChangedPass($isChangedPass)
@@ -334,6 +345,7 @@ class UserLoginResponse
 
     /**
      * @param int $isLdap
+     *
      * @return UserLoginResponse
      */
     public function setIsLdap($isLdap)
@@ -352,6 +364,7 @@ class UserLoginResponse
 
     /**
      * @param int $isMigrate
+     *
      * @return UserLoginResponse
      */
     public function setIsMigrate($isMigrate)
@@ -370,6 +383,7 @@ class UserLoginResponse
 
     /**
      * @param mixed $preferences
+     *
      * @return UserLoginResponse
      */
     public function setPreferences(UserPreferencesData $preferences)
@@ -388,6 +402,7 @@ class UserLoginResponse
 
     /**
      * @param string $pass
+     *
      * @return UserLoginResponse
      */
     public function setPass($pass)
@@ -406,6 +421,7 @@ class UserLoginResponse
 
     /**
      * @param string $mPass
+     *
      * @return UserLoginResponse
      */
     public function setMPass($mPass)
@@ -424,6 +440,7 @@ class UserLoginResponse
 
     /**
      * @param string $mKey
+     *
      * @return UserLoginResponse
      */
     public function setMKey($mKey)
@@ -442,6 +459,7 @@ class UserLoginResponse
 
     /**
      * @param int $lastUpdateMPass
+     *
      * @return UserLoginResponse
      */
     public function setLastUpdateMPass($lastUpdateMPass)
@@ -460,6 +478,7 @@ class UserLoginResponse
 
     /**
      * @param string $hashSalt
+     *
      * @return UserLoginResponse
      */
     public function setHashSalt($hashSalt)
@@ -478,6 +497,7 @@ class UserLoginResponse
 
     /**
      * @param int $id
+     *
      * @return UserLoginResponse
      */
     public function setId($id)
@@ -496,6 +516,7 @@ class UserLoginResponse
 
     /**
      * @param string $userGroupName
+     *
      * @return UserLoginResponse
      */
     public function setUserGroupName($userGroupName)
@@ -514,6 +535,7 @@ class UserLoginResponse
 
     /**
      * @param string $userProfileName
+     *
      * @return UserLoginResponse
      */
     public function setUserProfileName($userProfileName)
@@ -532,6 +554,7 @@ class UserLoginResponse
 
     /**
      * @param int $lastUpdate
+     *
      * @return UserLoginResponse
      */
     public function setLastUpdate(int $lastUpdate)

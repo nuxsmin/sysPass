@@ -32,12 +32,13 @@ use SP\Util\Checks;
  *
  * @package Config
  */
-class ConfigUtil
+final class ConfigUtil
 {
     /**
      * Adaptador para convertir una cadena de extensiones a un array
      *
      * @param string $filesAllowedExts
+     *
      * @return array
      */
     public static function filesExtsAdapter($filesAllowedExts)
@@ -55,6 +56,7 @@ class ConfigUtil
      * Adaptador para convertir una cadena de direcciones de email a un array
      *
      * @param string $mailAddresses
+     *
      * @return array
      */
     public static function mailAddressesAdapter($mailAddresses)
@@ -68,6 +70,7 @@ class ConfigUtil
      * Adaptador para convertir una cadena de eventos a un array
      *
      * @param array $events
+     *
      * @return array
      */
     public static function eventsAdapter(array $events)

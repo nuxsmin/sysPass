@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Util
  */
-class Connection implements ConnectionInterface
+final class Connection implements ConnectionInterface
 {
     /**
      * @var resource
@@ -74,12 +74,13 @@ class Connection implements ConnectionInterface
      * Obtener un socket
      *
      * @param $type int EL tipo de socket TCP/UDP
+     *
      * @return resource
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getSocket($type)
     {
-        switch ($type){
+        switch ($type) {
             case self::TYPE_TCP:
                 $this->socket = $this->getTCPSocket();
                 break;
@@ -113,6 +114,7 @@ class Connection implements ConnectionInterface
      * Enviar un mensaje al socket
      *
      * @param $message string El mensaje a enviar
+     *
      * @return int|bool
      * @throws \SP\Core\Exceptions\SPException
      */

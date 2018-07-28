@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,6 +36,7 @@ interface ViewInterface
      *
      * @param $name
      * @param $value
+     *
      * @return $this
      */
     public function assign($name, $value);
@@ -44,6 +45,7 @@ interface ViewInterface
      * Devolver una variable
      *
      * @param $name
+     *
      * @return mixed
      */
     public function get($name);
@@ -52,6 +54,7 @@ interface ViewInterface
      * Establecer variables
      *
      * @param array $vars
+     *
      * @return $this
      */
     public function setVars(array $vars);
@@ -59,8 +62,9 @@ interface ViewInterface
     /**
      * Renderizar plantilla
      *
-     * @param $template
+     * @param      $template
      * @param null $path
+     *
      * @return string
      */
     public function render($template, $path = null);
@@ -69,6 +73,7 @@ interface ViewInterface
      * Establecer namespace para las plantillas
      *
      * @param $name
+     *
      * @return $this
      */
     public function setNamespace($name);
@@ -77,6 +82,7 @@ interface ViewInterface
      * Establecer el controlador
      *
      * @param $name
+     *
      * @return $this
      */
     public function setController($name);

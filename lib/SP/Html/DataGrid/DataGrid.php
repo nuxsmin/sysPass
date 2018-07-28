@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Html\DataGrid
  */
-class DataGrid extends DataGridBase
+final class DataGrid extends DataGridBase
 {
     /**
      * Título de la pestaña
@@ -41,7 +41,16 @@ class DataGrid extends DataGridBase
     private $_title = '';
 
     /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->_title;
+    }
+
+    /**
      * @param $title string
+     *
      * @return DataGrid
      */
     public function setTitle($title)
@@ -49,13 +58,5 @@ class DataGrid extends DataGridBase
         $this->_title = $title;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->_title;
     }
 }

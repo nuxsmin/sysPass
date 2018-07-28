@@ -47,7 +47,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de instalar sysPass.
  */
-class Installer extends Service
+final class Installer extends Service
 {
     /**
      * Versión y número de compilación de sysPass

@@ -39,7 +39,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Category
  */
-class CategoryRepository extends Repository implements RepositoryItemInterface
+final class CategoryRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

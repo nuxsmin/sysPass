@@ -34,7 +34,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\UserGroup
  */
-class UserToUserGroupService extends Service
+final class UserToUserGroupService extends Service
 {
     /**
      * @var UserToUserGroupRepository

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ use SP\DataModel\UserLoginData;
 
 /**
  * Interface AuthInterface
+ *
  * @package Auth
  */
 interface AuthInterface
@@ -36,6 +37,7 @@ interface AuthInterface
      * Autentificar al usuario
      *
      * @param UserLoginData $UserData Datos del usuario
+     *
      * @return mixed|AuthDataBase
      */
     public function authenticate(UserLoginData $UserData);

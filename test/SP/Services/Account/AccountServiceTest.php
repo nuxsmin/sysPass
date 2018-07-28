@@ -24,16 +24,15 @@
 
 namespace SP\Test\Services\Account;
 
-use SP\Account\AccountRequest;
-use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountVData;
-use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountPasswordRequest;
+use SP\Services\Account\AccountRequest;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -80,7 +79,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $accountRequest = new AccountRequest();
+        $accountRequest = new \SP\Services\Account\AccountRequest();
         $accountRequest->name = 'Prueba 2';
         $accountRequest->login = 'admin';
         $accountRequest->url = 'http://syspass.org';
@@ -322,10 +321,11 @@ class AccountServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Exception
      */
     public function testUpdate()
     {
-        $accountRequest = new AccountRequest();
+        $accountRequest = new \SP\Services\Account\AccountRequest();
         $accountRequest->id = 1;
         $accountRequest->name = 'Prueba 1';
         $accountRequest->login = 'admin';
@@ -394,7 +394,7 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals(3, $groups[1]->getId());
         $this->assertEquals(0, (int)$groups[1]->isEdit);
 
-        $accountRequest = new AccountRequest();
+        $accountRequest = new \SP\Services\Account\AccountRequest();
         $accountRequest->id = 3;
 
         self::$service->update($accountRequest);
@@ -453,79 +453,65 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setCategoryId(1);
 
         // Comprobar un Id de categoría
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
+        $this->assertCount(1, $result);
 
         // Comprobar un Id de categoría no existente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId(10);
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertCount(0, $result);
 
         // Comprobar un Id de cliente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(1);
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
+        $this->assertCount(1, $result);
 
         // Comprobar un Id de cliente no existente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertCount(0, $result);
 
         // Comprobar una cadena de texto
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCleanTxtSearch('apple.com');
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
-        $this->assertEquals(2, $response->getData()[0]->getId());
+        $this->assertCount(1, $result);
+        $this->assertEquals(2, $result[0]->getId());
 
         // Comprobar los favoritos
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertCount(0, $result);
 
         // Comprobar las etiquetas
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setTagsId([1]);
 
-        $response = self::$service->getByFilter($searchFilter);
+        $result = self::$service->getByFilter($searchFilter);
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
-        $this->assertEquals(1, $response->getData()[0]->getId());
+        $this->assertCount(1, $result);
+        $this->assertEquals(1, $result[0]->getId());
     }
 
     /**

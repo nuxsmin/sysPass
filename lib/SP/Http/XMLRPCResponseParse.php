@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -54,6 +54,7 @@ abstract class XMLRPCResponseParse
      * Constructor
      *
      * @param string $xml El documento XML
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct($xml)
@@ -89,6 +90,7 @@ abstract class XMLRPCResponseParse
      * de la clase _data
      *
      * @param DOMNodeList $nodes
+     *
      * @return array
      */
     private function parseNodes(DOMNodeList $nodes)
@@ -121,6 +123,7 @@ abstract class XMLRPCResponseParse
      * Procesar nodos del tipo struct
      *
      * @param DOMElement $xmlStruct
+     *
      * @return array
      */
     private function parseStruct(DOMElement $xmlStruct)
@@ -152,6 +155,7 @@ abstract class XMLRPCResponseParse
 
     /**
      * @param DOMNode $node
+     *
      * @return bool|int|string|null
      */
     private function parseNodeType(DOMNode $node)
@@ -175,6 +179,7 @@ abstract class XMLRPCResponseParse
      * Procesar nodos del tipo array
      *
      * @param DOMElement $xmlArray
+     *
      * @return array
      */
     private function parseArray(DOMElement $xmlArray)
@@ -203,6 +208,7 @@ abstract class XMLRPCResponseParse
      * Procesar nodos del tipo value
      *
      * @param DOMElement $xmlValues
+     *
      * @return array
      */
     private function parseValues(DOMElement $xmlValues)
@@ -228,6 +234,7 @@ abstract class XMLRPCResponseParse
      * Procesar nodos del tipo fault
      *
      * @param DOMElement $xmlFault
+     *
      * @return array
      */
     private function parseFault(DOMElement $xmlFault)

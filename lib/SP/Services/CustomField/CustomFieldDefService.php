@@ -38,7 +38,7 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\CustomField
  */
-class CustomFieldDefService extends Service
+final class CustomFieldDefService extends Service
 {
     use ServiceItemTrait;
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,7 +36,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class Minify
+final class Minify
 {
     /**
      * Constantes para tipos de archivos
@@ -81,6 +81,7 @@ class Minify
     /**
      * @param string $path
      * @param bool   $checkPath
+     *
      * @return $this
      */
     public function setBase($path, $checkPath = false)
@@ -96,6 +97,7 @@ class Minify
      * devuelve el código HTTP/304
      *
      * @param bool $disableMinify Deshabilitar minimizar
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -192,6 +194,7 @@ class Minify
      * Comprimir código javascript.
      *
      * @param string $buffer código a comprimir
+     *
      * @return string
      */
     private function jsCompress($buffer)
@@ -210,6 +213,7 @@ class Minify
     /**
      * @param      $files
      * @param bool $minify
+     *
      * @return Minify
      */
     public function addFilesFromString($files, $minify = true)
@@ -232,6 +236,7 @@ class Minify
      *
      * @param string $file
      * @param bool   $minify Si es necesario reducir
+     *
      * @return $this
      */
     public function addFile($file, $minify = true)
@@ -265,6 +270,7 @@ class Minify
      * Comprobar si es necesario reducir
      *
      * @param string $file El nombre del archivo
+     *
      * @return bool
      */
     private function needsMinify($file)
@@ -275,6 +281,7 @@ class Minify
     /**
      * @param array $files
      * @param bool  $minify
+     *
      * @return Minify
      */
     public function addFiles(array $files, $minify = true)
@@ -311,6 +318,7 @@ class Minify
      * Añadir un recurso desde URL
      *
      * @param $url
+     *
      * @return $this
      */
     public function addUrl($url)
@@ -330,6 +338,7 @@ class Minify
      * Establecer el tipo de recurso a procesar
      *
      * @param int $type
+     *
      * @return $this
      */
     public function setType($type)

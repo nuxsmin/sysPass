@@ -62,7 +62,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoExportWithoutPassword()
     {
@@ -84,7 +84,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     private function verifyExportWithoutPassword($file)
     {
@@ -122,7 +122,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoExportWithPassword()
     {
@@ -147,7 +147,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     private function verifyExportWithPassword($file, $password)
     {

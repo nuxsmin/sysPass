@@ -29,7 +29,7 @@ namespace SP\Core\Messages;
  *
  * @package SP\Core\Messages
  */
-class MailMessage extends MessageBase implements MessageInterface
+final class MailMessage extends MessageBase implements MessageInterface
 {
     /**
      * Adds a blank description line
@@ -59,6 +59,7 @@ class MailMessage extends MessageBase implements MessageInterface
      * Componer un mensaje en formato texto
      *
      * @param string $delimiter
+     *
      * @return string
      */
     public function composeText($delimiter = PHP_EOL)

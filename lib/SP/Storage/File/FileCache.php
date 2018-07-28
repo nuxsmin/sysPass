@@ -22,14 +22,14 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
 
 /**
  * Class FileCache
  *
- * @package SP\Storage
+ * @package SP\Storage\File;
  */
-class FileCache implements FileStorageInterface
+final class FileCache implements FileStorageInterface
 {
     /**
      * @param string $path
@@ -53,6 +53,7 @@ class FileCache implements FileStorageInterface
     /**
      * @param string $path
      * @param mixed  $data
+     *
      * @return FileStorageInterface
      * @throws FileException
      */
@@ -99,6 +100,7 @@ class FileCache implements FileStorageInterface
      *
      * @param string $path
      * @param int    $time
+     *
      * @return mixed
      */
     public function isExpired($path, $time = 86400)
@@ -111,6 +113,7 @@ class FileCache implements FileStorageInterface
      *
      * @param string $path
      * @param int    $date
+     *
      * @return mixed
      */
     public function isExpiredDate($path, $date)

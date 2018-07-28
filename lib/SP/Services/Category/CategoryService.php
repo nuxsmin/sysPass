@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Category
  */
-class CategoryService extends Service
+final class CategoryService extends Service
 {
     use ServiceItemTrait;
 

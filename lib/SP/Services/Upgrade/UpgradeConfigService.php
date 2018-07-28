@@ -35,7 +35,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeConfigService extends Service implements UpgradeInterface
+final class UpgradeConfigService extends Service implements UpgradeInterface
 {
     /**
      * @var array Versiones actualizables
@@ -48,6 +48,7 @@ class UpgradeConfigService extends Service implements UpgradeInterface
 
     /**
      * @param $version
+     *
      * @return bool
      */
     public static function needsUpgrade($version)
@@ -59,6 +60,7 @@ class UpgradeConfigService extends Service implements UpgradeInterface
      * Actualizar el archivo de configuración a formato XML
      *
      * @param $version
+     *
      * @throws UpgradeException
      */
     public function upgradeOldConfigFile($version)
@@ -190,7 +192,7 @@ class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * Migrar valores de configuración.
      *
-     * @param $version
+     * @param            $version
      * @param ConfigData $configData
      */
     public function upgrade($version, ConfigData $configData)

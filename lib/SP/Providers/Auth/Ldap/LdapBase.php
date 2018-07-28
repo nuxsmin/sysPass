@@ -95,9 +95,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * LdapBase constructor.
      *
-     * @param LdapParams $ldapParams
+     * @param LdapParams      $ldapParams
      * @param EventDispatcher $eventDispatcher
-     * @param bool $debug
+     * @param bool            $debug
      */
     public function __construct(LdapParams $ldapParams, EventDispatcher $eventDispatcher, $debug = false)
     {
@@ -220,8 +220,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn con el DN del usuario
+     * @param string $bindDn   con el DN del usuario
      * @param string $bindPass con la clave del usuario
+     *
      * @throws LdapException
      * @return bool
      */
@@ -286,6 +287,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Autentificar al usuario
      *
      * @param UserLoginData $userLoginData Datos del usuario
+     *
      * @return bool
      */
     public function authenticate(UserLoginData $userLoginData)
@@ -415,8 +417,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Devolver los resultados de una paginación
      *
-     * @param string $filter Filtro a utilizar
-     * @param array $attributes Atributos a devolver
+     * @param string $filter     Filtro a utilizar
+     * @param array  $attributes Atributos a devolver
+     *
      * @return bool|array
      */
     protected function getResults($filter, array $attributes = null)
@@ -514,7 +517,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Devolver los objetos disponibles
      *
      * @param string $filter
-     * @param array $attributes
+     * @param array  $attributes
+     *
      * @return array|bool
      * @throws LdapException
      */
@@ -529,7 +533,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Obtener los objetos según el filtro indicado
      *
      * @param string $filter
-     * @param array $attributes
+     * @param array  $attributes
+     *
      * @return array
      * @throws LdapException
      */
@@ -553,6 +558,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Devolver los objetos disponibles
      *
      * @param array $attributes
+     *
      * @return array|bool
      * @throws LdapException
      */
@@ -567,6 +573,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * Devolver los objetos disponibles
      *
      * @param array $attributes
+     *
      * @return array|bool
      * @throws LdapException
      */

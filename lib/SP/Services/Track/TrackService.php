@@ -38,7 +38,7 @@ use SP\Services\Service;
  *
  * @package SP\Services
  */
-class TrackService extends Service
+final class TrackService extends Service
 {
     /**
      * Tiempo para contador de intentos

@@ -61,9 +61,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Whether a offset exists
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
+     *
      * @param mixed $offset <p>
      *                      An offset to check for.
      *                      </p>
+     *
      * @return boolean true on success or false on failure.
      *                      </p>
      *                      <p>
@@ -79,6 +81,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * See if an attribute exists in the collection
      *
      * @param string $key The name of the parameter
+     *
      * @return boolean
      */
     public function exists($key)
@@ -91,9 +94,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Offset to retrieve
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetget.php
+     *
      * @param mixed $offset <p>
      *                      The offset to retrieve.
      *                      </p>
+     *
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
@@ -109,6 +114,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @param string $key         The name of the parameter to return
      * @param mixed  $default_val The default value of the parameter if it contains no value
+     *
      * @return mixed
      */
     public function get($key, $default_val = null)
@@ -124,12 +130,14 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Offset to set
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetset.php
+     *
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
      *                      </p>
      * @param mixed $value  <p>
      *                      The value to set.
      *                      </p>
+     *
      * @return void
      * @since 5.0.0
      */
@@ -143,6 +151,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @param string $key   The name of the parameter to set
      * @param mixed  $value The value of the parameter to set
+     *
      * @return DataCollection
      */
     public function set($key, $value)
@@ -156,9 +165,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Offset to unset
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetunset.php
+     *
      * @param mixed $offset <p>
      *                      The offset to unset.
      *                      </p>
+     *
      * @return void
      * @since 5.0.0
      */
@@ -171,6 +182,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Remove an attribute from the collection
      *
      * @param string $key The name of the parameter
+     *
      * @return void
      */
     public function remove($key)
@@ -209,6 +221,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Replace the collection's attributes
      *
      * @param array $attributes The attributes to replace the collection's with
+     *
      * @return DataCollection
      */
     public function replace(array $attributes = array())
@@ -235,7 +248,9 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * this instance while treating it as an instance property
      *
      * @see get()
+     *
      * @param string $key The name of the parameter to return
+     *
      * @return mixed
      */
     public function __get($key)
@@ -250,8 +265,10 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * this instance while treating it as an instance property
      *
      * @see set()
+     *
      * @param string $key   The name of the parameter to set
      * @param mixed  $value The value of the parameter to set
+     *
      * @return void
      */
     public function __set($key, $value)
@@ -266,7 +283,9 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * from this instance while treating it as an instance property
      *
      * @see exists()
+     *
      * @param string $key The name of the parameter
+     *
      * @return boolean
      */
     public function __isset($key)
@@ -281,7 +300,9 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * this instance while treating it as an instance property
      *
      * @see remove()
+     *
      * @param string $key The name of the parameter
+     *
      * @return void
      */
     public function __unset($key)

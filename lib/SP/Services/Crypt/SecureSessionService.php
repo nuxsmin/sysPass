@@ -30,15 +30,15 @@ use SP\Core\Crypt\Vault;
 use SP\Http\Request;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\FileCache;
-use SP\Storage\FileException;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileException;
 
 /**
  * Class SecureSessionService
  *
  * @package SP\Services\Crypt
  */
-class SecureSessionService extends Service
+final class SecureSessionService extends Service
 {
     const CACHE_EXPIRE_TIME = 86400;
     const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';

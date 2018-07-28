@@ -55,7 +55,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class Bootstrap
+final class Bootstrap
 {
     /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)

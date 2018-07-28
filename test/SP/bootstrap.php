@@ -25,7 +25,6 @@
 namespace SP\Test;
 
 use DI\ContainerBuilder;
-use Doctrine\Common\Cache\ArrayCache;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
@@ -111,7 +110,7 @@ function setupContext()
     // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
     // para la aplicación
     $builder = new ContainerBuilder();
-    $builder->setDefinitionCache(new ArrayCache());
+//    $builder->setDefinitionCache(new ArrayCache());
     $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
     $dic = $builder->build();
 

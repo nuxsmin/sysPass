@@ -29,7 +29,7 @@ namespace SP\Util;
  *
  * @package SP\Util
  */
-class Checks
+final class Checks
 {
     /**
      * Comprobar si la función de números aleatorios está disponible.

@@ -31,12 +31,13 @@ use SP\Core\Context\SessionContext;
  *
  * @package SP\Core\Crypt
  */
-class Session
+final class Session
 {
     /**
      * Devolver la clave maestra de la sesión
      *
      * @param SessionContext $sessionContext
+     *
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
@@ -47,6 +48,7 @@ class Session
 
     /**
      * @param SessionContext $sessionContext
+     *
      * @return string
      */
     private static function getKey(SessionContext $sessionContext)
@@ -59,6 +61,7 @@ class Session
      *
      * @param                $data
      * @param SessionContext $sessionContext
+     *
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public static function saveSessionKey($data, SessionContext $sessionContext)
@@ -70,6 +73,7 @@ class Session
      * Regenerar la clave de sesión
      *
      * @param SessionContext $sessionContext
+     *
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public static function reKey(SessionContext $sessionContext)

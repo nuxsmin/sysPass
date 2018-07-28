@@ -52,6 +52,7 @@ class SelectItemAdapter implements ItemAdapterInterface
 
     /**
      * @param array $items
+     *
      * @return static
      */
     public static function factory(array $items)
@@ -63,6 +64,7 @@ class SelectItemAdapter implements ItemAdapterInterface
      * Returns an array of ids from the given array of objects
      *
      * @param array $items
+     *
      * @return array
      */
     public static function getIdFromArrayOfObjects(array $items)
@@ -121,6 +123,7 @@ class SelectItemAdapter implements ItemAdapterInterface
      *
      * @param array $selected
      * @param null  $skip
+     *
      * @return SelectItem[]
      */
     public function getItemsFromModelSelected(array $selected, $skip = null)
@@ -165,6 +168,7 @@ class SelectItemAdapter implements ItemAdapterInterface
      *
      * @param array $selected
      * @param bool  $useValueAsKey
+     *
      * @return SelectItem[]
      */
     public function getItemsFromArraySelected(array $selected, $useValueAsKey = false)

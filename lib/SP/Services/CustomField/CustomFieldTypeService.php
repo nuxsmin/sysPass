@@ -26,6 +26,7 @@ namespace SP\Services\CustomField;
 
 use SP\DataModel\CustomFieldTypeData;
 use SP\Repositories\CustomField\CustomFieldTypeRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
@@ -34,7 +35,7 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\CustomField
  */
-class CustomFieldTypeService extends Service
+final class CustomFieldTypeService extends Service
 {
     use ServiceItemTrait;
 
@@ -44,27 +45,50 @@ class CustomFieldTypeService extends Service
     protected $customFieldTypeRepository;
 
     /**
+     * Get all items from the service's repository
+     *
+     * @return CustomFieldTypeData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function getAllBasic()
+    {
+        return $this->getAll();
+    }
+
+    /**
      * Returns all the items
      *
      * @return CustomFieldTypeData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
-        return $this->customFieldTypeRepository->getAll();
+        return $this->customFieldTypeRepository->getAll()->getDataAsArray();
+    }
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
+     */
+    public function getById($id)
+    {
+        $result = $this->customFieldTypeRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Tipo de campo no encontrado'));
+        }
+
+        return $result->getData();
     }
 
     protected function initialize()
     {
         $this->customFieldTypeRepository = $this->dic->get(CustomFieldTypeRepository::class);
-    }
-
-    /**
-     * Get all items from the service's repository
-     *
-     * @return CustomFieldTypeData[]
-     */
-    public function getAllBasic()
-    {
-        return $this->getAll();
     }
 }

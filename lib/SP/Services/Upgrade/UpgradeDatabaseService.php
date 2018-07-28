@@ -31,8 +31,8 @@ use SP\Services\Service;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\QueryData;
-use SP\Storage\FileException;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 /**
@@ -40,7 +40,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeDatabaseService extends Service implements UpgradeInterface
+final class UpgradeDatabaseService extends Service implements UpgradeInterface
 {
     /**
      * @var array Versiones actualizables

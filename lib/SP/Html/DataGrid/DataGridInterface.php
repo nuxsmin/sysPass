@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -67,7 +67,8 @@ interface DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool $isMenu Añadir al menu de acciones
+     * @param bool                    $isMenu Añadir al menu de acciones
+     *
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false);
@@ -182,6 +183,7 @@ interface DataGridInterface
      * Devolver las acciones filtradas
      *
      * @param $filter
+     *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsFiltered($filter);
@@ -190,12 +192,14 @@ interface DataGridInterface
      * Devolver las acciones de menu filtradas
      *
      * @param $filter
+     *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenuFiltered($filter);
 
     /**
      * Actualizar los datos del paginador
+     *
      * @return static
      */
     public function updatePager();

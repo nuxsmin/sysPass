@@ -38,7 +38,7 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-class SyslogHandler extends Provider implements EventReceiver
+final class SyslogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 

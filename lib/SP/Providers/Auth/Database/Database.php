@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,7 +38,7 @@ use SP\Services\User\UserService;
  *
  * @package SP\Providers\Auth\Database
  */
-class Database implements AuthInterface
+final class Database implements AuthInterface
 {
     /**
      * @var UserLoginData $userLoginData
@@ -56,7 +56,7 @@ class Database implements AuthInterface
     /**
      * Database constructor.
      *
-     * @param UserService $userService
+     * @param UserService     $userService
      * @param UserPassService $userPassService
      */
     public function __construct(UserService $userService, UserPassService $userPassService)
@@ -70,6 +70,7 @@ class Database implements AuthInterface
      * Autentificar al usuario
      *
      * @param UserLoginData $userLoginData Datos del usuario
+     *
      * @return DatabaseAuthData
      */
     public function authenticate(UserLoginData $userLoginData)
@@ -123,6 +124,7 @@ class Database implements AuthInterface
 
     /**
      * @param UserLoginResponse $userLoginResponse
+     *
      * @return bool
      */
     protected function checkMigrateUser(UserLoginResponse $userLoginResponse)

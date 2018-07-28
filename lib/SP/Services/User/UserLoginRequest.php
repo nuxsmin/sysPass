@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Services\User;
  *
  * @package SP\Services\User
  */
-class UserLoginRequest
+final class UserLoginRequest
 {
     /**
      * @var string

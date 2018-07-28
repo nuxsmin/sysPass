@@ -41,7 +41,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\User
  */
-class UserPassService extends Service
+final class UserPassService extends Service
 {
     // La clave maestra incorrecta
     const MPASS_WRONG = 0;

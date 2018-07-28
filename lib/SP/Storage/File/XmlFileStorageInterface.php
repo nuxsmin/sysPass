@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,44 +22,33 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
 
 /**
- * Interface FileStorageInterface
+ * Interface StorageInterface
  *
  * @package SP\Storage
  */
-interface FileStorageInterface
+interface XmlFileStorageInterface
 {
     /**
-     * @param string $path
+     * @param string $node
      *
-     * @return mixed
+     * @return XmlFileStorageInterface
      * @throws FileException
      */
-    public function load($path);
+    public function load($node = '');
 
     /**
-     * @param string $path
-     * @param mixed $data
-     * @return FileStorageInterface
-     * @throws FileException
-     */
-    public function save($path, $data);
-
-    /**
-     * @param string $path
+     * @param mixed  $data Data to be saved
+     * @param string $node
      *
+     * @return XmlFileStorageInterface
+     */
+    public function save($data, $node = '');
+
+    /**
      * @return mixed
      */
-    public function delete($path);
-
-    /**
-     * Returns whether the file is expired
-     *
-     * @param string $path
-     * @param int $time
-     * @return mixed
-     */
-    public function isExpired($path, $time = 86400);
+    public function getItems();
 }

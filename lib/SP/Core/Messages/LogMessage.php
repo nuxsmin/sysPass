@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Html\Html;
  *
  * @package SP\Core\Messages
  */
-class LogMessage extends MessageBase
+final class LogMessage extends MessageBase
 {
     /**
      * @var string Acción realizada
@@ -54,6 +54,7 @@ class LogMessage extends MessageBase
      * Devuelve la descripción de la acción realizada en formato HTML
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getHtmlDescription($translate = false)
@@ -65,6 +66,7 @@ class LogMessage extends MessageBase
      * Devuelve la descripción de la acción realizada
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getDescription($translate = false)
@@ -89,6 +91,7 @@ class LogMessage extends MessageBase
      *
      * @param $key   string
      * @param $value string
+     *
      * @return $this
      */
     public function addDetailsHtml($key, $value)
@@ -103,6 +106,7 @@ class LogMessage extends MessageBase
      *
      * @param $key   string
      * @param $value string
+     *
      * @return $this
      */
     public function addDetails($key, $value)
@@ -119,9 +123,22 @@ class LogMessage extends MessageBase
     }
 
     /**
+     * Formatear una cadena para guardarla en el registro
+     *
+     * @param $string string La cadena a formatear
+     *
+     * @return string
+     */
+    private function formatString($string)
+    {
+        return strip_tags($string);
+    }
+
+    /**
      * Establece la descripción de la acción realizada en formato HTML
      *
      * @param string $description
+     *
      * @return $this
      */
     public function addDescriptionHtml($description = '')
@@ -135,6 +152,7 @@ class LogMessage extends MessageBase
      * Establece la descripción de la acción realizada
      *
      * @param string $description
+     *
      * @return $this
      */
     public function addDescription($description = '')
@@ -159,6 +177,7 @@ class LogMessage extends MessageBase
      * Componer un mensaje en formato texto
      *
      * @param string $delimiter
+     *
      * @return string
      */
     public function composeText($delimiter = PHP_EOL)
@@ -174,6 +193,7 @@ class LogMessage extends MessageBase
      * Devuelve la acción realizada
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getAction($translate = false)
@@ -185,6 +205,7 @@ class LogMessage extends MessageBase
      * Establece la acción realizada
      *
      * @param string $action
+     *
      * @return $this
      */
     public function setAction($action)
@@ -195,20 +216,10 @@ class LogMessage extends MessageBase
     }
 
     /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags($string);
-    }
-
-    /**
      * Devuelve los detalles de la acción realizada
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getDetails($translate = false)
@@ -234,7 +245,8 @@ class LogMessage extends MessageBase
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool $translate
+     * @param bool  $translate
+     *
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
@@ -289,6 +301,7 @@ class LogMessage extends MessageBase
      * Devuelve los detalles en formato HTML
      *
      * @param bool $translate
+     *
      * @return string
      */
     public function getHtmlDetails($translate = false)

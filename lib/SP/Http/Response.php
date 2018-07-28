@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,13 +33,14 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es encargada de ejecutar acciones comunes para las funciones
  */
-class Response
+final class Response
 {
     /**
      * Devuelve una respuesta en formato XML con el estado y el mensaje.
      *
      * @param string $description mensaje a devolver
      * @param int    $status      devuelve el estado
+     *
      * @return bool
      */
     public static function printXml($description, $status = 1)

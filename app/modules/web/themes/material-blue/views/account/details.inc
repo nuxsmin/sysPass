@@ -1,5 +1,5 @@
 <?php
-/** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\Services\Account\AccountAcl $AccountAcl */
 /** @var \SP\DataModel\AccountExtData $accountData */
 ?>
 

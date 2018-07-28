@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
+namespace SP\Services\Account;
 
 defined('APP_ROOT') || die();
 
@@ -37,7 +37,7 @@ use SP\Services\PublicLink\PublicLinkService;
  *
  * @package SP\Controller
  */
-class AccountSearchItem
+final class AccountSearchItem
 {
     /**
      * @var bool

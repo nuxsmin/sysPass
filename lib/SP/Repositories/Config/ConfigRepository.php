@@ -35,7 +35,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Config
  */
-class ConfigRepository extends Repository
+final class ConfigRepository extends Repository
 {
     /**
      * @param ConfigData $configData

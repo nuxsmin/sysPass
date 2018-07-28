@@ -24,8 +24,6 @@
 
 namespace SP\Services\Account;
 
-use SP\Account\AccountSearchFilter;
-use SP\Account\AccountSearchItem;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\DataModel\AccountSearchVData;
@@ -40,15 +38,15 @@ use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Storage\Database\QueryResult;
-use SP\Storage\FileCache;
-use SP\Storage\FileException;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
 
 /**
  * Class AccountSearchService para la gestión de búsquedas de cuentas
  */
-class AccountSearchService extends Service
+final class AccountSearchService extends Service
 {
     /**
      * Regex filters for special searching
@@ -86,6 +84,14 @@ class AccountSearchService extends Service
         '673AB7',
         '3F51B5',
     ];
+    /**
+     * @var AccountFilterUser
+     */
+    private $accountFilterUser;
+    /**
+     * @var AccountAclService
+     */
+    private $accountAclService;
     /**
      * @var ConfigData
      */
@@ -144,7 +150,7 @@ class AccountSearchService extends Service
 
         $accountSearchFilter->setCleanTxtSearch($this->cleanString);
 
-        $accountSearchResponse = $this->accountRepository->getByFilter($accountSearchFilter);
+        $queryResult = $this->accountRepository->getByFilter($accountSearchFilter, $this->accountFilterUser->getFilter($accountSearchFilter->getGlobalSearch()));
 
         // Variables de configuración
         $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
@@ -152,15 +158,14 @@ class AccountSearchService extends Service
         $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
         $favorites = $this->dic->get(AccountToFavoriteService::class)->getForUserId($this->context->getUserData()->getId());
 
-        $accountAclService = $this->dic->get(AccountAclService::class);
-
         $accountsData = [];
 
-        foreach ($accountSearchResponse->getData() as $accountSearchData) {
+        /** @var AccountSearchVData $accountSearchData */
+        foreach ($queryResult->getDataAsArray() as $accountSearchData) {
             $cache = $this->getCacheForAccount($accountSearchData);
 
             // Obtener la ACL de la cuenta
-            $accountAcl = $accountAclService->getAcl(
+            $accountAcl = $this->accountAclService->getAcl(
                 Acl::ACCOUNT_SEARCH,
                 AccountAclDto::makeFromAccountSearch($accountSearchData, $cache->getUsers(), $cache->getUserGroups())
             );
@@ -182,7 +187,7 @@ class AccountSearchService extends Service
             $accountsData[] = $accountsSearchItem;
         }
 
-        return QueryResult::fromResults($accountsData, $accountSearchResponse->getCount());
+        return QueryResult::fromResults($accountsData, $queryResult->getTotalNumRows());
     }
 
     /**
@@ -392,6 +397,8 @@ class AccountSearchService extends Service
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
         $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
         $this->fileCache = $this->dic->get(FileCache::class);
+        $this->accountAclService = $this->dic->get(AccountAclService::class);
+        $this->accountFilterUser = $this->dic->get(AccountFilterUser::class);
         $this->configData = $this->config->getConfigData();
 
         $this->loadColors();

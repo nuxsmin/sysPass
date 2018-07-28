@@ -25,17 +25,18 @@
 namespace SP\Test\Repositories;
 
 use DI\DependencyException;
-use SP\Account\AccountRequest;
-use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
-use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Account\AccountRepository;
 use SP\Services\Account\AccountPasswordRequest;
+use SP\Services\Account\AccountRequest;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Test\DatabaseTestCase;
 use function SP\Test\setupContext;
@@ -96,11 +97,27 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * No implementado
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testEditRestore()
     {
-        $this->markTestIncomplete();
+        $this->assertTrue(self::$repository->editRestore(3, 1));
+
+        $this->assertEquals(5, $this->conn->getRowCount('AccountHistory'));
+
+        $this->assertEquals(0, self::$repository->editRestore(1, 1));
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testEditRestoreUnknownUser()
+    {
+        $this->expectException(ConstraintException::class);
+
+        self::$repository->editRestore(3, 10);
     }
 
     /**
@@ -122,14 +139,14 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar que la modificación de la clave es correcta
         $this->assertEquals(1, self::$repository->editPassword($accountRequest));
 
-        $accountPassData = self::$repository->getPasswordForId(2)->getData();
+        $accountPassData = self::$repository->getPasswordForId(2, new QueryCondition())->getData();
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente
         $this->assertEquals('1234', $clearPassword);
 
         // Comprobar que no devuelve resultados
-        $this->assertEquals(0, self::$repository->getPasswordForId(10)->getNumRows());
+        $this->assertEquals(0, self::$repository->getPasswordForId(10, new QueryCondition())->getNumRows());
     }
 
     /**
@@ -200,11 +217,11 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * No implementado
+     * Not implemented
      */
     public function testCheckDuplicatedOnAdd()
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -332,7 +349,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         // Comprobar que la modificación de la clave es correcta
         $this->assertTrue(self::$repository->updatePassword($accountRequest));
 
-        $accountPassData = self::$repository->getPasswordForId(2)->getData();
+        $accountPassData = self::$repository->getPasswordForId(2, new QueryCondition())->getData();
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar que la clave obtenida es igual a la encriptada anteriormente
@@ -458,27 +475,49 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * No implementado
+     * Not implemented
      */
     public function testGetByIdBatch()
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
-     * No implementado
+     * Not implemented
      */
     public function testCheckDuplicatedOnUpdate()
     {
-        $this->markTestIncomplete();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
-     * No implementado
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetPasswordHistoryForId()
     {
-        $this->markTestIncomplete();
+        $condition = new QueryCondition();
+        $condition->addFilter('AccountHistory.id = 3');
+
+        $result = self::$repository->getPasswordHistoryForId($condition);
+
+        $this->assertEquals(1, $result->getNumRows());
+
+        $data = $result->getData();
+
+        $this->assertEquals(3, $data->getId());
+        $this->assertEquals('Google', $data->getName());
+        $this->assertEquals('admin', $data->getLogin());
+        $this->assertNull($data->getParentId());
+        $this->assertEquals(pack('H*', '646566353032303064396362643366376662646536326637663732663861383732623430613839386131643134333933663662623033316664343362366461643762626564643634386437363964346634616234386638336636653236396166623734636261383134313363626162326461393733343934613231653934666331616664633637313732316562356666396562646132613665313937626233333563613632383830393934333863643731333230383132316430366433303838'), $data->getPass());
+        $this->assertEquals(pack('H*', '6465663130303030646566353032303032636635623034396437656539356531653838663166613438643061616132663133613163663766346238316165663837326134373665316461653661353865316666626438346130383166303062633138646136373265653935643234626564336565303063333262646262303433336633356534323263616337613238363532336233313666316137333462616337343839346631333632643863376430373861373862396135633064396239653061353537626562666336636566623766363166376330393734356461623536373762303436313865343936383434663932666364303634316330303935636239363938336361336631363161623134663339643536636233653938333833613062396464356365383736333334376364363933313563306436343362623937366139383831376632346431303364316533353133306262393862353034353262346334663934663162323531383632356530653331346438343430323362666334306264616265376437386238663632326535353338636537663431626261616461613138646333333662623762636565333030656565333734616537356365303131363731323239383132383964346634383661376635303136303835336138663335653366393230383632386162373332343335633037656432616234'), $data->getKey());
+        $this->assertEquals(pack('H*', '24327924313024787473754E325055766753482F306D7266426C73624F4163745667436A596371447143364C3354395172614E785A43345258475961'), $data->getMPassHash());
+
+
+        $condition = new QueryCondition();
+        $condition->addFilter('AccountHistory.id = 1');
+
+        $this->assertEquals(0, self::$repository->getPasswordHistoryForId($condition)->getNumRows());
     }
 
     /**
@@ -495,78 +534,72 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setCategoryId(1);
 
         // Comprobar un Id de categoría
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
+        $this->assertEquals(1, $response->getNumRows());
 
         // Comprobar un Id de categoría no existente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId(10);
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertEquals(0, $response->getNumRows());
 
         // Comprobar un Id de cliente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(1);
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
+        $this->assertEquals(1, $response->getNumRows());
 
         // Comprobar un Id de cliente no existente
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertEquals(0, $response->getNumRows());
 
         // Comprobar una cadena de texto
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCleanTxtSearch('apple.com');
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
-        $this->assertEquals(2, $response->getData()[0]->getId());
+        $this->assertEquals(1, $response->getNumRows());
+
+        /** @var AccountSearchVData[] $data */
+        $data = $response->getDataAsArray();
+
+        $this->assertEquals(2, $data[0]->getId());
 
         // Comprobar los favoritos
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(0, $response->getCount());
-        $this->assertCount(0, $response->getData());
+        $this->assertEquals(0, $response->getNumRows());
 
         // Comprobar las etiquetas
         $searchFilter->reset();
         $searchFilter->setLimitCount(10);
         $searchFilter->setTagsId([1]);
 
-        $response = self::$repository->getByFilter($searchFilter);
+        $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertInstanceOf(AccountSearchResponse::class, $response);
-        $this->assertEquals(1, $response->getCount());
-        $this->assertCount(1, $response->getData());
-        $this->assertEquals(1, $response->getData()[0]->getId());
+        $this->assertEquals(1, $response->getNumRows());
+
+        /** @var AccountSearchVData[] $data */
+        $data = $response->getDataAsArray();
+
+        $this->assertEquals(1, $data[0]->getId());
     }
 }

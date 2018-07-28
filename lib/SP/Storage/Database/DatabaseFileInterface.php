@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,10 +23,12 @@
  */
 
 namespace SP\Storage\Database;
-use SP\Storage\FileHandler;
+
+use SP\Storage\File\FileHandler;
 
 /**
  * Interface DatabaseFileInterface
+ *
  * @package SP\Storage
  */
 interface DatabaseFileInterface
@@ -35,7 +37,8 @@ interface DatabaseFileInterface
      * Parses a database script file and returns an array of lines parsed
      *
      * @param FileHandler $fileHandler
-     * @param string $delimiter
+     * @param string      $delimiter
+     *
      * @return array
      */
     public function parse(FileHandler $fileHandler, $delimiter = ';');

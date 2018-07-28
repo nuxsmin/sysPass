@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,12 +33,16 @@ use SplObjectStorage;
  *
  * @package SP\Html\DataGrid
  */
-class DataGridHeaderSort extends DataGridHeaderBase
+final class DataGridHeaderSort extends DataGridHeaderBase
 {
-    /** @var DataGridActionInterface[] */
+    /**
+     * @var DataGridActionInterface[]
+     */
     private $_actions;
 
-    /** @var DataGridSortInterface[] */
+    /**
+     * @var DataGridSortInterface[]
+     */
     private $_sortFields;
 
     /**
@@ -71,6 +75,7 @@ class DataGridHeaderSort extends DataGridHeaderBase
 
     /**
      * @param DataGridSortInterface $field
+     *
      * @return $this
      */
     public function addSortField($field)

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,12 +33,13 @@ use SP\Http\JsonResponse;
  *
  * @package SP\Util
  */
-class Json
+final class Json
 {
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
      * @param JsonResponse $JsonResponse
+     *
      * @return void
      */
     public static function returnJson(JsonResponse $JsonResponse)
@@ -57,21 +58,10 @@ class Json
     }
 
     /**
-     * Devuelve una respuesta en formato JSON
-     *
-     * @param string $data JSON string
-     */
-    public static function returnRawJson($data)
-    {
-        header('Content-type: application/json; charset=utf-8');
-
-        exit($data);
-    }
-
-    /**
      * Devuelve una cadena en formato JSON
      *
      * @param $data
+     *
      * @return string La cadena en formato JSON
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -87,9 +77,22 @@ class Json
     }
 
     /**
+     * Devuelve una respuesta en formato JSON
+     *
+     * @param string $data JSON string
+     */
+    public static function returnRawJson($data)
+    {
+        header('Content-type: application/json; charset=utf-8');
+
+        exit($data);
+    }
+
+    /**
      * Devuelve un array con las cadenas formateadas para JSON
      *
      * @param $data mixed
+     *
      * @return mixed
      */
     public static function safeJson(&$data)
@@ -125,6 +128,7 @@ class Json
      * Devuelve una cadena con los carácteres formateadas para JSON
      *
      * @param $string
+     *
      * @return mixed
      */
     public static function safeJsonString(&$string)

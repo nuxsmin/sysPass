@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Storage
  */
-class DBUtil
+final class DatabaseUtil
 {
     /**
      * @var array Tablas de la BBDD

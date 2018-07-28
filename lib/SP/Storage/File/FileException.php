@@ -22,32 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
+
+use SP\Core\Exceptions\SPException;
 
 /**
- * Interface StorageInterface
+ * Class FileException
  *
- * @package SP\Storage
+ * @package SP\Storage\File;
  */
-interface XmlFileStorageInterface
+final class FileException extends SPException
 {
-    /**
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
-     * @throws FileException
-     */
-    public function load($node = '');
 
-    /**
-     * @param mixed  $data Data to be saved
-     * @param string $node
-     * @return XmlFileStorageInterface
-     */
-    public function save($data, $node = '');
-
-    /**
-     * @return mixed
-     */
-    public function getItems();
 }

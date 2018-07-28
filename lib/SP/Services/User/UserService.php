@@ -45,7 +45,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\User
  */
-class UserService extends Service
+final class UserService extends Service
 {
     use ServiceItemTrait;
 

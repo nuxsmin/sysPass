@@ -29,7 +29,7 @@ namespace SP\Services\CustomField;
  *
  * @package SP\Services\CustomField
  */
-class CustomFieldItem
+final class CustomFieldItem
 {
     public $required = false;
     public $showInList = false;

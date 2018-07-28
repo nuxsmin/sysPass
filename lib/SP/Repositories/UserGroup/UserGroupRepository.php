@@ -41,7 +41,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\UserGroup
  */
-class UserGroupRepository extends Repository implements RepositoryItemInterface
+final class UserGroupRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

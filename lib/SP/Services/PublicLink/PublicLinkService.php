@@ -46,7 +46,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\PublicLink
  */
-class PublicLinkService extends Service
+final class PublicLinkService extends Service
 {
     use ServiceItemTrait;
 

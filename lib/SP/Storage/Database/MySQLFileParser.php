@@ -24,21 +24,21 @@
 
 namespace SP\Storage\Database;
 
-use SP\Storage\FileException;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class MysqlFileParser
  *
  * @package SP\Storage
  */
-class MySQLFileParser implements DatabaseFileInterface
+final class MySQLFileParser implements DatabaseFileInterface
 {
     /**
      * Parses a database script file and returns an array of lines parsed
      *
-     * @param FileHandler $fileHandler
-     * @param string      $delimiter
+     * @param \SP\Storage\File\FileHandler $fileHandler
+     * @param string                       $delimiter
      *
      * @return array
      * @throws FileException

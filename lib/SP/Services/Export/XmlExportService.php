@@ -49,7 +49,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class XmlExportService extends Service
+final class XmlExportService extends Service
 {
     /**
      * @var ConfigData

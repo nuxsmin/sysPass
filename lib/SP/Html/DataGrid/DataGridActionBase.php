@@ -143,6 +143,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param string $class
      * @param string $method
+     *
      * @throws \RuntimeException
      * @return $this
      */
@@ -170,6 +171,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $name string
+     *
      * @return $this
      */
     public function setName($name)
@@ -189,6 +191,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param int $id
+     *
      * @return $this
      */
     public function setId($id)
@@ -208,6 +211,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $title string
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -219,6 +223,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $function string
+     *
      * @return $this
      */
     public function setOnClickFunction($function)
@@ -230,6 +235,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $args string
+     *
      * @return $this
      */
     public function setOnClickArgs($args)
@@ -263,6 +269,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $icon IconInterface
+     *
      * @return $this
      */
     public function setIcon($icon)
@@ -274,6 +281,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param $skip bool
+     *
      * @return $this
      */
     public function setSkip($skip)
@@ -301,6 +309,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param bool $helper
+     *
      * @return $this
      */
     public function setIsHelper($helper)
@@ -323,6 +332,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param       $rowSource string
      * @param mixed $value     Valor a filtrar
+     *
      * @return $this
      */
     public function setFilterRowSource($rowSource, $value = 1)
@@ -342,6 +352,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param int $type El tipo de acción definido en DataGridActionType
+     *
      * @return $this
      */
     public function setType($type)
@@ -361,6 +372,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * @param array $data Los datos de los atributos
+     *
      * @return $this
      */
     public function setData(array $data)
@@ -375,6 +387,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param string $name El nombe del atributo
      * @param mixed  $data Los datos del atributo
+     *
      * @return $this
      */
     public function addData($name, $data)
@@ -396,6 +409,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * Establecer atributos
      *
      * @param array $attributes Los datos de los atributos
+     *
      * @return $this
      */
     public function setAttributes(array $attributes)
@@ -410,6 +424,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param string $name El nombe del atributo
      * @param mixed  $value
+     *
      * @return $this
      */
     public function addAttribute($name, $value)
@@ -453,6 +468,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * Adds a new class
      *
      * @param mixed $value
+     *
      * @return $this
      */
     public function addClass($value)

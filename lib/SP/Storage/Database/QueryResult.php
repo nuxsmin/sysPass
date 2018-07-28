@@ -29,7 +29,7 @@ namespace SP\Storage\Database;
  *
  * @package SP\Storage\Database
  */
-class QueryResult
+final class QueryResult
 {
     /**
      * @var array

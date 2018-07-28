@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,7 +32,7 @@ use Defuse\Crypto\Key;
  *
  * @package SP\Core\Crypt
  */
-class CryptSessionHandler extends \SessionHandler
+final class CryptSessionHandler extends \SessionHandler
 {
     /**
      * @var bool Indica si la sesión está encriptada
@@ -57,7 +57,9 @@ class CryptSessionHandler extends \SessionHandler
      * Read session data
      *
      * @link  http://php.net/manual/en/sessionhandler.read.php
-     * @param string $id         The session id to read data for.
+     *
+     * @param string $id The session id to read data for.
+     *
      * @return string <p>
      *                           Returns an encoded string of the read data.
      *                           If nothing was read, it must return an empty string.
@@ -91,6 +93,7 @@ class CryptSessionHandler extends \SessionHandler
      * Write session data
      *
      * @link  http://php.net/manual/en/sessionhandler.write.php
+     *
      * @param string $id           The session id.
      * @param string $data         <p>
      *                             The encoded session data. This data is the
@@ -99,6 +102,7 @@ class CryptSessionHandler extends \SessionHandler
      *                             string and passing it as this parameter.
      *                             Please note sessions use an alternative serialization method.
      *                             </p>
+     *
      * @return bool <p>
      *                             The return value (usually TRUE on success, FALSE on failure).
      *                             Note this value is returned internally to PHP for processing.

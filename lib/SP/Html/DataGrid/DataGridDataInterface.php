@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,8 +39,8 @@ interface DataGridDataInterface
     /**
      * Establecer los orígenes de datos de la consulta
      *
-     * @param string   $source
-     * @param bool     $isMethod
+     * @param string        $source
+     * @param bool          $isMethod
      * @param callable|null $filter
      */
     public function addDataRowSource($source, $isMethod = false, callable $filter = null);
@@ -86,6 +86,7 @@ interface DataGridDataInterface
      * @param       $source string
      * @param       $icon   IconInterface
      * @param mixed $value  Valor para mostrar el icono
+     *
      * @return
      */
     public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1);

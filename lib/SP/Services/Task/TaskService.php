@@ -33,7 +33,7 @@ use SP\Util\Util;
  *
  * @package SP\Services
  */
-class TaskService extends Service
+final class TaskService extends Service
 {
     /**
      * Tiempo de espera en cada intento de inicialización
@@ -69,6 +69,7 @@ class TaskService extends Service
      * Realizar acción
      *
      * @param string $taskId
+     *
      * @throws ServiceException
      */
     public function run($taskId)

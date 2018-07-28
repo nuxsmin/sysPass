@@ -73,7 +73,7 @@ class SyspassImportTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImport()
     {
@@ -227,7 +227,7 @@ class SyspassImportTest extends DatabaseTestCase
 
     /**
      * @throws ImportException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImportInvalidData()
     {

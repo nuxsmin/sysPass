@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Providers\Auth\AuthDataBase;
  *
  * @package SP\Auth\Database
  */
-class DatabaseAuthData extends AuthDataBase
+final class DatabaseAuthData extends AuthDataBase
 {
 
 }

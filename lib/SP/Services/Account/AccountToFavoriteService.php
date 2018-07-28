@@ -32,7 +32,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\Account
  */
-class AccountToFavoriteService extends Service
+final class AccountToFavoriteService extends Service
 {
     /**
      * @var AccountToFavoriteRepository

@@ -38,7 +38,7 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Tag
  */
-class TagService extends Service
+final class TagService extends Service
 {
     use ServiceItemTrait;
 

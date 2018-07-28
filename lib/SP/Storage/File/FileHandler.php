@@ -22,14 +22,14 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
 
 /**
  * Class FileHandler
  *
- * @package SP\Storage
+ * @package SP\Storage\File;
  */
-class FileHandler
+final class FileHandler
 {
     const CHUNK_LENGTH = 8192;
     /**

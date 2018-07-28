@@ -36,7 +36,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\EventLog
  */
-class EventlogService extends Service
+final class EventlogService extends Service
 {
     /**
      * @var EventlogRepository
@@ -72,6 +72,7 @@ class EventlogService extends Service
 
     /**
      * @param EventlogData $eventlogData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

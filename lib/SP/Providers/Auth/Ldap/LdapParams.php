@@ -29,7 +29,7 @@ namespace SP\Providers\Auth\Ldap;
  *
  * @package SP\Providers\Auth\Ldap
  */
-class LdapParams
+final class LdapParams
 {
     const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
 

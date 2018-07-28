@@ -38,7 +38,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\ApiToken
  */
-class AuthTokenRepository extends Repository implements RepositoryItemInterface
+final class AuthTokenRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -114,6 +114,7 @@ abstract class DokuWikiApiBase
      * Crear la llamada al método de DokuWiki
      *
      * @param $function
+     *
      * @throws SPException
      */
     protected function createMsg($function)
@@ -138,6 +139,7 @@ abstract class DokuWikiApiBase
      * Añadir un parámetro
      *
      * @param $value
+     *
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function addParam($value)
@@ -180,6 +182,7 @@ abstract class DokuWikiApiBase
      * Capturar si han habido errores en la consulta XML
      *
      * @param XMLRPCResponseParse $Res
+     *
      * @throws SPException
      */
     protected function catchError(XMLRPCResponseParse $Res)
@@ -210,6 +213,7 @@ abstract class DokuWikiApiBase
      * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
+     *
      * @throws SPException
      */
     protected function setConnectionData($url, $user, $pass)

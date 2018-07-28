@@ -1,7 +1,7 @@
 <?php
 /**
- * @var \SP\Account\AccountAcl $accountAcl
- * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Core\UI\ThemeIcons          $icons
  */
 ?>
 

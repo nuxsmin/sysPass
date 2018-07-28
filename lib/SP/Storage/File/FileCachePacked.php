@@ -22,16 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\File;
 
 use RuntimeException;
 
 /**
  * Class FileCachePacked
  *
- * @package SP\Storage
+ * @package SP\Storage\File;
  */
-class FileCachePacked implements FileStorageInterface
+final class FileCachePacked implements FileStorageInterface
 {
     /**
      * @var array

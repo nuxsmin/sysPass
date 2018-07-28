@@ -37,7 +37,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class Language
+final class Language
 {
     /**
      * Lenguaje del usuario

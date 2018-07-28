@@ -36,7 +36,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-class Acl implements ActionsInterface
+final class Acl implements ActionsInterface
 {
     /**
      * @var Actions

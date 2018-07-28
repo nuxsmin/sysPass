@@ -24,15 +24,15 @@
 
 namespace SP\Config;
 
-use SP\Storage\FileCache;
-use SP\Storage\FileException;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileException;
 
 /**
  * Class ConfigCache
  *
  * @package SP\Config
  */
-class ConfigCache
+final class ConfigCache
 {
     /**
      * Cache file name

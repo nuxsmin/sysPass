@@ -26,7 +26,6 @@ namespace SP\Services\Import;
 
 use Defuse\Crypto\Exception\CryptoException;
 use DOMXPath;
-use SP\Account\AccountRequest;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\OldCrypt;
@@ -35,6 +34,7 @@ use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
+use SP\Services\Account\AccountRequest;
 use SP\Services\Export\XmlVerifyService;
 
 defined('APP_ROOT') || die();
@@ -42,7 +42,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde sysPass
  */
-class SyspassImport extends XmlImportBase implements ImportInterface
+final class SyspassImport extends XmlImportBase implements ImportInterface
 {
     /**
      * Iniciar la importación desde sysPass.

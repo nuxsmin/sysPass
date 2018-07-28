@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Account\AccountAcl;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
@@ -33,6 +32,7 @@ use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Category\CategoryService;

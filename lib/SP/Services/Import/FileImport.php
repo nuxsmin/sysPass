@@ -25,8 +25,8 @@
 namespace SP\Services\Import;
 
 use SP\Http\Request;
-use SP\Storage\FileException;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -36,17 +36,17 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class FileImport
+final class FileImport
 {
     /**
-     * @var FileHandler
+     * @var \SP\Storage\File\FileHandler
      */
     private $fileHandler;
 
     /**
      * FileImport constructor.
      *
-     * @param FileHandler $fileHandler Datos del archivo a importar
+     * @param \SP\Storage\File\FileHandler $fileHandler Datos del archivo a importar
      */
     private function __construct(FileHandler $fileHandler)
     {
@@ -79,7 +79,7 @@ class FileImport
      * @param array $fileData con los datos del archivo
      *
      * @return string
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     private static function checkFile($fileData): string
     {
@@ -182,7 +182,7 @@ class FileImport
     }
 
     /**
-     * @return FileHandler
+     * @return \SP\Storage\File\FileHandler
      */
     public function getFileHandler(): FileHandler
     {

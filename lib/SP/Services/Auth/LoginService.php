@@ -57,7 +57,7 @@ use SP\Util\Util;
  *
  * @package SP\Services
  */
-class LoginService extends Service
+final class LoginService extends Service
 {
     /**
      * Estados
@@ -579,10 +579,12 @@ class LoginService extends Service
      */
     protected function authBrowser(BrowserAuthData $authData)
     {
+        $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/D');
+
         $eventMessage = EventMessage::factory()
             ->addDetail(__u('Tipo'), __FUNCTION__)
             ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser())
-            ->addDetail(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $authData->getName()));
+            ->addDetail(__u('Autentificación'), sprintf('%s (%s)', $authType, $authData->getName()));
 
         // Comprobar si concide el login con la autentificación del servidor web
         if ($authData->getAuthenticated() === false) {

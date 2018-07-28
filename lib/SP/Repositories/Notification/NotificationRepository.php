@@ -39,7 +39,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Notification
  */
-class NotificationRepository extends Repository implements RepositoryItemInterface
+final class NotificationRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

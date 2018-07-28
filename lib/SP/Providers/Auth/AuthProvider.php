@@ -47,7 +47,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Providers\Auth
  */
-class AuthProvider extends Provider
+final class AuthProvider extends Provider
 {
     /**
      * @var array

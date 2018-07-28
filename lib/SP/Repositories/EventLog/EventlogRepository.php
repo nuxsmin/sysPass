@@ -37,7 +37,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\EventLog
  */
-class EventlogRepository extends Repository
+final class EventlogRepository extends Repository
 {
     /**
      * Clears the event log

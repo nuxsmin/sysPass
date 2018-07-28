@@ -35,7 +35,7 @@ use SP\Providers\Auth\AuthInterface;
  *
  * @package SP\Providers\Auth\Browser
  */
-class Browser implements AuthInterface
+final class Browser implements AuthInterface
 {
     /**
      * @var ConfigData
@@ -56,6 +56,7 @@ class Browser implements AuthInterface
      * Autentificar al usuario
      *
      * @param UserLoginData $userLoginData Datos del usuario
+     *
      * @return BrowserAuthData
      */
     public function authenticate(UserLoginData $userLoginData)
@@ -99,6 +100,7 @@ class Browser implements AuthInterface
      * Comprobar si el usuario es autentificado por el servidor web
      *
      * @param $login string El login del usuario a comprobar
+     *
      * @return bool|null
      */
     public function checkServerAuthUser($login)

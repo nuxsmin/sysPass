@@ -60,6 +60,7 @@ abstract class Cookie
      *
      * @param string $data
      * @param string $cypher
+     *
      * @return string
      */
     protected final function sign($data, $cypher)
@@ -74,6 +75,7 @@ abstract class Cookie
      *
      * @param string $data
      * @param string $cypher
+     *
      * @return bool|string
      */
     protected final function getCookieData($data, $cypher)
@@ -101,6 +103,7 @@ abstract class Cookie
      * Sets cookie data
      *
      * @param $data
+     *
      * @return bool
      */
     protected function setCookie($data)

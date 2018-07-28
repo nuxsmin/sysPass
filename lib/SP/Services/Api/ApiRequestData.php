@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,7 +32,7 @@ use SP\Core\DataCollection;
  *
  * @package SP\Services\Api
  */
-class ApiRequestData extends DataCollection
+final class ApiRequestData extends DataCollection
 {
 
 }

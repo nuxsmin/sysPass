@@ -24,11 +24,11 @@
 
 namespace SP\Core\Context;
 
-use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Services\User\UserLoginResponse;
 
 /**
@@ -36,7 +36,7 @@ use SP\Services\User\UserLoginResponse;
  *
  * @package SP\Core\Session
  */
-class SessionContext extends ContextBase
+final class SessionContext extends ContextBase
 {
     private static $isReset = false;
     private static $isLocked = false;

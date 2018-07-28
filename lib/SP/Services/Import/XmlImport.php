@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class XmlImport implements ImportInterface
+final class XmlImport implements ImportInterface
 {
     /**
      * @var FileImport

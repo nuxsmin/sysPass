@@ -24,14 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Account\AccountAcl;
-use SP\Account\AccountSearchItem;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
+use SP\Services\Account\AccountAcl;
+use SP\Services\Account\AccountSearchItem;
 
 /**
  * Class AccountIconsHelper
@@ -73,11 +73,12 @@ class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl        $accountAcl
-     * @param AccountActionsDto $accountActionsDto
+     * @param \SP\Services\Account\AccountAcl $accountAcl
+     * @param AccountActionsDto               $accountActionsDto
+     *
      * @return DataGridAction[]
      */
-    public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
+    public function getActionsForAccount(\SP\Services\Account\AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
         $actions = [];
 
@@ -248,8 +249,9 @@ class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param AccountAcl        $accountAcl
-     * @param AccountActionsDto $accountActionsDto
+     * @param \SP\Services\Account\AccountAcl $accountAcl
+     * @param AccountActionsDto               $accountActionsDto
+     *
      * @return DataGridAction[]
      */
     public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
@@ -417,7 +419,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Ver Clave'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
-        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
+        $action->setRuntimeFilter(\SP\Services\Account\AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
         $action->addData('action-sk', $this->sk);

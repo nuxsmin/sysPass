@@ -29,7 +29,7 @@ namespace SP\Services\Api;
  *
  * @package SP\Services\Api
  */
-class ApiRequest
+final class ApiRequest
 {
     /**
      * @var string

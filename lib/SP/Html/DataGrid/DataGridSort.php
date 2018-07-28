@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,19 +33,31 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Html\DataGrid
  */
-class DataGridSort implements DataGridSortInterface
+final class DataGridSort implements DataGridSortInterface
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     private $_sortKey = 0;
-    /** @var string */
+    /**
+     * @var string
+     */
     private $_title = '';
-    /** @var string */
+    /**
+     * @var string
+     */
     private $_name = '';
-    /** @var array */
+    /**
+     * @var array
+     */
     private $_class = array();
-    /** @var IconInterface */
+    /**
+     * @var IconInterface
+     */
     private $_iconUp;
-    /** @var IconInterface */
+    /**
+     * @var IconInterface
+     */
     private $_iconDown;
 
     /**
@@ -58,6 +70,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $key int
+     *
      * @return $this
      */
     public function setSortKey($key)
@@ -77,6 +90,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $title string
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -96,6 +110,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $name string
+     *
      * @return $this
      */
     public function setName($name)
@@ -115,6 +130,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param $class string
+     *
      * @return $this
      */
     public function setClass($class)
@@ -134,6 +150,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param IconInterface $icon
+     *
      * @return $this
      */
     public function setIconUp(IconInterface $icon)
@@ -153,6 +170,7 @@ class DataGridSort implements DataGridSortInterface
 
     /**
      * @param IconInterface $icon
+     *
      * @return $this
      */
     public function setIconDown(IconInterface $icon)

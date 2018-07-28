@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Providers\Auth\AuthDataBase;
  *
  * @package SP\Providers\Auth\Browser
  */
-class BrowserAuthData extends AuthDataBase
+final class BrowserAuthData extends AuthDataBase
 {
 
 }

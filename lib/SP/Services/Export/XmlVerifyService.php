@@ -32,7 +32,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class XmlVerifyService
@@ -41,7 +41,7 @@ use SP\Storage\FileHandler;
  *
  * @package SP\Services\Export
  */
-class XmlVerifyService extends Service
+final class XmlVerifyService extends Service
 {
     const NODES = ['Category', 'Client', 'Tag', 'Account'];
     /**
@@ -62,7 +62,7 @@ class XmlVerifyService extends Service
      *
      * @return VerifyResult
      * @throws ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function verify(string $xmlFile): VerifyResult
     {
@@ -77,7 +77,7 @@ class XmlVerifyService extends Service
 
     /**
      * @throws ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     private function setup()
     {
@@ -88,7 +88,7 @@ class XmlVerifyService extends Service
      * Leer el archivo a un objeto XML.
      *
      * @throws ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     protected function readXmlFile()
     {
@@ -103,7 +103,7 @@ class XmlVerifyService extends Service
             foreach (libxml_get_errors() as $error) {
                 debugLog(__METHOD__ . ' - ' . $error->message);
             }
-            
+
             throw new ServiceException(
                 __u('Error interno'),
                 ServiceException::ERROR,
@@ -165,7 +165,7 @@ class XmlVerifyService extends Service
      *
      * @return VerifyResult
      * @throws ServiceException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      * @throws CryptoException
      */
     public function verifyEncrypted(string $xmlFile, string $password): VerifyResult

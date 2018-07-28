@@ -25,17 +25,14 @@
 namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Account\AccountRequest;
-use SP\Account\AccountSearchFilter;
-use SP\Account\AccountUtil;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountPassData;
+use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
-use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
@@ -53,7 +50,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Account
  */
-class AccountService extends Service implements AccountServiceInterface
+final class AccountService extends Service implements AccountServiceInterface
 {
     use ServiceItemTrait;
 
@@ -169,7 +166,9 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getPasswordForId($id)
     {
-        $result = $this->accountRepository->getPasswordForId($id);
+        $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
+
+        $result = $this->accountRepository->getPasswordForId($id, $queryFilter);
 
         if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('Cuenta no encontrada'));
@@ -461,7 +460,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getForUser($accountId = null)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->context);
+        $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
 
         if (null !== $accountId) {
             $queryFilter->addFilter('Account.id <> ? AND (Account.parentId = 0 OR Account.parentId IS NULL)', [$accountId]);
@@ -479,8 +478,9 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getLinked($accountId)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->context)
-            ->addFilter('Account.parentId = ?', [$accountId]);
+        $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilter();
+
+        $queryFilter->addFilter('Account.parentId = ?', [$accountId]);
 
         return $this->accountRepository->getLinked($queryFilter)->getDataAsArray();
     }
@@ -495,8 +495,8 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getPasswordHistoryForId($id)
     {
-        $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->context)
-            ->addFilter('AccountHistory.id = ?', [$id]);
+        $queryFilter = $this->dic->get(AccountFilterUser::class)->getFilterHistory();
+        $queryFilter->addFilter('AccountHistory.id = ?', [$id]);
 
         $result = $this->accountRepository->getPasswordHistoryForId($queryFilter);
 
@@ -579,14 +579,19 @@ class AccountService extends Service implements AccountServiceInterface
      *
      * @param AccountSearchFilter $accountSearchFilter
      *
-     * @return AccountSearchResponse
+     * @return AccountSearchVData[]
      * @throws QueryException
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
-        return $this->accountRepository->getByFilter($accountSearchFilter);
+        $accountFilterUser = $this->dic->get(AccountFilterUser::class);
+
+        return $this->accountRepository->getByFilter(
+            $accountSearchFilter,
+            $accountFilterUser->getFilter($accountSearchFilter->getGlobalSearch())
+        )->getDataAsArray();
     }
 
     /**

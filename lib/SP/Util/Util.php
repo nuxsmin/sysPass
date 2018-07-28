@@ -30,8 +30,6 @@ use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Html\Html;
-use SP\Log\Log;
-use SP\Log\LogUtil;
 use SP\Services\Install\Installer;
 
 defined('APP_ROOT') || die();
@@ -39,7 +37,7 @@ defined('APP_ROOT') || die();
 /**
  * Clase con utilizades para la aplicación
  */
-class Util
+final class Util
 {
     /**
      * Generar una clave aleatoria
@@ -170,6 +168,8 @@ class Util
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws SPException
+     *
+     * @todo Use Guzzle
      */
     public static function getDataFromUrl($url, array $data = null, $useCookie = false, $weak = false)
     {

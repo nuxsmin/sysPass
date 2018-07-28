@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -63,6 +63,7 @@ abstract class IconBase implements IconInterface
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -82,6 +83,7 @@ abstract class IconBase implements IconInterface
 
     /**
      * @param $class
+     *
      * @return $this
      */
     public function setClass($class)
@@ -101,6 +103,7 @@ abstract class IconBase implements IconInterface
 
     /**
      * @param $icon
+     *
      * @return $this
      */
     public function setIcon($icon)

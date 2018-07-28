@@ -44,7 +44,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\AuthToken
  */
-class AuthTokenService extends Service
+final class AuthTokenService extends Service
 {
     use ServiceItemTrait;
 

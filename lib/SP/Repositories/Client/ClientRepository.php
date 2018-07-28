@@ -43,7 +43,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Client
  */
-class ClientRepository extends Repository implements RepositoryItemInterface
+final class ClientRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -257,7 +257,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         if (empty($ids)) {
             return 0;
         }
-        
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);

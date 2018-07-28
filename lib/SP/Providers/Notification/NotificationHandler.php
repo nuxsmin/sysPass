@@ -37,7 +37,7 @@ use SplSubject;
  *
  * @package SP\Providers\Notification
  */
-class NotificationHandler extends Provider implements EventReceiver
+final class NotificationHandler extends Provider implements EventReceiver
 {
     const EVENTS = [
         'request.account',

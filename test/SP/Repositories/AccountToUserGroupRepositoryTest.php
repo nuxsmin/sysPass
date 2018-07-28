@@ -25,10 +25,10 @@
 namespace SP\Test\Repositories;
 
 use DI\DependencyException;
-use SP\Account\AccountRequest;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToUserGroupRepository;
+use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Test\DatabaseTestCase;
 use function SP\Test\setupContext;
@@ -252,7 +252,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(3, self::$repository->add($accountRequest));
 
-        $result  = self::$repository->getUserGroupsByAccountId($accountRequest->id);
+        $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
         $this->assertEquals(3, $result->getNumRows());
 

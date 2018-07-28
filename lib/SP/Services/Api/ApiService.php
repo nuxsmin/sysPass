@@ -42,7 +42,7 @@ use SP\Services\UserProfile\UserProfileService;
  *
  * @package SP\Services\ApiService
  */
-class ApiService extends Service
+final class ApiService extends Service
 {
     /**
      * @var AuthTokenService

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,15 +22,35 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Services\Account;
 
-use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountData;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\AccountHistoryData;
+
+defined('APP_ROOT') || die();
 
 /**
- * Class FileException
- * @package SP\Storage
+ * Interface AccountInterface con la definición de métodos comunes a las cuentas
  */
-class FileException extends SPException
+interface AccountInterface
 {
+    /**
+     * @return AccountExtData|AccountData|AccountHistoryData
+     */
+    public function getData();
 
+    /**
+     * @param bool $encryptPass Si se encripta la clave de la cuenta
+     *
+     * @return mixed
+     */
+    public function createAccount($encryptPass = true);
+
+    /**
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function deleteAccount($id);
 }

@@ -29,7 +29,7 @@ namespace SP\Core\Crypt;
  *
  * @package SP\Core\Crypt
  */
-class Hash
+final class Hash
 {
     /**
      * Longitud máxima aceptada para hashing
@@ -41,6 +41,7 @@ class Hash
      *
      * @param string $key  con la clave a comprobar
      * @param string $hash con el hash a comprobar
+     *
      * @return bool
      */
     public static function checkHashKey($key, $hash)
@@ -53,6 +54,7 @@ class Hash
      *
      * @param string $key
      * @param bool   $isCheck Indica si la operación es de comprobación o no
+     *
      * @return string
      */
     private static function getKey(&$key, $isCheck = true)
@@ -72,6 +74,7 @@ class Hash
      * Generar un hash de una clave criptográficamente segura
      *
      * @param string $key con la clave a 'hashear'
+     *
      * @return string con el hash de la clave
      */
     public static function hashKey($key)
@@ -84,6 +87,7 @@ class Hash
      *
      * @param $message
      * @param $key
+     *
      * @return string
      */
     public static function signMessage($message, $key)
@@ -97,6 +101,7 @@ class Hash
      * @param $message
      * @param $key
      * @param $hash
+     *
      * @return bool
      */
     public static function checkMessage($message, $key, $hash)

@@ -33,7 +33,7 @@ use SP\Services\Task\Task;
  *
  * @package SP\Services\Crypt
  */
-class UpdateMasterPassRequest
+final class UpdateMasterPassRequest
 {
     /**
      * @var string

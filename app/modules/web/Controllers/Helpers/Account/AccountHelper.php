@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Account\AccountAcl;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -37,6 +36,7 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\NoSuchItemException;
+use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
@@ -79,7 +79,7 @@ class AccountHelper extends HelperBase
      */
     private $actionId;
     /**
-     * @var AccountAcl
+     * @var \SP\Services\Account\AccountAcl
      */
     private $accountAcl;
     /**
@@ -212,7 +212,7 @@ class AccountHelper extends HelperBase
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      *
-     * @return AccountAcl
+     * @return \SP\Services\Account\AccountAcl
      * @throws AccountPermissionException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -297,7 +297,7 @@ class AccountHelper extends HelperBase
     public function setViewForBlank($actionId)
     {
         $this->actionId = $actionId;
-        $this->accountAcl = new AccountAcl($actionId);
+        $this->accountAcl = new \SP\Services\Account\AccountAcl($actionId);
 
         $this->checkActionAccess();
 

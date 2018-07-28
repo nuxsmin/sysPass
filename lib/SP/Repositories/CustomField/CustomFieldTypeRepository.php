@@ -29,7 +29,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -40,7 +39,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\CustomField
  */
-class CustomFieldTypeRepository extends Repository implements RepositoryItemInterface
+final class CustomFieldTypeRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -117,9 +116,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      *
      * @param int $id
      *
-     * @return CustomFieldTypeData
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
-     * @throws NoSuchItemException
      * @throws QueryException
      */
     public function getById($id)
@@ -129,19 +127,13 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        $result = $this->db->doSelect($queryData);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tipo de campo no encontrado'));
-        }
-
-        return $result->getData();
+        return $this->db->doSelect($queryData);
     }
 
     /**
      * Returns all the items
      *
-     * @return CustomFieldTypeData[]
+     * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -151,7 +143,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setMapClassName(CustomFieldTypeData::class);
         $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType');
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 
     /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Services\Auth;
  *
  * @package SP\Services\Auth
  */
-class LoginResponse
+final class LoginResponse
 {
     /**
      * @var int
@@ -42,7 +42,8 @@ class LoginResponse
 
     /**
      * LoginResponse constructor.
-     * @param int $status
+     *
+     * @param int    $status
      * @param string $redirect
      */
     public function __construct($status, $redirect = null)

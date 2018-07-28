@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,33 +22,46 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
-
-use SP\DataModel\AccountData;
-use SP\DataModel\AccountExtData;
-use SP\DataModel\AccountHistoryData;
-
-defined('APP_ROOT') || die();
+namespace SP\Storage\File;
 
 /**
- * Interface AccountInterface con la definición de métodos comunes a las cuentas
+ * Interface FileStorageInterface
+ *
+ * @package SP\Storage\File;
  */
-interface AccountInterface
+interface FileStorageInterface
 {
     /**
-     * @return AccountExtData|AccountData|AccountHistoryData
+     * @param string $path
+     *
+     * @return mixed
+     * @throws FileException
      */
-    public function getData();
+    public function load($path);
 
     /**
-     * @param bool $encryptPass Si se encripta la clave de la cuenta
-     * @return mixed
+     * @param string $path
+     * @param mixed  $data
+     *
+     * @return FileStorageInterface
+     * @throws FileException
      */
-    public function createAccount($encryptPass = true);
+    public function save($path, $data);
 
     /**
-     * @param $id
+     * @param string $path
+     *
      * @return mixed
      */
-    public function deleteAccount($id);
+    public function delete($path);
+
+    /**
+     * Returns whether the file is expired
+     *
+     * @param string $path
+     * @param int    $time
+     *
+     * @return mixed
+     */
+    public function isExpired($path, $time = 86400);
 }

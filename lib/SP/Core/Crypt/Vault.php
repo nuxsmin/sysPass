@@ -29,7 +29,7 @@ namespace SP\Core\Crypt;
  *
  * @package SP\Core\Crypt
  */
-class Vault
+final class Vault
 {
     /**
      * @var string

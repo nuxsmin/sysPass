@@ -25,13 +25,13 @@
 namespace SP\Test\Storage;
 
 use PHPUnit\Framework\TestCase;
-use SP\Storage\FileException;
-use SP\Storage\FileHandler;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class FileHandlerTest
  *
- * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\FileHandler
+ * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\File\FileHandler
  *
  * @package SP\Tests
  */
@@ -53,7 +53,7 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar la escritura de texto en un archivo
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testWrite()
     {
@@ -74,7 +74,7 @@ class FileHandlerTest extends TestCase
      */
     public function testCheckIsWritable()
     {
-        (new FileHandler(self::$validFile))
+        (new \SP\Storage\File\FileHandler(self::$validFile))
             ->clearCache()
             ->checkIsWritable();
 
@@ -84,11 +84,11 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar el tamaño del archivo
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testGetFileSize()
     {
-        $size = (new FileHandler(self::$validFile))->getFileSize();
+        $size = (new \SP\Storage\File\FileHandler(self::$validFile))->getFileSize();
 
         $this->assertEquals(10, $size);
     }
@@ -101,13 +101,13 @@ class FileHandlerTest extends TestCase
      */
     public function testCheckFileExists()
     {
-        (new FileHandler(self::$validFile))
+        (new \SP\Storage\File\FileHandler(self::$validFile))
             ->clearCache()
             ->checkFileExists();
 
-        $this->expectException(FileException::class);
+        $this->expectException(\SP\Storage\File\FileException::class);
 
-        (new FileHandler(self::$missingFile))
+        (new \SP\Storage\File\FileHandler(self::$missingFile))
             ->clearCache()
             ->checkFileExists();
     }
@@ -115,11 +115,11 @@ class FileHandlerTest extends TestCase
     /**
      * Abrir un archivo
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testOpenAndRead()
     {
-        $handler = new FileHandler(self::$validFile);
+        $handler = new \SP\Storage\File\FileHandler(self::$validFile);
         $handler->open('rb');
         $this->assertEquals('valid_file', $handler->read());
         $this->assertEquals('valid_file', $handler->readToString());
@@ -128,7 +128,7 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar a cerrar un archivo
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testClose()
     {
@@ -136,7 +136,7 @@ class FileHandlerTest extends TestCase
         $handler->open('rb');
         $handler->close();
 
-        $this->expectException(FileException::class);
+        $this->expectException(\SP\Storage\File\FileException::class);
         $handler->close();
     }
 
@@ -144,7 +144,7 @@ class FileHandlerTest extends TestCase
      * Comprobar si es posible leer el archivo
      *
      * @doesNotPerformAssertions
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testCheckIsReadable()
     {
@@ -156,11 +156,11 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar la eliminación de un archivo
      *
-     * @throws FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDelete()
     {
-        (new FileHandler(self::$validFile))->delete();
+        (new \SP\Storage\File\FileHandler(self::$validFile))->delete();
 
         $this->assertFileNotExists(self::$validFile);
     }

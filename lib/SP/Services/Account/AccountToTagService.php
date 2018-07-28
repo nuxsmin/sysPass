@@ -33,7 +33,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\Account
  */
-class AccountToTagService extends Service
+final class AccountToTagService extends Service
 {
     /**
      * @var AccountToTagRepository

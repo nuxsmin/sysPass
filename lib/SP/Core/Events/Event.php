@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use InvalidArgumentException;
  *
  * @package SP\Core\Events
  */
-class Event
+final class Event
 {
     /**
      * @var object
@@ -45,8 +45,9 @@ class Event
     /**
      * Event constructor.
      *
-     * @param object $source
+     * @param object       $source
      * @param EventMessage $eventMessage
+     *
      * @throws InvalidArgumentException
      */
     public function __construct($source, EventMessage $eventMessage = null)

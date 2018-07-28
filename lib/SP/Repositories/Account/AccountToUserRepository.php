@@ -24,10 +24,10 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
+use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\QueryData;
 
 /**
@@ -35,7 +35,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Repositories\Account
  */
-class AccountToUserRepository extends Repository
+final class AccountToUserRepository extends Repository
 {
     use RepositoryItemTrait;
 
@@ -84,7 +84,7 @@ class AccountToUserRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add(AccountRequest $accountRequest)
+    public function add(\SP\Services\Account\AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 
@@ -148,7 +148,7 @@ class AccountToUserRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addEdit(AccountRequest $accountRequest)
+    public function addEdit(\SP\Services\Account\AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 

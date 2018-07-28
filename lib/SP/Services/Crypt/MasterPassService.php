@@ -36,7 +36,7 @@ use SP\Services\ServiceException;
  *
  * @package SP\Services\Crypt
  */
-class MasterPassService extends Service
+final class MasterPassService extends Service
 {
     const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
     const PARAM_MASTER_PASS_HASH = 'masterPwd';

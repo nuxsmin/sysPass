@@ -39,7 +39,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Plugin
  */
-class PluginService extends Service
+final class PluginService extends Service
 {
     /**
      * @var PluginRepository

@@ -40,7 +40,7 @@ use SP\Core\UI\ThemeInterface;
  * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
  *
  */
-class Template
+final class Template
 {
     const TEMPLATE_EXTENSION = '.inc';
     const PARTIALS_DIR = '_partials';
@@ -84,6 +84,7 @@ class Template
      *
      * @param string $name Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
+     *
      * @return bool
      */
     public function addContentTemplate($name, $base = null)
@@ -102,8 +103,11 @@ class Template
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
      * @param string $template Con el nombre del archivo
+     *
      * @return string La ruta al archivo de la plantilla
+     *
      * @param string $base     Directorio base para la plantilla
+     *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private function checkTemplate($template, $base = null)
@@ -140,6 +144,7 @@ class Template
      * Removes a template from the stack
      *
      * @param $name
+     *
      * @return Template
      */
     public function removeTemplate($name)
@@ -153,6 +158,7 @@ class Template
      * Removes a template from the stack
      *
      * @param $name
+     *
      * @return Template
      */
     public function removeContentTemplate($name)
@@ -168,6 +174,7 @@ class Template
      * @param string $src Source template
      * @param string $dst Destination template
      * @param string $base
+     *
      * @return mixed|string
      */
     public function replaceTemplate($src, $dst, $base)
@@ -198,6 +205,7 @@ class Template
      *
      * @param string $name Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
+     *
      * @return bool
      */
     public function addTemplate($name, $base = null)
@@ -227,6 +235,7 @@ class Template
      * Añadir una nueva plantilla dentro de una plantilla
      *
      * @param string $file Con el nombre del archivo de plantilla
+     *
      * @return bool
      */
     public function includePartial($file)
@@ -239,6 +248,7 @@ class Template
      *
      * @param string $file Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
+     *
      * @return bool
      */
     public function includeTemplate($file, $base = null)
@@ -254,6 +264,7 @@ class Template
      * Overloading para controlar la devolución de atributos dinámicos.
      *
      * @param string $name Nombre del atributo
+     *
      * @return null
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
@@ -274,6 +285,7 @@ class Template
      *
      * @param string $name  Nombre del atributo
      * @param string $value Valor del atributo
+     *
      * @return null
      */
     public function __set($name, $value)
@@ -287,6 +299,7 @@ class Template
      * en el array de variables de la plantilla.
      *
      * @param string $name Nombre del atributo
+     *
      * @return bool
      */
     public function __isset($name)
@@ -299,6 +312,7 @@ class Template
      * atributo dinámico de la clase
      *
      * @param string $name Nombre del atributo
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */

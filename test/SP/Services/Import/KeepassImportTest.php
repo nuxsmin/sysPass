@@ -25,8 +25,8 @@
 namespace SP\Tests\Services\Import;
 
 use DI\Container;
-use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
+use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -75,7 +75,7 @@ class KeepassImportTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDoImport()
     {
@@ -126,7 +126,7 @@ class KeepassImportTest extends DatabaseTestCase
         $filter = new AccountSearchFilter();
         $filter->setClientId($client->getId());
 
-        $data = $accountService->getByFilter($filter)->getData();
+        $data = $accountService->getByFilter($filter);
 
         $this->assertCount(5, $data);
 

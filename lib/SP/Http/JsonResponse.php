@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,7 @@ namespace SP\Http;
  *
  * @package SP\Http
  */
-class JsonResponse implements \JsonSerializable
+final class JsonResponse implements \JsonSerializable
 {
     const JSON_SUCCESS = 0;
     const JSON_SUCCESS_STICKY = 100;
@@ -78,6 +78,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param int $status
+     *
      * @return JsonResponse
      */
     public function setStatus($status)
@@ -97,6 +98,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param string $description
+     *
      * @return JsonResponse
      */
     public function setDescription($description)
@@ -116,6 +118,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param string $action
+     *
      * @return JsonResponse
      */
     public function setAction($action)
@@ -135,6 +138,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param array|\stdClass $data
+     *
      * @return JsonResponse
      */
     public function setData($data)
@@ -154,6 +158,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param array $messages
+     *
      * @return JsonResponse
      */
     public function setMessages(array $messages)
@@ -173,6 +178,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param string $container
+     *
      * @return JsonResponse
      */
     public function setContainer($container)
@@ -192,6 +198,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param string $csrf
+     *
      * @return JsonResponse
      */
     public function setCsrf($csrf)
@@ -203,6 +210,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param $message
+     *
      * @return JsonResponse
      */
     public function addMessage($message)
@@ -213,6 +221,7 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * @param $param
+     *
      * @return $this
      */
     public function addParam($param)
@@ -228,7 +237,8 @@ class JsonResponse implements \JsonSerializable
 
     /**
      * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     *
+     * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0

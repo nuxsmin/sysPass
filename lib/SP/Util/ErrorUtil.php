@@ -36,7 +36,7 @@ use SP\Services\User\UpdatedMasterPassException;
  *
  * @package SP\Util
  */
-class ErrorUtil
+final class ErrorUtil
 {
     /**
      * Constantes de errores
@@ -118,6 +118,7 @@ class ErrorUtil
      * Return error message by type
      *
      * @param $type
+     *
      * @return mixed
      */
     protected static function getErrorTypes($type)

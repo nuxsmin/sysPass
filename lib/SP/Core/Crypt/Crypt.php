@@ -34,7 +34,7 @@ use Defuse\Crypto\KeyProtectedByPassword;
  *
  * @package SP\Core\Crypt
  */
-class Crypt
+final class Crypt
 {
     /**
      * Encriptar datos con una clave segura
@@ -42,6 +42,7 @@ class Crypt
      * @param string     $data
      * @param string|Key $securedKey
      * @param string     $password
+     *
      * @return string
      * @throws CryptoException
      */
@@ -68,6 +69,7 @@ class Crypt
      * @param string $key
      * @param string $password
      * @param bool   $useAscii
+     *
      * @return string|Key
      * @throws CryptoException
      */
@@ -92,6 +94,7 @@ class Crypt
      * @param string                            $data
      * @param string|Key|KeyProtectedByPassword $securedKey
      * @param string                            $password
+     *
      * @return string
      * @throws CryptoException
      */
@@ -122,6 +125,7 @@ class Crypt
      *
      * @param string $password
      * @param bool   $useAscii
+     *
      * @return string|KeyProtectedByPassword
      * @throws CryptoException
      */

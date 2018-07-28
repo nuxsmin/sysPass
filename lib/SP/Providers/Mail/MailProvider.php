@@ -34,7 +34,7 @@ use SP\Util\Util;
  *
  * @package SP\Providers\Mail
  */
-class MailProvider extends Provider
+final class MailProvider extends Provider
 {
     /**
      * @var  PHPMailer

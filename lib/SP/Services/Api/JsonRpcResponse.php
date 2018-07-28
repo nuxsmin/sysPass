@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,13 +29,15 @@ use SP\Util\Json;
 
 /**
  * Class JsonRpcResponse
+ *
  * @package SP\Api
  */
-class JsonRpcResponse
+final class JsonRpcResponse
 {
     /**
      * @param ApiResponse $apiResponse
-     * @param $id
+     * @param             $id
+     *
      * @return string
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -50,7 +52,8 @@ class JsonRpcResponse
 
     /**
      * @param \Exception $e
-     * @param $id
+     * @param            $id
+     *
      * @return string
      */
     public static function getResponseException(\Exception $e, $id)

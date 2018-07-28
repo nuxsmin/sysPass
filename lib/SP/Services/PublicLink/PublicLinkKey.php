@@ -31,7 +31,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\PublicLink
  */
-class PublicLinkKey
+final class PublicLinkKey
 {
     /**
      * @var string

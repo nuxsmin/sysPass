@@ -32,7 +32,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas.
  */
-class ImportService extends Service
+final class ImportService extends Service
 {
     /**
      * @var ImportParams
@@ -71,7 +71,7 @@ class ImportService extends Service
      * @throws ImportException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \SP\Storage\FileException
+     * @throws \SP\Storage\File\FileException
      */
     protected function selectImportType()
     {

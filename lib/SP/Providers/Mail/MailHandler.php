@@ -31,7 +31,7 @@ use SP\Core\Messages\MailMessage;
 use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\MailService;
+use SP\Services\Mail\MailService;
 use SplSubject;
 
 /**
@@ -39,7 +39,7 @@ use SplSubject;
  *
  * @package SP\Providers\Mail
  */
-class MailHandler extends Provider implements EventReceiver
+final class MailHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
@@ -57,7 +57,7 @@ class MailHandler extends Provider implements EventReceiver
     ];
 
     /**
-     * @var MailService
+     * @var \SP\Services\Mail\MailService
      */
     protected $mailService;
     /**

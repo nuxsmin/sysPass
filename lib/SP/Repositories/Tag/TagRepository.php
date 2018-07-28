@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Tag
  */
-class TagRepository extends Repository implements RepositoryItemInterface
+final class TagRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 

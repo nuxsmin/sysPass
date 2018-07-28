@@ -100,6 +100,7 @@ class SelectItem
 
     /**
      * @param $property
+     *
      * @return mixed
      */
     public function getItemProperty($property)

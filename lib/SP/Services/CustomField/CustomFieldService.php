@@ -38,7 +38,7 @@ use SP\Services\ServiceException;
  *
  * @package SP\Services\CustomField
  */
-class CustomFieldService extends Service
+final class CustomFieldService extends Service
 {
     /**
      * @var CustomFieldRepository

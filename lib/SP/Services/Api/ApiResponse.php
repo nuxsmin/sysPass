@@ -26,9 +26,10 @@ namespace SP\Services\Api;
 
 /**
  * Class ApiResponse
+ *
  * @package SP\Api
  */
-class ApiResponse
+final class ApiResponse
 {
     const RESULT_SUCCESS = 0;
     const RESULT_ERROR = 1;
@@ -48,9 +49,10 @@ class ApiResponse
 
     /**
      * ApiResponse constructor.
+     *
      * @param mixed $result
-     * @param int $resultCode
-     * @param null $itemId
+     * @param int   $resultCode
+     * @param null  $itemId
      */
     public function __construct($result, $resultCode = self::RESULT_SUCCESS, $itemId = null)
     {

@@ -29,7 +29,7 @@ namespace SP\Mvc\Model;
  *
  * @package SP\Mvc\Model
  */
-class QueryJoin
+final class QueryJoin
 {
     /**
      * @var array
@@ -43,6 +43,7 @@ class QueryJoin
     /**
      * @param string $join
      * @param array  $params
+     *
      * @return QueryJoin
      */
     public function addJoin($join, array $params = null)

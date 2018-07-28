@@ -31,7 +31,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
  *
  * @package SP\Repositories\Track
  */
-class TrackRequest
+final class TrackRequest
 {
     public $time;
     public $source;

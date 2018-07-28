@@ -26,9 +26,10 @@ namespace SP\Providers\Mail;
 
 /**
  * Class MailParams
+ *
  * @package SP\Providers\Mail
  */
-class MailParams
+final class MailParams
 {
     /**
      * @var string

@@ -33,7 +33,7 @@ use SP\Http\Request;
  *
  * @package SP\Util
  */
-class HttpUtil
+final class HttpUtil
 {
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS

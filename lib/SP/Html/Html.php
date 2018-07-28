@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,12 +29,13 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de mostrar el HTML
  */
-class Html
+final class Html
 {
     /**
      * Limpia los datos recibidos de un formulario.
      *
      * @param string $data con los datos a limpiar
+     *
      * @return false|string con los datos limpiados
      */
     public static function sanitize(&$data)
@@ -94,6 +95,7 @@ class Html
      * Limpia los datos recibidos de un formulario. Sölo admite cadenas
      *
      * @param $data
+     *
      * @return false|string con los datos limpiados
      */
     public static function sanitizeFull(&$data)
@@ -121,6 +123,7 @@ class Html
      * @param string $text  la cadena a truncar
      * @param int    $limit la longitud máxima de la cadena
      * @param string $ellipsis
+     *
      * @return string con el texto truncado
      *
      * @link http://www.pjgalbraith.com/truncating-text-html-with-php/
@@ -138,6 +141,7 @@ class Html
      * From: http://bavotasan.com/2011/convert-hex-color-to-rgb-using-php/
      *
      * @param array $rgb con color en RGB
+     *
      * @return string
      */
     public static function rgb2hex($rgb)
@@ -154,6 +158,7 @@ class Html
      * Devolver una cadena con el tag HTML strong.
      *
      * @param string $text con la cadena de texto
+     *
      * @return string
      */
     public static function strongText($text)
@@ -168,6 +173,7 @@ class Html
      * @param string $link    con el destino del enlace
      * @param string $title   con el título del enlace
      * @param string $attribs con atributos del enlace
+     *
      * @return string
      */
     public static function anchorText($text, $link = '', $title = '', $attribs = '')

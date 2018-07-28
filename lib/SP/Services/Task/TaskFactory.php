@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Core\Messages\TaskMessage;
  *
  * @package SP\Core
  */
-class TaskFactory
+final class TaskFactory
 {
     /**
      * @var Task[]
@@ -43,6 +43,7 @@ class TaskFactory
      *
      * @param string $name
      * @param string $id
+     *
      * @return Task
      */
     public static function create($name, $id)
@@ -52,6 +53,7 @@ class TaskFactory
 
     /**
      * @param Task $task
+     *
      * @return Task
      */
     private static function add(Task $task)
@@ -79,6 +81,7 @@ class TaskFactory
 
     /**
      * @param $id
+     *
      * @return Task
      */
     private static function get($id)
@@ -105,6 +108,7 @@ class TaskFactory
     /**
      * @param string $taskId
      * @param string $task
+     *
      * @return TaskMessage
      */
     public static function createMessage($taskId, $task)

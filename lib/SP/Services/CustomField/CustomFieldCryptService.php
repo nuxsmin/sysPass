@@ -40,7 +40,7 @@ use SP\Services\Task\TaskFactory;
  *
  * @package SP\Mgmt\CustomFields
  */
-class CustomFieldCryptService extends Service
+final class CustomFieldCryptService extends Service
 {
     /**
      * @var CustomFieldService
@@ -115,6 +115,7 @@ class CustomFieldCryptService extends Service
      * Actualizar los datos encriptados con una nueva clave
      *
      * @param UpdateMasterPassRequest $request
+     *
      * @throws ServiceException
      */
     public function updateMasterPassword(UpdateMasterPassRequest $request)

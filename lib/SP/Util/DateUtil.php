@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,13 +29,14 @@ namespace SP\Util;
  *
  * @package SP\Util
  */
-class DateUtil
+final class DateUtil
 {
     /**
      * Returns date string from UNIX timestamp
      *
      * @param        $date
      * @param string $format
+     *
      * @return false|string
      */
     public static function getDateFromUnix($date, $format = 'Y-m-d H:i')

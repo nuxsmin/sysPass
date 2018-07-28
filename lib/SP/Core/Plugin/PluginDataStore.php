@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,6 +39,7 @@ class PluginDataStore
      * Guardar los datos de un plugin
      *
      * @param PluginInterface $Plugin
+     *
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function save(PluginInterface $Plugin)
@@ -55,6 +56,7 @@ class PluginDataStore
      * Cargar los datos de un plugin
      *
      * @param PluginInterface $Plugin
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException

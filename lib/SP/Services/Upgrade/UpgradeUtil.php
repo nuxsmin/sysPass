@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,6 +23,7 @@
  */
 
 namespace SP\Services\Upgrade;
+
 use SP\Config\Config;
 use SP\Util\Util;
 
@@ -31,12 +32,13 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeUtil
+final class UpgradeUtil
 {
     /**
      * Normalizar un número de versión
      *
      * @param $version
+     *
      * @return string
      */
     public static function fixVersionNumber($version)
@@ -50,29 +52,6 @@ class UpgradeUtil
         }
 
         return $version;
-    }
-
-    /**
-     * Establecer la key de actualización
-     *
-     * @param Config $config
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public static function setUpgradeKey(Config $config)
-    {
-        $configData = $config->getConfigData();
-        $upgradeKey = $configData->getUpgradeKey();
-
-        if (empty($upgradeKey)) {
-            $configData->setUpgradeKey(Util::generateRandomBytes(32));
-        }
-
-        $configData->setMaintenance(true);
-        $config->saveConfig($configData, false);
-
-//        Init::initError(
-//            __('La aplicación necesita actualizarse'),
-//            sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }
 
     /**
@@ -96,6 +75,30 @@ class UpgradeUtil
             // FIXME: send link for upgrading
             throw new \RuntimeException('Needs upgrade');
         }
+    }
+
+    /**
+     * Establecer la key de actualización
+     *
+     * @param Config $config
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public static function setUpgradeKey(Config $config)
+    {
+        $configData = $config->getConfigData();
+        $upgradeKey = $configData->getUpgradeKey();
+
+        if (empty($upgradeKey)) {
+            $configData->setUpgradeKey(Util::generateRandomBytes(32));
+        }
+
+        $configData->setMaintenance(true);
+        $config->saveConfig($configData, false);
+
+//        Init::initError(
+//            __('La aplicación necesita actualizarse'),
+//            sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }
 
     /**

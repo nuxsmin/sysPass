@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
+namespace SP\Services\Account;
 
 use SP\Core\Acl\Acl;
 

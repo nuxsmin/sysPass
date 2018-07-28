@@ -154,10 +154,17 @@ class ClientServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testGetAllForUser()
+    public function testGetAllForUserAdmin()
     {
         $this->assertCount(3, self::$service->getAllForUser());
+    }
 
+    /**
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testGetAllForUser()
+    {
         $userData = new UserLoginResponse();
         $userData->setId(4);
 
@@ -174,8 +181,6 @@ class ClientServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $countBefore = $this->conn->getRowCount('Client');
-
         $data = new ClientData();
         $data->name = 'Cliente prueba';
         $data->description = 'Descripción prueba';
@@ -191,7 +196,7 @@ class ClientServiceTest extends DatabaseTestCase
 
         $countAfter = $this->conn->getRowCount('Client');
 
-        $this->assertEquals($countBefore + 1, $countAfter);
+        $this->assertEquals(4, $countAfter);
 
         $this->expectException(DuplicatedItemException::class);
 

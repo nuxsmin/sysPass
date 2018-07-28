@@ -26,11 +26,11 @@ namespace SP\Services\Import;
 
 use DOMElement;
 use DOMXPath;
-use SP\Account\AccountRequest;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
+use SP\Services\Account\AccountRequest;
 use SP\Util\Filter;
 
 defined('APP_ROOT') || die();
@@ -38,7 +38,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde KeePass
  */
-class KeepassImport extends XmlImportBase implements ImportInterface
+final class KeepassImport extends XmlImportBase implements ImportInterface
 {
     /**
      * @var array
@@ -81,7 +81,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
 
         $this->getEntries();
 
-        /** @var AccountRequest[] $group */
+        /** @var \SP\Services\Account\AccountRequest[] $group */
         foreach ($this->items as $group => $entry) {
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
@@ -164,7 +164,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
     /**
      * @param array $entry
      *
-     * @return AccountRequest
+     * @return \SP\Services\Account\AccountRequest
      */
     private function mapEntryToAccount(array $entry)
     {

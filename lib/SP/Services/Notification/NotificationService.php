@@ -37,7 +37,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Notification
  */
-class NotificationService extends Service
+final class NotificationService extends Service
 {
     /**
      * @var NotificationRepository

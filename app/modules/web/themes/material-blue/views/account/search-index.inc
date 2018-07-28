@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Account\AccountSearchItem
+ * @var $account \SP\Services\Account\AccountSearchItem
  * @var $this    \SP\Mvc\View\Template
  */
 ?>
@@ -15,7 +15,7 @@
             <?php include $data->getDataHeaderTemplate(); ?>
         </div>
 
-        <?php if (\SP\Account\AccountSearchItem::$topNavbar): ?>
+        <?php if (\SP\Services\Account\AccountSearchItem::$topNavbar): ?>
             <!-- Data Pager -->
             <div id="search-pager-top">
                 <?php include $data->getDataPagerTemplate(); ?>

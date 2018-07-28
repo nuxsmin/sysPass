@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account SP\Account\AccountSearchItem
+ * @var $account \SP\Services\Account\AccountSearchItem
  * @var $this    \SP\Mvc\View\Template
  * @var $icons   \SP\Core\UI\ThemeIcons
  */
