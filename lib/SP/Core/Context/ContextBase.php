@@ -47,10 +47,8 @@ abstract class ContextBase implements ContextInterface
 
     /**
      * ContextBase constructor.
-     *
-     * @param ContextCollection $trasient
      */
-    public function __construct(ContextCollection $trasient)
+    public function __construct()
     {
         $this->trasient = new ContextCollection();
     }

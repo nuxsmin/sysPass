@@ -51,11 +51,19 @@ final class CryptPKI
     {
         $this->rsa = $rsa;
 
-        if (!file_exists($this->getPublicKeyFile()) || !file_exists($this->getPrivateKeyFile())) {
-            if (!$this->createKeys()) {
-                throw new SPException(__u('No es posible generar las claves RSA'), SPException::CRITICAL);
-            }
+        if (!$this->checkKeys()) {
+            $this->createKeys();
         }
+    }
+
+    /**
+     * Check if private and public keys exist
+     *
+     * @return bool
+     */
+    public function checkKeys()
+    {
+        return file_exists($this->getPublicKeyFile()) && file_exists($this->getPrivateKeyFile());
     }
 
     /**
@@ -63,7 +71,7 @@ final class CryptPKI
      *
      * @return string
      */
-    private function getPublicKeyFile()
+    public function getPublicKeyFile()
     {
         return CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
     }
@@ -73,13 +81,15 @@ final class CryptPKI
      *
      * @return string
      */
-    private function getPrivateKeyFile()
+    public function getPrivateKeyFile()
     {
         return CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
     }
 
     /**
      * Crea el par de claves pública y privada
+     *
+     * @throws SPException
      */
     public function createKeys()
     {
@@ -88,9 +98,11 @@ final class CryptPKI
         $priv = file_put_contents($this->getPrivateKeyFile(), $keys['privatekey']);
         $pub = file_put_contents($this->getPublicKeyFile(), $keys['publickey']);
 
-        chmod($this->getPrivateKeyFile(), 0600);
+        if (!$priv || !$pub) {
+            throw new SPException(__u('No es posible generar las claves RSA'), SPException::CRITICAL);
+        }
 
-        return ($priv && $pub);
+        chmod($this->getPrivateKeyFile(), 0600);
     }
 
     /**
@@ -148,7 +160,7 @@ final class CryptPKI
      * @return string
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
-    private function getPrivateKey()
+    public function getPrivateKey()
     {
         $file = $this->getPrivateKeyFile();
 
