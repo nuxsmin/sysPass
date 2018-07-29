@@ -183,7 +183,7 @@ final class CustomFieldDefService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return CustomFieldDefinitionData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

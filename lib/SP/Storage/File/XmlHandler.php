@@ -289,4 +289,27 @@ final class XmlHandler implements XmlFileStorageInterface
 
         return $this;
     }
+
+    /**
+     * @param $path
+     *
+     * @return string
+     * @throws FileException
+     */
+    public function getPathValue($path)
+    {
+        $this->fileHandler->checkIsReadable();
+        $this->fileHandler->getFileSize(true);
+
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $dom->load($this->fileHandler->getFile());
+
+        $query = (new \DOMXPath($dom))->query($path);
+
+        if ($query->length === 0) {
+            throw new RuntimeException(__u('El nodo XML no existe'));
+        }
+
+        return $query->item(0)->nodeValue;
+    }
 }

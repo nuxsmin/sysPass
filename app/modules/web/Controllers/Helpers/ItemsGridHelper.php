@@ -525,35 +525,35 @@ final class ItemsGridHelper extends HelperBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY);
+        $GridActionSearch->setId(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchAccountHistory');
         $GridActionSearch->setTitle(__('Buscar Cuenta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
 
         // Grid item's actions
         $GridActionRestore = new DataGridAction();
-        $GridActionRestore->setId(ActionsInterface::ACCOUNTMGR_RESTORE);
+        $GridActionRestore->setId(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
         $GridActionRestore->setType(DataGridActionType::EDIT_ITEM);
         $GridActionRestore->setName(__('Restaurar Cuenta'));
         $GridActionRestore->setTitle(__('Restaurar Cuenta'));
         $GridActionRestore->setIcon($this->icons->getIconRestore());
-        $GridActionRestore->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_RESTORE));
+        $GridActionRestore->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE));
 
 //        $Grid->setDataActions($GridActionRestore);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(ActionsInterface::ACCOUNTMGR_DELETE_HISTORY);
+        $GridActionDel->setId(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Cuenta'));
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE_HISTORY));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -623,18 +623,18 @@ final class ItemsGridHelper extends HelperBase
 
         $Grid->setDataActions($GridActionNew);
 
-        if ($this->acl->checkUserAccess(ActionsInterface::IMPORT_CONFIG)
+        if ($this->acl->checkUserAccess(ActionsInterface::CONFIG_IMPORT)
             && $this->configData->isLdapEnabled()
         ) {
             $GridActionLdapSync = new DataGridAction();
-            $GridActionLdapSync->setId(ActionsInterface::LDAP_SYNC);
+            $GridActionLdapSync->setId(ActionsInterface::CONFIG_LDAP_SYNC);
             $GridActionLdapSync->setType(DataGridActionType::MENUBAR_ITEM);
             $GridActionLdapSync->setName(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setTitle(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setIcon(new FontIcon('get_app'));
             $GridActionLdapSync->setSkip(true);
             $GridActionLdapSync->setOnClickFunction('appMgmt/ldapSync');
-            $GridActionLdapSync->addData('action-route', Acl::getActionRoute(ActionsInterface::LDAP_SYNC));
+            $GridActionLdapSync->addData('action-route', Acl::getActionRoute(ActionsInterface::CONFIG_LDAP_SYNC));
 
             $Grid->setDataActions($GridActionLdapSync);
         }

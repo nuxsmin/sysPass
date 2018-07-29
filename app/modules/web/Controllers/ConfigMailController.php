@@ -157,7 +157,7 @@ final class ConfigMailController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::MAIL_CONFIG);
+            $this->checkAccess(Acl::CONFIG_MAIL);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

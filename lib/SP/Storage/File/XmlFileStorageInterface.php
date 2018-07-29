@@ -51,4 +51,14 @@ interface XmlFileStorageInterface
      * @return mixed
      */
     public function getItems();
+
+    /**
+     * Returns the given path node value
+     *
+     * @param $path
+     *
+     * @return string
+     * @throws FileException
+     */
+    public function getPathValue($path);
 }

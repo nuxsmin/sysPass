@@ -111,7 +111,7 @@ final class ConfigAccountController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(ActionsInterface::ACCOUNT_CONFIG);
+            $this->checkAccess(ActionsInterface::CONFIG_ACCOUNT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

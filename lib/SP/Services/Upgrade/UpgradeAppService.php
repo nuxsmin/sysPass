@@ -37,7 +37,7 @@ use SP\Util\Util;
  */
 final class UpgradeAppService extends Service implements UpgradeInterface
 {
-    const UPGRADES = ['300.18010101'];
+    const UPGRADES = ['300.18010101', '300.18072901'];
 
     /**
      * @param $version
@@ -102,6 +102,12 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                         ->upgrade_300_18010101();
                     $this->dic->get(UpgradePublicLink::class)
                         ->upgrade_300_18010101();
+                    return true;
+                case '300.18072901':
+                    $this->dic->get(UpgradeCustomFieldDefinition::class)
+                        ->upgrade_300_18072901();
+                    $this->dic->get(UpgradeAuthToken::class)
+                        ->upgrade_300_18072901();
                     return true;
             }
         } catch (\Exception $e) {

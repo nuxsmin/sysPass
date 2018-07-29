@@ -47,7 +47,7 @@ final class ConfigController extends ControllerBase
     public function backupAction()
     {
         try {
-            $this->setupApi(ActionsInterface::BACKUP_CONFIG);
+            $this->setupApi(ActionsInterface::CONFIG_BACKUP);
 
             $this->dic->get(FileBackupService::class)
                 ->doBackup(BACKUP_PATH);
@@ -74,7 +74,7 @@ final class ConfigController extends ControllerBase
     public function exportAction()
     {
         try {
-            $this->setupApi(ActionsInterface::EXPORT_CONFIG);
+            $this->setupApi(ActionsInterface::CONFIG_EXPORT);
 
             $password = $this->apiService->getParamString('password');
 

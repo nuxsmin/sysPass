@@ -140,7 +140,7 @@ final class ConfigBackupController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::BACKUP_CONFIG);
+            $this->checkAccess(Acl::CONFIG_BACKUP);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

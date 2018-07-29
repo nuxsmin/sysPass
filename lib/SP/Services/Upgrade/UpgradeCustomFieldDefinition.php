@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CustomFieldDefDataOld;
@@ -48,6 +49,8 @@ final class UpgradeCustomFieldDefinition extends Service
 
     /**
      * upgrade_300_18010101
+     *
+     * @throws \Exception
      */
     public function upgrade_300_18010101()
     {
@@ -70,7 +73,7 @@ final class UpgradeCustomFieldDefinition extends Service
 
                     $itemData = new CustomFieldDefinitionData();
                     $itemData->setId($item->id);
-                    $itemData->setModuleId($item->moduleId);
+                    $itemData->setModuleId($this->moduleMapper((int)$item->moduleId));
                     $itemData->setName($data->getName());
                     $itemData->setHelp($data->getHelp());
                     $itemData->setRequired($data->isRequired());
@@ -90,6 +93,77 @@ final class UpgradeCustomFieldDefinition extends Service
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            throw $e;
+        }
+
+        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__FUNCTION__))
+        );
+    }
+
+    /**
+     * @param int $moduleId
+     *
+     * @return int
+     */
+    private function moduleMapper(int $moduleId)
+    {
+        switch ($moduleId) {
+            case 10:
+                return ActionsInterface::ACCOUNT;
+            case 61:
+                return ActionsInterface::CATEGORY;
+            case 62:
+                return ActionsInterface::CLIENT;
+            case 71:
+                return ActionsInterface::USER;
+            case 72:
+                return ActionsInterface::GROUP;
+        }
+
+        return $moduleId;
+    }
+
+    /**
+     * upgrade_300_18072901
+     *
+     * @throws \Exception
+     */
+    public function upgrade_300_18072901()
+    {
+        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__FUNCTION__))
+        );
+
+        try {
+            $this->transactionAware(function () {
+                $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
+
+                foreach ($customFieldDefService->getAllBasic() as $item) {
+
+                    $itemData = clone $item;
+                    $itemData->setModuleId($this->moduleMapper((int)$item->getModuleId()));
+
+                    $customFieldDefService->update($itemData);
+
+                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Campo actualizado'))
+                            ->addDetail(__u('Campo'), $item->getName()))
+                    );
+                }
+            });
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            throw $e;
         }
 
         $this->eventDispatcher->notifyEvent('upgrade.customField.end',

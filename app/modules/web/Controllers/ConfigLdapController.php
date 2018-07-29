@@ -279,7 +279,7 @@ final class ConfigLdapController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::LDAP_CONFIG);
+            $this->checkAccess(Acl::CONFIG_LDAP);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

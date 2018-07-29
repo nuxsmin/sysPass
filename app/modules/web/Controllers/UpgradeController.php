@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Acl\Actions;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -43,11 +44,15 @@ final class UpgradeController extends ControllerBase
 
     /**
      * indexAction
+     *
+     * @throws \SP\Storage\File\FileException
      */
     public function indexAction()
     {
         $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getPublicLayout('index', 'upgrade');
+
+        $this->dic->get(Actions::class)->reset();
 
         $this->view();
     }

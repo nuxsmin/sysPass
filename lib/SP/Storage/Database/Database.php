@@ -326,12 +326,18 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbHandler->getConnection();
 
-        $result = !$conn->inTransaction() && $conn->beginTransaction();
+        if (!$conn->inTransaction()) {
+            $result = $conn->beginTransaction();
 
-        $this->eventDispatcher->notifyEvent('database.transaction.begin',
-            new Event($this, EventMessage::factory()->addData('result', $result)));
+            $this->eventDispatcher->notifyEvent('database.transaction.begin',
+                new Event($this, EventMessage::factory()->addData('result', $result)));
 
-        return $result;
+            return $result;
+        } else {
+            debugLog('beginTransaction: already in transaction');
+
+            return true;
+        }
     }
 
     /**

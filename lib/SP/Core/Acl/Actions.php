@@ -67,7 +67,7 @@ final class Actions
      * @param FileStorageInterface                     $fileStorage
      * @param \SP\Storage\File\XmlFileStorageInterface $xmlFileStorage
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileException
      */
     public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
     {
@@ -81,7 +81,7 @@ final class Actions
      * Loads actions from cache file
      *
      * @return void
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileException
      */
     protected function loadCache()
     {
@@ -101,7 +101,7 @@ final class Actions
     }
 
     /**
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileException
      */
     protected function mapAndSave()
     {
@@ -114,20 +114,18 @@ final class Actions
     /**
      * Sets an array of actions using id as key
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileException
      */
     protected function map()
     {
         $this->actions = [];
-
-        $actionBase = new ActionData();
 
         foreach ($this->load() as $a) {
             if (isset($this->actions[$a['id']])) {
                 throw new \RuntimeException('Duplicated action id: ' . $a['id']);
             }
 
-            $action = clone $actionBase;
+            $action = new ActionData();
             $action->id = $a['id'];
             $action->name = $a['name'];
             $action->text = $a['text'];
@@ -177,5 +175,15 @@ final class Actions
         }
 
         return $this->actions[$id];
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function reset()
+    {
+        @unlink(self::ACTIONS_CACHE_FILE);
+
+        $this->loadCache();
     }
 }

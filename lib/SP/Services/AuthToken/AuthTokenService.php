@@ -81,8 +81,8 @@ final class AuthTokenService extends Service
             ActionsInterface::TAG_CREATE => Acl::getActionInfo(ActionsInterface::TAG_CREATE),
             ActionsInterface::TAG_EDIT => Acl::getActionInfo(ActionsInterface::TAG_EDIT),
             ActionsInterface::TAG_DELETE => Acl::getActionInfo(ActionsInterface::TAG_DELETE),
-            ActionsInterface::BACKUP => Acl::getActionInfo(ActionsInterface::BACKUP),
-            ActionsInterface::EXPORT => Acl::getActionInfo(ActionsInterface::EXPORT)
+            ActionsInterface::CONFIG_BACKUP_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_BACKUP_RUN),
+            ActionsInterface::CONFIG_EXPORT_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_EXPORT_RUN)
         ];
 
         return $actions;
@@ -260,6 +260,20 @@ final class AuthTokenService extends Service
     }
 
     /**
+     * @param AuthTokenData $itemData
+     *
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updateRaw(AuthTokenData $itemData)
+    {
+        if ($this->authTokenRepository->update($itemData) === 0) {
+            throw new NoSuchItemException(__u('Token no encontrado'));
+        }
+    }
+
+    /**
      * Devolver los datos de un token
      *
      * @param $actionId int El id de la accion
@@ -282,11 +296,13 @@ final class AuthTokenService extends Service
     }
 
     /**
-     * @return array
+     * @return AuthTokenData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
-        return $this->authTokenRepository->getAll();
+        return $this->authTokenRepository->getAll()->getDataAsArray();
     }
 
     /**

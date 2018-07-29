@@ -97,7 +97,7 @@ final class ConfigImportController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::IMPORT_CONFIG);
+            $this->checkAccess(Acl::CONFIG_IMPORT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

@@ -53,7 +53,7 @@ final class AccountHistoryManagerController extends ControllerBase
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH_HISTORY)) {
+        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_HISTORY_SEARCH)) {
             return;
         }
 

@@ -113,7 +113,7 @@ final class ConfigWikiController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::WIKI_CONFIG);
+            $this->checkAccess(Acl::CONFIG_WIKI);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

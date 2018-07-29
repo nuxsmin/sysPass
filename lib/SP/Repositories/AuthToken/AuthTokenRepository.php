@@ -95,11 +95,30 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
     /**
      * Returns all the items
      *
-     * @return mixed
+     * @return QueryResult
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
-        throw new \RuntimeException('Not implemented');
+        $query = /** @lang SQL */
+            'SELECT id,
+            userId,
+            actionId,
+            createdBy,
+            startDate,
+            vault,
+            token,
+            `hash` 
+            FROM AuthToken
+            ORDER BY actionId, userId';
+
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AuthTokenData::class);
+        $queryData->setQuery($query);
+
+        return $this->db->doSelect($queryData);
     }
 
     /**

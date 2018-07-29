@@ -84,31 +84,31 @@ final class ConfigManagerController extends ControllerBase
             $this->tabsHelper->addTab($this->getConfigGeneral());
         }
 
-        if ($this->checkAccess(Acl::ACCOUNT_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_ACCOUNT)) {
             $this->tabsHelper->addTab($this->getAccountConfig());
         }
 
-        if ($this->checkAccess(Acl::WIKI_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_WIKI)) {
             $this->tabsHelper->addTab($this->getWikiConfig());
         }
 
-        if ($this->checkAccess(Acl::LDAP_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_LDAP)) {
             $this->tabsHelper->addTab($this->getLdapConfig());
         }
 
-        if ($this->checkAccess(Acl::MAIL_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_MAIL)) {
             $this->tabsHelper->addTab($this->getMailConfig());
         }
 
-        if ($this->checkAccess(Acl::ENCRYPTION_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_CRYPT)) {
             $this->tabsHelper->addTab($this->getEncryptionConfig());
         }
 
-        if ($this->checkAccess(Acl::BACKUP_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_BACKUP)) {
             $this->tabsHelper->addTab($this->getBackupConfig());
         }
 
-        if ($this->checkAccess(Acl::IMPORT_CONFIG)) {
+        if ($this->checkAccess(Acl::CONFIG_IMPORT)) {
             $this->tabsHelper->addTab($this->getImportConfig());
         }
 

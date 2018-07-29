@@ -107,12 +107,9 @@ final class Acl implements ActionsInterface
 
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
-     * Esta función comprueba los permisos del usuario para realizar una acción.
-     * Si los permisos ya han sido obtenidos desde la BBDD, se utiliza el objeto creado
-     * en la variable de sesión.
      *
-     * @param string $action con el nombre de la acción
-     * @param int    $userId opcional, con el Id del usuario
+     * @param int $action con el Id de la acción
+     * @param int $userId opcional, con el Id del usuario
      *
      * @return bool
      */
@@ -148,17 +145,27 @@ final class Acl implements ActionsInterface
             case self::ACCOUNT_FILE:
                 return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
             case self::ITEMS_MANAGE:
-                return ($userProfile->isMgmCategories() || $userProfile->isMgmCustomers());
+                return ($userData->getIsAdminAcc()
+                    || $userProfile->isMgmCategories()
+                    || $userProfile->isMgmCustomers()
+                    || $userProfile->isMgmAccounts()
+                    || $userProfile->isMgmFiles()
+                    || $userProfile->isMgmTags()
+                    || $userProfile->isMgmCustomFields()
+                    || $userProfile->isMgmPublicLinks());
             case self::CONFIG:
-                return ($userProfile->isConfigGeneral() || $userProfile->isConfigEncryption() || $userProfile->isConfigBackup() || $userProfile->isConfigImport());
+                return ($userProfile->isConfigGeneral()
+                    || $userProfile->isConfigEncryption()
+                    || $userProfile->isConfigBackup()
+                    || $userProfile->isConfigImport());
             case self::CONFIG_GENERAL:
             case self::PLUGIN:
-            case self::ACCOUNT_CONFIG:
-            case self::WIKI_CONFIG:
-            case self::LDAP_CONFIG:
-            case self::MAIL_CONFIG:
+            case self::CONFIG_ACCOUNT:
+            case self::CONFIG_WIKI:
+            case self::CONFIG_LDAP:
+            case self::CONFIG_MAIL:
                 return $userProfile->isConfigGeneral();
-            case self::IMPORT_CONFIG:
+            case self::CONFIG_IMPORT:
                 return $userProfile->isConfigImport();
             case self::CATEGORY:
             case self::CATEGORY_SEARCH:
@@ -193,8 +200,8 @@ final class Acl implements ActionsInterface
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
-            case self::ACCOUNTMGR_SEARCH_HISTORY:
-                return $userProfile->isMgmAccounts();
+            case self::ACCOUNTMGR_HISTORY_SEARCH:
+                return ($userData->getIsAdminAcc() || $userProfile->isMgmAccounts());
             case self::FILE:
             case self::FILE_SEARCH:
             case self::FILE_DELETE:
@@ -208,12 +215,15 @@ final class Acl implements ActionsInterface
             case self::TAG_EDIT:
             case self::TAG_DELETE:
                 return $userProfile->isMgmTags();
-            case self::ENCRYPTION_CONFIG:
+            case self::CONFIG_CRYPT:
                 return $userProfile->isConfigEncryption();
-            case self::BACKUP_CONFIG:
+            case self::CONFIG_BACKUP:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
-                return ($userProfile->isMgmUsers() || $userProfile->isMgmGroups() || $userProfile->isMgmProfiles());
+                return ($userProfile->isMgmUsers()
+                    || $userProfile->isMgmGroups()
+                    || $userProfile->isMgmProfiles()
+                    || $userProfile->isMgmApiTokens());
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_VIEW:

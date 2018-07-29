@@ -210,7 +210,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::ENCRYPTION_CONFIG);
+            $this->checkAccess(Acl::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
