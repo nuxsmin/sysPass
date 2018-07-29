@@ -439,7 +439,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemData::class);
-        $queryData->setQuery('SELECT id, `name` FROM Plugin WHERE available = 1 AND enabled = 1 ORDER BY id');
+        $queryData->setQuery('SELECT id, `name` FROM Plugin WHERE enabled = 1 ORDER BY id');
 
         return $this->db->doSelect($queryData);
     }
