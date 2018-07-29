@@ -181,6 +181,20 @@ final class CustomFieldDefService extends Service
     }
 
     /**
+     * @param CustomFieldDefinitionData $itemData
+     *
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updateRaw(CustomFieldDefinitionData $itemData)
+    {
+        if ($this->customFieldDefRepository->update($itemData) !== 1) {
+            throw new ServiceException(__u('Error al actualizar el campo personalizado'));
+        }
+    }
+
+    /**
      * Get all items from the service's repository
      *
      * @return CustomFieldDefinitionData[]

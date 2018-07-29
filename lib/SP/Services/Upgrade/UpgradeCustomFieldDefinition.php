@@ -80,7 +80,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     $itemData->setShowInList($data->isShowInItemsList());
                     $itemData->setTypeId($data->getType());
 
-                    $customFieldDefService->update($itemData);
+                    $customFieldDefService->updateRaw($itemData);
 
                     $this->eventDispatcher->notifyEvent('upgrade.customField.process',
                         new Event($this, EventMessage::factory()
@@ -149,7 +149,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     $itemData = clone $item;
                     $itemData->setModuleId($this->moduleMapper((int)$item->getModuleId()));
 
-                    $customFieldDefService->update($itemData);
+                    $customFieldDefService->updateRaw($itemData);
 
                     $this->eventDispatcher->notifyEvent('upgrade.customField.process',
                         new Event($this, EventMessage::factory()
