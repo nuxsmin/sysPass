@@ -84,7 +84,7 @@ final class AccountToUserRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function add(\SP\Services\Account\AccountRequest $accountRequest)
+    public function add(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 
@@ -148,7 +148,7 @@ final class AccountToUserRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addEdit(\SP\Services\Account\AccountRequest $accountRequest)
+    public function addEdit(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId, isEdit) 
