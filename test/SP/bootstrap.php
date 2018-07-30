@@ -31,6 +31,8 @@ use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
 
+define('DEBUG', true);
+
 define('APP_MODULE', 'tests');
 
 define('APP_ROOT', dirname(__DIR__, 2));
