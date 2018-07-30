@@ -29,7 +29,6 @@ use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
 use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\MySQLHandler;
 
 /**
  * Class DatabaseBaseTest
@@ -69,7 +68,7 @@ abstract class DatabaseTestCase extends TestCase
     {
         if ($this->conn === null) {
             if (self::$pdo === null) {
-                self::$pdo = (new MySQLHandler(self::$databaseConnectionData))->getConnection();
+                self::$pdo = getDbHandler()->getConnection();
             }
 
             $this->conn = $this->createDefaultDBConnection(self::$pdo, 'syspass');

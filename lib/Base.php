@@ -23,7 +23,6 @@
  */
 
 use DI\ContainerBuilder;
-use Doctrine\Common\Cache\ArrayCache;
 use SP\Bootstrap;
 
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
@@ -67,7 +66,6 @@ initModule(APP_MODULE);
 
 try {
     $builder = new ContainerBuilder();
-    $builder->setDefinitionCache(new ArrayCache());
     $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
     $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
 

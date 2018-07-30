@@ -25,7 +25,7 @@
 namespace SP\Tests\Services\Install;
 
 use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\MySQLHandler;
+use function SP\Test\getDbHandler;
 
 /**
  * Trait DbTestUtilTrait
@@ -56,7 +56,7 @@ trait DbTestUtilTrait
             ->setDbUser(getenv('DB_USER'))
             ->setDbPass(getenv('DB_PASS'));
 
-        return (new MySQLHandler($data))->getConnectionSimple();
+        return getDbHandler($data)->getConnectionSimple();
     }
 
     /**

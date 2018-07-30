@@ -155,19 +155,18 @@ class MySQLTest extends TestCase
         $mysql = new MySQL($this->getParams(), new ConfigData());
         $mysql->connectDatabase();
 
-        $this->assertInstanceOf(MySQLHandler::class, $mysql->getDbs());
+        $this->assertInstanceOf(MySQLHandler::class, $mysql->getDbHandler());
     }
 
     /**
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Storage\Database\DatabaseException
      */
     public function testCreateDBUser()
     {
         $mysql = new MySQL($this->getParams(), new ConfigData());
         $mysql->createDBUser('test', Util::randomPassword());
 
-        $num = (int)$mysql->getDbs()
+        $num = (int)$mysql->getDbHandler()
             ->getConnectionSimple()
             ->query('SELECT COUNT(*) FROM mysql.user WHERE `User` = \'test\'')
             ->fetchColumn(0);

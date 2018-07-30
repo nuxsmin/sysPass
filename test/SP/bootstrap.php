@@ -30,6 +30,8 @@ use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DBStorageInterface;
+use SP\Storage\Database\MySQLHandler;
 
 define('DEBUG', true);
 
@@ -106,6 +108,7 @@ function getRealIpAddress()
  * @throws \DI\NotFoundException
  * @throws \SP\Core\Context\ContextException
  * @return \DI\Container
+ * @throws \Exception
  */
 function setupContext()
 {
@@ -136,20 +139,32 @@ function setupContext()
 
     $context->setUserProfile(new ProfileData());
 
-    // Establecer configuración de conexión con la BBDD
-    $connectionData = (new DatabaseConnectionData())
-        ->setDbHost(getenv('DB_SERVER'))
-        ->setDbName(getenv('DB_NAME'))
-        ->setDbUser(getenv('DB_USER'))
-        ->setDbPass(getenv('DB_PASS'));
-
     // Inicializar la configuración
 //    $dic->set(ConfigData::class, $configData);
 
     // Inicializar los datos de conexión a la BBDD
-    $dic->set(DatabaseConnectionData::class, $connectionData);
+    $dic->set(DBStorageInterface::class, getDbHandler());
 
     return $dic;
+}
+
+/**
+ * @param DatabaseConnectionData|null $connectionData
+ *
+ * @return MySQLHandler
+ */
+function getDbHandler(DatabaseConnectionData $connectionData = null)
+{
+    if ($connectionData === null) {
+        // Establecer configuración de conexión con la BBDD
+        $connectionData = (new DatabaseConnectionData())
+            ->setDbHost(getenv('DB_SERVER'))
+            ->setDbName(getenv('DB_NAME'))
+            ->setDbUser(getenv('DB_USER'))
+            ->setDbPass(getenv('DB_PASS'));
+    }
+
+    return new MySQLHandler($connectionData);
 }
 
 /**

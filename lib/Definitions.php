@@ -22,13 +22,29 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Monolog\Logger;
+use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Container\ContainerInterface;
+use SP\Config\Config;
+use SP\Config\ConfigData;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\Actions;
+use SP\Core\Context\ContextInterface;
+use SP\Core\UI\Theme;
+use SP\Http\Request;
+use SP\Services\Account\AccountAclService;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DBStorageInterface;
+use SP\Storage\Database\MySQLHandler;
+use SP\Storage\File\FileCache;
+use SP\Storage\File\FileHandler;
+use SP\Storage\File\XmlHandler;
 use function DI\get;
-use function DI\object;
 
 return [
-    \Klein\Klein::class => object(\Klein\Klein::class),
-    \SP\Http\Request::class => object(\SP\Http\Request::class)->constructor(\Klein\Request::createFromGlobals()),
-    \SP\Core\Context\ContextInterface::class => function (\Interop\Container\ContainerInterface $c) {
+    Request::class => \DI\create(Request::class)
+        ->constructor(\Klein\Request::createFromGlobals()),
+    ContextInterface::class => function (ContainerInterface $c) {
         switch (APP_MODULE) {
             case 'web':
                 return $c->get(\SP\Core\Context\SessionContext::class);
@@ -36,34 +52,24 @@ return [
                 return $c->get(\SP\Core\Context\StatelessContext::class);
         }
     },
-    \SP\Config\Config::class => object(\SP\Config\Config::class)
-        ->constructor(object(\SP\Storage\File\XmlHandler::class)
-            ->constructor(object(\SP\Storage\File\FileHandler::class)
-                ->constructor(CONFIG_FILE)), get(\SP\Core\Context\ContextInterface::class)),
-    \SP\Core\Language::class => object(\SP\Core\Language::class),
-    \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
+    Config::class => function (ContainerInterface $c) {
+        return new Config(new XmlHandler(new FileHandler(CONFIG_FILE)), $c->get(ContextInterface::class), $c);
+    },
+    ConfigData::class => function (Config $config) {
         return $config->getConfigData();
     },
-    \SP\Storage\Database\DatabaseConnectionData::class => function (\SP\Config\ConfigData $configData) {
-        return \SP\Storage\Database\DatabaseConnectionData::getFromConfig($configData);
+    DBStorageInterface::class => \DI\create(MySQLHandler::class)
+        ->constructor(\DI\factory([DatabaseConnectionData::class, 'getFromConfig'])),
+    Actions::class => function (ContainerInterface $c) {
+        return new Actions($c->get(FileCache::class), new XmlHandler(new FileHandler(ACTIONS_FILE)));
     },
-    \SP\Storage\Database\Database::class => object(\SP\Storage\Database\Database::class)
-        ->constructor(object(\SP\Storage\Database\MySQLHandler::class)
-            ->constructor(get(\SP\Storage\Database\DatabaseConnectionData::class))),
-    \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
-        ->constructor(object(\SP\Storage\File\FileCache::class), object(\SP\Storage\File\XmlHandler::class)
-            ->constructor(object(\SP\Storage\File\FileHandler::class)
-                ->constructor(ACTIONS_FILE))),
-    \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),
-    \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
-        ->constructor(get(\SP\Core\Context\ContextInterface::class), get(\SP\Core\Events\EventDispatcher::class), get(\SP\Core\Acl\Actions::class)),
-    \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
-        ->constructor(APP_MODULE, get(\SP\Config\Config::class), get(\SP\Core\Context\ContextInterface::class)),
-    \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
+    Acl::class => \DI\autowire(Acl::class)
+        ->constructorParameter('action', get(Actions::class)),
+    Theme::class => \DI\autowire(Theme::class)
+        ->constructorParameter('module', APP_MODULE),
+    PHPMailer::class => \DI\create(PHPMailer::class)
         ->constructor(true),
-    \Monolog\Logger::class => object(\Monolog\Logger::class)
+    Logger::class => \DI\create(Logger::class)
         ->constructor('syspass'),
-    \SP\Services\Account\AccountAclService::class => function (\Interop\Container\ContainerInterface $c) {
-        return new \SP\Services\Account\AccountAclService($c);
-    }
+    AccountAclService::class => \DI\autowire(AccountAclService::class)
 ];

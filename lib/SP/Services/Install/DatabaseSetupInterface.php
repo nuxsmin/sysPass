@@ -24,6 +24,8 @@
 
 namespace SP\Services\Install;
 
+use SP\Storage\Database\DBStorageInterface;
+
 /**
  * Interface DatabaseInterface
  *
@@ -79,4 +81,14 @@ interface DatabaseSetupInterface
      * Comprobar la conexión a la BBDD
      */
     public function checkConnection();
+
+    /**
+     * @return DBStorageInterface
+     */
+    public function getDbHandler(): DBStorageInterface;
+
+    /**
+     * @return DBStorageInterface
+     */
+    public function createDbHandlerFromInstaller(): DBStorageInterface;
 }

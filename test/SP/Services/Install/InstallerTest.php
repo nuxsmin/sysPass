@@ -32,7 +32,7 @@ use SP\Services\Crypt\MasterPassService;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\Database\MySQLHandler;
+use SP\Storage\Database\DBStorageInterface;
 use SP\Util\Util;
 use function SP\Test\getResource;
 use function SP\Test\saveResource;
@@ -285,7 +285,7 @@ class InstallerTest extends TestCase
         $installer = self::$dic->get(Installer::class);
         $installer->run($params);
 
-        $this->assertTrue(DatabaseUtil::checkDatabaseExist(self::$dic->get(MySQLHandler::class), self::DB_NAME));
+        $this->assertTrue(DatabaseUtil::checkDatabaseExist(self::$dic->get(DBStorageInterface::class), self::DB_NAME));
 
         $configData = self::$dic->get(Config::class)->getConfigData();
 

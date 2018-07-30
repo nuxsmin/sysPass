@@ -43,7 +43,7 @@ use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\Database\MySQLHandler;
+use SP\Storage\Database\DBStorageInterface;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -331,7 +331,7 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('info');
 
-        $template->assign('dbInfo', DatabaseUtil::getDBinfo($this->dic->get(MySQLHandler::class)));
+        $template->assign('dbInfo', DatabaseUtil::getDBinfo($this->dic->get(DBStorageInterface::class)));
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0)));
         $template->assign('plugins', $this->dic->get(PluginManager::class)->getLoadedPlugins());

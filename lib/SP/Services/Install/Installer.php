@@ -39,7 +39,7 @@ use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DBStorageInterface;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -57,13 +57,9 @@ final class Installer extends Service
     const BUILD = 18072902;
 
     /**
-     * @var ConfigService
-     */
-    protected $configService;
-    /**
      * @var DatabaseSetupInterface
      */
-    protected $dbs;
+    private $dbs;
     /**
      * @var Request
      */
@@ -182,13 +178,14 @@ final class Installer extends Service
         $this->setupConfig();
         $this->setupDb();
 
-        $this->setupDBConnectionData();
+        $this->updateConnectionData();
         $this->saveMasterPassword();
         $this->createAdminAccount();
 
         $version = Util::getVersionStringNormalized();
 
-        $this->configService->create(new \SP\DataModel\ConfigData('version', $version));
+        $this->dic->get(ConfigService::class)
+            ->create(new \SP\DataModel\ConfigData('version', $version));
 
         $this->configData->setInstalled(true);
 
@@ -282,13 +279,13 @@ final class Installer extends Service
     }
 
     /**
-     * Setup database connection for sysPass
+     * Setup database connection for sysPass.
+     *
+     * Updates the database storage interface in the dependency container
      */
-    private function setupDBConnectionData()
+    private function updateConnectionData()
     {
-        // FIXME: ugly!!
-        $this->dic->get(DatabaseConnectionData::class)
-            ->refreshFromConfig($this->configData);
+        $this->dic->set(DBStorageInterface::class, $this->dbs->createDbHandlerFromInstaller());
     }
 
     /**
@@ -299,8 +296,13 @@ final class Installer extends Service
     private function saveMasterPassword()
     {
         try {
-            $this->configService->create(new \SP\DataModel\ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword())));
-            $this->configService->create(new \SP\DataModel\ConfigData('lastupdatempass', time()));
+            // This service needs to be called after a successful database setup, since
+            // DI container stores the definition on its first call, so it would contain
+            // an incomplete database setup
+            $configService = $this->dic->get(ConfigService::class);
+
+            $configService->create(new \SP\DataModel\ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword())));
+            $configService->create(new \SP\DataModel\ConfigData('lastupdatempass', time()));
         } catch (\Exception $e) {
             processException($e);
 
@@ -373,7 +375,6 @@ final class Installer extends Service
     protected function initialize()
     {
         $this->configData = $this->config->getConfigData();
-        $this->configService = $this->dic->get(ConfigService::class);
         $this->request = $this->dic->get(Request::class);
     }
 }
