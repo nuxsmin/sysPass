@@ -25,7 +25,7 @@
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "~2.0",
     "klein/klein": "v2.1.*",
-    "php-di/php-di": "5.4.*",
+    "php-di/php-di": "6.0.*",
     "doctrine/common": "v2.7.*",
     "guzzlehttp/guzzle": "6.3.0",
     "monolog/monolog": "1.23.0"
