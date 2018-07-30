@@ -35,7 +35,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('PHP'); ?></div>
 
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Versión')), (!$isDemo) ? phpversion() : '***'); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Versión')), phpversion()); ?>
             <br>
             <?php printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones')), implode(', ', get_loaded_extensions())); ?>
             <br>

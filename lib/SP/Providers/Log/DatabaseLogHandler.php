@@ -117,13 +117,13 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 
         $eventlogData = new EventlogData();
         $eventlogData->setAction($eventType);
+        $eventlogData->setLevel('INFO');
 
         if (($e = $event->getSource()) instanceof \Exception) {
             /** @var \Exception $e */
             $eventlogData->setLevel('ERROR');
             $eventlogData->setDescription(__($e->getMessage()));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $eventlogData->setLevel('INFO');
             $eventlogData->setDescription($eventMessage->composeText());
         }
 
