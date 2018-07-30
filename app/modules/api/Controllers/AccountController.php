@@ -160,7 +160,7 @@ final class AccountController extends ControllerBase
             $this->setupApi(ActionsInterface::ACCOUNT_SEARCH);
 
             $accountSearchFilter = new AccountSearchFilter();
-            $accountSearchFilter->setTxtSearch($this->apiService->getParamString('text'));
+            $accountSearchFilter->setCleanTxtSearch($this->apiService->getParamString('text'));
             $accountSearchFilter->setCategoryId($this->apiService->getParamInt('categoryId'));
             $accountSearchFilter->setClientId($this->apiService->getParamInt('clientId'));
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));

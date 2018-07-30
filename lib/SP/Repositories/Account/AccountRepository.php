@@ -588,7 +588,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      * @throws QueryException
      * @throws SPException
      */
-    public function getByFilter(\SP\Services\Account\AccountSearchFilter $accountSearchFilter, QueryCondition $queryFilterUser)
+    public function getByFilter(AccountSearchFilter $accountSearchFilter, QueryCondition $queryFilterUser)
     {
         $queryFilters = new QueryCondition();
 
