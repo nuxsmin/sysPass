@@ -83,7 +83,7 @@ trait ItemTrait
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
-                debugLog($e->getMessage());
+                logger($e->getMessage());
             }
         }
 

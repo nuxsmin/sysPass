@@ -35,6 +35,8 @@ ALTER TABLE User
 ALTER TABLE UserPassRecover
   MODIFY hash varbinary(255) NOT NULL $$
 
+DELETE FROM Notification WHERE userId NOT IN (SELECT id FROM User) $$
+
 ALTER TABLE Notification
   ADD CONSTRAINT fk_Notificationt_userId
 FOREIGN KEY (userId) REFERENCES User (id) ON DELETE CASCADE ON UPDATE CASCADE $$

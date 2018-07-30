@@ -376,7 +376,7 @@ final class AccountSearchService extends Service
         try {
             $this->fileCache->save(self::COLORS_CACHE_FILE, $this->accountColor);
 
-            debugLog('Saved accounts color cache');
+            logger('Saved accounts color cache');
 
             return $this->accountColor[$id];
         } catch (FileException $e) {
@@ -412,7 +412,7 @@ final class AccountSearchService extends Service
         try {
             $this->accountColor = $this->fileCache->load(self::COLORS_CACHE_FILE);
 
-            debugLog('Loaded accounts color cache');
+            logger('Loaded accounts color cache');
         } catch (FileException $e) {
             processException($e);
         }

@@ -28,7 +28,6 @@ namespace SP\Services\Upgrade;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Services\CustomField\CustomFieldService;
 use SP\Services\Service;
 use SP\Storage\Database\Database;
@@ -66,11 +65,9 @@ class UpgradeCustomFieldData extends Service
                 foreach ($customFieldService->getAll() as $item) {
                     $queryData = new QueryData();
                     $queryData->setQuery('UPDATE CustomFieldData SET moduleId = ? WHERE id = ? LIMIT 1');
-                    $queryData->setParams([$this->moduleMapper($item->getModuleId())]);
+                    $queryData->setParams([$this->moduleMapper($item->getModuleId()), $item->getId()]);
 
-                    if ($this->db->doQuery($queryData)->getNumRows() === 0) {
-                        throw new SPException(__u('Error al actualizar los datos del campo personalizado'));
-                    }
+                    $this->db->doQuery($queryData);
 
                     $this->eventDispatcher->notifyEvent('upgrade.customField.process',
                         new Event($this, EventMessage::factory()

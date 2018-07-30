@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Http\Response;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 
 /**
@@ -43,7 +42,8 @@ final class IndexController extends ControllerBase
     public function indexAction()
     {
         if (!$this->session->isLoggedIn()) {
-            Response::redirect('index.php?r=login');
+            $this->router->response()
+                ->redirect('index.php?r=login');
         } else {
             $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
 

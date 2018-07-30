@@ -101,7 +101,7 @@ final class XmlVerifyService extends Service
 
         if ($this->xml->loadXML((new FileHandler($this->xmlFile))->read()) === false) {
             foreach (libxml_get_errors() as $error) {
-                debugLog(__METHOD__ . ' - ' . $error->message);
+                logger(__METHOD__ . ' - ' . $error->message);
             }
 
             throw new ServiceException(

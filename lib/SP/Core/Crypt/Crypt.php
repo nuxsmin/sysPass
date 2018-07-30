@@ -59,7 +59,7 @@ final class Crypt
 
             return Crypto::encrypt((string)$data, $key);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -82,7 +82,7 @@ final class Crypt
 
             return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -113,7 +113,7 @@ final class Crypt
 
             return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -138,7 +138,7 @@ final class Crypt
 
             return KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }

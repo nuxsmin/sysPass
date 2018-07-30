@@ -130,10 +130,10 @@ final class Bootstrap
         $oops = "Oops, it looks like this content doesn't exist...";
 
         $this->router->onError(function ($router, $err_msg, $type, $err) {
-            debugLog('Routing error: ' . $err_msg);
+            logger('Routing error: ' . $err_msg);
 
             /** @var Exception|\Throwable $err */
-            debugLog('Routing error: ' . $err->getTraceAsString());
+            logger('Routing error: ' . $err->getTraceAsString());
 
             /** @var Klein $router */
             $router->response()->body($err_msg);
@@ -152,7 +152,7 @@ final class Bootstrap
                     $method = $action . 'Action';
 
                     if (!method_exists($controllerClass, $method)) {
-                        debugLog($controllerClass . '::' . $method);
+                        logger($controllerClass . '::' . $method);
 
                         throw new RuntimeException($oops);
                     }
@@ -162,7 +162,7 @@ final class Bootstrap
                     self::$container->get(InitApi::class)
                         ->initialize($controller);
 
-                    debugLog('Routing call: ' . $controllerClass . '::' . $method);
+                    logger('Routing call: ' . $controllerClass . '::' . $method);
 
                     return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
                 } catch (\Exception $e) {
@@ -195,7 +195,7 @@ final class Bootstrap
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
                     if (!method_exists($controllerClass, $method)) {
-                        debugLog($controllerClass . '::' . $method);
+                        logger($controllerClass . '::' . $method);
 
                         throw new RuntimeException($oops);
                     }
@@ -209,7 +209,7 @@ final class Bootstrap
                             break;
                     }
 
-                    debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
+                    logger('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
                     return call_user_func_array([new $controllerClass(self::$container, $method), $method], $params);
                 } catch (\Exception $e) {
@@ -236,7 +236,7 @@ final class Bootstrap
      */
     protected function initializeCommon()
     {
-        debugLog(__FUNCTION__);
+        logger(__FUNCTION__);
 
         self::$checkPhpVersion = Checks::checkPhpVersion();
 
@@ -314,7 +314,7 @@ final class Bootstrap
             && touch(LOG_FILE)
             && chmod(LOG_FILE, 0600)
         ) {
-            debugLog('Setup log file: ' . LOG_FILE);
+            logger('Setup log file: ' . LOG_FILE);
         }
 
         if (date_default_timezone_get() === 'UTC') {
@@ -420,14 +420,14 @@ final class Bootstrap
 
         switch ($module) {
             case 'web':
-                debugLog('------------');
-                debugLog('Boostrap:web');
+                logger('------------');
+                logger('Boostrap:web');
 
                 $bs->router->dispatch($bs->request->getRequest());
                 break;
             case 'api':
-                debugLog('------------');
-                debugLog('Boostrap:api');
+                logger('------------');
+                logger('Boostrap:api');
 
                 $bs->router->dispatch($bs->request->getRequest());
                 break;

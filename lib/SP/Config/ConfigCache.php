@@ -64,7 +64,7 @@ final class ConfigCache
         try {
             $this->fileCache->save(self::CONFIG_CACHE_FILE, $configData);
 
-            debugLog('Saved config cache');
+            logger('Saved config cache');
         } catch (FileException $e) {
             processException($e);
         }
@@ -81,7 +81,7 @@ final class ConfigCache
             $configData = $this->fileCache->load(self::CONFIG_CACHE_FILE);
 
             if ($configData instanceof ConfigData) {
-                debugLog('Loaded config cache');
+                logger('Loaded config cache');
 
                 return $configData;
             }

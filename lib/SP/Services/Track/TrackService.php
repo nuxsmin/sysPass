@@ -135,7 +135,7 @@ final class TrackService extends Service
                         ->addDetail(__u('Segundos'), self::TIME_SLEEP * $attempts))
                 );
 
-                debugLog('Tracking delay: ' . self::TIME_SLEEP * $attempts . 's');
+                logger('Tracking delay: ' . self::TIME_SLEEP * $attempts . 's');
 
                 sleep(self::TIME_SLEEP * $attempts);
 

@@ -69,7 +69,7 @@ final class SecureKeyCookie extends Cookie
             $data = $this->getCookieData($cookie, $key);
 
             if ($data === false) {
-                debugLog('Cookie verification error.');
+                logger('Cookie verification error.');
 
                 return $this->saveKey($key);
             }
@@ -83,7 +83,7 @@ final class SecureKeyCookie extends Cookie
                 try {
                     return Key::loadFromAsciiSafeString($vault->getData($key));
                 } catch (CryptoException $e) {
-                    debugLog($e->getMessage());
+                    logger($e->getMessage());
 
                     return false;
                 }
@@ -127,16 +127,16 @@ final class SecureKeyCookie extends Cookie
             $vault->saveData($this->securedKey->saveToAsciiSafeString(), $key);
 
             if ($this->setCookie($this->sign(serialize($vault), $key))) {
-                debugLog('Generating a new session key.');
+                logger('Generating a new session key.');
 
                 return $this->securedKey;
             } else {
-                debugLog('Could not generate session key cookie.');
+                logger('Could not generate session key cookie.');
 
                 unset($this->securedKey);
             }
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
 
         return false;

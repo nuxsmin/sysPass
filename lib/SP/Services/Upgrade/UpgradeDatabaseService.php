@@ -98,7 +98,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
                     );
                 }
 
-                debugLog('DB Upgrade: ' . $upgradeVersion);
+                logger('DB Upgrade: ' . $upgradeVersion);
 
                 $configData->setDatabaseVersion($upgradeVersion);
 
@@ -152,7 +152,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         $queries = $this->getQueriesFromFile($version);
 
         if (count($queries) === 0) {
-            debugLog(__('No es necesario actualizar la Base de Datos.'));
+            logger(__('No es necesario actualizar la Base de Datos.'));
 
             $this->eventDispatcher->notifyEvent('upgrade.db.process',
                 new Event($this, EventMessage::factory()
@@ -175,7 +175,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
                 $this->db->doQuery($queryData);
             } catch (\Exception $e) {
                 processException($e);
-                debugLog('SQL: ' . $query);
+                logger('SQL: ' . $query);
 
                 $this->eventDispatcher->notifyEvent('exception',
                     new Event($this, EventMessage::factory()

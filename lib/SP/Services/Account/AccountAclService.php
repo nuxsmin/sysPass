@@ -78,11 +78,11 @@ final class AccountAclService extends Service
      */
     public static function clearAcl($userId)
     {
-        debugLog(__FUNCTION__);
+        logger(__FUNCTION__);
 
         try {
             if (FileUtil::rmdir_recursive(self::ACL_PATH . $userId) === false) {
-                debugLog(sprintf('Unable to delete %s directory', self::ACL_PATH . $userId));
+                logger(sprintf('Unable to delete %s directory', self::ACL_PATH . $userId));
 
                 return false;
             }
@@ -121,13 +121,13 @@ final class AccountAclService extends Service
                     || $this->userData->getLastUpdate() > $accountAcl->getTime()));
 
                 if (!$this->accountAcl->isModified()) {
-                    debugLog('Account ACL HIT');
+                    logger('Account ACL HIT');
 
                     return $accountAcl;
                 }
             }
 
-            debugLog('Account ACL MISS');
+            logger('Account ACL MISS');
 
             $this->accountAcl->setAccountId($accountAclDto->getAccountId());
 
@@ -169,7 +169,7 @@ final class AccountAclService extends Service
                 return $acl;
             }
         } catch (FileException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
 
         return null;

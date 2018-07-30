@@ -172,9 +172,6 @@ final class Database implements DatabaseInterface
      */
     public function doQuery(QueryData $queryData, $getRawData = false)
     {
-        // Limpiar valores de caché
-//        $this->lastResult = [];
-
         /** @var PDOStatement $stmt */
         $stmt = $this->prepareQueryData($queryData);
 
@@ -334,7 +331,7 @@ final class Database implements DatabaseInterface
 
             return $result;
         } else {
-            debugLog('beginTransaction: already in transaction');
+            logger('beginTransaction: already in transaction');
 
             return true;
         }

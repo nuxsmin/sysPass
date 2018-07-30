@@ -158,7 +158,7 @@ final class MySQL implements DatabaseSetupInterface
             return;
         }
 
-        debugLog('Creating DB user');
+        logger('Creating DB user');
 
         try {
             $query = 'CREATE USER %s@`%s` IDENTIFIED BY %s';
@@ -289,7 +289,7 @@ final class MySQL implements DatabaseSetupInterface
             }
         }
 
-        debugLog('Rollback');
+        logger('Rollback');
     }
 
     /**
@@ -330,7 +330,7 @@ final class MySQL implements DatabaseSetupInterface
             } catch (PDOException $e) {
                 processException($e);
 
-                debugLog('Query: ' . $query);
+                logger('Query: ' . $query);
 
                 $this->rollback();
 

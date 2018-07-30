@@ -75,7 +75,7 @@ final class MailProvider extends Provider
             if ($this->debug) {
                 $this->mailer->SMTPDebug = 2;
                 $this->mailer->Debugoutput = function ($str, $level) {
-                    debugLog($str);
+                    logger($str);
                 };
             }
 

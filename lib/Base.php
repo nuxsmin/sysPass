@@ -73,13 +73,13 @@ try {
 
     Bootstrap::run($builder->build());
 } catch (\Exception $e) {
-    debugLog($e->getMessage());
-    debugLog($e->getTraceAsString());
+    logger($e->getMessage());
+    logger($e->getTraceAsString());
 
     die($e->getMessage());
 } catch (\Psr\Container\ContainerExceptionInterface $e) {
-    debugLog($e->getMessage());
-    debugLog($e->getTraceAsString());
+    logger($e->getMessage());
+    logger($e->getTraceAsString());
 
     die($e->getMessage());
 }

@@ -236,7 +236,7 @@ final class Request
 
             // Desencriptar con la clave RSA
             if ($clearData === false) {
-                debugLog('No RSA encrypted data from request');
+                logger('No RSA encrypted data from request');
 
                 return $encryptedData;
             }

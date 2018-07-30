@@ -87,11 +87,11 @@ final class TaskService extends Service
 
         while (!$this->checkTaskRegistered() || !$this->checkTaskFile()) {
             if ($count >= self::STARTUP_WAIT_COUNT || !file_exists($this->lockFile)) {
-                debugLog('Aborting ...');
+                logger('Aborting ...');
 
                 die(1);
             } else {
-                debugLog(sprintf('Waiting for task "%s" (%ds) ...', $taskId, (self::STARTUP_WAIT_COUNT - $count) * self::STARTUP_WAIT_TIME));
+                logger(sprintf('Waiting for task "%s" (%ds) ...', $taskId, (self::STARTUP_WAIT_COUNT - $count) * self::STARTUP_WAIT_TIME));
 
                 $count++;
                 sleep(self::STARTUP_WAIT_TIME);
@@ -143,7 +143,7 @@ final class TaskService extends Service
     protected function checkTaskRegistered()
     {
         if (is_object($this->task)) {
-            debugLog('Task detected: ' . $this->task->getTaskId());
+            logger('Task detected: ' . $this->task->getTaskId());
 
             return true;
         }
@@ -174,7 +174,7 @@ final class TaskService extends Service
      */
     protected function readTaskStatus()
     {
-        debugLog('Tracking task: ' . $this->task->getTaskId());
+        logger('Tracking task: ' . $this->task->getTaskId());
 
         $id = 0;
         $failCount = 0;
@@ -190,7 +190,7 @@ final class TaskService extends Service
                 $this->sendMessage($id, $content);
                 $id++;
             } else {
-                debugLog($taskMessage->composeJson());
+                logger($taskMessage->composeJson());
 
                 $this->sendMessage($id, $taskMessage->composeJson());
                 $failCount++;

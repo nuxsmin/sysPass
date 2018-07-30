@@ -77,7 +77,7 @@ final class SecureSessionService extends Service
 
         try {
             if ($this->fileCache->isExpired($this->getFileNameFromCookie(), self::CACHE_EXPIRE_TIME)) {
-                debugLog('Session key expired or does not exist.');
+                logger('Session key expired or does not exist.');
 
                 return $this->saveKey();
             }
@@ -126,7 +126,7 @@ final class SecureSessionService extends Service
             $securedKey = Key::createNewRandomKey();
             $this->fileCache->save($this->getFileNameFromCookie(), (new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
 
-            debugLog('Saved session key.');
+            logger('Saved session key.');
 
             return $securedKey;
         } catch (\Exception $e) {

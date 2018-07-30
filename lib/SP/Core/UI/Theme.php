@@ -165,7 +165,7 @@ final class Theme implements ThemeInterface
             try {
                 $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
 
-                debugLog('Loaded icons cache');
+                logger('Loaded icons cache');
 
                 return $this->icons;
             } catch (FileException $e) {
@@ -183,7 +183,7 @@ final class Theme implements ThemeInterface
             try {
                 $this->fileCache->save(self::ICONS_CACHE_FILE, $this->icons);
 
-                debugLog('Saved icons cache');
+                logger('Saved icons cache');
             } catch (FileException $e) {
                 processException($e);
             }

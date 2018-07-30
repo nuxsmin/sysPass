@@ -67,6 +67,7 @@ final class MySQLHandler implements DBStorageInterface
 
     /**
      * Devuelve el estado de conexión a la BBDD
+     *
      * OK -> 0
      * KO -> 1
      *
@@ -130,27 +131,23 @@ final class MySQLHandler implements DBStorageInterface
      */
     public function getConnectionUri()
     {
+        $dsn = ['charset=utf8'];
+
         if (empty($this->connectionData->getDbSocket())) {
-            $dsn = 'mysql:host=' . $this->connectionData->getDbHost();
+            $dsn[] = 'host=' . $this->connectionData->getDbHost();
 
             if (null !== $this->connectionData->getDbPort()) {
-                $dsn .= ';port=' . $this->connectionData->getDbPort();
+                $dsn[] = 'port=' . $this->connectionData->getDbPort();
             }
-
-            if (null !== $this->connectionData->getDbName()) {
-                $dsn .= ';dbname=' . $this->connectionData->getDbName();
-            }
-
-            return $dsn . ';charset=utf8';
+        } else {
+            $dsn[] = 'unix_socket=' . $this->connectionData->getDbSocket();
         }
-
-        $dsn = 'mysql:unix_socket=' . $this->connectionData->getDbSocket();
 
         if (!empty($this->connectionData->getDbName())) {
-            $dsn .= ';dbname=' . $this->connectionData->getDbName();
+            $dsn[] = 'dbname=' . $this->connectionData->getDbName();
         }
 
-        return $dsn . ';charset=utf8';
+        return 'mysql:' . implode(';', $dsn);
     }
 
     /**

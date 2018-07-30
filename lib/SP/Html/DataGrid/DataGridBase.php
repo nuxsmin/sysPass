@@ -331,7 +331,7 @@ abstract class DataGridBase implements DataGridInterface
         try {
             $this->_actionsTemplate = $this->checkTemplate($template);
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
 
         return $this;
@@ -360,7 +360,7 @@ abstract class DataGridBase implements DataGridInterface
         try {
             $this->_pagerTemplate = $this->checkTemplate($template, $base);
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
 
         return $this;

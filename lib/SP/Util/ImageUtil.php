@@ -45,7 +45,7 @@ final class ImageUtil
     public static function convertText($text)
     {
         if (!Checks::gdIsAvailable()) {
-            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
+            logger(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
 
             return false;
         }
@@ -96,7 +96,7 @@ final class ImageUtil
     public static function createThumbnail($image)
     {
         if (!Checks::gdIsAvailable()) {
-            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
+            logger(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
 
             return false;
         }

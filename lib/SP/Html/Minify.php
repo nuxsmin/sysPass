@@ -123,7 +123,7 @@ final class Minify
                 try {
                     $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
                 } catch (SPException $e) {
-                    debugLog($e->getMessage());
+                    logger($e->getMessage());
                 }
             } else {
 
@@ -259,7 +259,7 @@ final class Minify
                     'md5' => md5_file($filePath)
                 );
             } else {
-                debugLog('File not found: ' . $filePath);
+                logger('File not found: ' . $filePath);
             }
         }
 
@@ -310,7 +310,7 @@ final class Minify
                 'md5' => md5_file($filePath)
             );
         } else {
-            debugLog('File not found: ' . $filePath);
+            logger('File not found: ' . $filePath);
         }
     }
 

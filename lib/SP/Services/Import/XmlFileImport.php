@@ -72,7 +72,7 @@ final class XmlFileImport
 
         if ($this->xmlDOM->loadXML($this->fileImport->readFileToString()) === false) {
             foreach (libxml_get_errors() as $error) {
-                debugLog(__METHOD__ . ' - ' . $error->message);
+                logger(__METHOD__ . ' - ' . $error->message);
             }
 
             throw new ImportException(

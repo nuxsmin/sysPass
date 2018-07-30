@@ -232,7 +232,7 @@ final class Task
      */
     public function deregister()
     {
-        debugLog('Deregister Task: ' . $this->name);
+        logger('Deregister Task: ' . $this->name);
 
         return unlink($this->fileTask);
     }
@@ -298,7 +298,7 @@ final class Task
      */
     public function register($lockSession = true)
     {
-        debugLog('Register Task: ' . $this->name);
+        logger('Register Task: ' . $this->name);
 
         file_put_contents($this->fileTask, serialize($this));
 

@@ -267,7 +267,7 @@ final class AccountService extends Service implements AccountServiceInterface
                 $this->accountToTagRepository->add($accountRequest);
             }
         } catch (SPException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
     }
 

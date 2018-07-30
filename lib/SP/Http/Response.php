@@ -24,7 +24,6 @@
 
 namespace SP\Http;
 
-use SP\Bootstrap;
 use SP\Core\Exceptions\SPException;
 use SP\Util\Json;
 
@@ -99,38 +98,5 @@ final class Response
 
             exit(json_encode($data));
         }
-    }
-
-    /**
-     * Devuelve una respuesta de error en formato HTML.
-     *
-     * @param $data
-     */
-    public static function printHtmlError($data)
-    {
-        $error = '<div class="error">' . htmlentities($data) . '</div>';
-
-        exit($error);
-    }
-
-    /**
-     * Internal URL redirection
-     *
-     * @param $url
-     */
-    public static function redirectInternal($url)
-    {
-        self::redirect(Bootstrap::$WEBURI . '/' . $url);
-    }
-
-    /**
-     * URL redirection
-     *
-     * @param $url
-     */
-    public static function redirect($url)
-    {
-        header('Location: ' . $url);
-        die();
     }
 }

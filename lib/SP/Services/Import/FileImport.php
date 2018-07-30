@@ -110,7 +110,7 @@ final class FileImport
 
         if (!file_exists($fileData['tmp_name']) || !is_readable($fileData['tmp_name'])) {
             // Registramos el máximo tamaño permitido por PHP
-            debugLog('Max. upload size: ' . Util::getMaxUpload());
+            logger('Max. upload size: ' . Util::getMaxUpload());
 
             throw new FileException(
                 __u('Error interno al leer el archivo'),

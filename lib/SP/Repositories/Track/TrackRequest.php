@@ -53,7 +53,7 @@ final class TrackRequest
         } elseif (strlen($ip) > 4) {
             $this->ipv6 = $ip;
         } elseif ($ip === false) {
-            debugLog(sprintf('%s : %s', __('IP inválida'), $address));
+            logger(sprintf('%s : %s', __('IP inválida'), $address));
 
             throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
         }

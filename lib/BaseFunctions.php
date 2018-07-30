@@ -23,46 +23,94 @@
  */
 
 /**
- * Función para enviar mensajes al log de errores
+ * [type] [caller] data
+ */
+define('LOG_FORMAT', "[%s] [%s] %s");
+/**
+ * [timestamp] [type] [caller] data
+ */
+define('LOG_FORMAT_OWN', "%s [%s] [%s] %s\n");
+
+/**
+ * Basic logger to handle some debugging and exception messages.
+ *
+ * It will log messages into syspass.log or PHP error log file.
+ *
+ * In order to log debugging messages, DEBUG constant must be set to true.
+ *
+ * A more advanced event logging should be handled through EventDispatcher
  *
  * @param mixed $data
- * @param bool  $printLastCaller
+ * @param string $type
  */
-function debugLog($data, $printLastCaller = false)
+function logger($data, $type = 'DEBUG')
 {
-    $line = date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL;
+    if (!DEBUG && $type === 'DEBUG') {
+        return;
+    }
+
+    $date = date('Y-m-d H:i:s');
+    $caller = getLastCaller();
+
+    if (is_scalar($data)) {
+        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $caller, $data);
+    } else {
+        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $caller, print_r($data, true));
+    }
+
     $useOwn = (!defined('LOG_FILE')
         || !error_log($line, 3, LOG_FILE)
     );
 
     if ($useOwn === false) {
-        error_log(print_r($data, true));
-    }
-
-    if ($printLastCaller === true) {
-        if ($useOwn === true) {
-            error_log(formatTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)), 3, LOG_FILE);
+        if (is_scalar($data)) {
+            $line = sprintf(LOG_FORMAT, $type, $caller, $data);
         } else {
-            error_log(formatTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)));
+            $line = sprintf(LOG_FORMAT, $type, $caller, print_r($data, true));
         }
+
+        error_log($line);
     }
 }
 
 /**
- * Procesar una excepción y registrarla en el log
+ * Print last callers from backtrace
+ */
+function printLastCallers()
+{
+    logger(formatTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)));
+}
+
+/**
+ * Print last caller from backtrace
+ *
+ * @return string
+ */
+function getLastCaller()
+{
+    $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+
+    if (isset($callers[2])
+        && isset($callers[2]['class'])
+        && isset($callers[2]['function'])
+    ) {
+        return $callers[2]['class'] . '::' . $callers[2]['function'];
+    }
+
+    return 'N/A';
+}
+
+/**
+ * Process an exception and log into the error log
  *
  * @param \Exception $exception
  */
 function processException(\Exception $exception)
 {
-    debugLog(__($exception->getMessage()));
-    debugLog($exception->getTraceAsString());
+    logger(sprintf("%s\n%s", __($exception->getMessage()), $exception->getTraceAsString()), 'EXCEPTION');
 
-    $previous = $exception->getPrevious();
-
-    if ($previous !== null) {
-        debugLog(__($previous->getMessage()));
-        debugLog($previous->getTraceAsString());
+    if (($previous = $exception->getPrevious()) !== null) {
+        logger(sprintf("(P) %s\n%s", __($previous->getMessage()), $previous->getTraceAsString()), 'EXCEPTION');
     }
 }
 
@@ -92,7 +140,7 @@ function formatTrace($trace)
  * Alias gettext function
  *
  * @param string $message
- * @param bool   $translate Si es necesario traducir
+ * @param bool $translate Si es necesario traducir
  *
  * @return string
  */
@@ -118,7 +166,7 @@ function __u($message)
  *
  * @param string $domain
  * @param string $message
- * @param bool   $translate
+ * @param bool $translate
  *
  * @return string
  */
@@ -186,7 +234,7 @@ function initModule($module)
 function nDirname($dir, $levels)
 {
     if (version_compare(PHP_VERSION, '7.0') === -1) {
-        debugLog(realpath(dirname($dir) . str_repeat('../', $levels)));
+        logger(realpath(dirname($dir) . str_repeat('../', $levels)));
 
         return realpath(dirname($dir) . str_repeat('../', $levels));
     }

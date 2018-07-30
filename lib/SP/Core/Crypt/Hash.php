@@ -63,7 +63,7 @@ final class Hash
             $key = hash('sha256', $key);
 
             if ($isCheck === false) {
-                debugLog('[INFO] Password string shortened using SHA256 and then BCRYPT');
+                logger('[INFO] Password string shortened using SHA256 and then BCRYPT');
             }
         }
 

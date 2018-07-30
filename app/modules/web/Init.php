@@ -111,7 +111,7 @@ final class Init extends ModuleBase
      */
     public function initialize($controller)
     {
-        debugLog(__METHOD__);
+        logger(__METHOD__);
 
         // Iniciar la sesión de PHP
         $this->initSession($this->configData->isEncryptSession());
@@ -127,7 +127,7 @@ final class Init extends ModuleBase
             // Initialize theme
             $this->theme->initialize();
         } else {
-            debugLog('Browser reload');
+            logger('Browser reload');
 
             $this->context->setAppStatus(SessionContext::APP_STATUS_RELOADED);
 
@@ -185,7 +185,7 @@ final class Init extends ModuleBase
             $this->pluginManager->loadPlugins();
 
             if ($this->context->isLoggedIn() && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
-                debugLog('Reload user profile');
+                logger('Reload user profile');
                 // Recargar los permisos del perfil de usuario
                 $this->context->setUserProfile($this->container->get(UserProfileService::class)->getById($this->context->getUserData()->getUserProfileId())->getProfile());
             }
@@ -282,7 +282,7 @@ final class Init extends ModuleBase
                     // Recargar los permisos del perfil de usuario
 //                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
                 } catch (CryptoException $e) {
-                    debugLog($e->getMessage());
+                    logger($e->getMessage());
 
                     SessionContext::restart();
                     return;

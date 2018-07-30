@@ -63,7 +63,7 @@ class CustomFieldData
      */
     public function getId()
     {
-        return $this->id;
+        return (int)$this->id;
     }
 
     /**
@@ -71,7 +71,7 @@ class CustomFieldData
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->id = (int)$id;
     }
 
     /**

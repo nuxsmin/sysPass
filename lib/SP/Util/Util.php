@@ -177,7 +177,7 @@ final class Util
         $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
         if (!Checks::curlIsAvailable()) {
-            debugLog(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
+            logger(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
 
             throw new SPException(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
         }

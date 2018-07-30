@@ -107,7 +107,7 @@ final class Config
             self::$timeUpdated = $this->configData->getConfigDate();
             $this->configLoaded = true;
 
-            debugLog('Config loaded');
+            logger('Config loaded');
         }
     }
 
@@ -250,7 +250,7 @@ final class Config
     public function generateUpgradeKey()
     {
         if (empty($this->configData->getUpgradeKey())) {
-            debugLog('Generating upgrade key');
+            logger('Generating upgrade key');
 
             return $this->saveConfig($this->configData->setUpgradeKey(Util::generateRandomBytes(16)), false);
         }

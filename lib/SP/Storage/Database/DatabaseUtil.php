@@ -111,7 +111,7 @@ final class DatabaseUtil
         } catch (\Exception $e) {
             processException($e);
 
-            debugLog($e->getMessage());
+            logger($e->getMessage());
         }
 
         return $dbinfo;

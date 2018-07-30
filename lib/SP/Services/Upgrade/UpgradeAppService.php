@@ -72,7 +72,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                     );
                 }
 
-                debugLog('APP Upgrade: ' . $appVersion);
+                logger('APP Upgrade: ' . $appVersion);
 
                 $configData->setConfigVersion($appVersion);
 

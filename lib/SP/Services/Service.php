@@ -106,7 +106,7 @@ abstract class Service
             } catch (\Exception $e) {
                 $database->rollbackTransaction();
 
-                debugLog('Transaction:Rollback');
+                logger('Transaction:Rollback');
 
                 $this->eventDispatcher->notifyEvent('database.rollback',
                     new Event($this, EventMessage::factory()
@@ -139,7 +139,7 @@ abstract class Service
 
             return $key;
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
         }
@@ -159,11 +159,11 @@ abstract class Service
                 $this->context->setTrasientKey('_masterpass', $masterPass);
             }
         } catch (ContextException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
         }

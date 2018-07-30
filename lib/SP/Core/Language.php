@@ -213,8 +213,8 @@ final class Language
         putenv('LANGUAGE=' . $lang);
 
         if (!($result = setlocale(LC_ALL, $locales))) {
-            debugLog('Could not set locales');
-            debugLog('Domain path: ' . LOCALES_PATH);
+            logger('Could not set locales');
+            logger('Domain path: ' . LOCALES_PATH);
         }
 
         bindtextdomain('messages', LOCALES_PATH);

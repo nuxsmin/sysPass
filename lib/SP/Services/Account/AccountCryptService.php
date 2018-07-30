@@ -142,9 +142,9 @@ final class AccountCryptService extends Service
 
                     TaskFactory::update($taskId, $taskMessage);
 
-                    debugLog($taskMessage->composeText());
+                    logger($taskMessage->composeText());
                 } else {
-                    debugLog(
+                    logger(
                         sprintf(__('Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
                             $counter,
                             $numAccounts,

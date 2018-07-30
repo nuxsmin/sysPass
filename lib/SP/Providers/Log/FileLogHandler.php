@@ -76,9 +76,9 @@ final class FileLogHandler extends Provider implements EventReceiver
         $this->language->setAppLocales();
 
         if (($e = $event->getSource()) instanceof \Exception) {
-            debugLog(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
+            logger(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            debugLog(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
+            logger(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
         }
 
         $this->language->unsetAppLocales();

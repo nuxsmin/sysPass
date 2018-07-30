@@ -78,7 +78,7 @@ final class Session
      */
     public static function reKey(SessionContext $sessionContext)
     {
-        debugLog(__METHOD__);
+        logger(__METHOD__);
 
         $oldSeed = session_id() . $sessionContext->getSidStartTime();
 

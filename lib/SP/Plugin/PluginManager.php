@@ -163,7 +163,7 @@ class PluginManager
 
         foreach ($this->getPlugins() as $name) {
             if (($plugin = $this->loadPlugin($name)) !== null) {
-                debugLog('Plugin loaded: ' . $name);
+                logger('Plugin loaded: ' . $name);
 
                 $this->eventDispatcher->attach($plugin);
             }

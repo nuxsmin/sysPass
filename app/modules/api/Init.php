@@ -81,7 +81,7 @@ final class Init extends ModuleBase
      */
     public function initialize($controller)
     {
-        debugLog(__FUNCTION__);
+        logger(__FUNCTION__);
 
         // Initialize context
         $this->context->initialize();

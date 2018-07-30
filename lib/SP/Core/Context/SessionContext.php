@@ -54,7 +54,7 @@ final class SessionContext extends ContextBase
      */
     public static function close()
     {
-        debugLog('Session closed');
+        logger('Session closed');
 
         session_write_close();
 
@@ -124,7 +124,7 @@ final class SessionContext extends ContextBase
     {
         try {
             if (self::$isLocked) {
-                debugLog('Session locked; key=' . $key);
+                logger('Session locked; key=' . $key);
             } else {
                 parent::setContextKey($key, $value);
             }

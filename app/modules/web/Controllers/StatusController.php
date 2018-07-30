@@ -79,7 +79,7 @@ final class StatusController extends SimpleControllerBase
                 }
             }
 
-            debugLog($requestData->message);
+            logger($requestData->message);
         }
 
         $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
@@ -114,7 +114,7 @@ final class StatusController extends SimpleControllerBase
                 $this->returnJsonResponseData($notices);
             }
 
-            debugLog($requestData->message);
+            logger($requestData->message);
         }
 
         $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));

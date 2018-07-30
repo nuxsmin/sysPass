@@ -121,7 +121,7 @@ final class Template
         if (!is_readable($templateFile)) {
             $msg = sprintf(__('No es posible obtener la plantilla "%s" : %s'), $templateFile, $template);
 
-            debugLog($msg);
+            logger($msg);
 
             throw new FileNotFoundException($msg);
         }
@@ -271,7 +271,7 @@ final class Template
     public function __get($name)
     {
         if (!array_key_exists($name, $this->vars)) {
-            debugLog(sprintf(__('No es posible obtener la variable "%s"'), $name));
+            logger(sprintf(__('No es posible obtener la variable "%s"'), $name));
 
             throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
         }
@@ -319,7 +319,7 @@ final class Template
     public function __unset($name)
     {
         if (!array_key_exists($name, $this->vars)) {
-            debugLog(sprintf(__('No es posible destruir la variable "%s"'), $name));
+            logger(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
             throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
         }
@@ -431,7 +431,7 @@ final class Template
      */
     public function dumpVars()
     {
-        debugLog($this->vars);
+        logger($this->vars);
     }
 
     /**

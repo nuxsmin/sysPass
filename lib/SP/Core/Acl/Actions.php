@@ -91,7 +91,7 @@ final class Actions
             try {
                 $this->actions = $this->fileStorage->load(self::ACTIONS_CACHE_FILE);
 
-                debugLog('Loaded actions cache');
+                logger('Loaded actions cache');
             } catch (FileException $e) {
                 processException($e);
 
@@ -105,7 +105,7 @@ final class Actions
      */
     protected function mapAndSave()
     {
-        debugLog('ACTION CACHE MISS');
+        logger('ACTION CACHE MISS');
 
         $this->map();
         $this->saveCache();
@@ -154,7 +154,7 @@ final class Actions
         try {
             $this->fileStorage->save(self::ACTIONS_CACHE_FILE, $this->actions);
 
-            debugLog('Saved actions cache');
+            logger('Saved actions cache');
         } catch (FileException $e) {
             processException($e);
         }
