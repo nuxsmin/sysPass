@@ -24,6 +24,8 @@
 
 namespace SP\Core;
 
+use SP\Core\Exceptions\CheckException;
+
 /**
  * Class PhpModuleChecker
  * @package SP\Core
@@ -49,11 +51,11 @@ class PhpModuleChecker
     ];
 
     /**
-     * Missing modules
+     * Available modules
      *
      * @var array
      */
-    protected $missing;
+    protected $available;
 
     /**
      * PhpModuleChecker constructor.
@@ -70,18 +72,139 @@ class PhpModuleChecker
     {
         $loaded = get_loaded_extensions();
 
-        $this->missing = array_filter(self::MODULES, function ($module) use ($loaded) {
-            return !in_array($module, $loaded);
+        $this->available = array_filter(self::MODULES, function ($module) use ($loaded) {
+            return in_array($module, $loaded);
         });
     }
 
     /**
-     * Comprobar si el módulo de LDAP está instalado.
+     * Comprobar si el módulo está instalado.
      *
+     * @throws CheckException
+     */
+    public function checkCurlAvailable()
+    {
+        if (!$this->checkIsAvailable('curl')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'curl'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @param $module
      * @return bool
      */
-    public function ldapIsAvailable()
+    public function checkIsAvailable(string $module)
     {
-        return extension_loaded('ldap');
+        return in_array(strtolower($module), $this->available);
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkLdapAvailable()
+    {
+        if (!$this->checkIsAvailable('ldap')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'ldap'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkSimpleXmlAvailable()
+    {
+        if (!$this->checkIsAvailable('simplexml')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'simplexml'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkPharAvailable()
+    {
+        if (!$this->checkIsAvailable('phar')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'phar'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkJsonAvailable()
+    {
+        if (!$this->checkIsAvailable('json')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'json'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkPdoAvailable()
+    {
+        if (!$this->checkIsAvailable('pdo')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'pdo'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkGettextAvailable()
+    {
+        if (!$this->checkIsAvailable('gettext')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'gettext'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkOpenSslAvailable()
+    {
+        if (!$this->checkIsAvailable('openssl')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'openssl'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkGdAvailable()
+    {
+        if (!$this->checkIsAvailable('gd')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'gd'));
+        }
+    }
+
+    /**
+     * Comprobar si el módulo está instalado.
+     *
+     * @throws CheckException
+     */
+    public function checkMbstringAvailable()
+    {
+        if (!$this->checkIsAvailable('mbstring')) {
+            throw new CheckException(sprintf(__('Módulo \'%s\' no disponible'), 'mbstring'));
+        }
     }
 }
