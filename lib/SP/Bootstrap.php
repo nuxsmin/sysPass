@@ -25,10 +25,10 @@
 namespace SP;
 
 use DI\Container;
-use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -36,6 +36,7 @@ use SP\Config\ConfigUtil;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
+use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
@@ -46,6 +47,7 @@ use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
 use SP\Util\Filter;
 use SP\Util\Util;
+use Symfony\Component\Debug\Debug;
 
 defined('APP_ROOT') || die();
 
@@ -77,7 +79,7 @@ final class Bootstrap
      */
     public static $checkPhpVersion;
     /**
-     * @var ContainerInterface|Container
+     * @var ContainerInterface
      */
     private static $container;
     /**
@@ -231,6 +233,7 @@ final class Bootstrap
 
     /**
      * @throws ConfigException
+     * @throws Core\Exceptions\CheckException
      * @throws InitializationException
      * @throws Services\Upgrade\UpgradeException
      */
@@ -248,6 +251,8 @@ final class Bootstrap
 
         //  Establecer las rutas de la aplicación
         $this->initPaths();
+
+        self::$container->get(PhpExtensionChecker::class)->checkMandatory();
 
         // Establecer el lenguaje por defecto
         $this->language->setLocales('en_US');
@@ -303,8 +308,7 @@ final class Bootstrap
         }
 
         if (defined('DEBUG') && DEBUG) {
-            error_reporting(E_ALL);
-            ini_set('display_errors', 'On');
+            Debug::enable();
         } else {
             error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
             ini_set('display_errors', 'Off');

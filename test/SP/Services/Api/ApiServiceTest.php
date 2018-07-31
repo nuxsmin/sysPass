@@ -161,7 +161,8 @@ class ApiServiceTest extends DatabaseTestCase
 
         self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
 
-        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&amp;/()=&iquest;&ordf;&ordm;", self::$service->getParamString('notes'));
+        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamString('notes'));
+
         $this->assertEmpty(self::$service->getParamString('test'));
     }
 
@@ -175,7 +176,7 @@ class ApiServiceTest extends DatabaseTestCase
 
         self::$service->setup(ActionsInterface::ACCOUNT_SEARCH);
 
-        $this->assertEquals("bla bla blabla bla~!?|.$%&/()=¿ªº", self::$service->getParamRaw('notes'));
+        $this->assertEquals("bla bla bla\nbla bla~!?|.$%&/()=¿ªº€\"'", self::$service->getParamRaw('notes'));
     }
 
     /**

@@ -43,7 +43,7 @@ use SP\Util\Util;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class LayoutHelper extends HelperBase
+final class LayoutHelper extends HelperBase
 {
     /**
      * @var  bool

@@ -121,6 +121,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     protected function setViewData($categoryId = null)
     {
@@ -142,7 +143,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CATEGORY, $categoryId, $this->session));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CATEGORY, $categoryId));
     }
 
     /**

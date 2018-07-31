@@ -243,39 +243,6 @@ function nDirname($dir, $levels)
 }
 
 /**
- * @param Exception $exception
- *
- * @throws ReflectionException
- */
-function flattenExceptionBacktrace(\Exception $exception)
-{
-    $traceProperty = (new \ReflectionClass('Exception'))->getProperty('trace');
-    $traceProperty->setAccessible(true);
-    $flatten = function (&$value, $key) {
-        if ($value instanceof \Closure) {
-            $closureReflection = new \ReflectionFunction($value);
-            $value = sprintf(
-                '(Closure at %s:%s)',
-                $closureReflection->getFileName(),
-                $closureReflection->getStartLine()
-            );
-        } elseif (is_object($value)) {
-            $value = sprintf('object(%s)', get_class($value));
-        } elseif (is_resource($value)) {
-            $value = sprintf('resource(%s)', get_resource_type($value));
-        }
-    };
-    do {
-        $trace = $traceProperty->getValue($exception);
-        foreach ($trace as &$call) {
-            array_walk_recursive($call['args'], $flatten);
-        }
-        $traceProperty->setValue($exception, $trace);
-    } while ($exception = $exception->getPrevious());
-    $traceProperty->setAccessible(false);
-}
-
-/**
  * Prints a fancy trace info using Xdebug extension
  */
 function printTraceInfo()
@@ -284,5 +251,3 @@ function printTraceInfo()
         xdebug_print_function_stack();
     }
 }
-
-//set_exception_handler('\flattenExceptionBacktrace');

@@ -123,6 +123,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     protected function setViewData($authTokenId = null)
     {
@@ -146,7 +147,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::AUTHTOKEN, $authTokenId, $this->session));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::AUTHTOKEN, $authTokenId));
     }
 
     /**

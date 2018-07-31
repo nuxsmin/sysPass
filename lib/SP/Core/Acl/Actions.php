@@ -45,7 +45,7 @@ final class Actions
      */
     const CACHE_EXPIRE = 86400;
     /**
-     * @var  int
+     * @var int
      */
     protected $lastLoadTime;
     /**
@@ -91,7 +91,7 @@ final class Actions
             try {
                 $this->actions = $this->fileStorage->load(self::ACTIONS_CACHE_FILE);
 
-                logger('Loaded actions cache');
+                logger('Loaded actions cache', 'INFO');
             } catch (FileException $e) {
                 processException($e);
 
@@ -105,7 +105,7 @@ final class Actions
      */
     protected function mapAndSave()
     {
-        logger('ACTION CACHE MISS');
+        logger('ACTION CACHE MISS', 'INFO');
 
         $this->map();
         $this->saveCache();
@@ -154,7 +154,7 @@ final class Actions
         try {
             $this->fileStorage->save(self::ACTIONS_CACHE_FILE, $this->actions);
 
-            logger('Saved actions cache');
+            logger('Saved actions cache', 'INFO');
         } catch (FileException $e) {
             processException($e);
         }

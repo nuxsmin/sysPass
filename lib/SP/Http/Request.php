@@ -202,8 +202,7 @@ final class Request
      * @param string $param
      * @param string $default
      *
-     * @return string
-     * @deprecated
+     * @return string|null
      */
     public function analyzeEmail(string $param, string $default = null)
     {
@@ -253,7 +252,7 @@ final class Request
      * @param $param
      * @param $default
      *
-     * @return string
+     * @return string|null
      */
     public function analyzeString(string $param, string $default = null)
     {
@@ -269,7 +268,7 @@ final class Request
      * @param callable|null $mapper
      * @param mixed         $default
      *
-     * @return mixed
+     * @return array|null
      */
     public function analyzeArray(string $param, callable $mapper = null, $default = null)
     {

@@ -122,6 +122,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     protected function setViewData($clientId = null)
     {
@@ -143,7 +144,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CLIENT, $clientId, $this->session));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::CLIENT, $clientId));
     }
 
     /**

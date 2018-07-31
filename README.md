@@ -2,7 +2,11 @@
 
 ## sysPass - Systems Password Manager
 
-[![Build Status](https://travis-ci.org/nuxsmin/sysPass.svg?branch=devel-3.0)](https://travis-ci.org/nuxsmin/sysPass) [![Join the chat at https://gitter.im/sysPass/Lobby](https://badges.gitter.im/sysPass/Lobby.svg)](https://gitter.im/sysPass/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+[![Build Status](https://travis-ci.org/nuxsmin/sysPass.svg?branch=devel-3.0)](https://travis-ci.org/nuxsmin/sysPass)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=devel-3.0)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=devel-3.0)
+
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Percentage of issues still open")
+
+Join us in the Gitter chat room: [![Join the chat at https://gitter.im/sysPass/Lobby](https://badges.gitter.im/sysPass/Lobby.svg)](https://gitter.im/sysPass/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 
 ----------------
 

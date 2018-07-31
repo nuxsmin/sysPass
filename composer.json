@@ -19,23 +19,24 @@
   },
   "require": {
     "roave/security-advisories": "dev-master",
-    "php": "7.0.* || 7.1.* || 7.2.*",
-    "defuse/php-encryption": "~2.1",
-    "phpmailer/phpmailer": "~6.0",
+    "php": "~7.0 || ~7.1 || ~7.2",
+    "defuse/php-encryption": "^2.1",
+    "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
-    "phpseclib/phpseclib": "~2.0",
-    "klein/klein": "v2.1.*",
-    "php-di/php-di": "6.0.*",
-    "doctrine/common": "v2.7.*",
-    "guzzlehttp/guzzle": "6.3.0",
-    "monolog/monolog": "1.23.0"
+    "phpseclib/phpseclib": "^2.0",
+    "klein/klein": "~2.1",
+    "php-di/php-di": "^6.0",
+    "doctrine/common": "~v2.7",
+    "guzzlehttp/guzzle": "~6.3",
+    "monolog/monolog": "^1.23"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*",
     "phpunit/phpunit": "^6",
     "phpunit/dbunit": "^3",
     "pdepend/pdepend" : "@stable",
-    "phpmd/phpmd" : "@stable"
+    "phpmd/phpmd" : "@stable",
+    "symfony/debug" : "~v3.4"
   },
   "autoload": {
     "psr-4": {

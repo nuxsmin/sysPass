@@ -128,6 +128,7 @@ final class UserGroupController extends ControllerBase implements CrudController
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     protected function setViewData($userGroupId = null)
     {
@@ -151,7 +152,7 @@ final class UserGroupController extends ControllerBase implements CrudController
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::GROUP, $userGroupId, $this->session));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::GROUP, $userGroupId));
     }
 
     /**

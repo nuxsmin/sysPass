@@ -212,7 +212,7 @@ final class Language
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
 
-        if (!($result = setlocale(LC_ALL, $locales))) {
+        if (!setlocale(LC_ALL, $locales)) {
             logger('Could not set locales');
             logger('Domain path: ' . LOCALES_PATH);
         }

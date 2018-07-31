@@ -101,6 +101,7 @@ final class Theme implements ThemeInterface
         $this->configData = $config->getConfigData();
         $this->context = $context;
         $this->fileCache = $fileCache;
+        $this->module = $module;
     }
 
     /**
@@ -165,7 +166,7 @@ final class Theme implements ThemeInterface
             try {
                 $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
 
-                logger('Loaded icons cache');
+                logger('Loaded icons cache', 'INFO');
 
                 return $this->icons;
             } catch (FileException $e) {
@@ -183,7 +184,7 @@ final class Theme implements ThemeInterface
             try {
                 $this->fileCache->save(self::ICONS_CACHE_FILE, $this->icons);
 
-                logger('Saved icons cache');
+                logger('Saved icons cache', 'INFO');
             } catch (FileException $e) {
                 processException($e);
             }

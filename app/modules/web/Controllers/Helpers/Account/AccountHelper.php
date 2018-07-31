@@ -233,6 +233,7 @@ final class AccountHelper extends HelperBase
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     protected function setViewCommon()
     {
@@ -241,7 +242,7 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign('accountIsHistory', false);
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId, $this->context));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
         $this->view->assign('categories', SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getItemsFromModel());
         $this->view->assign('clients', SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getItemsFromModel());
 

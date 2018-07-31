@@ -80,10 +80,8 @@ final class ImportService extends Service
         switch ($fileType) {
             case 'text/plain':
                 return new CsvImport($this->dic, $this->fileImport, $this->importParams);
-                break;
             case 'text/xml':
                 return new XmlImport($this->dic, new XmlFileImport($this->fileImport), $this->importParams);
-                break;
         }
 
         throw new ImportException(

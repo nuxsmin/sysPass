@@ -94,4 +94,14 @@ final class Filter
     {
         return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    public static function getRaw($value): string
+    {
+        return filter_var(trim($value), FILTER_UNSAFE_RAW);
+    }
 }

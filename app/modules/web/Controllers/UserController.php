@@ -171,7 +171,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::USER, $userId, $this->session));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::USER, $userId));
     }
 
     /**

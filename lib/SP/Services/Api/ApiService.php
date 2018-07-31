@@ -36,6 +36,7 @@ use SP\Services\ServiceException;
 use SP\Services\Track\TrackService;
 use SP\Services\User\UserService;
 use SP\Services\UserProfile\UserProfileService;
+use SP\Util\Filter;
 
 /**
  * Class ApiService
@@ -343,12 +344,12 @@ final class ApiService extends Service
      * @param bool   $required
      * @param null   $default
      *
-     * @return int|string
+     * @return int
      * @throws ServiceException
      */
     public function getParamInt($param, $required = false, $default = null)
     {
-        return filter_var($this->getParam($param, $required, $default), FILTER_VALIDATE_INT);
+        return Filter::getInt($this->getParam($param, $required, $default));
     }
 
     /**
@@ -356,12 +357,12 @@ final class ApiService extends Service
      * @param bool   $required
      * @param null   $default
      *
-     * @return int|string
+     * @return string
      * @throws ServiceException
      */
     public function getParamString($param, $required = false, $default = null)
     {
-        return filter_var($this->getParam($param, $required, $default), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        return Filter::getString($this->getParam($param, $required, $default));
     }
 
     /**
@@ -374,7 +375,7 @@ final class ApiService extends Service
      */
     public function getParamEmail($param, $required = false, $default = null)
     {
-        return filter_var($this->getParam($param, $required, $default), FILTER_SANITIZE_EMAIL);
+        return Filter::getEmail($this->getParam($param, $required, $default));
     }
 
     /**
@@ -382,12 +383,12 @@ final class ApiService extends Service
      * @param bool   $required
      * @param null   $default
      *
-     * @return int|string
+     * @return string
      * @throws ServiceException
      */
     public function getParamRaw($param, $required = false, $default = null)
     {
-        return filter_var($this->getParam($param, $required, $default), FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+        return Filter::getRaw($this->getParam($param, $required, $default));
     }
 
     /**
