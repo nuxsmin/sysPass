@@ -301,9 +301,9 @@ final class AccountAclService extends Service
      */
     private function getUserInSecondaryUsers($userId)
     {
-        return array_filter($this->accountAclDto->getUsersId(), function ($value) use ($userId) {
+        return array_values(array_filter($this->accountAclDto->getUsersId(), function ($value) use ($userId) {
             return (int)$value->id === $userId;
-        });
+        }));
     }
 
     /**
