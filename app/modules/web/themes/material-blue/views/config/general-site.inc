@@ -5,6 +5,18 @@
  */
 ?>
 
+<?php if (!$curlIsAvailable): ?>
+    <div class="msg-option-unvailable">
+        <?php printf(__('La extensión \'%s\' no está disponible'), 'curl'); ?>
+        <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <div class="mdl-tooltip mdl-tooltip--large" for="help-curl">
+            <p>
+                <?php echo __('Esta extensión es necesaria comprobar las actualizaciones y notificaciones'); ?>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
 <div id="title" class="titleNormal">
     <i class="material-icons">home</i>
     <?php echo __('Sitio'); ?>

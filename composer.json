@@ -31,11 +31,8 @@
     "monolog/monolog": "^1.23"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "3.*",
     "phpunit/phpunit": "^6",
     "phpunit/dbunit": "^3",
-    "pdepend/pdepend" : "@stable",
-    "phpmd/phpmd" : "@stable",
     "symfony/debug" : "~v3.4"
   },
   "autoload": {

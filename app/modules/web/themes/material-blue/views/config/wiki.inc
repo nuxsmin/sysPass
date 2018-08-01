@@ -4,6 +4,18 @@
  * @var \SP\Config\ConfigData  $configData
  */ ?>
 
+<?php if (!$curlIsAvailable): ?>
+    <div class="msg-option-unvailable">
+        <?php printf(__('La extensión \'%s\' no está disponible'), 'curl'); ?>
+        <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <div class="mdl-tooltip mdl-tooltip--large" for="help-curl">
+            <p>
+                <?php echo __('Esta extensión es necesaria conectar con DokuWiki'); ?>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
 <form method="post" name="frmWiki" id="frmWiki" class="form-action"
       data-onsubmit="config/save"
       data-action-route="configWiki/save"

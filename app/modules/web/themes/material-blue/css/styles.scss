@@ -1152,6 +1152,15 @@ fieldset.warning {
   opacity: .5 !important;
 }
 
+.msg-option-unvailable {
+  @include color-amber();
+  border: none;
+  padding: .5em;
+  text-align: center;
+  margin: 1em 0;
+  font-size: 1.5em;
+}
+
 @import "login";
 
 /* Default styles first then media queries */

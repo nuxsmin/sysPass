@@ -1128,6 +1128,16 @@ fieldset.warning {
 .opacity50 {
   opacity: .5 !important; }
 
+.msg-option-unvailable {
+  color: #ffca28;
+  background-color: #fff8e1;
+  border: 1px solid #ffca28;
+  border: none;
+  padding: .5em;
+  text-align: center;
+  margin: 1em 0;
+  font-size: 1.5em; }
+
 #box-pub-noheader #box-login {
   position: relative;
   min-height: 14em; }

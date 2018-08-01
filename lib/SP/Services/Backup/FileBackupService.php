@@ -28,6 +28,7 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
+use SP\Core\PhpExtensionChecker;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
@@ -47,19 +48,23 @@ final class FileBackupService extends Service
     /**
      * @var ConfigData
      */
-    protected $configData;
+    private $configData;
     /**
      * @var string
      */
-    protected $path;
+    private $path;
     /**
      * @var string
      */
-    protected $backupFileApp;
+    private $backupFileApp;
     /**
      * @var string
      */
-    protected $backupFileDb;
+    private $backupFileDb;
+    /**
+     * @var PhpExtensionChecker
+     */
+    private $extensionChecker;
 
 
     /**
@@ -91,13 +96,20 @@ final class FileBackupService extends Service
                     EventMessage::factory()->addDescription(__u('Realizar Backup'))));
 
             $this->backupTables('*', new FileHandler($this->backupFileDb));
-            $this->backupApp($this->backupFileApp);
+
+            if (!$this->backupApp($this->backupFileApp)
+                && !$this->backupAppLegacyLinux($this->backupFileApp)
+            ) {
+                throw new ServiceException(__u('Error al realizar backup en modo compatibilidad'));
+            }
 
             $this->configData->setBackupHash($backupUniqueHash);
             $this->config->saveConfig($this->configData);
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             throw new ServiceException(
                 __u('Error al realizar el backup'),
                 SPException::ERROR,
@@ -275,26 +287,23 @@ final class FileBackupService extends Service
      * @param string $backupFile nombre del archivo de backup
      *
      * @return bool
-     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\CheckException
      */
     private function backupApp($backupFile)
     {
-        $this->eventDispatcher->notifyEvent('run.backup.process',
-            new Event($this,
-                EventMessage::factory()->addDescription(__u('Copiando aplicación')))
-        );
+        if (!$this->extensionChecker->checkPharAvailable()) {
+            $this->eventDispatcher->notifyEvent('error',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(sprintf(__('La extensión \'%s\' no está disponible'), 'phar')))
+            );
 
-        if (!class_exists(\PharData::class)) {
-            if (Checks::checkIsWindows()) {
-                throw new ServiceException(
-                    __u('Esta operación sólo es posible en entornos Linux'), ServiceException::INFO);
-            }
-
-            if (!$this->backupAppLegacyLinux($backupFile)) {
-                throw new ServiceException(
-                    __u('Error al realizar backup en modo compatibilidad'));
-            }
+            return false;
         }
+
+        $this->eventDispatcher->notifyEvent('run.backup.process',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Copiando aplicación')))
+        );
 
         $compressedFile = $backupFile . '.gz';
 
@@ -303,12 +312,12 @@ final class FileBackupService extends Service
         }
 
         $archive = new \PharData($backupFile);
-        $archive->buildFromDirectory(APP_ROOT, '/^(?!backup).*$/');
+        $archive->buildFromDirectory(APP_ROOT, '/^(?!backup).*$/i');
         $archive->compress(\Phar::GZ);
 
         unlink($backupFile);
 
-        return file_exists($backupFile);
+        return file_exists($compressedFile);
     }
 
     /**
@@ -317,9 +326,20 @@ final class FileBackupService extends Service
      * @param string $backupFile nombre del archivo de backup
      *
      * @return int Con el código de salida del comando ejecutado
+     * @throws ServiceException
      */
     private function backupAppLegacyLinux($backupFile)
     {
+        if (Checks::checkIsWindows()) {
+            throw new ServiceException(
+                __u('Esta operación sólo es posible en entornos Linux'), ServiceException::INFO);
+        }
+
+        $this->eventDispatcher->notifyEvent('run.backup.process',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Copiando aplicación')))
+        );
+
         $compressedFile = $backupFile . '.gz';
 
         $command = 'tar czf ' . $compressedFile . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';
@@ -351,5 +371,6 @@ final class FileBackupService extends Service
     protected function initialize()
     {
         $this->configData = $this->config->getConfigData();
+        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
     }
 }

@@ -1,5 +1,17 @@
 <?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
+<?php if (!$pharIsAvailable): ?>
+    <div class="msg-option-unvailable">
+        <?php printf(__('La extensión \'%s\' no está disponible'), 'phar'); ?>
+        <i id="help-phar" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <div class="mdl-tooltip mdl-tooltip--large" for="help-phar">
+            <p>
+                <?php echo __('Esta extensión es necesaria para generar los archivos de copia de seguridad de la aplicación'); ?>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
 <div id="title" class="titleNormal">
     <i class="material-icons">backup</i>
     <?php echo __('Copia de Seguridad'); ?>

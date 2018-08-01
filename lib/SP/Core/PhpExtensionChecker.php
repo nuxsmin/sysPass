@@ -31,7 +31,7 @@ use SP\Core\Exceptions\CheckException;
  *
  * @package SP\Core
  */
-class PhpExtensionChecker
+final class PhpExtensionChecker
 {
     /**
      * Array of extensions needed by sysPass.
@@ -88,145 +88,164 @@ class PhpExtensionChecker
     /**
      * Checks if the extension is installed
      *
-     * @throws CheckException
-     */
-    public function checkCurlAvailable()
-    {
-        if (!$this->checkIsAvailable('curl')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'curl'));
-        }
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param $extension
+     * @param bool $exception
      *
      * @return bool
+     * @throws CheckException
      */
-    public function checkIsAvailable(string $extension)
+    public function checkCurlAvailable($exception = false)
     {
-        return in_array(strtolower($extension), $this->available);
+        return $this->checkIsAvailable('curl', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param string $extension
+     * @param bool   $exception Throws an exception if the extension is not available
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkLdapAvailable()
+    public function checkIsAvailable(string $extension, $exception = false)
     {
-        if (!$this->checkIsAvailable('ldap')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'ldap'));
+        $result = in_array(strtolower($extension), $this->available);
+
+        if (!$result && $exception) {
+            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, $extension));
         }
+
+        return $result;
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkSimpleXmlAvailable()
+    public function checkLdapAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('simplexml')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'simplexml'));
-        }
+        return $this->checkIsAvailable('ldap', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkXmlAvailable()
+    public function checkSimpleXmlAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('xml')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'xml'));
-        }
+        return $this->checkIsAvailable('simplexml', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkPharAvailable()
+    public function checkXmlAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('phar')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'phar'));
-        }
+        return $this->checkIsAvailable('xml', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkJsonAvailable()
+    public function checkPharAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('json')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'json'));
-        }
+        return $this->checkIsAvailable('phar', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkPdoAvailable()
+    public function checkJsonAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('pdo')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'pdo'));
-        }
+        return $this->checkIsAvailable('json', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkGettextAvailable()
+    public function checkPdoAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('gettext')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'gettext'));
-        }
+        return $this->checkIsAvailable('pdo', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkOpenSslAvailable()
+    public function checkGettextAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('openssl')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'openssl'));
-        }
+        return $this->checkIsAvailable('gettext', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkGdAvailable()
+    public function checkOpenSslAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('gd')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'gd'));
-        }
+        return $this->checkIsAvailable('openssl', $exception);
     }
 
     /**
      * Checks if the extension is installed
      *
+     * @param bool $exception
+     *
+     * @return bool
      * @throws CheckException
      */
-    public function checkMbstringAvailable()
+    public function checkGdAvailable($exception = false)
     {
-        if (!$this->checkIsAvailable('mbstring')) {
-            throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, 'mbstring'));
-        }
+        return $this->checkIsAvailable('gd', $exception);
+    }
+
+    /**
+     * Checks if the extension is installed
+     *
+     * @param bool $exception
+     *
+     * @return bool
+     * @throws CheckException
+     */
+    public function checkMbstringAvailable($exception = false)
+    {
+        return $this->checkIsAvailable('mbstring', $exception);
     }
 
     /**
@@ -243,5 +262,17 @@ class PhpExtensionChecker
         }
 
         logger('Extensions checked', 'INFO');
+    }
+
+    /**
+     * Returns missing extensions
+     *
+     * @return array
+     */
+    public function getMissing()
+    {
+        return array_filter(self::EXTENSIONS, function ($k) {
+            return !in_array($k, $this->available);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

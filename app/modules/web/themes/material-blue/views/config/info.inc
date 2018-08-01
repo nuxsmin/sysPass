@@ -39,6 +39,12 @@
             <br>
             <?php printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones')), implode(', ', get_loaded_extensions())); ?>
             <br>
+            <?php
+                if (!empty($missingExtensions)) {
+                    printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones no disponibles')), implode(', ', $missingExtensions));
+                    echo '<br>';
+                }
+            ?>
             <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
             <br>
             <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$isDemo) ? get_current_user() : '***'); ?>

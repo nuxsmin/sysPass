@@ -4,6 +4,18 @@
  * @var \SP\Config\ConfigData  $configData
  */ ?>
 
+<?php if (!$gdIsAvailable): ?>
+    <div class="msg-option-unvailable">
+        <?php printf(__('La extensión \'%s\' no está disponible'), 'gd'); ?>
+        <i id="help-gd" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <div class="mdl-tooltip mdl-tooltip--large" for="help-gd">
+            <p>
+                <?php echo __('Esta extensión es necesaria para mostrar las claves como imágenes'); ?>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
 <form method="post" name="frmAccounts" id="frmAccounts" class="form-action"
       data-onsubmit="config/save"
       data-action-route="configAccount/save"

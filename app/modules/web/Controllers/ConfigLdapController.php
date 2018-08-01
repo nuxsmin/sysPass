@@ -28,6 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -280,9 +281,15 @@ final class ConfigLdapController extends SimpleControllerBase
         try {
             $this->checks();
             $this->checkAccess(Acl::CONFIG_LDAP);
+
+            $this->extensionChecker->checkLdapAvailable(true);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
+            $this->returnJsonResponseException($e);
+        } catch (CheckException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            
             $this->returnJsonResponseException($e);
         }
     }

@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use SP\Core\Exceptions\CheckException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -47,51 +48,53 @@ final class StatusController extends SimpleControllerBase
     public function checkReleaseAction()
     {
         try {
-            $this->extensionChecker->checkCurlAvailable();
-        } catch (CheckException $e) {
+            $this->extensionChecker->checkCurlAvailable(true);
+
+            $request = $this->dic->get(Client::class)
+                ->request('GET', Util::getAppInfo('appupdates'));
+
+            if ($request->getStatusCode() === 200
+                && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
+            ) {
+                $requestData = json_decode($request->getBody());
+
+                if ($requestData !== null && !isset($requestData->message)) {
+                    // $updateInfo[0]->tag_name
+                    // $updateInfo[0]->name
+                    // $updateInfo[0]->body
+                    // $updateInfo[0]->tarball_url
+                    // $updateInfo[0]->zipball_url
+                    // $updateInfo[0]->published_at
+                    // $updateInfo[0]->html_url
+
+                    if (preg_match('/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/', $requestData->tag_name, $matches)) {
+                        $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
+
+                        if (Util::checkVersion(Util::getVersionStringNormalized(), $pubVersion)) {
+                            $this->returnJsonResponseData([
+                                'version' => $requestData->tag_name,
+                                'url' => $requestData->html_url,
+                                'title' => $requestData->name,
+                                'description' => $requestData->body,
+                                'date' => $requestData->published_at
+                            ]);
+                        }
+
+                        $this->returnJsonResponseData([]);
+                    }
+                }
+
+                logger($requestData->message);
+            }
+
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
+        } catch (ClientException $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
+        } catch (CheckException $e) {
+            $this->returnJsonResponseException($e);
         }
-
-        $request = $this->dic->get(Client::class)
-            ->request('GET', Util::getAppInfo('appupdates'));
-
-        if ($request->getStatusCode() === 200
-            && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
-        ) {
-            $requestData = json_decode($request->getBody());
-
-            if ($requestData !== null && !isset($requestData->message)) {
-                // $updateInfo[0]->tag_name
-                // $updateInfo[0]->name
-                // $updateInfo[0]->body
-                // $updateInfo[0]->tarball_url
-                // $updateInfo[0]->zipball_url
-                // $updateInfo[0]->published_at
-                // $updateInfo[0]->html_url
-
-                if (preg_match('/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/', $requestData->tag_name, $matches)) {
-                    $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
-
-                    if (Util::checkVersion(Util::getVersionStringNormalized(), $pubVersion)) {
-                        $this->returnJsonResponseData([
-                            'version' => $requestData->tag_name,
-                            'url' => $requestData->html_url,
-                            'title' => $requestData->name,
-                            'description' => $requestData->body,
-                            'date' => $requestData->published_at
-                        ]);
-                    }
-
-                    $this->returnJsonResponseData([]);
-                }
-            }
-
-            logger($requestData->message);
-        }
-
-        $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
     }
 
     /**
@@ -102,38 +105,40 @@ final class StatusController extends SimpleControllerBase
     public function checkNoticesAction()
     {
         try {
-            $this->extensionChecker->checkCurlAvailable();
-        } catch (CheckException $e) {
+            $this->extensionChecker->checkCurlAvailable(true);
+
+            $request = $this->dic->get(Client::class)
+                ->request('GET', Util::getAppInfo('appnotices'));
+
+            if ($request->getStatusCode() === 200
+                && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
+            ) {
+                $requestData = json_decode($request->getBody());
+
+                if ($requestData !== null && !isset($requestData->message)) {
+                    $notices = [];
+
+                    foreach ($requestData as $notice) {
+                        $notices[] = [
+                            'title' => $notice->title,
+                            'date' => $notice->created_at,
+                            'text' => $notice->body
+                        ];
+                    }
+
+                    $this->returnJsonResponseData($notices);
+                }
+
+                logger($requestData->message);
+            }
+
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));
+        } catch (ClientException $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
+        } catch (CheckException $e) {
+            $this->returnJsonResponseException($e);
         }
-
-        $request = $this->dic->get(Client::class)
-            ->request('GET', Util::getAppInfo('appnotices'));
-
-        if ($request->getStatusCode() === 200
-            && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
-        ) {
-            $requestData = json_decode($request->getBody());
-
-            if ($requestData !== null && !isset($requestData->message)) {
-                $notices = [];
-
-                foreach ($requestData as $notice) {
-                    $notices[] = [
-                        'title' => $notice->title,
-                        'date' => $notice->created_at,
-                        'text' => $notice->body
-                    ];
-                }
-
-                $this->returnJsonResponseData($notices);
-            }
-
-            logger($requestData->message);
-        }
-
-        $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));
     }
 }

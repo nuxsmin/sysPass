@@ -71,5 +71,7 @@ return [
         ->constructor(true),
     Logger::class => \DI\create(Logger::class)
         ->constructor('syspass'),
-    AccountAclService::class => \DI\autowire(AccountAclService::class)
+    AccountAclService::class => \DI\autowire(AccountAclService::class),
+    \GuzzleHttp\Client::class => \DI\create(GuzzleHttp\Client::class)
+        ->constructor(\DI\factory([\SP\Http\Client::class, 'getOptions']))
 ];

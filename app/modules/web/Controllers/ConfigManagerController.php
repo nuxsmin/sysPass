@@ -127,6 +127,7 @@ final class ConfigManagerController extends ControllerBase
      * @return DataTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getConfigGeneral()
     {
@@ -143,6 +144,8 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
+        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
+
         $template->assign('logEvents', SelectItemAdapter::factory(array_merge(DatabaseLogHandler::EVENTS, $this->configData->getLogEvents()))
             ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
         );
@@ -152,24 +155,29 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getAccountConfig()
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('accounts');
+        $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
 
         return new DataTab(__('Cuentas'), $template);
     }
 
     /**
      * @return DataTab
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getWikiConfig()
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('wiki');
+
+        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
 
         return new DataTab(__('Wiki'), $template);
     }
@@ -178,6 +186,7 @@ final class ConfigManagerController extends ControllerBase
      * @return DataTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getLdapConfig()
     {
@@ -252,12 +261,14 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \SP\Core\Exceptions\CheckException
      */
     protected function getBackupConfig()
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('backup');
+        $template->assign('pharIsAvailable', $this->extensionChecker->checkPharAvailable());
 
         $template->assign('siteName', Util::getAppInfo('appname'));
         $template->assign('backupDir', BACKUP_PATH);
@@ -336,6 +347,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('plugins', $this->dic->get(PluginManager::class)->getLoadedPlugins());
         $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('No instalado')));
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
+        $template->assign('missingExtensions', $this->extensionChecker->getMissing());
 
         return new DataTab(__('Información'), $template);
     }

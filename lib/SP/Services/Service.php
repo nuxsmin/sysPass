@@ -134,14 +134,14 @@ abstract class Service
             }
 
             if (empty($key)) {
-                throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
+                throw new ServiceException(__u('Error al obtener la clave maestra del contexto'));
             }
 
             return $key;
         } catch (CryptoException $e) {
             logger($e->getMessage());
 
-            throw new ServiceException(__u('Error ol obtener la clave maestra del contexto'));
+            throw new ServiceException(__u('Error al obtener la clave maestra del contexto'));
         }
     }
 

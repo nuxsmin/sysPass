@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers;
 
 use DI\Container;
-use Interop\Container\ContainerInterface;
 use Klein\Klein;
+use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
