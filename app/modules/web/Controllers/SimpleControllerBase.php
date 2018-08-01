@@ -34,6 +34,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
 use SP\Mvc\Controller\ControllerTrait;
@@ -91,6 +92,10 @@ abstract class SimpleControllerBase
      * @var Request
      */
     protected $request;
+    /**
+     * @var PhpExtensionChecker
+     */
+    protected $extensionChecker;
 
     /**
      * SimpleControllerBase constructor.
@@ -116,6 +121,7 @@ abstract class SimpleControllerBase
         $this->router = $this->dic->get(Klein::class);
         $this->request = $this->dic->get(Request::class);
         $this->acl = $this->dic->get(Acl::class);
+        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

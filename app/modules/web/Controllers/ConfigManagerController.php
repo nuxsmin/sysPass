@@ -44,7 +44,6 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 /**
@@ -186,7 +185,7 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('ldap');
 
-        $template->assign('ldapIsAvailable', Checks::ldapIsAvailable());
+        $template->assign('ldapIsAvailable', $this->extensionChecker->checkIsAvailable('ldap'));
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 

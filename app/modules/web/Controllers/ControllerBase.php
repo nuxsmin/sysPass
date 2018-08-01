@@ -36,6 +36,7 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\Theme;
 use SP\DataModel\ProfileData;
 use SP\Http\Request;
@@ -127,6 +128,10 @@ abstract class ControllerBase
      * @var Request
      */
     protected $request;
+    /**
+     * @var PhpExtensionChecker
+     */
+    protected $extensionChecker;
 
     /**
      * Constructor
@@ -153,6 +158,7 @@ abstract class ControllerBase
         $this->router = $this->dic->get(Klein::class);
         $this->view = $this->dic->get(Template::class);
         $this->request = $this->dic->get(Request::class);
+        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
 
         $this->view->setBase(strtolower($this->controllerName));
 

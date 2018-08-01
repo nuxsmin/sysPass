@@ -109,16 +109,6 @@ final class Checks
     }
 
     /**
-     * Comprobar si el módulo de LDAP está instalado.
-     *
-     * @return bool
-     */
-    public static function ldapIsAvailable()
-    {
-        return extension_loaded('ldap');
-    }
-
-    /**
      * Comprobar si el módulo CURL está instalado.
      *
      * @return bool

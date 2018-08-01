@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use GuzzleHttp\Client;
+use SP\Core\Exceptions\CheckException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\Util;
@@ -45,6 +46,14 @@ final class StatusController extends SimpleControllerBase
      */
     public function checkReleaseAction()
     {
+        try {
+            $this->extensionChecker->checkCurlAvailable();
+        } catch (CheckException $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
+
         $request = $this->dic->get(Client::class)
             ->request('GET', Util::getAppInfo('appupdates'));
 
@@ -92,6 +101,14 @@ final class StatusController extends SimpleControllerBase
      */
     public function checkNoticesAction()
     {
+        try {
+            $this->extensionChecker->checkCurlAvailable();
+        } catch (CheckException $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
+
         $request = $this->dic->get(Client::class)
             ->request('GET', Util::getAppInfo('appnotices'));
 
