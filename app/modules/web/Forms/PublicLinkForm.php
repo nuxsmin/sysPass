@@ -46,7 +46,7 @@ final class PublicLinkForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
+     * @return PublicLinkForm
      * @throws ValidationException
      */
     public function validate($action)
@@ -59,7 +59,7 @@ final class PublicLinkForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**

@@ -296,7 +296,7 @@ class AccountVData extends DataModelBase
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserEdit()
     {
@@ -312,7 +312,7 @@ class AccountVData extends DataModelBase
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserGroupEdit()
     {

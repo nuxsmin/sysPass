@@ -38,7 +38,7 @@ final class Event
      */
     private $source;
     /**
-     * @var array
+     * @var EventMessage
      */
     private $eventMessage;
 

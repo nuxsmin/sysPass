@@ -49,7 +49,7 @@ final class UserForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
+     * @return UserForm
      * @throws ValidationException
      */
     public function validate($action)
@@ -73,7 +73,7 @@ final class UserForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**

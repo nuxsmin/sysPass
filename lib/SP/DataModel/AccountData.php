@@ -269,7 +269,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserEdit()
     {
@@ -285,7 +285,7 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserGroupEdit()
     {

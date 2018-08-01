@@ -157,7 +157,7 @@ final class Theme implements ThemeInterface
     /**
      * Inicializar los iconos del tema actual
      *
-     * @return ThemeIconsInterface
+     * @return ThemeIcons
      * @throws InvalidClassException
      */
     protected function initIcons()

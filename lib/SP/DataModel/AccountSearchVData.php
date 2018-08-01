@@ -223,7 +223,7 @@ class AccountSearchVData
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserEdit()
     {
@@ -239,7 +239,7 @@ class AccountSearchVData
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getOtherUserGroupEdit()
     {

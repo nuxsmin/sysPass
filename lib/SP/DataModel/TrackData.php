@@ -159,7 +159,7 @@ class TrackData extends DataModelBase
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getTrackIpv4Bin()
     {

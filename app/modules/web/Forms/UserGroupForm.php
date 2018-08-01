@@ -45,7 +45,7 @@ final class UserGroupForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
+     * @return UserGroupForm
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
@@ -58,7 +58,7 @@ final class UserGroupForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**

@@ -102,7 +102,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public $isMigrate = 0;
     /**
-     * @var
+     * @var string
      */
     public $preferences;
     /**
@@ -159,7 +159,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isMigrate()
     {
@@ -175,7 +175,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPreferences()
     {
@@ -183,7 +183,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @param mixed $preferences
+     * @param string $preferences
      */
     public function setPreferences($preferences)
     {
@@ -255,7 +255,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isAdminApp()
     {
@@ -271,7 +271,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isAdminAcc()
     {
@@ -287,7 +287,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isDisabled()
     {
@@ -303,7 +303,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isChangePass()
     {
@@ -319,7 +319,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isLdap()
     {
@@ -383,7 +383,7 @@ class UserData extends UserPassData implements DataModelInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function isChangedPass()
     {

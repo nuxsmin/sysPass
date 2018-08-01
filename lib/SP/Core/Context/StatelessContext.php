@@ -122,7 +122,7 @@ final class StatelessContext extends ContextBase
      */
     public function isLoggedIn()
     {
-        return $this->getUserData()->getLogin();
+        return !empty($this->getUserData()->getLogin());
     }
 
     /**

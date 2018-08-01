@@ -46,7 +46,7 @@ final class NotificationForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
+     * @return NotificationForm
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
@@ -59,7 +59,7 @@ final class NotificationForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**

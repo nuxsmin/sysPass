@@ -71,13 +71,7 @@ try {
 
     Bootstrap::run($builder->build());
 } catch (\Exception $e) {
-    logger($e->getMessage());
-    logger($e->getTraceAsString());
-
-    die($e->getMessage());
-} catch (\Psr\Container\ContainerExceptionInterface $e) {
-    logger($e->getMessage());
-    logger($e->getTraceAsString());
+    processException($e);
 
     die($e->getMessage());
 }

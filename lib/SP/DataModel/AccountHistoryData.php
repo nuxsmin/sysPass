@@ -45,7 +45,7 @@ class AccountHistoryData extends AccountExtData
     public $accountId;
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isIsModify()
     {
@@ -61,7 +61,7 @@ class AccountHistoryData extends AccountExtData
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isIsDeleted()
     {

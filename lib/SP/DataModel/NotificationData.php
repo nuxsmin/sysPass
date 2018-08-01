@@ -151,7 +151,7 @@ class NotificationData implements DataModelInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function isChecked()
     {
@@ -183,7 +183,7 @@ class NotificationData implements DataModelInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function isSticky()
     {
@@ -199,7 +199,7 @@ class NotificationData implements DataModelInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function isOnlyAdmin()
     {

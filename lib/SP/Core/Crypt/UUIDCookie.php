@@ -53,7 +53,7 @@ class UUIDCookie extends Cookie
      *
      * @param string $signKey Signing key
      *
-     * @return string
+     * @return string|false
      */
     public function createCookie($signKey)
     {
@@ -71,7 +71,7 @@ class UUIDCookie extends Cookie
      *
      * @param string $signKey Signing key
      *
-     * @return bool|string
+     * @return false|string
      */
     public function loadCookie($signKey)
     {

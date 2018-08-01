@@ -142,7 +142,7 @@ final class Language
     /**
      * Devuelve el lenguaje del usuario
      *
-     * @return bool
+     * @return string
      */
     private function getUserLang()
     {
@@ -174,7 +174,7 @@ final class Language
     /**
      * Devolver el lenguaje que acepta el navegador
      *
-     * @return mixed
+     * @return string
      */
     private function getBrowserLang()
     {

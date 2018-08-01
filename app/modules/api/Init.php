@@ -25,7 +25,7 @@
 namespace SP\Modules\Api;
 
 use DI\Container;
-use Interop\Container\Exception\NotFoundException;
+use DI\NotFoundException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;

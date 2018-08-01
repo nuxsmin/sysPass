@@ -45,8 +45,8 @@ final class CategoryForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @return CategoryForm
+     * @throws ValidationException
      */
     public function validate($action)
     {
@@ -58,7 +58,7 @@ final class CategoryForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**

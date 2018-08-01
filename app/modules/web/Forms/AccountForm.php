@@ -45,7 +45,7 @@ final class AccountForm extends FormBase implements FormInterface
      *
      * @param $action
      *
-     * @return bool
+     * @return AccountForm
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
@@ -67,7 +67,7 @@ final class AccountForm extends FormBase implements FormInterface
                 break;
         }
 
-        return true;
+        return $this;
     }
 
     /**
