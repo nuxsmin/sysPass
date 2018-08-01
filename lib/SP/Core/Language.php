@@ -96,8 +96,8 @@ final class Language
      * Language constructor.
      *
      * @param ContextInterface $session
-     * @param Config           $config
-     * @param Request          $request
+     * @param Config $config
+     * @param Request $request
      */
     public function __construct(ContextInterface $session, Config $config, Request $request)
     {
@@ -161,16 +161,14 @@ final class Language
         $configLang = $this->configData->getSiteLang();
 
         // Establecer a en si no existe la traducción o no es español
-        if (!$configLang
+        if (empty($configLang)
             && !$this->checkLangFile($browserLang)
             && strpos($browserLang, 'es_') === false
         ) {
-            $lang = 'en';
+            return 'en_US';
         } else {
-            $lang = $configLang ?: $browserLang;
+            return $configLang ?: $browserLang;
         }
-
-        return $lang;
     }
 
     /**
@@ -180,9 +178,9 @@ final class Language
      */
     private function getBrowserLang()
     {
-        $lang = $this->request->getHeader('HTTP_ACCEPT_LANGUAGE');
+        $lang = $this->request->getHeader('Accept-Language');
 
-        return !empty($lang) ? str_replace('-', '_', substr($lang, 0, 5)) : '';
+        return $lang !== '' ? str_replace('-', '_', substr($lang, 0, 5)) : 'en_US';
     }
 
     /**
@@ -205,16 +203,20 @@ final class Language
     public function setLocales($lang)
     {
         $lang .= '.utf8';
-        $locales = [$lang, 'en.utf8', 'en_US.utf8', 'en_GB.utf8'];
+        $locales = [$lang, 'en_US.utf8', 'en_GB.utf8'];
 
         self::$localeStatus = setlocale(LC_MESSAGES, $locales);
 
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
 
-        if (!setlocale(LC_ALL, $locales)) {
-            logger('Could not set locales');
+        $locale = setlocale(LC_ALL, $locales);
+
+        if ($locale === false) {
+            logger('Could not set locale', 'ERROR');
             logger('Domain path: ' . LOCALES_PATH);
+        } else {
+            logger('Locale set to: ' . $locale);
         }
 
         bindtextdomain('messages', LOCALES_PATH);

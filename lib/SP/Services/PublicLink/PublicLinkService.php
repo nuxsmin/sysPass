@@ -327,7 +327,7 @@ final class PublicLinkService extends Service
             'who' => $request->getClientAddress(true),
             'time' => time(),
             'hash' => $hash,
-            'agent' => $request->getHeader('HTTP_USER_AGENT'),
+            'agent' => $request->getHeader('User-Agent'),
             'https' => $request->isHttps()
         ];
     }
