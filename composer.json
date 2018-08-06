@@ -33,7 +33,8 @@
   "require-dev": {
     "phpunit/phpunit": "^6",
     "phpunit/dbunit": "^3",
-    "symfony/debug" : "~v3.4"
+    "symfony/debug" : "~v3.4",
+    "fzaninotto/faker": "~v1.8"
   },
   "autoload": {
     "psr-4": {

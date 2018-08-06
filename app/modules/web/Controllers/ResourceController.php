@@ -40,26 +40,21 @@ final class ResourceController extends SimpleControllerBase
     protected $minify;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws SPException
+     * Returns CSS resources
      */
     public function cssAction()
     {
-        $this->request->verifySignature($this->configData->getPasswordSalt());
-
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
 
-        $minify = $this->dic->get(Minify::class);
-
         if ($file && $base) {
-            $minify->setType(Minify::FILETYPE_CSS)
+            $this->minify
+                ->setType(Minify::FILETYPE_CSS)
                 ->setBase(urldecode($base), true)
                 ->addFilesFromString(urldecode($file))
                 ->getMinified();
         } else {
-            $minify->setType(Minify::FILETYPE_CSS)
+            $this->minify->setType(Minify::FILETYPE_CSS)
                 ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'css')
                 ->addFiles(['reset.min.css',
                     'jquery-ui.min.css',
@@ -74,32 +69,27 @@ final class ResourceController extends SimpleControllerBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws SPException
+     * Returns JS resources
      */
     public function jsAction()
     {
-        $this->request->verifySignature($this->configData->getPasswordSalt());
-
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
 
-        $minify = $this->dic->get(Minify::class);
-
         if ($file && $base) {
-            $minify->setType(Minify::FILETYPE_JS)
+            $this->minify
+                ->setType(Minify::FILETYPE_JS)
                 ->setBase(urldecode($base), true)
                 ->addFilesFromString(urldecode($file))
                 ->getMinified();
         } else {
-            $minify->setType(Minify::FILETYPE_JS)
+            $this->minify->setType(Minify::FILETYPE_JS)
                 ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
 
             $group = $this->request->analyzeInt('g', 0);
 
             if ($group === 0) {
-                $minify->addFiles([
+                $this->minify->addFiles([
                     'jquery-3.3.1.min.js',
                     'jquery-migrate-3.0.0.min.js',
                     'jquery.fileDownload.min.js',
@@ -116,7 +106,7 @@ final class ResourceController extends SimpleControllerBase
                     'eventsource.min.js'], false);
             } elseif ($group === 1) {
                 // FIXME: use MIN version
-                $minify->addFiles([
+                $this->minify->addFiles([
                     'app.js',
                     'app-triggers.js',
                     'app-actions.js',
@@ -124,7 +114,17 @@ final class ResourceController extends SimpleControllerBase
                     'app-main.js'], false);
             }
 
-            $minify->getMinified();
+            $this->minify->getMinified();
         }
+    }
+
+    /**
+     * @throws SPException
+     */
+    protected function initialize()
+    {
+        $this->request->verifySignature($this->configData->getPasswordSalt());
+
+        $this->minify = $this->dic->get(Minify::class);
     }
 }

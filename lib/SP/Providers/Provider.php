@@ -24,7 +24,6 @@
 
 namespace SP\Providers;
 
-use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
@@ -51,22 +50,14 @@ abstract class Provider
      * @var EventDispatcher
      */
     protected $eventDispatcher;
-    /**
-     * @var ContainerInterface
-     */
-    private $dic;
 
     /**
      * Provider constructor.
      *
-     * @param Container $dic
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $dic
      */
-    final public function __construct(Container $dic)
+    final public function __construct(ContainerInterface $dic)
     {
-        $this->dic = $dic;
         $this->config = $dic->get(Config::class);
         $this->context = $dic->get(ContextInterface::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);

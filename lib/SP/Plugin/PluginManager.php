@@ -134,7 +134,7 @@ class PluginManager
     /**
      * Devolver los plugins habilitados
      *
-     * @return PluginInterface[]
+     * @return array
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

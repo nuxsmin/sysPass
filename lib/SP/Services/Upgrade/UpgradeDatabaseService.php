@@ -33,7 +33,7 @@ use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\QueryData;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
-use SP\Util\Util;
+use SP\Util\Version;
 
 /**
  * Class UpgradeDatabaseService
@@ -61,7 +61,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return empty($version) || Util::checkVersion($version, self::UPGRADES);
+        return empty($version) || Version::checkVersion($version, self::UPGRADES);
     }
 
     /**
@@ -81,7 +81,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         );
 
         foreach (self::UPGRADES as $upgradeVersion) {
-            if (Util::checkVersion($version, $upgradeVersion)) {
+            if (Version::checkVersion($version, $upgradeVersion)) {
                 if ($this->applyPreUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
                         __u('Error al aplicar la actualización auxiliar'),

@@ -27,21 +27,11 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use DI\Container;
-use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Acl\Acl;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\Theme;
 use SP\DataModel\ProfileData;
-use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
-use SP\Mvc\Controller\ControllerTrait;
+use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Auth\AuthException;
@@ -52,7 +42,7 @@ use SP\Services\User\UserLoginResponse;
  */
 abstract class ControllerBase
 {
-    use ControllerTrait;
+    use WebControllerTrait;
 
     /**
      * Constantes de errores
@@ -69,18 +59,6 @@ abstract class ControllerBase
      */
     protected $view;
     /**
-     * @var  int ID de la acción
-     */
-    protected $action;
-    /**
-     * @var string Nombre de la acción
-     */
-    protected $actionName;
-    /**
-     * @var string Nombre del controlador
-     */
-    protected $controllerName;
-    /**
      * @var  UserLoginResponse
      */
     protected $userData;
@@ -89,34 +67,6 @@ abstract class ControllerBase
      */
     protected $userProfileData;
     /**
-     * @var  EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var  ConfigData
-     */
-    protected $configData;
-    /**
-     * @var  Config
-     */
-    protected $config;
-    /**
-     * @var  SessionContext
-     */
-    protected $session;
-    /**
-     * @var  Theme
-     */
-    protected $theme;
-    /**
-     * @var  \SP\Core\Acl\Acl
-     */
-    protected $acl;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
      * @var ContainerInterface
      */
     protected $dic;
@@ -124,14 +74,6 @@ abstract class ControllerBase
      * @var
      */
     protected $isAjax = false;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var PhpExtensionChecker
-     */
-    protected $extensionChecker;
 
     /**
      * Constructor
@@ -145,20 +87,11 @@ abstract class ControllerBase
     public final function __construct(Container $container, $actionName)
     {
         $this->dic = $container;
-
-        $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
 
-        $this->config = $this->dic->get(Config::class);
-        $this->configData = $this->config->getConfigData();
-        $this->session = $this->dic->get(ContextInterface::class);
-        $this->theme = $this->dic->get(Theme::class);
-        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
-        $this->acl = $this->dic->get(Acl::class);
-        $this->router = $this->dic->get(Klein::class);
+        $this->setUp($container);
+
         $this->view = $this->dic->get(Template::class);
-        $this->request = $this->dic->get(Request::class);
-        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
 
         $this->view->setBase(strtolower($this->controllerName));
 
@@ -202,14 +135,16 @@ abstract class ControllerBase
     protected function view()
     {
         try {
-            echo $this->view->render();
+            $this->router->response()
+                ->body($this->view->render())
+                ->send();
         } catch (FileNotFoundException $e) {
             processException($e);
 
-            echo __($e->getMessage());
+            $this->router->response()
+                ->body(__($e->getMessage()))
+                ->send(true);
         }
-
-        die();
     }
 
     /**

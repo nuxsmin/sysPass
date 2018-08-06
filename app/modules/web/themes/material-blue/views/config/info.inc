@@ -1,6 +1,8 @@
 <div id="title" class="titleNormal">
     <i class="material-icons">info</i>
-    <?php echo __('Información de la Aplicación'); ?>
+    <?php use SP\Util\Version;
+
+    echo __('Información de la Aplicación'); ?>
 </div>
 
 <table class="data">
@@ -11,7 +13,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Versión sysPass'); ?></div>
 
-            <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(\SP\Util\Util::getVersionStringNormalized())); ?>
+            <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(Version::getVersionStringNormalized())); ?>
         </td>
     </tr>
     <tr>

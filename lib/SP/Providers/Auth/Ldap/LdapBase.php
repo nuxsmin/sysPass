@@ -160,7 +160,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->eventDispatcher->notifyEvent('ldap.connection',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
-                    ->addDetail(__('Servidor'), $this->server)
+                    ->addDetail(__u('Servidor'), $this->server)
                     ->addDetail('LDAP ERROR', $this->getLdapErrorMessage()))
             );
 
@@ -399,13 +399,18 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     {
         $searchResults = $this->getResults($this->getUserDnFilter(), self::SEARCH_ATTRIBUTES);
 
-        if ($searchResults === false || $searchResults['count'] > 1) {
+        if ($searchResults === false
+            || $searchResults['count'] > 1
+        ) {
+            $count = $searchResults !== false ? $searchResults['count'] : 0;
+
             $this->eventDispatcher->notifyEvent('ldap.getAttributes',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Error al localizar el usuario en LDAP'))
                     ->addDetail(__u('Usuario'), $this->userLogin)
                     ->addDetail('LDAP ERROR', $this->getLdapErrorMessage())
-                    ->addDetail('LDAP DN', $this->getGroupMembershipFilter()))
+                    ->addDetail('LDAP DN', $this->getGroupMembershipFilter())
+                    ->addDetail('COUNT', $count))
             );
 
             throw new LdapException(__u('Error al localizar el usuario en LDAP'));
@@ -470,40 +475,32 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function searchGroupDN()
     {
-        $group = $this->getGroupName() ?: $this->ldapParams->getGroup();
-        $filter = '(cn=' . ldap_escape($group) . ')';
+        if (strpos($this->ldapParams->getGroup(), 'cn=') === 0) {
+            $filter = $this->ldapParams->getGroup();
+        } else {
+            $filter = '(cn=' . ldap_escape($this->ldapParams->getGroup()) . ')';
+        }
 
         $searchResults = $this->getResults($filter, ['dn', 'cn']);
 
-        if ($searchResults === false || $searchResults['count'] > 1) {
+        if ($searchResults === false
+            || $searchResults['count'] > 1
+        ) {
+            $count = $searchResults !== false ? $searchResults['count'] : 0;
+
             $this->eventDispatcher->notifyEvent('ldap.search.group',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Error al buscar RDN de grupo'))
                     ->addDetail(__u('Grupo'), $filter)
                     ->addDetail('LDAP ERROR', $this->getLdapErrorMessage())
-                    ->addDetail('LDAP FILTER', $filter))
+                    ->addDetail('LDAP FILTER', $filter)
+                    ->addDetail('COUNT', $count))
             );
 
             throw new LdapException(__u('Error al buscar RDN de grupo'));
         }
 
         return $searchResults[0]['dn'];
-    }
-
-    /**
-     * Obtener el nombre del grupo a partir del CN
-     *
-     * @return bool
-     */
-    protected function getGroupName()
-    {
-        if ($this->ldapParams->getGroup()
-            && preg_match('/^cn=(?P<groupname>[\w\s-]+)(?:,.*)?/i', $this->ldapParams->getGroup(), $matches)
-        ) {
-            return $matches['groupname'];
-        }
-
-        return false;
     }
 
     /**
@@ -605,6 +602,22 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     public function isBound()
     {
         return $this->isBound;
+    }
+
+    /**
+     * Obtener el nombre del grupo a partir del CN
+     *
+     * @return bool
+     */
+    protected function getGroupName()
+    {
+        if ($this->ldapParams->getGroup()
+            && preg_match('/^cn=(?P<groupname>[\w\s-]+)(?:,.*)?/i', $this->ldapParams->getGroup(), $matches)
+        ) {
+            return $matches['groupname'];
+        }
+
+        return false;
     }
 
     /**

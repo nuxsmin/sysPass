@@ -24,7 +24,8 @@
 
 namespace SP\Services\Account;
 
-use SP\Core\Exceptions\SPException;
+use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\InvalidImageException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -54,14 +55,21 @@ final class AccountFileService extends Service
      * @param FileData $itemData
      *
      * @return int
-     * @throws SPException
+     * @throws InvalidImageException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
         if (FileUtil::isImage($itemData)) {
-            $itemData->setThumb(ImageUtil::createThumbnail($itemData->getContent()) ?: 'no_thumb');
+            try {
+                $imageUtil = $this->dic->get(ImageUtil::class);
+                $itemData->setThumb($imageUtil->createThumbnail($itemData->getContent()));
+            } catch (CheckException $e) {
+                processException($e);
+
+                $itemData->setThumb('no_thumb');
+            }
         } else {
             $itemData->setThumb('no_thumb');
         }

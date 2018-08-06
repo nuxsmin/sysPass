@@ -69,6 +69,16 @@ final class JsonResponse implements \JsonSerializable
     protected $csrf = '';
 
     /**
+     * JsonResponse constructor.
+     *
+     * @param string $description
+     */
+    public function __construct(string $description = null)
+    {
+        $this->description = $description;
+    }
+
+    /**
      * @return int
      */
     public function getStatus()

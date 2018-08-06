@@ -25,19 +25,9 @@
 namespace SP\Modules\Web\Controllers;
 
 use DI\Container;
-use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Events\EventDispatcher;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\Theme;
-use SP\Http\Request;
-use SP\Mvc\Controller\ControllerTrait;
+use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 
 /**
  * Class SimpleControllerBase
@@ -46,56 +36,12 @@ use SP\Mvc\Controller\ControllerTrait;
  */
 abstract class SimpleControllerBase
 {
-    use ControllerTrait;
+    use WebControllerTrait;
 
-    /**
-     * @var string Nombre del controlador
-     */
-    protected $controllerName;
-    /**
-     * @var  EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var  Config
-     */
-    protected $config;
-    /**
-     * @var  SessionContext
-     */
-    protected $session;
-    /**
-     * @var  Theme
-     */
-    protected $theme;
-    /**
-     * @var string
-     */
-    protected $actionName;
-    /**
-     * @var Klein
-     */
-    protected $router;
     /**
      * @var ContainerInterface
      */
     protected $dic;
-    /**
-     * @var Acl
-     */
-    protected $acl;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var PhpExtensionChecker
-     */
-    protected $extensionChecker;
 
     /**
      * SimpleControllerBase constructor.
@@ -109,19 +55,9 @@ abstract class SimpleControllerBase
     public function __construct(Container $container, $actionName)
     {
         $this->dic = $container;
-
-        $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
 
-        $this->config = $this->dic->get(Config::class);
-        $this->configData = $this->config->getConfigData();
-        $this->session = $this->dic->get(ContextInterface::class);
-        $this->theme = $this->dic->get(Theme::class);
-        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
-        $this->router = $this->dic->get(Klein::class);
-        $this->request = $this->dic->get(Request::class);
-        $this->acl = $this->dic->get(Acl::class);
-        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
+        $this->setUp($container);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

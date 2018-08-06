@@ -25,13 +25,13 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\DataModel\DataModelInterface;
+use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Notification\NotificationService;
-use SP\Util\Json;
 
 /**
  * Class ItemsController
@@ -65,7 +65,7 @@ final class ItemsController extends SimpleControllerBase
         $jsonResponse->setData($outItems);
         $jsonResponse->setCsrf($this->session->getSecurityKey());
 
-        Json::returnJson($jsonResponse);
+        Json::fromDic()->returnJson($jsonResponse);
     }
 
     /**
@@ -73,7 +73,8 @@ final class ItemsController extends SimpleControllerBase
      */
     public function clientsAction()
     {
-        Json::returnRawJson(SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getJsonItemsFromModel());
+        Json::factory($this->router->response())
+            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getJsonItemsFromModel());
     }
 
     /**
@@ -81,7 +82,8 @@ final class ItemsController extends SimpleControllerBase
      */
     public function categoriesAction()
     {
-        Json::returnRawJson(SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getJsonItemsFromModel());
+        Json::factory($this->router->response())
+            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getJsonItemsFromModel());
     }
 
     /**
@@ -89,7 +91,8 @@ final class ItemsController extends SimpleControllerBase
      */
     public function notificationsAction()
     {
-        Json::returnRawJson(Json::getJson($this->dic->get(NotificationService::class)->getAllActiveForUserId($this->session->getUserData()->getId())));
+        Json::factory($this->router->response())
+            ->returnRawJson(Json::getJson($this->dic->get(NotificationService::class)->getAllActiveForUserId($this->session->getUserData()->getId())));
     }
 
     /**

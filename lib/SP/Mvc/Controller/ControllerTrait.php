@@ -26,10 +26,10 @@ namespace SP\Mvc\Controller;
 
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\SPException;
+use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Http\Uri;
-use SP\Util\Json;
 use SP\Util\Util;
 
 
@@ -61,11 +61,10 @@ trait ControllerTrait
     {
         if (!$context->isLoggedIn()) {
             if ($request->isJson()) {
-                $JsonResponse = new JsonResponse();
-                $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
-                $JsonResponse->setStatus(10);
+                $jsonResponse = new JsonResponse(__u('La sesión no se ha iniciado o ha caducado'));
+                $jsonResponse->setStatus(10);
 
-                Json::returnJson($JsonResponse);
+                Json::fromDic()->returnJson($jsonResponse);
             } elseif ($request->isAjax()) {
                 Util::logout();
             } else {
@@ -112,6 +111,6 @@ trait ControllerTrait
      */
     protected function invalidAction()
     {
-        Json::returnJson((new JsonResponse())->setDescription(__u('Acción Inválida')));
+        Json::fromDic()->returnJson(new JsonResponse(__u('Acción Inválida')));
     }
 }

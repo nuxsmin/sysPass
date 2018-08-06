@@ -31,7 +31,7 @@ use SP\Config\ConfigData;
  *
  * @package SP\Http
  */
-class Client
+final class Client
 {
     /**
      * @param ConfigData $configData

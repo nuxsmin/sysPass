@@ -41,6 +41,7 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\Tag\TagService;
 use SP\Util\Util;
+use SP\Util\Version;
 
 defined('APP_ROOT') || die();
 
@@ -194,7 +195,7 @@ final class XmlExportService extends Service
 
             $nodeMeta = $this->xml->createElement('Meta');
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
-            $metaVersion = $this->xml->createElement('Version', Util::getVersionStringNormalized());
+            $metaVersion = $this->xml->createElement('Version', Version::getVersionStringNormalized());
             $metaTime = $this->xml->createElement('Time', time());
             $metaUser = $this->xml->createElement('User', $userData->getLogin());
             $metaUser->setAttribute('id', $userData->getId());

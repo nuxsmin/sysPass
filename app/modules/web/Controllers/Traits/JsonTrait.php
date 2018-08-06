@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use SP\Core\Exceptions\SPException;
+use SP\Http\Json;
 use SP\Http\JsonResponse;
-use SP\Util\Json;
 
 /**
  * Trait JsonTrait
@@ -52,7 +52,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        Json::returnJson($jsonResponse);
+        Json::fromDic()->returnJson($jsonResponse);
     }
 
     /**
@@ -77,7 +77,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        Json::returnJson($jsonResponse);
+        Json::fromDic()->returnJson($jsonResponse);
     }
 
     /**
@@ -96,6 +96,6 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        Json::returnJson($jsonResponse);
+        Json::fromDic()->returnJson($jsonResponse);
     }
 }

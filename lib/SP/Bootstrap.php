@@ -46,7 +46,6 @@ use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
 use SP\Util\Filter;
-use SP\Util\Util;
 use Symfony\Component\Debug\Debug;
 
 defined('APP_ROOT') || die();
@@ -259,7 +258,7 @@ final class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__u('Versión de PHP requerida >= %s <= %s'), '7.0', '7.2'),
+                sprintf(__('Versión de PHP requerida >= %s <= %s'), '7.0', '7.2'),
                 InitializationException::ERROR,
                 __u('Actualice la versión de PHP para que la aplicación funcione correctamente')
             );
@@ -389,7 +388,7 @@ final class Bootstrap
     {
         if (file_exists(OLD_CONFIG_FILE)) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgradeOldConfigFile(Util::getVersionStringNormalized());
+            $upgradeConfigService->upgradeOldConfigFile(InitWeb::getVersionStringNormalized());
         }
 
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());

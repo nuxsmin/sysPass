@@ -92,32 +92,6 @@ final class Html
     }
 
     /**
-     * Limpia los datos recibidos de un formulario. Sölo admite cadenas
-     *
-     * @param $data
-     *
-     * @return false|string con los datos limpiados
-     */
-    public static function sanitizeFull(&$data)
-    {
-        if (empty($data)) {
-            return $data;
-        }
-
-        if (is_array($data)) {
-            array_walk_recursive($data, '\SP\Html\Html::sanitizeFull');
-        } else {
-            $data = preg_replace([
-                /** @lang RegExp */
-                '/x[a-z\d]+/i',
-                /** @lang RegExp */
-                '/[^a-z0-9]+/i'], '', urldecode($data));
-        }
-
-        return $data;
-    }
-
-    /**
      * Truncar un texto a una determinada longitud.
      *
      * @param string $text  la cadena a truncar
@@ -130,9 +104,10 @@ final class Html
      */
     public static function truncate($text, $limit, $ellipsis = '...')
     {
-        if (strlen($text) > $limit) {
-            $text = trim(mb_substr($text, 0, $limit)) . $ellipsis;
+        if (mb_strlen($text) > $limit) {
+            return trim(mb_substr($text, 0, $limit)) . $ellipsis;
         }
+
         return $text;
     }
 
@@ -144,14 +119,15 @@ final class Html
      *
      * @return string
      */
-    public static function rgb2hex($rgb)
+    public static function rgb2hex(array $rgb)
     {
         $hex = "#";
-        $hex .= str_pad(dechex($rgb[0]), 2, "0", STR_PAD_LEFT);
-        $hex .= str_pad(dechex($rgb[1]), 2, "0", STR_PAD_LEFT);
-        $hex .= str_pad(dechex($rgb[2]), 2, "0", STR_PAD_LEFT);
 
-        return $hex; // returns the hex value including the number sign (#)
+        foreach ($rgb as $val) {
+            $hex .= str_pad(dechex($val), 2, "0", STR_PAD_LEFT);
+        }
+
+        return $hex;
     }
 
     /**
@@ -163,7 +139,7 @@ final class Html
      */
     public static function strongText($text)
     {
-        return ('<strong>' . $text . '</strong>');
+        return '<strong>' . $text . '</strong>';
     }
 
     /**
@@ -176,13 +152,11 @@ final class Html
      *
      * @return string
      */
-    public static function anchorText($text, $link = '', $title = '', $attribs = '')
+    public static function anchorText($text, $link = null, $title = null, $attribs = '')
     {
-        $alink = (!empty($link)) ? $link : $text;
-        $atitle = (!empty($title)) ? $title : '';
+        $alink = $link !== null ? $link : $text;
+        $atitle = $title !== null ? $title : $text;
 
-        $anchor = '<a href="' . $alink . '" title="' . $atitle . '" ' . $attribs . '>' . $text . '</a>';
-
-        return $anchor;
+        return sprintf('<a href="%s" title="%s" %s>%s</a>', $alink, $atitle, $attribs, $text);
     }
 }

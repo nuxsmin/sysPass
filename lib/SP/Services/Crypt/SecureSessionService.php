@@ -77,7 +77,7 @@ final class SecureSessionService extends Service
 
         try {
             if ($this->fileCache->isExpired($this->getFileNameFromCookie(), self::CACHE_EXPIRE_TIME)) {
-                logger('Session key expired or does not exist.');
+                logger('Session key expired or does not exist', 'ERROR');
 
                 return $this->saveKey();
             }
@@ -106,7 +106,7 @@ final class SecureSessionService extends Service
             if (($uuid = $this->cookie->loadCookie($this->seed)) === false
                 && ($uuid = $this->cookie->createCookie($this->seed)) === false
             ) {
-                throw new ServiceException('Unable to get UUID for filename.');
+                throw new ServiceException('Unable to get UUID for filename');
             }
 
             $this->filename = self::CACHE_PATH . DIRECTORY_SEPARATOR . $uuid;
@@ -126,7 +126,7 @@ final class SecureSessionService extends Service
             $securedKey = Key::createNewRandomKey();
             $this->fileCache->save($this->getFileNameFromCookie(), (new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
 
-            logger('Saved session key.');
+            logger('Saved session key');
 
             return $securedKey;
         } catch (\Exception $e) {

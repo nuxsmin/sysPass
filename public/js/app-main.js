@@ -794,24 +794,26 @@ sysPass.Main = function () {
         opts.data = {isAjax: 1};
 
         return appRequests.getActionCall(opts, function (json) {
-            // config.APP_ROOT = json.app_root;
-            config.LANG = json.lang;
-            config.PK = json.pk;
-            config.CHECK_UPDATES = json.check_updates;
-            config.CHECK_NOTICES = json.check_notices;
-            config.CRYPT.setPublicKey(json.pk);
-            config.TIMEZONE = json.timezone;
-            config.LOCALE = json.locale;
-            config.DEBUG = json.debug;
-            config.MAX_FILE_SIZE = parseInt(json.max_file_size);
-            config.COOKIES_ENABLED = json.cookies_enabled;
-            config.PLUGINS = json.plugins;
-            config.LOGGEDIN = json.loggedin;
-            config.AUTHBASIC_AUTOLOGIN = json.authbasic_autologin;
-            config.IMPORT_ALLOWED_EXTS = json.import_allowed_exts;
-            config.FILES_ALLOWED_EXTS = json.files_allowed_exts;
+            if (json.data !== undefined) {
+                // config.APP_ROOT = json.app_root;
+                config.LANG = json.data.lang;
+                config.PK = json.data.pk;
+                config.CHECK_UPDATES = json.data.check_updates;
+                config.CHECK_NOTICES = json.data.check_notices;
+                config.CRYPT.setPublicKey(json.data.pk);
+                config.TIMEZONE = json.data.timezone;
+                config.LOCALE = json.data.locale;
+                config.DEBUG = json.data.debug;
+                config.MAX_FILE_SIZE = parseInt(json.data.max_file_size);
+                config.COOKIES_ENABLED = json.data.cookies_enabled;
+                config.PLUGINS = json.data.plugins;
+                config.LOGGEDIN = json.data.loggedin;
+                config.AUTHBASIC_AUTOLOGIN = json.data.authbasic_autologin;
+                config.IMPORT_ALLOWED_EXTS = json.data.import_allowed_exts;
+                config.FILES_ALLOWED_EXTS = json.data.files_allowed_exts;
 
-            Object.freeze(config);
+                Object.freeze(config);
+            }
         });
     };
 

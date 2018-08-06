@@ -44,7 +44,11 @@ final class SecureKeyCookie extends Cookie
      *
      * @var Key
      */
-    protected $securedKey;
+    private $securedKey;
+    /**
+     * @var string
+     */
+    private $cypher;
 
     /**
      * @param Request $request
@@ -53,7 +57,20 @@ final class SecureKeyCookie extends Cookie
      */
     public static function factory(Request $request)
     {
-        return new self(self::COOKIE_NAME, $request);
+        $self = new self(self::COOKIE_NAME, $request);
+        $self->cypher = $self->getCypher();
+
+        return $self;
+    }
+
+    /**
+     * Devolver la llave de cifrado para los datos de la cookie
+     *
+     * @return string
+     */
+    public function getCypher()
+    {
+        return sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
     }
 
     /**
@@ -63,83 +80,75 @@ final class SecureKeyCookie extends Cookie
      */
     public function getKey()
     {
-        $key = $this->getCypher();
+        $cookie = $this->getCookie();
 
-        if (($cookie = $this->getCookie())) {
-            $data = $this->getCookieData($cookie, $key);
+        if ($cookie !== false) {
+            $data = $this->getCookieData($cookie, $this->cypher);
 
-            if ($data === false) {
-                logger('Cookie verification error.');
+            if ($data !== false) {
+                /** @var Vault $vault */
+                $vault = unserialize($data, ['allowed_classes' => Vault::class]);
 
-                return $this->saveKey($key);
-            }
+                if ($vault !== false
+                    && ($vault instanceof Vault) === true
+                ) {
+                    try {
+                        $this->securedKey = Key::loadFromAsciiSafeString($vault->getData($this->cypher));
 
-            /** @var Vault $vault */
-            $vault = unserialize($data);
-
-            if ($vault !== false
-                && ($vault instanceof Vault) === true
-            ) {
-                try {
-                    return Key::loadFromAsciiSafeString($vault->getData($key));
-                } catch (CryptoException $e) {
-                    logger($e->getMessage());
+                        return $this->securedKey;
+                    } catch (CryptoException $e) {
+                        logger($e->getMessage(), 'EXCEPTION');
+                    }
 
                     return false;
                 }
+            } else {
+                logger('Cookie verification error', 'ERROR');
             }
-        } elseif (($this->getSecuredKey() instanceof Key) === true) {
-            return $this->getSecuredKey();
-        } else {
-            return $this->saveKey($key);
+        } elseif (($this->securedKey instanceof Key) === true) {
+            return $this->securedKey;
         }
 
-        return false;
-    }
-
-    /**
-     * Devolver la llave de cifrado para los datos de la cookie
-     *
-     * @return string
-     */
-    private function getCypher()
-    {
-        return md5($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
+        return $this->saveKey() ? $this->securedKey : false;
     }
 
     /**
      * Guardar una llave de encriptación
      *
-     * @param $key
-     *
      * @return Key|false
      */
-    public function saveKey($key)
+    public function saveKey()
     {
-        if (empty($key)) {
-            return false;
-        }
-
         try {
-            $this->securedKey = Key::createNewRandomKey();
-
-            $vault = new Vault();
-            $vault->saveData($this->securedKey->saveToAsciiSafeString(), $key);
-
-            if ($this->setCookie($this->sign(serialize($vault), $key))) {
-                logger('Generating a new session key.');
-
-                return $this->securedKey;
-            } else {
-                logger('Could not generate session key cookie.');
+            if ($this->setCookie($this->sign($this->generateSecuredData()->getSerialized(), $this->cypher)) === false) {
+                logger('Could not generate session\'s key cookie', 'ERROR');
 
                 unset($this->securedKey);
+
+                return false;
             }
+
+            logger('Generating a new session\'s key cookie');
+
+            return true;
         } catch (CryptoException $e) {
-            logger($e->getMessage());
+            logger($e->getMessage(), 'EXCEPTION');
         }
 
         return false;
+    }
+
+    /**
+     * @return Vault
+     * @throws CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function generateSecuredData()
+    {
+        $this->securedKey = Key::createNewRandomKey();
+
+        return (new Vault())
+            ->saveData($this->securedKey->saveToAsciiSafeString(), $this->cypher);
     }
 
     /**

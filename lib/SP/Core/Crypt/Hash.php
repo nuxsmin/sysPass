@@ -83,19 +83,6 @@ final class Hash
     }
 
     /**
-     * Signs a message with a given key
-     *
-     * @param $message
-     * @param $key
-     *
-     * @return string
-     */
-    public static function signMessage($message, $key)
-    {
-        return hash_hmac('sha256', $message, $key);
-    }
-
-    /**
      * Checks a message with a given key against a hash
      *
      * @param $message
@@ -106,6 +93,19 @@ final class Hash
      */
     public static function checkMessage($message, $key, $hash)
     {
-        return hash_hmac('sha256', $message, $key) === $hash;
+        return hash_equals($hash, self::signMessage($message, $key));
+    }
+
+    /**
+     * Signs a message with a given key
+     *
+     * @param $message
+     * @param $key
+     *
+     * @return string
+     */
+    public static function signMessage($message, $key)
+    {
+        return hash_hmac('sha256', $message, $key);
     }
 }

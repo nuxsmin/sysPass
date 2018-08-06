@@ -512,6 +512,6 @@ final class Request
      */
     public function getServer(string $key): string
     {
-        return $this->request->server()->get($key, '');
+        return (string)$this->request->server()->get($key, '');
     }
 }

@@ -26,7 +26,7 @@ namespace SP\Mvc\View\Components;
 
 use RuntimeException;
 use SP\DataModel\DataModelInterface;
-use SP\Util\Json;
+use SP\Http\Json;
 
 /**
  * Class SelectItemAdapter

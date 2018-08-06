@@ -29,8 +29,7 @@ use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Html\Html;
-use SP\Services\Install\Installer;
+use SP\Core\PhpExtensionChecker;
 
 defined('APP_ROOT') || die();
 
@@ -126,36 +125,6 @@ final class Util
         return Encoding::binToHex(Core::secureRandom($length));
     }
 
-
-    /**
-     * Devuelve el valor de la variable enviada por un formulario.
-     *
-     * @param string $s con el nombre de la variable
-     * @param string $d con el valor por defecto
-     *
-     * @return string con el valor de la variable
-     */
-    public static function init_var($s, $d = '')
-    {
-        $r = $d;
-        if (isset($_REQUEST[$s]) && !empty($_REQUEST[$s])) {
-            $r = Html::sanitize($_REQUEST[$s]);
-        }
-
-        return $r;
-    }
-
-
-    /**
-     * Devuelve la versión de sysPass.
-     *
-     * @return string con la versión
-     */
-    public static function getVersionString()
-    {
-        return '2.2-dev';
-    }
-
     /**
      * Obtener datos desde una URL usando CURL
      *
@@ -167,20 +136,18 @@ final class Util
      * @return bool|string
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws SPException
      *
-     * @todo Use Guzzle
+     * TODO: Use Guzzle
+     *
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws SPException
      */
     public static function getDataFromUrl($url, array $data = null, $useCookie = false, $weak = false)
     {
         /** @var ConfigData $ConfigData */
         $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
-        if (!Checks::curlIsAvailable()) {
-            logger(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
-
-            throw new SPException(sprintf(__('Extensión \'%s\' no cargada'), 'CURL'));
-        }
+        Bootstrap::getContainer()->get(PhpExtensionChecker::class)->checkCurlAvailable(true);
 
         $ch = curl_init($url);
 
@@ -236,15 +203,7 @@ final class Util
         $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($data === false || $httpStatus !== 200) {
-            $Log = new Log();
-            $LogMessgae = $Log->getLogMessage();
-            $LogMessgae->setAction(__FUNCTION__);
-            $LogMessgae->addDescription(curl_error($ch));
-            $LogMessgae->addDetails(__('Respuesta', false), $httpStatus);
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-
-            throw new SPException($LogMessgae->getDescription(), SPException::WARNING);
+            throw new SPException(curl_error($ch), SPException::WARNING);
         }
 
         return $data;
@@ -324,105 +283,9 @@ final class Util
     }
 
     /**
-     * Devolver versión normalizada en cadena
-     *
-     * @return string
-     */
-    public static function getVersionStringNormalized()
-    {
-        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
-    }
-
-    /**
-     * Comprobar si una versión necesita actualización
-     *
-     * @param string       $currentVersion
-     * @param array|string $upgradeableVersion
-     *
-     * @return bool True si la versión es menor.
-     */
-    public static function checkVersion($currentVersion, $upgradeableVersion)
-    {
-        if (is_array($upgradeableVersion)) {
-            $upgradeableVersion = $upgradeableVersion[count($upgradeableVersion) - 1];
-        }
-
-        $currentVersion = self::normalizeVersionForCompare($currentVersion);
-        $upgradeableVersion = self::normalizeVersionForCompare($upgradeableVersion);
-
-        if (empty($currentVersion) || empty($upgradeableVersion)) {
-            return false;
-        }
-
-        if (PHP_INT_SIZE > 4) {
-            return version_compare($currentVersion, $upgradeableVersion) === -1;
-        }
-
-        list($currentVersion, $build) = explode('.', $currentVersion, 2);
-        list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeableVersion, 2);
-
-        $versionRes = (int)$currentVersion < (int)$upgradeVersion;
-
-        return (($versionRes && (int)$upgradeBuild === 0)
-            || ($versionRes && (int)$build < (int)$upgradeBuild));
-    }
-
-    /**
-     * Devuelve una versión normalizada para poder ser comparada
-     *
-     * @param string $versionIn
-     *
-     * @return string
-     */
-    private static function normalizeVersionForCompare($versionIn)
-    {
-        if (is_string($versionIn) && !empty($versionIn)) {
-            list($version, $build) = explode('.', $versionIn);
-
-            $nomalizedVersion = 0;
-
-            foreach (str_split($version) as $key => $value) {
-                $nomalizedVersion += (int)$value * (10 ** (3 - $key));
-            }
-
-            return $nomalizedVersion . '.' . $build;
-        }
-
-        return '';
-    }
-
-    /**
-     * Devuelve la versión de sysPass.
-     *
-     * @param bool $retBuild devolver el número de compilación
-     *
-     * @return array con el número de versión
-     */
-    public static function getVersionArray($retBuild = false)
-    {
-        $version = array_values(Installer::VERSION);
-
-        if ($retBuild === true) {
-            $version[] = Installer::BUILD;
-
-            return $version;
-        }
-
-        return $version;
-    }
-
-    /**
-     * Devolver versión normalizada en array
-     *
-     * @return array
-     */
-    public static function getVersionArrayNormalized()
-    {
-        return [implode('', Installer::VERSION), Installer::BUILD];
-    }
-
-    /**
      * Realiza el proceso de logout.
+     *
+     * FIXME
      */
     public static function logout()
     {
@@ -470,21 +333,6 @@ final class Util
         // not strict? let the regular php bool check figure it out (will
         // largely default to true)
         return ($in ? true : false);
-    }
-
-    /**
-     * Recorrer un array y escapar los carácteres no válidos en Javascript.
-     *
-     * @param $array
-     *
-     * @return array
-     */
-    public static function arrayJSEscape(&$array)
-    {
-        array_walk($array, function (&$value) {
-            $value = str_replace(['\'', '"'], '\\\'', $value);
-        });
-        return $array;
     }
 
     /**
@@ -546,30 +394,6 @@ final class Util
         }
 
         return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $object));
-    }
-
-    /**
-     * Devuelve la última función llamada tras un error
-     *
-     * @param string $function La función utilizada como base
-     *
-     * @return string
-     */
-    public static function traceLastCall($function = null)
-    {
-        $backtrace = debug_backtrace(0);
-
-        if (count($backtrace) === 1) {
-            return $backtrace[1]['function'];
-        }
-
-        foreach ($backtrace as $index => $fn) {
-            if ($fn['function'] === $function) {
-                return $backtrace[$index + 1]['function'];
-            }
-        }
-
-        return '';
     }
 
     /**

@@ -209,7 +209,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->view->assign('useImage', $this->configData->isPublinksImageEnabled() || $this->configData->isAccountPassToImage());
 
                 if ($this->view->useImage) {
-                    $this->view->assign('accountPassImage', ImageUtil::convertText($accountData->getPass()));
+                    $imageUtil = $this->dic->get(ImageUtil::class);
+                    $this->view->assign('accountPassImage', $imageUtil->convertText($accountData->getPass()));
                 } else {
                     $this->view->assign('copyPassRoute', Acl::getActionRoute(Acl::ACCOUNT_VIEW_PASS));
                 }

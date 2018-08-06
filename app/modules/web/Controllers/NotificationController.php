@@ -83,6 +83,8 @@ final class NotificationController extends ControllerBase implements CrudControl
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
+        $itemsGridHelper->setQueryTimeStart(microtime(true));
+
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getNotificationsGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
@@ -125,6 +127,7 @@ final class NotificationController extends ControllerBase implements CrudControl
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setViewData($notificationId = null)
     {
@@ -151,7 +154,8 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
-     * Search action
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {

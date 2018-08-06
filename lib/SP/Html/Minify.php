@@ -109,10 +109,6 @@ final class Minify
 
         $this->setHeaders();
 
-//        if ($this->checkZlib() || !ob_start('ob_gzhandler')) {
-//            ob_start();
-//        }
-
         $data = '';
 
         foreach ($this->files as $file) {
@@ -123,12 +119,12 @@ final class Minify
                 try {
                     $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
                 } catch (SPException $e) {
-                    logger($e->getMessage());
+                    processException($e);
                 }
             } else {
-
                 if ($file['min'] === true && $disableMinify === false) {
                     $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
+                    
                     if ($this->type === self::FILETYPE_JS) {
                         $data .= $this->jsCompress(file_get_contents($filePath));
                     }
@@ -167,10 +163,13 @@ final class Minify
         $response->header('Pragma', 'public; maxage={' . self::OFFSET . '}');
         $response->header('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + self::OFFSET));
 
-        if ($this->type === self::FILETYPE_JS) {
-            $response->header('Content-type', 'application/x-javascript; charset: UTF-8');
-        } elseif ($this->type === self::FILETYPE_CSS) {
-            $response->header('Content-type', 'text/css; charset: UTF-8');
+        switch ($this->type) {
+            case self::FILETYPE_JS;
+                $response->header('Content-type', 'application/javascript; charset: UTF-8');
+                break;
+            case self::FILETYPE_CSS:
+                $response->header('Content-type', 'text/css; charset: UTF-8');
+                break;
         }
     }
 
@@ -199,15 +198,15 @@ final class Minify
      */
     private function jsCompress($buffer)
     {
-        $regexReplace = array(
+        $regexReplace = [
             '#/\*[^*]*\*+([^/][^*]*\*+)*/#',
             '#^[\s\t]*//.*$#m',
             '#[\s\t]+$#m',
             '#^[\s\t]+#m',
             '#\s*//\s.*$#m'
-        );
+        ];
 
-        return str_replace(array("\r\n", "\r", "\n", "\t"), '', preg_replace($regexReplace, '', $buffer));
+        return str_replace(["\r\n", "\r", "\n", "\t"], '', preg_replace($regexReplace, '', $buffer));
     }
 
     /**
@@ -241,26 +240,18 @@ final class Minify
      */
     public function addFile($file, $minify = true)
     {
-        if (strrpos($file, ',')) {
-            $files = explode(',', $file);
+        $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
 
-            foreach ($files as $filename) {
-                $this->addFile($filename, $minify);
-            }
+        if (file_exists($filePath)) {
+            $this->files[] = [
+                'type' => 'file',
+                'base' => $this->base,
+                'name' => Request::getSecureAppFile($file, $this->base),
+                'min' => $minify === true && $this->needsMinify($file),
+                'md5' => md5_file($filePath)
+            ];
         } else {
-            $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
-
-            if (file_exists($filePath)) {
-                $this->files[] = array(
-                    'type' => 'file',
-                    'base' => $this->base,
-                    'name' => Request::getSecureAppFile($file, $this->base),
-                    'min' => $minify === true && $this->needsMinify($file),
-                    'md5' => md5_file($filePath)
-                );
-            } else {
-                logger('File not found: ' . $filePath);
-            }
+            logger('File not found: ' . $filePath);
         }
 
         return $this;
@@ -275,7 +266,7 @@ final class Minify
      */
     private function needsMinify($file)
     {
-        return !preg_match('/\.(min|pack)\./', $file);
+        return !preg_match('/\.min|pack\.css|js/', $file);
     }
 
     /**
@@ -346,16 +337,5 @@ final class Minify
         $this->type = (int)$type;
 
         return $this;
-    }
-
-    /**
-     * Comprobar si la salida comprimida en con zlib está activada.
-     * No es compatible con ob_gzhandler()
-     *
-     * @return bool
-     */
-    private function checkZlib()
-    {
-        return Util::boolval(ini_get('zlib.output_compression'));
     }
 }

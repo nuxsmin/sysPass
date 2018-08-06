@@ -32,35 +32,13 @@ namespace SP\Util;
 final class Checks
 {
     /**
-     * Comprobar si la función de números aleatorios está disponible.
-     *
-     * @return bool
-     */
-    public static function secureRNGIsAvailable()
-    {
-        // Check openssl_random_pseudo_bytes
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            openssl_random_pseudo_bytes(1, $strong);
-
-            if ($strong === true) {
-                return true;
-            }
-        }
-
-        // Check /dev/urandom
-        $fp = @file_get_contents('/dev/urandom', false, null, 0, 1);
-
-        return $fp !== false;
-    }
-
-    /**
      * Comprobar si sysPass se ejecuta en W$indows.
      *
      * @return bool
      */
     public static function checkIsWindows()
     {
-        return 0 === strpos(PHP_OS, 'WIN');
+        return strpos(PHP_OS, 'WIN') === 0;
     }
 
     /**
@@ -71,60 +49,5 @@ final class Checks
     public static function checkPhpVersion()
     {
         return version_compare(PHP_VERSION, '7.0', '>=') && version_compare(PHP_VERSION, '7.3', '<');
-    }
-
-    /**
-     * Comprobar los módulos necesarios.
-     *
-     * @return array con los módulos no disponibles
-     */
-    public static function checkModules()
-    {
-        $modsNeed = [
-            'ldap',
-            'curl',
-            'SimpleXML',
-            'Phar',
-            'json',
-            'xml',
-            'PDO',
-            'zlib',
-            'gettext',
-            'openssl',
-            'pcre',
-            'session',
-            'gd',
-            'mbstring'
-        ];
-
-        $missing = [];
-
-        foreach ($modsNeed as $module) {
-            if (!extension_loaded($module)) {
-                $missing[] = $module;
-            }
-        }
-
-        return $missing;
-    }
-
-    /**
-     * Comprobar si el módulo CURL está instalado.
-     *
-     * @return bool
-     */
-    public static function curlIsAvailable()
-    {
-        return extension_loaded('curl');
-    }
-
-    /**
-     * Comprobar si el módulo GD está instalado.
-     *
-     * @return bool
-     */
-    public static function gdIsAvailable()
-    {
-        return extension_loaded('gd');
     }
 }

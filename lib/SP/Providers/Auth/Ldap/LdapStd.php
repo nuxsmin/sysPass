@@ -36,8 +36,8 @@ use SP\Core\Events\EventMessage;
  */
 final class LdapStd extends LdapBase
 {
-    const userObjectFilter = '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
-    const groupObjectFilter = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))';
+    const FILTER_USER_OBJECT = '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
+    const FILTER_GROUP_OBJECT = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))';
 
     /**
      * Devolver el filtro para comprobar la pertenecia al grupo
@@ -48,12 +48,12 @@ final class LdapStd extends LdapBase
     protected function getGroupMembershipFilter()
     {
         if (empty($this->ldapParams->getGroup())) {
-            return self::userObjectFilter;
+            return self::FILTER_USER_OBJECT;
         }
 
         $groupDN = ldap_escape($this->searchGroupDN());
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))' . self::userObjectFilter . ')';
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))' . self::FILTER_USER_OBJECT . ')';
     }
 
     /**
@@ -75,7 +75,7 @@ final class LdapStd extends LdapBase
     {
         $userLogin = ldap_escape($this->userLogin);
 
-        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))' . self::userObjectFilter . ')';
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))' . self::FILTER_USER_OBJECT . ')';
     }
 
     /**
@@ -103,7 +103,7 @@ final class LdapStd extends LdapBase
         $userDN = ldap_escape($this->ldapAuthData->getDn());
         $groupName = $this->getGroupName() ?: $this->ldapParams->getGroup();
 
-        $filter = '(&(cn=' . ldap_escape($groupName) . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))' . self::groupObjectFilter . ')';
+        $filter = '(&(cn=' . ldap_escape($groupName) . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))' . self::FILTER_GROUP_OBJECT . ')';
 
         $searchResults = $this->getResults($filter, ['member', 'uniqueMember']);
 
@@ -150,6 +150,6 @@ final class LdapStd extends LdapBase
      */
     protected function getGroupObjectFilter()
     {
-        return self::groupObjectFilter;
+        return self::FILTER_GROUP_OBJECT;
     }
 }

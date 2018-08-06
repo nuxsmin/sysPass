@@ -24,12 +24,12 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use phpseclib\Crypt\RSA;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
-use SP\Http\Cookies;
-use SP\Http\Response;
+use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Browser\Browser;
+use SP\Services\Import\ImportService;
 
 /**
  * Class BootstrapController
@@ -38,6 +38,8 @@ use SP\Providers\Auth\Browser\Browser;
  */
 final class BootstrapController extends SimpleControllerBase
 {
+    use JsonTrait;
+
     /**
      * Returns environment data
      *
@@ -46,29 +48,70 @@ final class BootstrapController extends SimpleControllerBase
      */
     public function getEnvironmentAction()
     {
-        $configData = $this->config->getConfigData();
-
-        $checkStatus = $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled());
+        $checkStatus = $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $this->configData->isDemoEnabled());
 
         $data = [
-            'lang' => require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc',
-            'locale' => $configData->getSiteLang(),
+            'lang' => $this->getJsLang(),
+            'locale' => $this->configData->getSiteLang(),
             'app_root' => Bootstrap::$WEBURI,
-            'max_file_size' => $configData->getFilesAllowedSize(),
-            'check_updates' => $checkStatus && $configData->isCheckUpdates(),
-            'check_notices' => $checkStatus && $configData->isChecknotices(),
+            'max_file_size' => $this->configData->getFilesAllowedSize(),
+            'check_updates' => $checkStatus && $this->configData->isCheckUpdates(),
+            'check_notices' => $checkStatus && $this->configData->isChecknotices(),
             'timezone' => date_default_timezone_get(),
-            'debug' => DEBUG || $configData->isDebug(),
-            'cookies_enabled' => Cookies::checkCookies(),
-//            'plugins' => PluginUtil::getEnabledPlugins(),
-            'plugins' => [],
+            'debug' => DEBUG || $this->configData->isDebug(),
+            'cookies_enabled' => $this->getCookiesEnabled(),
+            'plugins' => $this->getPlugins(),
             'loggedin' => $this->session->isLoggedIn(),
-            'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled(),
-            'pk' => $this->session->getPublicKey() ?: (new CryptPKI($this->dic->get(RSA::class)))->getPublicKey(),
-            'import_allowed_exts' => ['CSV', 'XML'],
-            'files_allowed_exts' => $configData->getFilesAllowedExts()
+            'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
+            'pk' => $this->getPublicKey(),
+            'import_allowed_exts' => ImportService::ALLOWED_EXTS,
+            'files_allowed_exts' => $this->configData->getFilesAllowedExts()
         ];
 
-        Response::printJson($data, 0);
+        $this->returnJsonResponseData($data);
+    }
+
+    /**
+     * @return array
+     */
+    private function getJsLang()
+    {
+        return require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
+    }
+
+    /**
+     * @return bool
+     */
+    private function getCookiesEnabled()
+    {
+        return $this->router->request()->cookies()->get(session_name()) !== null;
+    }
+
+    /**
+     * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function getPlugins()
+    {
+        return $this->dic->get(PluginManager::class)->getEnabledPlugins();
+    }
+
+    /**
+     * @return bool
+     */
+    private function getAuthBasicAutologinEnabled()
+    {
+        return Browser::getServerAuthUser() && $this->configData->isAuthBasicAutoLoginEnabled();
+    }
+
+    /**
+     * @return string
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function getPublicKey()
+    {
+        return $this->session->getPublicKey() ?: $this->dic->get(CryptPKI::class)->getPublicKey();
     }
 }

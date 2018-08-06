@@ -35,13 +35,13 @@ use SP\Http\Request;
 abstract class Cookie
 {
     /**
-     * @var string
-     */
-    private $cookieName;
-    /**
      * @var Request
      */
     protected $request;
+    /**
+     * @var string
+     */
+    private $cookieName;
 
     /**
      * Cookie constructor.
@@ -63,11 +63,11 @@ abstract class Cookie
      *
      * @return string
      */
-    protected final function sign($data, $cypher)
+    public final function sign($data, $cypher)
     {
         $data = base64_encode($data);
 
-        return hash_hmac('sha256', $data, $cypher) . ';' . $data;
+        return Hash::signMessage($data, $cypher) . ';' . $data;
     }
 
     /**
@@ -78,15 +78,15 @@ abstract class Cookie
      *
      * @return bool|string
      */
-    protected final function getCookieData($data, $cypher)
+    public final function getCookieData($data, $cypher)
     {
-        list($signature, $data) = explode(';', $data, 2);
-
-        if (!empty($signature) && !empty($data)) {
-            return hash_equals($signature, hash_hmac('sha256', $data, $cypher)) ? base64_decode($data) : false;
+        if (strpos($data, ';') === false) {
+            return false;
         }
 
-        return false;
+        list($signature, $data) = explode(';', $data, 2);
+
+        return Hash::checkMessage($data, $cypher, $signature) ? base64_decode($data) : false;
     }
 
     /**
@@ -108,6 +108,17 @@ abstract class Cookie
      */
     protected function setCookie($data)
     {
+        // Do not try to set cookies when testing
+        if (APP_MODULE === 'tests') {
+            return true;
+        }
+
+        if (headers_sent()) {
+            logger('Headers already sent', 'ERROR');
+
+            return false;
+        }
+
         return setcookie($this->cookieName, $data, 0, Bootstrap::$WEBROOT);
     }
 }

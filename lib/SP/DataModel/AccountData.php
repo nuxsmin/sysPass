@@ -27,7 +27,7 @@ namespace SP\DataModel;
 defined('APP_ROOT') || die();
 
 use JsonSerializable;
-use SP\Util\Json;
+use SP\Http\Json;
 
 /**
  * Class AccountData

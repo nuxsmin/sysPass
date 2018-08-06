@@ -1,7 +1,7 @@
 <main class="mdl-layout__content">
     <div id="actions" class="upgrade">
         <div id="page-title">
-            <h1><?php use SP\Util\Util;
+            <h1><?php use SP\Util\Version;
 
                 printf(__('Actualización  %s'), $upgradeVersion); ?></h1>
         </div>
@@ -29,7 +29,7 @@
                     <?php echo __('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
-                <?php if (Util::checkVersion($version, '130.16011001') && count($constraints) > 0): ?>
+                <?php if (Version::checkVersion($version, '130.16011001') && count($constraints) > 0): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">
@@ -110,7 +110,7 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (Util::checkVersion($version, '210.17022601')): ?>
+                <?php if (Version::checkVersion($version, '210.17022601')): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

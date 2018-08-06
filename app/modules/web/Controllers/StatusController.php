@@ -30,6 +30,7 @@ use SP\Core\Exceptions\CheckException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Util\Util;
+use SP\Util\Version;
 
 /**
  * Class StatusController
@@ -70,7 +71,7 @@ final class StatusController extends SimpleControllerBase
                     if (preg_match('/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/', $requestData->tag_name, $matches)) {
                         $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
 
-                        if (Util::checkVersion(Util::getVersionStringNormalized(), $pubVersion)) {
+                        if (Version::checkVersion(Version::getVersionStringNormalized(), $pubVersion)) {
                             $this->returnJsonResponseData([
                                 'version' => $requestData->tag_name,
                                 'url' => $requestData->html_url,

@@ -138,8 +138,8 @@ final class UserForm extends FormBase implements FormInterface
     private function isDemo()
     {
         return $this->configData->isDemoEnabled()
-            && ($this->userData->getLogin() === 'demo'
-                && $this->userData->isAdminApp() === 0);
+            && $this->itemId === 2 // FIXME: Ugly!!
+            && $this->context->getUserData()->getIsAdminApp() === 0;
     }
 
     /**

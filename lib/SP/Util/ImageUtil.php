@@ -24,7 +24,9 @@
 
 namespace SP\Util;
 
+use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\InvalidImageException;
+use SP\Core\PhpExtensionChecker;
 
 defined('APP_ROOT') || die();
 
@@ -36,20 +38,67 @@ defined('APP_ROOT') || die();
 final class ImageUtil
 {
     /**
+     * ImageUtil constructor.
+     *
+     * @param PhpExtensionChecker $checker
+     *
+     * @throws CheckException
+     */
+    public function __construct(PhpExtensionChecker $checker)
+    {
+        $checker->checkCurlAvailable(true);
+    }
+
+    /**
+     * Crear miniatura de una imagen
+     *
+     * @param $image string La imagen a redimensionar
+     *
+     * @return bool|string
+     * @throws InvalidImageException
+     */
+    public function createThumbnail($image)
+    {
+        $im = @imagecreatefromstring($image);
+
+        if ($im === false) {
+            throw new InvalidImageException(__u('Imagen no válida'));
+        }
+
+        $width = imagesx($im);
+        $height = imagesy($im);
+
+        // Calcular el tamaño de la miniatura
+        $new_width = 48;
+        $new_height = floor($height * ($new_width / $width));
+
+        // Crear nueva imagen
+        $imTmp = imagecreatetruecolor($new_width, $new_height);
+
+        // Redimensionar la imagen
+        imagecopyresized($imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+        // Devolver la imagen
+        ob_start();
+        imagepng($imTmp);
+        $thumbnail = ob_get_contents();
+        ob_end_clean();
+
+        imagedestroy($imTmp);
+        imagedestroy($im);
+
+        return base64_encode($thumbnail);
+    }
+
+    /**
      * Convertir un texto a imagen
      *
      * @param $text string El texto a convertir
      *
      * @return bool|string
      */
-    public static function convertText($text)
+    public function convertText($text)
     {
-        if (!Checks::gdIsAvailable()) {
-            logger(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
-
-            return false;
-        }
-
         $width = strlen($text) * 10;
 
         $im = @imagecreatetruecolor($width, 30);
@@ -83,50 +132,5 @@ final class ImageUtil
         imagedestroy($im);
 
         return base64_encode($image);
-    }
-
-    /**
-     * Crear miniatura de una imagen
-     *
-     * @param $image string La imagen a redimensionar
-     *
-     * @return bool|string
-     * @throws InvalidImageException
-     */
-    public static function createThumbnail($image)
-    {
-        if (!Checks::gdIsAvailable()) {
-            logger(sprintf(__('Extensión \'%s\' no cargada'), 'GD'));
-
-            return false;
-        }
-
-        if (($im = @imagecreatefromstring($image)) === false) {
-            throw new InvalidImageException(__u('Imagen no válida'));
-        }
-
-        $width = imagesx($im);
-        $height = imagesy($im);
-
-        // Calcular el tamaño de la miniatura
-        $new_width = 48;
-        $new_height = floor($height * ($new_width / $width));
-
-        // Crear nueva imagen
-        $imTmp = imagecreatetruecolor($new_width, $new_height);
-
-        // Redimensionar la imagen
-        imagecopyresized($imTmp, $im, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-        // Devolver la imagen
-        ob_start();
-        imagepng($imTmp);
-        $thumbnail = ob_get_contents();
-        ob_end_clean();
-
-        imagedestroy($imTmp);
-        imagedestroy($im);
-
-        return base64_encode($thumbnail);
     }
 }

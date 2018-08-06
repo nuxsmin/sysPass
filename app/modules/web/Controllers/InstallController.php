@@ -28,13 +28,13 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
+use SP\Core\PhpExtensionChecker;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
-use SP\Util\Checks;
 
 /**
  * Class InstallController
@@ -56,38 +56,12 @@ final class InstallController extends ControllerBase
 
         $errors = [];
 
-        if (!Checks::checkPhpVersion()) {
-            $errors[] = [
-                'type' => SPException::CRITICAL,
-                'description' => __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
-                'hint' => __('Actualice la versión de PHP para que la aplicación funcione correctamente')
+        foreach ($this->dic->get(PhpExtensionChecker::class)->getMissing() as $module) {
+            $error[] = [
+                'type' => SPException::WARNING,
+                'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
+                'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
             ];
-        }
-
-        $modules = Checks::checkModules();
-
-        if (count($modules) > 0) {
-            foreach ($modules as $module) {
-                $error[] = [
-                    'type' => SPException::WARNING,
-                    'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
-                    'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
-                ];
-            }
-        }
-
-        if (@file_exists(__FILE__ . "\0Nullbyte")) {
-            $errors[] = [
-                'type' => SPException::WARNING,
-                'description' => __('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-                'hint' => __('Actualice la versión de PHP para usar sysPass de forma segura')];
-        }
-
-        if (!Checks::secureRNGIsAvailable()) {
-            $errors[] = [
-                'type' => SPException::WARNING,
-                'description' => __('No se encuentra el generador de números aleatorios.'),
-                'hint' => __('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')];
         }
 
         $this->view->assign('errors', $errors);

@@ -55,7 +55,8 @@
                         <?php if ($showPassIcon): ?>
                             <li id="btnUserPass" class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
-                                data-action-route="user/editPass/<?php echo $context_userId; ?>"
+                                data-action-route="user/editPass"
+                                data-item-id="<?php echo $context_userId; ?>"
                                 data-sk="<?php echo $sk; ?>">
                                 <i class="material-icons">security</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
@@ -118,7 +119,8 @@
                     <a class="btn-action mdl-navigation__link"
                        title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                        data-onclick="appMgmt/show"
-                       data-action-route="user/editPass/<?php echo $context_userId; ?>"
+                       data-action-route="user/editPass"
+                       data-item-id="<?php echo $context_userId; ?>"
                        data-sk="<?php echo $sk; ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Cambiar Clave de Usuario'); ?>

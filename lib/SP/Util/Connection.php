@@ -102,6 +102,39 @@ final class Connection implements ConnectionInterface
     }
 
     /**
+     * Obtener un socket del tipo TCP
+     *
+     * @return resource
+     */
+    private function getTCPSocket()
+    {
+        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
+//        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    }
+
+    /**
+     * Obtener un socket del tipo UDP
+     *
+     * @return resource
+     */
+    private function getUDPSocket()
+    {
+        return stream_socket_client('udp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
+//        return @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+    }
+
+    /**
+     * Obtener el último error del socket
+     *
+     * @return string
+     */
+    public function getSocketError()
+    {
+        return sprintf('%s (%d)', $this->errorstr, $this->errorno);
+//        return socket_strerror(socket_last_error($this->_socket));
+    }
+
+    /**
      * Cerrar el socket
      */
     public function closeSocket()
@@ -121,49 +154,16 @@ final class Connection implements ConnectionInterface
     public function send($message)
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(__('Socket no inicializado', false), SPException::WARNING);
+            throw new SPException(__u('Socket no inicializado'), SPException::WARNING);
         }
 
         $nBytes = @fwrite($this->socket, $message);
 //        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
-            throw new SPException(__('Error al enviar datos', false), SPException::WARNING, $this->getSocketError());
+            throw new SPException(__u('Error al enviar datos'), SPException::WARNING, $this->getSocketError());
         }
 
         return $nBytes;
-    }
-
-    /**
-     * Obtener el último error del socket
-     *
-     * @return string
-     */
-    public function getSocketError()
-    {
-        return sprintf('%s (%d)', $this->errorstr, $this->errorno);
-//        return socket_strerror(socket_last_error($this->_socket));
-    }
-
-    /**
-     * Obtener un socket del tipo UDP
-     *
-     * @return resource
-     */
-    private function getUDPSocket()
-    {
-        return stream_socket_client('udp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
-//        return @socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-    }
-
-    /**
-     * Obtener un socket del tipo TCP
-     *
-     * @return resource
-     */
-    private function getTCPSocket()
-    {
-        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
-//        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     }
 }

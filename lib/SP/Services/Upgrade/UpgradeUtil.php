@@ -26,6 +26,7 @@ namespace SP\Services\Upgrade;
 
 use SP\Config\Config;
 use SP\Util\Util;
+use SP\Util\Version;
 
 /**
  * Class UpgradeUtil
@@ -62,12 +63,12 @@ final class UpgradeUtil
      */
     public function checkDbVersion()
     {
-        $appVersion = Util::getVersionStringNormalized();
+        $appVersion = Version::getVersionStringNormalized();
         $databaseVersion = UserUpgrade::fixVersionNumber(ConfigDB::getValue('version'));
 
-        if (Util::checkVersion($databaseVersion, $appVersion)
+        if (Version::checkVersion($databaseVersion, $appVersion)
             && Request::analyze('nodbupgrade', 0) === 0
-            && Util::checkVersion($databaseVersion, self::$dbUpgrade)
+            && Version::checkVersion($databaseVersion, self::$dbUpgrade)
             && !$this->configData->isMaintenance()
         ) {
             $this->setUpgradeKey('db');
@@ -111,7 +112,7 @@ final class UpgradeUtil
     {
         $appVersion = UserUpgrade::fixVersionNumber($this->configData->getConfigVersion());
 
-        if (Util::checkVersion($appVersion, self::$appUpgrade) && !$this->configData->isMaintenance()) {
+        if (Version::checkVersion($appVersion, self::$appUpgrade) && !$this->configData->isMaintenance()) {
             $this->setUpgradeKey('app');
 
             // FIXME: send link for upgrading

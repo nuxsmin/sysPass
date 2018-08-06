@@ -41,6 +41,7 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Util\Util;
+use SP\Util\Version;
 
 defined('APP_ROOT') || die();
 
@@ -54,7 +55,7 @@ final class Installer extends Service
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18080201;
+    const BUILD = 18080601;
 
     /**
      * @var DatabaseSetupInterface
@@ -182,7 +183,7 @@ final class Installer extends Service
         $this->saveMasterPassword();
         $this->createAdminAccount();
 
-        $version = Util::getVersionStringNormalized();
+        $version = Version::getVersionStringNormalized();
 
         $this->dic->get(ConfigService::class)
             ->create(new \SP\DataModel\ConfigData('version', $version));
@@ -235,8 +236,8 @@ final class Installer extends Service
         $this->configData->setPasswordSalt(Util::generateRandomBytes(30));
 
         // Sets version and remove upgrade key
-        $this->configData->setConfigVersion(Util::getVersionStringNormalized());
-        $this->configData->setDatabaseVersion(Util::getVersionStringNormalized());
+        $this->configData->setConfigVersion(Version::getVersionStringNormalized());
+        $this->configData->setDatabaseVersion(Version::getVersionStringNormalized());
         $this->configData->setUpgradeKey(null);
 
         // Set DB connection info

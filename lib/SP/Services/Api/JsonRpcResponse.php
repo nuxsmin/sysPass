@@ -25,7 +25,7 @@
 namespace SP\Services\Api;
 
 use SP\Core\Exceptions\SPException;
-use SP\Util\Json;
+use SP\Http\Json;
 
 /**
  * Class JsonRpcResponse

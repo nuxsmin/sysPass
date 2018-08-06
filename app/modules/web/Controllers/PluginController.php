@@ -140,6 +140,7 @@ final class PluginController extends ControllerBase
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setViewData($pluginId = null)
     {

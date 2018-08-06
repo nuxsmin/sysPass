@@ -215,7 +215,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
     public function editPassAction($id)
     {
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $this->userData->getId())) {
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
             return;
         }
 
@@ -253,7 +253,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
     public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
-            return;
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign(__FUNCTION__, 1);
@@ -295,7 +295,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
     public function saveCreateAction()
     {
         if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
-            return;
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -356,7 +356,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
     public function saveEditAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
-            return;
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -394,8 +394,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function saveEditPassAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS)) {
-            return;
+        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {

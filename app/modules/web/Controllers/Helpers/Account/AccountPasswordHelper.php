@@ -116,7 +116,9 @@ final class AccountPasswordHelper extends HelperBase
         $pass = $this->getPasswordClear($accountData);
 
         if ($this->configData->isAccountPassToImage()) {
-            $this->view->assign('pass', ImageUtil::convertText($pass));
+            $imageUtil = $this->dic->get(ImageUtil::class);
+
+            $this->view->assign('pass', $imageUtil->convertText($pass));
             $this->view->assign('isImage', 1);
         } else {
             $this->view->assign('pass', htmlentities($pass));

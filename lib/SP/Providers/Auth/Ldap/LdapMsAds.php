@@ -36,8 +36,8 @@ use SP\Core\Events\EventMessage;
  */
 final class LdapMsAds extends LdapBase
 {
-    const userObjectFilter = '(|(objectCategory=person)(objectClass=user))';
-    const groupObjectFilter = '(objectCategory=group)';
+    const FILTER_USER_OBJECT = '(|(objectCategory=person)(objectClass=user))';
+    const FILTER_GROUP_OBJECT = '(objectCategory=group)';
 
     /**
      * Devolver el filtro para comprobar la pertenecia al grupo
@@ -48,12 +48,12 @@ final class LdapMsAds extends LdapBase
     protected function getGroupMembershipFilter()
     {
         if (empty($this->ldapParams->getGroup())) {
-            return self::userObjectFilter;
+            return self::FILTER_USER_OBJECT;
         }
 
         $groupDN = ldap_escape($this->searchGroupDN());
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))' . self::userObjectFilter . ')';
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))' . self::FILTER_USER_OBJECT . ')';
     }
 
     /**
@@ -103,7 +103,7 @@ final class LdapMsAds extends LdapBase
     {
         $userLogin = ldap_escape($this->userLogin);
 
-        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))' . self::userObjectFilter . ')';
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))' . self::FILTER_USER_OBJECT . ')';
     }
 
     /**
@@ -189,6 +189,6 @@ final class LdapMsAds extends LdapBase
      */
     protected function getGroupObjectFilter()
     {
-        return self::groupObjectFilter;
+        return self::FILTER_GROUP_OBJECT;
     }
 }
