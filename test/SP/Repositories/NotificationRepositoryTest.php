@@ -142,7 +142,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $data = new NotificationData();
         $data->setId(4);
         $data->setUserId(2);
-        $data->setDate(time());
         $data->setType('Test');
         $data->setComponent('Config');
         $data->setDescription(NotificationMessage::factory()->setTitle('Prueba')->setDescription(['blablabla']));
@@ -152,8 +151,17 @@ class NotificationRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(4, self::$repository->create($data)->getLastId());
 
-        $this->assertEquals($data, self::$repository->getById(4)->getData());
+        /** @var NotificationData $resultData */
+        $resultData = self::$repository->getById(4)->getData();
 
+        $this->assertEquals($data->getId(), $resultData->getId());
+        $this->assertEquals($data->getUserId(), $resultData->getUserId());
+        $this->assertEquals($data->getType(), $resultData->getType());
+        $this->assertEquals($data->getComponent(), $resultData->getComponent());
+        $this->assertEquals($data->isChecked(), $resultData->isChecked());
+        $this->assertEquals($data->isOnlyAdmin(), $resultData->isOnlyAdmin());
+        $this->assertEquals($data->isSticky(), $resultData->isSticky());
+        $this->assertGreaterThan(0, $resultData->getDate());
     }
 
     /**
@@ -224,7 +232,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $data = new NotificationData();
         $data->setId(3);
         $data->setUserId(2);
-        $data->setDate(time());
         $data->setType('Test');
         $data->setComponent('Config');
         $data->setDescription(NotificationMessage::factory()->setTitle('Prueba')->setDescription(['blablabla']));
@@ -234,7 +241,17 @@ class NotificationRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$repository->update($data));
 
-        $this->assertEquals($data, self::$repository->getById(3)->getData());
+        /** @var NotificationData $resultData */
+        $resultData = self::$repository->getById($data->getId())->getData();
+
+        $this->assertEquals($data->getId(), $resultData->getId());
+        $this->assertEquals($data->getUserId(), $resultData->getUserId());
+        $this->assertEquals($data->getType(), $resultData->getType());
+        $this->assertEquals($data->getComponent(), $resultData->getComponent());
+        $this->assertEquals($data->isChecked(), $resultData->isChecked());
+        $this->assertEquals($data->isOnlyAdmin(), $resultData->isOnlyAdmin());
+        $this->assertEquals($data->isSticky(), $resultData->isSticky());
+        $this->assertGreaterThan(0, $resultData->getDate());
 
         $data->setId(4);
 

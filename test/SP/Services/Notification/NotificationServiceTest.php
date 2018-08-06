@@ -211,7 +211,6 @@ class NotificationServiceTest extends DatabaseTestCase
         $data = new NotificationData();
         $data->setId(4);
         $data->setUserId(2);
-        $data->setDate(time());
         $data->setType('Test');
         $data->setComponent('Config');
         $data->setDescription(NotificationMessage::factory()->setTitle('Prueba')->setDescription(['blablabla']));
@@ -221,7 +220,16 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->assertEquals(4, self::$service->create($data));
 
-        $this->assertEquals($data, self::$service->getById(4));
+        $resultData = self::$service->getById(4);
+
+        $this->assertEquals($data->getId(), $resultData->getId());
+        $this->assertEquals($data->getUserId(), $resultData->getUserId());
+        $this->assertEquals($data->getType(), $resultData->getType());
+        $this->assertEquals($data->getComponent(), $resultData->getComponent());
+        $this->assertEquals($data->isChecked(), $resultData->isChecked());
+        $this->assertEquals($data->isOnlyAdmin(), $resultData->isOnlyAdmin());
+        $this->assertEquals($data->isSticky(), $resultData->isSticky());
+        $this->assertGreaterThan(0, $resultData->getDate());
     }
 
     /**
@@ -377,7 +385,6 @@ class NotificationServiceTest extends DatabaseTestCase
         $data = new NotificationData();
         $data->setId(3);
         $data->setUserId(2);
-        $data->setDate(time());
         $data->setType('Test');
         $data->setComponent('Config');
         $data->setDescription(NotificationMessage::factory()->setTitle('Prueba')->setDescription(['blablabla']));
@@ -387,7 +394,16 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$service->update($data));
 
-        $this->assertEquals($data, self::$service->getById(3));
+        $resultData = self::$service->getById(3);
+
+        $this->assertEquals($data->getId(), $resultData->getId());
+        $this->assertEquals($data->getUserId(), $resultData->getUserId());
+        $this->assertEquals($data->getType(), $resultData->getType());
+        $this->assertEquals($data->getComponent(), $resultData->getComponent());
+        $this->assertEquals($data->isChecked(), $resultData->isChecked());
+        $this->assertEquals($data->isOnlyAdmin(), $resultData->isOnlyAdmin());
+        $this->assertEquals($data->isSticky(), $resultData->isSticky());
+        $this->assertGreaterThan(0, $resultData->getDate());
 
         $data->setId(4);
 
