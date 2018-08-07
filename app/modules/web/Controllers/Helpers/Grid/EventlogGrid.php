@@ -34,7 +34,6 @@ use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Html\DataGrid\DataGridTab;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -52,7 +51,7 @@ final class EventlogGrid extends GridBase
     /**
      * @param QueryResult $queryResult
      *
-     * @return DataGridTab
+     * @return DataGridInterface
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {

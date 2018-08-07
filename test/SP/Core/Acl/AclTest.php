@@ -261,7 +261,7 @@ class AclTest extends TestCase
             [1311, 'accountHistoryManager/index'],
             [1314, 'accountHistoryManager/delete'],
             [1312, 'accountHistoryManager/search'],
-            [1315, 'accountManager/restore'],
+            [1315, 'accountHistoryManager/restore'],
             [1403, 'notification/view'],
             [1404, 'notification/create'],
             [1405, 'notification/edit'],

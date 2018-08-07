@@ -85,20 +85,20 @@ final class Actions
      */
     protected function loadCache()
     {
-        if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)
-            || $this->fileStorage->isExpiredDate(self::ACTIONS_CACHE_FILE, $this->xmlFileStorage->getFileHandler()->getFileTime())
-        ) {
-            $this->mapAndSave();
-        } else {
-            try {
+        try {
+            if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)
+                || $this->fileStorage->isExpiredDate(self::ACTIONS_CACHE_FILE, $this->xmlFileStorage->getFileHandler()->getFileTime())
+            ) {
+                $this->mapAndSave();
+            } else {
                 $this->actions = $this->fileStorage->load(self::ACTIONS_CACHE_FILE);
 
                 logger('Loaded actions cache', 'INFO');
-            } catch (FileException $e) {
-                processException($e);
-
-                $this->mapAndSave();
             }
+        } catch (FileException $e) {
+            processException($e);
+
+            $this->mapAndSave();
         }
     }
 

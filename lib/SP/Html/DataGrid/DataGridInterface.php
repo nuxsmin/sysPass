@@ -168,7 +168,7 @@ interface DataGridInterface
     /**
      * Establece el tiempo total de carga del DataGrid
      *
-     * @param int $time
+     * @param int|float $time
      */
     public function setTime($time);
 

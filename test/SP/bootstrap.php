@@ -58,16 +58,8 @@ print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
 print 'SELF_IP_ADDRESS=' . SELF_IP_ADDRESS . PHP_EOL;
 
 // Setup directories
-if (!is_dir(TMP_DIR)) {
-    print 'Creating ' . TMP_DIR . PHP_EOL;
-
-    mkdir(TMP_DIR);
-} else {
-    print 'Deleting ' . TMP_DIR . PHP_EOL;
-
-    // Delete tmp dir ...
-    array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*'));
-}
+recreateDir(TMP_DIR);
+recreateDir(CACHE_PATH);
 
 if (is_dir(CONFIG_PATH)
     && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
@@ -188,4 +180,21 @@ function getResource($dir, $file)
 function saveResource($dir, $file, $data)
 {
     return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
+}
+
+/**
+ * @param $dir
+ */
+function recreateDir($dir)
+{
+    if (!is_dir($dir)) {
+        print 'Creating ' . $dir . PHP_EOL;
+
+        mkdir($dir);
+    } else {
+        print 'Deleting ' . $dir . PHP_EOL;
+
+        // Delete tmp dir ...
+        array_map('unlink', glob($dir . DIRECTORY_SEPARATOR . '*'));
+    }
 }
