@@ -82,6 +82,7 @@ final class StatusController extends SimpleControllerBase
                         }
 
                         $this->returnJsonResponseData([]);
+                        return;
                     }
                 }
 
@@ -128,6 +129,7 @@ final class StatusController extends SimpleControllerBase
                     }
 
                     $this->returnJsonResponseData($notices);
+                    return;
                 }
 
                 logger($requestData->message);

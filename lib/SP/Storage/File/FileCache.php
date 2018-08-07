@@ -39,15 +39,9 @@ final class FileCache implements FileStorageInterface
      */
     public function load($path)
     {
-        if (!file_exists($path)) {
-            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $path));
-        }
+        $file = new FileHandler($path);
 
-        if (!($data = file_get_contents($path))) {
-            throw new FileException(sprintf(__('Error al leer datos del archivo (%s)'), $path));
-        }
-
-        return unserialize($data);
+        return unserialize($file->checkIsReadable()->readToString());
     }
 
     /**
@@ -59,21 +53,26 @@ final class FileCache implements FileStorageInterface
      */
     public function save($path, $data)
     {
-        $dir = dirname($path);
+        $this->createPath(dirname($path));
 
-        if (!is_dir($dir) && mkdir($dir, 0700, true) === false) {
-            throw new FileException(sprintf(__('No es posible crear el directorio (%s)'), $dir));
-        }
-
-        if (file_exists($path) && !is_writable($path)) {
-            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $path));
-        }
-
-        if (!file_put_contents($path, serialize($data))) {
-            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $path));
-        }
+        $file = new FileHandler($path);
+        $file->checkIsWritable()
+            ->write(serialize($data))
+            ->close();
 
         return $this;
+    }
+
+    /**
+     * @param $path
+     *
+     * @throws FileException
+     */
+    public function createPath($path)
+    {
+        if (!is_dir($path) && mkdir($path, 0700, true) === false) {
+            throw new FileException(sprintf(__('No es posible crear el directorio (%s)'), $path));
+        }
     }
 
     /**
@@ -84,13 +83,8 @@ final class FileCache implements FileStorageInterface
      */
     public function delete($path)
     {
-        if (file_exists($path) && !is_writable($path)) {
-            throw new FileException(sprintf(__('No es posible abrir el archivo (%s)'), $path));
-        }
-
-        if (!unlink($path)) {
-            throw new FileException(sprintf(__('Error al eliminar el archivo (%s)'), $path));
-        }
+        $file = new FileHandler($path);
+        $file->delete();
 
         return $this;
     }
@@ -101,11 +95,15 @@ final class FileCache implements FileStorageInterface
      * @param string $path
      * @param int    $time
      *
-     * @return mixed
+     * @return bool
+     * @throws FileException
      */
-    public function isExpired($path, $time = 86400)
+    public function isExpired($path, $time = 86400): bool
     {
-        return !file_exists($path) || time() > filemtime($path) + $time;
+        $file = new FileHandler($path);
+        $file->checkFileExists();
+
+        return time() > $file->getFileTime() + $time;
     }
 
     /**
@@ -114,10 +112,14 @@ final class FileCache implements FileStorageInterface
      * @param string $path
      * @param int    $date
      *
-     * @return mixed
+     * @return bool
+     * @throws FileException
      */
-    public function isExpiredDate($path, $date)
+    public function isExpiredDate($path, $date): bool
     {
-        return !file_exists($path) || (int)$date > filemtime($path);
+        $file = new FileHandler($path);
+        $file->checkFileExists();
+
+        return (int)$date > $file->getFileTime();
     }
 }

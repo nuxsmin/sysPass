@@ -32,7 +32,7 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\PublicLinkForm;
@@ -84,10 +84,11 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getPublicLinksGrid($this->publicLinkService->search($itemSearchData)), $itemSearchData);
+        $publicLinkGrid = $this->dic->get(PublicLinkGrid::class);
+
+        return $publicLinkGrid->updatePager($publicLinkGrid->getGrid($this->publicLinkService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

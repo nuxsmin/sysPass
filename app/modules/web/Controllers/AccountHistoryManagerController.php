@@ -28,10 +28,11 @@ use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Account\AccountHistoryService;
+use SP\Services\Account\AccountService;
 
 /**
  * Class AccountHistoryManagerController
@@ -73,10 +74,11 @@ final class AccountHistoryManagerController extends ControllerBase
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getAccountsHistoryGrid($this->accountHistoryService->search($itemSearchData)), $itemSearchData);
+        $historyGrid = $this->dic->get(AccountHistoryGrid::class);
+
+        return $historyGrid->updatePager($historyGrid->getGrid($this->accountHistoryService->search($itemSearchData)), $itemSearchData);
     }
 
     /**
@@ -109,6 +111,39 @@ final class AccountHistoryManagerController extends ControllerBase
 
                 $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
             }
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * Saves restore action
+     *
+     * @param int $id Account's history ID
+     */
+    public function restoreAction($id)
+    {
+        try {
+            $accountDetails = $this->accountHistoryService->getById($id);
+
+            $accountService = $this->dic->get(AccountService::class);
+
+            if ($accountDetails->isModify) {
+                $accountService->editRestore($id, $accountDetails->getAccountId());
+            } else {
+                $accountService->createFromHistory($accountDetails);
+            }
+
+            $this->eventDispatcher->notifyEvent('restore.accountHistory',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta restaurada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+            );
+
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta restaurada'));
         } catch (\Exception $e) {
             processException($e);
 

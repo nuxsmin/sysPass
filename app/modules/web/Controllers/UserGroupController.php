@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserGroupForm;
@@ -86,10 +86,11 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getUserGroupsGrid($this->userGroupService->search($itemSearchData)), $itemSearchData);
+        $userGroupGrid = $this->dic->get(UserGroupGrid::class);
+
+        return $userGroupGrid->updatePager($userGroupGrid->getGrid($this->userGroupService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

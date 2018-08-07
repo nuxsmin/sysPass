@@ -28,7 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Account\AccountService;
@@ -73,10 +73,11 @@ final class AccountManagerController extends ControllerBase
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getAccountsGrid($this->accountService->search($itemSearchData)), $itemSearchData);
+        $accountGrid = $this->dic->get(AccountGrid::class);
+
+        return $accountGrid->updatePager($accountGrid->getGrid($this->accountService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

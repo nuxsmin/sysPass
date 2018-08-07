@@ -27,7 +27,14 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\CustomFieldGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountHistoryService;
@@ -49,10 +56,6 @@ final class ItemManagerController extends ControllerBase
      * @var ItemSearchData
      */
     protected $itemSearchData;
-    /**
-     * @var ItemsGridHelper
-     */
-    protected $itemsGridHelper;
     /**
      * @var TabsGridHelper
      */
@@ -78,10 +81,7 @@ final class ItemManagerController extends ControllerBase
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
-
-        $this->itemsGridHelper->setQueryTimeStart(microtime(true));
 
         if ($this->checkAccess(Acl::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
@@ -131,7 +131,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getCategoriesList()
     {
-        return $this->itemsGridHelper->getCategoriesGrid($this->dic->get(CategoryService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(CategoryGrid::class)
+            ->getGrid($this->dic->get(CategoryService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -143,7 +145,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getTagsList()
     {
-        return $this->itemsGridHelper->getTagsGrid($this->dic->get(TagService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(TagGrid::class)
+            ->getGrid($this->dic->get(TagService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -155,7 +159,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getClientsList()
     {
-        return $this->itemsGridHelper->getClientsGrid($this->dic->get(ClientService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(ClientGrid::class)
+            ->getGrid($this->dic->get(ClientService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -167,7 +173,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getCustomFieldsList()
     {
-        return $this->itemsGridHelper->getCustomFieldsGrid($this->dic->get(CustomFieldDefService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(CustomFieldGrid::class)
+            ->getGrid($this->dic->get(CustomFieldDefService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -179,7 +187,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getAccountFilesList()
     {
-        return $this->itemsGridHelper->getFilesGrid($this->dic->get(AccountFileService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(FileGrid::class)
+            ->getGrid($this->dic->get(AccountFileService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -191,7 +201,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getAccountsList()
     {
-        return $this->itemsGridHelper->getAccountsGrid($this->dic->get(AccountService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(AccountGrid::class)
+            ->getGrid($this->dic->get(AccountService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -203,7 +215,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getAccountsHistoryList()
     {
-        return $this->itemsGridHelper->getAccountsHistoryGrid($this->dic->get(AccountHistoryService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(AccountHistoryGrid::class)
+            ->getGrid($this->dic->get(AccountHistoryService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -215,7 +229,9 @@ final class ItemManagerController extends ControllerBase
      */
     protected function getPluginsList()
     {
-        return $this->itemsGridHelper->getPluginsGrid($this->dic->get(PluginService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(PluginGrid::class)
+            ->getGrid($this->dic->get(PluginService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**

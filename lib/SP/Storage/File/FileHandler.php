@@ -265,4 +265,15 @@ final class FileHandler
 
         return $this;
     }
+
+    /**
+     * @return int
+     * @throws FileException
+     */
+    public function getFileTime(): int
+    {
+        $this->checkIsReadable();
+
+        return filemtime($this->file) ?: 0;
+    }
 }

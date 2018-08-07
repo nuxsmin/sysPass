@@ -85,7 +85,9 @@ final class Actions
      */
     protected function loadCache()
     {
-        if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)) {
+        if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)
+            || $this->fileStorage->isExpiredDate(self::ACTIONS_CACHE_FILE, $this->xmlFileStorage->getFileHandler()->getFileTime())
+        ) {
             $this->mapAndSave();
         } else {
             try {

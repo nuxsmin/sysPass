@@ -1589,6 +1589,44 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    const accountManager = {
+        restore: function ($obj) {
+            log.info("accountManager:restore");
+
+            tabs.state.update($obj);
+
+            const itemId = $obj.data("item-id");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
+            opts.data = {
+                r: $obj.data("action-route") + "/" + itemId,
+                sk: Common.sk.get(),
+                isAjax: 1
+            };
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    const actionNext = $obj.data("action-next");
+
+                    if (actionNext) {
+                        getContent({
+                            r: actionNext + "/" + itemId
+                        });
+                    } else {
+                        getContent({
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
+                        });
+                    }
+                }
+            });
+        },
+    };
+
     const task = function (taskId) {
         const $taskStatus = $("#taskStatus");
 
@@ -1610,6 +1648,7 @@ sysPass.Actions = function (Common) {
         doAction: doAction,
         appMgmt: appMgmt,
         account: account,
+        accountManager: accountManager,
         file: file,
         checks: checks,
         config: config,

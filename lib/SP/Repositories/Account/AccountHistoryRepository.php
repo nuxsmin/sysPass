@@ -347,7 +347,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         INNER JOIN Client C ON AH.clientId = C.id
         INNER JOIN Category C2 ON AH.categoryId = C2.id
         ');
-        $queryData->setOrder('AH.name, C.name, AH.id DESC');
+        $queryData->setOrder('date DESC, AH.name, C.name, AH.id DESC');
 
         if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere('AH.name LIKE ? OR C.name LIKE ?');

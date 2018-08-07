@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\NotificationData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\NotificationForm;
@@ -82,12 +82,11 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemsGridHelper->setQueryTimeStart(microtime(true));
-
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getNotificationsGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
+        $notificationGrid = $this->dic->get(NotificationGrid::class);
+
+        return $notificationGrid->updatePager($notificationGrid->getGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

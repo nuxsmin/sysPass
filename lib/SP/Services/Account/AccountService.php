@@ -29,6 +29,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountDetailsResponse;
@@ -272,6 +273,34 @@ final class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
+     * @param AccountHistoryData $data
+     *
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function createFromHistory(AccountHistoryData $data)
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->name = $data->getName();
+        $accountRequest->categoryId = $data->getCategoryId();
+        $accountRequest->clientId = $data->getClientId();
+        $accountRequest->url = $data->getUrl();
+        $accountRequest->login = $data->getLogin();
+        $accountRequest->pass = $data->getPass();
+        $accountRequest->key = $data->getKey();
+        $accountRequest->notes = $data->getNotes();
+        $accountRequest->userId = $data->getUserId();
+        $accountRequest->userGroupId = $data->getUserGroupId();
+        $accountRequest->passDateChange = $data->getPassDateChange();
+        $accountRequest->parentId = $data->getParentId();
+        $accountRequest->isPrivate = $data->getIsPrivate();
+        $accountRequest->isPrivateGroup = $data->getIsPrivateGroup();
+
+        return $this->accountRepository->create($accountRequest);
+    }
+
+    /**
      * Updates external items for the account
      *
      * @param AccountRequest $accountRequest
@@ -313,8 +342,8 @@ final class AccountService extends Service implements AccountServiceInterface
         return $accountHistoryRepository->create(
             new AccountHistoryCreateDto(
                 $accountId,
-                $isDelete,
                 !$isDelete,
+                $isDelete,
                 $configService->getByParam('masterPwd'))
         );
     }
@@ -422,15 +451,18 @@ final class AccountService extends Service implements AccountServiceInterface
      * @param $id
      *
      * @return AccountService
-     * @throws NoSuchItemException
-     * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ServiceException
      */
     public function delete($id)
     {
-        if ($this->accountRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Cuenta no encontrada'));
-        }
+        $this->transactionAware(function () use ($id) {
+            $this->addHistory($id, 1);
+
+            if ($this->accountRepository->delete($id) === 0) {
+                throw new NoSuchItemException(__u('Cuenta no encontrada'));
+            }
+
+        });
 
         return $this;
     }

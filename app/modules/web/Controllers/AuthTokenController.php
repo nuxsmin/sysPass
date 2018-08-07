@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;
@@ -81,10 +81,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getAuthTokensGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
+        $authTokenGrid = $this->dic->get(AuthTokenGrid::class);
+
+        return $authTokenGrid->updatePager($authTokenGrid->getGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

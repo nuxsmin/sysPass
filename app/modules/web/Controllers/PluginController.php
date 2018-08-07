@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\PluginData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Plugin\PluginService;
@@ -78,10 +78,11 @@ final class PluginController extends ControllerBase
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getPluginsGrid($this->pluginService->search($itemSearchData)), $itemSearchData);
+        $pluginGrid = $this->dic->get(PluginGrid::class);
+
+        return $pluginGrid->updatePager($pluginGrid->getGrid($this->pluginService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

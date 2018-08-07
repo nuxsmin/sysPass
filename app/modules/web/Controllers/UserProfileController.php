@@ -31,7 +31,7 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserProfileForm;
@@ -80,10 +80,11 @@ final class UserProfileController extends ControllerBase implements CrudControll
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getUserProfilesGrid($this->userProfileService->search($itemSearchData)), $itemSearchData);
+        $userProfileGrid = $this->dic->get(UserProfileGrid::class);
+
+        return $userProfileGrid->updatePager($userProfileGrid->getGrid($this->userProfileService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

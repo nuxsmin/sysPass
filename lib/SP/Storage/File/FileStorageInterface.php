@@ -61,7 +61,18 @@ interface FileStorageInterface
      * @param string $path
      * @param int    $time
      *
-     * @return mixed
+     * @return bool
      */
-    public function isExpired($path, $time = 86400);
+    public function isExpired($path, $time = 86400): bool;
+
+    /**
+     * Returns if the file is expired adding time to modification date
+     *
+     * @param string $path
+     * @param int    $date
+     *
+     * @return bool
+     * @throws FileException
+     */
+    public function isExpiredDate($path, $date): bool;
 }

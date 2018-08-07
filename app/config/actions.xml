@@ -791,7 +791,7 @@
         <id>1315</id>
         <name>ACCOUNTMGR_HISTORY_RESTORE</name>
         <text>Restaurar Cuenta</text>
-        <route>accountManager/restore</route>
+        <route>accountHistoryManager/restore</route>
     </action>
     <action multiple="1">
         <id>1403</id>

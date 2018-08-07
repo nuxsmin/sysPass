@@ -312,4 +312,12 @@ final class XmlHandler implements XmlFileStorageInterface
 
         return $query->item(0)->nodeValue;
     }
+
+    /**
+     * @return FileHandler
+     */
+    public function getFileHandler(): FileHandler
+    {
+        return $this->fileHandler;
+    }
 }

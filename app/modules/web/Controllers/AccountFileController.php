@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Html\Html;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
@@ -267,10 +267,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getFilesGrid($this->accountFileService->search($itemSearchData)), $itemSearchData);
+        $fileGrid = $this->dic->get(FileGrid::class);
+
+        return $fileGrid->updatePager($fileGrid->getGrid($this->accountFileService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

@@ -30,6 +30,7 @@ use SP\DataModel\AccountData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
+use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
@@ -48,6 +49,10 @@ use function SP\Test\setupContext;
 class AccountServiceTest extends DatabaseTestCase
 {
     const SECURE_KEY_PASSWORD = '12345678900';
+    /**
+     * @var AccountHistoryService
+     */
+    protected static $accountHistoryService;
     /**
      * @var AccountService
      */
@@ -69,6 +74,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         // Inicializar el servicio
         self::$service = $dic->get(AccountService::class);
+        self::$accountHistoryService = $dic->get(AccountHistoryService::class);
     }
 
     /**
@@ -79,7 +85,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $accountRequest = new \SP\Services\Account\AccountRequest();
+        $accountRequest = new AccountRequest();
         $accountRequest->name = 'Prueba 2';
         $accountRequest->login = 'admin';
         $accountRequest->url = 'http://syspass.org';
@@ -152,9 +158,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ServiceException
      */
     public function testDelete()
     {
@@ -325,7 +329,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $accountRequest = new \SP\Services\Account\AccountRequest();
+        $accountRequest = new AccountRequest();
         $accountRequest->id = 1;
         $accountRequest->name = 'Prueba 1';
         $accountRequest->login = 'admin';
@@ -394,7 +398,7 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals(3, $groups[1]->getId());
         $this->assertEquals(0, (int)$groups[1]->isEdit);
 
-        $accountRequest = new \SP\Services\Account\AccountRequest();
+        $accountRequest = new AccountRequest();
         $accountRequest->id = 3;
 
         self::$service->update($accountRequest);
@@ -620,5 +624,36 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals(1, $data[0]->getId());
         $this->assertInstanceOf(AccountData::class, $data[1]);
         $this->assertEquals(2, $data[1]->getId());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCreateFromHistory()
+    {
+        $data = self::$accountHistoryService->getById(7);
+
+        $this->assertEquals(3, self::$service->createFromHistory($data));
+
+        $result = self::$service->getById(3);
+        $resultData = $result->getAccountVData();
+
+        $this->assertEquals($data->getName(), $resultData->getName());
+        $this->assertEquals($data->getCategoryId(), $resultData->getCategoryId());
+        $this->assertEquals($data->getClientId(), $resultData->getClientId());
+        $this->assertEquals($data->getUrl(), $resultData->getUrl());
+        $this->assertEquals($data->getLogin(), $resultData->getLogin());
+        $this->assertEquals($data->getNotes(), $resultData->getNotes());
+        $this->assertEquals($data->getPassDateChange(), $resultData->getPassDateChange());
+        $this->assertEquals($data->getUserId(), $resultData->getUserId());
+        $this->assertEquals($data->getUserGroupId(), $resultData->getUserGroupId());
+        $this->assertEquals($data->getParentId(), $resultData->getParentId());
+        $this->assertEquals($data->getIsPrivate(), $resultData->getIsPrivate());
+        $this->assertEquals($data->getIsPrivateGroup(), $resultData->getIsPrivateGroup());
+
+        $resultData = self::$service->getPasswordForId(3);
+
+        $this->assertEquals($data->getPass(), $resultData->getPass());
+        $this->assertEquals($data->getKey(), $resultData->getKey());
     }
 }

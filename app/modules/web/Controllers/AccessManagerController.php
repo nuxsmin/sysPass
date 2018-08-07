@@ -27,7 +27,11 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\PublicLink\PublicLinkService;
@@ -46,10 +50,6 @@ final class AccessManagerController extends ControllerBase
      * @var ItemSearchData
      */
     protected $itemSearchData;
-    /**
-     * @var ItemsGridHelper
-     */
-    protected $itemsGridHelper;
     /**
      * @var TabsGridHelper
      */
@@ -75,10 +75,7 @@ final class AccessManagerController extends ControllerBase
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
-
-        $this->itemsGridHelper->setQueryTimeStart(microtime(true));
 
         if ($this->checkAccess(Acl::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
@@ -117,7 +114,9 @@ final class AccessManagerController extends ControllerBase
     protected function getUsersList()
     {
 
-        return $this->itemsGridHelper->getUsersGrid($this->dic->get(UserService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(UserGrid::class)
+            ->getGrid($this->dic->get(UserService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -129,7 +128,9 @@ final class AccessManagerController extends ControllerBase
      */
     protected function getUsersGroupList()
     {
-        return $this->itemsGridHelper->getUserGroupsGrid($this->dic->get(UserGroupService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(UserGroupGrid::class)
+            ->getGrid($this->dic->get(UserGroupService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -141,7 +142,9 @@ final class AccessManagerController extends ControllerBase
      */
     protected function getUsersProfileList()
     {
-        return $this->itemsGridHelper->getUserProfilesGrid($this->dic->get(UserProfileService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(UserProfileGrid::class)
+            ->getGrid($this->dic->get(UserProfileService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -153,7 +156,9 @@ final class AccessManagerController extends ControllerBase
      */
     protected function getApiTokensList()
     {
-        return $this->itemsGridHelper->getAuthTokensGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(AuthTokenGrid::class)
+            ->getGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**
@@ -165,7 +170,9 @@ final class AccessManagerController extends ControllerBase
      */
     protected function getPublicLinksList()
     {
-        return $this->itemsGridHelper->getPublicLinksGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))->updatePager();
+        return $this->dic->get(PublicLinkGrid::class)
+            ->getGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))
+            ->updatePager();
     }
 
     /**

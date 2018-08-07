@@ -47,23 +47,18 @@ final class FileCachePacked implements FileStorageInterface
      *
      * @return mixed
      * @throws \RuntimeException
+     * @throws FileException
      */
     public function load($path)
     {
-        if (!file_exists($path)) {
-            throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo (%s)'), $path));
-        }
+        $file = new FileHandler($path);
 
-        if (!($data = file_get_contents($path))) {
-            throw new RuntimeException(sprintf(__('Error al leer datos del archivo (%s)'), $path));
-        }
-
-        if (!($data = gzuncompress($data))) {
-            throw new RuntimeException(sprintf(__('Error al descomprimir datos del archivo (%s)'), $path));
+        if (!($data = gzuncompress($file->checkIsReadable()->readToString()))) {
+            throw new FileException(sprintf(__('Error al descomprimir datos del archivo (%s)'), $path));
         }
 
         if (($this->data = unserialize($data)) === false) {
-            throw new RuntimeException(__('Error al obtener los datos'));
+            throw new FileException(__('Error al obtener los datos'));
         }
 
         $this->loaded = true;
@@ -76,6 +71,7 @@ final class FileCachePacked implements FileStorageInterface
      * @param mixed  $data
      *
      * @return FileStorageInterface
+     * @throws FileException
      */
     public function save($path, $data = null)
     {
@@ -91,25 +87,33 @@ final class FileCachePacked implements FileStorageInterface
     /**
      * @param $path
      * @param $data
+     *
+     * @throws FileException
      */
     protected function saveData($path, $data)
     {
-        $dir = dirname($path);
 
-        if (!is_dir($dir) && mkdir($dir, 0700, true) === false) {
-            throw new RuntimeException(sprintf(__('No es posible crear el directorio (%s)'), $dir));
-        }
-
-        if (file_exists($path) && !is_writable($path)) {
-            throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo (%s)'), $path));
-        }
+        $this->createPath(dirname($path));
 
         if (!($data = gzcompress(serialize($data)))) {
-            throw new RuntimeException(sprintf(__('Error al comprimir datos del archivo (%s)'), $path));
+            throw new FileException(sprintf(__('Error al comprimir datos del archivo (%s)'), $path));
         }
 
-        if (!file_put_contents($path, $data)) {
-            throw new RuntimeException(sprintf(__('Error al escribir datos en el archivo (%s)'), $path));
+        $file = new FileHandler($path);
+        $file->checkIsWritable()
+            ->write(gzcompress(serialize($data)))
+            ->close();
+    }
+
+    /**
+     * @param $path
+     *
+     * @throws FileException
+     */
+    public function createPath($path)
+    {
+        if (!is_dir($path) && mkdir($path, 0700, true) === false) {
+            throw new FileException(sprintf(__('No es posible crear el directorio (%s)'), $path));
         }
     }
 
@@ -117,16 +121,12 @@ final class FileCachePacked implements FileStorageInterface
      * @param string $path
      *
      * @return FileStorageInterface
+     * @throws FileException
      */
     public function delete($path)
     {
-        if (file_exists($path) && !is_writable($path)) {
-            throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo (%s)'), $path));
-        }
-
-        if (!unlink($path)) {
-            throw new RuntimeException(sprintf(__('Error al eliminar el archivo (%s)'), $path));
-        }
+        $file = new FileHandler($path);
+        $file->delete();
 
         return $this;
     }
@@ -168,10 +168,31 @@ final class FileCachePacked implements FileStorageInterface
      * @param string $path
      * @param int    $time
      *
-     * @return mixed
+     * @return bool
+     * @throws FileException
      */
-    public function isExpired($path, $time = 86400)
+    public function isExpired($path, $time = 86400): bool
     {
-        // TODO: Implement isExpired() method.
+        $file = new FileHandler($path);
+        $file->checkFileExists();
+
+        return time() > $file->getFileTime() + $time;
+    }
+
+    /**
+     * Returns if the file is expired adding time to modification date
+     *
+     * @param string $path
+     * @param int    $date
+     *
+     * @return bool
+     * @throws FileException
+     */
+    public function isExpiredDate($path, $date): bool
+    {
+        $file = new FileHandler($path);
+        $file->checkFileExists();
+
+        return (int)$date > $file->getFileTime();
     }
 }

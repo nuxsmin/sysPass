@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\ClientForm;
@@ -80,10 +80,11 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getClientsGrid($this->clientService->search($itemSearchData)), $itemSearchData);
+        $clientGrid = $this->dic->get(ClientGrid::class);
+
+        return $clientGrid->updatePager($clientGrid->getGrid($this->clientService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

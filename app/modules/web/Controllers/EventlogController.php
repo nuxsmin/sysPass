@@ -28,7 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\EventLog\EventlogService;
@@ -75,12 +75,11 @@ final class EventlogController extends ControllerBase
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemsGridHelper->setQueryTimeStart(microtime(true));
-
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getEventLogGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
+        $eventlogGrid = $this->dic->get(EventlogGrid::class);
+
+        return $eventlogGrid->updatePager($eventlogGrid->getGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

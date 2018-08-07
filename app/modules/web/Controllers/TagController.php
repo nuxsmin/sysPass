@@ -29,7 +29,7 @@ use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\TagForm;
@@ -78,10 +78,11 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getTagsGrid($this->tagService->search($itemSearchData)), $itemSearchData);
+        $tagGrid = $this->dic->get(TagGrid::class);
+
+        return $tagGrid->updatePager($tagGrid->getGrid($this->tagService->search($itemSearchData)), $itemSearchData);
     }
 
     /**
@@ -120,6 +121,7 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setViewData($tagId = null)
     {

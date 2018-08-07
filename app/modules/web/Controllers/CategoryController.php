@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
+use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CategoryForm;
@@ -79,10 +79,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      */
     protected function getSearchGrid()
     {
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getCategoriesGrid($this->categoryService->search($itemSearchData)), $itemSearchData);
+        $itemsGridHelper = $this->dic->get(CategoryGrid::class);
+
+        return $itemsGridHelper->updatePager($itemsGridHelper->getGrid($this->categoryService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

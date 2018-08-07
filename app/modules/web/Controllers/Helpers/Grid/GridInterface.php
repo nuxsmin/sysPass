@@ -22,48 +22,23 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage\File;
+namespace SP\Modules\Web\Controllers\Helpers\Grid;
+
+use SP\Html\DataGrid\DataGridInterface;
+use SP\Storage\Database\QueryResult;
+
 
 /**
- * Interface StorageInterface
+ * Interface GridInterface
  *
- * @package SP\Storage
+ * @package SP\Modules\Web\Controllers\Helpers\Grid
  */
-interface XmlFileStorageInterface
+interface GridInterface
 {
     /**
-     * @param string $node
+     * @param QueryResult $queryResult
      *
-     * @return XmlFileStorageInterface
-     * @throws FileException
+     * @return DataGridInterface
      */
-    public function load($node = '');
-
-    /**
-     * @param mixed  $data Data to be saved
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
-     */
-    public function save($data, $node = '');
-
-    /**
-     * @return mixed
-     */
-    public function getItems();
-
-    /**
-     * Returns the given path node value
-     *
-     * @param $path
-     *
-     * @return string
-     * @throws FileException
-     */
-    public function getPathValue($path);
-
-    /**
-     * @return FileHandler
-     */
-    public function getFileHandler(): FileHandler;
+    public function getGrid(QueryResult $queryResult): DataGridInterface;
 }
