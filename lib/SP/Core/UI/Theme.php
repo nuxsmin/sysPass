@@ -50,39 +50,39 @@ final class Theme implements ThemeInterface
     /**
      * @var string
      */
-    protected $themeUri = '';
+    private $themeUri = '';
     /**
      * @var string
      */
-    protected $themePath = '';
+    private $themePath = '';
     /**
      * @var string
      */
-    protected $themePathFull = '';
+    private $themePathFull = '';
     /**
      * @var string
      */
-    protected $themeName = '';
+    private $themeName = '';
     /**
      * @var string
      */
-    protected $viewsPath = '';
+    private $viewsPath = '';
     /**
      * @var ThemeIcons
      */
-    protected $icons;
+    private $icons;
     /**
      * @var ConfigData
      */
-    protected $configData;
+    private $configData;
     /**
      * @var SessionContext
      */
-    protected $context;
+    private $context;
     /**
      * @var string
      */
-    protected $module;
+    private $module;
     /**
      * @var FileCache
      */
@@ -160,20 +160,30 @@ final class Theme implements ThemeInterface
      * @return ThemeIcons
      * @throws InvalidClassException
      */
-    protected function initIcons()
+    private function initIcons()
     {
-        if (!$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)) {
-            try {
+        try {
+            if (!$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)) {
                 $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
 
                 logger('Loaded icons cache', 'INFO');
 
                 return $this->icons;
-            } catch (FileException $e) {
-                processException($e);
             }
+        } catch (FileException $e) {
+            processException($e);
         }
 
+        $this->saveIcons();
+
+        return $this->icons;
+    }
+
+    /**
+     * @throws InvalidClassException
+     */
+    private function saveIcons()
+    {
         $iconsClass = $this->themePathFull . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.php';
 
         if (file_exists($iconsClass)) {
@@ -189,8 +199,6 @@ final class Theme implements ThemeInterface
                 processException($e);
             }
         }
-
-        return $this->icons;
     }
 
     /**
