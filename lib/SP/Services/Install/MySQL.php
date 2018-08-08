@@ -32,6 +32,7 @@ use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\MySQLHandler;
+use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
@@ -298,16 +299,6 @@ final class MySQL implements DatabaseSetupInterface
      */
     public function createDBStructure()
     {
-        $fileName = SQL_PATH . DIRECTORY_SEPARATOR . 'dbstructure.sql';
-
-        if (!file_exists($fileName)) {
-            throw new SPException(
-                __u('El archivo de estructura de la BBDD no existe'),
-                SPException::CRITICAL,
-                __u('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.')
-            );
-        }
-
         try {
             $dbc = $this->mysqlHandler->getConnectionSimple();
 
@@ -323,26 +314,36 @@ final class MySQL implements DatabaseSetupInterface
             );
         }
 
+        try {
+            $parser = new MySQLFileParser(new FileHandler(SQL_PATH . DIRECTORY_SEPARATOR . 'dbstructure.sql'));
 
-        foreach ((new MySQLFileParser())
-                     ->parse(new FileHandler($fileName)) as $query) {
-            try {
+            foreach ($parser->parse() as $query) {
                 $dbc->exec($query);
-            } catch (PDOException $e) {
-                processException($e);
-
-                logger('Query: ' . $query);
-
-                $this->rollback();
-
-                throw new SPException(
-                    sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
-                    SPException::CRITICAL,
-                    __u('Error al crear la estructura de la Base de Datos.'),
-                    $e->getCode(),
-                    $e
-                );
             }
+        } catch (PDOException $e) {
+            processException($e);
+
+            $this->rollback();
+
+            throw new SPException(
+                sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                SPException::CRITICAL,
+                __u('Error al crear la estructura de la Base de Datos.'),
+                $e->getCode(),
+                $e
+            );
+        } catch (FileException $e) {
+            processException($e);
+
+            $this->rollback();
+
+            throw new SPException(
+                sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                SPException::ERROR,
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 

@@ -65,7 +65,7 @@ final class QueryAssignment
     public function setFields(array $fields, array $values)
     {
         $this->fields = array_map(function ($value) {
-            return strpos($value, '=') === false ? $value . ' = ?' : $value;
+            return strpos($value, '=') === false ? "$value = ?" : $value;
         }, $fields);
 
         $this->values = array_merge($this->values, $values);

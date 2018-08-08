@@ -35,21 +35,37 @@ use SP\Storage\File\FileHandler;
 final class MySQLFileParser implements DatabaseFileInterface
 {
     /**
+     * @var FileHandler
+     */
+    private $fileHandler;
+
+    /**
+     * MySQLFileParser constructor.
+     *
+     * @param FileHandler $fileHandler
+     */
+    public function __construct(FileHandler $fileHandler)
+    {
+        $this->fileHandler = $fileHandler;
+    }
+
+    /**
      * Parses a database script file and returns an array of lines parsed
      *
-     * @param \SP\Storage\File\FileHandler $fileHandler
-     * @param string                       $delimiter
+     * @param string $delimiter
      *
      * @return array
      * @throws FileException
      */
-    public function parse(FileHandler $fileHandler, $delimiter = ';')
+    public function parse($delimiter = ';')
     {
         $queries = [];
         $query = '';
         $delimiterLength = strlen($delimiter);
 
-        $handle = $fileHandler->open('rb');
+        $this->fileHandler->checkIsReadable();
+
+        $handle = $this->fileHandler->open('rb');
 
         while (($buffer = fgets($handle)) !== false) {
             $buffer = trim($buffer);
@@ -60,10 +76,9 @@ final class MySQLFileParser implements DatabaseFileInterface
             ) {
                 // CHecks if delimiter based EOL is reached
                 $end = strrpos($buffer, $delimiter) === $length - $delimiterLength;
-                // Checks if line is an SQL statement wrapped by a comment
-                $setComment = preg_match('#^(?<stmt>/\*!\d+.*\*/)#', $buffer, $matches);
 
-                if ($setComment) {
+                // Checks if line is an SQL statement wrapped by a comment
+                if (preg_match('#^(?<stmt>/\*!\d+.*\*/)#', $buffer, $matches)) {
                     if (!$end) {
                         $query .= $matches['stmt'] . PHP_EOL;
                     } else {
@@ -83,7 +98,7 @@ final class MySQLFileParser implements DatabaseFileInterface
             }
         }
 
-        $fileHandler->close();
+        $this->fileHandler->close();
 
         return $queries;
     }

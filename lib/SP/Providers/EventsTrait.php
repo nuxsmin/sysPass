@@ -38,6 +38,6 @@ trait EventsTrait
      */
     protected function parseEventsToRegex(array $events)
     {
-        return str_replace('.', '\\.', implode('|', $events));
+        return implode('|', array_map('preg_quote', $events));
     }
 }

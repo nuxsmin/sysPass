@@ -51,7 +51,7 @@ final class QueryCondition
      */
     public function addFilter($query, array $params = null)
     {
-        $this->query[] = '(' . $query . ')';
+        $this->query[] = "($query)";
 
         if ($params !== null) {
             $this->param = array_merge($this->param, $params);

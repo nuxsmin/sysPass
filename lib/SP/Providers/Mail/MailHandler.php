@@ -59,23 +59,15 @@ final class MailHandler extends Provider implements EventReceiver
     /**
      * @var \SP\Services\Mail\MailService
      */
-    protected $mailService;
+    private $mailService;
     /**
      * @var string
      */
-    protected $events;
+    private $events;
     /**
      * @var Request
      */
-    protected $request;
-
-    /**
-     * Inicialización del observador
-     */
-    public function init()
-    {
-        // TODO: Implement init() method.
-    }
+    private $request;
 
     /**
      * Evento de actualización
@@ -136,7 +128,7 @@ final class MailHandler extends Provider implements EventReceiver
      */
     public function update(SplSubject $subject)
     {
-        // TODO: Implement update() method.
+        $this->updateEvent('update', new Event($subject));
     }
 
     /**

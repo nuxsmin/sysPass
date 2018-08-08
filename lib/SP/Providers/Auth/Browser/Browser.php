@@ -26,6 +26,7 @@ namespace SP\Providers\Auth\Browser;
 
 use SP\Config\ConfigData;
 use SP\DataModel\UserLoginData;
+use SP\Http\Request;
 use SP\Providers\Auth\AuthInterface;
 
 /**
@@ -41,15 +42,21 @@ final class Browser implements AuthInterface
      * @var ConfigData
      */
     private $configData;
+    /**
+     * @var Request
+     */
+    private $request;
 
     /**
      * Browser constructor.
      *
      * @param ConfigData $configData
+     * @param Request    $request
      */
-    public function __construct(ConfigData $configData)
+    public function __construct(ConfigData $configData, Request $request)
     {
         $this->configData = $configData;
+        $this->request = $request;
     }
 
     /**
@@ -69,7 +76,7 @@ final class Browser implements AuthInterface
         }
 
         if ($this->configData->isAuthBasicAutoLoginEnabled()) {
-            $authUser = self::getServerAuthUser();
+            $authUser = $this->getServerAuthUser();
             $authPass = $this->getAuthPass();
 
             if ($authUser !== null && $authPass !== null) {
@@ -106,12 +113,11 @@ final class Browser implements AuthInterface
     public function checkServerAuthUser($login)
     {
         $domain = $this->configData->getAuthBasicDomain();
+        $authUser = $this->getServerAuthUser();
 
-        if (!empty($domain)) {
-            $login = self::getServerAuthUser() . '@' . $domain;
+        if (!empty($domain) && !empty($authUser)) {
+            $login = $authUser . '@' . $domain;
         }
-
-        $authUser = self::getServerAuthUser();
 
         return $authUser !== null && $authUser === $login ?: null;
     }
@@ -121,14 +127,18 @@ final class Browser implements AuthInterface
      *
      * @return string
      */
-    public static function getServerAuthUser()
+    public function getServerAuthUser()
     {
-        if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
-            return $_SERVER['PHP_AUTH_USER'];
+        $authUser = $this->request->getServer('PHP_AUTH_USER');
+
+        if (!empty($authUser)) {
+            return $authUser;
         }
 
-        if (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
-            return $_SERVER['REMOTE_USER'];
+        $remoteUser = $this->request->getServer('REMOTE_USER');
+
+        if (!empty($remoteUser)) {
+            return $remoteUser;
         }
 
         return null;
@@ -141,10 +151,8 @@ final class Browser implements AuthInterface
      */
     protected function getAuthPass()
     {
-        if (isset($_SERVER['PHP_AUTH_PW']) && !empty($_SERVER['PHP_AUTH_PW'])) {
-            return $_SERVER['PHP_AUTH_PW'];
-        }
+        $authPass = $this->request->getServer('PHP_AUTH_PW');
 
-        return null;
+        return !empty($authPass) ? $authPass : null;
     }
 }

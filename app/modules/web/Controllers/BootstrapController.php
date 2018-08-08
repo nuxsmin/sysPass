@@ -102,7 +102,7 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getAuthBasicAutologinEnabled()
     {
-        return Browser::getServerAuthUser() && $this->configData->isAuthBasicAutoLoginEnabled();
+        return $this->dic->get(Browser::class)->getServerAuthUser() !== null && $this->configData->isAuthBasicAutoLoginEnabled();
     }
 
     /**

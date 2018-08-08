@@ -41,6 +41,8 @@ trait JsonTrait
      * @param int        $status      Status code
      * @param string     $description Untranslated description string
      * @param array|null $messages    Untranslated massages array of strings
+     *
+     * @return bool
      */
     protected function returnJsonResponse($status, $description, array $messages = null)
     {
@@ -52,7 +54,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        Json::fromDic()->returnJson($jsonResponse);
+        return Json::fromDic()->returnJson($jsonResponse);
     }
 
     /**
@@ -62,6 +64,8 @@ trait JsonTrait
      * @param int    $status      Status code
      * @param string $description Untranslated description string
      * @param array  $messages
+     *
+     * @return bool
      */
     protected function returnJsonResponseData($data, $status = JsonResponse::JSON_SUCCESS, $description = null, array $messages = null)
     {
@@ -77,7 +81,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        Json::fromDic()->returnJson($jsonResponse);
+        return Json::fromDic()->returnJson($jsonResponse);
     }
 
     /**
@@ -85,6 +89,8 @@ trait JsonTrait
      *
      * @param \Exception $exception
      * @param int        $status Status code
+     *
+     * @return bool
      */
     protected function returnJsonResponseException(\Exception $exception, $status = JsonResponse::JSON_ERROR)
     {
@@ -96,6 +102,6 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        Json::fromDic()->returnJson($jsonResponse);
+        return Json::fromDic()->returnJson($jsonResponse);
     }
 }

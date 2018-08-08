@@ -34,11 +34,6 @@ use SplObserver;
 interface EventReceiver extends SplObserver
 {
     /**
-     * Inicialización del observador
-     */
-    public function init();
-
-    /**
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento

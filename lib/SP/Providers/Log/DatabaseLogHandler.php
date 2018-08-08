@@ -70,15 +70,15 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     /**
      * @var EventlogService
      */
-    protected $eventlogService;
+    private $eventlogService;
     /**
      * @var string
      */
-    protected $events;
+    private $events;
     /**
      * @var Language
      */
-    protected $language;
+    private $language;
 
     /**
      * Receive update from subject
@@ -94,15 +94,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      */
     public function update(SplSubject $subject)
     {
-        // TODO: Implement update() method.
-    }
-
-    /**
-     * Inicialización del observador
-     */
-    public function init()
-    {
-        // TODO: Implement init() method.
+        $this->updateEvent('update', new Event($subject));
     }
 
     /**

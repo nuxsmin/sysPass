@@ -71,43 +71,15 @@ final class SyslogHandler extends Provider implements EventReceiver
     /**
      * @var string
      */
-    protected $events;
+    private $events;
     /**
      * @var Logger
      */
-    protected $logger;
+    private $logger;
     /**
      * @var Language
      */
-    protected $language;
-
-    /**
-     * Inicialización del observador
-     */
-    public function init()
-    {
-        // TODO: Implement init() method.
-    }
-
-    /**
-     * Evento de actualización
-     *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
-     */
-    public function updateEvent($eventType, Event $event)
-    {
-        $this->language->setAppLocales();
-
-        if (($e = $event->getSource()) instanceof \Exception) {
-            /** @var \Exception $e */
-            $this->logger->error(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
-        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $this->logger->debug(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
-        }
-
-        $this->language->unsetAppLocales();
-    }
+    private $language;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -143,7 +115,27 @@ final class SyslogHandler extends Provider implements EventReceiver
      */
     public function update(SplSubject $subject)
     {
-        // TODO: Implement update() method.
+        $this->updateEvent('update', new Event($subject));
+    }
+
+    /**
+     * Evento de actualización
+     *
+     * @param string $eventType Nombre del evento
+     * @param Event  $event     Objeto del evento
+     */
+    public function updateEvent($eventType, Event $event)
+    {
+        $this->language->setAppLocales();
+
+        if (($e = $event->getSource()) instanceof \Exception) {
+            /** @var \Exception $e */
+            $this->logger->error(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
+        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
+            $this->logger->debug(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
+        }
+
+        $this->language->unsetAppLocales();
     }
 
     /**

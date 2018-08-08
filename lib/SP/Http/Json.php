@@ -127,13 +127,16 @@ final class Json
      * Devuelve una respuesta en formato JSON
      *
      * @param string $data JSON string
+     *
+     * @return bool
      */
     public function returnRawJson($data)
     {
-        $this->response
+        return $this->response
             ->header('Content-type', 'application/json; charset=utf-8')
             ->body($data)
-            ->send(true);
+            ->send(true)
+            ->isSent();
     }
 
     /**
@@ -141,7 +144,7 @@ final class Json
      *
      * @param JsonResponse $jsonResponse
      *
-     * @return void
+     * @return bool
      */
     public function returnJson(JsonResponse $jsonResponse)
     {
@@ -156,7 +159,7 @@ final class Json
             $this->response->body(json_encode($jsonResponse));
         }
 
-        $this->response->send(true);
+        return $this->response->send(true)->isSent();
     }
 
     /**

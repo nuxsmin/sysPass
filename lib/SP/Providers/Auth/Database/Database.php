@@ -111,15 +111,14 @@ final class Database implements AuthInterface
 
             if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser($userLoginResponse)) {
                 return $this->userPassService->migrateUserPassById($userLoginResponse->getId(), $this->userLoginData->getLoginPass());
-
             }
 
             return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
         } catch (\Exception $e) {
             processException($e);
-
-            return false;
         }
+
+        return false;
     }
 
     /**

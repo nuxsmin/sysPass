@@ -24,9 +24,7 @@
 
 namespace SP\Repositories;
 
-use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
 use SP\Storage\Database\Database;
 
 /**
@@ -37,17 +35,9 @@ use SP\Storage\Database\Database;
 abstract class Repository
 {
     /**
-     * @var Config
-     */
-    protected $config;
-    /**
      * @var ContextInterface
      */
     protected $context;
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
     /**
      * @var Database
      */
@@ -56,17 +46,13 @@ abstract class Repository
     /**
      * Repository constructor.
      *
-     * @param Config           $config
      * @param Database         $database
      * @param ContextInterface $session
-     * @param EventDispatcher  $eventDispatcher
      */
-    final public function __construct(Config $config, Database $database, ContextInterface $session, EventDispatcher $eventDispatcher)
+    final public function __construct(Database $database, ContextInterface $session)
     {
-        $this->config = $config;
         $this->db = $database;
         $this->context = $session;
-        $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

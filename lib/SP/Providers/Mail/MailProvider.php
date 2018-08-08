@@ -39,7 +39,7 @@ final class MailProvider extends Provider
     /**
      * @var  PHPMailer
      */
-    protected $mailer;
+    private $mailer;
     /**
      * @var bool
      */

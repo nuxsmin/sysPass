@@ -24,8 +24,6 @@
 
 namespace SP\Storage\Database;
 
-use SP\Storage\File\FileHandler;
-
 /**
  * Interface DatabaseFileInterface
  *
@@ -36,10 +34,9 @@ interface DatabaseFileInterface
     /**
      * Parses a database script file and returns an array of lines parsed
      *
-     * @param FileHandler $fileHandler
-     * @param string      $delimiter
+     * @param string $delimiter
      *
      * @return array
      */
-    public function parse(FileHandler $fileHandler, $delimiter = ';');
+    public function parse($delimiter = ';');
 }

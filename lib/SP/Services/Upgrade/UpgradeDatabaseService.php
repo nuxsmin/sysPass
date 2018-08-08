@@ -152,14 +152,9 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         $queries = $this->getQueriesFromFile($version);
 
         if (count($queries) === 0) {
-            logger(__('No es necesario actualizar la Base de Datos.'));
+            logger(__('El archivo de actualización no contiene datos'), 'ERROR');
 
-            $this->eventDispatcher->notifyEvent('upgrade.db.process',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('No es necesario actualizar la Base de Datos.')))
-            );
-
-            return true;
+            throw new UpgradeException(__u('El archivo de actualización no contiene datos'), UpgradeException::ERROR, $version);
         }
 
         foreach ($queries as $query) {
@@ -205,10 +200,12 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
      */
     private function getQueriesFromFile($filename)
     {
-        $file = SQL_PATH . DIRECTORY_SEPARATOR . str_replace('.', '', $filename) . '.sql';
+        $fileName = SQL_PATH . DIRECTORY_SEPARATOR . str_replace('.', '', $filename) . '.sql';
 
         try {
-            return (new MySQLFileParser())->parse(new FileHandler($file), '$$');
+            $parser = new MySQLFileParser(new FileHandler($fileName));
+
+            return $parser->parse('$$');
         } catch (FileException $e) {
             processException($e);
 

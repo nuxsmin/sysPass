@@ -38,7 +38,7 @@ use SP\Services\Plugin\PluginService;
  *
  * @package SP\Plugin
  */
-class PluginManager
+final class PluginManager
 {
     /**
      * @var array Plugins habilitados

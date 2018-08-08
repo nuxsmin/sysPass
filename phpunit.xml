@@ -16,6 +16,12 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./lib/SP</directory>
+            <exclude>
+                <directory suffix=".php">./lib/SP/DataModel</directory>
+                <directory suffix=".php">./lib/SP/Html/Assets</directory>
+                <directory suffix=".php">./lib/SP/Html/DataGrid</directory>
+                <file>./lib/SP/Config/ConfigData.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
