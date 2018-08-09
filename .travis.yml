@@ -7,6 +7,10 @@ php:
   - '7.1'
 #  - '7.2'
 
+branches:
+  only:
+  - devel-3.0
+
 addons:
   mariadb: '10.1'
 
@@ -24,9 +28,6 @@ after_script:
 notifications:
     on_success: never
     on_failure: always
-
-#services:
-#  - mysql
 
 env:
   - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=

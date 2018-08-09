@@ -34,7 +34,8 @@
     "phpunit/phpunit": "^6",
     "phpunit/dbunit": "^3",
     "symfony/debug" : "~v3.4",
-    "fzaninotto/faker": "~v1.8"
+    "fzaninotto/faker": "~v1.8",
+    "fabpot/goutte": "~v3.2"
   },
   "autoload": {
     "psr-4": {
