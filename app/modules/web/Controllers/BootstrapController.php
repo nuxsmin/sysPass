@@ -94,7 +94,11 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getPlugins()
     {
-        return $this->dic->get(PluginManager::class)->getEnabledPlugins();
+        if ($this->configData->isInstalled()) {
+            return $this->dic->get(PluginManager::class)->getEnabledPlugins();
+        }
+
+        return [];
     }
 
     /**
