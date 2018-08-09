@@ -171,7 +171,11 @@ final class ApiService extends Service
      */
     public function getHelp($action)
     {
-        return call_user_func([$this->helpClass, 'getHelpFor'], $action);
+        if ($this->helpClass !== null) {
+            return call_user_func([$this->helpClass, 'getHelpFor'], $action);
+        }
+
+        return [];
     }
 
     /**
