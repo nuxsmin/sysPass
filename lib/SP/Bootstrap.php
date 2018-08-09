@@ -172,13 +172,14 @@ final class Bootstrap
                     /** @var Response $response */
                     $response->headers()->set('Content-type', 'application/json; charset=utf-8');
                     return $response->body(JsonRpcResponse::getResponseException($e, 0));
+
                 }
             }
         );
 
         // Manejar URLs de módulo web
         $this->router->respond(['GET', 'POST'],
-            '@/(index\.php)?',
+            '@/index\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
                     /** @var \Klein\Request $request */

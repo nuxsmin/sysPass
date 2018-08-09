@@ -29,6 +29,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Modules\Api\Controllers\Help\CategoryHelp;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Category\CategoryService;
 
@@ -43,7 +44,7 @@ final class CategoryController extends ControllerBase
     /**
      * @var CategoryService
      */
-    protected $categoryService;
+    private $categoryService;
 
     /**
      * viewAction
@@ -62,9 +63,9 @@ final class CategoryController extends ControllerBase
 
             $this->returnResponse(new ApiResponse($categoryData));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -90,9 +91,9 @@ final class CategoryController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Categoría creada'), ApiResponse::RESULT_SUCCESS, $id));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -119,9 +120,9 @@ final class CategoryController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Categoría actualizada'), ApiResponse::RESULT_SUCCESS, $categoryData->getId()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -147,9 +148,9 @@ final class CategoryController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Categoría eliminada'), ApiResponse::RESULT_SUCCESS, $id));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -167,20 +168,22 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.category', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->categoryService->search($itemSearchData)));
+            $this->returnResponse(new ApiResponse($this->categoryService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * initialize
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize()
     {
         $this->categoryService = $this->dic->get(CategoryService::class);
+        $this->apiService->setHelpClass(CategoryHelp::class);
     }
 }

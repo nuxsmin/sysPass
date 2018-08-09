@@ -27,6 +27,7 @@ namespace SP\Modules\Api\Controllers;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Modules\Api\Controllers\Help\ConfigHelp;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
@@ -40,36 +41,33 @@ final class ConfigController extends ControllerBase
 {
     /**
      * backupAction
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function backupAction()
     {
         try {
             $this->setupApi(ActionsInterface::CONFIG_BACKUP);
 
+            $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
+
             $this->dic->get(FileBackupService::class)
-                ->doBackup(BACKUP_PATH);
+                ->doBackup($path);
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente')))
+                    ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente'))
+                    ->addDetail(__u('Ruta'), $path))
             );
 
             $this->returnResponse(new ApiResponse(__u('Proceso de backup finalizado')));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
     /**
      * exportAction
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function exportAction()
     {
@@ -77,14 +75,16 @@ final class ConfigController extends ControllerBase
             $this->setupApi(ActionsInterface::CONFIG_EXPORT);
 
             $password = $this->apiService->getParamString('password');
+            $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 
             $this->eventDispatcher->notifyEvent('run.export.start',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportación de sysPass en XML')))
+                    ->addDescription(__u('Exportación de sysPass en XML'))
+                    ->addDetail(__u('Ruta'), $path))
             );
 
             $this->dic->get(XmlExportService::class)
-                ->doExport(BACKUP_PATH, $password);
+                ->doExport($path, $password);
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()
@@ -93,9 +93,17 @@ final class ConfigController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__u('Proceso de exportación finalizado')));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function initialize()
+    {
+        $this->apiService->setHelpClass(ConfigHelp::class);
     }
 }

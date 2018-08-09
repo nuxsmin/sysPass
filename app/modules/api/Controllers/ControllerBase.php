@@ -26,6 +26,7 @@ namespace SP\Modules\Api\Controllers;
 
 use DI\Container;
 use Klein\Klein;
+use Psr\Container\ContainerInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
@@ -42,7 +43,7 @@ abstract class ControllerBase
 {
     const SEARCH_COUNT_ITEMS = 25;
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     protected $dic;
     /**
@@ -120,7 +121,7 @@ abstract class ControllerBase
     /**
      * @param int $actionId
      *
-     * @throws \Exception
+     * @throws SPException
      * @throws \SP\Services\ServiceException
      */
     final protected function setupApi($actionId)
@@ -136,8 +137,6 @@ abstract class ControllerBase
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      *
      * @param \SP\Services\Api\ApiResponse $apiResponse
-     *
-     * @return string La cadena en formato JSON
      */
     final protected function returnResponse(ApiResponse $apiResponse)
     {
@@ -149,24 +148,22 @@ abstract class ControllerBase
             $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
             $this->router->response()->send(true);
 
-            exit(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
+            echo JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId());
         } catch (SPException $e) {
             processException($e);
 
-            exit(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
+            echo JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId());
         }
     }
 
     /**
      * @param \Exception $e
-     *
-     * @return string
      */
     final protected function returnResponseException(\Exception $e)
     {
         $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
         $this->router->response()->send(true);
 
-        exit(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
+        echo JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId());
     }
 }

@@ -28,7 +28,9 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\AuthTokenData;
+use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\Service;
@@ -65,6 +67,10 @@ final class ApiService extends Service
      * @var AuthTokenData
      */
     private $authTokenData;
+    /**
+     * @var HelpInterface
+     */
+    private $helpClass;
     /**
      * @var bool
      */
@@ -165,113 +171,7 @@ final class ApiService extends Service
      */
     public function getHelp($action)
     {
-        return $this->getActions()[$action]['help'];
-    }
-
-    /**
-     * Devuelve las acciones que implementa la API
-     *
-     * @return array
-     */
-    public function getActions()
-    {
-        return [
-            'account/viewPass' => [
-                'help' => [
-                    'id' => __('Id de la cuenta'),
-                    'tokenPass' => __('Clave del token'),
-                    'details' => __('Devolver detalles en la respuesta')
-                ]
-            ],
-            'account/search' => [
-                'help' => [
-                    'text' => __('Texto a buscar'),
-                    'count' => __('Número de resultados a mostrar'),
-                    'categoryId' => __('Id de categoría a filtrar'),
-                    'clientId' => __('Id de cliente a filtrar')
-                ]
-            ],
-            'account/view' => [
-                'help' => [
-                    'id' => __('Id de la cuenta')
-                ]
-            ],
-            'account/delete' => [
-                'help' => [
-                    'id' => __('Id de la cuenta')
-                ]
-            ],
-            'account/create' => [
-                'help' => [
-                    'tokenPass' => __('Clave del token'),
-                    'name' => __('Nombre de cuenta'),
-                    'categoryId' => __('Id de categoría'),
-                    'clientId' => __('Id de cliente'),
-                    'pass' => __('Clave'),
-                    'login' => __('Usuario de acceso'),
-                    'url' => __('URL o IP de acceso'),
-                    'notes' => __('Notas sobre la cuenta'),
-                    'private' => __('Cuenta Privada'),
-                    'privateGroup' => __('Cuenta Privada Grupo'),
-                    'expireDate' => __('Fecha Caducidad Clave'),
-                    'parentId' => __('Cuenta Vinculada')
-                ]
-            ],
-            'backup' => [
-                'help' => ''
-            ],
-            'category/search' => [
-                'help' => [
-                    'text' => __('Texto a buscar'),
-                    'count' => __('Número de resultados a mostrar')
-                ]
-            ],
-            'category/create' => [
-                'help' => [
-                    'name' => __('Nombre de la categoría'),
-                    'description' => __('Descripción de la categoría')
-                ]
-            ],
-            'category/delete' => [
-                'help' => [
-                    'id' => __('Id de categoría')
-                ]
-            ],
-            'client/search' => [
-                'help' => [
-                    'text' => __('Texto a buscar'),
-                    'count' => __('Número de resultados a mostrar')
-                ]
-            ],
-            'client/create' => [
-                'help' => [
-                    'name' => __('Nombre del cliente'),
-                    'description' => __('Descripción del cliente'),
-                    'global' => __('Global')
-                ]
-            ],
-            'client/delete' => [
-                'help' => [
-                    'id' => __('Id de cliente')
-                ]
-            ],
-            'tag/search' => [
-                'help' => [
-                    'text' => __('Texto a buscar'),
-                    'count' => __('Número de resultados a mostrar')
-                ]
-            ],
-            'tag/create' => [
-                'help' => [
-                    'name' => __('Nombre de la etiqueta')
-                ]
-            ],
-            'tag/delete' => [
-                'help' => [
-                    'id' => __('Id de etiqueta')
-                ]
-            ]
-        ];
+        return call_user_func([$this->helpClass, 'getHelpFor'], $action);
     }
 
     /**
@@ -426,6 +326,21 @@ final class ApiService extends Service
     public function isInitialized(): bool
     {
         return $this->initialized;
+    }
+
+    /**
+     * @param string $helpClass
+     *
+     * @throws InvalidClassException
+     */
+    public function setHelpClass(string $helpClass)
+    {
+        if (class_exists($helpClass)) {
+            $this->helpClass = $helpClass;
+            return;
+        }
+
+        throw new InvalidClassException('Invalid class for helper');
     }
 
     /**

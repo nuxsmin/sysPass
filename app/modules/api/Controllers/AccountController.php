@@ -28,6 +28,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
@@ -43,7 +44,7 @@ final class AccountController extends ControllerBase
     /**
      * @var AccountService
      */
-    protected $accountService;
+    private $accountService;
 
     /**
      * viewAction
@@ -98,9 +99,9 @@ final class AccountController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(["itemId" => $accountId, "password" => $password]));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -145,9 +146,9 @@ final class AccountController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Cuenta creada'), ApiResponse::RESULT_SUCCESS, $accountId));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -168,9 +169,9 @@ final class AccountController extends ControllerBase
 
             $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -197,18 +198,18 @@ final class AccountController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__u('Cuenta eliminada'), ApiResponse::RESULT_SUCCESS, $accountId));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize()
     {
         $this->accountService = $this->dic->get(AccountService::class);
+        $this->apiService->setHelpClass(AccountHelp::class);
     }
 }

@@ -29,6 +29,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
+use SP\Modules\Api\Controllers\Help\TagHelp;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Tag\TagService;
 
@@ -42,7 +43,7 @@ final class TagController extends ControllerBase
     /**
      * @var TagService
      */
-    protected $tagService;
+    private $tagService;
 
     /**
      * viewAction
@@ -58,9 +59,9 @@ final class TagController extends ControllerBase
 
             $this->returnResponse(new ApiResponse($this->tagService->getById($id)));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -85,9 +86,9 @@ final class TagController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Etiqueta creada'), ApiResponse::RESULT_SUCCESS, $id));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -113,9 +114,9 @@ final class TagController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Etiqueta actualizada'), ApiResponse::RESULT_SUCCESS, $tagData->getId()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -141,9 +142,9 @@ final class TagController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Etiqueta eliminada'), ApiResponse::RESULT_SUCCESS, $id));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -161,20 +162,20 @@ final class TagController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.tag', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->tagService->search($itemSearchData)));
+            $this->returnResponse(new ApiResponse($this->tagService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize()
     {
         $this->tagService = $this->dic->get(TagService::class);
+        $this->apiService->setHelpClass(TagHelp::class);
     }
 }

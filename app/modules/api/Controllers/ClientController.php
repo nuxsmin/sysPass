@@ -29,6 +29,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
+use SP\Modules\Api\Controllers\Help\ClientHelp;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Client\ClientService;
 
@@ -42,7 +43,7 @@ final class ClientController extends ControllerBase
     /**
      * @var ClientService
      */
-    protected $clientService;
+    private $clientService;
 
     /**
      * viewAction
@@ -59,9 +60,9 @@ final class ClientController extends ControllerBase
 
             $this->returnResponse(new ApiResponse($client));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -88,9 +89,9 @@ final class ClientController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Cliente creado'), ApiResponse::RESULT_SUCCESS, $clientId));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -118,9 +119,9 @@ final class ClientController extends ControllerBase
 
             $this->returnResponse(new ApiResponse(__('Cliente actualizado'), ApiResponse::RESULT_SUCCESS, $clientData->getId()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
@@ -166,20 +167,20 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.client', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->clientService->search($itemSearchData)));
+            $this->returnResponse(new ApiResponse($this->clientService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
-            $this->returnResponseException($e);
-
             processException($e);
+
+            $this->returnResponseException($e);
         }
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize()
     {
         $this->clientService = $this->dic->get(ClientService::class);
+        $this->apiService->setHelpClass(ClientHelp::class);
     }
 }
