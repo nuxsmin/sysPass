@@ -27,6 +27,7 @@ namespace SP\Services\Install;
 
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Hash;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
@@ -39,6 +40,7 @@ use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
+use SP\Storage\Database\Database;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Util\Util;
 use SP\Util\Version;
@@ -55,7 +57,7 @@ final class Installer extends Service
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18080903;
+    const BUILD = 18081001;
 
     /**
      * @var DatabaseSetupInterface
@@ -287,6 +289,7 @@ final class Installer extends Service
     private function updateConnectionData()
     {
         $this->dic->set(DBStorageInterface::class, $this->dbs->createDbHandlerFromInstaller());
+        $this->dic->set(Database::class, new Database($this->dic->get(DBStorageInterface::class), $this->dic->get(EventDispatcher::class)));
     }
 
     /**

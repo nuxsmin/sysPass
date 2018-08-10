@@ -43,7 +43,6 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * Returns environment data
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getEnvironmentAction()
@@ -89,13 +88,13 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     private function getPlugins()
     {
-        if ($this->configData->isInstalled()) {
+        try {
             return $this->dic->get(PluginManager::class)->getEnabledPlugins();
+        } catch (\Exception $e) {
+            processException($e);
         }
 
         return [];
