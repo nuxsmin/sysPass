@@ -49,7 +49,7 @@ class InstallerTest extends TestCase
 {
     use DbTestUtilTrait;
 
-    const DB_NAME = 'syspass_test';
+    const DB_NAME = 'syspass-test-install';
 
     private static $currentConfig;
 

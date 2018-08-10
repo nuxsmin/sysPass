@@ -34,14 +34,21 @@ use SP\Http\Json;
  */
 final class JsonRpcResponse
 {
+    const PARSE_ERROR = -32700;
+    const INVALID_REQUEST = -32600;
+    const METHOD_NOT_FOUND = -32601;
+    const INVALID_PARAMS = -32602;
+    const INTERNAL_ERROR = -32603;
+    const SERVER_ERROR = -32000;
+
     /**
      * @param ApiResponse $apiResponse
-     * @param             $id
+     * @param int         $id
      *
      * @return string
      * @throws \SP\Core\Exceptions\SPException
      */
-    public static function getResponse(ApiResponse $apiResponse, $id)
+    public static function getResponse(ApiResponse $apiResponse, int $id)
     {
         return Json::getJson([
             'jsonrpc' => '2.0',
@@ -52,18 +59,33 @@ final class JsonRpcResponse
 
     /**
      * @param \Exception $e
-     * @param            $id
+     * @param  int       $id
      *
      * @return string
      */
-    public static function getResponseException(\Exception $e, $id)
+    public static function getResponseException(\Exception $e, int $id)
+    {
+        $data = ($e instanceof SPException) ? $e->getHint() : null;
+
+        return self::getResponseError($e->getMessage(), $e->getCode(), $id, $data);
+    }
+
+    /**
+     * @param string $message
+     * @param int    $code
+     * @param int    $id
+     * @param mixed  $data
+     *
+     * @return string
+     */
+    public static function getResponseError(string $message, int $code, int $id, $data = null)
     {
         return json_encode([
             'jsonrpc' => '2.0',
             'error' => [
-                'message' => __($e->getMessage()),
-                'code' => $e->getCode(),
-                'data' => ($e instanceof SPException) ? $e->getHint() : null
+                'message' => __($message),
+                'code' => $code,
+                'data' => $data
             ],
             'id' => $id
         ], JSON_PARTIAL_OUTPUT_ON_ERROR);

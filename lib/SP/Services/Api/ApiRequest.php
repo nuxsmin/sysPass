@@ -79,7 +79,7 @@ final class ApiRequest
                 __u('Datos inválidos'),
                 ApiRequestException::ERROR,
                 json_last_error_msg(),
-                -32700
+                JsonRpcResponse::PARSE_ERROR
             );
         }
 
@@ -88,7 +88,7 @@ final class ApiRequest
                 __u('Fomato incorrecto'),
                 ApiRequestException::ERROR,
                 null,
-                -32600
+                JsonRpcResponse::INVALID_REQUEST
             );
         }
 
@@ -113,7 +113,7 @@ final class ApiRequest
                 __u('Datos inválidos'),
                 ApiRequestException::ERROR,
                 null,
-                -32700
+                JsonRpcResponse::PARSE_ERROR
             );
         }
 

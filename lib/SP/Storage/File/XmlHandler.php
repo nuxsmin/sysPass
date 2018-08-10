@@ -173,9 +173,8 @@ final class XmlHandler implements XmlFileStorageInterface
         $this->root = $this->Dom->createElement($node);
         $this->Dom->appendChild($this->root);
         $this->writeChildNodes($data, $this->root);
-//        $this->Dom->save($this->file);
 
-        file_put_contents($this->fileHandler->getFile(), $this->Dom->saveXML(), LOCK_EX);
+        $this->fileHandler->save($this->Dom->saveXML());
 
         return $this;
     }

@@ -25,6 +25,7 @@
 namespace SP\Config;
 
 use DI\Container;
+use Psr\Container\ContainerInterface;
 use ReflectionObject;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
@@ -61,7 +62,7 @@ final class Config
      */
     private $context;
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private $dic;
 
@@ -90,24 +91,21 @@ final class Config
     {
         if (!$this->configLoaded) {
             try {
+                if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
+                    $this->configData = $this->loadConfigFromFile();
+                } else {
+                    $this->saveConfig(new ConfigData(), false);
+                }
 
-                $this->configData = $this->loadConfigFromFile();
-            } catch (FileException $e) {
-                processException($e);
+                self::$timeUpdated = $this->configData->getConfigDate();
+                $this->configLoaded = true;
 
-                $this->configData = new ConfigData();
-
-                $this->saveConfig($this->configData, false);
+                logger('Config loaded');
             } catch (\Exception $e) {
                 processException($e);
 
                 throw new ConfigException($e->getMessage(), ConfigException::CRITICAL, null, $e->getCode(), $e);
             }
-
-            self::$timeUpdated = $this->configData->getConfigDate();
-            $this->configLoaded = true;
-
-            logger('Config loaded');
         }
     }
 
@@ -115,13 +113,10 @@ final class Config
      * Cargar el archivo de configuración
      *
      * @return ConfigData
-     * @throws ConfigException
      * @throws FileException
      */
     public function loadConfigFromFile()
     {
-        ConfigUtil::checkConfigDir();
-
         $configData = new ConfigData();
 
         // Mapear el array de elementos de configuración con las propiedades de la clase configData
@@ -148,25 +143,22 @@ final class Config
      * @param bool       $backup
      *
      * @return Config
+     * @throws FileException
      */
     public function saveConfig(ConfigData $configData, $backup = true)
     {
-        try {
-            if ($backup) {
-                $this->dic->get(ConfigBackupService::class)
-                    ->backup($configData);
-            }
-
-            $configData->setConfigDate(time());
-            $configData->setConfigSaver($this->context->getUserData()->getLogin());
-            $configData->setConfigHash();
-
-            $this->fileStorage->save($configData, 'config');
-
-            $this->configData = $configData;
-        } catch (\Exception $e) {
-            processException($e);
+        if ($backup) {
+            $this->dic->get(ConfigBackupService::class)
+                ->backup($configData);
         }
+
+        $configData->setConfigDate(time());
+        $configData->setConfigSaver($this->context->getUserData()->getLogin());
+        $configData->setConfigHash();
+
+        $this->fileStorage->save($configData, 'config');
+
+        $this->configData = $configData;
 
         return $this;
     }

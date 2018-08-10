@@ -119,6 +119,23 @@ final class FileHandler
     }
 
     /**
+     * Reads data from file into a string
+     *
+     * @param string $data Data to write into file
+     *
+     * @return FileHandler
+     * @throws FileException
+     */
+    public function save($data)
+    {
+        if (file_put_contents($this->file, $data, LOCK_EX) === false) {
+            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
      * Reads data from file
      *
      * @return string Data read from file

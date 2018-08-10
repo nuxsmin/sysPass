@@ -42,7 +42,7 @@ class MySQLTest extends TestCase
 {
     use DbTestUtilTrait;
 
-    const DB_NAME = 'syspass_test';
+    const DB_NAME = 'syspass-test-install';
 
     /**
      * @throws \SP\Core\Exceptions\SPException

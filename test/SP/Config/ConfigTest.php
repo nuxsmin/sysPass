@@ -95,6 +95,8 @@ class ConfigTest extends TestCase
      * @depends testLoadClass
      *
      * @param Config $config
+     *
+     * @throws \SP\Storage\File\FileException
      */
     public function testSaveConfig($config)
     {

@@ -25,7 +25,6 @@
 namespace SP\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
-use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextException;
@@ -66,12 +65,9 @@ abstract class Service
     /**
      * Service constructor.
      *
-     * @param Container $dic
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $dic
      */
-    public function __construct(Container $dic)
+    public function __construct(ContainerInterface $dic)
     {
         $this->dic = $dic;
         $this->config = $dic->get(Config::class);

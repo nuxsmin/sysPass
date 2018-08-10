@@ -136,7 +136,7 @@ final class Language
             $this->context->setLocale($lang);
         }
 
-        $this->setLocales($lang);
+        self::setLocales($lang);
     }
 
     /**
@@ -200,7 +200,7 @@ final class Language
      *
      * @param string $lang El lenguaje a utilizar
      */
-    public function setLocales($lang)
+    public static function setLocales($lang)
     {
         $lang .= '.utf8';
         $locales = [$lang, 'en_US.utf8', 'en_GB.utf8'];
@@ -230,7 +230,7 @@ final class Language
     public function setAppLocales()
     {
         if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
-            $this->setLocales($this->configData->getSiteLang());
+            self::setLocales($this->configData->getSiteLang());
 
             self::$appSet = true;
         }
@@ -242,7 +242,7 @@ final class Language
     public function unsetAppLocales()
     {
         if (self::$appSet === true) {
-            $this->setLocales($this->context->getLocale());
+            self::setLocales($this->context->getLocale());
 
             self::$appSet = false;
         }

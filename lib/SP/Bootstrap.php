@@ -46,6 +46,7 @@ use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
 use SP\Util\Filter;
+use SP\Util\Version;
 use Symfony\Component\Debug\Debug;
 
 defined('APP_ROOT') || die();
@@ -114,6 +115,9 @@ final class Bootstrap
     {
         self::$container = $container;
 
+        // Set the default language
+        Language::setLocales('en_US');
+
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
         $this->router = $container->get(Klein::class);
@@ -137,10 +141,10 @@ final class Bootstrap
             logger('Routing error: ' . $err->getTraceAsString());
 
             /** @var Klein $router */
-            $router->response()->body($err_msg);
+            $router->response()->body(__($err_msg));
         });
 
-        // Manejar URLs de módulo web
+        // Manage requests for api module
         $this->router->respond(['POST'],
             '@/api\.php',
             function ($request, $response, $service) use ($oops) {
@@ -155,7 +159,9 @@ final class Bootstrap
                     if (!method_exists($controllerClass, $method)) {
                         logger($controllerClass . '::' . $method);
 
-                        throw new RuntimeException($oops);
+                        /** @var Response $response */
+                        $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                        return $response->body(JsonRpcResponse::getResponseError($oops, JsonRpcResponse::METHOD_NOT_FOUND, $apiRequest->getId()));
                     }
 
                     $this->initializeCommon();
@@ -177,7 +183,7 @@ final class Bootstrap
             }
         );
 
-        // Manejar URLs de módulo web
+        // Manage requests for web module
         $this->router->respond(['GET', 'POST'],
             '@/index\.php',
             function ($request, $response, $service) use ($oops) {
@@ -217,7 +223,7 @@ final class Bootstrap
                 } catch (\Exception $e) {
                     processException($e);
 
-                    return $e->getMessage();
+                    return __($e->getMessage());
                 }
             }
         );
@@ -243,19 +249,16 @@ final class Bootstrap
 
         self::$checkPhpVersion = Checks::checkPhpVersion();
 
-        // Inicializar autentificación
+        // Initialize authentication variables
         $this->initAuthVariables();
 
-        // Inicializar logging
+        // Initialize logging
         $this->initPHPVars();
 
-        //  Establecer las rutas de la aplicación
+        // Set application paths
         $this->initPaths();
 
         self::$container->get(PhpExtensionChecker::class)->checkMandatory();
-
-        // Establecer el lenguaje por defecto
-        $this->language->setLocales('en_US');
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
@@ -265,7 +268,7 @@ final class Bootstrap
             );
         }
 
-        // Comprobar la configuración
+        // Check and intitialize configuration
         $this->initConfig();
     }
 
@@ -300,7 +303,7 @@ final class Bootstrap
      */
     public function initPHPVars()
     {
-        // Establecer el modo debug si una sesión de xdebug está activa
+        // Set debug mode if an Xdebug session is active
         if ($this->router->request()->cookies()->get('XDEBUG_SESSION')
             && !defined('DEBUG')
         ) {
@@ -325,7 +328,7 @@ final class Bootstrap
             date_default_timezone_set('UTC');
         }
 
-        // Evita que javascript acceda a las cookies de sesion de PHP
+        // Avoid PHP session cookies from JavaScript
         ini_set('session.cookie_httponly', '1');
         ini_set('session.save_handler', 'files');
     }
@@ -374,7 +377,6 @@ final class Bootstrap
      */
     private function initConfig()
     {
-        // Comprobar si es una versión antigua
         $this->checkConfigVersion();
 
         ConfigUtil::checkConfigDir();
@@ -389,7 +391,7 @@ final class Bootstrap
     {
         if (file_exists(OLD_CONFIG_FILE)) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgradeOldConfigFile(InitWeb::getVersionStringNormalized());
+            $upgradeConfigService->upgradeOldConfigFile(Version::getVersionStringNormalized());
         }
 
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());

@@ -44,6 +44,7 @@ interface XmlFileStorageInterface
      * @param string $node
      *
      * @return XmlFileStorageInterface
+     * @throws FileException
      */
     public function save($data, $node = '');
 
