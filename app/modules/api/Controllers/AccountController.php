@@ -120,14 +120,12 @@ final class AccountController extends ControllerBase
             $accountRequest->login = $this->apiService->getParamString('login');
             $accountRequest->url = $this->apiService->getParamString('url');
             $accountRequest->notes = $this->apiService->getParamString('notes');
-            $accountRequest->otherUserEdit = 0;
-            $accountRequest->otherUserGroupEdit = 0;
             $accountRequest->isPrivate = $this->apiService->getParamInt('private');
             $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
-            $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
             $accountRequest->userId = $this->context->getUserData()->getId();
+            $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
 
             $pass = $this->accountService->getPasswordEncrypted($this->apiService->getParamRaw('pass', true), $this->apiService->getMasterPass());
             $accountRequest->pass = $pass['pass'];

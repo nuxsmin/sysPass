@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="./test/SP/bootstrap.php"
+         bootstrap="./tests/SP/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -10,11 +10,11 @@
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Core">
-            <directory suffix=".php">./test/SP</directory>
-            <exclude>./test/SP/Modules</exclude>
+            <directory suffix=".php">./tests/SP</directory>
+            <exclude>./tests/SP/Modules</exclude>
         </testsuite>
         <testsuite name="Modules">
-            <directory suffix=".php">./test/SP/Modules</directory>
+            <directory suffix=".php">./tests/SP/Modules</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -29,7 +29,7 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="./test/_output/coverage-clover.xml"/>
+        <log type="coverage-clover" target="./tests/_output/coverage-clover.xml"/>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false" showOnlySummary="true" />
     </logging>
 </phpunit>

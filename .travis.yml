@@ -23,7 +23,7 @@ before_script:
 script: ./vendor/bin/phpunit -c ./phpunit.xml --testsuite Core
 
 after_script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then mv ./test/_output/coverage-clover.xml clover.xml && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then mv ./tests/_output/coverage-clover.xml clover.xml && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi
 
 notifications:
     on_success: never

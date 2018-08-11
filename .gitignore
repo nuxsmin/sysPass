@@ -48,15 +48,15 @@ fabric.properties
 app/cache/*
 app/backup/*
 app/config/*
+app/temp/*
+app/modules/**/plugins/*
 !app/config/actions.xml
 !app/config/*.inc
 res/*
 tools/
-app/temp/*
-app/modules/web/plugins/*
 vendor/*
 doc/*
-test/_output/*
+tests/_output/*
 
 .phpstorm.meta.php
 composer.phar
