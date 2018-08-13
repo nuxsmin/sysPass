@@ -45,7 +45,7 @@ class Syslog extends AbstractLogger
      */
     public function setIsRemote($isRemote)
     {
-        $this->isRemote = $isRemote;
+        $this->isRemote = (bool)$isRemote;
     }
 
     /**
