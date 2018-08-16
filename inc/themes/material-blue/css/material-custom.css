@@ -176,3 +176,17 @@
 label.mdl-switch {
     margin: .5em 0;
 }
+
+.colpass{
+    float:left;
+}
+
+.digit{
+    width:10%;
+    clear:left;
+}
+
+.descr{
+    width:75%;
+    clear:right;
+}
