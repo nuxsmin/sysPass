@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-18 08:22+0100\n"
-"PO-Revision-Date: 2017-08-18 08:24+0100\n"
+"PO-Revision-Date: 2018-08-09 13:40+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.1.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 "X-Poedit-SearchPathExcluded-0: ../../../../inc/Plugins\n"
@@ -3783,8 +3783,7 @@ msgid "Actualizando preferencias"
 msgstr "Updating preferences"
 
 #: ../../../../inc/SP/Storage/DB.class.php:285
-#: ../../../../inc/SP/Storage/DB.class.php:330
-#: ../../../../js/strings.js.php:26
+#: ../../../../inc/SP/Storage/DB.class.php:330 ../../../../js/strings.js.php:26
 msgid "Error en la consulta"
 msgstr "Error while querying"
 
@@ -4202,6 +4201,63 @@ msgstr "Clipboard not supported by your browser."
 #: ../../../../js/strings.js.php:91
 msgid "Hay una versión más reciente del plugin {0} ({1})"
 msgstr "There is a more recent version of {0} plugin ({1})"
+
+#: ../../../../js/strings.js.php:92
+msgid "Patrón"
+msgstr "Pattern"
+
+#: ../../../../js/strings.js.php:93
+msgid "Símbolos incluidos"
+msgstr "Included symbols"
+
+#: ../../../../js/strings.js.php:94
+msgid "Símbolos para la generación de contraseñas:"
+msgstr "Symbols for password generation:"
+
+#: ../../../../js/strings.js.php:95
+msgid "Patrón de conversión:"
+msgstr "Conversion pattern:"
+
+#: ../../../../js/strings.js.php:96
+msgid "Mayúscula"
+msgstr "Upper-case"
+
+#: ../../../../js/strings.js.php:97
+msgid "Minúscula"
+msgstr "Lower-case"
+
+#: ../../../../js/strings.js.php:98
+msgid "Cifra"
+msgstr "Digit"
+
+#: ../../../../js/strings.js.php:99
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../../../../js/strings.js.php:100
+msgid "Cualquier"
+msgstr "Any"
+
+#: ../../../../js/strings.js.php:101
+msgid "Contraseña generada"
+msgstr "Generated password"
+
+#: ../../../../js/strings.js.php:102
+msgid "Verificar"
+msgstr "Verify"
+
+#: ../../../../js/strings.js.php:103
+msgid "Barajar"
+msgstr "Shuffle"
+
+#: ../../../../js/strings.js.php:104
+msgid "Usar"
+msgstr "Use"
+
+#: ../../../../js/strings.js.php:105
+msgid "Regen"
+msgstr "Regen"
+
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136
