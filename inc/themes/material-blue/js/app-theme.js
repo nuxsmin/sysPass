@@ -68,93 +68,126 @@ sysPass.Theme = function (Common) {
     };
 
     // Función para generar claves aleatorias.
-    var password = function ($target) {
-        var i = 0;
-        var chars = "";
+    var password = function () {
         var genPassword = "";
 
-        var getRandomChar = function (min, max) {
-            return chars.charAt(Math.floor((Math.random() * max) + min));
-        };
+        var symbols = Common.passwordData.complexity.symbpass;
+        var digits = "1234567890";
+        var lowers = "abcdefghijklmnopqrstuvwxyz";
+        var uppers = String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
+        var any = symbols + digits + lowers + uppers
 
-        if (Common.passwordData.complexity.symbols) {
-            chars += "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>";
-        }
+        var pattern = Common.passwordData.complexity.patpass;
 
-        if (Common.passwordData.complexity.numbers) {
-            chars += "1234567890";
-        }
+        for (var i = 0; i++ < pattern.length;) {
 
-        if (Common.passwordData.complexity.chars) {
-            chars += "abcdefghijklmnopqrstuvwxyz";
-
-            if (Common.passwordData.complexity.uppercase) {
-                chars += String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
+            var setchoice = ""
+            switch(pattern.charAt(i-1)) {
+                case "U":
+                    setchoice = uppers;
+                    break;
+                case "L":
+                    setchoice = lowers;
+                    break;
+                case "D":
+                    setchoice = digits;
+                    break;
+                case "S":
+                    setchoice = symbols;
+                    break;
+                case "A":
+                    setchoice = any;
+                    break;
             }
+            genPassword += setchoice.charAt(Math.floor(Math.random() * (setchoice.length)));
         }
-
-        for (; i++ < Common.passwordData.complexity.numlength;) {
-            genPassword += getRandomChar(0, chars.length - 1);
-        }
-
-        $("#viewPass").attr("title", genPassword);
-
-        var level = zxcvbn(genPassword);
-        Common.passwordData.passLength = genPassword.length;
-
-        if ($target) {
-            var $dstParent = $target.parent();
-            var $targetR = $("#" + $target.attr("id") + "R");
-
-            Common.outputResult(level, $target);
-
-            // Actualizar los componentes de MDL
-            var mdl = new MaterialTextfield();
-
-            // Poner la clave en los input y actualizar MDL
-            $dstParent.find("input:password").val(genPassword);
-            $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-
-            // Poner la clave en el input de repetición y encriptarla
-            if ($targetR.length > 0) {
-                $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-                Common.encryptFormValue($targetR);
-            }
-
-            // Mostar el indicador de complejidad
-            $dstParent.find("#passLevel").show(500);
-        } else {
-            Common.outputResult(level);
-            $("input:password, input.password").val(genPassword);
-            $("#passLevel").show(500);
-        }
+        $(checkGenDialog(genPassword));
     };
+
+    // Diálogo de verificación de clave
+    var checkGenDialog = function(genPassword) {
+        var content =
+            "<div id=\"box-complexity\">" +
+            "<div class=\"mdl-textfield mdl-js-textfield textfield-verifield\" style=\"width:100%\">" +
+            "<input class=\"mdl-textfield__input\" id=\"verifield\" />" +
+            "<label class=\"mdl-textfield__label\" for=\"verifield\">" + Common.config().LANG[76] + "</label>" + 
+            "</div></div>";
+
+        mdlDialog().show({
+            title: Common.config().LANG[77], 
+            text: content,
+            negative: {
+                title: Common.config().LANG[78],
+                onClick: function (e) {
+                var accpass=$("#verifield").val();
+                var shakepass = accpass.split('').sort(function(){return 0.5-Math.random()}).join('');
+                $(checkGenDialog(shakepass));
+                }
+            },
+            positive: {
+                title: Common.config().LANG[79],
+                onClick: function (e) {
+
+                var level = zxcvbn($("#verifield").val());
+                Common.passwordData.passLength = $("#verifield").val().length;
+
+                var $dstParent = $("#accountpass");
+                var $targetR = $("#accountpassR");
+                Common.outputResult(level, $dstParent);
+
+                // Actualizar los componentes de MDL
+                var mdl = new MaterialTextfield();
+
+                // Poner la clave en los input y actualizar MDL
+                $dstParent.val($("#verifield").val());
+                $dstParent.parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+
+                // Poner la clave en el input de repetición y encriptarla
+                if ($targetR.length > 0) {
+                    $targetR.val($("#verifield").val()).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+                    Common.encryptFormValue($targetR);
+                }
+
+                // Mostar el indicador de complejidad
+                $dstParent.find("#passLevel").show(500);
+                //$dstParent.focus();
+
+                }
+            },
+            neutral: {
+                title: Common.config().LANG[80],
+                onClick: function (e) {
+                    $(password);
+                    Common.passwordData.complexity.verifypass = $("#verifield").val();
+                }
+            },
+            cancelable: true,
+            contentStyle: {"max-width": "400px"},
+            onLoaded: function () {
+                $("#verifield").val(genPassword);
+            }
+        });
+    }
 
     // Diálogo de configuración de complejidad de clave
     var complexityDialog = function () {
 
         var content =
-            "<div id=\"box-complexity\"><div>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-chars\">" +
-            "<input type=\"checkbox\" id=\"checkbox-chars\" class=\"mdl-checkbox__input\" name=\"checkbox-chars\" checked/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[63] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
-            "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\" checked/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[35] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-uppercase\">" +
-            "<input type=\"checkbox\" id=\"checkbox-uppercase\" class=\"mdl-checkbox__input\" name=\"checkbox-uppercase\"/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[36] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-symbols\">" +
-            "<input type=\"checkbox\" id=\"checkbox-symbols\" class=\"mdl-checkbox__input\" name=\"checkbox-symbols\"/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[37] + "</span>" +
-            "</label>" +
-            "<div class=\"mdl-textfield mdl-js-textfield textfield-passlength\">" +
-            "<input class=\"mdl-textfield__input\" type=\"number\" pattern=\"[0-9]*\" id=\"passlength\" />" +
-            "<label class=\"mdl-textfield__label\" for=\"passlength\">" + Common.config().LANG[38] + "</label>" +
-            "</div></div></div>";
+            "<div id=\"box-complexity\">" +
+            "<div>" + Common.config().LANG[69] + "</div>" +
+            "<div class=\"mdl-textfield mdl-js-textfield textfield-symbfield\">" +
+            "<input class=\"mdl-textfield__input\" id=\"symbfield\" />" +
+            "<label class=\"mdl-textfield__label\" for=\"symbfield\">" + Common.config().LANG[68] + "</label>" +
+            "</div><div>" + Common.config().LANG[70] + "</div><div>" +
+            "<div class=\"colpass digit\">U</div><div class=\"colpass descr\">" + Common.config().LANG[71] + "</div>" +
+            "<div class=\"colpass digit\">L</div><div class=\"colpass descr\">" + Common.config().LANG[72] + "</div>" +
+            "<div class=\"colpass digit\">D</div><div class=\"colpass descr\">" + Common.config().LANG[73] + "</div>" +
+            "<div class=\"colpass digit\">S</div><div class=\"colpass descr\">" + Common.config().LANG[74] + "</div>" +
+            "<div class=\"colpass digit\">A</div><div class=\"colpass descr\">" + Common.config().LANG[75] + "</div>" +
+            "</div><div class=\"mdl-textfield mdl-js-textfield textfield-patfield\">" +
+            "<input class=\"mdl-textfield__input\" id=\"patfield\" />" +
+            "<label class=\"mdl-textfield__label\" for=\"patfield\">" + Common.config().LANG[67] + "</label>" +
+            "</div></div>";
 
         mdlDialog().show({
             title: Common.config().LANG[29],
@@ -167,21 +200,15 @@ sysPass.Theme = function (Common) {
                 onClick: function (e) {
                     e.preventDefault();
 
-                    Common.passwordData.complexity.chars = $("#checkbox-chars").is(":checked");
-                    Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
-                    Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
-                    Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
-                    Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
+                    Common.passwordData.complexity.symbpass = $("#symbfield").val();
+                    Common.passwordData.complexity.patpass = $("#patfield").val();
                 }
             },
             cancelable: true,
             contentStyle: {"max-width": "300px"},
             onLoaded: function () {
-                $("#checkbox-chars").prop("checked", Common.passwordData.complexity.chars);
-                $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
-                $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
-                $("#checkbox-symbols").prop("checked", Common.passwordData.complexity.symbols);
-                $("#passlength").val(Common.passwordData.complexity.numlength);
+                $("#symbfield").val(Common.passwordData.complexity.symbpass);
+                $("#patfield").val(Common.passwordData.complexity.patpass);
             }
         });
     };
