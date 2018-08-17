@@ -3905,7 +3905,7 @@ MaterialRipple.prototype.init = function () {
             this.ignoringMouseDown_ = false;
             this.boundDownHandler = this.downHandler_.bind(this);
             this.element_.addEventListener('mousedown', this.boundDownHandler);
-            this.element_.addEventListener('touchstart', this.boundDownHandler);
+            this.element_.addEventListener('touchstart', this.boundDownHandler,true);
             this.boundUpHandler = this.upHandler_.bind(this);
             this.element_.addEventListener('mouseup', this.boundUpHandler);
             this.element_.addEventListener('mouseleave', this.boundUpHandler);
