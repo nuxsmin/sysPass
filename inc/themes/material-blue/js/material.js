@@ -3120,7 +3120,7 @@ MaterialTooltip.prototype.init = function () {
             this.forElement_.addEventListener('touchend', this.boundMouseEnterHandler, false);
             this.forElement_.addEventListener('mouseleave', this.boundMouseLeaveAndScrollHandler, false);
             window.addEventListener('scroll', this.boundMouseLeaveAndScrollHandler, true);
-            window.addEventListener('touchstart', this.boundMouseLeaveAndScrollHandler);
+            window.addEventListener('touchstart', this.boundMouseLeaveAndScrollHandler, true);
         }
     }
 };
