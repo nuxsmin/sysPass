@@ -153,7 +153,7 @@
                             <input id="accountpassdatechange" name="accountpassdatechange" type="date"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                    tabindex="8"
-                                   value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
+                                   value="<?php if ($accountPassDateChange == '1970-01-01') { echo ""; } else { echo $accountPassDateChange; } ?>" <?php echo $readonly; ?>>
                             <label class="mdl-textfield__label"
                                    for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
                         </div>

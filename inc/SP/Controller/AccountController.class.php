@@ -290,7 +290,11 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
 
             $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
+            if ($this->AccountData->getAccountPassDateChange() == 0) {
+                $this->view->assign('accountPassDateChange', '');
+            } else {
+                $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
+            }
         } else {
             $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
@@ -439,7 +443,11 @@ class AccountController extends ControllerBase implements ActionsInterface
             ]
         );
 
-        $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+        if ($this->AccountData->getAccountPassDateChange() == 0) {
+                $this->view->assign('accountPassDateChange', '');
+            } else {
+               $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+            }
     }
 
     /**
