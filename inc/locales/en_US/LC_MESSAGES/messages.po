@@ -5864,3 +5864,59 @@ msgstr "Defines the attribute for the user's name when importing."
 msgid "Hay una versión más reciente del plugin {0} ({1})"
 msgstr "There is a more recent version of {0} plugin ({1})"
 
+#: ../../../../js/strings.js.php:92
+msgid "Patrón"
+msgstr "Pattern"
+
+#: ../../../../js/strings.js.php:93
+msgid "Símbolos incluidos"
+msgstr "Included symbols"
+
+#: ../../../../js/strings.js.php:94
+msgid "Caracteres especiales."
+msgstr "Special characters."
+
+#: ../../../../js/strings.js.php:95
+msgid "Patrón de conversión."
+msgstr "Conversion pattern."
+
+#: ../../../../js/strings.js.php:96
+msgid "Mayúscula"
+msgstr "Upper-case"
+
+#: ../../../../js/strings.js.php:97
+msgid "Minúscula"
+msgstr "Lower-case"
+
+#: ../../../../js/strings.js.php:98
+msgid "Cifra"
+msgstr "Digit"
+
+#: ../../../../js/strings.js.php:99
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../../../../js/strings.js.php:100
+msgid "Cualquier"
+msgstr "Any"
+
+#: ../../../../js/strings.js.php:101
+msgid "Contraseña generada"
+msgstr "Generated password"
+
+#: ../../../../js/strings.js.php:102
+msgid "Verificar"
+msgstr "Verify"
+
+#: ../../../../js/strings.js.php:103
+msgid "Barajar"
+msgstr "Shuffle"
+
+#: ../../../../js/strings.js.php:104
+msgid "Usar"
+msgstr "Use"
+
+#: ../../../../js/strings.js.php:105
+msgid "Regen"
+msgstr "Regen"
+
