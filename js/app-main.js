@@ -45,12 +45,8 @@ sysPass.Main = function () {
         passLength: 0,
         minPasswordLength: 8,
         complexity: {
-            chars: true,
-            numbers: true,
-            symbols: true,
-            uppercase: true,
-            numlength: 12
-        }
+            patpass: "AAAAAAAAAAAA",
+            symbpass: "!£$%&()=?@#-_[],.;:"}
     };
 
     Object.seal(passwordData);
@@ -415,9 +411,9 @@ sysPass.Main = function () {
         log.info("checkLogout");
 
         if (parseInt(getUrlVars("logout")) === 1) {
-            msg.sticky(config.LANG[61], function () {
+            msg.sticky(config.LANG[61], setTimeout(function () {
                 redirect("index.php");
-            });
+            },1000);
         }
     };
 
