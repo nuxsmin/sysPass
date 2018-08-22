@@ -91,13 +91,13 @@ final class EventlogController extends ControllerBase
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table-simple', 'grid');
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -112,17 +112,15 @@ final class EventlogController extends ControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Registro de eventos vaciado')))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Registro de eventos vaciado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Registro de eventos vaciado'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()

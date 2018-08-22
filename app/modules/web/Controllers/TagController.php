@@ -59,14 +59,14 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -87,13 +87,11 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
     /**
      * Create action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function createAction()
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign(__FUNCTION__, 1);
@@ -106,11 +104,11 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
             $this->eventDispatcher->notifyEvent('show.tag.create', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -148,12 +146,12 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function editAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Editar Etiqueta'));
@@ -165,11 +163,11 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
             $this->eventDispatcher->notifyEvent('show.tag.edit', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -178,13 +176,12 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_DELETE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -195,7 +192,7 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
                 $this->eventDispatcher->notifyEvent('delete.tag.selection', new Event($this));
 
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiquetas eliminadas'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiquetas eliminadas'));
             } else {
                 $this->tagService->delete($id);
 
@@ -203,12 +200,12 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
                 $this->eventDispatcher->notifyEvent('delete.tag', new Event($this));
 
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta eliminada'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta eliminada'));
             }
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -218,7 +215,7 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     public function saveCreateAction()
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -229,13 +226,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
             $this->eventDispatcher->notifyEvent('create.tag', new Event($this));
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta creada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta creada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -243,11 +240,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      * Saves edit action
      *
      * @param $id
+     *
+     * @return bool
      */
     public function saveEditAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -258,13 +257,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
             $this->eventDispatcher->notifyEvent('edit.tag', new Event($this));
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -273,12 +272,12 @@ final class TagController extends ControllerBase implements CrudControllerInterf
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function viewAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::TAG_VIEW)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Ver Etiqueta'));
@@ -289,11 +288,11 @@ final class TagController extends ControllerBase implements CrudControllerInterf
 
             $this->eventDispatcher->notifyEvent('show.tag', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

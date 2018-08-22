@@ -72,7 +72,7 @@ final class StatusController extends SimpleControllerBase
                         $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
 
                         if (Version::checkVersion(Version::getVersionStringNormalized(), $pubVersion)) {
-                            $this->returnJsonResponseData([
+                            return $this->returnJsonResponseData([
                                 'version' => $requestData->tag_name,
                                 'url' => $requestData->html_url,
                                 'title' => $requestData->name,
@@ -81,21 +81,20 @@ final class StatusController extends SimpleControllerBase
                             ]);
                         }
 
-                        $this->returnJsonResponseData([]);
-                        return;
+                        return $this->returnJsonResponseData([]);
                     }
                 }
 
                 logger($requestData->message);
             }
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
         } catch (ClientException $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (CheckException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -128,20 +127,19 @@ final class StatusController extends SimpleControllerBase
                         ];
                     }
 
-                    $this->returnJsonResponseData($notices);
-                    return;
+                    return $this->returnJsonResponseData($notices);
                 }
 
                 logger($requestData->message);
             }
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));
         } catch (ClientException $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (CheckException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

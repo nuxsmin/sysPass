@@ -86,7 +86,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
         if ($remoteSyslogEnabled) {
             if (!$syslogServer || !$syslogPort) {
-                $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de syslog remoto'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de syslog remoto'));
             }
 
             $configData->setSyslogRemoteEnabled(true);
@@ -112,7 +112,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
         // Valores para Proxy
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Proxy'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Proxy'));
         }
 
         if ($proxyEnabled) {
@@ -159,11 +159,14 @@ final class ConfigGeneralController extends SimpleControllerBase
             $eventMessage->addDescription(__u('Auth Basic deshabiltada'));
         }
 
-        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $eventMessage));
         });
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -172,7 +175,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

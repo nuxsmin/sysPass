@@ -53,7 +53,7 @@ final class ConfigImportController extends SimpleControllerBase
     public function importAction()
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
         }
 
         $importParams = new ImportParams();
@@ -77,10 +77,10 @@ final class ConfigImportController extends SimpleControllerBase
             );
 
             if ($counter > 0) {
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
-            } else {
-                $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No se importaron cuentas'), [__u('Revise el registro de eventos para más detalles')]);
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
             }
+
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No se importaron cuentas'), [__u('Revise el registro de eventos para más detalles')]);
         } catch (\Exception $e) {
             processException($e);
 
@@ -89,10 +89,13 @@ final class ConfigImportController extends SimpleControllerBase
                     ->addDescription($e->getMessage()))
             );
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -101,7 +104,7 @@ final class ConfigImportController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

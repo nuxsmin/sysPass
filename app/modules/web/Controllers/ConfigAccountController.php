@@ -67,7 +67,7 @@ final class ConfigAccountController extends SimpleControllerBase
             $filesAllowedSize = $this->request->analyzeInt('files_allowed_size', 1024);
 
             if ($filesAllowedSize >= 16384) {
-                $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('El tamaño máximo por archivo es de 16MB'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('El tamaño máximo por archivo es de 16MB'));
             }
 
             $configData->setFilesEnabled(true);
@@ -107,6 +107,9 @@ final class ConfigAccountController extends SimpleControllerBase
         });
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -115,7 +118,7 @@ final class ConfigAccountController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

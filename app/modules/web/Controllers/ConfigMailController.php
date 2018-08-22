@@ -65,7 +65,7 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom || count($mailRecipients) === 0)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
         }
 
         if ($mailEnabled) {
@@ -99,10 +99,10 @@ final class ConfigMailController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Correo deshabilitado'));
         } else {
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Sin cambios'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Sin cambios'));
         }
 
-        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
         });
     }
@@ -122,7 +122,7 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if (!$mailParams->server || empty($mailParams->from) || empty($mailRecipients)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
         }
 
         if ($mailParams->mailAuthenabled) {
@@ -139,7 +139,7 @@ final class ConfigMailController extends SimpleControllerBase
                     ->addDetail(__u('Destinatario'), $mailRecipients[0]))
             );
 
-            $this->returnJsonResponse(
+            return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,
                 __u('Correo enviado'),
                 [__u('Compruebe su buzón de correo')]
@@ -149,10 +149,13 @@ final class ConfigMailController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -161,7 +164,7 @@ final class ConfigMailController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

@@ -94,14 +94,14 @@ final class PluginController extends ControllerBase
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -109,13 +109,12 @@ final class PluginController extends ControllerBase
      *
      * @param $id
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return bool
      */
     public function viewAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Ver Plugin'));
@@ -126,11 +125,11 @@ final class PluginController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('show.plugin', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -167,6 +166,8 @@ final class PluginController extends ControllerBase
      * enableAction
      *
      * @param $id
+     *
+     * @return bool
      */
     public function enableAction($id)
     {
@@ -178,11 +179,11 @@ final class PluginController extends ControllerBase
                     EventMessage::factory()->addDescription(__u('Plugin habilitado')))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin habilitado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin habilitado'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -190,6 +191,8 @@ final class PluginController extends ControllerBase
      * disableAction
      *
      * @param $id
+     *
+     * @return bool
      */
     public function disableAction($id)
     {
@@ -201,11 +204,11 @@ final class PluginController extends ControllerBase
                     EventMessage::factory()->addDescription(__u('Plugin deshabilitado')))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deshabilitado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deshabilitado'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -213,6 +216,8 @@ final class PluginController extends ControllerBase
      * resetAction
      *
      * @param $id
+     *
+     * @return bool
      */
     public function resetAction($id)
     {
@@ -224,11 +229,11 @@ final class PluginController extends ControllerBase
                     EventMessage::factory()->addDescription(__u('Plugin restablecido')))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin restablecido'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin restablecido'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

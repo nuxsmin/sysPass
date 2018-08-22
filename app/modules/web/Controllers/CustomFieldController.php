@@ -62,14 +62,14 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -90,13 +90,11 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
     /**
      * Create action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function createAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign(__FUNCTION__, 1);
@@ -109,11 +107,11 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -124,6 +122,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      *
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setViewData($customFieldId = null)
     {
@@ -152,12 +151,12 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function editAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Editar Campo'));
@@ -169,11 +168,11 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -182,13 +181,12 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -199,18 +197,18 @@ final class CustomFieldController extends ControllerBase implements CrudControll
                     new Event($this, EventMessage::factory()->addDescription(__u('Campos eliminados')))
                 );
 
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campos eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campos eliminados'));
             } else {
                 $this->customFieldService->delete($id);
 
                 $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
 
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
             }
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -220,7 +218,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     public function saveCreateAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -237,13 +235,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
                     ->addDetail(__u('Campo'), $itemData->getName()))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -251,11 +249,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * Saves edit action
      *
      * @param $id
+     *
+     * @return bool
      */
     public function saveEditAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -272,13 +272,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
                     ->addDetail(__u('Campo'), $itemData->getName()))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -287,12 +287,12 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function viewAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Ver Campo'));
@@ -305,10 +305,10 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**

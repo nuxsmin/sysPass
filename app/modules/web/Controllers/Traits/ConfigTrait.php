@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -45,12 +45,14 @@ trait ConfigTrait
      * @param ConfigData    $configData
      * @param Config        $config
      * @param callable|null $onSuccess
+     *
+     * @return bool
      */
     protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null)
     {
         try {
             if ($configData->isDemoEnabled()) {
-                $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
             }
 
             $config->saveConfig($configData);
@@ -63,11 +65,11 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuración actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuración actualizada'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar la configuración'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar la configuración'));
         }
     }
 }

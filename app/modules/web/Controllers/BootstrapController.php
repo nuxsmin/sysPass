@@ -67,7 +67,7 @@ final class BootstrapController extends SimpleControllerBase
             'files_allowed_exts' => $this->configData->getFilesAllowedExts()
         ];
 
-        $this->returnJsonResponseData($data);
+        return $this->returnJsonResponseData($data);
     }
 
     /**

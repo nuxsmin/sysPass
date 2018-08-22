@@ -30,7 +30,6 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeException;
 use SP\Services\Upgrade\UpgradeUtil;
 
 /**
@@ -63,11 +62,11 @@ final class UpgradeController extends ControllerBase
     public function upgradeAction()
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Es necesario confirmar la actualización'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Es necesario confirmar la actualización'));
         }
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Código de seguridad incorrecto'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Código de seguridad incorrecto'));
         }
 
 
@@ -88,11 +87,11 @@ final class UpgradeController extends ControllerBase
             $this->configData->setUpgradeKey(null);
             $this->config->saveConfig($this->configData, false);
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Aplicación actualizada correctamente'), [__u('En 5 segundos será redirigido al login')]);
-        } catch (UpgradeException $e) {
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Aplicación actualizada correctamente'), [__u('En 5 segundos será redirigido al login')]);
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

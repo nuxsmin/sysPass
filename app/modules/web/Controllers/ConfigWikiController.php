@@ -56,7 +56,7 @@ final class ConfigWikiController extends SimpleControllerBase
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Wiki'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Wiki'));
         }
 
         if ($wikiEnabled) {
@@ -84,7 +84,7 @@ final class ConfigWikiController extends SimpleControllerBase
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de DokuWiki'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de DokuWiki'));
         }
 
         if ($dokuWikiEnabled) {
@@ -104,11 +104,14 @@ final class ConfigWikiController extends SimpleControllerBase
             $eventMessage->addDescription(__u('DokuWiki deshabilitada'));
         }
 
-        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.wiki', new Event($this, $eventMessage));
         });
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -117,7 +120,7 @@ final class ConfigWikiController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

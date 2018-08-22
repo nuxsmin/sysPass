@@ -77,21 +77,18 @@ final class LoginController extends ControllerBase
                 );
             }
 
-            $this->returnJsonResponseData(['url' => $loginResponmse->getRedirect()]);
+            return $this->returnJsonResponseData(['url' => $loginResponmse->getRedirect()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponse($e->getCode(), $e->getMessage());
+            return $this->returnJsonResponse($e->getCode(), $e->getMessage());
         }
     }
 
     /**
      * Logout action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function logoutAction()
     {

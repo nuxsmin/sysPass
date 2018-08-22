@@ -54,14 +54,14 @@ final class AccountManagerController extends ControllerBase
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -84,6 +84,8 @@ final class AccountManagerController extends ControllerBase
      * Delete action
      *
      * @param $id
+     *
+     * @return bool
      */
     public function deleteAction($id = null)
     {
@@ -97,27 +99,27 @@ final class AccountManagerController extends ControllerBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
                 );
 
-                $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
-            } else {
-                $accountDetails = $this->accountService->getById($id)->getAccountVData();
-
-                $this->accountService->delete($id);
-
-                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.account',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Cuenta eliminada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
-                );
-
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
+                return $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
             }
+
+            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+
+            $this->accountService->delete($id);
+
+            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
+
+            $this->eventDispatcher->notifyEvent('delete.account',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta eliminada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+            );
+
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

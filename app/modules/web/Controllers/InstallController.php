@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
@@ -46,8 +44,7 @@ final class InstallController extends ControllerBase
     use JsonTrait;
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * indexAction
      */
     public function indexAction()
     {
@@ -72,9 +69,6 @@ final class InstallController extends ControllerBase
 
     /**
      * Performs sysPass installation
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function installAction()
     {
@@ -92,11 +86,11 @@ final class InstallController extends ControllerBase
         try {
             $this->dic->get(Installer::class)->run($installData);
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Instalación finalizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Instalación finalizada'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

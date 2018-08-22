@@ -67,11 +67,11 @@ final class UserSettingsGeneralController extends SimpleControllerBase
             // Guardar las preferencias en la sesión
             $userData->setPreferences($userPreferencesData);
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Preferencias actualizadas'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Preferencias actualizadas'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

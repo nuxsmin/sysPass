@@ -45,13 +45,12 @@ final class ConfigBackupController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function fileBackupAction()
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
         }
 
         try {
@@ -65,19 +64,18 @@ final class ConfigBackupController extends SimpleControllerBase
                     ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente')))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de backup finalizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de backup finalizado'));
         } catch (\Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function xmlExportAction()
     {
@@ -85,7 +83,7 @@ final class ConfigBackupController extends SimpleControllerBase
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves no coinciden'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves no coinciden'));
         }
 
         try {
@@ -126,16 +124,19 @@ final class ConfigBackupController extends SimpleControllerBase
                 )
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));
         } catch (\Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
+    /**
+     * @return bool
+     */
     protected function initialize()
     {
         try {
@@ -144,7 +145,7 @@ final class ConfigBackupController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 }

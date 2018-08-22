@@ -96,8 +96,6 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
     /**
      * Search action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function searchAction()
     {
@@ -112,7 +110,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 'html' => $this->render()
             ];
 
-            $this->returnJsonResponseData($data);
+            return $this->returnJsonResponseData($data);
         } catch (\Exception $e) {
             processException($e);
 
@@ -530,6 +528,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      * @param int $parentId
+     *
+     * @return bool
      */
     public function viewPassAction($id, $parentId = 0)
     {
@@ -555,11 +555,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cuenta'), $account->getName()))
             );
 
-            $this->returnJsonResponseData($data);
+            return $this->returnJsonResponseData($data);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -567,6 +567,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * Display account's password
      *
      * @param int $id Account's ID
+     *
+     * @return bool
      */
     public function viewPassHistoryAction($id)
     {
@@ -590,11 +592,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cuenta'), $account->getName()))
             );
 
-            $this->returnJsonResponseData($data);
+            return $this->returnJsonResponseData($data);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -603,11 +605,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
+     * @return bool
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function copyPassAction($id)
     {
@@ -625,7 +626,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->addDetail(__u('Cuenta'), $account->getName()))
         );
 
-        $this->returnJsonResponseData($data);
+        return $this->returnJsonResponseData($data);
     }
 
     /**
@@ -633,11 +634,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
+     * @return bool
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function copyPassHistoryAction($id)
     {
@@ -655,7 +655,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 ->addDetail(__u('Cuenta'), $account->getName()))
         );
 
-        $this->returnJsonResponseData($data);
+        return $this->returnJsonResponseData($data);
     }
 
     /**
@@ -691,7 +691,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnJsonResponseData(
+            return $this->returnJsonResponseData(
                 [
                     'itemId' => $accountId,
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_EDIT)
@@ -700,11 +700,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 __u('Cuenta creada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -713,8 +713,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function saveEditAction($id)
     {
@@ -737,7 +736,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnJsonResponseData(
+            return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
@@ -746,11 +745,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 __u('Cuenta actualizada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -759,8 +758,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function saveEditPassAction($id)
     {
@@ -779,7 +777,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnJsonResponseData(
+            return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
@@ -788,11 +786,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 __u('Clave actualizada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -802,8 +800,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $historyId Account's history ID
      * @param int $id        Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function saveEditRestoreAction($historyId, $id)
     {
@@ -819,7 +816,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnJsonResponseData(
+            return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
@@ -830,7 +827,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -839,8 +836,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return bool
      */
     public function saveDeleteAction($id)
     {
@@ -854,27 +850,27 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
                 );
 
-                $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
-            } else {
-                $accountDetails = $this->accountService->getById($id)->getAccountVData();
-
-                $this->accountService->delete($id);
-
-                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.account',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Cuenta eliminada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
-                );
-
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
             }
+
+            $accountDetails = $this->accountService->getById($id)->getAccountVData();
+
+            $this->accountService->delete($id);
+
+            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
+
+            $this->eventDispatcher->notifyEvent('delete.account',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta eliminada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+            );
+
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -883,8 +879,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function saveRequestAction($id)
     {
@@ -910,7 +905,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addData('userId', $accountDetails->userEditId))
             );
 
-            $this->returnJsonResponseData(
+            return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT)
@@ -919,11 +914,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 __u('Solicitud realizada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

@@ -60,14 +60,14 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -88,13 +88,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
     /**
      * Create action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function createAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign(__FUNCTION__, 1);
@@ -107,11 +105,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->eventDispatcher->notifyEvent('show.category.create', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -123,6 +121,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setViewData($categoryId = null)
     {
@@ -152,12 +151,12 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function editAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Editar Categoría'));
@@ -169,11 +168,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->eventDispatcher->notifyEvent('show.category.edit', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -182,13 +181,12 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return bool
      */
     public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_DELETE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -203,38 +201,35 @@ final class CategoryController extends ControllerBase implements CrudControllerI
                             ->addDescription(__u('Categorías eliminadas')))
                 );
 
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categorías eliminadas'));
-            } else {
-                $this->categoryService->delete($id);
-
-                $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.category',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__u('Categoría eliminada'))
-                            ->addDetail(__u('Categoría'), $id))
-                );
-
-                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categorías eliminadas'));
             }
+
+            $this->categoryService->delete($id);
+
+            $this->deleteCustomFieldsForItem(Acl::CATEGORY, $id);
+
+            $this->eventDispatcher->notifyEvent('delete.category',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Categoría eliminada'))
+                        ->addDetail(__u('Categoría'), $id))
+            );
+
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
     /**
      * Saves create action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function saveCreateAction()
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -254,13 +249,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
                         ->addDetail(__u('Categoría'), $itemData->getName()))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría creada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría creada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -269,14 +264,12 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     *
+     * @return bool
      */
     public function saveEditAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
@@ -296,13 +289,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
                         ->addDetail(__u('Categoría'), $itemData->getName()))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -311,12 +304,12 @@ final class CategoryController extends ControllerBase implements CrudControllerI
      *
      * @param $id
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @return bool
      */
     public function viewAction($id)
     {
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_VIEW)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->assign('header', __('Ver Categoría'));
@@ -327,11 +320,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->eventDispatcher->notifyEvent('show.category', new Event($this));
 
-            $this->returnJsonResponseData(['html' => $this->render()]);
+            return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

@@ -59,6 +59,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * View action
      *
      * @param $id
+     *
+     * @return bool
      */
     public function viewAction($id)
     {
@@ -81,7 +83,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
                             ->addDetail(__u('Archivo'), $fileData->getName()))
                 );
 
-                $this->returnJsonResponseData(['html' => $this->render()]);
+                return $this->returnJsonResponseData(['html' => $this->render()]);
             }
 
             if (mb_strtoupper($fileData->getExtension()) === 'TXT') {
@@ -94,15 +96,15 @@ final class AccountFileController extends ControllerBase implements CrudControll
                             ->addDetail(__u('Archivo'), $fileData->getName()))
                 );
 
-                $this->returnJsonResponseData(['html' => $this->render()]);
+                return $this->returnJsonResponseData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
 
-        $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Archivo no soportado para visualizar'));
+        return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Archivo no soportado para visualizar'));
     }
 
     /**
@@ -142,6 +144,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * Upload action
      *
      * @param int $accountId
+     *
+     * @return bool
      */
     public function uploadAction($accountId)
     {
@@ -227,15 +231,15 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 )
             );
 
-            $this->returnJsonResponse(0, __u('Archivo guardado'));
+            return $this->returnJsonResponse(0, __u('Archivo guardado'));
         } catch (SPException $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
+            return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -248,14 +252,14 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
-            return;
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->returnJsonResponseData(['html' => $this->render()]);
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -296,6 +300,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * Delete action
      *
      * @param $id
+     *
+     * @return bool
      */
     public function deleteAction($id = null)
     {
@@ -308,22 +314,22 @@ final class AccountFileController extends ControllerBase implements CrudControll
                         ->addDescription(__u('Archivos eliminados')))
                 );
 
-                $this->returnJsonResponse(0, __u('Archivos eliminados'));
-            } else {
-                $this->eventDispatcher->notifyEvent('delete.accountFile',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Archivo eliminado'))
-                        ->addDetail(__u('Archivo'), $id))
-                );
-
-                $this->accountFileService->delete($id);
-
-                $this->returnJsonResponse(0, __u('Archivo Eliminado'));
+                return $this->returnJsonResponse(0, __u('Archivos eliminados'));
             }
+
+            $this->eventDispatcher->notifyEvent('delete.accountFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo eliminado'))
+                    ->addDetail(__u('Archivo'), $id))
+            );
+
+            $this->accountFileService->delete($id);
+
+            return $this->returnJsonResponse(0, __u('Archivo Eliminado'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

@@ -44,33 +44,37 @@ final class AccountFavoriteController extends SimpleControllerBase
 
     /**
      * @param $accountId
+     *
+     * @return bool
      */
     public function markAction($accountId)
     {
         try {
             $this->accountFavoriteService->add($accountId, $this->session->getUserData()->getId());
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito añadido'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito añadido'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
     /**
      * @param $accountId
+     *
+     * @return bool
      */
     public function unmarkAction($accountId)
     {
         try {
             $this->accountFavoriteService->delete($accountId, $this->session->getUserData()->getId());
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito eliminado'));
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 

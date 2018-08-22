@@ -104,13 +104,13 @@ final class UserPassResetController extends ControllerBase
 
             $this->dic->get(MailService::class)->send(__('Cambio de Clave'), $email, UserPassRecoverService::getMailMessage($hash));
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Solicitud enviada'), [__u('En breve recibirá un correo para completar la solicitud.')]);
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Solicitud enviada'), [__u('En breve recibirá un correo para completar la solicitud.')]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->addTracking();
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -187,13 +187,13 @@ final class UserPassResetController extends ControllerBase
                     ->addDetail(__u('Usuario'), $userId))
             );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
         } catch (\Exception $e) {
             processException($e);
 
             $this->addTracking();
 
-            $this->returnJsonResponseException($e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
