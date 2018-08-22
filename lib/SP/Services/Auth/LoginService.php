@@ -37,7 +37,6 @@ use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
 use SP\Providers\Auth\AuthProvider;
-use SP\Providers\Auth\AuthUtil;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuthData;
@@ -347,6 +346,7 @@ final class LoginService extends Service
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     protected function setUserSession()
     {
