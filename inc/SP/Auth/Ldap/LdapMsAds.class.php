@@ -102,7 +102,7 @@ class LdapMsAds extends LdapBase
     {
         $userLogin = ldap_escape($this->userLogin);
 
-        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . ')(userPrincipalName=' . $userLogin . '))(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
     }
 
     /**
@@ -130,7 +130,7 @@ class LdapMsAds extends LdapBase
         $groupDN = $this->LdapAuthData->getGroupDn();
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . ldap_escape($groupDN) . ')';
 
-        $searchResults = $this->getResults($filter, ['sAMAccountName']);
+        $searchResults = $this->getResults($filter, ['sAMAccountName', 'cn', 'uid', 'userPrincipalName']);
 
         if ($searchResults === false) {
             $this->LogMessage->addDescription(__('Error al buscar el grupo de usuarios', false));
@@ -144,7 +144,7 @@ class LdapMsAds extends LdapBase
 
         foreach ($searchResults as $entry) {
             if (is_array($entry)) {
-                if ($this->userLogin === strtolower($entry['samaccountname'][0])) {
+                if (($this->userLogin === strtolower($entry['samaccountname'][0])) || ($this->userLogin === strtolower($entry['cn'][0])) || ($this->userLogin === strtolower($entry['uid'][0])) || ($this->userLogin === strtolower($entry['userprincipalname'][0]))) {
                     $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
                     $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
                     $this->writeLog(Log::INFO);
