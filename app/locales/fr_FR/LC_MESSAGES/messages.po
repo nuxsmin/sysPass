@@ -3203,7 +3203,7 @@ msgstr "Confirmer Changement"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:92
 msgid "Guarde la nueva clave en un lugar seguro."
-msgstr "Vous devriez sauvegarder le mot de passe dans un endroit sûre."
+msgstr "Vous devriez sauvegarder le mot de passe dans un endroit sûr."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:96
 msgid "Se volverán a encriptar las claves de todas las cuentas."
