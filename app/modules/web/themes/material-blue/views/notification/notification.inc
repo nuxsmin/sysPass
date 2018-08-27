@@ -8,7 +8,7 @@
     <form method="post" name="frmNotices" id="frmNotices" class="form-action"
           data-onsubmit="notification/save"
           data-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-nextaction="<?php echo $nextAction; ?>"
+          data-action-next="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>

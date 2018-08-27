@@ -124,7 +124,7 @@ final class Minify
             } else {
                 if ($file['min'] === true && $disableMinify === false) {
                     $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
-                    
+
                     if ($this->type === self::FILETYPE_JS) {
                         $data .= $this->jsCompress(file_get_contents($filePath));
                     }
@@ -235,18 +235,24 @@ final class Minify
      *
      * @param string $file
      * @param bool   $minify Si es necesario reducir
+     * @param string $base
      *
      * @return $this
      */
-    public function addFile($file, $minify = true)
+    public function addFile($file, $minify = true, $base = null)
     {
-        $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
+        if ($base === null) {
+            $base = $this->base;
+            $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
+        } else {
+            $filePath = $base . DIRECTORY_SEPARATOR . $file;
+        }
 
         if (file_exists($filePath)) {
             $this->files[] = [
                 'type' => 'file',
-                'base' => $this->base,
-                'name' => Request::getSecureAppFile($file, $this->base),
+                'base' => $base,
+                'name' => Request::getSecureAppFile($file, $base),
                 'min' => $minify === true && $this->needsMinify($file),
                 'md5' => md5_file($filePath)
             ];

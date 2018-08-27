@@ -26,10 +26,10 @@
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url("public/css/fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
+    src: url("public/vendor/fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
     src: local('Material Icons'),
     local('MaterialIcons-Regular'),
-    url("public/css/fonts/MaterialIcons-Regular.woff2") format('woff2'),
-    url("public/css/fonts/MaterialIcons-Regular.woff") format('woff'),
-    url("public/css/fonts/MaterialIcons-Regular.ttf") format('truetype');
+    url("public/vendor/fonts/MaterialIcons-Regular.woff2") format('woff2'),
+    url("public/vendor/fonts/MaterialIcons-Regular.woff") format('woff'),
+    url("public/vendor/fonts/MaterialIcons-Regular.ttf") format('truetype');
 }

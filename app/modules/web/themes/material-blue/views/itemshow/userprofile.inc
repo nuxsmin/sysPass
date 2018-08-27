@@ -13,7 +13,6 @@
           data-onsubmit="appMgmt/save"
           data-action-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
 
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">

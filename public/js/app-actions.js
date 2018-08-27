@@ -1270,7 +1270,7 @@ sysPass.Actions = function (Common) {
                             Common.msg.out(json);
 
                             if (json.status === 0) {
-                                getContent({r: $obj.data("nextaction")});
+                                getContent({r: $obj.data("action-next")});
                             }
 
                             Common.sk.set(json.csrf);
@@ -1371,7 +1371,7 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    getContent({r: $obj.data("nextaction")});
+                    getContent({r: $obj.data("action-next")});
                 }
 
                 Common.sk.set(json.csrf);
@@ -1398,7 +1398,7 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    getContent({r: $obj.data("nextaction")});
+                    getContent({r: $obj.data("action-next")});
 
                     $.magnificPopup.close();
                 }
@@ -1423,7 +1423,7 @@ sysPass.Actions = function (Common) {
                 Common.appRequests().getActionCall(opts, function (json) {
                     Common.msg.out(json);
 
-                    getContent({r: $obj.data("nextaction")});
+                    getContent({r: $obj.data("action-next")});
                 });
             });
         },

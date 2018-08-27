@@ -202,7 +202,7 @@ final class EventlogGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconClear());
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));
-        $gridAction->addData('nextaction', Acl::getActionRoute(ActionsInterface::EVENTLOG));
+        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::EVENTLOG));
 
         return $gridAction;
     }

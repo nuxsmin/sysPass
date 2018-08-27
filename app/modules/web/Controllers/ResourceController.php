@@ -55,15 +55,16 @@ final class ResourceController extends SimpleControllerBase
                 ->getMinified();
         } else {
             $this->minify->setType(Minify::FILETYPE_CSS)
-                ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'css')
-                ->addFiles(['reset.min.css',
+                ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'css')
+                ->addFiles([
+                    'reset.min.css',
                     'jquery-ui.min.css',
                     'jquery-ui.structure.min.css',
-                    'fonts.min.css',
                     'material-icons.min.css',
                     'toastr.min.css',
                     'magnific-popup.min.css'
                 ], false)
+                ->addFile('fonts.min.css', false, PUBLIC_PATH . DIRECTORY_SEPARATOR . 'css')
                 ->getMinified();
         }
     }
@@ -83,12 +84,12 @@ final class ResourceController extends SimpleControllerBase
                 ->addFilesFromString(urldecode($file))
                 ->getMinified();
         } else {
-            $this->minify->setType(Minify::FILETYPE_JS)
-                ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
-
             $group = $this->request->analyzeInt('g', 0);
 
             if ($group === 0) {
+                $this->minify->setType(Minify::FILETYPE_JS)
+                    ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'js');
+
                 $this->minify->addFiles([
                     'jquery-3.3.1.min.js',
                     'jquery-migrate-3.0.0.min.js',
@@ -105,6 +106,9 @@ final class ResourceController extends SimpleControllerBase
                     'jquery.magnific-popup.min.js',
                     'eventsource.min.js'], false);
             } elseif ($group === 1) {
+                $this->minify->setType(Minify::FILETYPE_JS)
+                    ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
+
                 // FIXME: use MIN version
                 $this->minify->addFiles([
                     'app.js',

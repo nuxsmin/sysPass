@@ -226,7 +226,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setOnClickFunction('notification/check');
         $gridAction->setFilterRowSource('checked');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_CHECK));
-        $gridAction->addData('nextaction', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
 
         return $gridAction;
     }
@@ -260,7 +260,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('notification/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_DELETE));
-        $gridAction->addData('nextaction', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
 
         return $gridAction;
     }
