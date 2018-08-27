@@ -20,7 +20,7 @@ before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
-script: ./vendor/bin/phpunit -c ./phpunit.xml --testsuite Core
+script: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite Core
 
 after_script:
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then mv ./tests/_output/coverage-clover.xml clover.xml && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi
@@ -33,8 +33,9 @@ env:
   - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=
 
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
-  - mysql $DB_NAME < $TRAVIS_BUILD_DIR/schemas/dbstructure.sql
+  - mysql -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
+  - mysql -e 'CREATE DATABASE `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+  - mysql $DB_NAME < ./schemas/dbstructure.sql
 
 cache:
   directories:

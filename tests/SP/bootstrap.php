@@ -96,8 +96,6 @@ function getRealIpAddress()
 /**
  * Configura el contexto de la aplicación para los tests
  *
- * @throws \DI\DependencyException
- * @throws \DI\NotFoundException
  * @throws \SP\Core\Context\ContextException
  * @return \DI\Container
  * @throws \Exception

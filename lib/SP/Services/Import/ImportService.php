@@ -35,7 +35,7 @@ defined('APP_ROOT') || die();
 final class ImportService extends Service
 {
     const ALLOWED_EXTS = ['CSV', 'XML'];
-    
+
     /**
      * @var ImportParams
      */
@@ -71,8 +71,6 @@ final class ImportService extends Service
     /**
      * @return ImportInterface
      * @throws ImportException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     protected function selectImportType()

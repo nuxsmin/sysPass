@@ -30,6 +30,7 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
+use SP\Http\Json;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Api\ApiService;
 use SP\Services\Api\JsonRpcResponse;
@@ -145,15 +146,23 @@ abstract class ControllerBase
                 throw new SPException(__u('Acceso no permitido'));
             }
 
-            $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
-            $this->router->response()->send(true);
-
-            echo JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId());
+            $this->sendJsonResponse(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
         } catch (SPException $e) {
             processException($e);
 
-            echo JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId());
+            $this->returnResponseException($e);
         }
+    }
+
+    /**
+     * Returns a JSON response back to the browser
+     *
+     * @param string $response
+     */
+    final private function sendJsonResponse(string $response)
+    {
+        $json = Json::factory($this->router->response());
+        $json->returnRawJson($response);
     }
 
     /**
@@ -161,9 +170,6 @@ abstract class ControllerBase
      */
     final protected function returnResponseException(\Exception $e)
     {
-        $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
-        $this->router->response()->send(true);
-
-        echo JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId());
+        $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
     }
 }

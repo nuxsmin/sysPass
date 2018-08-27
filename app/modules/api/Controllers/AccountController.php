@@ -29,6 +29,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
+use SP\Mvc\Model\QueryCondition;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
@@ -162,6 +163,26 @@ final class AccountController extends ControllerBase
             $accountSearchFilter->setCleanTxtSearch($this->apiService->getParamString('text'));
             $accountSearchFilter->setCategoryId($this->apiService->getParamInt('categoryId'));
             $accountSearchFilter->setClientId($this->apiService->getParamInt('clientId'));
+
+            $tagsId = $this->apiService->getParamArray('tagsId', false, []);
+
+            if (!empty($tagsId)) {
+                $accountSearchFilter->setTagsId($tagsId);
+            }
+
+            $op = $this->apiService->getParamString('op');
+
+            if ($op !== null) {
+                switch ($op) {
+                    case 'and':
+                        $accountSearchFilter->setFilterOperator(QueryCondition::CONDITION_AND);
+                        break;
+                    case 'or':
+                        $accountSearchFilter->setFilterOperator(QueryCondition::CONDITION_OR);
+                        break;
+                }
+            }
+
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
             $accountSearchFilter->setSortOrder($this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT));
 
@@ -194,7 +215,7 @@ final class AccountController extends ControllerBase
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnResponse(new ApiResponse(__u('Cuenta eliminada'), ApiResponse::RESULT_SUCCESS, $accountId));
+            $this->returnResponse(new ApiResponse(__('Cuenta eliminada'), ApiResponse::RESULT_SUCCESS, $accountId));
         } catch (\Exception $e) {
             processException($e);
 

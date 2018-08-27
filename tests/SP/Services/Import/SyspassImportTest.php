@@ -30,7 +30,6 @@ use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Import\FileImport;
-use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
 use SP\Services\Import\SyspassImport;
 use SP\Services\Import\XmlFileImport;
@@ -223,24 +222,5 @@ class SyspassImportTest extends DatabaseTestCase
         $this->assertEquals('csv_pass3', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         $this->assertEquals(7, $this->conn->getRowCount('Account'));
-    }
-
-    /**
-     * @throws ImportException
-     * @throws \SP\Storage\File\FileException
-     */
-    public function testDoImportInvalidData()
-    {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_invalid.xml';
-
-        $params = new ImportParams();
-        $params->setDefaultUser(1);
-        $params->setDefaultGroup(1);
-
-        $import = new SyspassImport(self::$dic, new XmlFileImport(FileImport::fromFilesystem($file)), $params);
-
-        $this->expectException(ImportException::class);
-
-        $import->doImport();
     }
 }

@@ -72,7 +72,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                 $this->processEncrypted();
             }
 
-            XmlVerifyService::checkXmlHash($this->xmlDOM, $this->configData->getPasswordSalt());
+            $this->checkIntegrity();
 
             $this->processCategories();
 
@@ -161,6 +161,22 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Datos desencriptados')))
         );
+    }
+
+    /**
+     * Checks XML file's data integrity using the signed hash
+     */
+    protected function checkIntegrity()
+    {
+        $key = $this->importParams->getImportPwd() ?: sha1($this->configData->getPasswordSalt());
+
+        if (!XmlVerifyService::checkXmlHash($this->xmlDOM, $key)) {
+            $this->eventDispatcher->notifyEvent('run.import.syspass.process.verify',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Fallo en la verificación del hash de integridad'))
+                    ->addDescription(__u('Si está importando un archivo exportado desde el mismo origen, los datos pueden estar comprometidos.')))
+            );
+        }
     }
 
     /**

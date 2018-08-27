@@ -88,6 +88,7 @@ final class XmlExportService extends Service
      * @param string $pass string La clave de exportación
      *
      * @throws ServiceException
+     * @throws \SP\Storage\File\FileException
      */
     public function doExport(string $exportPath, string $pass = null)
     {
@@ -118,6 +119,8 @@ final class XmlExportService extends Service
 
     /**
      * Genera el nombre del archivo usado para la exportación.
+     *
+     * @throws \SP\Storage\File\FileException
      */
     private function generateExportFilename(): string
     {
@@ -497,7 +500,10 @@ final class XmlExportService extends Service
 
             $hashNode = $this->xml->createElement('Hash', $hash);
             $hashNode->appendChild($this->xml->createAttribute('sign'));
-            $hashNode->setAttribute('sign', Hash::signMessage($hash, $this->configData->getPasswordSalt()));
+
+            $key = $this->exportPass ?: sha1($this->configData->getPasswordSalt());
+
+            $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));
 
             $this->root
                 ->getElementsByTagName('Meta')

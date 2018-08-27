@@ -1027,16 +1027,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "6.0.2",
+            "version": "6.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "71a7f2ed1e728138060ea159cbb1a92dc8620bd2"
+                "reference": "61ef5c9fcbf04c8504a46d20bd27ea608eab7864"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/71a7f2ed1e728138060ea159cbb1a92dc8620bd2",
-                "reference": "71a7f2ed1e728138060ea159cbb1a92dc8620bd2",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/61ef5c9fcbf04c8504a46d20bd27ea608eab7864",
+                "reference": "61ef5c9fcbf04c8504a46d20bd27ea608eab7864",
                 "shasum": ""
             },
             "require": {
@@ -1086,7 +1086,7 @@
                 "ioc",
                 "psr11"
             ],
-            "time": "2018-04-23T06:54:40+00:00"
+            "time": "2018-08-25T22:21:38+00:00"
         },
         {
             "name": "php-di/phpdoc-reader",
@@ -1435,12 +1435,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "f834fd02a512672f298ed7c59e44e46621b6423d"
+                "reference": "0abc14e0df387fe74b4b32e0b8647d1639256d38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f834fd02a512672f298ed7c59e44e46621b6423d",
-                "reference": "f834fd02a512672f298ed7c59e44e46621b6423d",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0abc14e0df387fe74b4b32e0b8647d1639256d38",
+                "reference": "0abc14e0df387fe74b4b32e0b8647d1639256d38",
                 "shasum": ""
             },
             "conflict": {
@@ -1577,7 +1577,7 @@
                 "zendframework/zend-validator": ">=2.3,<2.3.6",
                 "zendframework/zend-view": ">=2,<2.2.7|>=2.3,<2.3.1",
                 "zendframework/zend-xmlrpc": ">=2.1,<2.1.6|>=2.2,<2.2.6",
-                "zendframework/zendframework": ">=2,<2.4.11|>=2.5,<2.5.1",
+                "zendframework/zendframework": "<2.5.1",
                 "zendframework/zendframework1": "<1.12.20",
                 "zendframework/zendopenid": ">=2,<2.0.2",
                 "zendframework/zendxml": ">=1,<1.0.1",
@@ -1599,7 +1599,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2018-08-10T10:05:21+00:00"
+            "time": "2018-08-14T15:39:17+00:00"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -2535,16 +2535,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.5.11",
+            "version": "6.5.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "7bab54cb366076023bbf457a2a0d513332cd40f2"
+                "reference": "24da433d7384824d65ea93fbb462e2f31bbb494e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7bab54cb366076023bbf457a2a0d513332cd40f2",
-                "reference": "7bab54cb366076023bbf457a2a0d513332cd40f2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/24da433d7384824d65ea93fbb462e2f31bbb494e",
+                "reference": "24da433d7384824d65ea93fbb462e2f31bbb494e",
                 "shasum": ""
             },
             "require": {
@@ -2615,7 +2615,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-08-07T07:05:35+00:00"
+            "time": "2018-08-22T06:32:48+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

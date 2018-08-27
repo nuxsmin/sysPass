@@ -26,7 +26,6 @@ namespace SP\Tests\Modules\Api;
 
 use SP\Services\Api\JsonRpcResponse;
 use SP\Tests\WebTestCase;
-use Symfony\Component\BrowserKit\Response;
 
 /**
  * Class ApiTest
@@ -36,21 +35,13 @@ use Symfony\Component\BrowserKit\Response;
 class ApiTest extends WebTestCase
 {
 
-    const API_TOKEN = 'ca28f2ad2af09064ce0bfc2aff144cacb4a48df09b0978c4b6dc3970db7b2c48';
-    const API_PASS = '123456';
+    const API_TOKEN = '4eb7a989fab4c8fd9ade0ea80df7032d5ee78d4496c1c10f9c4388a872bfff28';
+    const API_PASS = ')%Iykm*4A]wg';
     const API_URL = 'http://syspass-app-test/api.php';
 
     public function testInvalidRequest()
     {
-        $client = self::postJson(self::API_URL);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
@@ -70,15 +61,7 @@ class ApiTest extends WebTestCase
             'id' => 1
         ];
 
-        $client = self::postJson(self::API_URL, $data);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
@@ -99,15 +82,7 @@ class ApiTest extends WebTestCase
             'id' => 1
         ];
 
-        $client = self::postJson(self::API_URL, $data);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);

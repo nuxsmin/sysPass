@@ -26,6 +26,7 @@ namespace SP\Tests;
 
 use Goutte\Client;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\BrowserKit\Response;
 
 /**
  * Class WebTestCase
@@ -56,5 +57,21 @@ abstract class WebTestCase extends TestCase
     protected static function createClient(array $server = [])
     {
         return new Client($server);
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return \stdClass
+     */
+    protected static function checkAndProcessJsonResponse(Client $client)
+    {
+        /** @var Response $response */
+        $response = $client->getResponse();
+
+        self::assertEquals(200, $response->getStatus());
+        self::assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
+
+        return json_decode($response->getContent());
     }
 }

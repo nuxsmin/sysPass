@@ -192,6 +192,9 @@ class ApiServiceTest extends DatabaseTestCase
         $this->assertEquals(10, self::$service->getRequestId());
     }
 
+    /**
+     * @throws ServiceException
+     */
     public function testGetMasterPass()
     {
         $this->assertEquals('12345678900', self::$service->getMasterPass());

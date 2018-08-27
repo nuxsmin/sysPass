@@ -25,6 +25,7 @@
 namespace SP\Services\Import;
 
 use DI\Container;
+use Psr\Container\ContainerInterface;
 
 defined('APP_ROOT') || die();
 
@@ -52,11 +53,11 @@ final class XmlImport implements ImportInterface
     /**
      * XmlImport constructor.
      *
-     * @param Container     $dic
-     * @param XmlFileImport $xmlFileImport
-     * @param ImportParams  $importParams
+     * @param ContainerInterface $dic
+     * @param XmlFileImport      $xmlFileImport
+     * @param ImportParams       $importParams
      */
-    public function __construct(Container $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
+    public function __construct(ContainerInterface $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
     {
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;

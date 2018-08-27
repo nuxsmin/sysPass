@@ -45,7 +45,7 @@ final class ConfigController extends ControllerBase
     public function backupAction()
     {
         try {
-            $this->setupApi(ActionsInterface::CONFIG_BACKUP);
+            $this->setupApi(ActionsInterface::CONFIG_BACKUP_RUN);
 
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
 
@@ -58,7 +58,7 @@ final class ConfigController extends ControllerBase
                     ->addDetail(__u('Ruta'), $path))
             );
 
-            $this->returnResponse(new ApiResponse(__u('Proceso de backup finalizado')));
+            $this->returnResponse(new ApiResponse(__('Proceso de backup finalizado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -72,7 +72,7 @@ final class ConfigController extends ControllerBase
     public function exportAction()
     {
         try {
-            $this->setupApi(ActionsInterface::CONFIG_EXPORT);
+            $this->setupApi(ActionsInterface::CONFIG_EXPORT_RUN);
 
             $password = $this->apiService->getParamString('password');
             $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
@@ -91,7 +91,7 @@ final class ConfigController extends ControllerBase
                     ->addDescription(__u('Proceso de exportación finalizado')))
             );
 
-            $this->returnResponse(new ApiResponse(__u('Proceso de exportación finalizado')));
+            $this->returnResponse(new ApiResponse(__('Proceso de exportación finalizado')));
         } catch (\Exception $e) {
             processException($e);
 

@@ -24,7 +24,7 @@
 
 namespace SP\Services\Import;
 
-use DI\Container;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
@@ -75,14 +75,12 @@ abstract class CsvImportBase
     /**
      * ImportBase constructor.
      *
-     * @param Container    $dic
-     * @param FileImport   $fileImport
-     * @param ImportParams $importParams
+     * @param ContainerInterface $dic
+     * @param FileImport         $fileImport
+     * @param ImportParams       $importParams
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
-    public function __construct(Container $dic, FileImport $fileImport, ImportParams $importParams)
+    public function __construct(ContainerInterface $dic, FileImport $fileImport, ImportParams $importParams)
     {
         $this->fileImport = $fileImport;
         $this->importParams = $importParams;

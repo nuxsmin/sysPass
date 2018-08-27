@@ -55,8 +55,6 @@ class InstallerTest extends TestCase
     private static $dic;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
      */
     public static function setUpBeforeClass()

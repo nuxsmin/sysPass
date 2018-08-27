@@ -97,7 +97,7 @@ final class ApiService extends Service
                 __u('Intentos excedidos'),
                 ServiceException::ERROR,
                 null,
-                -32601
+                JsonRpcResponse::INTERNAL_ERROR
             );
         }
 
@@ -132,7 +132,7 @@ final class ApiService extends Service
                 __u('Error interno'),
                 ServiceException::ERROR,
                 null,
-                -32601
+                JsonRpcResponse::INTERNAL_ERROR
             );
         }
     }
@@ -144,7 +144,7 @@ final class ApiService extends Service
      * @param bool   $required Si es requerido
      * @param mixed  $default  Valor por defecto
      *
-     * @return int|string
+     * @return mixed
      * @throws ServiceException
      */
     public function getParam($param, $required = false, $default = null)
@@ -155,7 +155,7 @@ final class ApiService extends Service
                 __u('Parámetros incorrectos'),
                 ServiceException::ERROR,
                 $this->getHelp($this->apiRequest->getMethod()),
-                -32602
+                JsonRpcResponse::INVALID_PARAMS
             );
         }
 
@@ -189,7 +189,7 @@ final class ApiService extends Service
             __u('Acceso no permitido'),
             ServiceException::ERROR,
             null,
-            -32601
+            JsonRpcResponse::INTERNAL_ERROR
         );
     }
 
@@ -230,7 +230,7 @@ final class ApiService extends Service
                     __u('Error interno'),
                     ServiceException::ERROR,
                     __u('Datos inválidos'),
-                    -32603
+                    JsonRpcResponse::INTERNAL_ERROR
                 );
             }
         } catch (CryptoException $e) {
@@ -238,7 +238,7 @@ final class ApiService extends Service
                 __u('Error interno'),
                 ServiceException::ERROR,
                 $e->getMessage(),
-                -32603
+                JsonRpcResponse::INTERNAL_ERROR
             );
         }
     }
@@ -246,7 +246,7 @@ final class ApiService extends Service
     /**
      * @param string $param
      * @param bool   $required
-     * @param null   $default
+     * @param mixed  $default
      *
      * @return int
      * @throws ServiceException
@@ -259,7 +259,7 @@ final class ApiService extends Service
     /**
      * @param string $param
      * @param bool   $required
-     * @param null   $default
+     * @param mixed  $default
      *
      * @return string
      * @throws ServiceException
@@ -272,7 +272,20 @@ final class ApiService extends Service
     /**
      * @param string $param
      * @param bool   $required
-     * @param null   $default
+     * @param mixed  $default
+     *
+     * @return array
+     * @throws ServiceException
+     */
+    public function getParamArray($param, $required = false, $default = null)
+    {
+        return Filter::getArray($this->getParam($param, $required, $default));
+    }
+
+    /**
+     * @param string $param
+     * @param bool   $required
+     * @param mixed  $default
      *
      * @return int|string
      * @throws ServiceException
@@ -285,7 +298,7 @@ final class ApiService extends Service
     /**
      * @param string $param
      * @param bool   $required
-     * @param null   $default
+     * @param mixed  $default
      *
      * @return string
      * @throws ServiceException

@@ -116,11 +116,9 @@ final class XmlVerifyService extends Service
      * Obtener la versión del XML
      *
      * @param DOMDocument $document
-     *
      * @param string      $key
      *
-     * @return void
-     * @throws ServiceException
+     * @return bool
      */
     public static function checkXmlHash(DOMDocument $document, string $key)
     {
@@ -128,11 +126,7 @@ final class XmlVerifyService extends Service
         $hash = $DOMXPath->query('/Root/Meta/Hash')->item(0)->nodeValue;
         $hmac = $DOMXPath->query('/Root/Meta/Hash/@sign')->item(0)->nodeValue;
 
-        if (!Hash::checkMessage($hash, $key, $hmac)
-            || $hash !== XmlExportService::generateHashFromNodes($document)
-        ) {
-            throw new ServiceException(__u('Fallo en la verificación del hash de integridad'));
-        }
+        return Hash::checkMessage($hash, $key, $hmac) || $hash === XmlExportService::generateHashFromNodes($document);
     }
 
     /**
@@ -177,7 +171,11 @@ final class XmlVerifyService extends Service
 
         $this->checkPassword();
 
-        self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
+        $key = $password !== '' ? $password : $this->config->getConfigData()->getPasswordSalt();
+
+        if (!self::checkXmlHash($this->xml, $key)) {
+            throw new ServiceException(__u('Fallo en la verificación del hash de integridad'));
+        }
 
         return new VerifyResult($this->getXmlVersion(), $this->detectEncrypted(), $this->countItemNodes($this->processEncrypted()));
     }

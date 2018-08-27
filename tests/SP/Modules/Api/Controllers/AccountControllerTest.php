@@ -26,7 +26,6 @@ namespace SP\Tests\Modules\Api\Controllers;
 
 use SP\Tests\Modules\Api\ApiTest;
 use SP\Tests\WebTestCase;
-use Symfony\Component\BrowserKit\Response;
 
 /**
  * Class AccountControllerTest
@@ -35,6 +34,9 @@ use Symfony\Component\BrowserKit\Response;
  */
 class AccountControllerTest extends WebTestCase
 {
+    /**
+     * @return int
+     */
     public function testCreateAction()
     {
         $data = [
@@ -44,38 +46,35 @@ class AccountControllerTest extends WebTestCase
                 'authToken' => ApiTest::API_TOKEN,
                 'tokenPass' => ApiTest::API_PASS,
                 'name' => 'API test',
-                'categoryId' => 1,
-                'clientId' => 1,
+                'categoryId' => 2,
+                'clientId' => 2,
                 'login' => 'root',
                 'pass' => 'password_test',
-                'passDateChange' => time() + 86400,
+                'expireDate' => time() + 86400,
                 'url' => 'http://syspass.org',
-                'notes' => "test\ntest",
+                'notes' => "test\n\ntest",
                 'isPrivate' => 1,
                 'isPrivateGroup' => 1,
             ],
             'id' => 1
         ];
 
-        $client = self::postJson(ApiTest::API_URL, $data);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(2, $result->result->result);
-        $this->assertEquals(1, $result->result->result->itemId);
-        $this->assertNotEmpty($result->result->result->password);
+        $this->assertNull($result->result->count);
+        $this->assertEquals(3, $result->result->itemId);
+
+        return $result->result->itemId;
     }
 
-    public function testViewPassAction()
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
+    public function testViewPassAction($id)
     {
         $data = [
             'jsonrpc' => '2.0',
@@ -83,27 +82,64 @@ class AccountControllerTest extends WebTestCase
             'params' => [
                 'authToken' => ApiTest::API_TOKEN,
                 'tokenPass' => ApiTest::API_PASS,
-                'id' => 1,
+                'id' => $id,
             ],
             'id' => 1
         ];
 
-        $client = self::postJson(ApiTest::API_URL, $data);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(2, $result->result->result);
-        $this->assertEquals(1, $result->result->result->itemId);
-        $this->assertNotEmpty($result->result->result->password);
+        $this->assertEquals(2, $result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertEquals($id, $result->result->result->itemId);
+        $this->assertEquals('password_test', $result->result->result->password);
+    }
+
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
+    public function testViewAction($id)
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/view',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $id,
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertEquals($id, $result->result->result->id);
+        $this->assertEquals(1, $result->result->result->userId);
+        $this->assertEquals(1, $result->result->result->userGroupId);
+        $this->assertEquals(1, $result->result->result->userEditId);
+        $this->assertEquals('API test', $result->result->result->name);
+        $this->assertEquals(2, $result->result->result->clientId);
+        $this->assertEquals(2, $result->result->result->categoryId);
+        $this->assertEquals('root', $result->result->result->login);
+        $this->assertEquals('http://syspass.org', $result->result->result->url);
+        $this->assertEmpty($result->result->result->pass);
+        $this->assertEmpty($result->result->result->key);
+        $this->assertEquals("test\n\ntest", $result->result->result->notes);
+        $this->assertNull($result->result->result->dateEdit);
+        $this->assertEquals(0, $result->result->result->countView);
+        $this->assertEquals(1, $result->result->result->countDecrypt);
+        $this->assertEquals(0, $result->result->result->isPrivate);
+        $this->assertEquals(0, $result->result->result->isPrivateGroup);
+        $this->assertGreaterThan(0, $result->result->result->passDate);
+        $this->assertGreaterThan(0, $result->result->result->passDateChange);
+        $this->assertEquals(0, $result->result->result->parentId);
     }
 
     public function testSearchAction()
@@ -117,29 +153,363 @@ class AccountControllerTest extends WebTestCase
             'id' => 1
         ];
 
-        $client = self::postJson(ApiTest::API_URL, $data);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-
-        $this->assertEquals(200, $response->getStatus());
-        $this->assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
-
-        $result = json_decode($response->getContent());
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(3, $result->result->count);
         $this->assertCount(3, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'count' => 1
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
     }
 
-    public function testDeleteAction()
+    public function testSearchByTextAction()
     {
-        $this->markTestSkipped();
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'text' => 'Simple'
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'text' => 'admin'
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(2, $result->result->count);
+        $this->assertCount(2, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'text' => 'cloud'
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
     }
 
-    public function testViewAction()
+    public function testSearchByClientAction()
     {
-        $this->markTestSkipped();
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'clientId' => 2
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'clientId' => 3
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'clientId' => 10
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+    }
+
+    public function testSearchByCategoryAction()
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 1
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 3
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 10
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+    }
+
+    public function testSearchByTagsAction()
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tagsId' => [3]
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tagsId' => [3, 6]
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tagsId' => [3, 6],
+                'op' => 'or'
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(2, $result->result->count);
+        $this->assertCount(2, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tagsId' => [10]
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+    }
+
+    public function testSearchByCategoryAndClientAction()
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 1,
+                'clientId' => 1
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 2,
+                'clientId' => 3
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertCount(1, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 2,
+                'clientId' => 1
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(0, $result->result->count);
+        $this->assertCount(0, $result->result->result);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'categoryId' => 1,
+                'clientId' => 3,
+                'op' => 'or'
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(2, $result->result->count);
+        $this->assertCount(2, $result->result->result);
+    }
+
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
+    public function testDeleteAction($id)
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/delete',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $id,
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertEquals($id, $result->result->itemId);
     }
 }

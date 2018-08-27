@@ -89,7 +89,9 @@ class AccountHelp implements HelpInterface
                 self::getItem('text', __('Texto a buscar')),
                 self::getItem('count', __('Número de resultados a mostrar')),
                 self::getItem('categoryId', __('Id de categoría a filtrar')),
-                self::getItem('clientId', __('Id de cliente a filtrar'))
+                self::getItem('clientId', __('Id de cliente a filtrar')),
+                self::getItem('tagsId', __('Array de Ids de etiquetas a filtrar')),
+                self::getItem('op', __('Operador de filtrado'))
             ];
     }
 
