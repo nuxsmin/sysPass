@@ -312,7 +312,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
                     ->addDetail(__u('Usuario'), $itemData->getName()))
             );
 
-            $this->checkChangeUserPass($itemData);
+            $this->checkChangeUserPass($id, $itemData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario creado'));
         } catch (ValidationException $e) {
@@ -325,6 +325,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
     }
 
     /**
+     * @param int      $userId
      * @param UserData $userData
      *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
@@ -332,11 +333,11 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
      */
-    protected function checkChangeUserPass(UserData $userData)
+    protected function checkChangeUserPass(int $userId, UserData $userData)
     {
         if ($userData->isChangePass()) {
             $hash = $this->dic->get(UserPassRecoverService::class)
-                ->requestForUserId($userData->getId());
+                ->requestForUserId($userId);
 
             $this->dic->get(MailService::class)
                 ->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
@@ -372,7 +373,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
                     ->addDetail(__u('Usuario'), $itemData->getName()))
             );
 
-            $this->checkChangeUserPass($itemData);
+            $this->checkChangeUserPass($id, $itemData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario actualizado'));
         } catch (ValidationException $e) {
