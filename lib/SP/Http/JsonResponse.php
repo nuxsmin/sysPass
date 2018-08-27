@@ -173,7 +173,7 @@ final class JsonResponse implements \JsonSerializable
      */
     public function setMessages(array $messages)
     {
-        $this->messages = $messages;
+        $this->messages = array_map('__', $messages);
 
         return $this;
     }

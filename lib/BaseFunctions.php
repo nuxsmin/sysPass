@@ -150,7 +150,8 @@ function __($message, $translate = true)
 }
 
 /**
- * Returns an untranslated string (gettext placeholder)
+ * Returns an untranslated string (gettext placeholder).
+ * Dummy function to extract strings from source code
  *
  * @param string $message
  *
