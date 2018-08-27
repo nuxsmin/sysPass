@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-28 00:31+0100\n"
-"PO-Revision-Date: 2018-08-28 00:31+0100\n"
+"PO-Revision-Date: 2018-08-28 01:45+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -1905,7 +1905,7 @@ msgstr "Error while updating the database"
 #: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:155
 #: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:157
 msgid "El archivo de actualización no contiene datos"
-msgstr "The updating file does not contain data"
+msgstr "The update file does not contain data"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:187
 msgid "Actualización de la Base de Datos realizada correctamente."
