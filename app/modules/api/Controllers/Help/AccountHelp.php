@@ -60,12 +60,26 @@ class AccountHelp implements HelpInterface
     /**
      * @return array
      */
+    public static function editPass()
+    {
+        return
+            [
+                self::getItem('id', __('Id de la cuenta'), true),
+                self::getItem('tokenPass', __('Clave del token'), true),
+                self::getItem('pass', __('Clave'), true),
+                self::getItem('expireDate', __('Fecha Caducidad Clave'))
+            ];
+    }
+
+    /**
+     * @return array
+     */
     public static function create()
     {
         return
             [
                 self::getItem('tokenPass', __('Clave del token'), true),
-                self::getItem('name', __('Nombre de cuenta', true)),
+                self::getItem('name', __('Nombre de cuenta'), true),
                 self::getItem('categoryId', __('Id de categoría'), true),
                 self::getItem('clientId', __('Id de cliente'), true),
                 self::getItem('pass', __('Clave'), true),
@@ -75,7 +89,30 @@ class AccountHelp implements HelpInterface
                 self::getItem('private', __('Cuenta Privada')),
                 self::getItem('privateGroup', __('Cuenta Privada Grupo')),
                 self::getItem('expireDate', __('Fecha Caducidad Clave')),
-                self::getItem('parentId', __('Cuenta Vinculada'))
+                self::getItem('parentId', __('Cuenta Vinculada')),
+                self::getItem('tagsId', __('Array con Ids de etiquetas'))
+            ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function edit()
+    {
+        return
+            [
+                self::getItem('id', __('Id de la cuenta'), true),
+                self::getItem('name', __('Nombre de cuenta')),
+                self::getItem('categoryId', __('Id de categoría')),
+                self::getItem('clientId', __('Id de cliente')),
+                self::getItem('login', __('Usuario de acceso')),
+                self::getItem('url', __('URL o IP de acceso')),
+                self::getItem('notes', __('Notas sobre la cuenta')),
+                self::getItem('private', __('Cuenta Privada')),
+                self::getItem('privateGroup', __('Cuenta Privada Grupo')),
+                self::getItem('expireDate', __('Fecha Caducidad Clave')),
+                self::getItem('parentId', __('Cuenta Vinculada')),
+                self::getItem('tagsId', __('Array con Ids de etiquetas'))
             ];
     }
 
@@ -90,7 +127,7 @@ class AccountHelp implements HelpInterface
                 self::getItem('count', __('Número de resultados a mostrar')),
                 self::getItem('categoryId', __('Id de categoría a filtrar')),
                 self::getItem('clientId', __('Id de cliente a filtrar')),
-                self::getItem('tagsId', __('Array de Ids de etiquetas a filtrar')),
+                self::getItem('tagsId', __('Array con Ids de etiquetas a filtrar')),
                 self::getItem('op', __('Operador de filtrado'))
             ];
     }

@@ -25,7 +25,6 @@
 namespace SP\Services\Api;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\InvalidClassException;
@@ -109,9 +108,7 @@ final class ApiService extends Service
 
         $this->setupUser();
 
-        if ($actionId === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $actionId === ActionsInterface::ACCOUNT_CREATE
-        ) {
+        if (AuthTokenService::isSecuredAction($actionId)) {
             $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
         }
 

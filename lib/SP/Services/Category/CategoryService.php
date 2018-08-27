@@ -152,7 +152,7 @@ final class CategoryService extends Service
     /**
      * @param $itemData
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

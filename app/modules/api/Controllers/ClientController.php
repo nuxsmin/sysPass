@@ -54,11 +54,18 @@ final class ClientController extends ControllerBase
             $this->setupApi(ActionsInterface::CLIENT_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
-            $client = $this->clientService->getById($id);
+            $clientData = $this->clientService->getById($id);
 
             $this->eventDispatcher->notifyEvent('show.client', new Event($this));
 
-            $this->returnResponse(new ApiResponse($client));
+            $this->eventDispatcher->notifyEvent('show.client',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cliente visualizado'))
+                    ->addDetail(__u('Cliente'), $clientData->getName())
+                    ->addDetail(__u('ID'), $id))
+            );
+
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id));
         } catch (\Exception $e) {
             processException($e);
 
@@ -84,10 +91,11 @@ final class ClientController extends ControllerBase
             $this->eventDispatcher->notifyEvent('create.client',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cliente creado'))
-                    ->addDetail(__u('Cliente'), $clientData->getName()))
+                    ->addDetail(__u('Cliente'), $clientData->getName())
+                    ->addDetail(__u('ID'), $clientId))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cliente creado'), ApiResponse::RESULT_SUCCESS, $clientId));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientId, __('Cliente creado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -114,10 +122,11 @@ final class ClientController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.client',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cliente actualizado'))
-                    ->addDetail(__u('Cliente'), $clientData->getName()))
+                    ->addDetail(__u('Cliente'), $clientData->getName())
+                    ->addDetail(__u('ID'), $clientData->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cliente actualizado'), ApiResponse::RESULT_SUCCESS, $clientData->getId()));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Cliente actualizado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -142,10 +151,11 @@ final class ClientController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.client',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cliente eliminado'))
-                    ->addDetail(__u('Cliente'), $clientData->getName()))
+                    ->addDetail(__u('Cliente'), $clientData->getName())
+                    ->addDetail(__u('ID'), $id))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cliente eliminado'), ApiResponse::RESULT_SUCCESS, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Cliente eliminado')));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 
@@ -167,7 +177,7 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.client', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->clientService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(ApiResponse::makeSuccess($this->clientService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
             processException($e);
 

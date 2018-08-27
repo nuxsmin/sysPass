@@ -64,10 +64,11 @@ final class AccountController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta visualizada'))
                     ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
             );
 
-            $this->returnResponse(new ApiResponse($accountDetails));
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 
@@ -95,10 +96,45 @@ final class AccountController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Clave visualizada'))
                     ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(["itemId" => $accountId, "password" => $password]));
+            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $accountId));
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnResponseException($e);
+        }
+    }
+
+    /**
+     * viewPassAction
+     */
+    public function editPassAction()
+    {
+        try {
+            $this->setupApi(ActionsInterface::ACCOUNT_EDIT_PASS);
+
+            $accountRequest = new AccountRequest();
+            $accountRequest->id = $this->apiService->getParamInt('id', true);
+            $accountRequest->pass = $this->apiService->getParamString('pass', true);
+            $accountRequest->passDateChange = $this->apiService->getParamString('expireDate');
+            $accountRequest->userEditId = $this->context->getUserData()->getId();
+
+            $this->accountService->editPassword($accountRequest);
+
+            $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
+
+            $this->eventDispatcher->notifyEvent('edit.account.pass',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave actualizada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
+            );
+
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Clave actualizada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -127,6 +163,7 @@ final class AccountController extends ControllerBase
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
             $accountRequest->userId = $this->context->getUserData()->getId();
             $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
+            $accountRequest->tags = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 
             $pass = $this->accountService->getPasswordEncrypted($this->apiService->getParamRaw('pass', true), $this->apiService->getMasterPass());
             $accountRequest->pass = $pass['pass'];
@@ -140,10 +177,60 @@ final class AccountController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta creada'))
                     ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cuenta creada'), ApiResponse::RESULT_SUCCESS, $accountId));
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Cuenta creada')));
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnResponseException($e);
+        }
+    }
+
+    /**
+     * editAction
+     */
+    public function editAction()
+    {
+        try {
+            $this->setupApi(ActionsInterface::ACCOUNT_EDIT);
+
+            $accountRequest = new AccountRequest();
+            $accountRequest->id = $this->apiService->getParamInt('id', true);
+            $accountRequest->name = $this->apiService->getParamString('name', true);
+            $accountRequest->clientId = $this->apiService->getParamInt('clientId', true);
+            $accountRequest->categoryId = $this->apiService->getParamInt('categoryId', true);
+            $accountRequest->login = $this->apiService->getParamString('login');
+            $accountRequest->url = $this->apiService->getParamString('url');
+            $accountRequest->notes = $this->apiService->getParamString('notes');
+            $accountRequest->isPrivate = $this->apiService->getParamInt('private');
+            $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
+            $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
+            $accountRequest->parentId = $this->apiService->getParamInt('parentId');
+            $accountRequest->userEditId = $this->context->getUserData()->getId();
+
+            $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
+
+            if (!empty($tagsId)) {
+                $accountRequest->updateTags = true;
+                $accountRequest->tags = $tagsId;
+            }
+
+            $this->accountService->update($accountRequest);
+
+            $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
+
+            $this->eventDispatcher->notifyEvent('edit.account',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta actualizada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
+            );
+
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Cuenta actualizada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -164,7 +251,7 @@ final class AccountController extends ControllerBase
             $accountSearchFilter->setCategoryId($this->apiService->getParamInt('categoryId'));
             $accountSearchFilter->setClientId($this->apiService->getParamInt('clientId'));
 
-            $tagsId = $this->apiService->getParamArray('tagsId', false, []);
+            $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 
             if (!empty($tagsId)) {
                 $accountSearchFilter->setTagsId($tagsId);
@@ -186,7 +273,7 @@ final class AccountController extends ControllerBase
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
             $accountSearchFilter->setSortOrder($this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT));
 
-            $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)));
+            $this->returnResponse(ApiResponse::makeSuccess($this->accountService->getByFilter($accountSearchFilter)));
         } catch (\Exception $e) {
             processException($e);
 
@@ -212,10 +299,11 @@ final class AccountController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta eliminada'))
                     ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('ID'), $accountDetails->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cuenta eliminada'), ApiResponse::RESULT_SUCCESS, $accountId));
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Cuenta eliminada')));
         } catch (\Exception $e) {
             processException($e);
 

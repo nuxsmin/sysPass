@@ -111,6 +111,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * Download action
      *
      * @param $id
+     *
+     * @return string
      */
     public function downloadAction($id)
     {
@@ -134,10 +136,12 @@ final class AccountFileController extends ControllerBase implements CrudControll
                     ->addDetail(__u('Archivo'), $fileData->getName()))
             );
 
-            exit($fileData->getContent());
+            return $fileData->getContent();
         } catch (\Exception $e) {
             processException($e);
         }
+
+        return '';
     }
 
     /**
@@ -361,7 +365,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function listAction($accountId)
     {
         if (!$this->configData->isFilesEnabled()) {
-            die(__('Gestión de archivos deshabilitada'));
+            echo __('Gestión de archivos deshabilitada');
+            return;
         }
 
         try {
@@ -375,6 +380,12 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->view->assign('fileDeleteRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DELETE));
 
             if (!is_array($this->view->files) || count($this->view->files) === 0) {
+                $this->view->addTemplate('no_records_found', '_partials');
+
+                $this->view->assign('message', __('No hay archivos asociados a la cuenta'));
+
+                $this->view();
+
                 return;
             }
 

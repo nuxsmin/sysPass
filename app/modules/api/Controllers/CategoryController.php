@@ -58,10 +58,12 @@ final class CategoryController extends ControllerBase
             $categoryData = $this->categoryService->getById($id);
 
             $this->eventDispatcher->notifyEvent('show.category',
-                new Event($this)
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Categoría visualizada'))
+                    ->addDetail(__u('Categoría'), $categoryData->getName()))
             );
 
-            $this->returnResponse(new ApiResponse($categoryData));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id));
         } catch (\Exception $e) {
             processException($e);
 
@@ -81,15 +83,16 @@ final class CategoryController extends ControllerBase
             $categoryData->setName($this->apiService->getParamString('name', true));
             $categoryData->setDescription($this->apiService->getParamString('description'));
 
-            $id = $this->categoryService->create($categoryData);
+            $categoryId = $this->categoryService->create($categoryData);
 
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Categoría creada'))
-                    ->addDetail(__u('Categoría'), $categoryData->getName()))
+                    ->addDetail(__u('Categoría'), $categoryData->getName())
+                    ->addDetail(__u('ID'), $categoryId))
             );
 
-            $this->returnResponse(new ApiResponse(__('Categoría creada'), ApiResponse::RESULT_SUCCESS, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryId, __('Categoría creada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -115,10 +118,11 @@ final class CategoryController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Categoría actualizada'))
-                    ->addDetail(__u('Categoría'), $categoryData->getName()))
+                    ->addDetail(__u('Categoría'), $categoryData->getName())
+                    ->addDetail(__u('ID'), $categoryData->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Categoría actualizada'), ApiResponse::RESULT_SUCCESS, $categoryData->getId()));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Categoría actualizada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -143,10 +147,11 @@ final class CategoryController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Categoría eliminada'))
-                    ->addDetail(__u('Categoría'), $categoryData->getName()))
+                    ->addDetail(__u('Categoría'), $categoryData->getName())
+                    ->addDetail(__u('ID'), $categoryData->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Categoría eliminada'), ApiResponse::RESULT_SUCCESS, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Categoría eliminada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -168,7 +173,7 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.category', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->categoryService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(ApiResponse::makeSuccess($this->categoryService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
             processException($e);
 

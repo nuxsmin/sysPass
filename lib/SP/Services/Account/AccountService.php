@@ -313,7 +313,7 @@ final class AccountService extends Service implements AccountServiceInterface
             $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
             // Cambiar el grupo principal si el usuario es Admin
-            $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
+            $accountRequest->changeUserGroup = ($accountRequest->userGroupId > 0
                 && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
 
             $this->addHistory($accountRequest->id);

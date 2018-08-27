@@ -46,19 +46,52 @@ final class ApiResponse
      * @var int
      */
     private $itemId;
+    /**
+     * @var string
+     */
+    private $resultMessage;
 
     /**
      * ApiResponse constructor.
      *
      * @param mixed $result
-     * @param int   $resultCode
      * @param null  $itemId
      */
-    public function __construct($result, $resultCode = self::RESULT_SUCCESS, $itemId = null)
+    public function __construct($result, $itemId = null)
     {
         $this->result = $result;
-        $this->resultCode = (int)$resultCode;
         $this->itemId = (int)$itemId;
+    }
+
+    /**
+     * @param mixed       $result
+     * @param int|null    $itemId
+     * @param string|null $message
+     *
+     * @return ApiResponse
+     */
+    public static function makeSuccess($result, int $itemId = null, string $message = null)
+    {
+        $out = new self($result, $itemId);
+        $out->resultCode = self::RESULT_SUCCESS;
+        $out->resultMessage = $message;
+
+        return $out;
+    }
+
+    /**
+     * @param mixed       $result
+     * @param string|null $message
+     *
+     * @return ApiResponse
+     */
+    public static function makeError($result, string $message = null)
+    {
+        $out = new self($result);
+        $out->resultCode = self::RESULT_ERROR;
+        $out->resultMessage = $message;
+
+        return $out;
     }
 
     /**
@@ -70,6 +103,7 @@ final class ApiResponse
             'itemId' => $this->itemId,
             'result' => $this->result,
             'resultCode' => $this->resultCode,
+            'resultMessage' => $this->resultMessage,
             'count' => is_array($this->result) ? count($this->result) : null
         ];
     }

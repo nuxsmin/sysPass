@@ -64,7 +64,9 @@ class AccountControllerTest extends WebTestCase
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result);
         $this->assertEquals(3, $result->result->itemId);
+        $this->assertEquals('Account added', $result->result->resultMessage);
 
         return $result->result->itemId;
     }
@@ -91,10 +93,60 @@ class AccountControllerTest extends WebTestCase
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(2, $result->result->count);
+        $this->assertEquals(1, $result->result->count);
         $this->assertInstanceOf(\stdClass::class, $result->result->result);
-        $this->assertEquals($id, $result->result->result->itemId);
+        $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('password_test', $result->result->result->password);
+    }
+
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
+    public function testEditPassAction($id)
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/editPass',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tokenPass' => ApiTest::API_PASS,
+                'id' => $id,
+                'pass' => 'test_123',
+                'expireDate' => time() + 86400
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertEquals('Password updated', $result->result->resultMessage);
+        $this->assertEquals($id, $result->result->itemId);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/viewPass',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tokenPass' => ApiTest::API_PASS,
+                'id' => $id,
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals(1, $result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('test_123', $result->result->result->password);
     }
 
     /**
@@ -118,7 +170,9 @@ class AccountControllerTest extends WebTestCase
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals($id, $result->result->itemId);
         $this->assertNull($result->result->count);
+
         $this->assertInstanceOf(\stdClass::class, $result->result->result);
         $this->assertEquals($id, $result->result->result->id);
         $this->assertEquals(1, $result->result->result->userId);
@@ -132,9 +186,9 @@ class AccountControllerTest extends WebTestCase
         $this->assertEmpty($result->result->result->pass);
         $this->assertEmpty($result->result->result->key);
         $this->assertEquals("test\n\ntest", $result->result->result->notes);
-        $this->assertNull($result->result->result->dateEdit);
+        $this->assertNotNull($result->result->result->dateEdit);
         $this->assertEquals(0, $result->result->result->countView);
-        $this->assertEquals(1, $result->result->result->countDecrypt);
+        $this->assertEquals(2, $result->result->result->countDecrypt);
         $this->assertEquals(0, $result->result->result->isPrivate);
         $this->assertEquals(0, $result->result->result->isPrivateGroup);
         $this->assertGreaterThan(0, $result->result->result->passDate);
@@ -493,6 +547,79 @@ class AccountControllerTest extends WebTestCase
      *
      * @param int $id
      */
+    public function testEditAction($id)
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $id,
+                'name' => 'API test edit',
+                'categoryId' => 3,
+                'clientId' => 1,
+                'login' => 'admin',
+                'expireDate' => time() + 86400,
+                'url' => 'http://demo.syspass.org',
+                'notes' => "test\n\ntest\nedit",
+                'isPrivate' => 0,
+                'isPrivateGroup' => 0,
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result);
+        $this->assertEquals(3, $result->result->itemId);
+        $this->assertEquals('Account updated', $result->result->resultMessage);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/view',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $id,
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertEquals($id, $result->result->itemId);
+        $this->assertNull($result->result->count);
+
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertEquals($id, $result->result->result->id);
+        $this->assertEquals(1, $result->result->result->userId);
+        $this->assertEquals(1, $result->result->result->userGroupId);
+        $this->assertEquals(1, $result->result->result->userEditId);
+        $this->assertEquals('API test edit', $result->result->result->name);
+        $this->assertEquals(1, $result->result->result->clientId);
+        $this->assertEquals(3, $result->result->result->categoryId);
+        $this->assertEquals('admin', $result->result->result->login);
+        $this->assertEquals('http://demo.syspass.org', $result->result->result->url);
+        $this->assertEmpty($result->result->result->pass);
+        $this->assertEmpty($result->result->result->key);
+        $this->assertEquals("test\n\ntest\nedit", $result->result->result->notes);
+        $this->assertNotNull($result->result->result->dateEdit);
+        $this->assertEquals(0, $result->result->result->isPrivate);
+        $this->assertEquals(0, $result->result->result->isPrivateGroup);
+        $this->assertGreaterThan(0, $result->result->result->passDate);
+        $this->assertGreaterThan(0, $result->result->result->passDateChange);
+        $this->assertEquals(0, $result->result->result->parentId);
+    }
+
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
     public function testDeleteAction($id)
     {
         $data = [
@@ -509,7 +636,9 @@ class AccountControllerTest extends WebTestCase
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result);
+        $this->assertEquals('Account removed', $result->result->resultMessage);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertNull($result->result->count);
     }
 }

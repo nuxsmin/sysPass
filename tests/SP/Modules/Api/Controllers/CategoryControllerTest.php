@@ -56,6 +56,8 @@ class CategoryControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(5, $result->result->itemId);
+        $this->assertEquals('Category added', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
 
         return $result->result->itemId;
     }
@@ -112,6 +114,8 @@ class CategoryControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Category updated', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 
     public function testSearchAction()
@@ -195,5 +199,7 @@ class CategoryControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Category deleted', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 }

@@ -58,7 +58,7 @@ final class ConfigController extends ControllerBase
                     ->addDetail(__u('Ruta'), $path))
             );
 
-            $this->returnResponse(new ApiResponse(__('Proceso de backup finalizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Proceso de backup finalizado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -91,7 +91,7 @@ final class ConfigController extends ControllerBase
                     ->addDescription(__u('Proceso de exportación finalizado')))
             );
 
-            $this->returnResponse(new ApiResponse(__('Proceso de exportación finalizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Proceso de exportación finalizado')));
         } catch (\Exception $e) {
             processException($e);
 

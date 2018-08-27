@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,6 +56,8 @@ class TagControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(7, $result->result->itemId);
+        $this->assertEquals('Tag added', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
 
         return $result->result->itemId;
     }
@@ -110,6 +112,8 @@ class TagControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Tag updated', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 
     public function testSearchAction()
@@ -192,5 +196,7 @@ class TagControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Tag removed', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 }

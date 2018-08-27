@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
+use SP\Services\AuthToken\AuthTokenService;
 
 /**
  * Class ApiTokenForm
@@ -94,11 +95,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Acción no indicada'));
         }
 
-        $action = $this->authTokenData->getActionId();
-
-        if (($action === ActionsInterface::ACCOUNT_VIEW_PASS
-                || $action === ActionsInterface::ACCOUNT_CREATE
-                || $this->isRefresh())
+        if ((AuthTokenService::isSecuredAction($this->authTokenData->getActionId()) || $this->isRefresh())
             && $this->authTokenData->getHash() === ''
         ) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));

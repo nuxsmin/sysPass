@@ -50,7 +50,8 @@ class ConfigControllerTest extends WebTestCase
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
-        $this->assertEquals('Export process finished', $result->result->result);
+        $this->assertEquals('/var/www/html/sysPass/app/backup', $result->result->result);
+        $this->assertEquals('Export process finished', $result->result->resultMessage);
         $this->assertEquals(0, $result->result->resultCode);
     }
 
@@ -71,7 +72,8 @@ class ConfigControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(0, $result->result->itemId);
-        $this->assertEquals('Backup process finished', $result->result->result);
+        $this->assertEquals('/var/www/html/sysPass/app/backup', $result->result->result);
+        $this->assertEquals('Backup process finished', $result->result->resultMessage);
         $this->assertEquals(0, $result->result->resultCode);
     }
 }

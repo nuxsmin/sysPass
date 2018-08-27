@@ -57,6 +57,8 @@ class ClientControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(4, $result->result->itemId);
+        $this->assertEquals('Client added', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
 
         return $result->result->itemId;
     }
@@ -115,6 +117,8 @@ class ClientControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Client updated', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 
     public function testSearchAction()
@@ -199,5 +203,7 @@ class ClientControllerTest extends WebTestCase
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
+        $this->assertEquals('Client deleted', $result->result->resultMessage);
+        $this->assertInstanceOf(\stdClass::class, $result->result->result);
     }
 }

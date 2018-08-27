@@ -54,10 +54,15 @@ final class TagController extends ControllerBase
             $this->setupApi(ActionsInterface::TAG_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
+            $tagData = $this->tagService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.tag', new Event($this));
+            $this->eventDispatcher->notifyEvent('show.tag',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Etiqueta visualizada'))
+                    ->addDetail(__u('Etiqueta'), $tagData->getName()))
+            );
 
-            $this->returnResponse(new ApiResponse($this->tagService->getById($id)));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id));
         } catch (\Exception $e) {
             processException($e);
 
@@ -76,7 +81,7 @@ final class TagController extends ControllerBase
             $tagData = new TagData();
             $tagData->setName($this->apiService->getParamString('name', true));
 
-            $id = $this->tagService->create($tagData);
+            $tagId = $this->tagService->create($tagData);
 
             $this->eventDispatcher->notifyEvent('create.tag',
                 new Event($this, EventMessage::factory()
@@ -84,7 +89,7 @@ final class TagController extends ControllerBase
                     ->addDetail(__u('Etiqueta'), $tagData->getName()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Etiqueta creada'), ApiResponse::RESULT_SUCCESS, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagId, __('Etiqueta creada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -109,10 +114,11 @@ final class TagController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.tag',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Etiqueta actualizada'))
-                    ->addDetail(__u('Etiqueta'), $tagData->getName()))
+                    ->addDetail(__u('Etiqueta'), $tagData->getName())
+                    ->addDetail(__u('ID'), $tagData->getId()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Etiqueta actualizada'), ApiResponse::RESULT_SUCCESS, $tagData->getId()));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Etiqueta actualizada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -140,7 +146,7 @@ final class TagController extends ControllerBase
                     ->addDetail(__u('Etiqueta'), $tagData->getName()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Etiqueta eliminada'), ApiResponse::RESULT_SUCCESS, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Etiqueta eliminada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -162,7 +168,7 @@ final class TagController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('search.tag', new Event($this));
 
-            $this->returnResponse(new ApiResponse($this->tagService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(ApiResponse::makeSuccess($this->tagService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
             processException($e);
 

@@ -48,6 +48,12 @@ final class AuthTokenService extends Service
 {
     use ServiceItemTrait;
 
+    const SECURED_ACTIONS = [
+        ActionsInterface::ACCOUNT_VIEW_PASS,
+        ActionsInterface::ACCOUNT_EDIT_PASS,
+        ActionsInterface::ACCOUNT_CREATE
+    ];
+
     /**
      * @var AuthTokenRepository
      */
@@ -64,8 +70,10 @@ final class AuthTokenService extends Service
             ActionsInterface::ACCOUNT_SEARCH => Acl::getActionInfo(ActionsInterface::ACCOUNT_SEARCH),
             ActionsInterface::ACCOUNT_VIEW => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW),
             ActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW_PASS),
+            ActionsInterface::ACCOUNT_EDIT_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_EDIT_PASS),
             ActionsInterface::ACCOUNT_DELETE => Acl::getActionInfo(ActionsInterface::ACCOUNT_DELETE),
             ActionsInterface::ACCOUNT_CREATE => Acl::getActionInfo(ActionsInterface::ACCOUNT_CREATE),
+            ActionsInterface::ACCOUNT_EDIT => Acl::getActionInfo(ActionsInterface::ACCOUNT_EDIT),
             ActionsInterface::CATEGORY_SEARCH => Acl::getActionInfo(ActionsInterface::CATEGORY_SEARCH),
             ActionsInterface::CATEGORY_VIEW => Acl::getActionInfo(ActionsInterface::CATEGORY_VIEW),
             ActionsInterface::CATEGORY_CREATE => Acl::getActionInfo(ActionsInterface::CATEGORY_CREATE),
@@ -182,11 +190,7 @@ final class AuthTokenService extends Service
             $token = $this->authTokenRepository->getTokenByUserId($authTokenData->getUserId()) ?: $this->generateToken();
         }
 
-        $action = $authTokenData->getActionId();
-
-        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $action === ActionsInterface::ACCOUNT_CREATE
-        ) {
+        if (self::isSecuredAction($authTokenData->getActionId())) {
             $authTokenData->setVault($this->getSecureData($token, $authTokenData->getHash()));
             $authTokenData->setHash(Hash::hashKey($authTokenData->getHash()));
         } else {
@@ -208,6 +212,16 @@ final class AuthTokenService extends Service
     private function generateToken()
     {
         return Util::generateRandomBytes(32);
+    }
+
+    /**
+     * @param int $action
+     *
+     * @return bool
+     */
+    public static function isSecuredAction(int $action)
+    {
+        return in_array($action, self::SECURED_ACTIONS, true);
     }
 
     /**
