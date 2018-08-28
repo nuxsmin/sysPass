@@ -65,7 +65,7 @@ final class ApiResponse
 
     /**
      * @param mixed       $result
-     * @param int|null    $itemId
+     * @param int         $itemId
      * @param string|null $message
      *
      * @return ApiResponse

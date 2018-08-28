@@ -119,7 +119,7 @@ final class AccountController extends ControllerBase
             $accountRequest = new AccountRequest();
             $accountRequest->id = $this->apiService->getParamInt('id', true);
             $accountRequest->pass = $this->apiService->getParamString('pass', true);
-            $accountRequest->passDateChange = $this->apiService->getParamString('expireDate');
+            $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->userEditId = $this->context->getUserData()->getId();
 
             $this->accountService->editPassword($accountRequest);
