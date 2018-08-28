@@ -44,6 +44,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
     use EventsTrait;
 
     const EVENTS = [
+        'show.',
         'create.',
         'delete.',
         'edit.',
@@ -64,7 +65,8 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         'import.ldap.',
         'run.',
         'send.mail',
-        'show.authToken'
+        'show.authToken',
+        'clear.eventlog'
     ];
 
     /**

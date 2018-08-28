@@ -146,7 +146,11 @@ final class ConfigManagerController extends ControllerBase
 
         $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
 
-        $template->assign('logEvents', SelectItemAdapter::factory(array_merge(DatabaseLogHandler::EVENTS, $this->configData->getLogEvents()))
+        $events = array_merge(DatabaseLogHandler::EVENTS, $this->configData->getLogEvents());
+
+        sort($events, SORT_STRING);
+
+        $template->assign('logEvents', SelectItemAdapter::factory($events)
             ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
         );
 
@@ -215,7 +219,12 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('mailSecurity', ['SSL', 'TLS']);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
-        $template->assign('mailEvents', SelectItemAdapter::factory(array_merge(MailHandler::EVENTS, $this->configData->getMailEvents()))
+
+        $events = array_merge(MailHandler::EVENTS, $this->configData->getMailEvents());
+
+        sort($events, SORT_STRING);
+
+        $template->assign('mailEvents', SelectItemAdapter::factory($events)
             ->getItemsFromArraySelected($this->configData->getMailEvents(), true)
         );
 
