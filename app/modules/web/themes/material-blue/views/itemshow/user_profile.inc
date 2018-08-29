@@ -414,6 +414,22 @@
                             </label>
                         </span>
                     </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons  mdl-list__item-icon">vpn_key</i>
+                            <span><?php echo __('Permisos'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de Permisos'); ?></span>
+                        </span>
+
+                        <span class="mdl-list__item-secondary-action">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_permissions">
+                                <input type="checkbox" id="profile_permissions"
+                                       class="mdl-switch__input"
+                                       name="profile_permissions" <?php echo $profileData->isMgmAccountDefaultPermissions() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
+                            </label>
+                        </span>
+                    </li>
                 </ul>
             </div>
 

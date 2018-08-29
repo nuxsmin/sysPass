@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-30 01:29+0100\n"
-"PO-Revision-Date: 2018-08-30 01:29+0100\n"
+"POT-Creation-Date: 2018-08-30 01:52+0100\n"
+"PO-Revision-Date: 2018-08-30 01:52+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -336,7 +336,7 @@ msgstr "New Plugin"
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:29
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_pass.inc:15
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:512
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:528
 msgid "Nombre"
 msgstr "Name"
 
@@ -3205,7 +3205,7 @@ msgstr "Please, check your inbox"
 
 #: ../../../modules/web/Controllers/ConfigManagerController.php:157
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:131
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:425
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
 msgid "General"
 msgstr "General"
 
@@ -3226,7 +3226,7 @@ msgid "Correo"
 msgstr "Mail"
 
 #: ../../../modules/web/Controllers/ConfigManagerController.php:268
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
 msgid "Encriptación"
 msgstr "Encryption"
 
@@ -4396,7 +4396,7 @@ msgstr "Unable to delete, user in use"
 msgid "Es necesario un nombre de grupo"
 msgstr "A group name is needed"
 
-#: ../../../modules/web/Forms/UserProfileForm.php:115
+#: ../../../modules/web/Forms/UserProfileForm.php:116
 msgid "Es necesario un nombre de perfil"
 msgstr "A profile name is needed"
 
@@ -4985,6 +4985,7 @@ msgstr "Send"
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:31
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:120
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:209
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
 msgid "Permisos"
 msgstr "Permissions"
 
@@ -6540,8 +6541,8 @@ msgstr "Group description"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:69
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:527
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:529
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:543
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:545
 msgid "Usado por"
 msgstr "Used by"
 
@@ -6663,41 +6664,45 @@ msgstr "Links management"
 msgid "Gestión de cuentas"
 msgstr "Accounts management"
 
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:422
+msgid "Gestión de Permisos"
+msgstr "Permissions Management"
+
 #. (itstool) path: action/text
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:426
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:442
 #: ../../../config/actions.xml:679
 msgid "Configuración General"
 msgstr "General Configuration"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:442
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:458
 msgid "Opciones de encriptación"
 msgstr "Encryption options"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:473
 msgid "Backup"
 msgstr "Backup"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:458
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:474
 msgid "Realizar copia de seguridad y exportar"
 msgstr "Make a backup and export"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:473
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:489
 msgid "Importar"
 msgstr "Import"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:474
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:490
 msgid "Realizar importación de cuentas"
 msgstr "Make accounts import"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:493
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:509
 msgid "Log de Eventos"
 msgstr "Event Log"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:494
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:510
 msgid "Ver log de eventos"
 msgstr "View event log"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:520
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:536
 msgid "Nombre del perfil"
 msgstr "Profile name"
 
