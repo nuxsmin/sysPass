@@ -126,7 +126,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     protected function setViewData($authTokenId = null)
     {
-        $this->view->addTemplate('authtoken', 'itemshow');
+        $this->view->addTemplate('auth_token', 'itemshow');
 
         $authToken = $authTokenId ? $this->authTokenService->getById($authTokenId) : new AuthTokenData();
 

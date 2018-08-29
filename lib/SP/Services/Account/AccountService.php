@@ -71,6 +71,10 @@ final class AccountService extends Service implements AccountServiceInterface
      * @var AccountToTagRepository
      */
     protected $accountToTagRepository;
+    /**
+     * @var AccountDefaultPermissionService
+     */
+    protected $accountDefaultPermissionService;
 
     /**
      * @param int $id
@@ -201,6 +205,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $accountRequest->id = $this->accountRepository->create($accountRequest);
 
         $this->addItems($accountRequest);
+        $this->addDefaultPermissions($accountRequest->id);
 
         return $accountRequest->id;
     }
@@ -243,32 +248,84 @@ final class AccountService extends Service implements AccountServiceInterface
      *
      * @param AccountRequest $accountRequest
      */
-    protected function addItems(AccountRequest $accountRequest)
+    private function addItems(AccountRequest $accountRequest)
     {
         try {
+
             if ($accountRequest->changePermissions) {
-                if (is_array($accountRequest->userGroupsView) && !empty($accountRequest->userGroupsView)) {
+                if (is_array($accountRequest->userGroupsView)
+                    && !empty($accountRequest->userGroupsView)
+                ) {
                     $this->accountToUserGroupRepository->add($accountRequest);
                 }
 
-                if (is_array($accountRequest->userGroupsEdit) && !empty($accountRequest->userGroupsEdit)) {
+                if (is_array($accountRequest->userGroupsEdit)
+                    && !empty($accountRequest->userGroupsEdit)
+                ) {
                     $this->accountToUserGroupRepository->addEdit($accountRequest);
                 }
 
-                if (is_array($accountRequest->usersView) && !empty($accountRequest->usersView)) {
+                if (is_array($accountRequest->usersView)
+                    && !empty($accountRequest->usersView)
+                ) {
                     $this->accountToUserRepository->add($accountRequest);
                 }
 
-                if (is_array($accountRequest->usersEdit) && !empty($accountRequest->usersEdit)) {
+                if (is_array($accountRequest->usersEdit)
+                    && !empty($accountRequest->usersEdit)
+                ) {
                     $this->accountToUserRepository->addEdit($accountRequest);
                 }
             }
 
-            if (is_array($accountRequest->tags) && !empty($accountRequest->tags)) {
+            if (is_array($accountRequest->tags)
+                && !empty($accountRequest->tags)
+            ) {
                 $this->accountToTagRepository->add($accountRequest);
             }
         } catch (SPException $e) {
             logger($e->getMessage());
+        }
+    }
+
+    /**
+     * @param int $accountId
+     *
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    private function addDefaultPermissions(int $accountId)
+    {
+        $accountDefaultPermission = $this->accountDefaultPermissionService->getForCurrentUser();
+
+        if ($accountDefaultPermission !== null
+            && $accountDefaultPermission->getFixed()
+        ) {
+            $userData = $this->context->getUserData();
+            $accountPermission = $accountDefaultPermission->getAccountPermission();
+
+            $accountRequest = new AccountRequest();
+            $accountRequest->id = $accountId;
+            $accountRequest->usersView = array_diff($accountPermission->getUsersView(), [$userData->getId()]);
+            $accountRequest->usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->getId()]);
+            $accountRequest->userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->getUserGroupId()]);
+            $accountRequest->userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
+
+            if (!empty($accountRequest->usersView)) {
+                $this->accountToUserRepository->add($accountRequest);
+            }
+
+            if (!empty($accountRequest->usersEdit)) {
+                $this->accountToUserRepository->addEdit($accountRequest);
+            }
+
+            if (!empty($accountRequest->userGroupsView)) {
+                $this->accountToUserGroupRepository->add($accountRequest);
+            }
+
+            if (!empty($accountRequest->userGroupsEdit)) {
+                $this->accountToUserGroupRepository->addEdit($accountRequest);
+            }
         }
     }
 
@@ -321,6 +378,8 @@ final class AccountService extends Service implements AccountServiceInterface
             $this->accountRepository->update($accountRequest);
 
             $this->updateItems($accountRequest);
+
+            $this->addDefaultPermissions($accountRequest->id);
         });
     }
 
@@ -334,7 +393,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    protected function addHistory($accountId, $isDelete = false)
+    private function addHistory($accountId, $isDelete = false)
     {
         $accountHistoryRepository = $this->dic->get(AccountHistoryService::class);
         $configService = $this->dic->get(ConfigService::class);
@@ -356,7 +415,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    protected function updateItems(AccountRequest $accountRequest)
+    private function updateItems(AccountRequest $accountRequest)
     {
         if ($accountRequest->changePermissions) {
             if ($accountRequest->updateUserGroupPermissions) {
@@ -461,7 +520,6 @@ final class AccountService extends Service implements AccountServiceInterface
             if ($this->accountRepository->delete($id) === 0) {
                 throw new NoSuchItemException(__u('Cuenta no encontrada'));
             }
-
         });
 
         return $this;
@@ -636,5 +694,6 @@ final class AccountService extends Service implements AccountServiceInterface
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
         $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
+        $this->accountDefaultPermissionService = $this->dic->get(AccountDefaultPermissionService::class);
     }
 }

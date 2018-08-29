@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,11 +36,11 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Storage\Database\QueryResult;
 
 /**
- * Class ClientGrid
+ * Class AccountDefaultPermissionGrid
  *
  * @package SP\Modules\Web\Controllers\Helpers\Grid
  */
-final class ClientGrid extends GridBase
+final class AccountDefaultPermissionGrid extends GridBase
 {
     /**
      * @var QueryResult
@@ -82,12 +82,12 @@ final class ClientGrid extends GridBase
     {
         // Grid
         $gridTab = new DataGridTab($this->view->getTheme());
-        $gridTab->setId('tblClients');
+        $gridTab->setId('tblAccountDefaultPermission');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Clientes'));
+        $gridTab->setTitle(__('Permisos por Defecto'));
 
         return $gridTab;
     }
@@ -99,9 +99,11 @@ final class ClientGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Descripción'));
-        $gridHeader->addHeader(__('Global'));
+        $gridHeader->addHeader(__('Usuario'));
+        $gridHeader->addHeader(__('Grupo'));
+        $gridHeader->addHeader(__('Perfil'));
+        $gridHeader->addHeader(__('Prioridad'));
+        $gridHeader->addHeader(__('Forzado'));
 
         return $gridHeader;
     }
@@ -114,10 +116,12 @@ final class ClientGrid extends GridBase
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
-        $gridData->addDataRowSource('name');
-        $gridData->addDataRowSource('description');
-        $gridData->addDataRowSource('isGlobal', false, function ($value) {
-            return $value ? __('SI') : __('NO');
+        $gridData->addDataRowSource('userName');
+        $gridData->addDataRowSource('userGroupName');
+        $gridData->addDataRowSource('userProfileName');
+        $gridData->addDataRowSource('priority');
+        $gridData->addDataRowSource('fixed', false, function ($value) {
+            return $value === 1 ? __('SI') : __('NO');
         });
         $gridData->setData($this->queryResult);
 
@@ -131,12 +135,12 @@ final class ClientGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::CLIENT_SEARCH);
+        $gridActionSearch->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
-        $gridActionSearch->setName('frmSearchClient');
-        $gridActionSearch->setTitle(__('Buscar Cliente'));
+        $gridActionSearch->setName('frmSearchPermission');
+        $gridActionSearch->setTitle(__('Buscar Permiso'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_SEARCH));
+        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_SEARCH));
 
         return $gridActionSearch;
     }
@@ -147,14 +151,14 @@ final class ClientGrid extends GridBase
     private function getCreateAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_CREATE);
+        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Cliente'));
-        $gridAction->setTitle(__('Nuevo Cliente'));
+        $gridAction->setName(__('Nuevo Permiso'));
+        $gridAction->setTitle(__('Nuevo Permiso'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_CREATE));
 
         return $gridAction;
     }
@@ -165,13 +169,13 @@ final class ClientGrid extends GridBase
     private function getEditAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_EDIT);
+        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Cliente'));
-        $gridAction->setTitle(__('Editar Cliente'));
+        $gridAction->setName(__('Editar Permiso'));
+        $gridAction->setTitle(__('Editar Permiso'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_EDIT));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_EDIT));
 
         return $gridAction;
     }
@@ -182,13 +186,13 @@ final class ClientGrid extends GridBase
     private function getDeleteAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CLIENT_DELETE);
+        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Cliente'));
-        $gridAction->setTitle(__('Eliminar Cliente'));
+        $gridAction->setName(__('Eliminar Permiso'));
+        $gridAction->setTitle(__('Eliminar Permiso'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_DELETE));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_DELETE));
 
         return $gridAction;
     }

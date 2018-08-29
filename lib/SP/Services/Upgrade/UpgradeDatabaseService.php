@@ -45,7 +45,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['300.18010101', '300.18072302', '300.18072501'];
+    const UPGRADES = ['300.18010101', '300.18072302', '300.18072501', '300.18083001'];
 
     /**
      * @var Database

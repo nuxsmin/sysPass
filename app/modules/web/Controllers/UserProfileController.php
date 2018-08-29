@@ -126,7 +126,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
      */
     protected function setViewData($profileId = null)
     {
-        $this->view->addTemplate('userprofile', 'itemshow');
+        $this->view->addTemplate('user_profile', 'itemshow');
 
         $profile = $profileId ? $this->userProfileService->getById($profileId) : new UserProfileData();
 

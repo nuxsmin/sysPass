@@ -51,7 +51,7 @@ class CategoryData extends DataModelBase implements DataModelInterface
     public $hash = '';
 
     /**
-     * categoryData constructor.
+     * accountDefaultPermissionData constructor.
      *
      * @param int    $id
      * @param string $name

@@ -132,7 +132,7 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     protected function setViewData($userGroupId = null)
     {
-        $this->view->addTemplate('usergroup', 'itemshow');
+        $this->view->addTemplate('user_group', 'itemshow');
 
         $group = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 

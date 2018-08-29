@@ -27,12 +27,14 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountDefaultPermissionGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
+use SP\Services\Account\AccountDefaultPermissionService;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\User\UserService;
@@ -87,6 +89,10 @@ final class AccessManagerController extends ControllerBase
 
         if ($this->checkAccess(Acl::PROFILE)) {
             $this->tabsGridHelper->addTab($this->getUsersProfileList());
+        }
+
+        if ($this->checkAccess(Acl::ACCOUNT_DEFAULT_PERMISSION)) {
+            $this->tabsGridHelper->addTab($this->getAccountDefaultPermissionList());
         }
 
         if ($this->checkAccess(Acl::AUTHTOKEN)) {
@@ -172,6 +178,20 @@ final class AccessManagerController extends ControllerBase
     {
         return $this->dic->get(PublicLinkGrid::class)
             ->getGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))
+            ->updatePager();
+    }
+
+    /**
+     * Returns API tokens data tab
+     *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    protected function getAccountDefaultPermissionList()
+    {
+        return $this->dic->get(AccountDefaultPermissionGrid::class)
+            ->getGrid($this->dic->get(AccountDefaultPermissionService::class)->search($this->itemSearchData))
             ->updatePager();
     }
 

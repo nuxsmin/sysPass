@@ -218,7 +218,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
-        $this->view->addTemplate('userpass', 'itemshow');
+        $this->view->addTemplate('user_pass', 'itemshow');
 
         $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Cambio de Clave'));

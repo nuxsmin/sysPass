@@ -8,7 +8,7 @@
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
-    <form method="post" name="frmCustomers" id="frmCustomers" class="form-action"
+    <form method="post" name="frmClients" id="frmClients" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
@@ -76,7 +76,7 @@
     <div class="action-in-box">
         <button
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                form="frmCustomers" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                form="frmClients" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
             <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>

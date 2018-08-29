@@ -109,13 +109,13 @@ final class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param \SP\Services\Account\AccountRequest $accountRequest
+     * @param AccountRequest $accountRequest
      *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(\SP\Services\Account\AccountRequest $accountRequest)
+    public function update(AccountRequest $accountRequest)
     {
         $this->deleteByAccountId($accountRequest->id);
 
@@ -140,7 +140,7 @@ final class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param \SP\Services\Account\AccountRequest $accountRequest
+     * @param AccountRequest $accountRequest
      *
      * @return int Last ID inserted
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -172,7 +172,7 @@ final class AccountToUserGroupRepository extends Repository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updateEdit(\SP\Services\Account\AccountRequest $accountRequest)
+    public function updateEdit(AccountRequest $accountRequest)
     {
         $this->deleteEditByAccountId($accountRequest->id);
 
@@ -197,13 +197,13 @@ final class AccountToUserGroupRepository extends Repository
     }
 
     /**
-     * @param \SP\Services\Account\AccountRequest $accountRequest
+     * @param AccountRequest $accountRequest
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function addEdit(\SP\Services\Account\AccountRequest $accountRequest)
+    public function addEdit(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
             'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 

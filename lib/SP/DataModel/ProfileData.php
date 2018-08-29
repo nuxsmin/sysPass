@@ -144,6 +144,10 @@ class ProfileData
     /**
      * @var bool
      */
+    protected $mgmAccountDefaultPermissions = false;
+    /**
+     * @var bool
+     */
     protected $evl = false;
     /**
      * @var bool
@@ -758,6 +762,26 @@ class ProfileData
         foreach ($this as $property => $value) {
             $this->{$property} = false;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMgmAccountDefaultPermissions(): bool
+    {
+        return $this->mgmAccountDefaultPermissions;
+    }
+
+    /**
+     * @param bool $mgmAccountDefaultPermissions
+     *
+     * @return ProfileData
+     */
+    public function setMgmAccountDefaultPermissions(bool $mgmAccountDefaultPermissions)
+    {
+        $this->mgmAccountDefaultPermissions = $mgmAccountDefaultPermissions;
 
         return $this;
     }

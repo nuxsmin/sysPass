@@ -126,7 +126,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     protected function setViewData($customFieldId = null)
     {
-        $this->view->addTemplate('customfield', 'itemshow');
+        $this->view->addTemplate('custom_field', 'itemshow');
 
         $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
 

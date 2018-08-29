@@ -128,7 +128,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     protected function setViewData($publicLinkId = null)
     {
-        $this->view->addTemplate('publiclink', 'itemshow');
+        $this->view->addTemplate('public_link', 'itemshow');
 
         $publicLink = $publicLinkId ? $this->publicLinkService->getById($publicLinkId) : new PublicLinkListData();
 

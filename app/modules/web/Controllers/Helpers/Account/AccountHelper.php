@@ -29,6 +29,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountPermission;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Http\Uri;
@@ -38,6 +39,7 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
+use SP\Services\Account\AccountDefaultPermissionService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -61,25 +63,29 @@ final class AccountHelper extends HelperBase
     /**
      * @var  Acl
      */
-    protected $acl;
+    private $acl;
     /**
      * @var AccountService
      */
-    protected $accountService;
+    private $accountService;
     /**
      * @var AccountHistoryService
      */
-    protected $accountHistoryService;
+    private $accountHistoryService;
     /**
      * @var PublicLinkService
      */
-    protected $publicLinkService;
+    private $publicLinkService;
+    /**
+     * @var AccountDefaultPermissionService
+     */
+    private $accountDefaultPermissionService;
     /**
      * @var string
      */
     private $actionId;
     /**
-     * @var \SP\Services\Account\AccountAcl
+     * @var AccountAcl
      */
     private $accountAcl;
     /**
@@ -120,28 +126,34 @@ final class AccountHelper extends HelperBase
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
 
-        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected(
-            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
+        $usersView = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter($accountDetailsResponse->getUsers(), function ($value) {
                 return (int)$value->isEdit === 0;
-            })), $accountData->getUserId()));
+            }));
 
-        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected(
-            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
+        $usersEdit = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter($accountDetailsResponse->getUsers(), function ($value) {
                 return (int)$value->isEdit === 1;
-            })), $accountData->getUserId()));
+            }));
 
-        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected(
-            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
+        $userGroupsView = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
                 return (int)$value->isEdit === 0;
-            })), $accountData->getUserGroupId()));
+            }));
 
-        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected(
-            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
+        $userGroupsEdit = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
                 return (int)$value->isEdit === 1;
-            })), $accountData->getUserGroupId()));
+            }));
+
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected($usersView, $accountData->getUserId()));
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected($usersEdit, $accountData->getUserId()));
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected($userGroupsView, $accountData->getUserGroupId()));
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($userGroupsEdit, $accountData->getUserGroupId()));
 
         $this->view->assign('users', $selectUsers->getItemsFromModelSelected([$accountData->getUserId()]));
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected([$accountData->getUserGroupId()]));
+
         $this->view->assign('tags', $selectTags->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())));
 
         $this->view->assign('historyData', $this->accountHistoryService->getHistoryForAccount($this->accountId));
@@ -212,7 +224,7 @@ final class AccountHelper extends HelperBase
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      *
-     * @return \SP\Services\Account\AccountAcl
+     * @return AccountAcl
      * @throws AccountPermissionException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -298,7 +310,7 @@ final class AccountHelper extends HelperBase
     public function setViewForBlank($actionId)
     {
         $this->actionId = $actionId;
-        $this->accountAcl = new \SP\Services\Account\AccountAcl($actionId);
+        $this->accountAcl = new AccountAcl($actionId);
 
         $this->checkActionAccess();
 
@@ -307,15 +319,17 @@ final class AccountHelper extends HelperBase
 
         $this->accountAcl->setShowPermission($userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission());
 
+        $accountPermission = $this->accountDefaultPermissionService->getForCurrentUser()->getAccountPermission() ?: new AccountPermission();
+
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
 
         $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
-        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModel());
-        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModel());
-        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModel());
-        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModel());
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected($accountPermission->getUsersView()));
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected($accountPermission->getUsersEdit()));
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
 
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
@@ -376,9 +390,10 @@ final class AccountHelper extends HelperBase
     protected function initialize()
     {
         $this->acl = $this->dic->get(Acl::class);
-        $this->accountService = $this->dic->get(AccountService::class);;
-        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
-        $this->publicLinkService = $this->dic->get(PublicLinkService::class);;
+        $this->accountService = $this->dic->get(AccountService::class);
+        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
+        $this->publicLinkService = $this->dic->get(PublicLinkService::class);
+        $this->accountDefaultPermissionService = $this->dic->get(AccountDefaultPermissionService::class);
 
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');

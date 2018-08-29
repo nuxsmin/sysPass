@@ -540,5 +540,6 @@
             <field name="used">0</field>
         </row>
     </table_data>
+    <table_data name="AccountDefaultPermission"/>
 </database>
 </mysqldump>
