@@ -141,7 +141,7 @@
                 <field name="preferences" xsi:nil="true" />
             </row>
         </table_data>
-        <table_data name="AccountDefaultPermission">
+        <table_data name="ItemPreset">
             <row>
                 <field name="id">1</field>
                 <field name="userId">1</field>
@@ -149,8 +149,9 @@
                 <field name="userProfileId" xsi:nil="true"/>
                 <field name="fixed">0</field>
                 <field name="priority">0</field>
-                <field name="permission" xsi:nil="true"/>
-                <field name="hash">e3cbba8883fe746c6e35783c9404b4bc0c7ee9eb</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">284985459df4616aa682a6de4c4994a9fedf164d</field>
             </row>
             <row>
                 <field name="id">2</field>
@@ -159,8 +160,9 @@
                 <field name="userProfileId" xsi:nil="true"/>
                 <field name="fixed">0</field>
                 <field name="priority">10</field>
-                <field name="permission" xsi:nil="true"/>
-                <field name="hash">9c5975f336463693254939bfde7042459607d834</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">ac1de29cfbc9db8c63b3b109c899148e904ccced</field>
             </row>
             <row>
                 <field name="id">3</field>
@@ -169,8 +171,9 @@
                 <field name="userProfileId">1</field>
                 <field name="fixed">0</field>
                 <field name="priority">20</field>
-                <field name="permission" xsi:nil="true"/>
-                <field name="hash">19fc3ecd72937e313c4a4a7023eb0ab07890cee7</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">3ec16d2bece6de02ed9423f98fcaaba260ffd36b</field>
             </row>
             <row>
                 <field name="id">4</field>
@@ -179,8 +182,9 @@
                 <field name="userProfileId" xsi:nil="true"/>
                 <field name="fixed">0</field>
                 <field name="priority">0</field>
-                <field name="permission" xsi:nil="true"/>
-                <field name="hash">a4ac914c09d7c097fe1f4f96b897e625b6922069</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">8eca5d3518e5531aa968ce0d5a7221f659f5d0ee</field>
             </row>
             <row>
                 <field name="id">5</field>
@@ -189,8 +193,9 @@
                 <field name="userProfileId">3</field>
                 <field name="fixed">0</field>
                 <field name="priority">10</field>
-                <field name="permission" xsi:nil="true"/>
-                <field name="hash">0e718dd1e04a0f28f7e31ddfaed950e2d70ee477</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">fa66da8c08bf2728dfa90bb0682494a763dc0c11</field>
             </row>
         </table_data>
     </database>

@@ -67,11 +67,9 @@ final class PublicLinkGrid extends GridBase
         $grid->setDataActions($this->getCreateAction());
         $grid->setDataActions($this->getViewAction());
         $grid->setDataActions($this->getRefreshAction());
+        $grid->setDataActions($this->getDeleteAction());
+        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
 
-        $deleteAction = $this->getDeleteAction();
-
-        $grid->setDataActions($deleteAction);
-        $grid->setDataActions($deleteAction, true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

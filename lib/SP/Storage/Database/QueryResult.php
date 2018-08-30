@@ -87,11 +87,12 @@ final class QueryResult
     }
 
     /**
-     * @return mixed
+     * @param string $class
+     *
+     * @return mixed|null
      */
-    public function getData()
+    public function getData(string $class = null)
     {
-        // FIXME
         if ($this->numRows === 1) {
             return $this->data[0];
         }

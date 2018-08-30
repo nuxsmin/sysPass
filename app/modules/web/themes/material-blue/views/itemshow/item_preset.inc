@@ -1,12 +1,13 @@
 <?php
 /** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $permission \SP\DataModel\AccountDefaultPermissionData */
+/** @var $preset \SP\DataModel\ItemPresetData */
+/** @var $this \SP\Mvc\View\Template */
 ?>
 
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
-    <form method="post" name="frmAccountDefaultGroup" id="frmAccountDefaultGroup" class="form-action"
+    <form method="post" name="frmItemPreset" id="frmItemPreset" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
@@ -72,7 +73,7 @@
                          class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-priority">
                         <p>
-                            <?php echo __('Prioridad de asignación en caso de coincidir con otros permisos asignados por usuario, grupo o perfil.'); ?>
+                            <?php echo __('Prioridad de asignación en caso de coincidir con otros valores asignados por usuario, grupo o perfil.'); ?>
                         </p>
                     </div>
                 </td>
@@ -81,7 +82,7 @@
                         <input id="priority" name="priority" type="number" step="1"
                                pattern="[0-9]{1,3}" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="3" min="0" max="128"
-                               value="<?php echo $permission->getPriority(); ?>"/>
+                               value="<?php echo $preset->getPriority(); ?>"/>
                         <label class="mdl-textfield__label"
                                for="priority"><?php echo __('Prioridad de asignación'); ?></label>
                     </div>
@@ -97,16 +98,16 @@
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fixed_enabled">
                                     <input type="checkbox" id="fixed_enabled"
                                            class="mdl-switch__input"
-                                           name="fixed_enabled" <?php echo $permission->getFixed() ? 'checked' : ''; ?>/>
+                                           name="fixed_enabled" <?php echo $preset->getFixed() ? 'checked' : ''; ?>/>
                                 </label>
                             </div>
 
                             <span class="mdl-list__item-primary-content">
                                 <span><?php echo __('Forzado'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Indica si los permisos serán forzados al crear o modificar la cuenta.'); ?>
+                                    <?php echo __('Indica si los valores serán forzados al crear o modificar los elementos.'); ?>
                                     <br>
-                                    <?php echo __('Los permisos serán añadidos a los existentes.'); ?>
+                                    <?php echo __('Los valores serán añadidos a los existentes.'); ?>
                                 </span>
                             </span>
                         </li>
@@ -114,94 +115,19 @@
                 </td>
             </tr>
 
-            <tr>
-                <td class="descField"><?php echo __('Usuarios'); ?></td>
-                <td class="valField">
-                    <div class="account-permissions">
-                        <div class="tag-list-box">
-                            <div class="tag-list-header"><?php echo __('Ver'); ?></div>
-
-                            <select id="users_view" name="users_view[]" multiple="multiple"
-                                    class="select-box">
-                                <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $usersView */
-                                foreach ($usersView as $user): ?>
-                                    <?php if ($user->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $user->getId(); ?>"
-                                        <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo $user->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="tag-list-box">
-                            <div class="tag-list-header"><?php echo __('Editar'); ?></div>
-
-                            <select id="users_edit" name="users_edit[]" multiple="multiple"
-                                    class="select-box">
-                                <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $usersEdit */
-                                foreach ($usersEdit as $user): ?>
-                                    <?php if ($user->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $user->getId(); ?>"
-                                        <?php echo $user->isSelected() ? 'selected' : '' ?>><?php echo $user->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="descField"><?php echo __('Grupos'); ?></td>
-                <td class="valField">
-                    <div class="account-permissions">
-                        <div class="tag-list-box">
-                            <div class="tag-list-header"><?php echo __('Ver'); ?></div>
-
-                            <select id="user_groups_view" name="user_groups_view[]" multiple="multiple"
-                                    class="select-box">
-                                <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroupsView */
-                                foreach ($userGroupsView as $userGroup): ?>
-                                    <?php if ($userGroup->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $userGroup->getId(); ?>"
-                                        <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo $userGroup->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="tag-list-box">
-                            <div class="tag-list-header"><?php echo __('Editar'); ?></div>
-
-                            <select id="user_groups_edit" name="user_groups_edit[]" multiple="multiple"
-                                    class="select-box">
-                                <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroupsEdit */
-                                foreach ($userGroupsEdit as $userGroup): ?>
-                                    <?php if ($userGroup->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $userGroup->getId(); ?>"
-                                        <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo $userGroup->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            <?php if (isset($typeTemplate)) : include $this->includeTemplate($typeTemplate, 'itemshow'); endif; ?>
 
             </tbody>
         </table>
 
+        <input type="hidden" name="type" value="<?php echo $preset->getType(); ?>">
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div class="action-in-box">
         <button
                 class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                form="frmAccountDefaultGroup" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                form="frmItemPreset" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
             <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>

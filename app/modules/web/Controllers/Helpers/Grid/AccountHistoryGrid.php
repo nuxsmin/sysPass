@@ -64,11 +64,8 @@ final class AccountHistoryGrid extends GridBase
         $grid->setPager($this->getPager($searchAction));
 
         $grid->setDataActions($this->getRestoreAction());
-
-        $deleteAction = $this->getDeleteAction();
-
-        $grid->setDataActions($deleteAction);
-        $grid->setDataActions($deleteAction, true);
+        $grid->setDataActions($this->getDeleteAction());
+        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

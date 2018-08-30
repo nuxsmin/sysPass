@@ -22,50 +22,50 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\Account;
+namespace SP\Services\ItemPreset;
 
-use SP\DataModel\AccountDefaultPermissionData;
+use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Account\AccountDefaultPermissionRepository;
+use SP\Repositories\ItemPreset\ItemPresetRepository;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database\QueryResult;
 
 /**
- * Class AccountDefaultPermissionService
+ * Class ItemPresetService
  *
  * @package SP\Services\Account
  */
-class AccountDefaultPermissionService extends Service
+class ItemPresetService extends Service
 {
     /**
-     * @var AccountDefaultPermissionRepository
+     * @var ItemPresetRepository
      */
-    private $accountDefaultPermissionRepository;
+    private $itemPresetRepository;
 
     /**
-     * @param AccountDefaultPermissionData $accountDefaultPermissionData
+     * @param ItemPresetRequest $itemPresetRequest
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create(AccountDefaultPermissionData $accountDefaultPermissionData)
+    public function create(ItemPresetRequest $itemPresetRequest)
     {
-        return $this->accountDefaultPermissionRepository->create($accountDefaultPermissionData);
+        return $this->itemPresetRepository->create($itemPresetRequest->prepareToPersist());
     }
 
     /**
-     * @param AccountDefaultPermissionData $accountDefaultPermissionData
+     * @param ItemPresetRequest $itemPresetRequest
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(AccountDefaultPermissionData $accountDefaultPermissionData)
+    public function update(ItemPresetRequest $itemPresetRequest)
     {
-        return $this->accountDefaultPermissionRepository->update($accountDefaultPermissionData);
+        return $this->itemPresetRepository->update($itemPresetRequest->prepareToPersist());
     }
 
     /**
@@ -73,15 +73,15 @@ class AccountDefaultPermissionService extends Service
      *
      * @param $id
      *
-     * @return AccountDefaultPermissionService
+     * @return ItemPresetService
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        if ($this->accountDefaultPermissionRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Permiso no encontrada'));
+        if ($this->itemPresetRepository->delete($id) === 0) {
+            throw new NoSuchItemException(__u('Valor no encontrada'));
         }
 
         return $this;
@@ -92,35 +92,32 @@ class AccountDefaultPermissionService extends Service
      *
      * @param int $id
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
-        $result = $this->accountDefaultPermissionRepository->getById($id);
+        $result = $this->itemPresetRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Permiso no encontrada'));
+            throw new NoSuchItemException(__u('Valor no encontrada'));
         }
 
-        /** @var AccountDefaultPermissionData $data */
-        $data = $result->getData();
-
-        return $data->hydrate();
+        return $result->getData();
     }
 
     /**
      * Returns all the items
      *
-     * @return AccountDefaultPermissionData[]
+     * @return ItemPresetData[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
-        return $this->accountDefaultPermissionRepository->getAll()->getDataAsArray();
+        return $this->itemPresetRepository->getAll()->getDataAsArray();
     }
 
     /**
@@ -134,40 +131,44 @@ class AccountDefaultPermissionService extends Service
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        return $this->accountDefaultPermissionRepository->search($itemSearchData);
+        return $this->itemPresetRepository->search($itemSearchData);
     }
 
     /**
-     * @return AccountDefaultPermissionData
+     * @param string $type
+     *
+     * @return ItemPresetData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForCurrentUser()
+    public function getForCurrentUser(string $type)
     {
         $userData = $this->context->getUserData();
 
-        return $this->getForUser($userData->getId(), $userData->getUserGroupId(), $userData->getUserProfileId());
+        return $this->getForUser($type, $userData->getId(), $userData->getUserGroupId(), $userData->getUserProfileId());
     }
 
     /**
-     * @param int $userId
-     * @param int $userGroupId
-     * @param int $userProfileId
+     * @param string $type
+     * @param int    $userId
+     * @param int    $userGroupId
+     * @param int    $userProfileId
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getForUser(int $userId, int $userGroupId, int $userProfileId)
+    public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId)
     {
-        $result = $this->accountDefaultPermissionRepository->getByFilter(
+        $result = $this->itemPresetRepository->getByFilter(
+            $type,
             $userId,
             $userGroupId,
             $userProfileId
         );
 
         if ($result->getNumRows() === 1) {
-            return $result->getData()->hydrate();
+            return $result->getData();
         }
 
         return null;
@@ -183,8 +184,8 @@ class AccountDefaultPermissionService extends Service
      */
     public function deleteByIdBatch(array $ids)
     {
-        if (($count = $this->accountDefaultPermissionRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los permisos'), ServiceException::WARNING);
+        if (($count = $this->itemPresetRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los valores'), ServiceException::WARNING);
         }
 
         return $count;
@@ -192,6 +193,6 @@ class AccountDefaultPermissionService extends Service
 
     protected function initialize()
     {
-        $this->accountDefaultPermissionRepository = $this->dic->get(AccountDefaultPermissionRepository::class);
+        $this->itemPresetRepository = $this->dic->get(ItemPresetRepository::class);
     }
 }

@@ -24,19 +24,24 @@
 
 namespace SP\DataModel;
 
+use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Util\Util;
 
 /**
- * Class AccountDefaultPermission
+ * Class ItemPresetData
  *
  * @package SP\DataModel
  */
-class AccountDefaultPermissionData extends DataModelBase
+class ItemPresetData extends DataModelBase implements HydratableInterface
 {
     /**
      * @var int
      */
     public $id;
+    /**
+     * @var string
+     */
+    public $type;
     /**
      * @var int
      */
@@ -60,11 +65,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @var string
      */
-    public $permission;
-    /**
-     * @var AccountPermission
-     */
-    private $accountPermission;
+    public $data;
 
     /**
      * @return int
@@ -77,7 +78,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $id
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setId(int $id)
     {
@@ -97,7 +98,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $userId
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setUserId(int $userId)
     {
@@ -117,7 +118,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $userGroupId
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setUserGroupId(int $userGroupId)
     {
@@ -137,7 +138,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $userProfileId
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setUserProfileId(int $userProfileId)
     {
@@ -157,7 +158,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $fixed
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setFixed(int $fixed)
     {
@@ -177,7 +178,7 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @param int $priority
      *
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetData
      */
     public function setPriority(int $priority)
     {
@@ -189,9 +190,17 @@ class AccountDefaultPermissionData extends DataModelBase
     /**
      * @return string
      */
-    public function getPermission()
+    public function getData()
     {
-        return $this->permission;
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function setData(string $data)
+    {
+        $this->data = $data;
     }
 
     /**
@@ -199,39 +208,43 @@ class AccountDefaultPermissionData extends DataModelBase
      */
     public function getHash()
     {
-        return sha1((int)$this->userId . (int)$this->userGroupId . (int)$this->userProfileId . (int)$this->priority);
+        return sha1($this->type . (int)$this->userId . (int)$this->userGroupId . (int)$this->userProfileId . (int)$this->priority);
     }
 
     /**
-     * @return $this
+     * @param string $class
+     *
+     * @param string $property
+     *
+     * @return mixed
+     * @throws NoSuchPropertyException
      */
-    public function hydrate()
+    public function hydrate(string $class = null, string $property = 'data')
     {
-        if ($this->permission !== null) {
-            $this->accountPermission = Util::unserialize(AccountPermission::class, $this->permission);
+        if (property_exists($this, $property)) {
+            if ($this->data !== null) {
+                return $class !== null ? Util::unserialize($class, $this->data) : unserialize($this->data);
+            }
+
+            return null;
         }
 
-        return $this;
+        throw new NoSuchPropertyException($property);
     }
 
     /**
-     * @return AccountPermission
+     * @return string
      */
-    public function getAccountPermission()
+    public function getType()
     {
-        return $this->accountPermission;
+        return $this->type;
     }
 
     /**
-     * @param AccountPermission $accountPermission
-     *
-     * @return AccountDefaultPermissionData
+     * @param string $type
      */
-    public function setAccountPermission(AccountPermission $accountPermission)
+    public function setType(string $type)
     {
-        $this->accountPermission = $accountPermission;
-        $this->permission = serialize($accountPermission);
-
-        return $this;
+        $this->type = $type;
     }
 }

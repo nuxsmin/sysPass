@@ -22,9 +22,9 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Repositories\Account;
+namespace SP\Repositories\ItemPreset;
 
-use SP\DataModel\AccountDefaultPermissionData;
+use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -37,14 +37,14 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Repositories\Account
  */
-class AccountDefaultPermissionRepository extends Repository implements RepositoryItemInterface
+class ItemPresetRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
     /**
      * Creates an item
      *
-     * @param AccountDefaultPermissionData $itemData
+     * @param ItemPresetData $itemData
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -54,21 +54,23 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     {
         $queryData = new QueryData();
         $queryData->setQuery(
-            'INSERT INTO AccountDefaultPermission 
-                SET userId = ?, 
+            'INSERT INTO ItemPreset 
+                SET type = ?,
+                userId = ?, 
                 userGroupId = ?, 
                 userProfileId = ?, 
                 `fixed` = ?, 
                 priority = ?,
-                permission = ?,
+                `data` = ?,
                 `hash` = ?');
         $queryData->setParams([
+            $itemData->getType(),
             $itemData->getUserId(),
             $itemData->getUserGroupId(),
             $itemData->getUserProfileId(),
             $itemData->getFixed(),
             $itemData->getPriority(),
-            $itemData->getPermission(),
+            $itemData->getData(),
             $itemData->getHash()
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear permiso'));
@@ -79,7 +81,7 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     /**
      * Updates an item
      *
-     * @param AccountDefaultPermissionData $itemData
+     * @param ItemPresetData $itemData
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -89,22 +91,24 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     {
         $queryData = new QueryData();
         $queryData->setQuery(
-            'UPDATE AccountDefaultPermission 
-                SET userId = ?, 
+            'UPDATE ItemPreset 
+                SET type = ?, 
+                userId = ?, 
                 userGroupId = ?, 
                 userProfileId = ?, 
                 `fixed` = ?, 
                 priority = ?,
-                permission = ?,
+                `data` = ?,
                 `hash` = ?
                 WHERE id = ? LIMIT 1');
         $queryData->setParams([
+            $itemData->getType(),
             $itemData->getUserId(),
             $itemData->getUserGroupId(),
             $itemData->getUserProfileId(),
             $itemData->getFixed(),
             $itemData->getPriority(),
-            $itemData->getPermission(),
+            $itemData->getData(),
             $itemData->getHash(),
             $itemData->getId()
         ]);
@@ -125,7 +129,7 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     public function delete($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountDefaultPermission WHERE id = ? LIMIT 1');
+        $queryData->setQuery('DELETE FROM ItemPreset WHERE id = ? LIMIT 1');
         $queryData->setParams([$id]);
         $queryData->setOnErrorMessage(__u('Error al eliminar permiso'));
 
@@ -144,10 +148,10 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     public function getById($id)
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(AccountDefaultPermissionData::class);
+        $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
-            'SELECT id, userId, userGroupId, userProfileId, `fixed`, priority, permission 
-        FROM AccountDefaultPermission WHERE id = ? LIMIT 1');
+            'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
+        FROM ItemPreset WHERE id = ? LIMIT 1');
         $queryData->setParams([$id]);
 
         return $this->db->doSelect($queryData);
@@ -156,26 +160,27 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     /**
      * Returns the item for given id
      *
-     * @param int $userId
-     * @param int $userGroupId
-     * @param int $userProfileId
+     * @param string $type
+     * @param int    $userId
+     * @param int    $userGroupId
+     * @param int    $userProfileId
      *
      * @return QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function getByFilter(int $userId, int $userGroupId, int $userProfileId)
+    public function getByFilter(string $type, int $userId, int $userGroupId, int $userProfileId)
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(AccountDefaultPermissionData::class);
+        $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
-            'SELECT id, userId, userGroupId, userProfileId, `fixed`, priority, permission 
-        FROM AccountDefaultPermission 
-        WHERE userId = ? OR userGroupId = ? OR userProfileId = ?
+            'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
+        FROM ItemPreset 
+        WHERE type = ? AND (userId = ? OR userGroupId = ? OR userProfileId = ?)
         ORDER BY priority DESC, userId DESC, userProfileId DESC, userGroupId DESC
         LIMIT 1');
 
-        $queryData->setParams([$userId, $userGroupId, $userProfileId]);
+        $queryData->setParams([$type, $userId, $userGroupId, $userProfileId]);
 
         return $this->db->doSelect($queryData);
     }
@@ -190,10 +195,10 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(AccountDefaultPermissionData::class);
+        $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
-            'SELECT id, userId, userGroupId, userProfileId, `fixed`, priority, permission 
-        FROM AccountDefaultPermission');
+            'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
+        FROM ItemPreset');
 
         return $this->db->doSelect($queryData);
     }
@@ -214,10 +219,10 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
         }
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(AccountDefaultPermissionData::class);
+        $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
-            'SELECT userId, userGroupId, userProfileId, `fixed`, priority, permission
-            FROM AccountDefaultPermission WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+            'SELECT type, userId, userGroupId, userProfileId, `fixed`, priority, `data`
+            FROM ItemPreset WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
 
         return $this->db->doSelect($queryData);
@@ -239,7 +244,7 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountDefaultPermission WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setQuery('DELETE FROM ItemPreset WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los permisos'));
 
@@ -289,27 +294,29 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
     {
         $queryData = new QueryData();
         $queryData->setSelect(
-            'ADP.id,
-            ADP.userId,
-            ADP.userGroupId,
-            ADP.userProfileId,
-            ADP.`fixed`,
-            ADP.priority,
-            ADP.permission,
+            'IP.id,
+            IP.type,
+            IP.userId,
+            IP.userGroupId,
+            IP.userProfileId,
+            IP.`fixed`,
+            IP.priority,
+            IP.data,
             U.name AS userName,
             UP.name AS userProfileName,
             UG.name AS userGroupName');
         $queryData->setFrom('
-            AccountDefaultPermission ADP 
-            LEFT JOIN User U ON ADP.userId = U.id 
-            LEFT JOIN UserProfile UP ON ADP.userProfileId = UP.id 
-            LEFT JOIN UserGroup UG ON ADP.userGroupId = UG.id');
-        $queryData->setOrder('id');
+            ItemPreset IP 
+            LEFT JOIN User U ON IP.userId = U.id 
+            LEFT JOIN UserProfile UP ON IP.userProfileId = UP.id 
+            LEFT JOIN UserGroup UG ON IP.userGroupId = UG.id');
+        $queryData->setOrder('IP.type, IP.priority DESC, IP.userId DESC, IP.userProfileId DESC, IP.userGroupId DESC');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('U.name LIKE ? OR UP.name LIKE ? OR UG.name LIKE ?');
+            $queryData->setWhere('IP.type LIKE ? OR U.name LIKE ? OR UP.name LIKE ? OR UG.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParam($search);
             $queryData->addParam($search);
             $queryData->addParam($search);
             $queryData->addParam($search);
@@ -320,15 +327,5 @@ class AccountDefaultPermissionRepository extends Repository implements Repositor
         $queryData->addParam($itemSearchData->getLimitCount());
 
         return $this->db->doSelect($queryData, true);
-    }
-
-    /**
-     * @param AccountDefaultPermissionData $data
-     *
-     * @return string
-     */
-    private function getHash(AccountDefaultPermissionData $data)
-    {
-        return sha1((int)$data->getUserId() . (int)$data->getUserGroupId() . (int)$data->getUserProfileId() . (int)$data->getPriority());
     }
 }

@@ -39,12 +39,12 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
-use SP\Services\Account\AccountDefaultPermissionService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Crypt\MasterPassService;
+use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
@@ -77,9 +77,9 @@ final class AccountHelper extends HelperBase
      */
     private $publicLinkService;
     /**
-     * @var AccountDefaultPermissionService
+     * @var \SP\Services\ItemPreset\ItemPresetService
      */
-    private $accountDefaultPermissionService;
+    private $itemPresetService;
     /**
      * @var string
      */
@@ -306,6 +306,7 @@ final class AccountHelper extends HelperBase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
     public function setViewForBlank($actionId)
     {
@@ -319,8 +320,8 @@ final class AccountHelper extends HelperBase
 
         $this->accountAcl->setShowPermission($userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission());
 
-        $accountDefaultPermission = $this->accountDefaultPermissionService->getForCurrentUser();
-        $accountPermission = $accountDefaultPermission !== null ? $accountDefaultPermission->getAccountPermission() : new AccountPermission();
+        $accountPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_PERMISSION)
+            ->hydrate(AccountPermission::class, 'data') ?: new AccountPermission();
 
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
@@ -394,7 +395,7 @@ final class AccountHelper extends HelperBase
         $this->accountService = $this->dic->get(AccountService::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
         $this->publicLinkService = $this->dic->get(PublicLinkService::class);
-        $this->accountDefaultPermissionService = $this->dic->get(AccountDefaultPermissionService::class);
+        $this->itemPresetService = $this->dic->get(\SP\Services\ItemPreset\ItemPresetService::class);
 
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');

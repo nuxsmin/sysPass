@@ -26,34 +26,36 @@ namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\AccountDefaultPermissionData;
 use SP\DataModel\AccountPermission;
+use SP\DataModel\ItemPresetData;
+use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetRequest;
 
 /**
- * Class AccountDefaultPermissionForm
+ * Class ItemsPresetForm
  *
  * @package SP\Modules\Web\Forms
  */
-final class AccountDefaultPermissionForm extends FormBase implements FormInterface
+final class ItemsPresetForm extends FormBase implements FormInterface
 {
     /**
-     * @var AccountDefaultPermissionData
+     * @var ItemPresetRequest
      */
-    protected $accountDefaultPermissionData;
+    protected $itemPresetRequest;
 
     /**
      * Validar el formulario
      *
      * @param $action
      *
-     * @return AccountDefaultPermissionForm
+     * @return ItemsPresetForm
      * @throws ValidationException
      */
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_CREATE:
-            case ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_EDIT:
+            case ActionsInterface::ITEMPRESET_CREATE:
+            case ActionsInterface::ITEMPRESET_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -66,37 +68,58 @@ final class AccountDefaultPermissionForm extends FormBase implements FormInterfa
      * Analizar los datos de la petición HTTP
      *
      * @return void
+     * @throws ValidationException
      */
     protected function analyzeRequestData()
     {
-        $this->accountDefaultPermissionData = new AccountDefaultPermissionData();
+        $itemPresetData = new ItemPresetData();
 
         if ($this->itemId > 0) {
-            $this->accountDefaultPermissionData->setId($this->itemId);
+            $itemPresetData->setId($this->itemId);
         }
 
         if ($userId = $this->request->analyzeInt('user_id')) {
-            $this->accountDefaultPermissionData->setUserId($userId);
+            $itemPresetData->setUserId($userId);
         }
 
         if ($userGroupId = $this->request->analyzeInt('user_group_id')) {
-            $this->accountDefaultPermissionData->setUserGroupId($userGroupId);
+            $itemPresetData->setUserGroupId($userGroupId);
         }
 
         if ($userProfileId = $this->request->analyzeInt('user_profile_id')) {
-            $this->accountDefaultPermissionData->setUserProfileId($userProfileId);
+            $itemPresetData->setUserProfileId($userProfileId);
         }
-        
-        $this->accountDefaultPermissionData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
-        $this->accountDefaultPermissionData->setPriority($this->request->analyzeInt('priority'));
 
+        $itemPresetData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
+        $itemPresetData->setPriority($this->request->analyzeInt('priority'));
+        $itemPresetData->setType($this->request->analyzeString('type'));
+
+        switch ($itemPresetData->getType()) {
+            case ItemPresetInterface::ITEM_TYPE_PERMISSION:
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
+                break;
+            default:
+                throw new ValidationException(__u('Tipo de valor no definido o incorrecto'));
+        }
+    }
+
+    /**
+     * @return AccountPermission
+     * @throws ValidationException
+     */
+    private function makePermissionPreset()
+    {
         $accountPermission = new AccountPermission();
         $accountPermission->setUsersView($this->request->analyzeArray('users_view', null, []));
         $accountPermission->setUsersEdit($this->request->analyzeArray('users_edit', null, []));
         $accountPermission->setUserGroupsView($this->request->analyzeArray('user_groups_view', null, []));
         $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
 
-        $this->accountDefaultPermissionData->setAccountPermission($accountPermission);
+        if (!$accountPermission->hasItems()) {
+            throw new ValidationException(__u('No hay permisos definidos'));
+        }
+
+        return $accountPermission;
     }
 
     /**
@@ -104,23 +127,21 @@ final class AccountDefaultPermissionForm extends FormBase implements FormInterfa
      */
     protected function checkCommon()
     {
-        if (!$this->accountDefaultPermissionData->getUserId()
-            && !$this->accountDefaultPermissionData->getUserGroupId()
-            && !$this->accountDefaultPermissionData->getUserProfileId()
+        $itemPresetData = $this->itemPresetRequest->getItemPresetData();
+
+        if (!$itemPresetData->getUserId()
+            && !$itemPresetData->getUserGroupId()
+            && !$itemPresetData->getUserProfileId()
         ) {
             throw new ValidationException(__u('Es necesario asignar un elemento del tipo usuario, grupo o perfil'));
-        }
-
-        if (!$this->accountDefaultPermissionData->getAccountPermission()->hasItems()) {
-            throw new ValidationException(__u('No hay permisos definidos'));
         }
     }
 
     /**
-     * @return AccountDefaultPermissionData
+     * @return ItemPresetRequest
      */
     public function getItemData()
     {
-        return $this->accountDefaultPermissionData;
+        return $this->itemPresetRequest;
     }
 }

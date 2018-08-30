@@ -255,13 +255,13 @@ final class Acl implements ActionsInterface
             case self::AUTHTOKEN_EDIT:
             case self::AUTHTOKEN_DELETE:
                 return $userProfile->isMgmApiTokens();
-            case self::ACCOUNT_DEFAULT_PERMISSION:
-            case self::ACCOUNT_DEFAULT_PERMISSION_SEARCH:
-            case self::ACCOUNT_DEFAULT_PERMISSION_VIEW:
-            case self::ACCOUNT_DEFAULT_PERMISSION_CREATE:
-            case self::ACCOUNT_DEFAULT_PERMISSION_EDIT:
-            case self::ACCOUNT_DEFAULT_PERMISSION_DELETE:
-                return $userProfile->isMgmAccountDefaultPermissions();
+            case self::ITEMPRESET:
+            case self::ITEMPRESET_SEARCH:
+            case self::ITEMPRESET_VIEW:
+            case self::ITEMPRESET_CREATE:
+            case self::ITEMPRESET_EDIT:
+            case self::ITEMPRESET_DELETE:
+                return $userProfile->isMgmItemsPreset();
             case self::EVENTLOG:
             case self::EVENTLOG_SEARCH:
             case self::EVENTLOG_CLEAR:

@@ -97,7 +97,7 @@ final class UserProfileForm extends FormBase implements FormInterface
         $profileData->setMgmPublicLinks($this->request->analyzeBool('profile_publinks', false));
         $profileData->setMgmAccounts($this->request->analyzeBool('profile_accounts', false));
         $profileData->setMgmFiles($this->request->analyzeBool('profile_files', false));
-        $profileData->setMgmAccountDefaultPermissions($this->request->analyzeBool('profile_permissions', false));
+        $profileData->setMgmItemsPreset($this->request->analyzeBool('profile_items_preset', false));
         $profileData->setMgmTags($this->request->analyzeBool('profile_tags', false));
         $profileData->setEvl($this->request->analyzeBool('profile_eventlog', false));
 

@@ -432,6 +432,6 @@
 			<field name="isPrivateGroup">0</field>
 		</row>
 	</table_data>
-	<table_data name="AccountDefaultPermission"/>
+	<table_data name="ItemPreset"/>
 </database>
 </mysqldump>

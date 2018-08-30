@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,7 +40,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Modules\Web\Controllers\Helpers\Grid
  */
-final class AccountDefaultPermissionGrid extends GridBase
+final class ItemPresetGrid extends GridBase
 {
     /**
      * @var QueryResult
@@ -62,13 +62,11 @@ final class AccountDefaultPermissionGrid extends GridBase
 
         $grid->setDataActions($this->getSearchAction());
         $grid->setPager($this->getPager($searchAction));
-        $grid->setDataActions($this->getCreateAction());
+
+        $grid->setDataActions($this->getCreatePermissionAction(), true);
         $grid->setDataActions($this->getEditAction());
-
-        $deleteAction = $this->getDeleteAction();
-
-        $grid->setDataActions($deleteAction);
-        $grid->setDataActions($deleteAction, true);
+        $grid->setDataActions($this->getDeleteAction());
+        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -82,12 +80,12 @@ final class AccountDefaultPermissionGrid extends GridBase
     {
         // Grid
         $gridTab = new DataGridTab($this->view->getTheme());
-        $gridTab->setId('tblAccountDefaultPermission');
+        $gridTab->setId('tblItemPreset');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Permisos por Defecto'));
+        $gridTab->setTitle(__('Valores por Defecto'));
 
         return $gridTab;
     }
@@ -99,6 +97,7 @@ final class AccountDefaultPermissionGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
+        $gridHeader->addHeader(__('Tipo'));
         $gridHeader->addHeader(__('Usuario'));
         $gridHeader->addHeader(__('Grupo'));
         $gridHeader->addHeader(__('Perfil'));
@@ -116,6 +115,7 @@ final class AccountDefaultPermissionGrid extends GridBase
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
+        $gridData->addDataRowSource('type');
         $gridData->addDataRowSource('userName');
         $gridData->addDataRowSource('userGroupName');
         $gridData->addDataRowSource('userProfileName');
@@ -135,12 +135,12 @@ final class AccountDefaultPermissionGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_SEARCH);
+        $gridActionSearch->setId(ActionsInterface::ITEMPRESET_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchPermission');
-        $gridActionSearch->setTitle(__('Buscar Permiso'));
+        $gridActionSearch->setTitle(__('Buscar Valor'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_SEARCH));
+        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_SEARCH));
 
         return $gridActionSearch;
     }
@@ -148,17 +148,20 @@ final class AccountDefaultPermissionGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAction()
+    private function getCreatePermissionAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_CREATE);
+        $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('Nuevo Permiso'));
         $gridAction->setTitle(__('Nuevo Permiso'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+
+        $icon = clone $this->icons->getIconAdd();
+
+        $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_CREATE));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/permission');
 
         return $gridAction;
     }
@@ -169,13 +172,13 @@ final class AccountDefaultPermissionGrid extends GridBase
     private function getEditAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_EDIT);
+        $gridAction->setId(ActionsInterface::ITEMPRESET_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Permiso'));
-        $gridAction->setTitle(__('Editar Permiso'));
+        $gridAction->setName(__('Editar Valor'));
+        $gridAction->setTitle(__('Editar Valor'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_EDIT));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_EDIT));
 
         return $gridAction;
     }
@@ -186,13 +189,13 @@ final class AccountDefaultPermissionGrid extends GridBase
     private function getDeleteAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_DELETE);
+        $gridAction->setId(ActionsInterface::ITEMPRESET_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Permiso'));
-        $gridAction->setTitle(__('Eliminar Permiso'));
+        $gridAction->setName(__('Eliminar Valor'));
+        $gridAction->setTitle(__('Eliminar Valor'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DEFAULT_PERMISSION_DELETE));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_DELETE));
 
         return $gridAction;
     }

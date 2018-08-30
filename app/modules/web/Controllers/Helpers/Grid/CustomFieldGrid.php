@@ -63,13 +63,12 @@ final class CustomFieldGrid extends GridBase
 
         $grid->setDataActions($this->getSearchAction());
         $grid->setPager($this->getPager($searchAction));
+
         $grid->setDataActions($this->getCreateAction());
         $grid->setDataActions($this->getEditAction());
+        $grid->setDataActions($this->getDeleteAction());
+        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
 
-        $deleteAction = $this->getDeleteAction();
-
-        $grid->setDataActions($deleteAction);
-        $grid->setDataActions($deleteAction, true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

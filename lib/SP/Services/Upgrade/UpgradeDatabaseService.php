@@ -45,7 +45,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['300.18010101', '300.18072302', '300.18072501', '300.18083001'];
+    const UPGRADES = ['300.18010101', '300.18072302', '300.18072501', '300.18083001', '300.18083002'];
 
     /**
      * @var Database
@@ -72,6 +72,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
      *
      * @return bool
      * @throws UpgradeException
+     * @throws FileException
      */
     public function upgrade($version, ConfigData $configData)
     {

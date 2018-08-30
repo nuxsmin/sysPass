@@ -94,7 +94,7 @@ if (!isset($index)): $index = 0; endif;
                             data-onclick="<?php echo $action->getOnClick(); ?>"
                                 <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
-                            <?php echo __('Eliminar Seleccionados'); ?>
+                            <?php echo $action->getTitle(); ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>

@@ -28,32 +28,31 @@ use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\AccountDefaultPermissionData;
-use SP\DataModel\AccountPermission;
+use SP\DataModel\ItemPresetData;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountDefaultPermissionGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
+use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Modules\Web\Forms\AccountDefaultPermissionForm;
+use SP\Modules\Web\Forms\ItemsPresetForm;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\Account\AccountDefaultPermissionService;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
+use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetService;
+use SP\Util\Filter;
 
 /**
  * Class AccountDefaultPermissionController
  *
  * @package SP\Modules\Web\Controllers
  */
-class AccountDefaultPermissionController extends ControllerBase implements CrudControllerInterface
+class ItemPresetController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
     /**
-     * @var AccountDefaultPermissionService
+     * @var ItemPresetService
      */
-    protected $accountDefaultPermissionService;
+    protected $itemPresetService;
 
     /**
      * View action
@@ -64,17 +63,17 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_VIEW)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
-        $this->view->assign('header', __('Ver Permiso'));
+        $this->view->assign('header', __('Ver Valor'));
         $this->view->assign('isView', true);
 
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.accountDefaultPermission', new Event($this));
+            $this->eventDispatcher->notifyEvent('show.itemPreset', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
@@ -87,36 +86,35 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
     /**
      * Sets view data for displaying permissions' data
      *
-     * @param $permissionId
+     * @param int    $id
+     * @param string $type
      *
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      */
-    protected function setViewData($permissionId = null)
+    protected function setViewData(int $id = null, string $type = null)
     {
-        $this->view->addTemplate('account_default_permission', 'itemshow');
+        $this->view->addTemplate('item_preset', 'itemshow');
 
-        $accountDefaultPermissionData = $permissionId ? $this->accountDefaultPermissionService->getById($permissionId) : new AccountDefaultPermissionData();
-        $accountPermission = $accountDefaultPermissionData->getAccountPermission() ?: new AccountPermission();
+        $itemPresetData = $id ? $this->itemPresetService->getById($id) : new ItemPresetData();
 
-        $this->view->assign('permission', $accountDefaultPermissionData);
+        $itemPresetHelper = $this->dic->get(ItemPresetHelper::class);
 
-        $users = SelectItemAdapter::factory(UserService::getItemsBasic());
+        if ($itemPresetData->getType() === null) {
+            $itemPresetData->setType($type);
+        }
 
-        $this->view->assign('users', $users->getItemsFromModelSelected([$accountDefaultPermissionData->getUserId()]));
-        $this->view->assign('usersView', $users->getItemsFromModelSelected($accountPermission->getUsersView()));
-        $this->view->assign('usersEdit', $users->getItemsFromModelSelected($accountPermission->getUsersEdit()));
+        switch ($itemPresetData->getType()) {
+            case ItemPresetInterface::ITEM_TYPE_PERMISSION:
+                $itemPresetHelper->makeAccountPermissionView($itemPresetData);
+                break;
+            default:
+                $itemPresetHelper->makeDefaultPresetView();
+        }
 
-        $userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
-
-        $this->view->assign('userGroups', $userGroups->getItemsFromModelSelected([$accountDefaultPermissionData->getUserGroupId()]));
-        $this->view->assign('userGroupsView', $userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
-        $this->view->assign('userGroupsEdit', $userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
-
-        $this->view->assign('userProfiles', SelectItemAdapter::factory(UserGroupService::getItemsBasic())
-            ->getItemsFromModelSelected([$accountDefaultPermissionData->getUserProfileId()]));
-
+        $this->view->assign('preset', $itemPresetData);
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
@@ -138,7 +136,7 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_SEARCH)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
@@ -160,10 +158,10 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        $grid = $this->dic->get(AccountDefaultPermissionGrid::class);
+        $grid = $this->dic->get(ItemPresetGrid::class);
 
         return $grid->updatePager(
-            $grid->getGrid($this->accountDefaultPermissionService->search($itemSearchData)),
+            $grid->getGrid($this->itemPresetService->search($itemSearchData)),
             $itemSearchData
         );
     }
@@ -173,19 +171,26 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
+        $args = func_get_args();
+        $type = null;
+
+        if (count($args) > 0) {
+            $type = Filter::getString($args[0]);
+        }
+
         $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Permiso'));
+        $this->view->assign('header', __('Nuevo Valor'));
         $this->view->assign('isView', false);
-        $this->view->assign('route', 'accountDefaultPermission/saveCreate');
+        $this->view->assign('route', 'itemPreset/saveCreate');
 
         try {
-            $this->setViewData();
+            $this->setViewData(null, $type);
 
-            $this->eventDispatcher->notifyEvent('show.accountDefaultPermission.create', new Event($this));
+            $this->eventDispatcher->notifyEvent('show.itemPreset.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
@@ -204,18 +209,18 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
-        $this->view->assign('header', __('Editar Permiso'));
+        $this->view->assign('header', __('Editar Valor'));
         $this->view->assign('isView', false);
-        $this->view->assign('route', 'accountDefaultPermission/saveEdit/' . $id);
+        $this->view->assign('route', 'itemPreset/saveEdit/' . $id);
 
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.accountDefaultPermission.edit', new Event($this));
+            $this->eventDispatcher->notifyEvent('show.itemPreset.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
@@ -234,33 +239,33 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_DELETE)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
             if ($id === null) {
-                $this->accountDefaultPermissionService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notifyEvent('delete.accountDefaultPermission',
+                $this->eventDispatcher->notifyEvent('delete.itemPreset',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Permisos eliminados')))
+                            ->addDescription(__u('Valores eliminados')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Permisos eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valores eliminados'));
             }
 
-            $this->accountDefaultPermissionService->delete($id);
+            $this->itemPresetService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.accountDefaultPermission',
+            $this->eventDispatcher->notifyEvent('delete.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Permiso eliminado'))
+                        ->addDescription(__u('Valor eliminado'))
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Permiso eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor eliminado'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -273,24 +278,27 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_CREATE)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
-            $form = new AccountDefaultPermissionForm($this->dic);
-            $form->validate(Acl::ACCOUNT_DEFAULT_PERMISSION_CREATE);
+            $form = new ItemsPresetForm($this->dic);
+            $form->validate(Acl::ITEMPRESET_CREATE);
 
-            $id = $this->accountDefaultPermissionService->create($form->getItemData());
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('create.accountDefaultPermission',
+            $id = $this->itemPresetService->create($itemData);
+
+            $this->eventDispatcher->notifyEvent('create.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Permiso creado'))
+                        ->addDescription(__u('Valor creado'))
+                        ->addDetail(__u('Tipo'), $itemData->getItemPresetData()->getType())
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Permiso creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor creado'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -309,24 +317,27 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNT_DEFAULT_PERMISSION_EDIT)) {
+        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
 
         try {
-            $form = new AccountDefaultPermissionForm($this->dic, $id);
-            $form->validate(Acl::ACCOUNT_DEFAULT_PERMISSION_EDIT);
+            $form = new ItemsPresetForm($this->dic, $id);
+            $form->validate(Acl::ITEMPRESET_EDIT);
 
-            $this->accountDefaultPermissionService->update($form->getItemData());
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('edit.accountDefaultPermission',
+            $this->itemPresetService->update($itemData);
+
+            $this->eventDispatcher->notifyEvent('edit.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Permiso actualizado'))
+                        ->addDescription(__u('Valor actualizado'))
+                        ->addDetail(__u('Tipo'), $itemData->getItemPresetData()->getType())
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Permiso actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor actualizado'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -347,6 +358,6 @@ class AccountDefaultPermissionController extends ControllerBase implements CrudC
     {
         $this->checkLoggedIn();
 
-        $this->accountDefaultPermissionService = $this->dic->get(AccountDefaultPermissionService::class);
+        $this->itemPresetService = $this->dic->get(ItemPresetService::class);
     }
 }

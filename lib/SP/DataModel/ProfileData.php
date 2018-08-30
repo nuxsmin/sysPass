@@ -144,7 +144,7 @@ class ProfileData
     /**
      * @var bool
      */
-    protected $mgmAccountDefaultPermissions = false;
+    protected $mgmItemsPreset = false;
     /**
      * @var bool
      */
@@ -769,19 +769,19 @@ class ProfileData
     /**
      * @return bool
      */
-    public function isMgmAccountDefaultPermissions(): bool
+    public function isMgmItemsPreset(): bool
     {
-        return $this->mgmAccountDefaultPermissions;
+        return $this->mgmItemsPreset;
     }
 
     /**
-     * @param bool $mgmAccountDefaultPermissions
+     * @param bool $mgmItemsPreset
      *
      * @return ProfileData
      */
-    public function setMgmAccountDefaultPermissions(bool $mgmAccountDefaultPermissions)
+    public function setMgmItemsPreset(bool $mgmItemsPreset)
     {
-        $this->mgmAccountDefaultPermissions = $mgmAccountDefaultPermissions;
+        $this->mgmItemsPreset = $mgmItemsPreset;
 
         return $this;
     }

@@ -31,6 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountPassData;
+use SP\DataModel\AccountPermission;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
@@ -41,6 +42,8 @@ use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
+use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -72,9 +75,9 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     protected $accountToTagRepository;
     /**
-     * @var AccountDefaultPermissionService
+     * @var ItemPresetService
      */
-    protected $accountDefaultPermissionService;
+    protected $itemPresetService;
 
     /**
      * @param int $id
@@ -293,16 +296,17 @@ final class AccountService extends Service implements AccountServiceInterface
      *
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
     private function addDefaultPermissions(int $accountId)
     {
-        $accountDefaultPermission = $this->accountDefaultPermissionService->getForCurrentUser();
+        $itemPresetData = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_PERMISSION);
 
-        if ($accountDefaultPermission !== null
-            && $accountDefaultPermission->getFixed()
+        if ($itemPresetData !== null
+            && $itemPresetData->getFixed()
         ) {
             $userData = $this->context->getUserData();
-            $accountPermission = $accountDefaultPermission->getAccountPermission();
+            $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
 
             $accountRequest = new AccountRequest();
             $accountRequest->id = $accountId;
@@ -694,6 +698,6 @@ final class AccountService extends Service implements AccountServiceInterface
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
         $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
-        $this->accountDefaultPermissionService = $this->dic->get(AccountDefaultPermissionService::class);
+        $this->itemPresetService = $this->dic->get(ItemPresetService::class);
     }
 }

@@ -831,38 +831,38 @@
     </action>
     <action multiple="1">
         <id>1801</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION</name>
+        <name>ITEMPRESET</name>
         <text>Gestión Permisos</text>
-        <route>accountDefaultPermission/index</route>
+        <route>itemPreset/index</route>
     </action>
     <action multiple="1">
         <id>1802</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION_SEARCH</name>
+        <name>ITEMPRESET_SEARCH</name>
         <text>Buscar Permiso</text>
-        <route>accountDefaultPermission/search</route>
+        <route>itemPreset/search</route>
     </action>
     <action multiple="1">
         <id>1803</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION_VIEW</name>
+        <name>ITEMPRESET_VIEW</name>
         <text>Ver Permiso</text>
-        <route>accountDefaultPermission/view</route>
+        <route>itemPreset/view</route>
     </action>
     <action multiple="1">
         <id>1804</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION_CREATE</name>
+        <name>ITEMPRESET_CREATE</name>
         <text>Nuevo Permiso</text>
-        <route>accountDefaultPermission/create</route>
+        <route>itemPreset/create</route>
     </action>
     <action multiple="1">
         <id>1805</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION_EDIT</name>
+        <name>ITEMPRESET_EDIT</name>
         <text>Editar Permiso</text>
-        <route>accountDefaultPermission/edit</route>
+        <route>itemPreset/edit</route>
     </action>
     <action multiple="1">
         <id>1806</id>
-        <name>ACCOUNT_DEFAULT_PERMISSION_DELETE</name>
+        <name>ITEMPRESET_DELETE</name>
         <text>Eliminar Permiso</text>
-        <route>accountDefaultPermission/delete</route>
+        <route>itemPreset/delete</route>
     </action>
 </actions>

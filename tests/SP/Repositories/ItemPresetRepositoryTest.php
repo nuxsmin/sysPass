@@ -25,22 +25,22 @@
 namespace SP\Tests\Repositories;
 
 use SP\Core\Exceptions\ConstraintException;
-use SP\DataModel\AccountDefaultPermissionData;
+use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Account\AccountDefaultPermissionRepository;
+use SP\Repositories\ItemPreset\ItemPresetRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
 /**
- * Class AccountDefaultPermissionRepositoryTest
+ * Class ItemPresetRepositoryTest
  *
  * @package SP\Tests\Repositories
  */
-class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
+class ItemPresetRepositoryTest extends DatabaseTestCase
 {
     /**
-     * @var AccountDefaultPermissionRepository
+     * @var ItemPresetRepository
      */
     private static $repository;
 
@@ -53,13 +53,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountDefaultPermission.xml';
+        self::$dataset = 'syspass_itemPreset.xml';
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
-        self::$repository = $dic->get(AccountDefaultPermissionRepository::class);
+        self::$repository = $dic->get(ItemPresetRepository::class);
     }
 
     /**
@@ -70,7 +70,7 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(3, self::$repository->deleteByIdBatch([1, 2, 3, 10]));
 
-        $this->assertEquals(2, $this->conn->getRowCount('AccountDefaultPermission'));
+        $this->assertEquals(2, $this->conn->getRowCount('ItemPreset'));
 
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
     }
@@ -87,7 +87,7 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->delete(10));
 
-        $this->assertEquals(3, $this->conn->getRowCount('AccountDefaultPermission'));
+        $this->assertEquals(3, $this->conn->getRowCount('ItemPreset'));
     }
 
     /**
@@ -107,12 +107,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 1;
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 1;
-        $data->permission = 'data';
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
 
@@ -127,12 +128,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 1;
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 10;
-        $data->permission = 'data';
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
     }
@@ -145,9 +147,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 2;
         $data->userId = 10;
+        $data->fixed = 1;
+        $data->priority = 1;
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
     }
@@ -160,9 +166,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 2;
         $data->userGroupId = 10;
+        $data->fixed = 1;
+        $data->priority = 1;
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
     }
@@ -175,9 +185,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 2;
         $data->userProfileId = 10;
+        $data->fixed = 1;
+        $data->priority = 1;
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
     }
@@ -188,12 +202,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testUpdateUnknownId()
     {
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 10;
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 1;
-        $data->permission = 'data';
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->update($data);
 
@@ -206,11 +221,12 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testGetById()
     {
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 1;
         $data->userId = 1;
         $data->fixed = 0;
         $data->priority = 0;
+        $data->type = 'permission';
 
         $result = self::$repository->getById(1);
 
@@ -224,29 +240,32 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $count = $this->conn->getRowCount('AccountDefaultPermission');
+        $count = $this->conn->getRowCount('ItemPreset');
 
         $result = self::$repository->getAll();
         $this->assertEquals($count, $result->getNumRows());
 
-        /** @var AccountDefaultPermissionData[] $data */
+        /** @var ItemPresetData[] $data */
         $data = $result->getDataAsArray();
         $this->assertCount($count, $data);
 
-        $this->assertInstanceOf(AccountDefaultPermissionData::class, $data[0]);
+        $this->assertInstanceOf(ItemPresetData::class, $data[0]);
         $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals('permission', $data[0]->getType());
         $this->assertEquals(1, $data[0]->getUserId());
         $this->assertNull($data[0]->getUserGroupId());
         $this->assertNull($data[0]->getUserProfileId());
-        $this->assertNull($data[0]->getPermission());
+        $this->assertNull($data[0]->getData());
         $this->assertEquals(0, $data[0]->getFixed());
         $this->assertEquals(0, $data[0]->getPriority());
 
-        $this->assertInstanceOf(AccountDefaultPermissionData::class, $data[1]);
+        $this->assertInstanceOf(ItemPresetData::class, $data[1]);
         $this->assertEquals(2, $data[1]->getId());
+        $this->assertEquals('permission', $data[1]->getType());
 
-        $this->assertInstanceOf(AccountDefaultPermissionData::class, $data[2]);
+        $this->assertInstanceOf(ItemPresetData::class, $data[2]);
         $this->assertEquals(3, $data[2]->getId());
+        $this->assertEquals('permission', $data[2]->getType());
     }
 
     /**
@@ -267,10 +286,11 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
         $this->assertCount(1, $data);
         $this->assertInstanceOf(\stdClass::class, $data[0]);
         $this->assertEquals(4, $data[0]->id);
+        $this->assertEquals('permission', $data[0]->type);
         $this->assertEquals(2, $data[0]->userId);
         $this->assertNull($data[0]->userGroupId);
         $this->assertNull($data[0]->userProfileId);
-        $this->assertNull($data[0]->permission);
+        $this->assertNull($data[0]->data);
         $this->assertEquals(0, $data[0]->fixed);
         $this->assertEquals(0, $data[0]->priority);
         $this->assertEquals('sysPass demo', $data[0]->userName);
@@ -287,10 +307,11 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
         $this->assertCount(1, $data);
         $this->assertInstanceOf(\stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
+        $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
         $this->assertEquals(1, $data[0]->userGroupId);
         $this->assertNull($data[0]->userProfileId);
-        $this->assertNull($data[0]->permission);
+        $this->assertNull($data[0]->data);
         $this->assertEquals(0, $data[0]->fixed);
         $this->assertEquals(10, $data[0]->priority);
         $this->assertEquals('Admins', $data[0]->userGroupName);
@@ -307,10 +328,11 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
         $this->assertCount(1, $data);
         $this->assertInstanceOf(\stdClass::class, $data[0]);
         $this->assertEquals(5, $data[0]->id);
+        $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
         $this->assertNull($data[0]->userGroupId);
         $this->assertEquals(3, $data[0]->userProfileId);
-        $this->assertNull($data[0]->permission);
+        $this->assertNull($data[0]->data);
         $this->assertEquals(0, $data[0]->fixed);
         $this->assertEquals(10, $data[0]->priority);
         $this->assertEquals('Usuarios', $data[0]->userProfileName);
@@ -333,12 +355,13 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->id = 6;
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 20;
-        $data->permission = 'data';
+        $data->data = 'data';
+        $data->type = 'permission';
 
         $id = self::$repository->create($data);
 
@@ -354,11 +377,12 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $data = new AccountDefaultPermissionData();
+        $data = new ItemPresetData();
         $data->userGroupId = 1;
         $data->fixed = 1;
         $data->priority = 10;
-        $data->permission = 'data';
+        $data->data = 'data';
+        $data->type = 'permission';
 
         self::$repository->create($data);
     }
@@ -376,14 +400,14 @@ class AccountDefaultPermissionRepositoryTest extends DatabaseTestCase
      */
     public function testGetByFilter($userId, $userGroupId, $userProfileId, $expected)
     {
-        $result = self::$repository->getByFilter($userId, $userGroupId, $userProfileId);
+        $result = self::$repository->getByFilter('permission', $userId, $userGroupId, $userProfileId);
 
         $this->assertEquals(1, $result->getNumRows());
 
-        /** @var AccountDefaultPermissionData $data */
+        /** @var ItemPresetData $data */
         $data = $result->getData();
 
-        $this->assertInstanceOf(AccountDefaultPermissionData::class, $data);
+        $this->assertInstanceOf(ItemPresetData::class, $data);
         $this->assertEquals($expected, $data->getId());
     }
 
