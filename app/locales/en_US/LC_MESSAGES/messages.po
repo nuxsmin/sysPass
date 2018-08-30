@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-30 16:16+0100\n"
-"PO-Revision-Date: 2018-08-30 16:16+0100\n"
+"POT-Creation-Date: 2018-08-30 16:23+0100\n"
+"PO-Revision-Date: 2018-08-30 16:23+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -3651,6 +3651,7 @@ msgid "Eliminar Archivo"
 msgstr "Delete File"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:88
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
 msgid "Valores por Defecto"
 msgstr "Default Values"
 
@@ -5007,7 +5008,6 @@ msgstr "Send"
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:31
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:120
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:209
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
 msgid "Permisos"
 msgstr "Permissions"
 

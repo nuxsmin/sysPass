@@ -418,7 +418,7 @@
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Permisos'); ?></span>
+                            <span><?php echo __('Valores por Defecto'); ?></span>
                             <span class="mdl-list__item-sub-title"><?php echo __('Gestión de Valores por Defecto'); ?></span>
                         </span>
 
