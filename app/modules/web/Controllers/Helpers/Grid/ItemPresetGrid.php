@@ -64,6 +64,7 @@ final class ItemPresetGrid extends GridBase
         $grid->setPager($this->getPager($searchAction));
 
         $grid->setDataActions($this->getCreatePermissionAction(), true);
+        $grid->setDataActions($this->getCreatePrivateAction(), true);
         $grid->setDataActions($this->getEditAction());
         $grid->setDataActions($this->getDeleteAction());
         $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
@@ -120,9 +121,7 @@ final class ItemPresetGrid extends GridBase
         $gridData->addDataRowSource('userGroupName');
         $gridData->addDataRowSource('userProfileName');
         $gridData->addDataRowSource('priority');
-        $gridData->addDataRowSource('fixed', false, function ($value) {
-            return $value === 1 ? __('SI') : __('NO');
-        });
+        $gridData->addDataRowSourceWithIcon('fixed', $this->icons->getIconEnabled());
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -161,7 +160,28 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/permission');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/account.permission');
+
+        return $gridAction;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    private function getCreatePrivateAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
+        $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setName(__('Nuevo Valor de Cuenta Privada'));
+        $gridAction->setTitle(__('Nuevo Valor de Cuenta Privada'));
+
+        $icon = clone $this->icons->getIconAdd();
+
+        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setSkip(true);
+        $gridAction->setOnClickFunction('appMgmt/show');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/account.private');
 
         return $gridAction;
     }

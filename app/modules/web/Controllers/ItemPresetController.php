@@ -101,17 +101,19 @@ class ItemPresetController extends ControllerBase implements CrudControllerInter
         $itemPresetData = $id ? $this->itemPresetService->getById($id) : new ItemPresetData();
 
         $itemPresetHelper = $this->dic->get(ItemPresetHelper::class);
+        $itemPresetHelper->setCommon($itemPresetData);
 
         if ($itemPresetData->getType() === null) {
             $itemPresetData->setType($type);
         }
 
         switch ($itemPresetData->getType()) {
-            case ItemPresetInterface::ITEM_TYPE_PERMISSION:
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
                 $itemPresetHelper->makeAccountPermissionView($itemPresetData);
                 break;
-            default:
-                $itemPresetHelper->makeDefaultPresetView();
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
+                $itemPresetHelper->makeAccountPrivateView($itemPresetData);
+                break;
         }
 
         $this->view->assign('preset', $itemPresetData);

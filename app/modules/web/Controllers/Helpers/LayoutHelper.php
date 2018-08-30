@@ -312,20 +312,6 @@ final class LayoutHelper extends HelperBase
             $actions[] = $actionItemManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
-            $actionConfigManager = new DataGridAction();
-            $actionConfigManager->setId('config');
-            $actionConfigManager->setTitle(__('Configuración'));
-            $actionConfigManager->setIcon($icons->getIconSettings());
-            $actionConfigManager->setData([
-                'historyReset' => 1,
-                'view' => 'config',
-                'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
-            ]);
-
-            $actions[] = $actionConfigManager;
-        }
-
         if ($acl->checkUserAccess(ActionsInterface::EVENTLOG) && $this->configData->isLogEnabled()) {
             $actionEventlog = new DataGridAction();
             $actionEventlog->setId(ActionsInterface::EVENTLOG);
@@ -352,6 +338,20 @@ final class LayoutHelper extends HelperBase
             ]);
 
             $actions[] =  $actionPlugins;
+        }
+
+        if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
+            $actionConfigManager = new DataGridAction();
+            $actionConfigManager->setId('config');
+            $actionConfigManager->setTitle(__('Configuración'));
+            $actionConfigManager->setIcon($icons->getIconSettings());
+            $actionConfigManager->setData([
+                'historyReset' => 1,
+                'view' => 'config',
+                'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
+            ]);
+
+            $actions[] = $actionConfigManager;
         }
 
         $this->view->assign('actions', $actions);

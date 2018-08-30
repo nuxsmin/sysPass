@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\DataModel\AccountPermission;
+use SP\DataModel\AccountPrivate;
 use SP\DataModel\ItemPresetData;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\User\UserService;
@@ -63,31 +64,37 @@ class ItemPresetHelper extends HelperBase
 
         $this->view->assign('permission', $accountPermission);
 
-        $this->view->assign('users', $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()]));
         $this->view->assign('usersView', $this->users->getItemsFromModelSelected($accountPermission->getUsersView()));
         $this->view->assign('usersEdit', $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit()));
-
-        $this->view->assign('userGroups', $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()]));
         $this->view->assign('userGroupsView', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
         $this->view->assign('userGroupsEdit', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
-
-        $this->view->assign('userProfiles', $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()]));
     }
 
     /**
-     * makeDefaultPresetView
+     * @param ItemPresetData $itemPresetData
+     *
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
-    public function makeDefaultPresetView()
+    public function makeAccountPrivateView(ItemPresetData $itemPresetData)
     {
-        $this->view->assign('users', $this->users->getItemsFromModel());
-        $this->view->assign('userGroups', $this->userGroups->getItemsFromModel());
-        $this->view->assign('userProfiles', $this->userProfiles->getItemsFromModel());
+        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class, 'data') ?: new AccountPrivate();
+
+        $this->view->assign('typeTemplate', 'item_preset-private');
+
+        $this->view->assign('private', $accountPrivate);
     }
 
-    protected function initialize()
+    /**
+     * @param ItemPresetData $itemPresetData
+     */
+    public function setCommon(ItemPresetData $itemPresetData)
     {
         $this->users = SelectItemAdapter::factory(UserService::getItemsBasic());
         $this->userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $this->userProfiles = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
+
+        $this->view->assign('users', $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()]));
+        $this->view->assign('userGroups', $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()]));
+        $this->view->assign('userProfiles', $this->userProfiles->getItemsFromModelSelected([$itemPresetData->getUserProfileId()]));
     }
 }

@@ -32,6 +32,7 @@ use SP\DataModel\AccountData;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountPermission;
+use SP\DataModel\AccountPrivate;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
@@ -78,25 +79,6 @@ final class AccountService extends Service implements AccountServiceInterface
      * @var ItemPresetService
      */
     protected $itemPresetService;
-
-    /**
-     * @param int $id
-     *
-     * @return AccountDetailsResponse
-     * @throws QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     */
-    public function getById($id)
-    {
-        $result = $this->accountRepository->getById($id);
-
-        if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
-        }
-
-        return new AccountDetailsResponse($id, $result->getData());
-    }
 
     /**
      * @param AccountDetailsResponse $accountDetailsResponse
@@ -192,6 +174,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws QueryException
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
     public function create(AccountRequest $accountRequest)
     {
@@ -205,10 +188,13 @@ final class AccountService extends Service implements AccountServiceInterface
             $accountRequest->key = $pass['key'];
         }
 
+        $this->setPresetPrivate($accountRequest);
+
         $accountRequest->id = $this->accountRepository->create($accountRequest);
 
         $this->addItems($accountRequest);
-        $this->addDefaultPermissions($accountRequest->id);
+
+        $this->addPresetPermissions($accountRequest->id);
 
         return $accountRequest->id;
     }
@@ -244,6 +230,59 @@ final class AccountService extends Service implements AccountServiceInterface
         } catch (CryptoException $e) {
             throw new ServiceException(__u('Error interno'));
         }
+    }
+
+    /**
+     * @param AccountRequest $accountRequest
+     *
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws NoSuchItemException
+     */
+    private function setPresetPrivate(AccountRequest $accountRequest)
+    {
+        $userData = $this->context->getUserData();
+        $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE);
+
+        if ($itemPreset !== null
+            && $itemPreset->getFixed()
+        ) {
+            $accountPrivate = $itemPreset->hydrate(AccountPrivate::class);
+
+            $userId = $accountRequest->userId;
+
+            if ($userId === null && $accountRequest->id > 0) {
+                $userId = $this->getById($accountRequest->id)->getAccountVData()->getUserId();
+            }
+
+            if ($userData->getId() === $userId) {
+                $accountRequest->isPrivate = (int)$accountPrivate->isPrivateUser();
+            }
+
+            if ($userData->getUserGroupId() === $accountRequest->userGroupId) {
+                $accountRequest->isPrivateGroup = (int)$accountPrivate->isPrivateGroup();
+            }
+        }
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return AccountDetailsResponse
+     * @throws QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function getById($id)
+    {
+        $result = $this->accountRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('La cuenta no existe'));
+        }
+
+        return new AccountDetailsResponse($id, $result->getData());
     }
 
     /**
@@ -298,9 +337,9 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
-    private function addDefaultPermissions(int $accountId)
+    private function addPresetPermissions(int $accountId)
     {
-        $itemPresetData = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_PERMISSION);
+        $itemPresetData = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
 
         if ($itemPresetData !== null
             && $itemPresetData->getFixed()
@@ -379,11 +418,13 @@ final class AccountService extends Service implements AccountServiceInterface
 
             $this->addHistory($accountRequest->id);
 
+            $this->setPresetPrivate($accountRequest);
+
             $this->accountRepository->update($accountRequest);
 
             $this->updateItems($accountRequest);
 
-            $this->addDefaultPermissions($accountRequest->id);
+            $this->addPresetPermissions($accountRequest->id);
         });
     }
 

@@ -3,6 +3,7 @@
  * @var \SP\Services\Account\AccountAcl $accountAcl
  * @var \SP\DataModel\AccountExtData    $accountData
  * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountPrivate    $accountPrivate
  */
 ?>
 
@@ -121,26 +122,32 @@
             </tr>
         <?php endif; ?>
 
-        <?php if ($allowPrivate === true): ?>
+        <?php if ($allowPrivate === true):
+            $privateUserCheck = (($gotData && $accountData->getIsPrivate())
+                || (isset($accountPrivate) && $accountPrivate->isPrivateUser())) ? 'checked' : '';
+            ?>
             <tr>
                 <td class="descField"><?php echo __('Cuenta Privada'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_enabled">
                         <input name="private_enabled" type="checkbox" id="private_enabled"
-                               class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivate()) ? 'checked' : ''; ?>/>
+                               class="mdl-switch__input" <?php echo $privateUserCheck; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada'); ?></span>
                     </label>
                 </td>
             </tr>
         <?php endif; ?>
 
-        <?php if ($allowPrivateGroup === true): ?>
+        <?php if ($allowPrivateGroup === true):
+            $privateUserGroupCheck = (($gotData && $accountData->getIsPrivateGroup())
+                || (isset($accountPrivate) && $accountPrivate->isPrivateGroup())) ? 'checked' : '';
+            ?>
             <tr>
                 <td class="descField"><?php echo __('Cuenta Privada Grupo'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_group_enabled">
                         <input name="private_group_enabled" type="checkbox" id="private_group_enabled"
-                               class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivateGroup()) ? 'checked' : ''; ?>/>
+                               class="mdl-switch__input" <?php echo $privateUserGroupCheck; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada Grupo'); ?></span>
                     </label>
                 </td>

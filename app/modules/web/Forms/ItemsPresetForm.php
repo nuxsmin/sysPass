@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AccountPermission;
+use SP\DataModel\AccountPrivate;
 use SP\DataModel\ItemPresetData;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetRequest;
@@ -95,8 +96,11 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         $itemPresetData->setType($this->request->analyzeString('type'));
 
         switch ($itemPresetData->getType()) {
-            case ItemPresetInterface::ITEM_TYPE_PERMISSION:
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
                 $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
+                break;
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
                 break;
             default:
                 throw new ValidationException(__u('Tipo de valor no definido o incorrecto'));
@@ -120,6 +124,18 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
 
         return $accountPermission;
+    }
+
+    /**
+     * @return AccountPrivate
+     */
+    private function makePrivatePreset()
+    {
+        $accountPrivate = new AccountPrivate();
+        $accountPrivate->setPrivateUser($this->request->analyzeBool('private_user_enabled', false));
+        $accountPrivate->setPrivateGroup($this->request->analyzeBool('private_group_enabled', false));
+
+        return $accountPrivate;
     }
 
     /**

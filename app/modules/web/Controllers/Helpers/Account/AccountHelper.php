@@ -30,6 +30,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountPermission;
+use SP\DataModel\AccountPrivate;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Http\Uri;
@@ -45,6 +46,7 @@ use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
@@ -77,7 +79,7 @@ final class AccountHelper extends HelperBase
      */
     private $publicLinkService;
     /**
-     * @var \SP\Services\ItemPreset\ItemPresetService
+     * @var ItemPresetService
      */
     private $itemPresetService;
     /**
@@ -182,8 +184,8 @@ final class AccountHelper extends HelperBase
         $userData = $this->context->getUserData();
         $userProfileData = $this->context->getUserProfile();
 
-        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() && $accountData->getUserId() === $userData->getId());
-        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId());
+        $this->view->assign('allowPrivate', ($userProfileData->isAccPrivate() && $accountData->getUserId() === $userData->getId()) || $userData->getIsAdminApp());
+        $this->view->assign('allowPrivateGroup', ($userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId()) || $userData->getIsAdminApp());
 
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
         $this->view->assign('accountPassDateChange', $accountData->getPassDateChange() > 0 && date('Y-m-d', $accountData->getPassDateChange() ?: 0));
@@ -320,8 +322,11 @@ final class AccountHelper extends HelperBase
 
         $this->accountAcl->setShowPermission($userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission());
 
-        $accountPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_PERMISSION)
-            ->hydrate(AccountPermission::class, 'data') ?: new AccountPermission();
+        $accountPrivate = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+            ->hydrate(AccountPrivate::class) ?: new AccountPrivate();
+
+        $accountPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)
+            ->hydrate(AccountPermission::class) ?: new AccountPermission();
 
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
@@ -336,8 +341,9 @@ final class AccountHelper extends HelperBase
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
 
-        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
-        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());
+        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->getIsAdminApp());
+        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() || $userData->getIsAdminApp());
+        $this->view->assign('accountPrivate', $accountPrivate);
 
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
@@ -395,7 +401,7 @@ final class AccountHelper extends HelperBase
         $this->accountService = $this->dic->get(AccountService::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
         $this->publicLinkService = $this->dic->get(PublicLinkService::class);
-        $this->itemPresetService = $this->dic->get(\SP\Services\ItemPreset\ItemPresetService::class);
+        $this->itemPresetService = $this->dic->get(ItemPresetService::class);
 
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');

@@ -47,7 +47,7 @@ FOREIGN KEY (userProfileId) REFERENCES UserProfile (id)
   ON DELETE CASCADE
   ON UPDATE CASCADE $$
 UPDATE ItemPreset
-SET type = 'permission'
+SET type = 'account.permission'
 WHERE type = '' $$
 UPDATE ItemPreset
 set hash = sha1(CONCAT(type, coalesce(userId, 0), coalesce(userGroupId, 0), coalesce(userProfileId, 0), priority)) $$

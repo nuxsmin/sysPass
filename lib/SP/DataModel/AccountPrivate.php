@@ -22,17 +22,53 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\ItemPreset;
+namespace SP\DataModel;
 
 /**
- * Interface ItemPresetInterface
+ * Class AccountPrivate
  *
- * @package SP\Services\ItemPreset
+ * @package SP\DataModel
  */
-interface ItemPresetInterface
+class AccountPrivate
 {
-    const ITEM_TYPE_ACCOUNT_PERMISSION = 'account.permission';
-    const ITEM_TYPE_ACCOUNT_TAG = 'account.tag';
-    const ITEM_TYPE_PASSWORD = 'password';
-    const ITEM_TYPE_ACCOUNT_PRIVATE = 'account.private';
+    /**
+     * @var bool
+     */
+    private $privateUser = false;
+    /**
+     * @var bool
+     */
+    private $privateGroup = false;
+
+    /**
+     * @return bool
+     */
+    public function isPrivateUser(): bool
+    {
+        return $this->privateUser;
+    }
+
+    /**
+     * @param bool $privateUser
+     */
+    public function setPrivateUser(bool $privateUser)
+    {
+        $this->privateUser = $privateUser;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivateGroup(): bool
+    {
+        return $this->privateGroup;
+    }
+
+    /**
+     * @param bool $privateGroup
+     */
+    public function setPrivateGroup(bool $privateGroup)
+    {
+        $this->privateGroup = $privateGroup;
+    }
 }
