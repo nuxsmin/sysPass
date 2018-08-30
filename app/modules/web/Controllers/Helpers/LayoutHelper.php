@@ -256,6 +256,7 @@ final class LayoutHelper extends HelperBase
     public function getMenu(Acl $acl)
     {
         $icons = $this->theme->getIcons();
+        $actions = [];
 
         $actionSearch = new DataGridAction();
         $actionSearch->setId(ActionsInterface::ACCOUNT);
@@ -267,7 +268,7 @@ final class LayoutHelper extends HelperBase
             'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
         ]);
 
-        $this->view->append('actions', $actionSearch);
+        $actions[] = $actionSearch;
 
         if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
             $actionNewAccount = new DataGridAction();
@@ -280,7 +281,7 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE)
             ]);
 
-            $this->view->append('actions', $actionNewAccount);
+            $actions[] = $actionNewAccount;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
@@ -294,7 +295,7 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
             ]);
 
-            $this->view->append('actions', $actionAccessManager);
+            $actions[] = $actionAccessManager;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
@@ -308,7 +309,7 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
             ]);
 
-            $this->view->append('actions', $actionItemManager);
+            $actions[] = $actionItemManager;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
@@ -322,7 +323,7 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
             ]);
 
-            $this->view->append('actions', $actionConfigManager);
+            $actions[] = $actionConfigManager;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::EVENTLOG) && $this->configData->isLogEnabled()) {
@@ -336,9 +337,24 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::EVENTLOG)
             ]);
 
-            $this->view->append('actions', $actionEventlog);
+            $actions[] = $actionEventlog;
         }
 
+        if ($acl->checkUserAccess(ActionsInterface::PLUGIN)) {
+            $actionPlugins = new DataGridAction();
+            $actionPlugins->setId(ActionsInterface::PLUGIN);
+            $actionPlugins->setTitle(__('Plugins'));
+            $actionPlugins->setIcon($icons->getIconByName('extension'));
+            $actionPlugins->setData([
+                'historyReset' => 1,
+                'view' => 'plugin',
+                'route' => Acl::getActionRoute(ActionsInterface::PLUGIN)
+            ]);
+
+            $actions[] =  $actionPlugins;
+        }
+
+        $this->view->assign('actions', $actions);
         $this->view->assign('useMenu', true);
     }
 

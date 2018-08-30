@@ -34,6 +34,7 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Plugin\PluginManager;
 use SP\Services\Plugin\PluginService;
 
 /**
@@ -98,7 +99,6 @@ final class PluginController extends ControllerBase
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -147,8 +147,10 @@ final class PluginController extends ControllerBase
         $this->view->addTemplate('plugin');
 
         $pluginData = $pluginId ? $this->pluginService->getById($pluginId) : new PluginData();
+        $pluginInfo = $this->dic->get(PluginManager::class)->getPluginInfo($pluginData->name);
 
         $this->view->assign('plugin', $pluginData);
+        $this->view->assign('pluginInfo', $pluginInfo);
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));

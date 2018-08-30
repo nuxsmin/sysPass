@@ -163,7 +163,9 @@ final class Theme implements ThemeInterface
     private function initIcons()
     {
         try {
-            if (!$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)) {
+            if ($this->context->getAppStatus() !== SessionContext::APP_STATUS_RELOADED
+                && !$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)
+            ) {
                 $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
 
                 logger('Loaded icons cache', 'INFO');

@@ -132,7 +132,7 @@ final class PluginGrid extends GridBase
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchPlugin');
         $gridActionSearch->setTitle(__('Buscar Plugin'));
-        $gridActionSearch->setOnSubmitFunction('appMgmt/search');
+        $gridActionSearch->setOnSubmitFunction('plugin/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_SEARCH));
 
         return $gridActionSearch;
@@ -149,7 +149,7 @@ final class PluginGrid extends GridBase
         $gridAction->setName(__('Ver Plugin'));
         $gridAction->setTitle(__('Ver Plugin'));
         $gridAction->setIcon($this->icons->getIconView());
-        $gridAction->setOnClickFunction('appMgmt/show');
+        $gridAction->setOnClickFunction('plugin/show');
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_VIEW));
 

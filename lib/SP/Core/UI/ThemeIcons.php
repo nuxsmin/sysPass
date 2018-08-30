@@ -25,7 +25,7 @@
 namespace SP\Core\UI;
 
 use SP\Html\Assets\FontIcon;
-use SP\Html\Assets\ImageIcon;
+use SP\Html\Assets\IconInterface;
 
 defined('APP_ROOT') || die();
 
@@ -36,414 +36,359 @@ defined('APP_ROOT') || die();
  */
 class ThemeIcons
 {
-    /** @var  FontIcon|ImageIcon */
-    public $iconAdd;
-    /** @var  FontIcon|ImageIcon */
-    public $iconView;
-    /** @var  FontIcon|ImageIcon */
-    public $iconEdit;
-    /** @var  FontIcon|ImageIcon */
-    public $iconDelete;
-    /** @var  FontIcon|ImageIcon */
-    public $iconNavPrev;
-    /** @var  FontIcon|ImageIcon */
-    public $iconNavNext;
-    /** @var  FontIcon|ImageIcon */
-    public $iconNavFirst;
-    /** @var  FontIcon|ImageIcon */
-    public $iconNavLast;
-    /** @var  FontIcon|ImageIcon */
-    public $iconEditPass;
-    /** @var  FontIcon|ImageIcon */
-    public $iconAppAdmin;
-    /** @var  FontIcon|ImageIcon */
-    public $iconAccAdmin;
-    /** @var  FontIcon|ImageIcon */
-    public $iconLdapUser;
-    /** @var  FontIcon|ImageIcon */
-    public $iconDisabled;
-    /** @var  FontIcon|ImageIcon */
-    public $iconEnabled;
-    /** @var  FontIcon|ImageIcon */
-    public $iconViewPass;
-    /** @var  FontIcon|ImageIcon */
-    public $iconCopy;
-    /** @var  FontIcon|ImageIcon */
-    public $iconClipboard;
-    /** @var  FontIcon|ImageIcon */
-    public $iconEmail;
-    /** @var  FontIcon|ImageIcon */
-    public $iconOptional;
-    /** @var  FontIcon|ImageIcon */
-    public $iconUp;
-    /** @var  FontIcon|ImageIcon */
-    public $iconDown;
-    /** @var  FontIcon|ImageIcon */
-    public $iconRefresh;
-    /** @var  FontIcon|ImageIcon */
-    public $iconPublicLink;
-    /** @var  FontIcon|ImageIcon */
-    public $iconBack;
-    /** @var  FontIcon|ImageIcon */
-    public $iconRestore;
-    /** @var  FontIcon|ImageIcon */
-    public $iconSave;
-    /** @var  FontIcon|ImageIcon */
-    public $iconHelp;
-    /** @var  FontIcon|ImageIcon */
-    public $iconClear;
-    /** @var  FontIcon|ImageIcon */
-    public $iconPlay;
-    /** @var  FontIcon|ImageIcon */
-    public $iconDownload;
-    /** @var  FontIcon|ImageIcon */
-    public $iconWarning;
-    /** @var  FontIcon|ImageIcon */
-    public $iconCheck;
-    /** @var  FontIcon|ImageIcon */
-    public $iconSearch;
-    /** @var  FontIcon|ImageIcon */
-    public $iconAccount;
-    /** @var  FontIcon|ImageIcon */
-    public $iconGroup;
-    /** @var  FontIcon|ImageIcon */
-    public $iconSettings;
-    /** @var  FontIcon|ImageIcon */
-    public $iconHeadline;
-    /** @var  FontIcon|ImageIcon */
-    public $iconInfo;
-    /** @var  FontIcon|ImageIcon */
-    public $iconCritical;
-    /** @var  FontIcon|ImageIcon */
-    public $iconNotices;
-    /** @var  FontIcon|ImageIcon */
-    public $iconRemove;
+    /**
+     * @var IconInterface[]
+     */
+    private $icons = [];
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconWarning()
     {
-        return $this->iconWarning;
+        return $this->getIconByName('warning');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @param string $name
+     *
+     * @return IconInterface
+     */
+    public function getIconByName(string $name)
+    {
+        if (isset($this->icons[$name])) {
+            return $this->icons[$name];
+        }
+
+        return new FontIcon($name, 'mdl-color-text--indigo-A200');
+    }
+
+    /**
+     * @return IconInterface
      */
     public function getIconDownload()
     {
-        return $this->iconDownload;
+        return $this->getIconByName('download');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconClear()
     {
-        return $this->iconClear;
+        return $this->getIconByName('clear');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconPlay()
     {
-        return $this->iconPlay;
+        return $this->getIconByName('play');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconHelp()
     {
-        return $this->iconHelp;
+        return $this->getIconByName('help');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconPublicLink()
     {
-        return $this->iconPublicLink;
+        return $this->getIconByName('publicLink');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconBack()
     {
-        return $this->iconBack;
+        return $this->getIconByName('back');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconRestore()
     {
-        return $this->iconRestore;
+        return $this->getIconByName('restore');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconSave()
     {
-        return $this->iconSave;
+        return $this->getIconByName('save');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconUp()
     {
-        return $this->iconUp;
+        return $this->getIconByName('up');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconDown()
     {
-        return $this->iconDown;
+        return $this->getIconByName('down');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconViewPass()
     {
-        return $this->iconViewPass;
+        return $this->getIconByName('viewPass');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconCopy()
     {
-        return $this->iconCopy;
+        return $this->getIconByName('copy');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconClipboard()
     {
-        return $this->iconClipboard;
+        return $this->getIconByName('clipboard');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconEmail()
     {
-        return $this->iconEmail;
+        return $this->getIconByName('email');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconRefresh()
     {
-        return $this->iconRefresh;
+        return $this->getIconByName('refresh');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconEditPass()
     {
-        return $this->iconEditPass;
+        return $this->getIconByName('editPass');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconAppAdmin()
     {
-        return $this->iconAppAdmin;
+        return $this->getIconByName('appAdmin');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconAccAdmin()
     {
-        return $this->iconAccAdmin;
+        return $this->getIconByName('accAdmin');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconLdapUser()
     {
-        return $this->iconLdapUser;
+        return $this->getIconByName('ldapUser');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconDisabled()
     {
-        return $this->iconDisabled;
+        return $this->getIconByName('disabled');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconNavPrev()
     {
-        return $this->iconNavPrev;
+        return $this->getIconByName('previous');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconNavNext()
     {
-        return $this->iconNavNext;
+        return $this->getIconByName('next');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconNavFirst()
     {
-        return $this->iconNavFirst;
+        return $this->getIconByName('first');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconNavLast()
     {
-        return $this->iconNavLast;
+        return $this->getIconByName('last');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconAdd()
     {
-        return $this->iconAdd;
+        return $this->getIconByName('add');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconView()
     {
-        return $this->iconView;
+        return $this->getIconByName('view');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconEdit()
     {
-        return $this->iconEdit;
+        return $this->getIconByName('edit');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconDelete()
     {
-        return $this->iconDelete;
+        return $this->getIconByName('delete');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconOptional()
     {
-        return $this->iconOptional;
+        return $this->getIconByName('optional');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconCheck()
     {
-        return $this->iconCheck;
+        return $this->getIconByName('check');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconSearch()
     {
-        return $this->iconSearch;
+        return $this->getIconByName('search');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconAccount()
     {
-        return $this->iconAccount;
+        return $this->getIconByName('account');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconGroup()
     {
-        return $this->iconGroup;
+        return $this->getIconByName('group');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconSettings()
     {
-        return $this->iconSettings;
+        return $this->getIconByName('settings');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconHeadline()
     {
-        return $this->iconHeadline;
+        return $this->getIconByName('headline');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconInfo()
     {
-        return $this->iconInfo;
+        return $this->getIconByName('info');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconCritical()
     {
-        return $this->iconCritical;
+        return $this->getIconByName('critical');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconEnabled()
     {
-        return $this->iconEnabled;
+        return $this->getIconByName('enabled');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconNotices()
     {
-        return $this->iconNotices;
+        return $this->getIconByName('notices');
     }
 
     /**
-     * @return FontIcon|ImageIcon
+     * @return IconInterface
      */
     public function getIconRemove()
     {
-        return $this->iconRemove;
+        return $this->getIconByName('remove');
+    }
+
+    /**
+     * @param string        $alias
+     * @param IconInterface $icon
+     */
+    public function addIcon(string $alias, IconInterface $icon)
+    {
+        $this->icons[$alias] = $icon;
     }
 }

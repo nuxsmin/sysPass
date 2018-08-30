@@ -34,7 +34,6 @@ use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\CustomFieldGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\Account\AccountFileService;
@@ -44,7 +43,6 @@ use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\ItemPreset\ItemPresetService;
-use SP\Services\Plugin\PluginService;
 use SP\Services\Tag\TagService;
 
 /**
@@ -115,10 +113,6 @@ final class ItemManagerController extends ControllerBase
 
         if ($this->checkAccess(Acl::ITEMPRESET)) {
             $this->tabsGridHelper->addTab($this->getItemPresetList());
-        }
-
-        if ($this->checkAccess(Acl::PLUGIN)) {
-            $this->tabsGridHelper->addTab($this->getPluginsList());
         }
 
         $this->eventDispatcher->notifyEvent('show.itemlist.items', new Event($this));
@@ -237,20 +231,6 @@ final class ItemManagerController extends ControllerBase
     {
         return $this->dic->get(ItemPresetGrid::class)
             ->getGrid($this->dic->get(ItemPresetService::class)->search($this->itemSearchData))
-            ->updatePager();
-    }
-
-    /**
-     * Returns plugins' data tab
-     *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    protected function getPluginsList()
-    {
-        return $this->dic->get(PluginGrid::class)
-            ->getGrid($this->dic->get(PluginService::class)->search($this->itemSearchData))
             ->updatePager();
     }
 

@@ -1348,6 +1348,38 @@ sysPass.Actions = function (Common) {
                     }
                 }
             });
+        },
+        search: function ($obj) {
+            log.info("plugin:search");
+
+            grid.search($obj);
+        },
+        show: function ($obj) {
+            log.info("plugin:show");
+
+            appMgmt.show($obj);
+        },
+        save: function ($obj) {
+            log.info("plugin:save");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    getContent({r: $obj.data("action-next")});
+
+                    $.magnificPopup.close();
+                }
+            });
+        },
+        nav: function ($obj) {
+            log.info("plugin:nav");
+
+            grid.nav($obj);
         }
     };
 

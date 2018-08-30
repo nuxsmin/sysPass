@@ -6,8 +6,7 @@
  * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
  */
 
-if (!isset($index)): $index = 0; endif;
-?>
+if (!isset($index)): $index = 0; endif; ?>
 
 <div class="tab-actions">
     <ul>
@@ -92,7 +91,7 @@ if (!isset($index)): $index = 0; endif;
                         <li class="btn-action mdl-menu__item"
                             data-selection="#data-table-<?php echo $data->getId(); ?>"
                             data-onclick="<?php echo $action->getOnClick(); ?>"
-                                <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                            <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
                             <?php echo $action->getTitle(); ?>
                         </li>

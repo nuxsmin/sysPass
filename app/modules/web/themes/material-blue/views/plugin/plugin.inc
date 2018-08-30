@@ -1,8 +1,11 @@
 <?php
-/** @var  \SP\DataModel\PluginData $plugin */
-/** @var  \SP\Plugin\PluginInterface $pluginInfo */
-/** @var  \SP\Core\UI\ThemeIcons $icons */
+/**
+ * @var  \SP\DataModel\PluginData   $plugin
+ * @var  \SP\Plugin\PluginInterface $pluginInfo
+ * @var  \SP\Core\UI\ThemeIcons     $icons
+ */
 ?>
+
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
@@ -15,7 +18,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $plugin->getName(); ?>" <?php echo $isReadonly; ?>>
+                               value="<?php echo $plugin->getName(); ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del plugin'); ?></label>
                     </div>
@@ -27,7 +30,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo implode('.', $pluginInfo->getVersion()); ?>" <?php echo $isReadonly; ?>>
+                               value="<?php echo implode('.', $pluginInfo->getVersion()); ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="version"><?php echo __('Versión del plugin'); ?></label>
                     </div>
@@ -39,7 +42,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="compatible_version" name="compatible_version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $isReadonly; ?>>
+                               value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="compatible_version"><?php echo __('Versión de sysPass compatible'); ?></label>
                     </div>
@@ -51,7 +54,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="author" name="author" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $pluginInfo->getAuthor(); ?>" <?php echo $isReadonly; ?>>
+                               value="<?php echo $pluginInfo->getAuthor(); ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="author"><?php echo __('Autor del plugin'); ?></label>
                     </div>
