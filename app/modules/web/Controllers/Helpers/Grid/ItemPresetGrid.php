@@ -85,7 +85,7 @@ final class ItemPresetGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Valores por Defecto'));
+        $gridTab->setTitle(__('Valores Predeterminados'));
 
         return $gridTab;
     }
@@ -137,7 +137,7 @@ final class ItemPresetGrid extends GridBase
         $gridActionSearch = new DataGridActionSearch();
         $gridActionSearch->setId(ActionsInterface::ITEMPRESET_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
-        $gridActionSearch->setName('frmSearchPermission');
+        $gridActionSearch->setName('frmSearchItemPreset');
         $gridActionSearch->setTitle(__('Buscar Valor'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_SEARCH));
@@ -153,8 +153,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Permiso'));
-        $gridAction->setTitle(__('Nuevo Permiso'));
+        $gridAction->setName(__('Nuevo Valor de Permiso'));
+        $gridAction->setTitle(__('Nuevo Valor de Permiso'));
 
         $icon = clone $this->icons->getIconAdd();
 

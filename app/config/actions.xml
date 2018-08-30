@@ -832,37 +832,37 @@
     <action multiple="1">
         <id>1801</id>
         <name>ITEMPRESET</name>
-        <text>Gestión Permisos</text>
+        <text>Gestión Valores Predeterminados</text>
         <route>itemPreset/index</route>
     </action>
     <action multiple="1">
         <id>1802</id>
         <name>ITEMPRESET_SEARCH</name>
-        <text>Buscar Permiso</text>
+        <text>Buscar Valor</text>
         <route>itemPreset/search</route>
     </action>
     <action multiple="1">
         <id>1803</id>
         <name>ITEMPRESET_VIEW</name>
-        <text>Ver Permiso</text>
+        <text>Ver Valor</text>
         <route>itemPreset/view</route>
     </action>
     <action multiple="1">
         <id>1804</id>
         <name>ITEMPRESET_CREATE</name>
-        <text>Nuevo Permiso</text>
+        <text>Nuevo Valor</text>
         <route>itemPreset/create</route>
     </action>
     <action multiple="1">
         <id>1805</id>
         <name>ITEMPRESET_EDIT</name>
-        <text>Editar Permiso</text>
+        <text>Editar Valor</text>
         <route>itemPreset/edit</route>
     </action>
     <action multiple="1">
         <id>1806</id>
         <name>ITEMPRESET_DELETE</name>
-        <text>Eliminar Permiso</text>
+        <text>Eliminar Valor</text>
         <route>itemPreset/delete</route>
     </action>
 </actions>

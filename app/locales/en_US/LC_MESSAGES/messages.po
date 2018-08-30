@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-30 16:23+0100\n"
-"PO-Revision-Date: 2018-08-30 16:23+0100\n"
+"POT-Creation-Date: 2018-08-30 22:51+0100\n"
+"PO-Revision-Date: 2018-08-30 22:52+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -3651,9 +3651,8 @@ msgid "Eliminar Archivo"
 msgstr "Delete File"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:88
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
-msgid "Valores por Defecto"
-msgstr "Default Values"
+msgid "Valores Predeterminados"
+msgstr "Preset Values"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:103
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:113
@@ -3676,25 +3675,29 @@ msgstr "Priority"
 msgid "Forzado"
 msgstr "Forced"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:141
+#: ../../../config/actions.xml:841
 msgid "Buscar Valor"
 msgstr "Search for Value"
 
-#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:156
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:157
-#: ../../../config/actions.xml:853
-msgid "Nuevo Permiso"
-msgstr "New Permission"
+msgid "Nuevo Valor de Permiso"
+msgstr "New Permission Preset"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:177
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:178
 #: ../../../modules/web/Controllers/ItemPresetController.php:216
+#: ../../../config/actions.xml:859
 msgid "Editar Valor"
 msgstr "Edit Value"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:194
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:195
+#: ../../../config/actions.xml:865
 msgid "Eliminar Valor"
 msgstr "Delete Value"
 
@@ -4056,11 +4059,15 @@ msgstr "Without this module the application could not run correctly"
 msgid "Instalación finalizada"
 msgstr "Installation finished"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ItemPresetController.php:70
+#: ../../../config/actions.xml:847
 msgid "Ver Valor"
 msgstr "Display Value"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ItemPresetController.php:186
+#: ../../../config/actions.xml:853
 msgid "Nuevo Valor"
 msgstr "New Value"
 
@@ -6681,6 +6688,10 @@ msgstr "Links management"
 msgid "Gestión de cuentas"
 msgstr "Accounts management"
 
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
+msgid "Valores por Defecto"
+msgstr "Default Values"
+
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:422
 msgid "Gestión de Valores por Defecto"
 msgstr "Default Values Management"
@@ -7213,28 +7224,8 @@ msgstr "Create Notification"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:835
-msgid "Gestión Permisos"
-msgstr "Permissions Management"
-
-#. (itstool) path: action/text
-#: ../../../config/actions.xml:841
-msgid "Buscar Permiso"
-msgstr "Search for Permission"
-
-#. (itstool) path: action/text
-#: ../../../config/actions.xml:847
-msgid "Ver Permiso"
-msgstr "View Permission"
-
-#. (itstool) path: action/text
-#: ../../../config/actions.xml:859
-msgid "Editar Permiso"
-msgstr "Edit Permission"
-
-#. (itstool) path: action/text
-#: ../../../config/actions.xml:865
-msgid "Eliminar Permiso"
-msgstr "Delete Permission"
+msgid "Gestión Valores Predeterminados"
+msgstr "Preset Values Management"
 
 #. (itstool) path: strings/text
 #: ../../../config/strings.xml:4
@@ -7265,6 +7256,21 @@ msgstr "Text"
 #: ../../../config/strings.xml:9
 msgid "Link"
 msgstr "Link"
+
+#~ msgid "Gestión Permisos"
+#~ msgstr "Permissions Management"
+
+#~ msgid "Buscar Permiso"
+#~ msgstr "Search for Permission"
+
+#~ msgid "Ver Permiso"
+#~ msgstr "View Permission"
+
+#~ msgid "Editar Permiso"
+#~ msgstr "Edit Permission"
+
+#~ msgid "Eliminar Permiso"
+#~ msgstr "Delete Permission"
 
 #~ msgid "Permiso no encontrada"
 #~ msgstr "Permission not found"
