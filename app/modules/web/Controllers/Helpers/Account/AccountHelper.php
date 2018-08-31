@@ -322,11 +322,17 @@ final class AccountHelper extends HelperBase
 
         $this->accountAcl->setShowPermission($userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission());
 
-        $accountPrivate = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
-            ->hydrate(AccountPrivate::class) ?: new AccountPrivate();
+        $accountPrivate = new AccountPrivate();
 
-        $accountPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)
-            ->hydrate(AccountPermission::class) ?: new AccountPermission();
+        if ($itemPresetPrivate = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)) {
+            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class);
+        }
+
+        $accountPermission = new AccountPermission();
+
+        if ($itemPresetPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)) {
+            $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class);
+        }
 
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
