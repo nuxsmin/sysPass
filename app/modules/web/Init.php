@@ -316,6 +316,8 @@ final class Init extends ModuleBase
             if ($this->isIndex || $timeout === null) {
                 $userTimeout = $this->getSessionTimeoutForUser($timeout) ?: $this->configData->getSessionTimeout();
 
+                logger('Session timeout: ' . $userTimeout);
+
                 return $this->context->setSessionTimeout($userTimeout);
             }
         } catch (\Exception $e) {
