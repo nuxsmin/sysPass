@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-31 01:42+0100\n"
-"PO-Revision-Date: 2018-08-31 01:44+0100\n"
+"POT-Creation-Date: 2018-09-01 21:03+0100\n"
+"PO-Revision-Date: 2018-09-01 21:04+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -74,7 +74,7 @@ msgstr "Please contact to the administrator"
 
 # Not available
 #: ../../../../lib/SP/Core/Acl/Acl.php:282
-#: ../../../../lib/SP/Services/Auth/LoginService.php:582
+#: ../../../../lib/SP/Services/Auth/LoginService.php:586
 msgid "N/D"
 msgstr "N/A"
 
@@ -94,16 +94,16 @@ msgstr "Action"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:165
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:114
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:126
-#: ../../../../lib/SP/Services/Auth/LoginService.php:211
-#: ../../../../lib/SP/Services/Auth/LoginService.php:229
-#: ../../../../lib/SP/Services/Auth/LoginService.php:368
-#: ../../../../lib/SP/Services/Auth/LoginService.php:435
-#: ../../../../lib/SP/Services/Auth/LoginService.php:543
-#: ../../../../lib/SP/Services/Auth/LoginService.php:586
+#: ../../../../lib/SP/Services/Auth/LoginService.php:215
+#: ../../../../lib/SP/Services/Auth/LoginService.php:233
+#: ../../../../lib/SP/Services/Auth/LoginService.php:372
+#: ../../../../lib/SP/Services/Auth/LoginService.php:439
+#: ../../../../lib/SP/Services/Auth/LoginService.php:547
+#: ../../../../lib/SP/Services/Auth/LoginService.php:590
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:230
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:235
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:107
 #: ../../../modules/web/Controllers/LoginController.php:102
 #: ../../../modules/web/Controllers/UserController.php:278
@@ -169,7 +169,7 @@ msgstr "Invalid context"
 msgid "Contexto no inicializado"
 msgstr "Context not initialized"
 
-#: ../../../../lib/SP/Core/Context/SessionContext.php:545
+#: ../../../../lib/SP/Core/Context/SessionContext.php:547
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
@@ -195,12 +195,12 @@ msgstr "The key file does not exist"
 #: ../../../../lib/SP/Services/Api/ApiService.php:129
 #: ../../../../lib/SP/Services/Api/ApiService.php:227
 #: ../../../../lib/SP/Services/Api/ApiService.php:235
-#: ../../../../lib/SP/Services/Auth/LoginService.php:182
-#: ../../../../lib/SP/Services/Auth/LoginService.php:333
-#: ../../../../lib/SP/Services/Auth/LoginService.php:482
-#: ../../../../lib/SP/Services/Auth/LoginService.php:487
-#: ../../../../lib/SP/Services/Auth/LoginService.php:519
-#: ../../../../lib/SP/Services/Auth/LoginService.php:626
+#: ../../../../lib/SP/Services/Auth/LoginService.php:186
+#: ../../../../lib/SP/Services/Auth/LoginService.php:337
+#: ../../../../lib/SP/Services/Auth/LoginService.php:486
+#: ../../../../lib/SP/Services/Auth/LoginService.php:491
+#: ../../../../lib/SP/Services/Auth/LoginService.php:523
+#: ../../../../lib/SP/Services/Auth/LoginService.php:630
 #: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:306
 #: ../../../../lib/SP/Services/CustomField/CustomFieldService.php:203
 #: ../../../../lib/SP/Services/Export/XmlVerifyService.php:108
@@ -241,18 +241,22 @@ msgstr "ON"
 msgid "OFF"
 msgstr "OFF"
 
-#: ../../../../lib/SP/DataModel/TrackData.php:155
-#: ../../../../lib/SP/DataModel/TrackData.php:157
-#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:56
-#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:58
-msgid "IP inválida"
-msgstr "Invalid IP"
-
 #: ../../../../lib/SP/Html/DataGrid/DataGridBase.php:306
 #: ../../../../lib/SP/Mvc/View/Template.php:122
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
 msgstr "Unable to retrieve the \"%s\" template: %s"
+
+#: ../../../../lib/SP/Http/Address.php:49
+#: ../../../../lib/SP/Http/Address.php:51
+#: ../../../../lib/SP/Http/Address.php:68
+#: ../../../../lib/SP/Http/Address.php:70
+#: ../../../../lib/SP/Http/Address.php:90
+#: ../../../../lib/SP/Http/Address.php:109
+#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:56
+#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:58
+msgid "IP inválida"
+msgstr "Invalid IP"
 
 #: ../../../../lib/SP/Http/Json.php:179
 msgid "Error de codificación"
@@ -398,7 +402,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:115
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:127
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:137
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:103
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:107
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:114
 #: ../../../modules/web/Controllers/UserGroupController.php:220
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:137
@@ -979,7 +983,7 @@ msgid "Fomato incorrecto"
 msgstr "Invalid format"
 
 #: ../../../../lib/SP/Services/Api/ApiService.php:96
-#: ../../../../lib/SP/Services/Auth/LoginService.php:132
+#: ../../../../lib/SP/Services/Auth/LoginService.php:136
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 #: ../../../modules/web/Controllers/UserPassResetController.php:124
 msgid "Intentos excedidos"
@@ -994,34 +998,34 @@ msgstr "Wrong parameters"
 msgid "Acceso no permitido"
 msgstr "Unauthorized access"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:152
-#: ../../../../lib/SP/Services/Auth/LoginService.php:438
-#: ../../../../lib/SP/Services/Auth/LoginService.php:445
-#: ../../../../lib/SP/Services/Auth/LoginService.php:553
-#: ../../../../lib/SP/Services/Auth/LoginService.php:558
-#: ../../../../lib/SP/Services/Auth/LoginService.php:597
-#: ../../../../lib/SP/Services/Auth/LoginService.php:602
+#: ../../../../lib/SP/Services/Auth/LoginService.php:156
+#: ../../../../lib/SP/Services/Auth/LoginService.php:442
+#: ../../../../lib/SP/Services/Auth/LoginService.php:449
+#: ../../../../lib/SP/Services/Auth/LoginService.php:557
+#: ../../../../lib/SP/Services/Auth/LoginService.php:562
+#: ../../../../lib/SP/Services/Auth/LoginService.php:601
+#: ../../../../lib/SP/Services/Auth/LoginService.php:606
 msgid "Login incorrecto"
 msgstr "Wrong login"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:210
-#: ../../../../lib/SP/Services/Auth/LoginService.php:217
+#: ../../../../lib/SP/Services/Auth/LoginService.php:214
+#: ../../../../lib/SP/Services/Auth/LoginService.php:221
 msgid "Usuario deshabilitado"
 msgstr "User disabled"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:262
+#: ../../../../lib/SP/Services/Auth/LoginService.php:266
 msgid "Usando clave temporal"
 msgstr "Using temporary password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:270
-#: ../../../../lib/SP/Services/Auth/LoginService.php:276
-#: ../../../../lib/SP/Services/Auth/LoginService.php:289
-#: ../../../../lib/SP/Services/Auth/LoginService.php:295
+#: ../../../../lib/SP/Services/Auth/LoginService.php:274
+#: ../../../../lib/SP/Services/Auth/LoginService.php:280
+#: ../../../../lib/SP/Services/Auth/LoginService.php:293
+#: ../../../../lib/SP/Services/Auth/LoginService.php:299
 msgid "Clave maestra incorrecta"
 msgstr "Wrong master password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:284
-#: ../../../../lib/SP/Services/Auth/LoginService.php:303
+#: ../../../../lib/SP/Services/Auth/LoginService.php:288
+#: ../../../../lib/SP/Services/Auth/LoginService.php:307
 #: ../../../../lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: ../../../../lib/SP/Util/ErrorUtil.php:144
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:68
@@ -1030,25 +1034,25 @@ msgstr "Wrong master password"
 msgid "Clave maestra actualizada"
 msgstr "Master password updated"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:309
+#: ../../../../lib/SP/Services/Auth/LoginService.php:313
 msgid "Es necesaria su clave anterior"
 msgstr "Your previous password is needed"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:321
+#: ../../../../lib/SP/Services/Auth/LoginService.php:325
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "The Master Password either is not saved or is wrong"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:433
-#: ../../../../lib/SP/Services/Auth/LoginService.php:496
-#: ../../../../lib/SP/Services/Auth/LoginService.php:542
-#: ../../../../lib/SP/Services/Auth/LoginService.php:585
+#: ../../../../lib/SP/Services/Auth/LoginService.php:437
+#: ../../../../lib/SP/Services/Auth/LoginService.php:500
+#: ../../../../lib/SP/Services/Auth/LoginService.php:546
+#: ../../../../lib/SP/Services/Auth/LoginService.php:589
 #: ../../../modules/web/Controllers/AccountFileController.php:233
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:104
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:105
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:117
-#: ../../../modules/web/Controllers/ItemPresetController.php:299
-#: ../../../modules/web/Controllers/ItemPresetController.php:338
+#: ../../../modules/web/Controllers/ItemPresetController.php:302
+#: ../../../modules/web/Controllers/ItemPresetController.php:341
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:31
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:33
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:16
@@ -1056,22 +1060,22 @@ msgstr "The Master Password either is not saved or is wrong"
 msgid "Tipo"
 msgstr "Type"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:434
-#: ../../../../lib/SP/Services/Auth/LoginService.php:497
+#: ../../../../lib/SP/Services/Auth/LoginService.php:438
+#: ../../../../lib/SP/Services/Auth/LoginService.php:501
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:453
-#: ../../../../lib/SP/Services/Auth/LoginService.php:458
+#: ../../../../lib/SP/Services/Auth/LoginService.php:457
+#: ../../../../lib/SP/Services/Auth/LoginService.php:462
 msgid "Cuenta expirada"
 msgstr "Account expired"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:466
-#: ../../../../lib/SP/Services/Auth/LoginService.php:471
+#: ../../../../lib/SP/Services/Auth/LoginService.php:470
+#: ../../../../lib/SP/Services/Auth/LoginService.php:475
 msgid "El usuario no tiene grupos asociados"
 msgstr "The user has no associated groups"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:587
+#: ../../../../lib/SP/Services/Auth/LoginService.php:591
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:10
 msgid "Autentificación"
 msgstr "Authentication"
@@ -2158,12 +2162,12 @@ msgstr "Option unavailable"
 #: ../../../modules/web/Controllers/CustomFieldController.php:295
 #: ../../../modules/web/Controllers/EventlogController.php:94
 #: ../../../modules/web/Controllers/ItemPresetController.php:67
-#: ../../../modules/web/Controllers/ItemPresetController.php:142
-#: ../../../modules/web/Controllers/ItemPresetController.php:177
-#: ../../../modules/web/Controllers/ItemPresetController.php:215
-#: ../../../modules/web/Controllers/ItemPresetController.php:245
-#: ../../../modules/web/Controllers/ItemPresetController.php:284
-#: ../../../modules/web/Controllers/ItemPresetController.php:323
+#: ../../../modules/web/Controllers/ItemPresetController.php:145
+#: ../../../modules/web/Controllers/ItemPresetController.php:180
+#: ../../../modules/web/Controllers/ItemPresetController.php:218
+#: ../../../modules/web/Controllers/ItemPresetController.php:248
+#: ../../../modules/web/Controllers/ItemPresetController.php:287
+#: ../../../modules/web/Controllers/ItemPresetController.php:326
 #: ../../../modules/web/Controllers/NotificationController.php:100
 #: ../../../modules/web/Controllers/NotificationController.php:160
 #: ../../../modules/web/Controllers/NotificationController.php:175
@@ -2285,9 +2289,9 @@ msgstr "Account"
 #: ../../../modules/api/Controllers/ClientController.php:155
 #: ../../../modules/api/Controllers/TagController.php:118
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:100
-#: ../../../modules/web/Controllers/ItemPresetController.php:267
-#: ../../../modules/web/Controllers/ItemPresetController.php:300
-#: ../../../modules/web/Controllers/ItemPresetController.php:339
+#: ../../../modules/web/Controllers/ItemPresetController.php:270
+#: ../../../modules/web/Controllers/ItemPresetController.php:303
+#: ../../../modules/web/Controllers/ItemPresetController.php:342
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:138
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:140
 msgid "ID"
@@ -2640,7 +2644,7 @@ msgstr "Tag updated"
 msgid "Etiqueta eliminada"
 msgstr "Tag removed"
 
-#: ../../../modules/api/Init.php:139
+#: ../../../modules/api/Init.php:132
 msgid "Es necesario actualizar"
 msgstr "Updating needed"
 
@@ -3431,7 +3435,8 @@ msgstr "Sort by URL / IP"
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:69
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:70
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:69
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:70
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:73
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:74
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:83
 #: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:71
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:70
@@ -3650,11 +3655,11 @@ msgstr "Download File"
 msgid "Eliminar Archivo"
 msgstr "Delete File"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:89
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:93
 msgid "Valores Predeterminados"
 msgstr "Preset Values"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:104
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:113
 #: ../../../modules/web/Controllers/UserProfileController.php:216
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:52
@@ -3665,43 +3670,57 @@ msgstr "Preset Values"
 msgid "Perfil"
 msgstr "Profile"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:109
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:70
 msgid "Prioridad"
 msgstr "Priority"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:106
 msgid "Forzado"
 msgstr "Forced"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:140
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:144
 #: ../../../config/actions.xml:841
 msgid "Buscar Valor"
 msgstr "Search for Value"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:155
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:156
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:159
+msgid "Valor de Permiso"
+msgstr "Permission Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:160
 msgid "Nuevo Valor de Permiso"
 msgstr "New Permission Preset"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:176
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:177
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:183
+msgid "Valor de Cuenta Privada"
+msgstr "Private Account Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:184
 msgid "Nuevo Valor de Cuenta Privada"
 msgstr "New Private Account Preset"
 
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:207
+msgid "Valor de Timeout de Sesión"
+msgstr "Session Timeout Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:208
+msgid "Nuevo Valor de Timeout de Sesión"
+msgstr "New Session Timeout Preset"
+
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:197
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:198
-#: ../../../modules/web/Controllers/ItemPresetController.php:218
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:231
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:232
+#: ../../../modules/web/Controllers/ItemPresetController.php:221
 #: ../../../config/actions.xml:859
 msgid "Editar Valor"
 msgstr "Edit Value"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:214
-#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:215
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:248
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:249
 #: ../../../config/actions.xml:865
 msgid "Eliminar Valor"
 msgstr "Delete Value"
@@ -4073,28 +4092,28 @@ msgid "Ver Valor"
 msgstr "Display Value"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ItemPresetController.php:188
+#: ../../../modules/web/Controllers/ItemPresetController.php:191
 #: ../../../config/actions.xml:853
 msgid "Nuevo Valor"
 msgstr "New Value"
 
-#: ../../../modules/web/Controllers/ItemPresetController.php:255
 #: ../../../modules/web/Controllers/ItemPresetController.php:258
+#: ../../../modules/web/Controllers/ItemPresetController.php:261
 msgid "Valores eliminados"
 msgstr "Values deleted"
 
-#: ../../../modules/web/Controllers/ItemPresetController.php:266
-#: ../../../modules/web/Controllers/ItemPresetController.php:270
+#: ../../../modules/web/Controllers/ItemPresetController.php:269
+#: ../../../modules/web/Controllers/ItemPresetController.php:273
 msgid "Valor eliminado"
 msgstr "Value deleted"
 
-#: ../../../modules/web/Controllers/ItemPresetController.php:298
-#: ../../../modules/web/Controllers/ItemPresetController.php:303
+#: ../../../modules/web/Controllers/ItemPresetController.php:301
+#: ../../../modules/web/Controllers/ItemPresetController.php:306
 msgid "Valor creado"
 msgstr "Value created"
 
-#: ../../../modules/web/Controllers/ItemPresetController.php:337
-#: ../../../modules/web/Controllers/ItemPresetController.php:342
+#: ../../../modules/web/Controllers/ItemPresetController.php:340
+#: ../../../modules/web/Controllers/ItemPresetController.php:345
 msgid "Valor actualizado"
 msgstr "Value updated"
 
@@ -4373,15 +4392,15 @@ msgstr "Field type not set"
 msgid "Módulo del campo no indicado"
 msgstr "Field module not set"
 
-#: ../../../modules/web/Forms/ItemsPresetForm.php:106
+#: ../../../modules/web/Forms/ItemsPresetForm.php:111
 msgid "Tipo de valor no definido o incorrecto"
 msgstr "Value type not set or incorrect"
 
-#: ../../../modules/web/Forms/ItemsPresetForm.php:123
+#: ../../../modules/web/Forms/ItemsPresetForm.php:128
 msgid "No hay permisos definidos"
 msgstr "There aren't any defined permissions"
 
-#: ../../../modules/web/Forms/ItemsPresetForm.php:152
+#: ../../../modules/web/Forms/ItemsPresetForm.php:173
 msgid "Es necesario asignar un elemento del tipo usuario, grupo o perfil"
 msgstr "An element of type user, group or profile need to be set"
 
@@ -6461,6 +6480,16 @@ msgstr "Administrators won't be able to display the accounts."
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:40
 msgid "Las cuentas sólo serán visibles por el usuario y su grupo principal."
 msgstr "Accounts will be only visible by the user and his/her main group."
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:6
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:14
+msgid "Dirección IP"
+msgstr "IP Address"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:19
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:27
+msgid "Timeout"
+msgstr "Timeout"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:76
 msgid ""

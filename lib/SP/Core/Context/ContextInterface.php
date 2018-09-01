@@ -37,7 +37,6 @@ use SP\Services\User\UserLoginResponse;
 interface ContextInterface
 {
     /**
-     * @return void
      * @throws ContextException
      */
     public function initialize();

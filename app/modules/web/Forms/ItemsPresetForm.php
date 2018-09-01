@@ -25,9 +25,11 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AccountPermission;
 use SP\DataModel\AccountPrivate;
+use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetRequest;
@@ -102,6 +104,9 @@ final class ItemsPresetForm extends FormBase implements FormInterface
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
                 $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
                 break;
+            case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutreset());
+                break;
             default:
                 throw new ValidationException(__u('Tipo de valor no definido o incorrecto'));
         }
@@ -136,6 +141,22 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         $accountPrivate->setPrivateGroup($this->request->analyzeBool('private_group_enabled', false));
 
         return $accountPrivate;
+    }
+
+    /**
+     * @return SessionTimeout
+     * @throws ValidationException
+     */
+    private function makeSessionTimeoutreset()
+    {
+        try {
+            return new SessionTimeout(
+                $this->request->analyzeString('ip_address'),
+                $this->request->analyzeInt('timeout')
+            );
+        } catch (InvalidArgumentException $e) {
+            throw new ValidationException($e->getMessage());
+        }
     }
 
     /**

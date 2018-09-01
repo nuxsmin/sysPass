@@ -106,6 +106,7 @@ class TrackServiceTest extends DatabaseTestCase
 
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetAll()
@@ -125,6 +126,7 @@ class TrackServiceTest extends DatabaseTestCase
     /**
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetById()

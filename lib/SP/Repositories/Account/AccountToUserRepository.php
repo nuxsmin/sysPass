@@ -172,11 +172,9 @@ final class AccountToUserRepository extends Repository
      *
      * @param int $id con el id de la cuenta
      *
-     * @return ItemData[] con los id de usuarios de la cuenta
+     * @return \SP\Storage\Database\QueryResult
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     *
-     * @todo change returned type
      */
     public function getUsersByAccountId($id)
     {
@@ -192,6 +190,6 @@ final class AccountToUserRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return $this->db->doSelect($queryData)->getDataAsArray();
+        return $this->db->doSelect($queryData);
     }
 }

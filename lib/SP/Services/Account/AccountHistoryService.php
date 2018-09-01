@@ -126,7 +126,7 @@ final class AccountHistoryService extends Service
      */
     public function getUsersByAccountId($id)
     {
-        return $this->accountToUserRepository->getUsersByAccountId($id);
+        return $this->accountToUserRepository->getUsersByAccountId($id)->getDataAsArray();
     }
 
     /**

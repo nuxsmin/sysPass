@@ -24,8 +24,7 @@
 
 namespace SP\Modules\Api;
 
-use DI\Container;
-use DI\NotFoundException;
+use Psr\Container\ContainerInterface;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
@@ -56,12 +55,9 @@ final class Init extends ModuleBase
     /**
      * Module constructor.
      *
-     * @param Container $container
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $container
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
@@ -73,11 +69,8 @@ final class Init extends ModuleBase
      * @param string $controller
      *
      * @throws InitializationException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Context\ContextException
      */
     public function initialize($controller)
     {

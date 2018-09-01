@@ -24,7 +24,8 @@ if (!isset($index)): $index = 0; endif; ?>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                     </button>
                     <span for="btn-add-<?php echo $action->getId(); ?>"
-                          class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
+                          class="mdl-tooltip mdl-tooltip--bottom"
+                          title="<?php echo $action->getTitle(); ?>"><?php echo $action->getName(); ?></span>
                 </li>
             <?php elseif ($action->getType() === \SP\Html\DataGrid\DataGridActionType::SEARCH_ITEM): ?>
                 <li class="datagrid-action-search">
@@ -89,11 +90,12 @@ if (!isset($index)): $index = 0; endif; ?>
                     for="menu-<?php echo $data->getId(); ?>-menu-lower-right">
                     <?php foreach ($data->getDataActionsMenu() as $action): ?>
                         <li class="btn-action mdl-menu__item"
+                            title="<?php echo $action->getTitle(); ?>"
                             data-selection="#data-table-<?php echo $data->getId(); ?>"
                             data-onclick="<?php echo $action->getOnClick(); ?>"
                             <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
-                            <?php echo $action->getTitle(); ?>
+                            <?php echo $action->getName(); ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>

@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\DataModel\AccountPermission;
 use SP\DataModel\AccountPrivate;
+use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\User\UserService;
@@ -82,6 +83,21 @@ class ItemPresetHelper extends HelperBase
         $this->view->assign('typeTemplate', 'item_preset-private');
 
         $this->view->assign('private', $accountPrivate);
+    }
+
+    /**
+     * @param ItemPresetData $itemPresetData
+     *
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
+    public function makeSessionTimeoutView(ItemPresetData $itemPresetData)
+    {
+        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class, 'data') ?: new SessionTimeout($this->request->getClientAddress(), 3600);
+
+        $this->view->assign('typeTemplate', 'item_preset-session_timeout');
+
+        $this->view->assign('sessionTimeout', $sessionTimeout);
     }
 
     /**

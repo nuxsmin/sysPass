@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Http\Address;
 
 /**
  * Class TrackData
@@ -123,19 +123,26 @@ class TrackData extends DataModelBase
     }
 
     /**
-     * @return string
+     * @return string|null
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getIpv4()
     {
-        return @inet_ntop($this->ipv4);
+        if (!empty($this->ipv4)) {
+            return Address::fromBinary($this->ipv4);
+        }
+
+        return null;
     }
 
     /**
      * @param string $ipv4
+     *
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function setIpv4($ipv4)
     {
-        $this->ipv4 = @inet_pton($ipv4);
+        $this->ipv4 = Address::toBinary($ipv4);
     }
 
     /**
@@ -145,16 +152,12 @@ class TrackData extends DataModelBase
      */
     public function setTrackIp($track_ip)
     {
-        $ip = @inet_pton($track_ip);
+        $ip = Address::toBinary($track_ip);
 
         if (strlen($ip) === 4) {
             $this->ipv4 = $ip;
         } elseif (strlen($ip) > 4) {
             $this->ipv6 = $ip;
-        } elseif ($ip === false) {
-            logger(sprintf('%s : %s', __('IP inválida'), $track_ip));
-
-            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $track_ip);
         }
     }
 
@@ -167,19 +170,26 @@ class TrackData extends DataModelBase
     }
 
     /**
-     * @return string
+     * @return string|null
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getIpv6()
     {
-        return @inet_ntop($this->ipv6);
+        if (!empty($this->ipv6)) {
+            return Address::fromBinary($this->ipv6);
+        }
+
+        return null;
     }
 
     /**
      * @param string $ipv6
+     *
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function setIpv6($ipv6)
     {
-        $this->ipv6 = @inet_pton($ipv6);
+        $this->ipv6 = Address::toBinary($ipv6);
     }
 
     /**

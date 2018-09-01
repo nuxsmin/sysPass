@@ -114,6 +114,9 @@ class ItemPresetController extends ControllerBase implements CrudControllerInter
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
                 $itemPresetHelper->makeAccountPrivateView($itemPresetData);
                 break;
+            case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
+                $itemPresetHelper->makeSessionTimeoutView($itemPresetData);
+                break;
         }
 
         $this->view->assign('preset', $itemPresetData);

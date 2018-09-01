@@ -38,6 +38,8 @@ use SP\Services\User\UserLoginResponse;
  */
 final class SessionContext extends ContextBase
 {
+    const MAX_SID_TIME = 120;
+    
     private static $isReset = false;
     private static $isLocked = false;
 

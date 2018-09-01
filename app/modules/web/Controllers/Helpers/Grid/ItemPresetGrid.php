@@ -33,6 +33,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -65,9 +66,12 @@ final class ItemPresetGrid extends GridBase
 
         $grid->setDataActions($this->getCreatePermissionAction(), true);
         $grid->setDataActions($this->getCreatePrivateAction(), true);
+        $grid->setDataActions($this->getCreateSessionTimeoutAction(), true);
         $grid->setDataActions($this->getEditAction());
         $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
+        $grid->setDataActions($this->getDeleteAction()
+            ->setTitle(__('Eliminar Seleccionados'))
+            ->setName(__('Eliminar Seleccionados')), true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -152,7 +156,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Valor de Permiso'));
+        $gridAction->setName(__('Valor de Permiso'));
         $gridAction->setTitle(__('Nuevo Valor de Permiso'));
 
         $icon = clone $this->icons->getIconAdd();
@@ -160,7 +164,10 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/account.permission');
+
+        $route = Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION;
+
+        $gridAction->addData('action-route', $route);
 
         return $gridAction;
     }
@@ -173,7 +180,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Valor de Cuenta Privada'));
+        $gridAction->setName(__('Valor de Cuenta Privada'));
         $gridAction->setTitle(__('Nuevo Valor de Cuenta Privada'));
 
         $icon = clone $this->icons->getIconAdd();
@@ -181,7 +188,34 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setIcon($icon->setIcon('add_circle'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/account.private');
+
+        $route = Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE;
+
+        $gridAction->addData('action-route', $route);
+
+        return $gridAction;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    private function getCreateSessionTimeoutAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
+        $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setName(__('Valor de Timeout de Sesión'));
+        $gridAction->setTitle(__('Nuevo Valor de Timeout de Sesión'));
+
+        $icon = clone $this->icons->getIconAdd();
+
+        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setSkip(true);
+        $gridAction->setOnClickFunction('appMgmt/show');
+
+        $route = Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT;
+
+        $gridAction->addData('action-route', $route);
 
         return $gridAction;
     }

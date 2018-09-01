@@ -89,7 +89,7 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function withUsersById(AccountDetailsResponse $accountDetailsResponse)
     {
-        $accountDetailsResponse->setUsers($this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId()));
+        $accountDetailsResponse->setUsers($this->accountToUserRepository->getUsersByAccountId($accountDetailsResponse->getId())->getDataAsArray());
 
         return $this;
     }

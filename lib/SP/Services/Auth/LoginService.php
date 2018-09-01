@@ -73,42 +73,46 @@ final class LoginService extends Service
     /**
      * @var UserLoginData
      */
-    protected $userLoginData;
+    private $userLoginData;
     /**
      * @var ConfigData
      */
-    protected $configData;
+    private $configData;
     /**
      * @var Theme
      */
-    protected $theme;
+    private $theme;
     /**
      * @var UserService
      */
-    protected $userService;
+    private $userService;
     /**
      * @var Language
      */
-    protected $language;
+    private $language;
     /**
      * @var TrackService
      */
-    protected $trackService;
+    private $trackService;
     /**
      * @var TrackRequest
      */
-    protected $trackRequest;
+    private $trackRequest;
     /**
      * @var string
      */
-    protected $from;
+    private $from;
     /**
      * @var Request
      */
-    protected $request;
+    private $request;
 
     /**
      * Ejecutar las acciones de login
+     *
+     * @uses LoginService::authBrowser()
+     * @uses LoginService::authDatabase()
+     * @uses LoginService::authLdap()
      *
      * @return LoginResponse
      * @throws AuthException
@@ -198,7 +202,7 @@ final class LoginService extends Service
      * @throws \SP\Core\Exceptions\QueryException
      * @return LoginResponse
      */
-    protected function checkUser()
+    private function checkUser()
     {
         $userLoginResponse = $this->userLoginData->getUserLoginResponse();
 
@@ -247,7 +251,7 @@ final class LoginService extends Service
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function loadMasterPass()
+    private function loadMasterPass()
     {
         $temporaryMasterPass = $this->dic->get(TemporaryMasterPassService::class);
         $userPassService = $this->dic->get(UserPassService::class);
@@ -348,7 +352,7 @@ final class LoginService extends Service
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      */
-    protected function setUserSession()
+    private function setUserSession()
     {
         $userLoginResponse = $this->userLoginData->getUserLoginResponse();
 
@@ -372,7 +376,7 @@ final class LoginService extends Service
     /**
      * Cargar las preferencias del usuario y comprobar si usa 2FA
      */
-    protected function loadUserPreferences()
+    private function loadUserPreferences()
     {
         $this->language->setLanguage(true);
 
@@ -426,7 +430,7 @@ final class LoginService extends Service
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
-    protected function authLdap(LdapAuthData $authData)
+    private function authLdap(LdapAuthData $authData)
     {
         if ($authData->getStatusCode() > 0) {
             $eventMessage = EventMessage::factory()
@@ -536,7 +540,7 @@ final class LoginService extends Service
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
-    protected function authDatabase(DatabaseAuthData $authData)
+    private function authDatabase(DatabaseAuthData $authData)
     {
         $eventMessage = EventMessage::factory()
             ->addDetail(__u('Tipo'), __FUNCTION__)
@@ -577,7 +581,7 @@ final class LoginService extends Service
      * @return mixed
      * @throws AuthException
      */
-    protected function authBrowser(BrowserAuthData $authData)
+    private function authBrowser(BrowserAuthData $authData)
     {
         $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/D');
 

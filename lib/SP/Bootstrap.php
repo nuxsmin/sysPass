@@ -132,7 +132,7 @@ final class Bootstrap
      */
     protected function initRouter()
     {
-        $oops = "Oops, it looks like this content doesn't exist...";
+        $oops = "Oops, it looks like this content does not exist...";
 
         $this->router->onError(function ($router, $err_msg, $type, $err) {
             logger('Routing error: ' . $err_msg);

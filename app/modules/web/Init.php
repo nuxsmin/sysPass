@@ -25,9 +25,8 @@
 namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
-use DI\Container;
+use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
-use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -36,8 +35,12 @@ use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
+use SP\DataModel\ItemPreset\SessionTimeout;
+use SP\Http\Address;
 use SP\Plugin\PluginManager;
 use SP\Services\Crypt\SecureSessionService;
+use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
@@ -49,6 +52,7 @@ use SP\Util\HttpUtil;
 /**
  * Class Init
  *
+ * @property  itemPresetService
  * @package SP\Modules\Web
  */
 final class Init extends ModuleBase
@@ -79,16 +83,21 @@ final class Init extends ModuleBase
      * @var PluginManager
      */
     private $pluginManager;
+    /**
+     * @var ItemPresetService
+     */
+    private $itemPresetService;
+    /**
+     * @var bool
+     */
+    private $isIndex = false;
 
     /**
      * Init constructor.
      *
-     * @param Container $container
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $container
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
@@ -97,6 +106,7 @@ final class Init extends ModuleBase
         $this->language = $container->get(Language::class);
         $this->secureSessionService = $container->get(SecureSessionService::class);
         $this->pluginManager = $container->get(PluginManager::class);
+        $this->itemPresetService = $container->get(ItemPresetService::class);
     }
 
     /**
@@ -104,14 +114,18 @@ final class Init extends ModuleBase
      *
      * @param string $controller
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \Exception
      */
     public function initialize($controller)
     {
         logger(__METHOD__);
+
+        $this->isIndex = $controller === 'index';
 
         // Iniciar la sesión de PHP
         $this->initSession($this->configData->isEncryptSession());
@@ -202,7 +216,7 @@ final class Init extends ModuleBase
      *
      * @param bool $encrypt Encriptar la sesión de PHP
      *
-     * @throws ContextException
+     * @throws \Exception
      */
     private function initSession($encrypt = false)
     {
@@ -215,7 +229,7 @@ final class Init extends ModuleBase
 
         try {
             $this->context->initialize();
-        } catch (ContextException $e) {
+        } catch (\Exception $e) {
             $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
             throw $e;
@@ -262,7 +276,6 @@ final class Init extends ModuleBase
 
             SessionContext::restart();
         } else {
-
             $sidStartTime = $this->context->getSidStartTime();
 
             // Regenerar el Id de sesión periódicamente para evitar fijación
@@ -273,14 +286,11 @@ final class Init extends ModuleBase
                 $this->context->setSidStartTime(time());
                 $this->context->setStartActivity(time());
             } else if (!$inMaintenance
-                && time() > ($sidStartTime + 120)
+                && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
                 && $this->context->isLoggedIn()
             ) {
                 try {
                     CryptSession::reKey($this->context);
-
-                    // Recargar los permisos del perfil de usuario
-//                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
                 } catch (CryptoException $e) {
                     logger($e->getMessage());
 
@@ -300,10 +310,44 @@ final class Init extends ModuleBase
      */
     private function getSessionLifeTime()
     {
-        if (($timeout = $this->context->getSessionTimeout()) === null) {
-            return $this->context->setSessionTimeout($this->configData->getSessionTimeout());
+        $timeout = $this->context->getSessionTimeout();
+
+        try {
+            if ($this->isIndex || $timeout === null) {
+                $userTimeout = $this->getSessionTimeoutForUser($timeout) ?: $this->configData->getSessionTimeout();
+
+                return $this->context->setSessionTimeout($userTimeout);
+            }
+        } catch (\Exception $e) {
+            processException($e);
         }
 
         return $timeout;
+    }
+
+    /**
+     * @param int $default
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function getSessionTimeoutForUser(int $default = null)
+    {
+        if ($this->context->isLoggedIn()) {
+            $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT);
+
+            if ($itemPreset !== null) {
+                $sessionTimeout = $itemPreset->hydrate(SessionTimeout::class);
+
+                if (Address::check($this->request->getClientAddress(), $sessionTimeout->getAddress(), $sessionTimeout->getMask())) {
+                    return $sessionTimeout->getTimeout();
+                }
+            }
+        }
+
+        return $default;
     }
 }

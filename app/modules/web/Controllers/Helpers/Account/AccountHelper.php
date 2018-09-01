@@ -325,13 +325,13 @@ final class AccountHelper extends HelperBase
         $accountPrivate = new AccountPrivate();
 
         if ($itemPresetPrivate = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)) {
-            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class);
+            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?: $accountPrivate;
         }
 
         $accountPermission = new AccountPermission();
 
         if ($itemPresetPermission = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)) {
-            $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class);
+            $accountPermission = $itemPresetPermission->hydrate(AccountPermission::class) ?: $accountPermission;
         }
 
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());

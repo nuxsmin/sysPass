@@ -73,43 +73,47 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
      */
     public function testGetUsersByAccountId()
     {
-        $users = self::$repository->getUsersByAccountId(1);
+        $result = self::$repository->getUsersByAccountId(1);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(1, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
+        $resultData = $result->getDataAsArray();
 
-        $usersView = array_filter($users, function ($user) {
+        $this->assertCount(1, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+
+        $usersView = array_filter($resultData, function ($user) {
             return (int)$user->isEdit === 0;
         });
 
         $this->assertCount(0, $usersView);
 
-        $usersEdit = array_filter($users, function ($user) {
+        $usersEdit = array_filter($resultData, function ($user) {
             return (int)$user->isEdit === 1;
         });
 
         $this->assertCount(1, $usersEdit);
 
-        $users = self::$repository->getUsersByAccountId(2);
+        $result = self::$repository->getUsersByAccountId(2);
+        $this->assertEquals(1, $result->getNumRows());
 
-        $this->assertCount(1, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
+        $resultData = $result->getDataAsArray();
 
-        $usersView = array_filter($users, function ($user) {
+        $this->assertCount(1, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+
+        $usersView = array_filter($resultData, function ($user) {
             return (int)$user->isEdit === 0;
         });
 
         $this->assertCount(1, $usersView);
 
-        $usersEdit = array_filter($users, function ($user) {
+        $usersEdit = array_filter($resultData, function ($user) {
             return (int)$user->isEdit === 1;
         });
 
         $this->assertCount(0, $usersEdit);
 
-        $users = self::$repository->getUsersByAccountId(3);
-
-        $this->assertCount(0, $users);
+        $this->assertEquals(0, self::$repository->getUsersByAccountId(3)->getNumRows());
     }
 
     /**
@@ -126,15 +130,18 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         self::$repository->update($accountRequest);
 
-        $users = self::$repository->getUsersByAccountId($accountRequest->id);
+        $result = self::$repository->getUsersByAccountId($accountRequest->id);
+        $this->assertEquals(3, $result->getNumRows());
 
-        $this->assertCount(3, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
-        $this->assertEquals(0, (int)$users[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $users[1]);
-        $this->assertEquals(0, (int)$users[1]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $users[2]);
-        $this->assertEquals(0, (int)$users[2]->isEdit);
+        $resultData = $result->getDataAsArray();
+
+        $this->assertCount(3, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+        $this->assertEquals(0, (int)$resultData[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $resultData[1]);
+        $this->assertEquals(0, (int)$resultData[1]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $resultData[2]);
+        $this->assertEquals(0, (int)$resultData[2]->isEdit);
 
         $this->expectException(ConstraintException::class);
 
@@ -162,13 +169,16 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         self::$repository->updateEdit($accountRequest);
 
-        $users = self::$repository->getUsersByAccountId($accountRequest->id);
+        $result = self::$repository->getUsersByAccountId($accountRequest->id);
+        $this->assertEquals(2, $result->getNumRows());
 
-        $this->assertCount(2, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
-        $this->assertEquals(1, (int)$users[0]->isEdit);
-        $this->assertInstanceOf(ItemData::class, $users[1]);
-        $this->assertEquals(1, (int)$users[1]->isEdit);
+        $resultData = $result->getDataAsArray();
+
+        $this->assertCount(2, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+        $this->assertEquals(1, (int)$resultData[0]->isEdit);
+        $this->assertInstanceOf(ItemData::class, $resultData[1]);
+        $this->assertEquals(1, (int)$resultData[1]->isEdit);
 
         $this->expectException(ConstraintException::class);
 
@@ -193,7 +203,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     public function testDeleteByAccountId()
     {
         $this->assertEquals(1, self::$repository->deleteByAccountId(1));
-        $this->assertCount(0, self::$repository->getUsersByAccountId(1));
+        $this->assertEquals(0, self::$repository->getUsersByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteByAccountId(10));
 
@@ -214,12 +224,15 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         self::$repository->addEdit($accountRequest);
 
-        $users = self::$repository->getUsersByAccountId($accountRequest->id);
+        $result = self::$repository->getUsersByAccountId($accountRequest->id);
+        $this->assertEquals(3, $result->getNumRows());
 
-        $this->assertCount(3, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
-        $this->assertInstanceOf(ItemData::class, $users[1]);
-        $this->assertInstanceOf(ItemData::class, $users[2]);
+        $resultData = $result->getDataAsArray();
+
+        $this->assertCount(3, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+        $this->assertInstanceOf(ItemData::class, $resultData[1]);
+        $this->assertInstanceOf(ItemData::class, $resultData[2]);
 
         $this->expectException(ConstraintException::class);
 
@@ -249,12 +262,15 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         self::$repository->add($accountRequest);
 
-        $users = self::$repository->getUsersByAccountId($accountRequest->id);
+        $result = self::$repository->getUsersByAccountId($accountRequest->id);
+        $this->assertEquals(3, $result->getNumRows());
 
-        $this->assertCount(3, $users);
-        $this->assertInstanceOf(ItemData::class, $users[0]);
-        $this->assertInstanceOf(ItemData::class, $users[1]);
-        $this->assertInstanceOf(ItemData::class, $users[2]);
+        $resultData = $result->getDataAsArray();
+
+        $this->assertCount(3, $resultData);
+        $this->assertInstanceOf(ItemData::class, $resultData[0]);
+        $this->assertInstanceOf(ItemData::class, $resultData[1]);
+        $this->assertInstanceOf(ItemData::class, $resultData[2]);
 
         $this->expectException(ConstraintException::class);
 
@@ -279,7 +295,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     public function testDeleteEditByAccountId()
     {
         $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
-        $this->assertCount(0, self::$repository->getUsersByAccountId(1));
+        $this->assertEquals(0, self::$repository->getUsersByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
 

@@ -346,7 +346,7 @@ final class AccountSearchService extends Service
         ) {
             $cache[$accountId] = new AccountCache(
                 $accountId,
-                $this->accountToUserRepository->getUsersByAccountId($accountId),
+                $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
                 $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray());
 
             if ($hasCache) {

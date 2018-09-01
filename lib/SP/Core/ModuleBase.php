@@ -26,6 +26,7 @@ namespace SP\Core;
 
 use DI\Container;
 use Klein\Klein;
+use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
@@ -70,12 +71,9 @@ abstract class ModuleBase
     /**
      * Module constructor.
      *
-     * @param Container $container
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $container
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->config = $container->get(Config::class);
@@ -118,9 +116,6 @@ abstract class ModuleBase
 
     /**
      * Initializes event handlers
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     protected function initEventHandlers()
     {

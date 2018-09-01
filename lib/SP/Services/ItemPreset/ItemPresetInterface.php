@@ -35,4 +35,5 @@ interface ItemPresetInterface
     const ITEM_TYPE_ACCOUNT_TAG = 'account.tag';
     const ITEM_TYPE_PASSWORD = 'password';
     const ITEM_TYPE_ACCOUNT_PRIVATE = 'account.private';
+    const ITEM_TYPE_SESSION_TIMEOUT = 'session.timeout';
 }

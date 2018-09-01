@@ -86,7 +86,7 @@ class ApiTest extends WebTestCase
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
-        $this->assertEquals('Oops, it looks like this content doesn\'t exist...', $result->error->message);
+        $this->assertEquals('Oops, it looks like this content does not exist...', $result->error->message);
         $this->assertEquals(JsonRpcResponse::METHOD_NOT_FOUND, $result->error->code);
         $this->assertNull($result->error->data);
         $this->assertEquals(1, $result->id);

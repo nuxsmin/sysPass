@@ -311,7 +311,7 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        // TODO: Implement getName() method.
+        return '';
     }
 
     /**

@@ -143,7 +143,7 @@ final class Request
     /**
      * @param bool $fullForwarded
      *
-     * @return array|array[]|mixed|string
+     * @return array|string
      */
     public function getClientAddress(bool $fullForwarded = false)
     {
