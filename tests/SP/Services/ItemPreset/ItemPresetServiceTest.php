@@ -25,7 +25,7 @@
 namespace SP\Tests\Services\ItemPreset;
 
 use SP\Core\Exceptions\ConstraintException;
-use SP\DataModel\AccountPermission;
+use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
@@ -331,7 +331,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $accountPermission = new AccountPermission();
+        $accountPermission = new \SP\DataModel\ItemPreset\AccountPermission();
         $accountPermission->setUsersEdit([1, 2]);
         $accountPermission->setUsersView([3]);
         $accountPermission->setUserGroupsView([2]);

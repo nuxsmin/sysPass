@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\AccountPermission;
-use SP\DataModel\AccountPrivate;
+use SP\DataModel\ItemPreset\AccountPermission;
+use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
 use SP\Services\ItemPreset\ItemPresetInterface;
@@ -113,7 +113,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return AccountPermission
+     * @return \SP\DataModel\\SP\DataModel\ItemPreset\AccountPermission
      * @throws ValidationException
      */
     private function makePermissionPreset()

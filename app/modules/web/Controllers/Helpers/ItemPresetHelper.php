@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use SP\DataModel\AccountPermission;
-use SP\DataModel\AccountPrivate;
+use SP\DataModel\ItemPreset\AccountPermission;
+use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
 use SP\Mvc\View\Components\SelectItemAdapter;

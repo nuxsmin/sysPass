@@ -1,4 +1,4 @@
-<?php /** @var $private \SP\DataModel\AccountPrivate */ ?>
+<?php /** @var $private \SP\DataModel\ItemPreset\AccountPrivate */ ?>
 
 <table class="popup-data">
     <tbody>
