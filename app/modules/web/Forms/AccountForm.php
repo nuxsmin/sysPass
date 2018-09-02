@@ -24,8 +24,10 @@
 
 namespace SP\Modules\Web\Forms;
 
+use Psr\Container\ContainerInterface;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
+use SP\Services\Account\AccountPresetService;
 use SP\Services\Account\AccountRequest;
 
 /**
@@ -39,6 +41,10 @@ final class AccountForm extends FormBase implements FormInterface
      * @var AccountRequest
      */
     protected $accountRequest;
+    /**
+     * @var AccountPresetService
+     */
+    private $accountPresetService;
 
     /**
      * Validar el formulario
@@ -46,14 +52,18 @@ final class AccountForm extends FormBase implements FormInterface
      * @param $action
      *
      * @return AccountForm
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function validate($action)
     {
         switch ($action) {
             case ActionsInterface::ACCOUNT_EDIT_PASS:
                 $this->analyzeRequestData();
-                $this->checkPass();
+                $this->checkPassword();
+                $this->accountPresetService->checkPasswordPreset($this->accountRequest);
                 break;
             case ActionsInterface::ACCOUNT_EDIT:
                 $this->analyzeRequestData();
@@ -63,7 +73,8 @@ final class AccountForm extends FormBase implements FormInterface
             case ActionsInterface::ACCOUNT_COPY:
                 $this->analyzeRequestData();
                 $this->checkCommon();
-                $this->checkPass();
+                $this->checkPassword();
+                $this->accountPresetService->checkPasswordPreset($this->accountRequest);
                 break;
         }
 
@@ -129,7 +140,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkPass()
+    private function checkPassword()
     {
         if ($this->accountRequest->parentId > 0) {
             return;
@@ -147,7 +158,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    private function checkCommon()
     {
         if (!$this->accountRequest->name) {
             throw new ValidationException(__u('Es necesario un nombre de cuenta'));
@@ -172,5 +183,13 @@ final class AccountForm extends FormBase implements FormInterface
     public function getItemData()
     {
         return $this->accountRequest;
+    }
+
+    /**
+     * @param ContainerInterface $dic
+     */
+    protected function initialize($dic)
+    {
+        $this->accountPresetService = $dic->get(AccountPresetService::class);
     }
 }

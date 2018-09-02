@@ -67,6 +67,7 @@ final class ItemPresetGrid extends GridBase
         $grid->setDataActions($this->getCreatePermissionAction(), true);
         $grid->setDataActions($this->getCreatePrivateAction(), true);
         $grid->setDataActions($this->getCreateSessionTimeoutAction(), true);
+        $grid->setDataActions($this->getCreateAccountPasswordAction(), true);
         $grid->setDataActions($this->getEditAction());
         $grid->setDataActions($this->getDeleteAction());
         $grid->setDataActions($this->getDeleteAction()
@@ -214,6 +215,30 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
 
         $route = Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT;
+
+        $gridAction->addData('action-route', $route);
+
+        return $gridAction;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    private function getCreateAccountPasswordAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
+        $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setName(__('Valor de Clave de Cuentas'));
+        $gridAction->setTitle(__('Nuevo Valor de Clave de Cuentas'));
+
+        $icon = clone $this->icons->getIconAdd();
+
+        $gridAction->setIcon($icon->setIcon('add_circle'));
+        $gridAction->setSkip(true);
+        $gridAction->setOnClickFunction('appMgmt/show');
+
+        $route = Acl::getActionRoute(ActionsInterface::ITEMPRESET_CREATE) . '/' . ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD;
 
         $gridAction->addData('action-route', $route);
 

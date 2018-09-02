@@ -22,18 +22,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\ItemPreset;
+namespace SP\Mvc\Controller\Validators;
 
 /**
- * Interface ItemPresetInterface
+ * Interface ValidatorInterface
  *
- * @package SP\Services\ItemPreset
+ * @package SP\Mvc\Controller\Validators
  */
-interface ItemPresetInterface
+interface ValidatorInterface
 {
-    const ITEM_TYPE_ACCOUNT_PERMISSION = 'account.permission';
-    const ITEM_TYPE_ACCOUNT_TAG = 'account.tag';
-    const ITEM_TYPE_ACCOUNT_PASSWORD = 'account.password';
-    const ITEM_TYPE_ACCOUNT_PRIVATE = 'account.private';
-    const ITEM_TYPE_SESSION_TIMEOUT = 'session.timeout';
+    /**
+     * @param string $string
+     *
+     * @return bool
+     */
+    public function validate(string $string): bool;
 }

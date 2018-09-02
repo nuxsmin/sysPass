@@ -35,6 +35,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\ItemPreset\Password;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
@@ -49,6 +50,8 @@ use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Auth\AuthException;
+use SP\Services\ItemPreset\ItemPresetInterface;
+use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
@@ -538,14 +541,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $account = $this->accountService->getPasswordForId($id);
 
+            $passwordPreset = $this->getPasswordPreset();
+            $useImage = $this->configData->isAccountPassToImage()
+                || $passwordPreset !== null && $passwordPreset->isUseImage();
+
             $this->view->assign('isLinked', $parentId > 0);
 
-            $data = [
-                'acclogin' => $account->getLogin(),
-                'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_FULL),
-                'useimage' => $this->configData->isAccountPassToImage(),
-                'html' => $this->render()
-            ];
+            $data = $accountPassHelper->getPasswordView($account, $useImage);
 
             $this->accountService->incrementDecryptCounter($id);
 
@@ -562,6 +564,24 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseException($e);
         }
     }
+    
+    /**
+     * @return Password
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function getPasswordPreset()
+    {
+        $itemPreset = $this->dic->get(ItemPresetService::class)
+            ->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
+
+        if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
+            return $itemPreset->hydrate(Password::class);
+        }
+
+        return null;
+    }
 
     /**
      * Display account's password
@@ -577,14 +597,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $account = $this->accountService->getPasswordHistoryForId($id);
 
+            $passwordPreset = $this->getPasswordPreset();
+            $useImage = $this->configData->isAccountPassToImage()
+                || $passwordPreset !== null && $passwordPreset->isUseImage();
+
             $this->view->assign('isLinked', 0);
 
-            $data = [
-                'acclogin' => $account->getLogin(),
-                'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_FULL),
-                'useimage' => $this->configData->isAccountPassToImage(),
-                'html' => $this->render()
-            ];
+            $data = $accountPassHelper->getPasswordView($account, $useImage);
 
             $this->eventDispatcher->notifyEvent('show.account.pass.history',
                 new Event($this, EventMessage::factory()
@@ -617,7 +636,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         $account = $this->accountService->getPasswordForId($id);
 
         $data = [
-            'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
+            'accpass' => $accountPassHelper->getPasswordClear($account),
         ];
 
         $this->eventDispatcher->notifyEvent('copy.account.pass',
@@ -646,7 +665,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         $account = $this->accountService->getPasswordHistoryForId($id);
 
         $data = [
-            'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
+            'accpass' => $accountPassHelper->getPasswordClear($account),
         ];
 
         $this->eventDispatcher->notifyEvent('copy.account.pass.history',

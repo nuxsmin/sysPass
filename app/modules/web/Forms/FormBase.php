@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
-use DI\Container;
+use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
@@ -62,13 +62,10 @@ abstract class FormBase
     /**
      * FormBase constructor.
      *
-     * @param int       $itemId
-     * @param Container $container
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @param ContainerInterface $container
+     * @param int                $itemId
      */
-    public function __construct(Container $container, $itemId = null)
+    public function __construct(ContainerInterface $container, $itemId = null)
     {
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
@@ -76,6 +73,10 @@ abstract class FormBase
         $this->request = $container->get(Request::class);
 
         $this->itemId = $itemId;
+
+        if (method_exists($this, 'initialize')) {
+            $this->initialize($container);
+        }
     }
 
     /**

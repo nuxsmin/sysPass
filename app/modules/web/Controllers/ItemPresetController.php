@@ -93,6 +93,7 @@ class ItemPresetController extends ControllerBase implements CrudControllerInter
      * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function setViewData(int $id = null, string $type = null)
     {
@@ -116,6 +117,9 @@ class ItemPresetController extends ControllerBase implements CrudControllerInter
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
                 $itemPresetHelper->makeSessionTimeoutView($itemPresetData);
+                break;
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
+                $itemPresetHelper->makeAccountPasswordView($itemPresetData);
                 break;
         }
 

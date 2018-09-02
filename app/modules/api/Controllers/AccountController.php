@@ -30,6 +30,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Mvc\Model\QueryCondition;
+use SP\Services\Account\AccountPresetService;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
@@ -42,6 +43,10 @@ use SP\Services\Api\ApiResponse;
  */
 final class AccountController extends ControllerBase
 {
+    /**
+     * @var AccountPresetService
+     */
+    private $accountPresetService;
     /**
      * @var AccountService
      */
@@ -122,6 +127,8 @@ final class AccountController extends ControllerBase
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->userEditId = $this->context->getUserData()->getId();
 
+            $this->accountPresetService->checkPasswordPreset($accountRequest);
+
             $this->accountService->editPassword($accountRequest);
 
             $accountDetails = $this->accountService->getById($accountRequest->id)->getAccountVData();
@@ -164,6 +171,8 @@ final class AccountController extends ControllerBase
             $accountRequest->userId = $this->context->getUserData()->getId();
             $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
             $accountRequest->tags = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
+
+            $this->accountPresetService->checkPasswordPreset($accountRequest);
 
             $pass = $this->accountService->getPasswordEncrypted($this->apiService->getParamRaw('pass', true), $this->apiService->getMasterPass());
             $accountRequest->pass = $pass['pass'];
@@ -317,6 +326,7 @@ final class AccountController extends ControllerBase
     protected function initialize()
     {
         $this->accountService = $this->dic->get(AccountService::class);
+        $this->accountPresetService = $this->dic->get(AccountPresetService::class);
         $this->apiService->setHelpClass(AccountHelp::class);
     }
 }

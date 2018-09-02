@@ -41,36 +41,60 @@ use SP\Util\ImageUtil;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    const TYPE_NORMAL = 0;
-    const TYPE_FULL = 1;
-
-    /** @var  \SP\Core\Acl\Acl */
-    protected $acl;
+    /**
+     * @var Acl
+     */
+    private $acl;
 
     /**
-     * @param AccountPassData  $account
-     * @param \SP\Core\Acl\Acl $acl
-     * @param                  $type
+     * @param AccountPassData $accountData
      *
-     * @return string|null
+     * @param bool            $useImage
+     *
+     * @return array
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
-    public function getPassword(AccountPassData $account, Acl $acl, $type)
+    public function getPasswordView(AccountPassData $accountData, bool $useImage)
     {
-        $this->acl = $acl;
+        $this->checkActionAccess();
 
-        switch ($type) {
-            case self::TYPE_NORMAL:
-                return $this->getPasswordClear($account);
-                break;
-            case self::TYPE_FULL:
-                $this->setTemplateVars($account);
-                break;
+        $this->view->addTemplate('viewpass');
+
+        $this->view->assign('header', __('Clave de Cuenta'));
+        $this->view->assign('isImage', (int)$useImage);
+
+        $pass = $this->getPasswordClear($accountData);
+
+        if ($useImage) {
+            $imageUtil = $this->dic->get(ImageUtil::class);
+
+            $this->view->assign('login', $imageUtil->convertText($accountData->getLogin()));
+            $this->view->assign('pass', $imageUtil->convertText($pass));
+        } else {
+            $this->view->assign('login', $accountData->getLogin());
+            $this->view->assign('pass', htmlentities($pass));
         }
 
-        return null;
+        $this->view->assign('sk', $this->context->generateSecurityKey());
+
+        return [
+            'useimage' => $useImage,
+            'html' => $this->view->render()
+        ];
+    }
+
+    /**
+     * @throws HelperException
+     */
+    private function checkActionAccess()
+    {
+        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)) {
+            throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
+        }
     }
 
     /**
@@ -84,13 +108,9 @@ final class AccountPasswordHelper extends HelperBase
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
      */
-    protected function getPasswordClear(AccountPassData $accountData)
+    public function getPasswordClear(AccountPassData $accountData)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)
-            || $accountData->getId() === 0
-        ) {
-            throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
-        }
+        $this->checkActionAccess();
 
         if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
@@ -99,32 +119,8 @@ final class AccountPasswordHelper extends HelperBase
         return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
     }
 
-    /**
-     * @param AccountPassData $accountData
-     *
-     * @throws HelperException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function setTemplateVars(AccountPassData $accountData)
+    protected function initialize()
     {
-        $this->view->addTemplate('viewpass');
-
-        $this->view->assign('header', __('Clave de Cuenta'));
-        $this->view->assign('login', $accountData->getLogin());
-
-        $pass = $this->getPasswordClear($accountData);
-
-        if ($this->configData->isAccountPassToImage()) {
-            $imageUtil = $this->dic->get(ImageUtil::class);
-
-            $this->view->assign('pass', $imageUtil->convertText($pass));
-            $this->view->assign('isImage', 1);
-        } else {
-            $this->view->assign('pass', htmlentities($pass));
-            $this->view->assign('isImage', 0);
-        }
-
-        $this->view->assign('sk', $this->context->generateSecurityKey());
+        $this->acl = $this->dic->get(Acl::class);
     }
 }

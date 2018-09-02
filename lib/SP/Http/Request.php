@@ -264,6 +264,21 @@ final class Request
     }
 
     /**
+     * @param $param
+     * @param $default
+     *
+     * @return string|null
+     */
+    public function analyzeUnsafeString(string $param, string $default = null)
+    {
+        if (!$this->params->exists($param)) {
+            return $default;
+        }
+
+        return Filter::getRaw($this->params->get($param));
+    }
+
+    /**
      * @param string        $param
      * @param callable|null $mapper
      * @param mixed         $default

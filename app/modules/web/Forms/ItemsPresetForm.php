@@ -29,8 +29,10 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\DataModel\ItemPreset\Password;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\DataModel\ItemPresetData;
+use SP\Mvc\Controller\Validators\Validator;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetRequest;
 
@@ -105,7 +107,10 @@ final class ItemsPresetForm extends FormBase implements FormInterface
                 $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutreset());
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutPreset());
+                break;
+            case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
+                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
                 break;
             default:
                 throw new ValidationException(__u('Tipo de valor no definido o incorrecto'));
@@ -113,7 +118,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return \SP\DataModel\\SP\DataModel\ItemPreset\AccountPermission
+     * @return AccountPermission
      * @throws ValidationException
      */
     private function makePermissionPreset()
@@ -147,7 +152,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return SessionTimeout
      * @throws ValidationException
      */
-    private function makeSessionTimeoutreset()
+    private function makeSessionTimeoutPreset()
     {
         try {
             return new SessionTimeout(
@@ -157,6 +162,36 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         } catch (InvalidArgumentException $e) {
             throw new ValidationException($e->getMessage());
         }
+    }
+
+    /**
+     * @return Password
+     * @throws ValidationException
+     */
+    private function makePasswordPreset()
+    {
+        $password = new Password();
+        $password->setLength($this->request->analyzeInt('length', 1));
+        $password->setExpireTime($this->request->analyzeInt('expire_time', 0));
+        $password->setScore($this->request->analyzeInt('score', 0));
+
+        $regex = $this->request->analyzeUnsafeString('regex');
+
+        if (!empty($regex)) {
+            if (Validator::isRegex($regex) === false) {
+                throw new ValidationException(__u('Expresión regular inválida'));
+            }
+        }
+
+        $password->setRegex($regex);
+        $password->setUseNumbers($this->request->analyzeBool('use_numbers_enabled', false));
+        $password->setUseLetters($this->request->analyzeBool('use_letters_enabled', false));
+        $password->setUseSymbols($this->request->analyzeBool('use_symbols_enabled', false));
+        $password->setUseLower($this->request->analyzeBool('use_lower_enabled', false));
+        $password->setUseUpper($this->request->analyzeBool('use_upper_enabled', false));
+        $password->setUseImage($this->request->analyzeBool('use_image_enabled', false));
+
+        return $password;
     }
 
     /**

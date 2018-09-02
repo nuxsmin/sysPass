@@ -29,7 +29,7 @@ namespace SP\Core\Exceptions;
  *
  * @package SP\Core\Exceptions
  */
-final class ValidationException extends \Exception
+final class ValidationException extends SPException
 {
 
 }
