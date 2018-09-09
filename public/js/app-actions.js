@@ -1122,17 +1122,19 @@ sysPass.Actions = function (Common) {
                         onSuccess();
                     }
 
-                    if (tabs.state.tab.refresh === true) {
-                        getContent({
-                            r: tabs.state.tab.route,
-                            tabIndex: tabs.state.tab.index
-                        });
-                    } else if ($obj.data("reload") !== undefined) {
+                    if ($obj.data("reload") !== undefined) {
                         log.info('reload');
 
                         setTimeout(function () {
                             Common.redirect("index.php");
                         }, 2000);
+                    } else if (tabs.state.tab.refresh === true) {
+                        log.info("refresh");
+
+                        getContent({
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
+                        });
                     }
                 }
             });
