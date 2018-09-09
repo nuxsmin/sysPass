@@ -207,38 +207,40 @@ final class LoginService extends Service
     {
         $userLoginResponse = $this->userLoginData->getUserLoginResponse();
 
-        // Comprobar si el usuario está deshabilitado
-        if ($userLoginResponse->getIsDisabled()) {
-            $this->eventDispatcher->notifyEvent('login.checkUser.disabled',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Usuario deshabilitado'))
-                        ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
-            );
+        if ($userLoginResponse !== null) {
+            // Comprobar si el usuario está deshabilitado
+            if ($userLoginResponse->getIsDisabled()) {
+                $this->eventDispatcher->notifyEvent('login.checkUser.disabled',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Usuario deshabilitado'))
+                            ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+                );
 
-            $this->addTracking();
+                $this->addTracking();
 
-            throw new AuthException(
-                __u('Usuario deshabilitado'),
-                AuthException::INFO,
-                null,
-                self::STATUS_USER_DISABLED
-            );
-        }
+                throw new AuthException(
+                    __u('Usuario deshabilitado'),
+                    AuthException::INFO,
+                    null,
+                    self::STATUS_USER_DISABLED
+                );
+            }
 
-        // Comprobar si se ha forzado un cambio de clave
-        if ($userLoginResponse->getIsChangePass()) {
-            $this->eventDispatcher->notifyEvent('login.checkUser.changePass',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
-            );
+            // Comprobar si se ha forzado un cambio de clave
+            if ($userLoginResponse->getIsChangePass()) {
+                $this->eventDispatcher->notifyEvent('login.checkUser.changePass',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+                );
 
-            $hash = Util::generateRandomBytes(16);
+                $hash = Util::generateRandomBytes(16);
 
-            $this->dic->get(UserPassRecoverService::class)->add($userLoginResponse->getId(), $hash);
+                $this->dic->get(UserPassRecoverService::class)->add($userLoginResponse->getId(), $hash);
 
-            return new LoginResponse(self::STATUS_PASS_RESET, 'index.php?r=userPassReset/change/' . $hash);
+                return new LoginResponse(self::STATUS_PASS_RESET, 'index.php?r=userPassReset/change/' . $hash);
+            }
         }
 
         return new LoginResponse(self::STATUS_NONE);

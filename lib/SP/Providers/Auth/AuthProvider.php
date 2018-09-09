@@ -101,6 +101,7 @@ final class AuthProvider extends Provider
      * Autentificación de usuarios con LDAP.
      *
      * @return bool|LdapAuthData
+     * @throws Ldap\LdapException
      */
     public function authLdap()
     {
@@ -110,6 +111,7 @@ final class AuthProvider extends Provider
             ->setServer($data['server'])
             ->setPort(isset($data['port']) ? $data['port'] : 389)
             ->setSearchBase($this->configData->getLdapBase())
+            ->setGroup($this->configData->getLdapGroup())
             ->setBindDn($this->configData->getLdapBindUser())
             ->setBindPass($this->configData->getLdapBindPass())
             ->setAds($this->configData->isLdapAds());

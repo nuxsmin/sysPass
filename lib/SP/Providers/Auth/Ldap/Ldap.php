@@ -55,6 +55,8 @@ abstract class Ldap implements LdapInterface
      *
      * @param LdapConnectionInterface $ldapConnection
      * @param EventDispatcher         $eventDispatcher
+     *
+     * @throws LdapException
      */
     public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
     {

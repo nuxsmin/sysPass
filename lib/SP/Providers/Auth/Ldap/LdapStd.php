@@ -107,7 +107,8 @@ final class LdapStd extends Ldap
             $this->eventDispatcher->notifyEvent('ldap.check.group',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Usuario verificado en grupo'))
-                    ->addDetail(__u('Usuario'), $userDn)));
+                    ->addDetail(__u('Usuario'), $userDn)
+                    ->addDetail(__u('Grupo'), $this->getGroupDn())));
 
             return true;
         }
@@ -149,16 +150,6 @@ final class LdapStd extends Ldap
     }
 
     /**
-     * Obtener el servidor de LDAP a utilizar
-     *
-     * @return mixed
-     */
-    protected function pickServer()
-    {
-        return $this->ldapParams->getServer();
-    }
-
-    /**
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -169,5 +160,15 @@ final class LdapStd extends Ldap
         @ldap_set_option($handler, LDAP_OPT_REFERRALS, 0);
 
         return true;
+    }
+
+    /**
+     * Obtener el servidor de LDAP a utilizar
+     *
+     * @return mixed
+     */
+    protected function pickServer()
+    {
+        return $this->ldapParams->getServer();
     }
 }

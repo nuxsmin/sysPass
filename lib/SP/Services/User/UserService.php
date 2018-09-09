@@ -217,7 +217,7 @@ final class UserService extends Service
      *
      * @param UserLoginRequest $userLoginRequest
      *
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function createOnLogin(UserLoginRequest $userLoginRequest)

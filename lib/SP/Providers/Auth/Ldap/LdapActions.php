@@ -55,6 +55,18 @@ final class LdapActions
         'cn'
     ];
 
+    const ATTRIBUTES_MAPPING = [
+        'dn' => 'dn',
+        'groupmembership' => 'group',
+        'memberof' => 'group',
+        'displayname' => 'fullname',
+        'fullname' => 'fullname',
+        'givenname' => 'name',
+        'sn' => 'sn',
+        'mail' => 'mail',
+        'lockouttime' => 'expire'
+    ];
+
     /**
      * @var LdapParams
      */
@@ -74,6 +86,7 @@ final class LdapActions
      * @param LdapConnectionInterface $ldapConnection
      * @param EventDispatcher         $eventDispatcher
      *
+     * @throws LdapException
      */
     public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
     {
@@ -149,13 +162,15 @@ final class LdapActions
         do {
             ldap_control_paged_result($this->ldapHandler, 1000, false, $cookie);
 
-            if (!$searchRes = @ldap_search($this->ldapHandler, $this->ldapParams->getSearchBase(), $filter, $attributes)) {
+            $searchRes = @ldap_search($this->ldapHandler, $this->ldapParams->getSearchBase(), $filter, $attributes);
+
+            if (!$searchRes) {
                 return false;
             }
 
-            if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0
-                || !$entries = @ldap_get_entries($this->ldapHandler, $searchRes)
-            ) {
+            $entries = @ldap_get_entries($this->ldapHandler, $searchRes);
+
+            if (!$entries) {
                 return false;
             }
 
@@ -172,32 +187,11 @@ final class LdapActions
      *
      * @param string $filter
      *
-     * @return array
+     * @return AttributeCollection
      * @throws LdapException
      */
     public function getAttributes(string $filter)
     {
-        $validAttributes = [
-            'dn' => 'dn',
-            'groupmembership' => 'group',
-            'memberof' => 'group',
-            'displayname' => 'fullname',
-            'fullname' => 'fullname',
-            'givenname' => 'name',
-            'sn' => 'sn',
-            'mail' => 'mail',
-            'lockouttime' => 'expire'
-        ];
-
-        $res = [
-            'dn' => '',
-            'name' => '',
-            'sn' => '',
-            'mail' => '',
-            'group' => [],
-            'expire' => 0
-        ];
-
         $searchResults = $this->getObjects($filter);
 
         if ((int)$searchResults['count'] === 0) {
@@ -210,32 +204,30 @@ final class LdapActions
             throw new LdapException(__u('Error al localizar el usuario en LDAP'));
         }
 
-        foreach ($searchResults as $result) {
-            if (is_array($result)) {
-                foreach ($result as $attribute => $values) {
-                    $normalizedAttribute = strtolower($attribute);
+        // Normalize keys for comparing
+        $results = array_change_key_case($searchResults[0], CASE_LOWER);
 
-                    if (array_key_exists($normalizedAttribute, $validAttributes)) {
-                        if (is_array($values)) {
-                            $count = (int)$values['count'];
+        $attributeCollection = new AttributeCollection();
 
-                            if ($count > 1) {
-                                unset($values['count']);
+        foreach (self::ATTRIBUTES_MAPPING as $attribute => $map) {
+            if (isset($results[$attribute])) {
+                if (is_array($results[$attribute])) {
+                    if ((int)$results[$attribute]['count'] > 1) {
+                        unset($results[$attribute]['count']);
 
-                                $res[$validAttributes[$normalizedAttribute]] = $values;
-                            } else {
-                                // Almacenamos  1 solo valor
-                                $res[$validAttributes[$normalizedAttribute]] = trim($values[0]);
-                            }
-                        } else {
-                            $res[$validAttributes[$normalizedAttribute]] = trim($values);
-                        }
+                        // Store the whole array
+                        $attributeCollection->set($map, $results[$attribute]);
+                    } else {
+                        // Store first value
+                        $attributeCollection->set($map, trim($results[$attribute][0]));
                     }
+                } else {
+                    $attributeCollection->set($map, trim($results[$attribute]));
                 }
             }
         }
 
-        return $res;
+        return $attributeCollection;
     }
 
     /**
@@ -249,7 +241,9 @@ final class LdapActions
      */
     public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES)
     {
-        if (($searchResults = $this->getResults($filter, $attributes)) === false) {
+        $searchResults = $this->getResults($filter, $attributes);
+
+        if ($searchResults === false) {
             $this->eventDispatcher->notifyEvent('ldap.search',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Error al buscar objetos en DN base'))

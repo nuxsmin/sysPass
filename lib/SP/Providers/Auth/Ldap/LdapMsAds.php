@@ -42,7 +42,6 @@ final class LdapMsAds extends Ldap
     const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
     const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:='];
 
-
     /**
      * Devolver el filtro para comprobar la pertenecia al grupo
      *
@@ -110,7 +109,8 @@ final class LdapMsAds extends Ldap
             $this->eventDispatcher->notifyEvent('ldap.check.group',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Usuario verificado en grupo'))
-                    ->addDetail(__u('Usuario'), $userDn)));
+                    ->addDetail(__u('Usuario'), $userDn)
+                    ->addDetail(__u('Grupo'), $this->getGroupDn())));
 
             return true;
         }
@@ -159,6 +159,19 @@ final class LdapMsAds extends Ldap
     }
 
     /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function connect()
+    {
+        $handler = parent::connect();
+
+        @ldap_set_option($handler, LDAP_OPT_REFERRALS, 0);
+
+        return true;
+    }
+
+    /**
      * Obtener el servidor de LDAP a utilizar
      *
      * @return mixed
@@ -194,18 +207,5 @@ final class LdapMsAds extends Ldap
         $nAds = count($ads);
 
         return $nAds > 0 ? $ads[mt_rand(0, $nAds)] : $server;
-    }
-
-    /**
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function connect()
-    {
-        $handler = parent::connect();
-
-        @ldap_set_option($handler, LDAP_OPT_REFERRALS, 0);
-
-        return true;
     }
 }

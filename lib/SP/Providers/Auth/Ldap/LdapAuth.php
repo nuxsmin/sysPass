@@ -153,22 +153,24 @@ class LdapAuth implements AuthInterface
         $attributes = $this->ldap->getLdapActions()
             ->getAttributes($this->ldap->getUserDnFilter($userLogin));
 
-        if (!empty($attributes['fullname'])) {
-            $this->ldapAuthData->setName($attributes['fullname']);
+        if (!empty($attributes->get('fullname'))) {
+            $this->ldapAuthData->setName($attributes->get('fullname'));
         } else {
-            $this->ldapAuthData->setName($attributes['name'] . ' ' . $attributes['sn']);
+            $name = trim($attributes->get('name', '')
+                . ' '
+                . $attributes->get('sn', ''));
+
+            $this->ldapAuthData->setName($name);
         }
 
-        $this->ldapAuthData->setDn($attributes['dn']);
-        $this->ldapAuthData->setEmail($attributes['mail']);
-        $this->ldapAuthData->setExpire($attributes['expire']);
-
-        $groups = is_array($attributes['group']) ? $attributes['group'] : [$attributes['group']];
+        $this->ldapAuthData->setDn($attributes->get('dn'));
+        $this->ldapAuthData->setEmail($attributes->get('mail'));
+        $this->ldapAuthData->setExpire($attributes->get('expire'));
 
         $this->ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
                 $attributes['dn'],
-                $groups));
+                (array)$attributes->get('group')));
 
         return $this->ldapAuthData;
     }

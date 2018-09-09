@@ -178,8 +178,6 @@ final class LdapConnection implements LdapConnectionInterface
      */
     public function bind(string $bindDn = null, string $bindPass = null): bool
     {
-//        $this->ldapAuthData->setAuthenticated($bindDn && $bindPass);
-
         $dn = $bindDn ?: $this->ldapParams->getBindDn();
         $pass = $bindPass ?: $this->ldapParams->getBindPass();
 
