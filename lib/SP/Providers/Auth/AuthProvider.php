@@ -101,15 +101,17 @@ final class AuthProvider extends Provider
      * Autentificación de usuarios con LDAP.
      *
      * @return bool|LdapAuthData
-     * @throws Ldap\LdapException
      */
     public function authLdap()
     {
+        $data = LdapParams::getServerAndPort($this->configData->getLdapServer());
+
         $ldapParams = (new LdapParams())
-            ->setServer($this->configData->getLdapServer())
+            ->setServer($data['server'])
+            ->setPort(isset($data['port']) ? $data['port'] : 389)
+            ->setSearchBase($this->configData->getLdapBase())
             ->setBindDn($this->configData->getLdapBindUser())
             ->setBindPass($this->configData->getLdapBindPass())
-            ->setSearchBase($this->configData->getLdapBase())
             ->setAds($this->configData->isLdapAds());
 
         $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
@@ -131,9 +133,9 @@ final class AuthProvider extends Provider
         if ($ldapAuthData->getAuthenticated()) {
             // Comprobamos si la cuenta está bloqueada o expirada
             if ($ldapAuthData->getExpire() > 0) {
-                $ldapAuthData->setStatusCode(701);
+                $ldapAuthData->setStatusCode(LdapAuth::ACCOUNT_EXPIRED);
             } elseif (!$ldapAuthData->isInGroup()) {
-                $ldapAuthData->setStatusCode(702);
+                $ldapAuthData->setStatusCode(LdapAuth::ACCOUNT_NO_GROUPS);
             }
         }
 

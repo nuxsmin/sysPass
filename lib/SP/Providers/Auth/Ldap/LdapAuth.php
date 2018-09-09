@@ -35,6 +35,9 @@ use SP\Providers\Auth\AuthInterface;
  */
 class LdapAuth implements AuthInterface
 {
+    const ACCOUNT_EXPIRED = 701;
+    const ACCOUNT_NO_GROUPS = 702;
+
     /**
      * @var string
      */
@@ -56,17 +59,17 @@ class LdapAuth implements AuthInterface
      */
     protected $server;
     /**
-     * @var Ldap
+     * @var LdapInterface
      */
     private $ldap;
 
     /**
      * LdapBase constructor.
      *
-     * @param Ldap            $ldap
+     * @param LdapInterface   $ldap
      * @param EventDispatcher $eventDispatcher
      */
-    public function __construct(Ldap $ldap, EventDispatcher $eventDispatcher)
+    public function __construct(LdapInterface $ldap, EventDispatcher $eventDispatcher)
     {
         $this->ldap = $ldap;
         $this->eventDispatcher = $eventDispatcher;
@@ -111,11 +114,11 @@ class LdapAuth implements AuthInterface
             $this->ldapAuthData->setAuthGranted($this->isAuthGranted());
             $this->setUserLogin($userLoginData->getLoginUser());
 
-            $ldapConnection = $this->ldap->getLdapConnection();
-            $ldapConnection->connect();
-            $ldapConnection->bind($this->ldapAuthData->getDn(), $userLoginData->getLoginPass());
+            $this->ldap->connect();
 
             $this->getAttributes($userLoginData->getLoginUser());
+
+            $this->ldap->bind($this->ldapAuthData->getDn(), $userLoginData->getLoginPass());
         } catch (LdapException $e) {
             processException($e);
 

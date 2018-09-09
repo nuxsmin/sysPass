@@ -39,6 +39,7 @@ use SP\Http\Request;
 use SP\Providers\Auth\AuthProvider;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
+use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthData;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Crypt\TemporaryMasterPassService;
@@ -453,7 +454,7 @@ final class LoginService extends Service
                 );
             }
 
-            if ($authData->getStatusCode() === 701) {
+            if ($authData->getStatusCode() === LdapAuth::ACCOUNT_EXPIRED) {
                 $eventMessage->addDescription(__u('Cuenta expirada'));
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
@@ -466,7 +467,7 @@ final class LoginService extends Service
                 );
             }
 
-            if ($authData->getStatusCode() === 702) {
+            if ($authData->getStatusCode() === LdapAuth::ACCOUNT_NO_GROUPS) {
                 $eventMessage->addDescription(__u('El usuario no tiene grupos asociados'));
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));

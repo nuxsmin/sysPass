@@ -71,12 +71,11 @@ final class LdapActions
     /**
      * LdapActions constructor.
      *
-     * @param LdapConnection  $ldapConnection
-     * @param EventDispatcher $eventDispatcher
+     * @param LdapConnectionInterface $ldapConnection
+     * @param EventDispatcher         $eventDispatcher
      *
-     * @throws LdapException
      */
-    public function __construct(LdapConnection $ldapConnection, EventDispatcher $eventDispatcher)
+    public function __construct(LdapConnectionInterface $ldapConnection, EventDispatcher $eventDispatcher)
     {
         $this->ldapHandler = $ldapConnection->connectAndBind();
         $this->ldapParams = $ldapConnection->getLdapParams();

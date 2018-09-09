@@ -45,6 +45,7 @@ interface LdapConnectionInterface
 
     /**
      * @return resource
+     * @throws LdapException
      */
     public function connectAndBind();
 
@@ -68,4 +69,9 @@ interface LdapConnectionInterface
      * @return bool
      */
     public function unbind(): bool;
+
+    /**
+     * @return LdapParams
+     */
+    public function getLdapParams(): LdapParams;
 }

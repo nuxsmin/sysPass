@@ -64,4 +64,24 @@ interface LdapInterface
      * @return string
      */
     public function getGroupObjectFilter(): string;
+
+    /**
+     * Connects and binds to an LDAP server
+     *
+     * @throws LdapException
+     */
+    public function connect();
+
+    /**
+     * @param string $bindDn
+     * @param string $bindPass
+     *
+     * @return bool
+     */
+    public function bind(string $bindDn = null, string $bindPass = null): bool;
+
+    /**
+     * @return LdapActions
+     */
+    public function getLdapActions(): LdapActions;
 }

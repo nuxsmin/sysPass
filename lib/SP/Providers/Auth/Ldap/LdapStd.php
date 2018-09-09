@@ -162,7 +162,7 @@ final class LdapStd extends Ldap
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function connect()
+    public function connect()
     {
         $handler = parent::connect();
 

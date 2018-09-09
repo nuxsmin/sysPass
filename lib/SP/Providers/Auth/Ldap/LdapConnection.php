@@ -165,9 +165,6 @@ final class LdapConnection implements LdapConnectionInterface
 
             throw new LdapException(__u('Los parámetros de LDAP no están configurados'));
         }
-
-//        $this->server = $this->pickServer();
-//        $this->ldapAuthData->setServer($this->server);
     }
 
     /**
