@@ -60,6 +60,10 @@ final class LdapConnection implements LdapConnectionInterface
     /**
      * @var bool
      */
+    private $isTls;
+    /**
+     * @var bool
+     */
     private $debug;
 
     /**
@@ -132,7 +136,7 @@ final class LdapConnection implements LdapConnectionInterface
 
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
-            $this->eventDispatcher->notifyEvent('ldap.connection',
+            $this->eventDispatcher->notifyEvent('ldap.connect',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
                     ->addDetail(__u('Servidor'), $this->ldapParams->getServer()))
@@ -143,6 +147,8 @@ final class LdapConnection implements LdapConnectionInterface
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, self::TIMEOUT);
         @ldap_set_option($this->ldapHandler, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+        $this->isTls = $this->connectTls();
 
         return true;
     }
@@ -160,11 +166,49 @@ final class LdapConnection implements LdapConnectionInterface
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.params',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Los parámetros de LDAP no están configurados')))
-            );
+                    ->addDescription(__u('Los parámetros de LDAP no están configurados'))));
 
             throw new LdapException(__u('Los parámetros de LDAP no están configurados'));
         }
+    }
+
+    /**
+     * Connect through TLS
+     *
+     * @throws LdapException
+     */
+    private function connectTls(): bool
+    {
+        if ($this->ldapParams->isTlsEnabled()) {
+            $result = @ldap_start_tls($this->ldapHandler);
+
+            if ($result === false) {
+                $this->eventDispatcher->notifyEvent('ldap.connect.tls',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
+                        ->addDetail(__u('Servidor'), $this->ldapParams->getServer())
+                        ->addDetail(__u('TLS'), __u('ON'))
+                        ->addDetail(__u('LDAP ERROR'), self::getLdapErrorMessage($this->ldapHandler))));
+
+                throw new LdapException(__u('No es posible conectar con el servidor de LDAP'));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Registrar error de LDAP y devolver el mensaje de error
+     *
+     * @param $ldapHandler
+     *
+     * @return string
+     */
+    public static function getLdapErrorMessage($ldapHandler)
+    {
+        return sprintf('%s (%d)', ldap_error($ldapHandler), ldap_errno($ldapHandler));
     }
 
     /**
@@ -198,18 +242,6 @@ final class LdapConnection implements LdapConnectionInterface
         }
 
         return true;
-    }
-
-    /**
-     * Registrar error de LDAP y devolver el mensaje de error
-     *
-     * @param $ldapHandler
-     *
-     * @return string
-     */
-    public static function getLdapErrorMessage($ldapHandler)
-    {
-        return sprintf('%s (%d)', ldap_error($ldapHandler), ldap_errno($ldapHandler));
     }
 
     /**

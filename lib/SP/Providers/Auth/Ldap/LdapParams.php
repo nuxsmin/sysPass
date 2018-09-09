@@ -61,6 +61,10 @@ final class LdapParams
      * @var bool
      */
     protected $ads;
+    /**
+     * @var bool
+     */
+    protected $tlsEnabled;
 
     /**
      * Devolver el puerto del servidor si está establecido
@@ -206,6 +210,26 @@ final class LdapParams
     public function setAds($ads)
     {
         $this->ads = (bool)$ads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTlsEnabled(): bool
+    {
+        return $this->tlsEnabled;
+    }
+
+    /**
+     * @param bool $tlsEnabled
+     *
+     * @return LdapParams
+     */
+    public function setTlsEnabled(bool $tlsEnabled)
+    {
+        $this->tlsEnabled = $tlsEnabled;
 
         return $this;
     }

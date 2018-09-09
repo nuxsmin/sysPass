@@ -389,6 +389,10 @@ final class ConfigData implements JsonSerializable
      * @var int
      */
     private $accountExpireTime = 10368000;
+    /**
+     * @var bool
+     */
+    private $ldapTlsEnabled = false;
 
     /**
      * @return array
@@ -2144,5 +2148,21 @@ final class ConfigData implements JsonSerializable
         $this->accountExpireTime = (int)$accountExpireTime;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLdapTlsEnabled(): bool
+    {
+        return (bool)$this->ldapTlsEnabled;
+    }
+
+    /**
+     * @param bool $ldapTlsEnabled
+     */
+    public function setLdapTlsEnabled(bool $ldapTlsEnabled)
+    {
+        $this->ldapTlsEnabled = (int)$ldapTlsEnabled;
     }
 }

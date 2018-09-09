@@ -66,6 +66,23 @@
                             </span>
                     </li>
 
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_tls_enabled">
+                                <input type="checkbox" id="ldap_tls_enabled"
+                                       class="mdl-switch__input"
+                                       name="ldap_tls_enabled" <?php echo $configData->isLdapTlsEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('TLS'); ?></span>
+                                <span class="mdl-list__item-sub-title">
+                                    <?php echo __('Habilita la conexión mediante TLS.'); ?>
+                                </span>
+                            </span>
+                    </li>
+
                 </ul>
             </td>
         </tr>
