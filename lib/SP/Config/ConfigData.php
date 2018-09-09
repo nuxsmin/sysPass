@@ -206,10 +206,6 @@ final class ConfigData implements JsonSerializable
      */
     private $ldapServer;
     /**
-     * @var string
-     */
-    private $ldapUserattr;
-    /**
      * @var bool
      */
     private $logEnabled = true;
@@ -1245,26 +1241,6 @@ final class ConfigData implements JsonSerializable
     public function setLdapServer($ldapServer)
     {
         $this->ldapServer = $ldapServer;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLdapUserattr()
-    {
-        return $this->ldapUserattr;
-    }
-
-    /**
-     * @param string $ldapUserattr
-     *
-     * @return $this
-     */
-    public function setLdapUserattr($ldapUserattr)
-    {
-        $this->ldapUserattr = $ldapUserattr;
 
         return $this;
     }

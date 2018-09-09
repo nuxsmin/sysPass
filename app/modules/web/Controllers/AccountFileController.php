@@ -37,6 +37,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountService;
+use SP\Storage\File\FileHandler;
 use SP\Util\ErrorUtil;
 use SP\Util\FileUtil;
 use SP\Util\Util;
@@ -166,6 +167,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 throw new SPException(__u('No hay extensiones permitidas'), SPException::ERROR);
             }
 
+            $fileHandler = new FileHandler($file['tmp_name']);
+
             $fileData = new FileData();
             $fileData->setAccountId($accountId);
             $fileData->setName(Html::sanitize($file['name']));
@@ -210,8 +213,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 );
             }
 
-            // Leemos el archivo a una variable
-            $fileData->setContent(file_get_contents($file['tmp_name']));
+            $fileData->setContent($fileHandler->readToString());
 
             if ($fileData->getContent() === false) {
                 throw new SPException(__u('Error interno al leer el archivo'));

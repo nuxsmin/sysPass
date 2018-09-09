@@ -105,7 +105,7 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="mail_user" name="mail_user" type="email"
+                    <input id="mail_user" name="mail_user" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="50" value="<?php echo $configData->getMailUser(); ?>"/>
                     <label class="mdl-textfield__label" for="mail_user"><?php echo __('Usuario'); ?></label>
