@@ -168,10 +168,6 @@ final class AccountForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Es necesario un nombre de cliente'));
         }
 
-        if (!$this->accountRequest->login) {
-            throw new ValidationException(__u('Es necesario un usuario'));
-        }
-
         if (!$this->accountRequest->categoryId) {
             throw new ValidationException(__u('Es necesario una categoría'));
         }
