@@ -62,7 +62,7 @@ $showCustomFields = count($customFields) > 0;
                                 <input id="name" name="name" type="text" required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>>
+                                       value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>" <?php echo $readonly; ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Nombre de cuenta'); ?></label>
                             </div>
@@ -136,7 +136,7 @@ $showCustomFields = count($customFields) > 0;
                                 <input id="login" name="login" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo $gotData ? $accountData->getLogin() : ''; ?>" <?php echo $readonly; ?>>
+                                       value="<?php echo $gotData ? htmlentities($accountData->getLogin()) : ''; ?>" <?php echo $readonly; ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Usuario de acceso'); ?></label>
                             </div>
@@ -194,7 +194,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes"
-                                  maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getNotes() : ''; ?></textarea>
+                                  maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? htmlentities($accountData->getNotes()) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                             </div>
