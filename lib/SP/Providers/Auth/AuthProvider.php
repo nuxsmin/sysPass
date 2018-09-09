@@ -31,7 +31,9 @@ use SP\Providers\Auth\Browser\Browser;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\Database;
 use SP\Providers\Auth\Database\DatabaseAuthData;
+use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapStd;
@@ -84,11 +86,11 @@ final class AuthProvider extends Provider
         $auths = [];
 
         foreach ($this->auths as $authType) {
-            /** @var AuthDataBase $authDataBase */
-            $authDataBase = $this->$authType();
+            /** @var AuthDataBase $data */
+            $data = $this->{$authType}();
 
-            if ($authDataBase !== false) {
-                $auths[] = new AuthResult($authType, $authDataBase);
+            if ($data !== false) {
+                $auths[] = new AuthResult($authType, $data);
             }
         }
 
@@ -99,6 +101,7 @@ final class AuthProvider extends Provider
      * Autentificación de usuarios con LDAP.
      *
      * @return bool|LdapAuthData
+     * @throws Ldap\LdapException
      */
     public function authLdap()
     {
@@ -109,26 +112,30 @@ final class AuthProvider extends Provider
             ->setSearchBase($this->configData->getLdapBase())
             ->setAds($this->configData->isLdapAds());
 
+        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
+
         if ($this->configData->isLdapAds()) {
-            $ldap = new LdapMsAds($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
+            $ldap = new LdapAuth(
+                new LdapMsAds($ldapConnection, $this->eventDispatcher),
+                $this->eventDispatcher);
         } else {
-            $ldap = new LdapStd($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
+            $ldap = new LdapAuth(
+                new LdapStd($ldapConnection, $this->eventDispatcher),
+                $this->eventDispatcher);
         }
 
         $ldapAuthData = $ldap->getLdapAuthData();
 
-        if (!$ldap->authenticate($this->userLoginData)) {
-            return $ldapAuthData->getAuthenticated() === true ? $ldapAuthData : false;
-        }
+        $ldapAuthData->setAuthenticated($ldap->authenticate($this->userLoginData));
 
-        // Comprobamos si la cuenta está bloqueada o expirada
-        if ($ldapAuthData->getExpire() > 0) {
-            $ldapAuthData->setStatusCode(701);
-        } elseif (!$ldapAuthData->isInGroup()) {
-            $ldapAuthData->setStatusCode(702);
+        if ($ldapAuthData->getAuthenticated()) {
+            // Comprobamos si la cuenta está bloqueada o expirada
+            if ($ldapAuthData->getExpire() > 0) {
+                $ldapAuthData->setStatusCode(701);
+            } elseif (!$ldapAuthData->isInGroup()) {
+                $ldapAuthData->setStatusCode(702);
+            }
         }
-
-        $ldapAuthData->setAuthenticated(true);
 
         return $ldapAuthData;
     }

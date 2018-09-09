@@ -50,4 +50,38 @@ final class LdapUtil
 
         return preg_replace($chars, '\\\1', $dn);
     }
+
+    /**
+     * Obtener el nombre del grupo a partir del CN
+     *
+     * @param string $group
+     *
+     * @return bool
+     */
+    public static function getGroupName(string $group)
+    {
+        if (preg_match('/^cn=(?<groupname>[^,]+),.*/i', $group, $matches)) {
+            return $matches['groupname'];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array  $attributes
+     * @param string $value
+     *
+     * @return string
+     */
+    public static function getAttributesForFilter(array $attributes, $value): string
+    {
+        $out = [];
+        $value = ldap_escape((string)$value, null, LDAP_ESCAPE_FILTER);
+
+        foreach ($attributes as $attribute) {
+            $out[] = '(' . $attribute . '=' . $value . ')';
+        }
+
+        return implode('', $out);
+    }
 }

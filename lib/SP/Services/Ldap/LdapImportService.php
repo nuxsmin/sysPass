@@ -28,7 +28,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
-use SP\Providers\Auth\Ldap\LdapBase;
+use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapParams;
@@ -94,9 +95,11 @@ final class LdapImportService extends Service
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->findGroups();
+            $objects = $ldap->getLdapActions()
+                ->getObjects($ldap->getGroupObjectFilter());
         } else {
-            $objects = $ldap->findObjectsByFilter($ldapImportParams->filter);
+            $objects = $ldap->getLdapActions()
+                ->getObjects($ldapImportParams->filter);
         }
 
         $numObjects = (int)$objects['count'];
@@ -154,14 +157,17 @@ final class LdapImportService extends Service
     /**
      * @param LdapParams $ldapParams
      *
-     * @return LdapBase
+     * @return Ldap
+     * @throws LdapException
      */
     protected function getLdap(LdapParams $ldapParams)
     {
+        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, $this->config->getConfigData()->isDebug());
+
         if ($ldapParams->isAds()) {
-            return new LdapMsAds($ldapParams, $this->eventDispatcher, true);
+            return new LdapMsAds($ldapConnection, $this->eventDispatcher);
         } else {
-            return new LdapStd($ldapParams, $this->eventDispatcher, true);
+            return new LdapStd($ldapConnection, $this->eventDispatcher);
         }
     }
 
@@ -176,9 +182,11 @@ final class LdapImportService extends Service
         $ldap = $this->getLdap($ldapParams);
 
         if (empty($ldapImportParams->filter)) {
-            $objects = $ldap->findUsersByGroupFilter();
+            $objects = $ldap->getLdapActions()
+                ->getObjects($ldap->getGroupMembershipFilter());
         } else {
-            $objects = $ldap->findObjectsByFilter($ldapImportParams->filter);
+            $objects = $ldap->getLdapActions()
+                ->getObjects($ldapImportParams->filter);
         }
 
         $numObjects = (int)$objects['count'];

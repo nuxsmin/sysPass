@@ -24,7 +24,9 @@
 
 namespace SP\Services\Ldap;
 
-use SP\Providers\Auth\Ldap\LdapBase;
+use SP\Providers\Auth\Ldap\Ldap;
+use SP\Providers\Auth\Ldap\LdapConnection;
+use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapStd;
@@ -38,45 +40,52 @@ use SP\Services\Service;
 final class LdapCheckService extends Service
 {
     /**
-     * @var LdapBase
+     * @var Ldap
      */
     protected $ldap;
 
     /**
      * @param LdapParams $ldapParams
      *
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function checkConnection(LdapParams $ldapParams)
     {
-        if ($ldapParams->isAds()) {
-            $this->ldap = new LdapMsAds($ldapParams, $this->eventDispatcher, true);
-        } else {
-            $this->ldap = new LdapStd($ldapParams, $this->eventDispatcher, true);
-        }
+        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, true);
+        $ldapConnection->checkConnection();
 
-        $this->ldap->checkConnection();
+        if ($ldapParams->isAds()) {
+            $this->ldap = new LdapMsAds($ldapConnection, $this->eventDispatcher);
+        } else {
+            $this->ldap = new LdapStd($ldapConnection, $this->eventDispatcher);
+        }
     }
 
     /**
      * @param bool $includeGroups
      *
      * @return array
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function getObjects($includeGroups = true)
     {
+        $ldapActions = $this->ldap->getLdapActions();
+
         $data = ['count' => 0, 'results' => []];
 
         $data['results'][] = [
             'icon' => 'person',
-            'items' => $this->ldapResultsMapper($this->ldap->findUsersByGroupFilter(['dn']))
+            'items' => $this->ldapResultsMapper(
+                $ldapActions->getObjects(
+                    $this->ldap->getGroupMembershipFilter(), ['dn']))
         ];
 
         if ($includeGroups) {
             $data['results'][] = [
                 'icon' => 'group',
-                'items' => $this->ldapResultsMapper($this->ldap->findGroups(['dn']))
+                'items' => $this->ldapResultsMapper(
+                    $ldapActions->getObjects(
+                        $this->ldap->getGroupObjectFilter(), ['dn']))
             ];
         }
 
@@ -116,11 +125,12 @@ final class LdapCheckService extends Service
      * @param $filter
      *
      * @return array
-     * @throws \SP\Providers\Auth\Ldap\LdapException
+     * @throws LdapException
      */
     public function getObjectsByFilter($filter)
     {
-        $objects = $this->ldapResultsMapper($this->ldap->findObjectsByFilter($filter, ['dn']));
+        $objects = $this->ldapResultsMapper(
+            $this->ldap->getLdapActions()->getObjects($filter, ['dn']));
 
         return [
             'count' => count($objects),

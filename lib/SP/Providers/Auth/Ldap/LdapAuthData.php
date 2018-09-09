@@ -42,10 +42,6 @@ final class LdapAuthData extends AuthDataBase
      */
     protected $groupDn;
     /**
-     * @var array
-     */
-    protected $groups = [];
-    /**
      * @var int
      */
     protected $expire = 0;
@@ -68,22 +64,6 @@ final class LdapAuthData extends AuthDataBase
     public function setDn($dn)
     {
         $this->dn = $dn;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    /**
-     * @param array|string $groups
-     */
-    public function setGroups($groups)
-    {
-        $this->groups = is_string($groups) ? [$groups] : $groups;
     }
 
     /**

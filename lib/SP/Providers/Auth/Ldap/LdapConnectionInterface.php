@@ -24,44 +24,48 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-
 /**
  * Interface LdapInterface
  *
- * @package SP\Providers\Auth\Ldap
+ * @package Auth\Ldap
  */
-interface LdapInterface
+interface LdapConnectionInterface
 {
     /**
-     * Obtener el filtro para buscar el usuario
-     *
-     * @param string $userLogin
-     *
-     * @return string
+     * Comprobar la conexión al servidor de LDAP.
      */
-    public function getUserDnFilter(string $userLogin): string;
+    public function checkConnection();
 
     /**
-     * Devolver el filtro para comprobar la pertenecia al grupo
-     *
-     * @return string
-     */
-    public function getGroupMembershipFilter(): string;
-
-    /**
-     * Buscar al usuario en un grupo.
-     *
-     * @param string $userDn
-     * @param array  $groupsDn
+     * Comprobar si los parámetros necesarios de LDAP están establecidos.
      *
      * @return bool
      */
-    public function isUserInGroup(string $userDn, array $groupsDn): bool;
+    public function checkParams();
 
     /**
-     * Devolver el filtro para objetos del tipo grupo
-     *
-     * @return string
+     * @return resource
      */
-    public function getGroupObjectFilter(): string;
+    public function connectAndBind();
+
+    /**
+     * Realizar la conexión al servidor de LDAP.
+     *
+     * @throws LdapException
+     * @return bool
+     */
+    public function connect(): bool;
+
+    /**
+     * @param string $bindDn
+     * @param string $bindPass
+     *
+     * @return bool
+     */
+    public function bind(string $bindDn = null, string $bindPass = null): bool;
+
+    /**
+     * @return bool
+     */
+    public function unbind(): bool;
 }

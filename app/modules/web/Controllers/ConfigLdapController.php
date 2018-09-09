@@ -140,7 +140,7 @@ final class ConfigLdapController extends SimpleControllerBase
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
             $ldapCheckService->checkConnection($ldapParams);
 
-            $data = $ldapCheckService->getObjects();
+            $data = $ldapCheckService->getObjects(false);
 
             $template = $this->dic->get(Template::class);
             $template->addTemplate('results', 'itemshow');
@@ -239,7 +239,8 @@ final class ConfigLdapController extends SimpleControllerBase
             $ldapParams = $this->getLdapParamsFromRequest();
 
             $this->eventDispatcher->notifyEvent('import.ldap.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Importación LDAP')))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Importación LDAP')))
             );
 
             $userLdapService = $this->dic->get(LdapImportService::class);
@@ -253,7 +254,8 @@ final class ConfigLdapController extends SimpleControllerBase
             }
 
             $this->eventDispatcher->notifyEvent('import.ldap.end',
-                new Event($this, EventMessage::factory()->addDescription(__u('Importación finalizada')))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Importación finalizada')))
             );
 
             if ($userLdapService->getTotalObjects() === 0) {

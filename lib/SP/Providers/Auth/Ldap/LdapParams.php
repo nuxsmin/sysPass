@@ -40,7 +40,7 @@ final class LdapParams
     /**
      * @var int
      */
-    protected $port;
+    protected $port = 389;
     /**
      * @var string
      */
