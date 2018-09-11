@@ -60,11 +60,11 @@ final class LdapParams
     /**
      * @var bool
      */
-    protected $ads;
+    protected $ads = false;
     /**
      * @var bool
      */
-    protected $tlsEnabled;
+    protected $tlsEnabled = false;
 
     /**
      * Devolver el puerto del servidor si está establecido
