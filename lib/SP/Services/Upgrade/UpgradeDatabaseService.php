@@ -30,7 +30,6 @@ use SP\Core\Events\EventMessage;
 use SP\Services\Service;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\MySQLFileParser;
-use SP\Storage\Database\QueryData;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 use SP\Util\Version;
@@ -45,7 +44,14 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['300.18010101', '300.18072302', '300.18072501', '300.18083001', '300.18083002'];
+    const UPGRADES = [
+        '300.18010101',
+        '300.18072302',
+        '300.18072501',
+        '300.18083001',
+        '300.18083002',
+        '300.18091101'
+    ];
 
     /**
      * @var Database
@@ -67,7 +73,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * Inicia el proceso de actualización de la BBDD.
      *
-     * @param int        $version con la versión de la BBDD actual
+     * @param int $version con la versión de la BBDD actual
      * @param ConfigData $configData
      *
      * @return bool
@@ -106,18 +112,6 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
                 $this->config->saveConfig($configData, false);
             }
         }
-
-//        foreach (self::AUX_UPGRADES as $auxVersion) {
-//            if (Util::checkVersion($version, $auxVersion)
-//                && $this->auxUpgrades($auxVersion) === false
-//            ) {
-//                throw new UpgradeException(
-//                    __u('Error al aplicar la actualización auxiliar'),
-//                    UpgradeException::CRITICAL,
-//                    __u('Compruebe el registro de eventos para más detalles')
-//                );
-//            }
-//        }
 
         $this->eventDispatcher->notifyEvent('upgrade.db.end',
             new Event($this, EventMessage::factory()
@@ -165,12 +159,13 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
                         ->addDetail(__u('Versión'), $version))
                 );
 
-                $queryData = new QueryData();
-                $queryData->setQuery($query);
-
-                $this->db->doQuery($queryData);
+                // Direct PDO handling
+                $this->db->getDbHandler()
+                    ->getConnection()
+                    ->exec($query);
             } catch (\Exception $e) {
                 processException($e);
+
                 logger('SQL: ' . $query);
 
                 $this->eventDispatcher->notifyEvent('exception',

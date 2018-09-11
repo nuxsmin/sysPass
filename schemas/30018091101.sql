@@ -1,0 +1,52 @@
+DELIMITER $$
+
+ALTER SCHEMA DEFAULT COLLATE utf8_unicode_ci $$
+
+ALTER TABLE Account
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountFile
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountHistory
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountToFavorite
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountToTag
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountToUser
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AccountToUserGroup
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE AuthToken
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Category
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Client
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Config
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE CustomFieldData
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE CustomFieldDefinition
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE CustomFieldType
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE EventLog
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Notification
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Plugin
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE PublicLink
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Tag
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE Track
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE User
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE UserPassRecover
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE UserProfile
+  COLLATE utf8_unicode_ci $$
+ALTER TABLE UserToUserGroup
+  COLLATE utf8_unicode_ci $$

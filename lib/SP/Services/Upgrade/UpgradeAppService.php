@@ -54,6 +54,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      * @param ConfigData $configData
      *
      * @throws UpgradeException
+     * @throws \SP\Storage\File\FileException
      */
     public function upgrade($version, ConfigData $configData)
     {
