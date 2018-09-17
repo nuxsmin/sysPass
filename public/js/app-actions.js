@@ -21,10 +21,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sysPass.Actions = function (Common) {
+sysPass.Actions = function (log) {
     "use strict";
-
-    const log = Common.log;
 
     // Variable para almacenar la llamada a setTimeout()
     let timeout = 0;
@@ -48,19 +46,19 @@ sysPass.Actions = function (Common) {
             isAjax: 1
         };
 
-        const opts = Common.appRequests().getRequestOpts();
+        const opts = sysPassApp.requests.getRequestOpts();
         opts.url = ajaxUrl.entrypoint;
         opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
         opts.data = data;
 
-        Common.appRequests().getActionCall(opts, function (response) {
+        sysPassApp.requests.getActionCall(opts, function (response) {
             const $content = $("#content");
 
             $content.empty().html(response);
 
-            const views = Common.triggers().views;
+            const views = sysPassApp.triggers.views;
             views.common($content);
 
             if (view !== undefined && typeof views[view] === "function") {
@@ -81,19 +79,19 @@ sysPass.Actions = function (Common) {
 
         data.isAjax = 1;
 
-        const opts = Common.appRequests().getRequestOpts();
+        const opts = sysPassApp.requests.getRequestOpts();
         opts.url = ajaxUrl.entrypoint;
         opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
         opts.data = data;
 
-        Common.appRequests().getActionCall(opts, function (response) {
+        sysPassApp.requests.getActionCall(opts, function (response) {
             const $content = $("#content");
 
             $content.empty().html(response);
 
-            const views = Common.triggers().views;
+            const views = sysPassApp.triggers.views;
             views.common($content);
 
             if (view !== undefined && typeof views[view] === "function") {
@@ -128,13 +126,13 @@ sysPass.Actions = function (Common) {
                 open: function () {
                     const $boxPopup = $("#box-popup");
 
-                    Common.appTriggers().views.common($boxPopup);
-
-                    $boxPopup.find(":input:text:visible:first").focus();
+                    sysPassApp.triggers.views.common($boxPopup);
 
                     if (callback !== undefined && typeof callback.open === "function") {
                         callback.open();
                     }
+
+                    $boxPopup.find("form input:visible:first").focus();
                 },
                 close: function () {
                     if (callback !== undefined && typeof callback.close === "function") {
@@ -176,7 +174,7 @@ sysPass.Actions = function (Common) {
                     });
 
                     setTimeout(function () {
-                        const image = Common.resizeImage($image);
+                        const image = sysPassApp.util.resizeImage($image);
 
                         $content.css({
                             backgroundColor: "#fff",
@@ -205,45 +203,45 @@ sysPass.Actions = function (Common) {
         view: function ($obj) {
             log.info("account:show");
 
-            getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
         },
         viewHistory: function ($obj) {
             log.info("account:showHistory");
 
-            getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), $obj.val()), "account");
+            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.val()), "account");
         },
         edit: function ($obj) {
             log.info("account:edit");
 
-            getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
         },
         delete: function ($obj) {
             log.info("account:delete");
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[3] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[3] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.data = {
                             r: "account/saveDelete/" + $obj.data("item-id"),
-                            sk: Common.sk.get()
+                            sk: sysPassApp.sk.get()
                         };
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
 
                             account.search($obj);
                         });
@@ -258,18 +256,18 @@ sysPass.Actions = function (Common) {
             const parentId = $obj.data("parent-id") || 0;
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + id + "/" + parentId,
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
-                    Common.msg.out(json);
+                    sysPassApp.msg.out(json);
                 } else {
                     const $container = $(json.data.html);
 
@@ -304,17 +302,17 @@ sysPass.Actions = function (Common) {
             const parentId = $obj.data("parent-id");
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.async = false;
             opts.data = {
                 r: $obj.data("action-route") + "/" + id,
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            return Common.appRequests().getActionCall(opts);
+            return sysPassApp.requests.getActionCall(opts);
         },
         copyPassHistory: function ($obj) {
             log.info("account:copyPassHistory");
@@ -324,7 +322,7 @@ sysPass.Actions = function (Common) {
         copy: function ($obj) {
             log.info("account:copy");
 
-            getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
         },
         saveFavorite: function ($obj, callback) {
             log.info("account:saveFavorite");
@@ -332,16 +330,16 @@ sysPass.Actions = function (Common) {
             const isOn = $obj.data("status") === "on";
             const actionRoute = isOn ? $obj.data("action-route-off") : $obj.data("action-route-on");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.data = {
                 r: actionRoute + "/" + $obj.data("item-id"),
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     $obj.data("status", isOn ? "off" : "on");
@@ -355,12 +353,12 @@ sysPass.Actions = function (Common) {
         request: function ($obj) {
             log.info("account:request");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0 && json.data['nextAction'] !== undefined) {
                     getContent({r: json.data.nextAction['nextAction']}, "account");
@@ -391,37 +389,37 @@ sysPass.Actions = function (Common) {
             const parentId = $obj.data("parent-id");
             const itemId = parentId === undefined ? $obj.data("item-id") : parentId;
 
-            getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), itemId), "account");
+            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), itemId), "account");
         },
         saveEditRestore: function ($obj) {
             log.info("account:restore");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("history-id") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.data.itemId !== undefined && json.data.nextAction !== undefined) {
-                    getContent(Common.appRequests().getRouteForQuery(json.data.nextAction, json.data.itemId), "account");
+                    getContent(sysPassApp.requests.getRouteForQuery(json.data.nextAction, json.data.itemId), "account");
                 }
             });
         },
         listFiles: function ($obj) {
             log.info("account:getfiles");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
             opts.type = "html";
             opts.url = ajaxUrl.entrypoint;
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
                 del: $obj.data("delete"),
-                sk: Common.sk.get()
+                sk: sysPassApp.sk.get()
             };
 
-            Common.appRequests().getActionCall(opts, function (response) {
+            sysPassApp.requests.getActionCall(opts, function (response) {
                 $obj.html(response);
             });
         },
@@ -429,7 +427,7 @@ sysPass.Actions = function (Common) {
             log.info("account:search");
 
             const $frmSearch = $("#frmSearch");
-            $frmSearch.find("input[name='sk']").val(Common.sk.get());
+            $frmSearch.find("input[name='sk']").val(sysPassApp.sk.get());
 
             order.key = $frmSearch.find("input[name='skey']").val();
             order.dir = $frmSearch.find("input[name='sorder']").val();
@@ -438,17 +436,17 @@ sysPass.Actions = function (Common) {
                 $frmSearch.find("input[name='start']").val(0);
             }
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $frmSearch.data("action-route");
             opts.method = "get";
             opts.data = $frmSearch.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status === 10) {
-                    Common.msg.out(json);
+                    sysPassApp.msg.out(json);
                 }
 
-                Common.sk.set(json.data.sk);
+                sysPassApp.sk.set(json.data.sk);
 
                 $("#res-content").empty().html(json.data.html);
             });
@@ -456,7 +454,7 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("account:save");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
@@ -465,11 +463,11 @@ sysPass.Actions = function (Common) {
                 opts.data += "&" + value.getAttribute("id") + "_update=1";
             });
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.data.itemId !== undefined && json.data.nextAction !== undefined) {
-                    getContent(Common.appRequests().getRouteForQuery(json.data.nextAction, json.data.itemId), "account");
+                    getContent(sysPassApp.requests.getRouteForQuery(json.data.nextAction, json.data.itemId), "account");
                 }
             });
         }
@@ -487,7 +485,7 @@ sysPass.Actions = function (Common) {
             const $dst = $obj[0].selectize;
             $dst.clearOptions();
             $dst.load(function (callback) {
-                const opts = Common.appRequests().getRequestOpts();
+                const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
@@ -495,12 +493,12 @@ sysPass.Actions = function (Common) {
                     sk: $obj.data("sk")
                 };
 
-                Common.appRequests().getActionCall(opts, function (json) {
+                sysPassApp.requests.getActionCall(opts, function (json) {
                     callback(json.data);
 
                     $dst.setValue($obj.data("selected-id"), true);
 
-                    Common.appTriggers().updateFormHash();
+                    sysPassApp.triggers.updateFormHash();
                 });
             });
         },
@@ -510,15 +508,15 @@ sysPass.Actions = function (Common) {
             const $dst = $("#" + $obj.data("item-dst"))[0].selectize;
             $dst.clearOptions();
             $dst.load(function (callback) {
-                const opts = Common.appRequests().getRequestOpts();
+                const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
                     r: $obj.data("item-route"),
-                    sk: Common.sk.get()
+                    sk: sysPassApp.sk.get()
                 };
 
-                Common.appRequests().getActionCall(opts, function (json) {
+                sysPassApp.requests.getActionCall(opts, function (json) {
                     callback(json);
                 });
             });
@@ -542,17 +540,17 @@ sysPass.Actions = function (Common) {
         password: function ($obj) {
             log.info("user:password");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.type = "html";
             opts.method = "get";
             opts.url = ajaxUrl.entrypoint;
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (response) {
+            sysPassApp.requests.getActionCall(opts, function (response) {
                 if (response.length === 0) {
                     main.logout();
                 } else {
@@ -563,16 +561,16 @@ sysPass.Actions = function (Common) {
         passreset: function ($obj) {
             log.info("user:passreset");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "/?r=" + $obj.data("action-route");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     setTimeout(function () {
-                        Common.redirect("index.php");
+                        sysPassApp.redirect("index.php");
                     }, 2000);
                 }
             });
@@ -586,28 +584,28 @@ sysPass.Actions = function (Common) {
      */
     const main = {
         logout: function () {
-            Common.redirect("index.php?r=login/logout");
+            sysPassApp.util.redirect("index.php?r=login/logout");
         },
         login: function ($obj) {
             log.info("main:login");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.method = "get";
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 const $extra = $(".extra-hidden");
 
                 switch (json.status) {
                     case 0:
-                        Common.redirect(json.data.url);
+                        sysPassApp.util.redirect(json.data.url);
                         break;
                     case 2:
-                        Common.msg.out(json);
+                        sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:first").focus();
+                        $obj.find("input:visible:first").focus();
 
                         if ($extra.length > 0) {
                             $extra.hide();
@@ -617,10 +615,10 @@ sysPass.Actions = function (Common) {
                         $("#smpass").show();
                         break;
                     case 5:
-                        Common.msg.out(json);
+                        sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:first").focus();
+                        $obj.find("input:visible:first").focus();
 
                         if ($extra.length > 0) {
                             $extra.hide();
@@ -630,26 +628,26 @@ sysPass.Actions = function (Common) {
                         $("#soldpass").show();
                         break;
                     default:
-                        Common.msg.out(json);
+                        sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:first").focus();
+                        $obj.find("input:visible:first").focus();
                 }
             });
         },
         install: function ($obj) {
             log.info("main:install");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     setTimeout(function () {
-                        Common.redirect("index.php?r=login/index");
+                        sysPassApp.redirect("index.php?r=login/index");
                     }, 1000);
                 }
             });
@@ -657,20 +655,20 @@ sysPass.Actions = function (Common) {
         upgrade: function ($obj) {
             log.info("main:upgrade");
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[59] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
@@ -679,14 +677,14 @@ sysPass.Actions = function (Common) {
                             taskRunner = task(taskId);
                         }
 
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data('action-route');
                         opts.method = "get";
                         opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
 
                             if (json.status !== 0) {
                                 $obj.find(":input[name=key]").val("");
@@ -696,7 +694,7 @@ sysPass.Actions = function (Common) {
                                 }
 
                                 setTimeout(function () {
-                                    Common.redirect("index.php");
+                                    sysPassApp.redirect("index.php");
                                 }, 5000);
                             }
                         });
@@ -707,7 +705,7 @@ sysPass.Actions = function (Common) {
         getUpdates: function () {
             log.info("main:getUpdates");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=status/checkRelease";
             opts.method = "get";
             opts.timeout = 10000;
@@ -716,7 +714,7 @@ sysPass.Actions = function (Common) {
 
             const $updates = $("#updates");
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status === 0) {
                     if (json.data.length > 0) {
                         $updates.html(
@@ -726,12 +724,12 @@ sysPass.Actions = function (Common) {
                     } else {
                         $updates.html(
                             '<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>' +
-                            '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[68] + '</span>');
+                            '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[68] + '</span>');
                     }
                 } else {
                     $updates.html(
                         '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
-                        '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[69] + '</span>');
+                        '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[69] + '</span>');
                 }
 
                 if (componentHandler !== undefined) {
@@ -740,13 +738,13 @@ sysPass.Actions = function (Common) {
             }, function () {
                 $updates.html(
                     '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
-                    '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[69] + '</span>');
+                    '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[69] + '</span>');
             });
         },
         getNotices: function () {
             log.info("main:getNotices");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=status/checkNotices";
             opts.method = "get";
             opts.timeout = 10000;
@@ -755,7 +753,7 @@ sysPass.Actions = function (Common) {
 
             const $notices = $("#notices");
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status === 0) {
                     if (json.data.length > 0) {
                         $notices.html(
@@ -763,7 +761,7 @@ sysPass.Actions = function (Common) {
                             '<div id="notices-info" class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200" ' +
                             'data-badge="' + json.data.length + '">feedback</div></a>' +
                             '<span for="notices-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' +
-                            '<div class="notices-title">' + Common.config().LANG[70] + '</div>' +
+                            '<div class="notices-title">' + sysPassApp.config.LANG[70] + '</div>' +
                             json.data.map(x => x.title).join('<br>') +
                             '</span>');
                     }
@@ -786,14 +784,14 @@ sysPass.Actions = function (Common) {
             log.info("checks:wiki");
 
             const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(Common.sk.get());
+            $form.find("[name='sk']").val(sysPassApp.sk.get());
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.data = $form.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     $("#dokuWikiResCheck").html(json.data);
@@ -807,29 +805,29 @@ sysPass.Actions = function (Common) {
      *
      * @type {{save: config.save, backup: config.backup, export: config.export, import: config.import}}
      */
-    const config = {
+    const configManager = {
         save: function ($obj) {
             log.info("config:save");
 
             tabs.save($obj);
         },
         masterpass: function ($obj) {
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[59] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
 
                         $obj.find(":input[type=password]").val("");
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
@@ -838,13 +836,13 @@ sysPass.Actions = function (Common) {
                             taskRunner = task(taskId);
                         }
 
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
 
                             $obj.find(":input[type=password]").val("");
 
@@ -861,13 +859,13 @@ sysPass.Actions = function (Common) {
 
             tabs.state.update($obj);
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.useFullLoading = true;
-            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
+            opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     getContent({
@@ -885,38 +883,38 @@ sysPass.Actions = function (Common) {
         import: function ($obj) {
             log.info("config:import");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
+            opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
             });
         },
         refreshMpass: function ($obj) {
             log.info("config:import");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = {
                 sk: $obj.data("sk"),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
             });
         },
         mailCheck: function ($obj) {
             log.info("config:mailCheck");
 
             const $form = $($obj.data("src"));
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
-            opts.data = $form.serialize() + "&sk=" + Common.sk.get();
+            opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
             });
         }
     };
@@ -928,17 +926,17 @@ sysPass.Actions = function (Common) {
         view: function ($obj) {
             log.info("file:view");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: Common.sk.get()
+                sk: sysPassApp.sk.get()
             };
 
-            Common.appRequests().getActionCall(opts, function (response) {
+            sysPassApp.requests.getActionCall(opts, function (response) {
                 if (response.status !== 0) {
-                    return Common.msg.out(response);
+                    return sysPassApp.msg.out(response);
                 }
 
                 showImageBox($obj, response.data.html);
@@ -949,7 +947,7 @@ sysPass.Actions = function (Common) {
 
             const data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: Common.sk.get()
+                sk: sysPassApp.sk.get()
             };
 
             $.fileDownload(ajaxUrl.entrypoint, {"httpMethod": "GET", "data": data});
@@ -957,31 +955,31 @@ sysPass.Actions = function (Common) {
         delete: function ($obj) {
             log.info("file:delete");
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[15] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[15] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
                         opts.data = {
                             r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                            sk: Common.sk.get()
+                            sk: sysPassApp.sk.get()
                         };
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
 
                             if (json.status === 0) {
                                 account.listFiles($("#list-account-files"));
@@ -1003,7 +1001,7 @@ sysPass.Actions = function (Common) {
             const request = function (notify) {
                 const itemId = $obj.data("item-id");
 
-                const opts = Common.appRequests().getRequestOpts();
+                const opts = sysPassApp.requests.getRequestOpts();
 
                 if (itemId) {
                     opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + itemId + "/" + notify;
@@ -1012,8 +1010,8 @@ sysPass.Actions = function (Common) {
                     opts.data = $obj.serialize();
                 }
 
-                Common.appRequests().getActionCall(opts, function (json) {
-                    Common.msg.out(json);
+                sysPassApp.requests.getActionCall(opts, function (json) {
+                    sysPassApp.msg.out(json);
 
                     if (json.status === 0) {
                         getContent({r: $obj.data("action-next") + "/" + itemId});
@@ -1021,12 +1019,12 @@ sysPass.Actions = function (Common) {
                 });
             };
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[48] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
@@ -1034,7 +1032,7 @@ sysPass.Actions = function (Common) {
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         e.preventDefault();
 
@@ -1050,17 +1048,17 @@ sysPass.Actions = function (Common) {
 
             const itemId = $obj.data("item-id");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + itemId,
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     const actionNext = $obj.data("action-next");
@@ -1081,7 +1079,7 @@ sysPass.Actions = function (Common) {
     };
 
     /**
-     * Common tabs actions
+     * sysPassApp tabs actions
      *
      * @type {{state: {tab: {index: number, refresh: boolean, route: string}, itemId: number, update: update}, save: save}}
      */
@@ -1109,13 +1107,13 @@ sysPass.Actions = function (Common) {
 
             tabs.state.update($obj);
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = $obj.data("action-method") || "post";
-            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
+            opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     if (typeof onSuccess === "function") {
@@ -1126,7 +1124,7 @@ sysPass.Actions = function (Common) {
                         log.info('reload');
 
                         setTimeout(function () {
-                            Common.redirect("index.php");
+                            sysPassApp.redirect("index.php");
                         }, 2000);
                     } else if (tabs.state.tab.refresh === true) {
                         log.info("refresh");
@@ -1150,18 +1148,18 @@ sysPass.Actions = function (Common) {
 
             tabs.state.update($obj);
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
-                    Common.msg.out(json);
+                    sysPassApp.msg.out(json);
                 } else {
                     const $itemDst = $obj.data("item-dst");
 
@@ -1190,18 +1188,18 @@ sysPass.Actions = function (Common) {
 
                 console.info(itemId);
 
-                const opts = Common.appRequests().getRequestOpts();
+                const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
                     r: $obj.data("action-route") + (itemId > 0 ? "/" + itemId : ''),
                     items: items,
-                    sk: Common.sk.get(),
+                    sk: sysPassApp.sk.get(),
                     isAjax: 1
                 };
 
-                Common.appRequests().getActionCall(opts, function (json) {
-                    Common.msg.out(json);
+                sysPassApp.requests.getActionCall(opts, function (json) {
+                    sysPassApp.msg.out(json);
 
                     getContent({
                         r: tabs.state.tab.route,
@@ -1246,36 +1244,36 @@ sysPass.Actions = function (Common) {
             grid.nav($obj);
         },
         clear: function ($obj) {
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[20] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[20] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
                         opts.method = "get";
-                        opts.data = {sk: Common.sk.get(), isAjax: 1};
+                        opts.data = {sk: sysPassApp.sk.get(), isAjax: 1};
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
 
                             if (json.status === 0) {
                                 getContent({r: $obj.data("action-next")});
                             }
 
-                            Common.sk.set(json.csrf);
+                            sysPassApp.sk.set(json.csrf);
                         });
                     }
                 }
@@ -1292,19 +1290,19 @@ sysPass.Actions = function (Common) {
         show: function ($obj) {
             log.info("wiki:show");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 pageName: $obj.data("pagename"),
                 actionId: $obj.data("action-id"),
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
-                    Common.msg.out(json);
+                    sysPassApp.msg.out(json);
                 } else {
                     showFloatingBox(json.data.html);
                 }
@@ -1322,27 +1320,27 @@ sysPass.Actions = function (Common) {
             tabs.save($obj, function () {
                 // Recargar para cargar/descargar el plugin
                 setTimeout(function () {
-                    Common.redirect("index.php");
+                    sysPassApp.redirect("index.php");
                 }, 2000);
             });
         },
         reset: function ($obj) {
             log.info("plugin:reset");
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[58] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[58] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         e.preventDefault();
 
@@ -1364,12 +1362,12 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("plugin:save");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     getContent({r: $obj.data("action-next")});
@@ -1392,23 +1390,23 @@ sysPass.Actions = function (Common) {
         check: function ($obj) {
             log.info("notification:check");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     getContent({r: $obj.data("action-next")});
                 }
 
-                Common.sk.set(json.csrf);
+                sysPassApp.sk.set(json.csrf);
             });
         },
         search: function ($obj) {
@@ -1424,12 +1422,12 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("notification:save");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     getContent({r: $obj.data("action-next")});
@@ -1444,18 +1442,18 @@ sysPass.Actions = function (Common) {
             grid.delete($obj, function (items) {
                 const itemId = $obj.data("item-id");
 
-                const opts = Common.appRequests().getRequestOpts();
+                const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
                     r: $obj.data("action-route") + (itemId ? "/" + itemId : ''),
                     items: items,
-                    sk: Common.sk.get(),
+                    sk: sysPassApp.sk.get(),
                     isAjax: 1
                 };
 
-                Common.appRequests().getActionCall(opts, function (json) {
-                    Common.msg.out(json);
+                sysPassApp.requests.getActionCall(opts, function (json) {
+                    sysPassApp.msg.out(json);
 
                     getContent({r: $obj.data("action-next")});
                 });
@@ -1464,16 +1462,16 @@ sysPass.Actions = function (Common) {
         getActive: function () {
             log.info("notification:getActive");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: "items/notifications",
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 return json;
             });
         },
@@ -1485,7 +1483,7 @@ sysPass.Actions = function (Common) {
     };
 
     /**
-     * Common grids actions
+     * sysPassApp grids actions
      *
      * @type {{search: search, nav: nav, delete: delete}}
      */
@@ -1494,19 +1492,19 @@ sysPass.Actions = function (Common) {
             log.info("grid:search");
 
             const $target = $($obj.data("target"));
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status === 0) {
                     $target.html(json.data.html);
                 } else {
-                    $target.html(Common.msg.html.error(json.description));
+                    $target.html(sysPassApp.msg.html.error(json.description));
                 }
 
-                Common.sk.set(json.csrf);
+                sysPassApp.sk.set(json.csrf);
             });
         },
         nav: function ($obj, callback) {
@@ -1516,7 +1514,7 @@ sysPass.Actions = function (Common) {
 
             $form.find("[name='start']").val($obj.data("start"));
             $form.find("[name='count']").val($obj.data("count"));
-            $form.find("[name='sk']").val(Common.sk.get());
+            $form.find("[name='sk']").val(sysPassApp.sk.get());
 
             if (typeof callback === "function") {
                 callback($form);
@@ -1525,7 +1523,7 @@ sysPass.Actions = function (Common) {
             }
         },
         delete: function ($obj, onAccept) {
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[12] + "</p></div>";
             const selection = $obj.data("selection");
             const items = [];
 
@@ -1542,15 +1540,15 @@ sysPass.Actions = function (Common) {
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         e.preventDefault();
 
@@ -1568,12 +1566,12 @@ sysPass.Actions = function (Common) {
             log.info("ldap:check");
 
             const $form = $($obj.data("src"));
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
-            opts.data = $form.serialize() + "&sk=" + Common.sk.get();
+            opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0
                     && json.data['template'] !== undefined
@@ -1584,7 +1582,7 @@ sysPass.Actions = function (Common) {
                             const $list = $("#ldap-results").find(".list-wrap").empty();
 
                             json.data.items.forEach(function (value) {
-                                $list.append(Common.appTheme().html.getList(value.items, value.icon));
+                                $list.append(sysPassApp.theme.html.getList(value.items, value.icon));
                             });
                         }
                     });
@@ -1594,28 +1592,28 @@ sysPass.Actions = function (Common) {
         import: function ($obj) {
             log.info("ldap:import");
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[57] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
                 negative: {
-                    title: Common.config().LANG[44],
+                    title: sysPassApp.config.LANG[44],
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.msg.error(Common.config().LANG[44]);
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
                     }
                 },
                 positive: {
-                    title: Common.config().LANG[43],
+                    title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         const $form = $($obj.data("src"));
-                        const opts = Common.appRequests().getRequestOpts();
+                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-                        opts.data = $form.serialize() + "&sk=" + Common.sk.get();
+                        opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
                         });
                     }
                 }
@@ -1631,17 +1629,17 @@ sysPass.Actions = function (Common) {
 
             const itemId = $obj.data("item-id");
 
-            const opts = Common.appRequests().getRequestOpts();
+            const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + itemId,
-                sk: Common.sk.get(),
+                sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
                     const actionNext = $obj.data("action-next");
@@ -1664,15 +1662,15 @@ sysPass.Actions = function (Common) {
     const task = function (taskId) {
         const $taskStatus = $("#taskStatus");
 
-        $taskStatus.empty().html(Common.config().LANG[62]);
+        $taskStatus.empty().html(sysPassApp.config.LANG[62]);
 
-        const opts = Common.appRequests().getRequestOpts();
+        const opts = sysPassApp.requests.getRequestOpts();
         opts.method = "get";
         opts.url = ajaxUrl.entrypoint + "?r=task/runTask/" + taskId;
 
-        return Common.appRequests().getActionEvent(opts, function (result) {
+        return sysPassApp.requests.getActionEvent(opts, function (result) {
             let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
-            text += "<br>" + Common.config().LANG[62];
+            text += "<br>" + sysPassApp.config.LANG[62];
 
             $taskStatus.empty().html(text);
         });
@@ -1680,12 +1678,15 @@ sysPass.Actions = function (Common) {
 
     return {
         doAction: doAction,
+        getContent: getContent,
+        showFloatingBox: showFloatingBox,
+        closeFloatingBox: closeFloatingBox,
         appMgmt: appMgmt,
         account: account,
         accountManager: accountManager,
         file: file,
         checks: checks,
-        config: config,
+        config: configManager,
         main: main,
         user: user,
         link: link,

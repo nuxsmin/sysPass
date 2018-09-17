@@ -58,6 +58,7 @@ sysPass.createNS = function (namespace) {
     return parent;
 };
 
+sysPass.createNS("Config");
 sysPass.createNS("Main");
 sysPass.createNS("Triggers");
 sysPass.createNS("Actions");

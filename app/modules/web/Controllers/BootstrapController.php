@@ -30,6 +30,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Import\ImportService;
+use SP\Storage\File\FileException;
 
 /**
  * Class BootstrapController
@@ -42,12 +43,11 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * Returns environment data
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function getEnvironmentAction()
     {
-        $checkStatus = $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $this->configData->isDemoEnabled());
+        $checkStatus = $this->session->getAuthCompleted()
+            && ($this->session->getUserData()->getIsAdminApp() || $this->configData->isDemoEnabled());
 
         $data = [
             'lang' => $this->getJsLang(),
@@ -62,7 +62,8 @@ final class BootstrapController extends SimpleControllerBase
             'plugins' => $this->getPlugins(),
             'loggedin' => $this->session->isLoggedIn(),
             'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
-            'pk' => $this->getPublicKey(),
+            'pki_key' => $this->getPublicKey(),
+            'pki_max_size' => CryptPKI::getMaxDataSize(),
             'import_allowed_exts' => ImportService::ALLOWED_EXTS,
             'files_allowed_exts' => $this->configData->getFilesAllowedExts()
         ];
@@ -105,16 +106,21 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getAuthBasicAutologinEnabled()
     {
-        return $this->dic->get(Browser::class)->getServerAuthUser() !== null && $this->configData->isAuthBasicAutoLoginEnabled();
+        return $this->dic->get(Browser::class)->getServerAuthUser() !== null
+            && $this->configData->isAuthBasicAutoLoginEnabled();
     }
 
     /**
      * @return string
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\SPException
      */
     private function getPublicKey()
     {
-        return $this->session->getPublicKey() ?: $this->dic->get(CryptPKI::class)->getPublicKey();
+        try {
+            return $this->session->getPublicKey() ?: $this->dic->get(CryptPKI::class)->getPublicKey();
+        } catch (FileException $e) {
+            processException($e);
+
+            return '';
+        }
     }
 }

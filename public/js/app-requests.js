@@ -21,10 +21,10 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sysPass.Requests = function (Common) {
+sysPass.Requests = function (sysPassApp) {
     "use strict";
 
-    const log = Common.log;
+    const log = sysPassApp.log;
 
     /**
      * Historial de consultas AJAX
@@ -63,7 +63,7 @@ sysPass.Requests = function (Common) {
             return _history;
         },
         add: function (opts) {
-            const hash = (opts.hash === "") ? SparkMD5.hash(JSON.stringify(opts), false) : opts.hash;
+            const hash = (opts.hash === "") ? sysPassApp.util.hash.md5(JSON.stringify(opts)) : opts.hash;
 
             if (_history.length > 0 && _history[_history.length - 1].hash === hash) {
                 return _history;
@@ -113,7 +113,7 @@ sysPass.Requests = function (Common) {
      * @returns {*}
      */
     const getUrl = function (url) {
-        return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? Common.config().APP_ROOT + url : url;
+        return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? sysPassApp.config.APP_ROOT + url : url;
     };
 
     /**
@@ -138,7 +138,7 @@ sysPass.Requests = function (Common) {
             timeout: opts.timeout,
             beforeSend: function () {
                 if (opts.useLoading === true) {
-                    Common.appTheme().loading.show(opts.useFullLoading);
+                    sysPassApp.theme.loading.show(opts.useFullLoading);
                 }
             },
             success: function (response) {
@@ -156,29 +156,41 @@ sysPass.Requests = function (Common) {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (typeof callbackError !== "function") {
-                    const txt = Common.config().LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                    let txt;
+
+                    if (sysPassApp.config.LANG[1] !== undefined) {
+                        txt = sysPassApp.config.LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                    } else {
+                        txt = "An error occurred<p>" + errorThrown + " (" + textStatus + ")</p>";
+                    }
 
                     log.error(txt);
 
                     if (opts.type === "html") {
-                        $("#content").html(Common.msg.html.error(errorThrown));
+                        $("#content").html(sysPassApp.msg.html.error(errorThrown));
                     }
 
-                    Common.msg.error(txt);
+                    sysPassApp.msg.error(txt);
                 } else {
                     callbackError();
                 }
             },
             complete: function (response) {
                 if (opts.useLoading === true) {
-                    Common.appTheme().loading.hide();
+                    sysPassApp.theme.loading.hide();
                 }
 
-                if (opts.type === "json" && response.responseJSON.csrf !== undefined && response.responseJSON.csrf !== "") {
-                    Common.sk.set(response.responseJSON.csrf);
+                if (opts.type === "json"
+                    && response.responseJSON !== undefined
+                    && response.responseJSON.csrf !== undefined
+                    && response.responseJSON.csrf !== ""
+                ) {
+                    sysPassApp.sk.set(response.responseJSON.csrf);
                 }
 
-                Common.appTheme().ajax.complete();
+                if (sysPassApp.theme !== undefined) {
+                    sysPassApp.theme.ajax.complete();
+                }
             }
         });
     };

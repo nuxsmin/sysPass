@@ -21,10 +21,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sysPass.Theme = function (Common) {
+sysPass.Theme = function (log) {
     "use strict";
-
-    const log = Common.log;
 
     /**
      * Funciones a realizar en peticiones AJAX
@@ -69,14 +67,14 @@ sysPass.Theme = function (Common) {
 
     // Función para generar claves aleatorias.
     const randomPassword = function ($target) {
-        Common.generateRandomPass(function (password, level) {
+        sysPassApp.util.password.random(function (password, level) {
             $target.attr("data-pass", password);
 
             // if ($target) {
             const $dstParent = $target.parent();
             const $targetR = $("#" + $target.attr("id") + "_repeat");
 
-            Common.outputResult(level, $target);
+            sysPassApp.util.password.output(level, $target);
 
             // Actualizar los componentes de MDL
             const mdl = new MaterialTextfield();
@@ -92,7 +90,7 @@ sysPass.Theme = function (Common) {
                 $targetR.val(password).parent()
                     .addClass(mdl.CssClasses_.IS_DIRTY)
                     .removeClass(mdl.CssClasses_.IS_INVALID);
-                Common.encryptFormValue($targetR);
+                sysPassApp.encryptFormValue($targetR);
             }
         });
     };
@@ -104,52 +102,52 @@ sysPass.Theme = function (Common) {
             `<div id="box-complexity"><div>
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-chars">
             <input type="checkbox" id="checkbox-chars" class="mdl-checkbox__input" name="checkbox-chars" checked/>
-            <span class="mdl-checkbox__label">${Common.config().LANG[63]}</span>
+            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[63]}</span>
             </label>
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">
             <input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers" checked/>
-            <span class="mdl-checkbox__label">${Common.config().LANG[35]}</span>
+            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[35]}</span>
             </label>
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">
             <input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>
-            <span class="mdl-checkbox__label">${Common.config().LANG[36]}</span>
+            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[36]}</span>
             </label>
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">
             <input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>
-            <span class="mdl-checkbox__label">${Common.config().LANG[37]}</span>
+            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[37]}</span>
             </label>
             <div class="mdl-textfield mdl-js-textfield textfield-passlength">
             <input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" min="1" max="117" list="defaultLength"/>
-            <label class="mdl-textfield__label" for="passlength">${Common.config().LANG[38]}</label>
+            <label class="mdl-textfield__label" for="passlength">${sysPassApp.config.LANG[38]}</label>
             </div></div></div>
             <datalist id="defaultLength"><option value="8"><option value="12"><option value="16"><option value="32"><option value="64"></datalist>`;
 
         mdlDialog().show({
-            title: Common.config().LANG[29],
+            title: sysPassApp.config.LANG[29],
             text: content,
             negative: {
-                title: Common.config().LANG[44]
+                title: sysPassApp.config.LANG[44]
             },
             positive: {
-                title: Common.config().LANG[43],
+                title: sysPassApp.config.LANG[43],
                 onClick: function (e) {
                     e.preventDefault();
 
-                    Common.passwordData.complexity.chars = $("#checkbox-chars").is(":checked");
-                    Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
-                    Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
-                    Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
-                    Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
+                    sysPassApp.util.password.config.complexity.chars = $("#checkbox-chars").is(":checked");
+                    sysPassApp.util.password.config.complexity.numbers = $("#checkbox-numbers").is(":checked");
+                    sysPassApp.util.password.config.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
+                    sysPassApp.util.password.config.complexity.symbols = $("#checkbox-symbols").is(":checked");
+                    sysPassApp.util.password.config.complexity.numlength = parseInt($("#passlength").val());
                 }
             },
             cancelable: true,
             contentStyle: {"max-width": "300px"},
             onLoaded: function () {
-                $("#checkbox-chars").prop("checked", Common.passwordData.complexity.chars);
-                $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
-                $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
-                $("#checkbox-symbols").prop("checked", Common.passwordData.complexity.symbols);
-                $("#passlength").val(Common.passwordData.complexity.numlength);
+                $("#checkbox-chars").prop("checked", sysPassApp.util.password.config.complexity.chars);
+                $("#checkbox-numbers").prop("checked", sysPassApp.util.password.config.complexity.numbers);
+                $("#checkbox-uppercase").prop("checked", sysPassApp.util.password.config.complexity.uppercase);
+                $("#checkbox-symbols").prop("checked", sysPassApp.util.password.config.complexity.symbols);
+                $("#passlength").val(sysPassApp.util.password.config.complexity.numlength);
             }
         });
     };
@@ -166,7 +164,7 @@ sysPass.Theme = function (Common) {
                 return;
             }
 
-            const uniqueId = Common.uniqueId();
+            const uniqueId = sysPassApp.util.uniqueId();
             const $thisParent = $this.parent();
             const $form = $this.closest("form");
             const targetId = $this.attr("id") + "-" + uniqueId;
@@ -178,20 +176,20 @@ sysPass.Theme = function (Common) {
             $this.attr("data-pass", $this.val());
 
             let btnMenu =
-                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="${Common.config().LANG[27]}"><i class="material-icons">more_vert</i></button>
+                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="${sysPassApp.config.LANG[27]}"><i class="material-icons">more_vert</i></button>
                 <ul class="mdl-menu mdl-js-menu" for="menu-password-${targetId}">
-                <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${Common.config().LANG[28]}</li>
-                <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${Common.config().LANG[29]}</li>
-                <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${Common.config().LANG[30]}</li></ul>`;
+                <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${sysPassApp.config.LANG[28]}</li>
+                <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
+                <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${sysPassApp.config.LANG[30]}</li></ul>`;
 
             $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
-                .prepend(`<i id='password-level-${targetId}' class="showpass material-icons clip-pass-field password-level" data-clipboard-target='${targetId}' data-level-msg= '' title="${Common.config().LANG[32]}">remove_red_eye</i>`)
+                .prepend(`<i id='password-level-${targetId}' class="showpass material-icons clip-pass-field password-level" data-clipboard-target='${targetId}' data-level-msg= '' title="${sysPassApp.config.LANG[32]}">remove_red_eye</i>`)
                 .prepend(btnMenu);
 
             $this.on("keyup", function () {
-                Common.checkPassLevel($this);
+                sysPassApp.util.password.checkLevel($this);
 
                 this.dataset.pass = $this.val();
             });
@@ -248,10 +246,10 @@ sysPass.Theme = function (Common) {
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
         $container.find(".passwordfield__input-show").each(function () {
             const $this = $(this);
-            const $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>");
+            const $icon = $("<i class=\"showpass material-icons\" title=\"" + sysPassApp.config.LANG[32] + "\">remove_red_eye</i>");
 
             if ($this.data("clipboard") === 1) {
-                const $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
+                const $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + sysPassApp.config.LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
                 $this.parent().after($clip).after($icon);
             } else {
                 $this.parent().after($icon);
@@ -273,18 +271,18 @@ sysPass.Theme = function (Common) {
 
         const datePickerOpts = {
             format: "YYYY-MM-DD",
-            lang: Common.config().LOCALE.substr(0, 2),
+            lang: sysPassApp.config.BROWSER.LOCALE.substr(0, 2),
             time: false,
-            cancelText: Common.config().LANG[44],
-            okText: Common.config().LANG[43],
-            clearText: Common.config().LANG[30],
-            nowText: Common.config().LANG[56],
+            cancelText: sysPassApp.config.LANG[44],
+            okText: sysPassApp.config.LANG[43],
+            clearText: sysPassApp.config.LANG[30],
+            nowText: sysPassApp.config.LANG[56],
             minDate: new Date(),
             triggerEvent: "dateIconClick"
         };
 
         const getUnixtime = function (val) {
-            return moment.tz(val, Common.config().TIMEZONE).format("X");
+            return moment.tz(val, sysPassApp.config.BROWSER.TIMEZONE).format("X");
         };
 
         $container.find(".password-datefield__input").each(function () {
@@ -336,12 +334,12 @@ sysPass.Theme = function (Common) {
 
                 if ($searchfav.val() == 0) {
                     $icon.addClass("mdl-color-text--amber-A200");
-                    $icon.attr("title", Common.config().LANG[53]);
+                    $icon.attr("title", sysPassApp.config.LANG[53]);
 
                     $searchfav.val(1);
                 } else {
                     $icon.removeClass("mdl-color-text--amber-A200");
-                    $icon.attr("title", Common.config().LANG[52]);
+                    $icon.attr("title", sysPassApp.config.LANG[52]);
 
                     $searchfav.val(0);
                 }
@@ -352,11 +350,11 @@ sysPass.Theme = function (Common) {
             const checkFavorite = function ($obj) {
                 if ($obj.data("status") === "on") {
                     $obj.addClass("mdl-color-text--amber-A100");
-                    $obj.attr("title", Common.config().LANG[50]);
+                    $obj.attr("title", sysPassApp.config.LANG[50]);
                     $obj.html("star");
                 } else {
                     $obj.removeClass("mdl-color-text--amber-A100");
-                    $obj.attr("title", Common.config().LANG[49]);
+                    $obj.attr("title", sysPassApp.config.LANG[49]);
                     $obj.html("star_border");
                 }
             };
@@ -369,11 +367,11 @@ sysPass.Theme = function (Common) {
                 const $this = $(this);
                 $this.parent().find("a").addClass("filterOn");
 
-                Common.appActions().account.sort($this);
+                sysPassApp.actions.account.sort($this);
             }).on("click", "#search-rows i.icon-favorite", function () {
                 const $this = $(this);
 
-                Common.appActions().account.saveFavorite($this, function () {
+                sysPassApp.actions.account.saveFavorite($this, function () {
                     checkFavorite($this);
                 });
             }).on("click", "#search-rows span.tag", function () {

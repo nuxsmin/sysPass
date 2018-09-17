@@ -27,8 +27,9 @@ namespace SP\Core\Crypt;
 defined('APP_ROOT') || die();
 
 use phpseclib\Crypt\RSA;
-use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
@@ -37,10 +38,22 @@ use SP\Core\Exceptions\SPException;
  */
 final class CryptPKI
 {
+    const KEY_SIZE = 1024;
+    const PUBLIC_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
+    const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
+
     /**
      * @var RSA
      */
     protected $rsa;
+    /**
+     * @var FileHandler
+     */
+    private $publicKeyFile;
+    /**
+     * @var FileHandler
+     */
+    private $privateKeyFile;
 
     /**
      * @param RSA $rsa
@@ -51,58 +64,51 @@ final class CryptPKI
     {
         $this->rsa = $rsa;
 
-        if (!$this->checkKeys()) {
-            $this->createKeys();
-        }
+        $this->setUp();
     }
 
     /**
      * Check if private and public keys exist
      *
-     * @return bool
+     * @return void
+     * @throws SPException
      */
-    public function checkKeys()
+    private function setUp()
     {
-        return file_exists($this->getPublicKeyFile()) && file_exists($this->getPrivateKeyFile());
-    }
+        $this->publicKeyFile = new FileHandler(self::PUBLIC_KEY_FILE);
+        $this->privateKeyFile = new FileHandler(self::PRIVATE_KEY_FILE);
 
-    /**
-     * Devuelve la ruta al archivo de la clave pública
-     *
-     * @return string
-     */
-    public function getPublicKeyFile()
-    {
-        return CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
-    }
+        try {
+            $this->publicKeyFile->checkFileExists();
+            $this->privateKeyFile->checkFileExists();
+        } catch (FileException $e) {
+            processException($e);
 
-    /**
-     * Devuelve la ruta al archivo de la clave privada
-     *
-     * @return string
-     */
-    public function getPrivateKeyFile()
-    {
-        return CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
+            $this->createKeys();
+        }
     }
 
     /**
      * Crea el par de claves pública y privada
      *
-     * @throws SPException
+     * @throws FileException
      */
     public function createKeys()
     {
-        $keys = $this->rsa->createKey(1024);
+        $keys = $this->rsa->createKey(self::KEY_SIZE);
 
-        $priv = file_put_contents($this->getPrivateKeyFile(), $keys['privatekey']);
-        $pub = file_put_contents($this->getPublicKeyFile(), $keys['publickey']);
+        $this->publicKeyFile->save($keys['publickey']);
+        $this->privateKeyFile->save($keys['privatekey']);
 
-        if (!$priv || !$pub) {
-            throw new SPException(__u('No es posible generar las claves RSA'), SPException::CRITICAL);
-        }
+        chmod(CryptPKI::PRIVATE_KEY_FILE, 0600);
+    }
 
-        chmod($this->getPrivateKeyFile(), 0600);
+    /**
+     * @return int
+     */
+    public static function getMaxDataSize()
+    {
+        return (self::KEY_SIZE / 8) - 11;
     }
 
     /**
@@ -111,12 +117,12 @@ final class CryptPKI
      * @param string $data los datos a encriptar
      *
      * @return string
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function encryptRSA($data)
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPublicKey());
+        $this->rsa->loadKey($this->getPublicKey(), RSA::PUBLIC_FORMAT_PKCS1);
 
         return $this->rsa->encrypt($data);
     }
@@ -125,17 +131,13 @@ final class CryptPKI
      * Devuelve la clave pública desde el archivo
      *
      * @return string
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function getPublicKey()
     {
-        $file = $this->getPublicKeyFile();
-
-        if (!file_exists($file)) {
-            throw new FileNotFoundException(__u('El archivo de clave no existe'));
-        }
-
-        return file_get_contents($file);
+        return $this->publicKeyFile
+            ->checkFileExists()
+            ->readToString();
     }
 
     /**
@@ -144,12 +146,12 @@ final class CryptPKI
      * @param string $data los datos a desencriptar
      *
      * @return string
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function decryptRSA($data)
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPrivateKey());
+        $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
 
         return @$this->rsa->decrypt($data);
     }
@@ -158,16 +160,24 @@ final class CryptPKI
      * Devuelve la clave privada desde el archivo
      *
      * @return string
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function getPrivateKey()
     {
-        $file = $this->getPrivateKeyFile();
+        return $this->privateKeyFile
+            ->checkFileExists()
+            ->readToString();
+    }
 
-        if (!file_exists($file)) {
-            throw new FileNotFoundException(__u('El archivo de clave no existe'));
-        }
+    /**
+     * @return int
+     * @throws FileException
+     */
+    public function getKeySize()
+    {
+        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+        $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
 
-        return file_get_contents($file);
+        return $this->rsa->getSize();
     }
 }

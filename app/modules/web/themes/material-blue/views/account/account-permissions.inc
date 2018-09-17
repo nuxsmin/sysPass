@@ -16,34 +16,56 @@
                     <div class="account-permissions">
                         <div class="tag-list-box">
                             <div class="tag-list-header"><?php echo __('Ver'); ?></div>
-
-                            <select id="other_users_view" name="other_users_view[]" multiple="multiple"
-                                    class="select-box-tags" data-current-item-id="<?php echo $userId; ?>">
-                                <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersView */
-                                foreach ($otherUsersView as $otherUser): ?>
-                                    <?php if ($otherUser->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $otherUser->getId(); ?>"
-                                        <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo $otherUser->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php if (!$isView): ?>
+                                <select id="other_users_view" name="other_users_view[]" multiple="multiple"
+                                        class="select-box-tags"
+                                        data-current-item-id="<?php echo $userId; ?>" <?php echo $disabled; ?>>
+                                    <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersView */
+                                    foreach ($otherUsersView as $otherUser): ?>
+                                        <?php if ($otherUser->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUser->getId(); ?>"
+                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo $otherUser->getName(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else: ?>
+                                <div class="tag-list-body">
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersView */
+                                    foreach ($otherUsersView as $otherUser): ?>
+                                        <?php if ($otherUser->isSelected()): ?>
+                                            <span class="tag"><?php echo $otherUser->getName(); ?></span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="tag-list-box">
                             <div class="tag-list-header"><?php echo __('Editar'); ?></div>
-
-                            <select id="other_users_edit" name="other_users_edit[]" multiple="multiple"
-                                    class="select-box-tags" data-current-item-id="<?php echo $userId; ?>">
-                                <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersEdit */
-                                foreach ($otherUsersEdit as $otherUser): ?>
-                                    <?php if ($otherUser->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $otherUser->getId(); ?>"
-                                        <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo $otherUser->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php if (!$isView): ?>
+                                <select id="other_users_edit" name="other_users_edit[]" multiple="multiple"
+                                        class="select-box-tags"
+                                        data-current-item-id="<?php echo $userId; ?>" <?php echo $disabled; ?>>
+                                    <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersEdit */
+                                    foreach ($otherUsersEdit as $otherUser): ?>
+                                        <?php if ($otherUser->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUser->getId(); ?>"
+                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo $otherUser->getName(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else: ?>
+                                <div class="tag-list-body">
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersEdit */
+                                    foreach ($otherUsersEdit as $otherUser): ?>
+                                        <?php if ($otherUser->isSelected()): ?>
+                                            <span class="tag"><?php echo $otherUser->getName(); ?></span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </td>
@@ -54,34 +76,56 @@
                     <div class="account-permissions">
                         <div class="tag-list-box">
                             <div class="tag-list-header"><?php echo __('Ver'); ?></div>
-
-                            <select id="other_usergroups_view" name="other_usergroups_view[]" multiple="multiple"
-                                    class="select-box-tags" data-current-item-id="<?php echo $userGroupId; ?>">
-                                <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsView */
-                                foreach ($otherUserGroupsView as $otherUserGroup): ?>
-                                    <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $otherUserGroup->getId(); ?>"
-                                        <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo $otherUserGroup->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php if (!$isView): ?>
+                                <select id="other_usergroups_view" name="other_usergroups_view[]" multiple="multiple"
+                                        class="select-box-tags"
+                                        data-current-item-id="<?php echo $userGroupId; ?>" <?php echo $disabled; ?>>
+                                    <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsView */
+                                    foreach ($otherUserGroupsView as $otherUserGroup): ?>
+                                        <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUserGroup->getId(); ?>"
+                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo $otherUserGroup->getName(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else: ?>
+                                <div class="tag-list-body">
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsView */
+                                    foreach ($otherUserGroupsView as $otherGroup): ?>
+                                        <?php if ($otherGroup->isSelected()): ?>
+                                            <span class="tag"><?php echo $otherGroup->getName(); ?></span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="tag-list-box">
                             <div class="tag-list-header"><?php echo __('Editar'); ?></div>
-
-                            <select id="other_usergroups_edit" name="other_usergroups_edit[]" multiple="multiple"
-                                    class="select-box-tags" data-current-item-id="<?php echo $userGroupId; ?>">
-                                <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsEdit */
-                                foreach ($otherUserGroupsEdit as $otherUserGroup): ?>
-                                    <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
-                                    <option
-                                            value="<?php echo $otherUserGroup->getId(); ?>"
-                                        <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo $otherUserGroup->getName(); ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php if (!$isView): ?>
+                                <select id="other_usergroups_edit" name="other_usergroups_edit[]" multiple="multiple"
+                                        class="select-box-tags"
+                                        data-current-item-id="<?php echo $userGroupId; ?>" <?php echo $disabled; ?>>
+                                    <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsEdit */
+                                    foreach ($otherUserGroupsEdit as $otherUserGroup): ?>
+                                        <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUserGroup->getId(); ?>"
+                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo $otherUserGroup->getName(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else: ?>
+                                <div class="tag-list-body">
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsEdit */
+                                    foreach ($otherUserGroupsEdit as $otherGroup): ?>
+                                        <?php if ($otherGroup->isSelected()): ?>
+                                            <span class="tag"><?php echo $otherGroup->getName(); ?></span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </td>
@@ -92,7 +136,7 @@
             <tr>
                 <td class="descField"><?php echo __('Creador'); ?></td>
                 <td class="valField">
-                    <select id="owner_id" name="owner_id" class="select-box">
+                    <select id="owner_id" name="owner_id" class="select-box" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
                         foreach ($users as $user): ?>
@@ -109,7 +153,7 @@
             <tr>
                 <td class="descField"><?php echo __('Grupo Principal'); ?></td>
                 <td class="valField">
-                    <select id="main_usergroup_id" name="main_usergroup_id" class="select-box">
+                    <select id="main_usergroup_id" name="main_usergroup_id" class="select-box" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
                         foreach ($userGroups as $userGroup): ?>
@@ -131,7 +175,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_enabled">
                         <input name="private_enabled" type="checkbox" id="private_enabled"
-                               class="mdl-switch__input" <?php echo $privateUserCheck; ?>/>
+                               class="mdl-switch__input" <?php echo $privateUserCheck; echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada'); ?></span>
                     </label>
                 </td>
@@ -147,7 +191,7 @@
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_group_enabled">
                         <input name="private_group_enabled" type="checkbox" id="private_group_enabled"
-                               class="mdl-switch__input" <?php echo $privateUserGroupCheck; ?>/>
+                               class="mdl-switch__input" <?php echo $privateUserGroupCheck; echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada Grupo'); ?></span>
                     </label>
                 </td>

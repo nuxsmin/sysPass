@@ -243,12 +243,15 @@
           font-size: 12px;
           font-weight: bold;
         }
+        .tag-list-body {
+          padding: .5em 0;
+        }
       }
     }
   }
   span.tag {
     margin: 0 3px 3px 0;
-    padding: .2em;
+    padding: 3px;
     background: $color-indigo-fg;
     color: #fff;
     border: 0 solid rgba(0, 0, 0, 0);

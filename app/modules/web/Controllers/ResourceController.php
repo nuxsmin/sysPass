@@ -92,7 +92,7 @@ final class ResourceController extends SimpleControllerBase
 
                 $this->minify->addFiles([
                     'jquery-3.3.1.min.js',
-                    'jquery-migrate-3.0.0.min.js',
+//                    'jquery-migrate-3.0.0.min.js',
                     'jquery.fileDownload.min.js',
                     'clipboard.min.js',
                     'selectize.min.js',
@@ -112,9 +112,11 @@ final class ResourceController extends SimpleControllerBase
                 // FIXME: use MIN version
                 $this->minify->addFiles([
                     'app.js',
+                    'app-config.js',
                     'app-triggers.js',
                     'app-actions.js',
                     'app-requests.js',
+                    'app-util.js',
                     'app-main.js'], false);
             }
 

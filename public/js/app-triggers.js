@@ -21,10 +21,9 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-sysPass.Triggers = function (Common) {
+sysPass.Triggers = function (log) {
     "use strict";
 
-    const log = Common.log;
     const regex = {
         email: "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
     };
@@ -45,7 +44,7 @@ sysPass.Triggers = function (Common) {
                 self_options.create = true;
             }
 
-            options.plugins = $this.hasClass("select-box-deselect") ? {"clear_selection": {title: Common.config().LANG[51]}} : {};
+            options.plugins = $this.hasClass("select-box-deselect") ? {"clear_selection": {title: sysPassApp.config.LANG[51]}} : {};
 
             if ($this.data("onchange")) {
                 const onchange = $this.data("onchange").split("/");
@@ -53,9 +52,9 @@ sysPass.Triggers = function (Common) {
                 options.onChange = function (value) {
                     if (value > 0) {
                         if (onchange.length === 2) {
-                            sysPassApp.actions()[onchange[0]][onchange[1]]($this);
+                            sysPassApp.actions[onchange[0]][onchange[1]]($this);
                         } else {
-                            sysPassApp.actions()[onchange[0]]($this);
+                            sysPassApp.actions[onchange[0]]($this);
                         }
                     }
                 };
@@ -105,10 +104,10 @@ sysPass.Triggers = function (Common) {
 
         const plugin = $obj.data("plugin");
 
-        if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
-            actions = Common.appPlugins()[plugin];
+        if (plugin !== undefined && sysPassApp.plugins.plugin !== undefined) {
+            actions = sysPassApp.plugins.plugin;
         } else {
-            actions = Common.appActions();
+            actions = sysPassApp.actions;
         }
 
         if (onclick.length === 2) {
@@ -127,25 +126,25 @@ sysPass.Triggers = function (Common) {
         log.info("formAction");
 
         const lastHash = $obj.attr("data-hash");
-        const currentHash = SparkMD5.hash($obj.serialize(), false);
+        const currentHash = sysPassApp.util.hash.md5($obj.serialize());
 
         if (lastHash === currentHash) {
-            Common.msg.ok(Common.config().LANG[55]);
+            sysPassApp.msg.ok(sysPassApp.config.LANG[55]);
             return false;
         }
 
         const plugin = $obj.data("plugin");
         let actions;
 
-        if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
-            actions = Common.appPlugins()[plugin];
+        if (plugin !== undefined && sysPassApp.plugins.plugin !== undefined) {
+            actions = sysPassApp.plugins.plugin;
         } else {
-            actions = Common.appActions();
+            actions = sysPassApp.actions;
         }
 
         const onsubmit = $obj.data("onsubmit").split("/");
 
-        $obj.find("input[name='sk']").val(Common.sk.get());
+        $obj.find("input[name='sk']").val(sysPassApp.sk.get());
 
         if (onsubmit.length === 2) {
             actions[onsubmit[0]][onsubmit[1]]($obj);
@@ -165,14 +164,12 @@ sysPass.Triggers = function (Common) {
             ",.btn-action-pager[data-onclick]", function () {
             handleActionButton($(this));
         }).on("click", ".btn-back", function () {
-            const appRequests = Common.appRequests();
-
-            if (appRequests.history.length() > 0) {
+            if (sysPassApp.requests.history.length() > 0) {
                 log.info("back");
 
-                const lastHistory = appRequests.history.del();
+                const lastHistory = sysPassApp.requests.history.del();
 
-                appRequests.getActionCall(lastHistory, lastHistory.callback);
+                sysPassApp.requests.getActionCall(lastHistory, lastHistory.callback);
             }
         }).on("submit", ".form-action", function (e) {
             e.preventDefault();
@@ -183,13 +180,13 @@ sysPass.Triggers = function (Common) {
             const $helpSrc = $.find("div[for='" + $this.data("help") + "']");
 
             if ($helpSrc.length > 0) {
-                const title = Common.config().LANG[54] + " - " + $helpSrc[0].getAttribute("title") || Common.config().LANG[54];
+                const title = sysPassApp.config.LANG[54] + " - " + $helpSrc[0].getAttribute("title") || sysPassApp.config.LANG[54];
 
                 mdlDialog().show({
                     title: title,
                     text: $helpSrc[0].innerHTML,
                     positive: {
-                        title: Common.config().LANG[43]
+                        title: sysPassApp.config.LANG[43]
                     }
                 });
             }
@@ -222,25 +219,25 @@ sysPass.Triggers = function (Common) {
             log.info("views:main");
 
             if (!clipboard.isSupported()) {
-                Common.msg.info(Common.config().LANG[65]);
+                sysPassApp.msg.info(sysPassApp.config.LANG[65]);
             }
 
             $(".btn-menu").click(function () {
                 const $this = $(this);
 
                 if ($this.attr("data-history-reset") === "1") {
-                    Common.appRequests().history.reset();
+                    sysPassApp.requests.history.reset();
                 }
 
-                Common.appActions().doAction({r: $this.data("route")}, $this.data("view"));
+                sysPassApp.actions.doAction({r: $this.data("route")}, $this.data("view"));
             });
 
             // setInterval(function () {
-            //     Common.appActions().notification.getActive();
+            //     sysPassApp.actions.notification.getActive();
             // }, 60000);
 
             if ($obj.data("upgraded") === 0) {
-                Common.appActions().doAction({r: "account/index"}, "search");
+                sysPassApp.actions.doAction({r: "account/index"}, "search");
             } else {
                 const $content = $("#content");
                 const page = $content.data('page');
@@ -252,16 +249,16 @@ sysPass.Triggers = function (Common) {
                 }
             }
 
-            if (Common.config().CHECK_UPDATES === true) {
-                Common.appActions().main.getUpdates();
+            if (sysPassApp.config.STATUS.CHECK_UPDATES === true) {
+                sysPassApp.actions.main.getUpdates();
             }
 
-            if (Common.config().CHECK_NOTICES === true) {
-                Common.appActions().main.getNotices();
+            if (sysPassApp.config.STATUS.CHECK_NOTICES === true) {
+                sysPassApp.actions.main.getNotices();
             }
 
-            if (typeof Common.appTheme().viewsTriggers["main"] === "function") {
-                Common.appTheme().viewsTriggers.main();
+            if (typeof sysPassApp.theme.viewsTriggers.main === "function") {
+                sysPassApp.theme.viewsTriggers.main();
             }
         },
         search: function () {
@@ -303,8 +300,8 @@ sysPass.Triggers = function (Common) {
                 }
             );
 
-            if (typeof Common.appTheme().viewsTriggers.search === "function") {
-                Common.appTheme().viewsTriggers.search();
+            if (typeof sysPassApp.theme.viewsTriggers.search === "function") {
+                sysPassApp.theme.viewsTriggers.search();
             }
         },
         login: function () {
@@ -312,24 +309,27 @@ sysPass.Triggers = function (Common) {
 
             const $frmLogin = $("#frmLogin");
 
-            if (Common.config().AUTHBASIC_AUTOLOGIN && $frmLogin.find("input[name='loggedOut']").val() === "0") {
+            if (sysPassApp.config.AUTH.AUTHBASIC_AUTOLOGIN
+                && $frmLogin.find("input[name='loggedOut']").val() === "0"
+            ) {
                 log.info("views:login:autologin");
 
-                Common.msg.info(Common.config().LANG[66]);
+                sysPassApp.msg.info(sysPassApp.config.LANG[66]);
 
-                Common.appActions().main.login($frmLogin);
+                sysPassApp.actions.main.login($frmLogin);
             }
+
+            $frmLogin.find("input:visible:first").focus();
         },
         userpassreset: function () {
             log.info("views:userpassreset");
 
             const $form = $("#frmUserPassReset");
 
-            Common.appTheme().passwordDetect($form);
+            sysPassApp.theme.passwordDetect($form);
         },
         footer: function () {
             log.info("views:footer");
-
         },
         common: function ($container) {
             log.info("views:common");
@@ -339,14 +339,14 @@ sysPass.Triggers = function (Common) {
             const $sk = $container.find(":input [name='sk']");
 
             if ($sk.length > 0) {
-                Common.sk.set($sk.val());
+                sysPassApp.sk.set($sk.val());
             }
 
-            if (typeof Common.appTheme().viewsTriggers.common === "function") {
-                Common.appTheme().viewsTriggers.common($container);
+            if (typeof sysPassApp.theme.viewsTriggers.common === "function") {
+                sysPassApp.theme.viewsTriggers.common($container);
             }
 
-            Common.appTriggers().updateFormHash($container);
+            sysPassApp.triggers.updateFormHash($container);
         },
         datatabs: function () {
             log.info("views:datatabs");
@@ -367,13 +367,13 @@ sysPass.Triggers = function (Common) {
             const $dropFiles = $("#drop-import-files");
 
             if ($dropFiles.length > 0) {
-                const upload = Common.fileUpload($dropFiles);
+                const upload = sysPassApp.util.fileUpload($dropFiles);
 
-                upload.url = Common.appActions().ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route");
-                upload.allowedExts = Common.config().IMPORT_ALLOWED_EXTS;
+                upload.url = sysPassApp.actions.ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route");
+                upload.allowedExts = sysPassApp.config.FILES.IMPORT_ALLOWED_EXTS;
                 upload.beforeSendAction = function () {
                     upload.setRequestData({
-                        sk: Common.sk.get(),
+                        sk: sysPassApp.sk.get(),
                         csvDelimiter: $("#csvDelimiter").val(),
                         importPwd: $("#importPwd").val(),
                         importMasterPwd: $("#importMasterPwd").val(),
@@ -389,19 +389,19 @@ sysPass.Triggers = function (Common) {
             const $listFiles = $("#list-account-files");
 
             if ($listFiles.length > 0) {
-                Common.appActions().account.listFiles($listFiles);
+                sysPassApp.actions.account.listFiles($listFiles);
             }
 
             const $dropFiles = $("#drop-account-files");
 
             if ($dropFiles.length > 0) {
-                const upload = Common.fileUpload($dropFiles);
+                const upload = sysPassApp.util.fileUpload($dropFiles);
 
-                upload.url = Common.appActions().ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route") + "/" + $dropFiles.data("item-id");
-                upload.allowedExts = Common.config().FILES_ALLOWED_EXTS;
+                upload.url = sysPassApp.actions.ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route") + "/" + $dropFiles.data("item-id");
+                upload.allowedExts = sysPassApp.config.FILES.ACCOUNT_ALLOWED_EXTS;
 
                 upload.requestDoneAction = function () {
-                    Common.appActions().account.listFiles($listFiles);
+                    sysPassApp.actions.account.listFiles($listFiles);
                 };
             }
 
@@ -425,7 +425,7 @@ sysPass.Triggers = function (Common) {
                     }
                 });
 
-                Common.appActions().items.get($selParentAccount);
+                sysPassApp.actions.items.get($selParentAccount);
             }
 
             $('.select-box-tags').selectize({
@@ -437,7 +437,7 @@ sysPass.Triggers = function (Common) {
                 onInitialize: function () {
                     const input = this.$input[0];
                     const attribute = document.createAttribute("data-hash");
-                    attribute.value = SparkMD5.hash(this.getValue().join(), false);
+                    attribute.value = sysPassApp.util.hash.md5(this.getValue().join());
 
                     input.setAttributeNode(attribute);
 
@@ -448,7 +448,7 @@ sysPass.Triggers = function (Common) {
                 onChange: function () {
                     const input = this.$input[0];
                     const attribute = document.createAttribute("data-updated");
-                    attribute.value = SparkMD5.hash(this.getValue().join(), false) !== input.dataset.hash && "true";
+                    attribute.value = sysPassApp.util.hash.md5(this.getValue().join()) !== input.dataset.hash && "true";
 
                     input.setAttributeNode(attribute);
                 }
@@ -461,7 +461,7 @@ sysPass.Triggers = function (Common) {
 
             const $form = $("#frmInstall");
 
-            Common.appTheme().passwordDetect($form);
+            sysPassApp.theme.passwordDetect($form);
             selectDetect($form);
         }
     };
@@ -474,7 +474,7 @@ sysPass.Triggers = function (Common) {
         $("#content").find("[data-sk]").each(function () {
             log.info("updateSk");
 
-            $(this).data("sk", Common.sk.get());
+            $(this).data("sk", sysPassApp.sk.get());
         });
     };
 
@@ -496,7 +496,7 @@ sysPass.Triggers = function (Common) {
             $form.each(function () {
                 const $this = $(this);
 
-                $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
+                $this.attr("data-hash", sysPassApp.util.hash.md5($this.serialize()));
             });
         }
     };

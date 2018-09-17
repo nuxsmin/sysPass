@@ -8,7 +8,7 @@
 $showLinked = $gotData && count($linkedAccounts) > 0;
 $showFiles = $gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles();
 $showDetails = $gotData && $accountAcl->isShowDetails();
-$showPermissions = !$isView && ($accountAcl->isShowPermission() || $allowPrivate || $allowPrivateGroup);
+$showPermissions = $accountAcl->isShowPermission() || $allowPrivate || $allowPrivateGroup;
 $showCustomFields = count($customFields) > 0;
 
 ?>

@@ -289,7 +289,7 @@ final class Util
      */
     public static function logout()
     {
-        exit('<script>sysPassApp.actions().main.logout();</script>');
+        exit('<script>sysPassApp.actions.main.logout();</script>');
     }
 
     /**

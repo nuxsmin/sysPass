@@ -50,52 +50,6 @@
             </td>
         </tr>
 
-        <?php if (isset($otherUsers) && is_array($otherUsers) && count($otherUsers) > 0): ?>
-            <tr>
-                <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Usuarios Secundarios'); ?></div>
-
-                    <?php
-                    $users = [];
-
-                    /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
-                    foreach ($otherUsers as $otherUser) {
-                        if (!$otherUser->isSkip() && $otherUser->isSelected()) {
-                            $users[] = $otherUser->getName();
-                        }
-                    }
-
-                    $usersEdit = $accountData->getOtherUserEdit() ? '(+)' : '';
-                    echo $usersEdit . ' ' . implode(' | ', $users);
-                    ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-
-        <?php if (isset($otherUserGroups) && is_array($otherUserGroups) && count($otherUserGroups) > 0): ?>
-            <tr>
-                <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Grupos Secundarios'); ?></div>
-
-                    <?php
-                    $userGroups = [];
-
-                    /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
-                    foreach ($otherUserGroups as $otherUserGroup) {
-                        if (!$otherUserGroup->isSkip() && $otherUserGroup->isSelected()) {
-                            $userGroups[] = $otherUserGroup->getName();
-                        }
-                    }
-
-                    $userGroupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
-                    echo $userGroupsEdit . ' ' . implode(' | ', $userGroups);
-                    ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-
         <?php if ($accountAcl->isModified()): ?>
             <tr>
                 <td class="descField"><?php echo __('Fecha Edición'); ?></td>

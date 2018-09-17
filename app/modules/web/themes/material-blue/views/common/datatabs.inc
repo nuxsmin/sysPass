@@ -20,7 +20,7 @@
         </div>
 
         <script type="text/javascript">
-            sysPassApp.theme().html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $tab->getTitle(); ?>", <?php echo $index === $activeTab ? 1 : 0; ?>);
+            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $tab->getTitle(); ?>", <?php echo $index === $activeTab ? 1 : 0; ?>);
         </script>
     <?php endforeach; ?>
 </div>

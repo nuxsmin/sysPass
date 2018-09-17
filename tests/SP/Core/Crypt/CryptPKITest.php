@@ -42,12 +42,14 @@ class CryptPKITest extends TestCase
     private $cryptPki;
 
     /**
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
      */
     public function testDecryptRSA()
     {
-        $random = Util::generateRandomBytes();
+        $length = (CryptPKI::KEY_SIZE / 8) - 11;
+
+        $random = Util::generateRandomBytes($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -59,7 +61,38 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
+     */
+    public function testDecryptRSAPassword()
+    {
+        $length = (CryptPKI::KEY_SIZE / 8) - 11;
+
+        $random = Util::randomPassword($length);
+
+        $data = $this->cryptPki->encryptRSA($random);
+
+        $this->assertNotEmpty($data);
+
+        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
+    }
+
+    /**
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
+     */
+    public function testDecryptRSAWrongLength()
+    {
+        $length = ((CryptPKI::KEY_SIZE / 8) - 11) + 1;
+
+        $random = Util::generateRandomBytes($length);
+
+        $data = $this->cryptPki->encryptRSA($random);
+
+        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
+    }
+
+    /**
+     * @throws \SP\Storage\File\FileException
      */
     public function testGetPublicKey()
     {
@@ -71,7 +104,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function testGetPrivateKey()
     {
@@ -84,11 +117,13 @@ class CryptPKITest extends TestCase
 
     /**
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function testEncryptRSA()
     {
-        $random = Util::generateRandomBytes();
+        $length = (CryptPKI::KEY_SIZE / 8) - 11;
+
+        $random = Util::generateRandomBytes($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -113,16 +148,16 @@ class CryptPKITest extends TestCase
     {
         $this->cryptPki->createKeys();
 
-        $this->assertFileExists($this->cryptPki->getPublicKeyFile());
-        $this->assertFileExists($this->cryptPki->getPrivateKeyFile());
+        $this->assertFileExists(CryptPKI::PUBLIC_KEY_FILE);
+        $this->assertFileExists(CryptPKI::PRIVATE_KEY_FILE);
     }
 
     /**
-     * testCheckKeys
+     * @throws \SP\Storage\File\FileException
      */
-    public function testCheckKeys()
+    public function testGetKeySize()
     {
-        $this->assertTrue($this->cryptPki->checkKeys());
+        $this->assertEquals(CryptPKI::KEY_SIZE, $this->cryptPki->getKeySize());
     }
 
     /**
@@ -142,8 +177,8 @@ class CryptPKITest extends TestCase
      */
     protected function tearDown()
     {
-        unlink($this->cryptPki->getPublicKeyFile());
-        unlink($this->cryptPki->getPrivateKeyFile());
+        unlink(CryptPKI::PUBLIC_KEY_FILE);
+        unlink(CryptPKI::PRIVATE_KEY_FILE);
     }
 
 
