@@ -570,7 +570,7 @@ sysPass.Actions = function (log) {
 
                 if (json.status === 0) {
                     setTimeout(function () {
-                        sysPassApp.redirect("index.php");
+                        sysPassApp.util.redirect("index.php");
                     }, 2000);
                 }
             });
@@ -647,7 +647,7 @@ sysPass.Actions = function (log) {
 
                 if (json.status === 0) {
                     setTimeout(function () {
-                        sysPassApp.redirect("index.php?r=login/index");
+                        sysPassApp.util.redirect("index.php?r=login/index");
                     }, 1000);
                 }
             });
@@ -694,7 +694,7 @@ sysPass.Actions = function (log) {
                                 }
 
                                 setTimeout(function () {
-                                    sysPassApp.redirect("index.php");
+                                    sysPassApp.util.redirect("index.php");
                                 }, 5000);
                             }
                         });
@@ -1124,7 +1124,7 @@ sysPass.Actions = function (log) {
                         log.info('reload');
 
                         setTimeout(function () {
-                            sysPassApp.redirect("index.php");
+                            sysPassApp.util.redirect("index.php");
                         }, 2000);
                     } else if (tabs.state.tab.refresh === true) {
                         log.info("refresh");
@@ -1320,7 +1320,7 @@ sysPass.Actions = function (log) {
             tabs.save($obj, function () {
                 // Recargar para cargar/descargar el plugin
                 setTimeout(function () {
-                    sysPassApp.redirect("index.php");
+                    sysPassApp.util.redirect("index.php");
                 }, 2000);
             });
         },
