@@ -1,25 +1,28 @@
 DELIMITER $$
+
 SET FOREIGN_KEY_CHECKS = 0 $$
 
+ALTER SCHEMA DEFAULT COLLATE utf8_unicode_ci $$
+
 DROP PROCEDURE IF EXISTS drop_primary $$
-  
+
 CREATE PROCEDURE drop_primary(
   tName VARCHAR(64)
 )
   BEGIN
-	DECLARE cName VARCHAR(64);
+    DECLARE cName VARCHAR(64);
     DECLARE done INT DEFAULT FALSE;
     DECLARE cur CURSOR FOR
-	  SELECT DISTINCT
+      SELECT DISTINCT
         COLUMN_NAME
-	  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-        WHERE TABLE_SCHEMA = DATABASE()
-        AND CONSTRAINT_NAME = 'PRIMARY'
-        AND TABLE_NAME = tName;
+      FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+      WHERE TABLE_SCHEMA = DATABASE()
+            AND CONSTRAINT_NAME = 'PRIMARY'
+            AND TABLE_NAME = tName COLLATE utf8_unicode_ci;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN cur;
-  
+
     read_loop: LOOP
       FETCH cur
       INTO cName;
@@ -35,9 +38,9 @@ CREATE PROCEDURE drop_primary(
 
     CLOSE cur;
   END $$
-  
+
 DROP PROCEDURE IF EXISTS remove_constraints $$
-  
+
 CREATE PROCEDURE remove_constraints()
   BEGIN
     DECLARE done INT DEFAULT FALSE;
@@ -69,7 +72,7 @@ CREATE PROCEDURE remove_constraints()
 
     CLOSE cur;
   END $$
-  
+
 DROP PROCEDURE IF EXISTS remove_indexes $$
 
 CREATE PROCEDURE remove_indexes()
@@ -83,7 +86,7 @@ CREATE PROCEDURE remove_indexes()
         INDEX_NAME
       FROM INFORMATION_SCHEMA.STATISTICS
       WHERE TABLE_SCHEMA = DATABASE()
-      AND NON_UNIQUE = 1;
+            AND NON_UNIQUE = 1;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
     OPEN cur;
@@ -102,7 +105,7 @@ CREATE PROCEDURE remove_indexes()
     END LOOP;
 
     CLOSE cur;
-  END $$  
+  END $$
 
 CALL remove_constraints() $$
 CALL remove_indexes() $$
@@ -135,7 +138,7 @@ ALTER TABLE customFieldsData
   ADD INDEX idx_CustomFieldData_01 (definitionId ASC),
   ADD INDEX idx_CustomFieldData_02 (itemId ASC, moduleId ASC),
   ADD INDEX idx_CustomFieldData_03 (moduleId ASC),
-  ADD INDEX uk_CustomFieldData_01 (moduleId ASC, itemId ASC, definitionId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO CustomFieldData $$
 
 -- CustomFieldDefinition
@@ -150,6 +153,7 @@ ALTER TABLE customFieldsDef
   CHANGE customfielddef_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE customfielddef_module moduleId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE customfielddef_field field BLOB NULL,
+  COLLATE utf8_unicode_ci,
 RENAME TO CustomFieldDefinition $$
 
 -- EventLog
@@ -162,6 +166,7 @@ ALTER TABLE log
   CHANGE log_action action VARCHAR(50) NOT NULL,
   CHANGE log_description description TEXT,
   CHANGE log_level level VARCHAR(20) NOT NULL,
+  COLLATE utf8_unicode_ci,
 RENAME TO EventLog $$
 
 -- Track
@@ -174,6 +179,7 @@ ALTER TABLE track
   CHANGE track_ipv6 ipv6 BINARY(16),
   ADD INDEX `idx_Track_01` (userId ASC),
   ADD INDEX `idx_Track_02` (time ASC, ipv4 ASC, ipv6 ASC, source ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Track $$
 
 -- AccountFile
@@ -187,6 +193,7 @@ ALTER TABLE accFiles
   CHANGE accfile_extension extension VARCHAR(10) NOT NULL,
   CHANGE accFile_thumb thumb MEDIUMBLOB,
   ADD INDEX idx_AccountFile_01 (accountId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountFile $$
 
 -- Fix NULL user's hash salt
@@ -222,6 +229,7 @@ ALTER TABLE usrData
   CHANGE user_preferences preferences BLOB,
   ADD INDEX idx_User_01 (pass ASC),
   ADD UNIQUE INDEX `uk_User_01` (`login`, `ssoLogin`),
+  COLLATE utf8_unicode_ci,
 RENAME TO User $$
 
 -- UserProfile
@@ -229,6 +237,7 @@ ALTER TABLE usrProfiles
   CHANGE userprofile_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE userprofile_name name VARCHAR(45) NOT NULL,
   CHANGE userProfile_profile profile BLOB NOT NULL,
+  COLLATE utf8_unicode_ci,
 RENAME TO UserProfile $$
 
 -- Notice
@@ -244,6 +253,7 @@ ALTER TABLE notices
   CHANGE notice_onlyAdmin onlyAdmin TINYINT(1) DEFAULT 0,
   ADD INDEX idx_Notification_01 (userId ASC, checked ASC, date ASC),
   ADD INDEX idx_Notification_02 (component ASC, date ASC, checked ASC, userId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Notification $$
 
 -- Plugin
@@ -254,6 +264,7 @@ ALTER TABLE `plugins`
   CHANGE plugin_enabled enabled TINYINT(1) NOT NULL DEFAULT 0,
   ADD available TINYINT(1) DEFAULT 0,
   ADD UNIQUE INDEX uk_Plugin_01 (name ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Plugin $$
 
 -- PublicLink
@@ -283,12 +294,13 @@ ALTER TABLE publicLinks
   CHANGE publicLink_linkData `data` LONGBLOB,
   ADD UNIQUE INDEX uk_PublicLink_01 (`hash` ASC),
   ADD UNIQUE INDEX uk_PublicLink_02 (itemId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO PublicLink $$
 
 -- Fix missing categories hash
 UPDATE categories
 SET category_hash = MD5(CONCAT(category_id, category_name))
-WHERE category_hash IS NULL OR category_hash = 0 $$
+WHERE category_hash IS NULL OR category_hash = '0' $$
 
 -- Category
 ALTER TABLE categories
@@ -297,6 +309,7 @@ ALTER TABLE categories
   CHANGE category_hash hash VARBINARY(40) NOT NULL,
   CHANGE category_description description VARCHAR(255),
   ADD UNIQUE INDEX uk_Category_01 (`hash` ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Category $$
 
 -- Config
@@ -304,6 +317,7 @@ ALTER TABLE config
   CHANGE config_parameter parameter VARCHAR(50) NOT NULL,
   CHANGE config_value VALUE VARCHAR(4000),
   ADD PRIMARY KEY (parameter),
+  COLLATE utf8_unicode_ci,
 RENAME TO Config $$
 
 -- Fix missing customers hash
@@ -319,6 +333,7 @@ ALTER TABLE customers
   CHANGE customer_description description VARCHAR(255),
   ADD `isGlobal` TINYINT(1) DEFAULT 0,
   ADD INDEX uk_Client_01 (`hash` ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Client $$
 
 -- Account
@@ -350,6 +365,7 @@ ALTER TABLE accounts
   ADD INDEX idx_Account_02 (`userGroupId` ASC, `userId` ASC),
   ADD INDEX idx_Account_03 (`clientId` ASC),
   ADD INDEX idx_Account_04 (`parentId` ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Account $$
 
 -- AccountToFavorite
@@ -357,6 +373,7 @@ ALTER TABLE accFavorites
   CHANGE accfavorite_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accfavorite_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX idx_AccountToFavorite_01 (accountId ASC, userId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountToFavorite $$
 
 -- AccountHistory
@@ -390,6 +407,7 @@ ALTER TABLE accHistory
   CHANGE accHistory_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0,
   ADD INDEX idx_AccountHistory_01 (accountId ASC),
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountHistory $$
 
 
@@ -405,12 +423,14 @@ ALTER TABLE tags
   CHANGE tag_hash hash VARBINARY(40) NOT NULL,
   ADD UNIQUE INDEX uk_Tag_01 (`hash` ASC),
   ADD INDEX idx_Tag_01 (`name` ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO Tag $$
 
 -- AccountToTag
 ALTER TABLE accTags
   CHANGE acctag_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE acctag_tagId tagId INT(10) UNSIGNED NOT NULL,
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountToTag $$
 
 -- AccountToUserGroup
@@ -419,6 +439,7 @@ ALTER TABLE accGroups
   CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX idx_AccountToUserGroup_01 (`accountId` ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountToUserGroup $$
 
 -- AccountToUser
@@ -427,6 +448,7 @@ ALTER TABLE accUsers
   CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX idx_AccountToUser_01 (accountId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AccountToUser $$
 
 -- UserToUserGroup
@@ -434,6 +456,7 @@ ALTER TABLE usrToGroups
   CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX idx_UserToUserGroup_01 (userId ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO UserToUserGroup $$
 
 -- UserGroup
@@ -441,6 +464,7 @@ ALTER TABLE usrGroups
   CHANGE usergroup_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE usergroup_name name VARCHAR(50) NOT NULL,
   CHANGE usergroup_description description VARCHAR(255),
+  COLLATE utf8_unicode_ci,
 RENAME TO UserGroup $$
 
 -- AuthToken
@@ -455,6 +479,7 @@ ALTER TABLE authTokens
   CHANGE authtoken_hash hash VARBINARY(1000),
   ADD UNIQUE INDEX uk_AuthToken_01 (token ASC, actionId ASC),
   ADD INDEX idx_AuthToken_01 (userId ASC, actionId ASC, token ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO AuthToken $$
 
 -- UserPassRecover
@@ -465,6 +490,7 @@ ALTER TABLE usrPassRecover
   CHANGE userpassr_date date INT(10) UNSIGNED NOT NULL,
   CHANGE userpassr_used used TINYINT(1) DEFAULT 0,
   ADD INDEX idx_UserPassRecover_01 (userId ASC, date ASC),
+  COLLATE utf8_unicode_ci,
 RENAME TO UserPassRecover $$
 
 -- Views

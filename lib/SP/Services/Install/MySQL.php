@@ -207,7 +207,7 @@ final class MySQL implements DatabaseSetupInterface
             try {
                 $dbc = $this->mysqlHandler->getConnectionSimple();
 
-                $dbc->exec('CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci');
+                $dbc->exec('CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
             } catch (PDOException $e) {
                 throw new SPException(
                     sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),

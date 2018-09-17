@@ -214,11 +214,13 @@ final class Database implements DatabaseInterface
         try {
             $connection = $this->dbHandler->getConnection();
 
-            if (is_array($queryData->getParams())) {
+            $params = $queryData->getParams();
+
+            if (!empty($params)) {
                 $stmt = $connection->prepare($query);
                 $paramIndex = 0;
 
-                foreach ($queryData->getParams() as $param => $value) {
+                foreach ($params as $param => $value) {
                     if ($isCount === true
                         && $queryData->getLimit() !== ''
                         && $paramIndex > $paramMaxIndex

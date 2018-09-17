@@ -49,7 +49,7 @@ CREATE TABLE `Account` (
   CONSTRAINT `fk_Account_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ItemPreset`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -81,7 +81,7 @@ CREATE TABLE `ItemPreset`
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountFile`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -102,7 +102,7 @@ CREATE TABLE `AccountFile` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountHistory`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -150,7 +150,7 @@ CREATE TABLE `AccountHistory` (
   CONSTRAINT `fk_AccountHistory_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToFavorite`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -169,7 +169,7 @@ CREATE TABLE `AccountToFavorite` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToTag`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -188,7 +188,7 @@ CREATE TABLE `AccountToTag` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToUser`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -208,7 +208,7 @@ CREATE TABLE `AccountToUser` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToUserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -228,7 +228,7 @@ CREATE TABLE `AccountToUserGroup` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AuthToken`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -251,7 +251,7 @@ CREATE TABLE `AuthToken` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Category`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -265,7 +265,7 @@ CREATE TABLE `Category` (
   UNIQUE KEY `uk_Category_01` (`hash`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Client`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -280,7 +280,7 @@ CREATE TABLE `Client` (
   KEY `uk_Client_01` (`hash`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Config`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -291,7 +291,7 @@ CREATE TABLE `Config` (
   PRIMARY KEY (`parameter`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldData`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -311,7 +311,7 @@ CREATE TABLE `CustomFieldData` (
   CONSTRAINT `fk_CustomFieldData_definitionId` FOREIGN KEY (`definitionId`) REFERENCES `CustomFieldDefinition` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldDefinition`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -331,7 +331,7 @@ CREATE TABLE `CustomFieldDefinition` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldType`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -344,7 +344,7 @@ CREATE TABLE `CustomFieldType` (
   UNIQUE KEY `uk_CustomFieldType_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `EventLog`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -361,7 +361,7 @@ CREATE TABLE `EventLog` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 INSERT INTO CustomFieldType (id, name, text)
 VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
@@ -387,7 +387,7 @@ CREATE TABLE `Notification` (
   CONSTRAINT `fk_Notification_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Plugin`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -402,7 +402,7 @@ CREATE TABLE `Plugin` (
   UNIQUE KEY `uk_Plugin_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `PublicLink`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -429,7 +429,7 @@ CREATE TABLE `PublicLink` (
   CONSTRAINT `fk_PublicLink_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Tag`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -443,7 +443,7 @@ CREATE TABLE `Tag` (
   KEY `idx_Tag_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Track`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -460,7 +460,7 @@ CREATE TABLE `Track` (
   KEY `idx_Track_02` (`time`, `ipv4`, `ipv6`, `source`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -499,7 +499,7 @@ CREATE TABLE `User` (
   CONSTRAINT `fk_User_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -511,7 +511,7 @@ CREATE TABLE `UserGroup` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserPassRecover`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -529,7 +529,7 @@ CREATE TABLE `UserPassRecover` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserProfile`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -541,7 +541,7 @@ CREATE TABLE `UserProfile` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserToUserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -560,7 +560,7 @@ CREATE TABLE `UserToUserGroup` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `account_data_v`;
 /*!50001 DROP VIEW IF EXISTS `account_data_v`*/;
