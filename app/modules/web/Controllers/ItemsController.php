@@ -32,6 +32,7 @@ use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Notification\NotificationService;
+use SP\Services\Tag\TagService;
 
 /**
  * Class ItemsController
@@ -45,6 +46,8 @@ final class ItemsController extends SimpleControllerBase
      *
      * @param int $accountId
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -69,6 +72,10 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function clientsAction()
@@ -78,6 +85,10 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function categoriesAction()
@@ -87,12 +98,29 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function notificationsAction()
     {
         Json::factory($this->router->response())
             ->returnRawJson(Json::getJson($this->dic->get(NotificationService::class)->getAllActiveForUserId($this->session->getUserData()->getId())));
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function tagsAction()
+    {
+        Json::factory($this->router->response())
+            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(TagService::class)->getAllBasic())->getJsonItemsFromModel());
     }
 
     /**

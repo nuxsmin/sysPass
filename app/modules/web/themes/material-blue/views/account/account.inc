@@ -83,7 +83,7 @@ $showCustomFields = count($customFields) > 0;
                                 <?php endforeach; ?>
                             </select>
                             <?php if ($addClientEnabled): ?>
-                                <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
+                                <i class="material-icons btn-action btn-add-select" title="<?php echo __('Nuevo Cliente'); ?>"
                                    data-action-route="<?php echo $addClientRoute; ?>"
                                    data-item-route="items/clients"
                                    data-item-dst="client_id"
@@ -107,7 +107,7 @@ $showCustomFields = count($customFields) > 0;
                                 <?php endforeach; ?>
                             </select>
                             <?php if ($addCategoryEnabled): ?>
-                                <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
+                                <i class="material-icons btn-action btn-add-select" title="<?php echo __('Nueva Categoría'); ?>"
                                    data-action-route="<?php echo $addCategoryRoute; ?>"
                                    data-item-route="items/categories"
                                    data-item-dst="category_id"
@@ -213,6 +213,14 @@ $showCustomFields = count($customFields) > 0;
                                         <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                                <?php if ($addTagEnabled): ?>
+                                    <i class="material-icons btn-action btn-add-select" title="<?php echo __('Nueva Etiqueta'); ?>"
+                                       data-action-route="<?php echo $addTagRoute; ?>"
+                                       data-item-route="items/tags"
+                                       data-item-dst="tags"
+                                       data-item-id="0"
+                                       data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
                                 foreach ($tags as $tag): ?>

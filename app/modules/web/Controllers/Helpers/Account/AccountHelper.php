@@ -207,6 +207,8 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Services\ServiceException
      */
     public function checkActionAccess()
@@ -228,6 +230,8 @@ final class AccountHelper extends HelperBase
      *
      * @return AccountAcl
      * @throws AccountPermissionException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -245,6 +249,8 @@ final class AccountHelper extends HelperBase
     /**
      * Sets account's view common data
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
@@ -270,6 +276,9 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign('addCategoryEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
         $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
+
+        $this->view->assign('addTagEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::TAG));
+        $this->view->assign('addTagRoute', Acl::getActionRoute(ActionsInterface::TAG_CREATE));
 
         $this->view->assign('fileListRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_LIST));
         $this->view->assign('fileUploadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_UPLOAD));

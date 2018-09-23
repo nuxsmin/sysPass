@@ -156,7 +156,7 @@
   border: 1px solid #cccccc;
   padding: 6px 12px;
   display: inline-block;
-  width: 100%;
+  width: 300px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -181,7 +181,7 @@
 
 .selectize-input.full,
 .selectize-input.not-full {
-  background-color: #f2f2f2;
+  background-color: #ffffff;
 }
 
 .selectize-input.disabled,
@@ -206,6 +206,10 @@
   display: inline-block;
   zoom: 1;
   *display: inline;
+}
+
+.selectize-control.multi .selectize-input {
+  width: 95%;
 }
 
 .selectize-control.multi .selectize-input > div {

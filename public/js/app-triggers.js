@@ -33,7 +33,16 @@ sysPass.Triggers = function (log) {
         const options = {
             valueField: "id",
             labelField: "name",
-            searchField: ["name"]
+            searchField: ["name"],
+            onInitialize: function () {
+                const $wrapper = $(this.$wrapper[0]);
+                const $input = $(this.$input[0]);
+                const $selectBoxAddIcon = $input.siblings(".btn-add-select");
+
+                if ($selectBoxAddIcon.length === 1) {
+                    $wrapper.append($selectBoxAddIcon);
+                }
+            }
         };
 
         $container.find(".select-box").each(function (e) {
@@ -428,29 +437,40 @@ sysPass.Triggers = function (log) {
                 sysPassApp.actions.items.get($selParentAccount);
             }
 
-            $('.select-box-tags').selectize({
+            $(".select-box-tags").selectize({
                 persist: false,
                 valueField: 'id',
                 labelField: 'name',
                 searchField: ['name'],
                 plugins: ['remove_button'],
                 onInitialize: function () {
-                    const input = this.$input[0];
-                    const attribute = document.createAttribute("data-hash");
-                    attribute.value = sysPassApp.util.hash.md5(this.getValue().join());
+                    const $wrapper= $(this.$wrapper[0]);
+                    const $input = $(this.$input[0]);
 
-                    input.setAttributeNode(attribute);
+                    $input.attr("data-hash", sysPassApp.util.hash.md5(this.getValue().join()));
 
-                    if (typeof input.dataset.currentItemId !== "undefined") {
-                        this.removeOption(input.dataset.currentItemId, true);
+                    const currentItemId = $input.data("currentItemId");
+
+                    if (currentItemId !== undefined) {
+                        this.removeOption(currentItemId, true);
+                    }
+
+                    const $selectBoxTagsNext = $input.siblings(".btn-add-select");
+
+                    if ($selectBoxTagsNext.length === 1) {
+                        $wrapper.append($selectBoxTagsNext);
+                    }
+
+                    const $selectBoxIcon = $input.siblings(".select-icon");
+
+                    if ($selectBoxIcon.length === 1) {
+                        $wrapper.prepend($selectBoxIcon);
                     }
                 },
                 onChange: function () {
-                    const input = this.$input[0];
-                    const attribute = document.createAttribute("data-updated");
-                    attribute.value = sysPassApp.util.hash.md5(this.getValue().join()) !== input.dataset.hash && "true";
-
-                    input.setAttributeNode(attribute);
+                    const $input = $(this.$input[0]);
+                    const updated = sysPassApp.util.hash.md5(this.getValue().join()) !== $input.data("hash");
+                    $input.attr("data-updated", updated);
                 }
             });
 

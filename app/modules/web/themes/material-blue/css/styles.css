@@ -387,9 +387,21 @@ body.userpassreset {
         border-bottom: 1px solid #d9d9d9;
         color: #607d8b;
         font-size: 12px;
-        font-weight: bold; }
-      #content .data .account-permissions .tag-list-box .tag-list-body {
-        padding: .5em 0; }
+        font-weight: bold;
+        margin-bottom: .5em; }
+      #content .data .account-permissions .tag-list-box .tag-list-body .tags-list-items {
+        display: inline-block;
+        padding: .5em;
+        width: 95%;
+        height: 3em;
+        border: 1px solid #cccccc;
+        border-radius: 3px !important;
+        -moz-border-radius: 3px !important;
+        -webkit-border-radius: 3px !important; }
+      #content .data .account-permissions .tag-list-box i.select-icon {
+        margin-right: .5em;
+        color: #607d8b;
+        font-size: 18px; }
 #content span.tag {
   margin: 0 3px 3px 0;
   padding: 3px;
@@ -1034,7 +1046,8 @@ h5.datagrid-header-title {
   width: auto; }
 
 .select-box {
-  min-width: 20em; }
+  min-width: 300px;
+  max-width: 100%; }
 
 fieldset.warning {
   padding: 8px;

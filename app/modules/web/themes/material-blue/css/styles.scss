@@ -242,9 +242,22 @@
           color: $color-bluegrey-fg;
           font-size: 12px;
           font-weight: bold;
+          margin-bottom: .5em;
         }
         .tag-list-body {
-          padding: .5em 0;
+          .tags-list-items {
+            display: inline-block;
+            padding: .5em;
+            width: 95%;
+            height: 3em;
+            border: 1px solid #cccccc;
+            @include border-radius(3px);
+          }
+        }
+        i.select-icon {
+          margin-right: .5em;
+          color: $color-bluegrey-fg;
+          font-size: 18px;
         }
       }
     }
@@ -1044,7 +1057,8 @@ h5.datagrid-header-title {
 }
 
 .select-box {
-  min-width: 20em;
+  min-width: 300px;
+  max-width: 100%;
 }
 
 fieldset.warning {

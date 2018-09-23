@@ -159,11 +159,16 @@ final class Acl implements ActionsInterface
                     || $userProfile->isConfigBackup()
                     || $userProfile->isConfigImport());
             case self::CONFIG_GENERAL:
-            case self::PLUGIN:
             case self::CONFIG_ACCOUNT:
             case self::CONFIG_WIKI:
             case self::CONFIG_LDAP:
             case self::CONFIG_MAIL:
+            case self::PLUGIN:
+            case self::PLUGIN_SEARCH:
+            case self::PLUGIN_DISABLE:
+            case self::PLUGIN_ENABLE:
+            case self::PLUGIN_RESET:
+            case self::PLUGIN_VIEW:
                 return $userProfile->isConfigGeneral();
             case self::CONFIG_IMPORT:
                 return $userProfile->isConfigImport();

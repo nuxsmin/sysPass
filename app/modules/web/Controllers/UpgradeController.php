@@ -44,6 +44,8 @@ final class UpgradeController extends ControllerBase
     /**
      * indexAction
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function indexAction()
