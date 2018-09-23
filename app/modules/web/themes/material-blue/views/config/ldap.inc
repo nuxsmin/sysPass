@@ -76,7 +76,7 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('TLS'); ?></span>
+                                <span>TLS</span>
                                 <span class="mdl-list__item-sub-title">
                                     <?php echo __('Habilita la conexión mediante TLS.'); ?>
                                 </span>

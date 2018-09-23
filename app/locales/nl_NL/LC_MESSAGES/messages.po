@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-08-30 01:39+0100\n"
+"POT-Creation-Date: 2018-09-24 01:05+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nlmaca\n"
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
 "X-Poedit-Basepath: .\n"
@@ -43,16 +43,21 @@ msgstr "De Crypto module kan niet geladen worden"
 msgid "Error al generar datos cifrados"
 msgstr "Fout bij het genereren van de versleutelde data"
 
-#: ../../../../lib/SP/DataModel/TrackData.php:155
-#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:56
-msgid "IP inválida"
-msgstr "Ongeldig IP"
-
 #: ../../../../lib/SP/Html/DataGrid/DataGridBase.php:306
 #: ../../../../lib/SP/Mvc/View/Template.php:122
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
 msgstr "Niet mogelijk om  \"%s\" template: %s op te halen"
+
+#: ../../../../lib/SP/Http/Address.php:49
+#: ../../../../lib/SP/Http/Address.php:68
+msgid "IP inválida"
+msgstr "Ongeldig IP"
+
+#: ../../../../lib/SP/Mvc/Controller/Validators/PasswordValidator.php:71
+#, php-format
+msgid "Es necesaria una clave con al menos %d caracteres"
+msgstr "Password needs to be %d characters long"
 
 #: ../../../../lib/SP/Mvc/View/Template.php:274
 #: ../../../../lib/SP/Mvc/View/Template.php:276
@@ -91,7 +96,7 @@ msgstr "Verzoek"
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:156
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: ../../../modules/web/Controllers/ConfigManagerController.php:171
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:88
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:86
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:20
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:389
 #: ../../../config/actions.xml:13
@@ -117,7 +122,7 @@ msgstr "Accounts die geupdated zijn: %d / %d"
 msgid "Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 msgstr "Geupdate accounts: %d / %d - %d%% - VTA: %ds (%.2f/s)"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:582
+#: ../../../../lib/SP/Services/Auth/LoginService.php:589
 msgid "N/D"
 msgstr "N/A"
 
@@ -174,22 +179,22 @@ msgid "Actualizando datos encriptados"
 msgstr "Bijwerken encrypted data"
 
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:75
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:91
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:89
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:293
 msgid "Categorías"
 msgstr "Categorieen"
 
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:76
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:90
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:88
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:325
 #, fuzzy
 msgid "Clientes"
 msgstr "Klanten"
 
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:77
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:102
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:13
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:118
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:99
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:14
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:4
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:45
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:47
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:50
@@ -198,9 +203,9 @@ msgid "Usuarios"
 msgstr "Gebruikers"
 
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:78
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:93
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:51
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:157
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:90
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:84
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:43
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:261
 msgid "Grupos"
 msgstr "Groepen"
@@ -262,8 +267,8 @@ msgstr "Error bij het instellen van de database rechten ('%s')"
 msgid "Error al seleccionar la BBDD '%s' (%s)"
 msgstr "Error while selecting database '%s' (%s)"
 
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:131
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:221
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:134
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:229
 msgid "Importado desde LDAP"
 msgstr "Imported from LDAP"
 
@@ -275,12 +280,12 @@ msgstr "Unable to create the lock file"
 msgid "Esperando actualización de progreso ..."
 msgstr "Wachten op voortgang van update"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:134
+#: ../../../../lib/SP/Services/Track/TrackService.php:137
 #, php-format
 msgid "Intentos excedidos (%d/%d)"
 msgstr "Te veel pogingen (%d/%d)."
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:155
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:151
 msgid "El archivo de actualización no contiene datos"
 msgstr "The update file does not contain data"
 
@@ -394,13 +399,13 @@ msgid "No tiene permisos para realizar esta operación"
 msgstr "U heeft hiervoor geen toegang"
 
 #: ../../../../lib/SP/Util/ErrorUtil.php:144
-#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:96
+#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:116
 #, fuzzy
 msgid "Clave maestra actualizada"
 msgstr "Master Wachtwoord bijgewerkt"
 
 #: ../../../../lib/SP/Util/ErrorUtil.php:145
-#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:96
+#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:116
 #, fuzzy
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Herstart sessie om bij te werken"
@@ -409,7 +414,9 @@ msgstr "Herstart sessie om bij te werken"
 #: ../../../../lib/SP/Util/ErrorUtil.php:155
 #, fuzzy
 msgid "Se ha producido una excepción"
-msgstr "Er is een uitzondering opgetreden"
+msgstr ""
+"\n"
+"Er is een uitzondering opgetreden"
 
 #: ../../../../lib/SP/Util/Wiki/DokuWikiApi.php:70
 msgid "Fallo de autentificación"
@@ -423,19 +430,20 @@ msgstr "Fout bij het uitvoeren van de query"
 msgid "URL de conexión no establecida"
 msgstr "Verbinding URL niet ingesteld"
 
-#: ../../../modules/api/Controllers/AccountController.php:137
+#: ../../../modules/api/Controllers/AccountController.php:144
 msgid "Clave actualizada"
 msgstr "Wachtwoord bijgewerkt"
 
-#: ../../../modules/api/Controllers/AccountController.php:184
+#: ../../../modules/api/Controllers/AccountController.php:193
+#, fuzzy
 msgid "Cuenta creada"
-msgstr "Account toegevoegd"
+msgstr "Account created"
 
-#: ../../../modules/api/Controllers/AccountController.php:233
+#: ../../../modules/api/Controllers/AccountController.php:242
 msgid "Cuenta actualizada"
 msgstr "Account bijgewerkt"
 
-#: ../../../modules/api/Controllers/AccountController.php:306
+#: ../../../modules/api/Controllers/AccountController.php:315
 #, fuzzy
 msgid "Cuenta eliminada"
 msgstr "Account verwijderd"
@@ -504,11 +512,11 @@ msgstr "Stuur de details in de reactie"
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:93
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:147
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:155
-#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:31
+#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:37
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:288
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:291
 #: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:79
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:150
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:167
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:117
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:124
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:250
@@ -532,8 +540,8 @@ msgstr "Wachtwoord"
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:89
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:104
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:173
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:129
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:131
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:83
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:85
 msgid "Fecha Caducidad Clave"
 msgstr "Wachtwoord vervaldatum"
 
@@ -586,22 +594,24 @@ msgstr "Notities voor het account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:89
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:111
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:126
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:194
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:106
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:19
 msgid "Cuenta Privada"
 msgstr "Privé-account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:90
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:112
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:139
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:211
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:38
 msgid "Cuenta Privada Grupo"
 msgstr "privé-account voor groep."
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:92
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:114
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:228
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:230
-#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:9
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:236
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:238
+#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:8
 msgid "Cuenta Vinculada"
 msgstr "Gekoppeld account"
 
@@ -632,7 +642,9 @@ msgstr "Categorie ID om te filteren"
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:129
 #, fuzzy
 msgid "Id de cliente a filtrar"
-msgstr "Klant ID om te filteren ingeschakeld"
+msgstr ""
+"\n"
+"Klant ID om te filteren ingeschakeld"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:130
 msgid "Array con Ids de etiquetas a filtrar"
@@ -665,8 +677,8 @@ msgid "Descripción del cliente"
 msgstr "Klant omschrijving"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:56
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:144
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:142
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:62
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:92
 msgid "Global"
@@ -699,9 +711,9 @@ msgstr "Label geupdate"
 msgid "Etiqueta eliminada"
 msgstr "Label verwijderd"
 
-#: ../../../modules/web/Controllers/AccountController.php:146
-#: ../../../modules/web/Controllers/AccountController.php:201
-#: ../../../modules/web/Controllers/AccountController.php:473
+#: ../../../modules/web/Controllers/AccountController.php:149
+#: ../../../modules/web/Controllers/AccountController.php:204
+#: ../../../modules/web/Controllers/AccountController.php:476
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:26
@@ -710,15 +722,15 @@ msgid "Detalles de Cuenta"
 msgstr "Account details"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:253
-#: ../../../modules/web/Controllers/AccountController.php:297
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:275
+#: ../../../modules/web/Controllers/AccountController.php:256
+#: ../../../modules/web/Controllers/AccountController.php:300
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:276
 #: ../../../config/actions.xml:151
 msgid "Nueva Cuenta"
 msgstr "Nieuw Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:341
+#: ../../../modules/web/Controllers/AccountController.php:344
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:18
@@ -727,69 +739,47 @@ msgid "Editar Cuenta"
 msgstr "Wijzig Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:386
+#: ../../../modules/web/Controllers/AccountController.php:389
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:312
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:313
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:147
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:148
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:175
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:176
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:145
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:146
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:172
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:173
 #: ../../../config/actions.xml:163 ../../../config/actions.xml:481
 #: ../../../config/actions.xml:781
 #, fuzzy
 msgid "Eliminar Cuenta"
 msgstr "Verwijder Account"
 
-#: ../../../modules/web/Controllers/AccountController.php:429
+#: ../../../modules/web/Controllers/AccountController.php:432
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 msgid "Modificar Clave de Cuenta"
 msgstr "Wijzig Account Wachtwoord"
 
-#. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountDefaultPermissionController.php:71
-#: ../../../config/actions.xml:847
-msgid "Ver Permiso"
-msgstr "View Permission"
-
-#. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountDefaultPermissionController.php:181
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:156
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:157
-#: ../../../config/actions.xml:853
-msgid "Nuevo Permiso"
-msgstr "New Permission"
-
-#. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountDefaultPermissionController.php:211
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:174
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:175
-#: ../../../config/actions.xml:859
-msgid "Editar Permiso"
-msgstr "Edit Permission"
-
-#: ../../../modules/web/Controllers/AccountFileController.php:183
+#: ../../../modules/web/Controllers/AccountFileController.php:186
 #, php-format
 msgid "Extensión: %s"
 msgstr "Extension: %s"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:368
+#: ../../../modules/web/Controllers/AccountFileController.php:370
 msgid "Gestión de archivos deshabilitada"
 msgstr "Bestands management uitgeschakeld"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:385
+#: ../../../modules/web/Controllers/AccountFileController.php:387
 msgid "No hay archivos asociados a la cuenta"
 msgstr "There are no linked files for the account"
 
 #: ../../../modules/web/Controllers/AuthTokenController.php:101
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:153
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:154
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:150
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:151
 msgid "Nueva Autorización"
 msgstr "Nieuwe Autorisatie"
 
 #: ../../../modules/web/Controllers/AuthTokenController.php:165
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:188
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:189
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:185
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:186
 msgid "Editar Autorización"
 msgstr "Wijzig Autorisatie"
 
@@ -799,8 +789,8 @@ msgstr "Bekijk Autorisatie"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/CategoryController.php:99
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:149
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:150
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:147
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:148
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:110
 #: ../../../config/actions.xml:301
 msgid "Nueva Categoría"
@@ -808,8 +798,8 @@ msgstr "Nieuwe Categorie"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/CategoryController.php:162
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:167
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:168
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:165
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:166
 #: ../../../config/actions.xml:307
 msgid "Editar Categoría"
 msgstr "Wijzig Categorie"
@@ -822,8 +812,8 @@ msgstr "Bekijk Categorie"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ClientController.php:100
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:152
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:153
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:150
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:151
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:86
 #: ../../../config/actions.xml:331
 #, fuzzy
@@ -832,8 +822,8 @@ msgstr "Nieuwe Klant"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ClientController.php:163
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:170
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:171
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:168
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:169
 #: ../../../config/actions.xml:337
 #, fuzzy
 msgid "Editar Cliente"
@@ -846,30 +836,31 @@ msgstr "Wijzig Klant"
 msgid "Ver Cliente"
 msgstr "Bekijk Klant"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:147
-#: ../../../modules/web/Controllers/ConfigLdapController.php:189
+#: ../../../modules/web/Controllers/ConfigLdapController.php:149
+#: ../../../modules/web/Controllers/ConfigLdapController.php:191
 msgid "Resultados"
 msgstr "Resultaten"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:153
-#: ../../../modules/web/Controllers/ConfigLdapController.php:196
+#: ../../../modules/web/Controllers/ConfigLdapController.php:155
+#: ../../../modules/web/Controllers/ConfigLdapController.php:198
 #, php-format
 msgid "Objetos encontrados: %d"
 msgstr "Voorwerpen gevonden: %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:267
+#: ../../../modules/web/Controllers/ConfigLdapController.php:271
 #, php-format
 msgid "Usuarios importados: %d / %d"
 msgstr "Imported users: %d / %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:268
+#: ../../../modules/web/Controllers/ConfigLdapController.php:272
 #, php-format
 msgid "Errores: %d"
 msgstr "Errors: %d"
 
 #: ../../../modules/web/Controllers/ConfigManagerController.php:157
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:131
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:425
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:12
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
 msgid "General"
 msgstr "Algemeen"
 
@@ -890,7 +881,7 @@ msgid "Correo"
 msgstr "Email"
 
 #: ../../../modules/web/Controllers/ConfigManagerController.php:268
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
 msgid "Encriptación"
 msgstr "Encryptie"
 
@@ -932,14 +923,14 @@ msgid "Información"
 msgstr "Informatie"
 
 #: ../../../modules/web/Controllers/CustomFieldController.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:154
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:155
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:156
 msgid "Nuevo Campo"
 msgstr "Nieuw Veld"
 
 #: ../../../modules/web/Controllers/CustomFieldController.php:162
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:172
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:173
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:174
 msgid "Editar Campo"
 msgstr "Wijzig Veld"
 
@@ -975,8 +966,8 @@ msgstr "Bekijk Huidig"
 #: ../../../modules/web/themes/material-blue/views/config/general.inc:22
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:89
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:151
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:275
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:420
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:292
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:437
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:206
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:291
 #: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:167
@@ -1037,7 +1028,7 @@ msgstr "Kopieer Wachtwoord naar klembord"
 msgid "Copiar Cuenta"
 msgstr "Kopieer Account"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:113
+#: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:67
 #: ../../../config/strings.js.inc:72
 msgid "Clave de Cuenta"
 msgstr "Account Wachtwoord"
@@ -1048,10 +1039,10 @@ msgid "Más Acciones"
 msgstr "Meer acties"
 
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:214
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:101
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:99
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:100
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:104
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:33
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:39
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:47
@@ -1073,16 +1064,16 @@ msgid "Ordenar por Cliente"
 msgstr "Sorteer bij Klant"
 
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:221
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:100
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:114
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:105
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:98
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:99
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:100
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:103
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:111
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:102
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:22
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:33
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:15
@@ -1093,12 +1084,12 @@ msgstr "Sorteer bij Klant"
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:16
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:19
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:13
 #: ../../../modules/web/themes/material-blue/views/itemshow/tag.inc:16
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:29
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_pass.inc:15
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:512
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:528
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:16
 msgid "Nombre"
 msgstr "Naam"
 
@@ -1107,8 +1098,8 @@ msgid "Ordenar por Nombre"
 msgstr "Sorteer bij Naam"
 
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:228
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:100
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:101
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:62
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:64
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:38
@@ -1124,9 +1115,9 @@ msgid "Ordenar por Categoría"
 msgstr "Sorteer bij Categorie"
 
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:235
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:105
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:109
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:107
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:107
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:55
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:61
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:91
@@ -1137,16 +1128,16 @@ msgstr "Sorteer bij Categorie"
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:20
 #: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:65
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:52
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:129
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:146
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:104
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:111
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:230
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:244
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:17
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:19
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:22
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:16
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:18
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:26
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:28
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:31
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:60
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:62
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:11
@@ -1178,84 +1169,37 @@ msgstr "URL / IP"
 msgid "Ordenar por URL / IP"
 msgstr "Sorteer bij URL / IP"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:90
-msgid "Permisos por Defecto"
-msgstr "Default Permissions"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:103
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:117
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:137
-#: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
-#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:269
-#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:272
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:186
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:213
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:34
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:36
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:39
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:139
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:141
-msgid "Grupo"
-msgstr "Groep"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:116
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:51
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:53
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:56
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:122
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:124
-msgid "Perfil"
-msgstr "Profiel"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:105
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:69
-msgid "Prioridad"
-msgstr "Priority"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:106
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:105
-msgid "Forzado"
-msgstr "Forced"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:124
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:120
-#: ../../../config/strings.js.inc:66
-msgid "SI"
-msgstr "JA"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:124
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:120
-#: ../../../config/strings.js.inc:67
-msgid "NO"
-msgstr "NEE"
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:67
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:68
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:71
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:70
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:69
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:70
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:69
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:74
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:75
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:83
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:71
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:70
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:80
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:71
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:71
+msgid "Eliminar Seleccionados"
+msgstr "Verwijder selectie"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:141
-#: ../../../config/actions.xml:841
-msgid "Buscar Permiso"
-msgstr "Search for Permission"
-
-#. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:191
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountDefaultPermissionGrid.php:192
-#: ../../../config/actions.xml:865
-msgid "Eliminar Permiso"
-msgstr "Delete Permission"
-
-#. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:132
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:143
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:130
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:140
 #: ../../../config/actions.xml:487 ../../../config/actions.xml:787
 msgid "Buscar Cuenta"
 msgstr "Zoeken naar Account"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:90
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:87
 msgid "Cuentas (H)"
 msgstr "Accounts (H)"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:118
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:116
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:98
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:112
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:182
@@ -1265,57 +1209,57 @@ msgstr "Accounts (H)"
 msgid "Fecha"
 msgstr "Datum"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:122
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:103
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:120
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:102
 msgid "Estado"
 msgstr "Status"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:127
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:124
 msgid "Modificada"
 msgstr "Aangepast"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:128
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:125
 msgid "Eliminada"
 msgstr "Verwijderd"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:158
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:159
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:155
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:156
 #: ../../../config/actions.xml:181 ../../../config/actions.xml:793
 msgid "Restaurar Cuenta"
 msgstr "Account Herstel"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:93
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:90
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:357
 msgid "Autorizaciones API"
 msgstr "API Autorisaties"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:30
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:32
 msgid "Acción"
 msgstr "Actie"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:138
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:135
 msgid "Buscar Token"
 msgstr "Zoeken naar Sleutel"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:171
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:172
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:168
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:169
 msgid "Ver token de Autorización"
 msgstr "Bekijk Autorisatie Sleutel"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:205
-#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:206
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:202
+#: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:203
 msgid "Eliminar Autorización"
 msgstr "Verwijder Autorisatie"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:103
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:101
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:106
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:121
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:119
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:28
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:32
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:32
@@ -1325,48 +1269,59 @@ msgid "Descripción"
 msgstr "Omschrijving"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:134
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:132
 #: ../../../config/actions.xml:319
 msgid "Buscar Categoría"
 msgstr "Zoeken naar Categorie"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:184
-#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:185
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:182
+#: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:183
 #: ../../../config/actions.xml:313
 msgid "Eliminar Categoría"
 msgstr "Verwijder Categorie"
 
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:118
+#: ../../../config/strings.js.inc:66
+msgid "SI"
+msgstr "JA"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:118
+#: ../../../config/strings.js.inc:67
+msgid "NO"
+msgstr "NEE"
+
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:137
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:135
 #: ../../../config/actions.xml:349
 #, fuzzy
 msgid "Buscar Cliente"
 msgstr "Zoeken naar Klant"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:187
-#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:188
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:185
+#: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:186
 #: ../../../config/actions.xml:343
 #, fuzzy
 msgid "Eliminar Cliente"
 msgstr "Verwijder Klant"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:91
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:90
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:27
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:341
 msgid "Campos Personalizados"
 msgstr "Aangepaste velden"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:104
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:45
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:47
 msgid "Módulo"
 msgstr "Module"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:105
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:105
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:119
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:104
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:104
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:117
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:31
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:33
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:16
@@ -1374,37 +1329,37 @@ msgstr "Module"
 msgid "Tipo"
 msgstr "Type"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:106
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:118
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:115
 msgid "Propiedades"
 msgstr "Eigenschappen"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:124
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:123
 #: ../../../modules/web/themes/material-blue/views/common/aux-customfields.inc:13
 #: ../../../modules/web/themes/material-blue/views/itemshow/custom_field.inc:86
 msgid "Encriptado"
 msgstr "Encrypted"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:140
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:139
 msgid "Buscar Campo"
 msgstr "Zoeken naar Veld"
 
+#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:189
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:190
-#: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:191
 msgid "Eliminar Campo"
 msgstr "Verwijder Veld"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:88
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:331
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:318
 #: ../../../modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: ../../../config/actions.xml:127
 msgid "Registro de Eventos"
 msgstr "Event Log"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:100
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:138
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:140
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:94
 msgid "ID"
 msgstr "ID"
 
@@ -1421,7 +1376,7 @@ msgid "Evento"
 msgstr "Evenement"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:115
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:112
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:44
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_pass.inc:26
 msgid "Login"
@@ -1446,7 +1401,7 @@ msgid "Vaciar registro de eventos"
 msgstr "Event log opschonen"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:90
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:89
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:35
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:277
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:145
@@ -1455,8 +1410,8 @@ msgstr "Event log opschonen"
 msgid "Archivos"
 msgstr "Bestanden"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:102
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:15
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:24
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:16
@@ -1464,107 +1419,206 @@ msgstr "Bestanden"
 msgid "Cuenta"
 msgstr "Account"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:105
 msgid "Tamaño"
 msgstr "Grootte"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:141
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:140
 #: ../../../config/actions.xml:469
 msgid "Buscar Archivo"
 msgstr "Zoeken naar Bestand"
 
 #. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:155
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:156
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:157
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:45
 #: ../../../config/actions.xml:199 ../../../config/actions.xml:445
 msgid "Ver Archivo"
 msgstr "Bekijk bestand"
 
 #. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:172
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:173
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:174
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:38
 #: ../../../config/actions.xml:211 ../../../config/actions.xml:451
 msgid "Descargar Archivo"
 msgstr "Download bestand"
 
 #. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:189
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:190
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:191
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:30
 #: ../../../config/actions.xml:217 ../../../config/actions.xml:457
 msgid "Eliminar Archivo"
 msgstr "Verwijder Bestand"
 
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:94
+msgid "Valores Predeterminados"
+msgstr "Preset Values"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:114
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:137
+#: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
+#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:269
+#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:272
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:203
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:230
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:43
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:45
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:139
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:141
+msgid "Grupo"
+msgstr "Groep"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:109
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:113
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:60
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:62
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:65
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:122
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:124
+msgid "Perfil"
+msgstr "Profiel"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:78
+msgid "Prioridad"
+msgstr "Priority"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:115
+msgid "Forzado"
+msgstr "Forced"
+
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:145
+#: ../../../config/actions.xml:841
+msgid "Buscar Valor"
+msgstr "Search for Value"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:160
+#: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:66
+msgid "Valor de Permiso"
+msgstr "Permission Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:161
+msgid "Nuevo Valor de Permiso"
+msgstr "New Permission Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:184
+#: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:86
+msgid "Valor de Cuenta Privada"
+msgstr "Private Account Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:185
+msgid "Nuevo Valor de Cuenta Privada"
+msgstr "New Private Account Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:208
+#: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:102
+msgid "Valor de Timeout de Sesión"
+msgstr "Session Timeout Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:209
+msgid "Nuevo Valor de Timeout de Sesión"
+msgstr "New Session Timeout Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:232
+#: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:117
+msgid "Valor de Clave de Cuentas"
+msgstr "Account Password Preset"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:233
+msgid "Nuevo Valor de Clave de Cuentas"
+msgstr "New Account Password Preset"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:256
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:257
+#: ../../../modules/web/Controllers/ItemPresetController.php:225
+#: ../../../config/actions.xml:859
+msgid "Editar Valor"
+msgstr "Edit Value"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:273
+#: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:274
+#: ../../../config/actions.xml:865
+msgid "Eliminar Valor"
+msgstr "Delete Value"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:105
 #: ../../../modules/web/themes/material-blue/views/notification/index.inc:1
 #: ../../../config/actions.xml:667
 msgid "Notificaciones"
 msgstr "Notificaties"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:120
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:118
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:28
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:35
 msgid "Componente"
 msgstr "Onderdeel"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:142
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:140
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:104
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:108
 msgid "Leída"
 msgstr "Lees"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:143
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:141
 msgid "Sólo Admins"
 msgstr "Only Admins"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:160
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:158
 #: ../../../config/actions.xml:829
 msgid "Buscar Notificación"
 msgstr "Zoeken naar Notificatie"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:175
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:176
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:173
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:174
 #: ../../../modules/web/Controllers/NotificationController.php:179
 msgid "Nueva Notificación"
 msgstr "Nieuw bericht"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:193
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:194
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:191
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:192
 #: ../../../modules/web/Controllers/NotificationController.php:103
 #: ../../../config/actions.xml:799
 msgid "Ver Notificación"
 msgstr "Toon Notificatie"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:223
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:224
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:221
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:222
 #: ../../../config/actions.xml:823
 msgid "Marcar Notificación"
 msgstr "Afrekenen Melding"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:241
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:242
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:239
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:240
 #: ../../../modules/web/Controllers/NotificationController.php:210
 #: ../../../config/actions.xml:811
 msgid "Editar Notificación"
 msgstr "Wijzig bericht"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:258
-#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:259
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:256
+#: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:257
 #: ../../../config/actions.xml:817
 msgid "Eliminar Notificación"
 msgstr "Verwijder Notificatie"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:89
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:332
+#: ../../../modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -1605,32 +1659,32 @@ msgstr "Uitschakelen"
 msgid "Restablecer Datos"
 msgstr "Reset Data"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:93
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:91
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:43
 msgid "Enlaces"
 msgstr "Links"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:107
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:105
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:44
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:46
 msgid "Fecha Creación"
 msgstr "Aanmaakdatum"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:106
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:182
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:52
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:54
 msgid "Fecha Caducidad"
 msgstr "Verloopdatum"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:110
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:31
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:34
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:38
 msgid "Notificar"
 msgstr "Bericht"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:111
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:109
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:9
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:11
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:184
@@ -1639,32 +1693,32 @@ msgstr "Bericht"
 msgid "Visitas"
 msgstr "Bezoekers"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:146
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:144
 msgid "Buscar Enlace"
 msgstr "Zoeken naar Link"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:161
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:162
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:159
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:160
 msgid "Nuevo Enlace"
 msgstr "New Link"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:179
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:180
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:177
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:178
 #: ../../../modules/web/Controllers/PublicLinkController.php:336
 msgid "Ver Enlace"
 msgstr "Bekijk Link"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:195
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:196
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:193
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:194
 msgid "Renovar Enlace"
 msgstr "Vernieuw Link"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:212
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:213
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:210
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:211
 msgid "Eliminar Enlace"
 msgstr "Verwijder Link"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:91
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:89
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:203
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:205
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:309
@@ -1672,76 +1726,77 @@ msgid "Etiquetas"
 msgstr "Tags"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:132
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:130
 #: ../../../config/actions.xml:517
 msgid "Buscar Etiqueta"
 msgstr "Zoeken naar Label"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:147
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:148
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:145
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:146
 #: ../../../modules/web/Controllers/TagController.php:98
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:217
 #: ../../../config/actions.xml:493
 msgid "Nueva Etiqueta"
 msgstr "Nieuw Label"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:165
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:166
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:163
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:164
 #: ../../../modules/web/Controllers/TagController.php:157
 #: ../../../config/actions.xml:505
 msgid "Editar Etiqueta"
 msgstr "Bewerk Label"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:182
-#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:183
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:180
+#: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:181
 #: ../../../config/actions.xml:511
 msgid "Eliminar Etiqueta"
 msgstr "Verwijder Label"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:154
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:151
 #: ../../../config/actions.xml:589
 msgid "Buscar Usuario"
 msgstr "Zoeken naar Gebruiker"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:169
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:170
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:166
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:167
 #: ../../../modules/web/Controllers/UserController.php:105
 #: ../../../config/actions.xml:565
 msgid "Nuevo Usuario"
 msgstr "Nieuwe Gebruiker"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:187
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:188
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:184
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:185
 #: ../../../modules/web/Controllers/UserController.php:190
 #: ../../../config/actions.xml:571
 msgid "Editar Usuario"
 msgstr "Wijzig Gebruiker"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:204
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:205
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:201
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:202
 #: ../../../config/actions.xml:577
 msgid "Eliminar Usuario"
 msgstr "Verwijder Gebruiker"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:221
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:222
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:440
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:218
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:219
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:457
 msgid "Importar usuarios de LDAP"
 msgstr "Imoporteer gebruikers van LDAP"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:236
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:237
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:233
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:234
 msgid "Ver Detalles de Usuario"
 msgstr "Bekijk gebruiker Details"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:253
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:254
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:250
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:251
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:62
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:120
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:126
@@ -1749,99 +1804,99 @@ msgid "Cambiar Clave de Usuario"
 msgstr "Wijzig Gebruikers Wachtwoord"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:136
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:133
 #: ../../../config/actions.xml:619
 msgid "Buscar Grupo"
 msgstr "Zoeken naar Groep"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:151
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:152
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:148
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:149
 #: ../../../modules/web/Controllers/UserGroupController.php:106
 #: ../../../config/actions.xml:601
 msgid "Nuevo Grupo"
 msgstr "Nieuwe Groep"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:169
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:170
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:166
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:167
 #: ../../../modules/web/Controllers/UserGroupController.php:319
 #: ../../../config/actions.xml:595
 msgid "Ver Grupo"
 msgstr "Bekijk Groep"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:186
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:187
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:183
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:184
 #: ../../../modules/web/Controllers/UserGroupController.php:171
 #: ../../../config/actions.xml:607
 msgid "Editar Grupo"
 msgstr "Wijzig Broep"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:203
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:204
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:200
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:201
 #: ../../../config/actions.xml:613
 msgid "Eliminar Grupo"
 msgstr "Verwijder Groep"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:93
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:90
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:277
 msgid "Perfiles"
 msgstr "Profielen"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:134
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:131
 #: ../../../config/actions.xml:649
 msgid "Buscar Perfil"
 msgstr "Zoeken naar Profiel"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:149
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:150
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:146
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:147
 #: ../../../modules/web/Controllers/UserProfileController.php:100
 #: ../../../config/actions.xml:631
 msgid "Nuevo Perfil"
 msgstr "Nieuw Profiel"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:167
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:168
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:164
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:165
 msgid "Ver Detalles de Perfil"
 msgstr "Bekijk Profiel Details"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:184
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:185
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:181
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:182
 #: ../../../modules/web/Controllers/UserProfileController.php:166
 #: ../../../config/actions.xml:637
 msgid "Editar Perfil"
 msgstr "Wijzig Profiel"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:201
-#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:202
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:198
+#: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:199
 #: ../../../config/actions.xml:643
 msgid "Eliminar Perfil"
 msgstr "Verwijder Profiel"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:262
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:263
 msgid "Buscar"
 msgstr "zoek"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:289
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:290
 #: ../../../config/actions.xml:103
 msgid "Usuarios y Accesos"
 msgstr "Gebruikers en Toegang"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:303
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:304
 #: ../../../config/actions.xml:43
 msgid "Elementos y Personalización"
 msgstr "Onderdelen en Aanpassingen"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:317
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:346
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
 #: ../../../config/actions.xml:673
@@ -1855,6 +1910,18 @@ msgstr "Module niet beschikbaar"
 #: ../../../modules/web/Controllers/InstallController.php:60
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "Zonder deze module kan de applicatie niet goed werken"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/ItemPresetController.php:70
+#: ../../../config/actions.xml:847
+msgid "Ver Valor"
+msgstr "Display Value"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/ItemPresetController.php:195
+#: ../../../config/actions.xml:853
+msgid "Nuevo Valor"
+msgstr "New Value"
 
 #: ../../../modules/web/Controllers/PublicLinkController.php:104
 msgid "Nuevo Enlace Público"
@@ -1974,29 +2041,29 @@ msgid "Vaciar el registro de eventos?"
 msgstr "Opschonen van event log?"
 
 #: ../../../config/strings.js.inc:47
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:112
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:177
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:276
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:87
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:57
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:233
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:40
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:250
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:49
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:145
 msgid "Seleccionar Grupo"
 msgstr "Selecteer Groep"
 
 #: ../../../config/strings.js.inc:48
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:95
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:160
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:112
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:30
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:258
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:23
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:275
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:21
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:32
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:74
 msgid "Seleccionar Usuario"
 msgstr "Selecteer Gebruiker"
 
 #: ../../../config/strings.js.inc:49
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:57
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:66
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:128
 msgid "Seleccionar Perfil"
 msgstr "Selecteer Profiel"
@@ -2050,24 +2117,29 @@ msgstr "Kopieer  Gebruikersnaam"
 
 #. (itstool) path: action/text
 #: ../../../config/strings.js.inc:60
-#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:30
+#: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:36
 #: ../../../config/actions.xml:193 ../../../config/actions.xml:265
 msgid "Copiar Clave"
 msgstr "Kopieer Wachtwoord"
 
 #: ../../../config/strings.js.inc:61
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:74
 msgid "Incluir Números"
 msgstr "Inclusief Nummers"
 
 #: ../../../config/strings.js.inc:62
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:116
 msgid "Incluir Mayúsculas"
 msgstr "Inclusief Hoofdletters"
 
 #: ../../../config/strings.js.inc:63
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:102
 msgid "Incluir Símbolos"
 msgstr "Inclusief Symbolen"
 
 #: ../../../config/strings.js.inc:64
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:6
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:14
 msgid "Longitud"
 msgstr "Lengte"
 
@@ -2159,6 +2231,7 @@ msgid ""
 msgstr "Aan het wek. Venster of tab van de browser niet sluiten."
 
 #: ../../../config/strings.js.inc:88
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:88
 msgid "Incluir Letras"
 msgstr "Voeg letters toe"
 
@@ -2298,18 +2371,18 @@ msgstr "Notities"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:129
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:131
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:245
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:247
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:253
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:255
 msgid "Historial"
 msgstr "Geschiedenis"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:136
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:252
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:260
 msgid "Seleccionar fecha"
 msgstr "Selecteer data"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:147
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:264
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:272
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:27
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:29
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:284
@@ -2317,55 +2390,59 @@ msgstr "Selecteer data"
 msgid "Última Modificación"
 msgstr "Laatste Aanpassing"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:17
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:55
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:122
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:161
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:48
-msgid "Ver"
-msgstr "Bekijk"
-
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:21
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:37
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:126
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:142
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:22
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:54
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:12
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:28
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:51
 msgid "Seleccionar Usuarios"
 msgstr "Selecteer gebruikers"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:33
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:71
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:138
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:177
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:32
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:36
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:102
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:106
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:8
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:47
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:48
+msgid "Ver"
+msgstr "Bekijk"
+
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:64
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:68
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:134
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:138
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:24
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:63
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:97
 msgid "Editar"
 msgstr "Wijzig"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:59
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:75
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:165
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:181
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:124
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:51
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:67
 msgid "Seleccionar Grupos"
 msgstr "Selecteer groepen"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:157
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:37
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:39
 msgid "Creador"
 msgstr "Maker"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:109
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:174
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:45
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:47
 msgid "Grupo Principal"
 msgstr "Hoofd Groep"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:131
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:200
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:177
 msgid "Privada"
 msgstr "Privé"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:144
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:217
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:193
 msgid "Privada Grupo"
 msgstr "privé-groep"
@@ -2397,21 +2474,21 @@ msgstr "Permissies"
 msgid "Seleccionar Etiquetas"
 msgstr "Selecteer tags"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:238
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:246
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:21
 msgid "Seleccionar Cuenta"
 msgstr "Selecteer account"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:271
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:273
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:276
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:279
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:281
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:284
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:180
 msgid "Enlace Público"
 msgstr "Publieke link"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:284
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:286
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:289
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:292
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:294
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:297
 msgid "Enlace Directo"
 msgstr "Direct Link"
 
@@ -2422,26 +2499,16 @@ msgstr "Datum toegevoegd"
 
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:55
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:57
-msgid "Usuarios Secundarios"
-msgstr "Secundaire Gebruikers"
-
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:78
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:80
-msgid "Grupos Secundarios"
-msgstr "Secundaire Groepen"
-
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:101
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:103
 msgid "Fecha Edición"
 msgstr "Datum Aangepast"
 
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:109
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:111
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:63
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:65
 msgid "Editor"
 msgstr "Bewerker"
 
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:119
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:121
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:73
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:75
 msgid "Fecha de Clave"
 msgstr "Wachtwoorddatum"
 
@@ -2595,6 +2662,7 @@ msgid "Número de resultados por página"
 msgstr "Resultaten per pagina"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:67
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:20
 msgid "Caducidad clave cuentas"
 msgstr "Accounts password expiry"
 
@@ -2611,6 +2679,7 @@ msgid "Número de días para la caducidad de la clave de cuenta."
 msgstr "Number of days for the account expiry date."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:91
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:28
 msgid "Tiempo caducidad (días)"
 msgstr "Expire time (days)"
 
@@ -2639,14 +2708,17 @@ msgstr ""
 "niet worden weergegeven."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:141
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:144
 msgid "Imagen para mostrar clave"
 msgstr "Afbeelding om wachtwoord te tonen"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:143
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:146
 msgid "Generar una imagen con el texto de la clave de la cuenta."
 msgstr "Genereerd een plaatje met de tekst van het wachtwoord van je account. "
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:145
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:148
 msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 msgstr ""
 "Nuttig voor omgevingen waar het kopiëren van een wachtwoord naar het "
@@ -3069,8 +3141,8 @@ msgstr "Domain name"
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:83
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:43
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:53
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:219
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:229
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:236
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:246
 msgid "Grupo por Defecto"
 msgstr "Standaard Groep"
 
@@ -3081,8 +3153,8 @@ msgstr "Sets the default users group for newly SSO users"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:98
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:108
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:244
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:254
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:261
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:271
 msgid "Perfil por Defecto"
 msgstr "Standaard Profiel"
 
@@ -3096,8 +3168,8 @@ msgstr "Sets the default profile for the newly created SSO users."
 #: ../../../modules/web/themes/material-blue/views/config/general-events.inc:99
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:171
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:174
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:61
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:63
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:64
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:66
 msgid "Eventos"
 msgstr "Evenementen"
 
@@ -3121,8 +3193,8 @@ msgstr "Schakel Remote Syslog in"
 #: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:37
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:64
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:67
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:74
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:99
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:91
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:116
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:57
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:64
 msgid "Servidor"
@@ -3425,7 +3497,7 @@ msgid "PHP"
 msgstr "PHP"
 
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:40
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:25
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:28
 msgid "Versión"
 msgstr "Versie"
 
@@ -3509,111 +3581,115 @@ msgstr "Active Directory"
 msgid "Habilita el modo de conexión con LDAP de Active Directory."
 msgstr "Activeer Active Directory LDAP connectie mode"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:79
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:81
+msgid "Habilita la conexión mediante TLS."
+msgstr "Enables the connection over TLS"
+
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:96
 #, fuzzy
 msgid "Nombre o dirección IP del servidor de LDAP."
 msgstr "Hostnaam of IP adres van de LDAP Server"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:83
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:114
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:165
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:199
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:100
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:131
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:182
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:216
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:128
 msgid "Ejemplos:"
 msgstr "Voorbeelden:"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:105
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:122
 msgid "Usuario de conexión"
 msgstr "Verbind Gebruiker"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:110
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:127
 msgid "Usuario para conectar con el servicio de LDAP."
 msgstr "Gebruiker om verbinding te maken met de LDAP- service."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:135
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:152
 msgid "Clave de conexión"
 msgstr "Verbind Wachtwoord"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:140
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:157
 msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP connectie gebruikers wachtwoord"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:156
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:180
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:173
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:197
 msgid "Base de búsqueda"
 msgstr "Zoek basis."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:161
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:178
 #, fuzzy
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr " LDAP uitvalsbasis om de LDAP-gebruikers zoekopdrachten te doen."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:191
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:208
 #, fuzzy
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr "LDAP-groep waar de gebruiker in moet zitten om te kunnen inloggen."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:195
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:212
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
 msgstr " Deze groep moet in de LDAP-zoekbasis worden geplaatst ."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:224
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:241
 #, fuzzy
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr " Definieer de standaard gebruikers groep voor nieuwe LDAP-gebruikers."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:249
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:266
 #, fuzzy
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr " Definieert het standaard profiel voor de nieuwe LDAP-gebruikers ."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:301
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:318
 msgid "Importación"
 msgstr "Import"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:307
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:317
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:324
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:334
 msgid "Atributo Login"
 msgstr "Login attribuut"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:312
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:329
 msgid ""
 "Define el atributo a utilizar para el login del usuario en la importación."
 msgstr "Defines the attribute for the user's login when importing."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:330
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:340
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:347
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:357
 msgid "Atributo Nombre"
 msgstr "Naam attribuut"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:335
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:352
 msgid ""
 "Define el atributo a utilizar para el nombre del usuario en la importación."
 msgstr "Definieer de attribuut voor de gebruikersnaam tijdens het importeren."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:365
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:382
 msgid "Importar Grupos"
 msgstr "Import Groups"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:374
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:384
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:391
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:401
 msgid "Atributo Nombre Grupo"
 msgstr "Group Name Attribute"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:379
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:396
 msgid ""
 "Define el atributo a utilizar para el nombre del grupo en la importación."
 msgstr "Defines the attribute for the user group name when importing."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:395
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:409
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:412
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:426
 msgid "Filtro"
 msgstr "Filter"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:400
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:417
 msgid "Filtro para importar usuarios o grupos de LDAP."
 msgstr "Filter for importing LDAP users or groups."
 
@@ -3784,10 +3860,6 @@ msgstr "Namespace die gebruikt wordt voor het zoeken naar pagina's."
 msgid "Instalar"
 msgstr "Installeer"
 
-#: ../../../modules/web/themes/material-blue/views/grid/datagrid-grid.inc:97
-msgid "Eliminar Seleccionados"
-msgstr "Verwijder selectie"
-
 #: ../../../modules/web/themes/material-blue/views/grid/datagrid-nav-full.inc:11
 msgid "Filtro ON"
 msgstr "Filter AAN"
@@ -3850,28 +3922,6 @@ msgstr "Hosting mode"
 msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
 msgstr "Dit maakt of verifieerd niet de gebruikers rechten op de database."
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:75
-msgid ""
-"Prioridad de asignación en caso de coincidir con otros permisos asignados "
-"por usuario, grupo o perfil."
-msgstr ""
-"Assignment priority if permissions match with others assigned by user, group "
-"or profile."
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:86
-msgid "Prioridad de asignación"
-msgstr "Assignment Priority"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:107
-msgid "Indica si los permisos serán forzados al crear o modificar la cuenta."
-msgstr ""
-"Enforces the permissions to be set either on creating or updating an "
-"account ."
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/account_default_permission.inc:109
-msgid "Los permisos serán añadidos a los existentes."
-msgstr "Permissions will be merged with the existing ones."
-
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:58
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:12
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:85
@@ -3916,31 +3966,63 @@ msgstr "Veld help"
 msgid "Obligatorio"
 msgstr "Vereist"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:20
-msgid "Nombre del plugin"
-msgstr "Plug-in naam"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:34
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:42
+msgid "Puntuación"
+msgstr "Score"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:32
-#, fuzzy
-msgid "Versión del plugin"
-msgstr "Plug-in versie"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:48
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:55
+msgid "Expresión Regular"
+msgstr "Regular Expression"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:37
-msgid "Versión Compatible"
-msgstr "Geschikte versie"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:130
+msgid "Incluir Minúsculas"
+msgstr "Include Lowercase"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:44
-msgid "Versión de sysPass compatible"
-msgstr "Geschikte sysPass-versie"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:21
+msgid "Las cuentas sólo serán visibles por el usuario."
+msgstr "Accounts will be only visible by the user."
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:49
-#: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:25
-msgid "Autor"
-msgstr "Auteur"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:23
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:42
+msgid "Los administradores no podrán acceder a las cuentas."
+msgstr "Administrators won't be able to display the accounts."
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:56
-msgid "Autor del plugin"
-msgstr "Plug-in auteur"
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:40
+msgid "Las cuentas sólo serán visibles por el usuario y su grupo principal."
+msgstr "Accounts will be only visible by the user and his/her main group."
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:6
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:14
+msgid "Dirección IP"
+msgstr "IP Address"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:19
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:27
+msgid "Timeout"
+msgstr "Timeout"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:84
+msgid ""
+"Prioridad de asignación en caso de coincidir con otros valores asignados por "
+"usuario, grupo o perfil."
+msgstr ""
+"Assignment priority if values match with others assigned by user, group or "
+"profile."
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:95
+msgid "Prioridad de asignación"
+msgstr "Assignment Priority"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:117
+msgid ""
+"Indica si los valores serán forzados al crear o modificar los elementos."
+msgstr "Enforces the values to be set either on creating or updating an item."
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:119
+msgid "Los valores serán añadidos a los existentes."
+msgstr "Values will be merged with the existing ones."
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:76
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:78
@@ -4036,8 +4118,8 @@ msgstr "Groep omschrijving"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:69
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:527
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:529
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:543
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:545
 msgid "Usado por"
 msgstr "Gebruikt door"
 
@@ -4166,41 +4248,49 @@ msgstr "Linkbeheer"
 msgid "Gestión de cuentas"
 msgstr "Accountbeheer"
 
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:421
+msgid "Valores por Defecto"
+msgstr "Default Values"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:422
+msgid "Gestión de Valores por Defecto"
+msgstr "Default Values Management"
+
 #. (itstool) path: action/text
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:426
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:442
 #: ../../../config/actions.xml:679
 msgid "Configuración General"
 msgstr "Algemene Configuratie"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:442
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:458
 msgid "Opciones de encriptación"
 msgstr "Encryptie opties"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:473
 msgid "Backup"
 msgstr "Backup"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:458
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:474
 msgid "Realizar copia de seguridad y exportar"
 msgstr "Maak een backup en exporteer"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:473
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:489
 msgid "Importar"
 msgstr "Importeer"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:474
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:490
 msgid "Realizar importación de cuentas"
 msgstr "Importeer Accounts"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:493
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:509
 msgid "Log de Eventos"
 msgstr "Event Log"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:494
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:510
 msgid "Ver log de eventos"
 msgstr "Bekijk Event Log"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:520
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:536
 msgid "Nombre del perfil"
 msgstr "Profiel naam"
 
@@ -4323,6 +4413,32 @@ msgstr "Only for application administrators"
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:100
 msgid "Solo Admins"
 msgstr "Only Admins"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:23
+msgid "Nombre del plugin"
+msgstr "Plug-in naam"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:35
+#, fuzzy
+msgid "Versión del plugin"
+msgstr "Plug-in versie"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:40
+msgid "Versión Compatible"
+msgstr "Geschikte versie"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:47
+msgid "Versión de sysPass compatible"
+msgstr "Geschikte sysPass-versie"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:52
+#: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:25
+msgid "Autor"
+msgstr "Auteur"
+
+#: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:59
+msgid "Autor del plugin"
+msgstr "Plug-in auteur"
 
 #: ../../../modules/web/themes/material-blue/views/upgrade/index.inc:11
 msgid "La aplicación necesita actualizarse"
@@ -4713,8 +4829,8 @@ msgstr "Create Notification"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:835
-msgid "Gestión Permisos"
-msgstr "Permissions Management"
+msgid "Gestión Valores Predeterminados"
+msgstr "Preset Values Management"
 
 #. (itstool) path: strings/text
 #: ../../../config/strings.xml:4
@@ -4745,35 +4861,6 @@ msgstr "Tekst"
 #: ../../../config/strings.xml:9
 msgid "Link"
 msgstr "Link"
-
-#~ msgid "CONSULTA INVÁLIDA"
-#~ msgstr "ONGELDIGE QUERY"
-
-#~ msgid "La sesión no se ha iniciado o ha caducado"
-#~ msgstr "Sessie niet gestart of verlopen"
-
-#~ msgid "Es necesario un nombre de cuenta"
-#~ msgstr "Een accountnaam is vereist"
-
-#, fuzzy
-#~ msgid "Es necesario un nombre de cliente"
-#~ msgstr "Een klantennaam is vereist"
-
-#, fuzzy
-#~ msgid "Es necesario un usuario"
-#~ msgstr "Een gebruikersnaam is vereist"
-
-#~ msgid "Es necesaria una clave"
-#~ msgstr "Een sleutel is vereist"
-
-#~ msgid "Es necesario una categoría"
-#~ msgstr "Een categorie is vereist"
-
-#~ msgid "Acción Inválida"
-#~ msgstr "Ongeldige actie"
-
-#~ msgid "Las claves no coinciden"
-#~ msgstr "De wachtwoorden zijn niet gelijk"
 
 #~ msgid "Error al crear la cuenta"
 #~ msgstr "Fout bij account aanmaken"
@@ -5678,6 +5765,12 @@ msgstr "Link"
 #~ msgid "Hablitar edición"
 #~ msgstr "Activeer Wijzigen"
 
+#~ msgid "Usuarios Secundarios"
+#~ msgstr "Secundaire Gebruikers"
+
+#~ msgid "Grupos Secundarios"
+#~ msgstr "Secundaire Groepen"
+
 #~ msgid "Modificar Cuenta"
 #~ msgstr "Bewerk Account"
 
@@ -5786,7 +5879,9 @@ msgstr "Link"
 #~ msgstr "Remote syslog uitegeschakels"
 
 #~ msgid "Error al guardar la configuración"
-#~ msgstr "Fout bij het opslaan van de configuratie"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het opslaan van de configuratie"
 
 #~ msgid "Faltan parámetros de DokuWiki"
 #~ msgstr "Ontbrekende DokuWiki-parameters"
@@ -5840,7 +5935,9 @@ msgstr "Link"
 #~ msgstr "Verzoek niet verzonden via email"
 
 #~ msgid "Solicitud realizada"
-#~ msgstr "Aanvraag gedaan"
+#~ msgstr ""
+#~ "\n"
+#~ "Aanvraag gedaan"
 
 #~ msgid "Detalles de Plugin"
 #~ msgstr "Plugin Details"
@@ -5867,13 +5964,17 @@ msgstr "Link"
 #~ msgstr "Klant toevoegen"
 
 #~ msgid "Observador no inicializado"
-#~ msgstr "Waarnemer niet geïnitialiseerd"
+#~ msgstr ""
+#~ "\n"
+#~ "Waarnemer niet geïnitialiseerd"
 
 #~ msgid "Es necesario un objeto"
 #~ msgstr "Een object is nodig"
 
 #~ msgid "Indicar la clave de la BBDD"
-#~ msgstr "Vul alstublieft het database wachtwoord in"
+#~ msgstr ""
+#~ "\n"
+#~ "Vul alstublieft het database wachtwoord in"
 
 #~ msgid "Clave del usuario administrador de la Base de Datos"
 #~ msgstr "Database administrator's wachtwoord"
@@ -5885,7 +5986,9 @@ msgstr "Link"
 #~ msgstr "De database bestaat niet"
 
 #~ msgid "Es necesario crearla y asignar los permisos necesarios"
-#~ msgstr "U moet het creëren en de benodigde rechten toewijzen"
+#~ msgstr ""
+#~ "\n"
+#~ "U moet het creëren en de benodigde rechten toewijzen"
 
 #~ msgid "La plantilla no contiene archivos"
 #~ msgstr "De template bevat geen bestanden"
@@ -5916,7 +6019,9 @@ msgstr "Link"
 #~ msgstr "Encryptie wachtwoord niet ingesteld"
 
 #~ msgid "Extensión '%s' no cargada"
-#~ msgstr "Uitbreiding '% s' niet geladen"
+#~ msgstr ""
+#~ "\n"
+#~ "Uitbreiding '% s' niet geladen"
 
 #~ msgid "Categoría duplicada"
 #~ msgstr "Categorie gedupliceerd"
@@ -5940,7 +6045,9 @@ msgstr "Link"
 #~ msgstr "Aangepaste velden niet gevonden"
 
 #~ msgid "No hay datos de campos personalizados"
-#~ msgstr "Er zijn geen gegevens uit aangepaste velden"
+#~ msgstr ""
+#~ "\n"
+#~ "Er zijn geen gegevens uit aangepaste velden"
 
 #~ msgid "Error al migrar campos personalizados"
 #~ msgstr "Fout bij het migreren van de aangepaste velden"
@@ -6015,10 +6122,14 @@ msgstr "Link"
 #~ msgstr "Fout bij het vernieuwen van de link"
 
 #~ msgid "Actualizar Enlace"
-#~ msgstr "Update Link"
+#~ msgstr ""
+#~ "\n"
+#~ "Update Link"
 
 #~ msgid "Error al obtener enlace"
-#~ msgstr "Fout bij het ophalen van de link"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het ophalen van de link"
 
 #~ msgid "ON"
 #~ msgstr "AAN"
@@ -6081,7 +6192,9 @@ msgstr "Link"
 #~ msgstr "Socket is niet geïnitialiseerd"
 
 #~ msgid "Error al enviar datos"
-#~ msgstr "Fout bij het verzenden van de gegevens"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het verzenden van de gegevens"
 
 #~ msgid "Respuesta"
 #~ msgstr "Antwoord"
@@ -6145,7 +6258,9 @@ msgstr "Link"
 #~ msgstr "Autorisatie toevoegen"
 
 #~ msgid "Crear Campo"
-#~ msgstr "Veld toevoegen"
+#~ msgstr ""
+#~ "\n"
+#~ "Veld toevoegen"
 
 #~ msgid "Actualizar Campo"
 #~ msgstr "Veld bijwerken"
@@ -6154,22 +6269,32 @@ msgstr "Link"
 #~ msgstr "Link aanmaken"
 
 #~ msgid "Crear Etiqueta"
-#~ msgstr "Voeg tag toe"
+#~ msgstr ""
+#~ "\n"
+#~ "Voeg tag toe"
 
 #~ msgid "Actualizar Etiqueta"
-#~ msgstr "Update Tag"
+#~ msgstr ""
+#~ "\n"
+#~ "Update Tag"
 
 #~ msgid "Actualizar Plugin"
-#~ msgstr " Update Plugin"
+#~ msgstr ""
+#~ "\n"
+#~ " Update Plugin"
 
 #~ msgid "Crear Cuenta"
-#~ msgstr "Account toevoegen"
+#~ msgstr ""
+#~ "\n"
+#~ "Account toevoegen"
 
 #~ msgid "Usuarios importados"
-#~ msgstr "Geimporteerde gebruikers"
+#~ msgstr ""
+#~ "\n"
+#~ "Geimporteerde gebruikers"
 
 #~ msgid "Acceso denegado"
-#~ msgstr "Toegang geweigerd"
+#~ msgstr "Toegang geweigerd\n"
 
 #~ msgid "Error al añadir las etiquetas de la cuenta"
 #~ msgstr "Error tijdens het toevoegen van de account tags"
@@ -6724,6 +6849,15 @@ msgstr "Link"
 #~ msgid "Permiso no encontrada"
 #~ msgstr "Permission not found"
 
+#~ msgid "Ver Permiso"
+#~ msgstr "View Permission"
+
+#~ msgid "Nuevo Permiso"
+#~ msgstr "New Permission"
+
+#~ msgid "Editar Permiso"
+#~ msgstr "Edit Permission"
+
 #~ msgid "Permisos eliminados"
 #~ msgstr "Permissions deleted"
 
@@ -6736,8 +6870,84 @@ msgstr "Link"
 #~ msgid "Permiso actualizado"
 #~ msgstr "Permission updated"
 
+#~ msgid "Permisos por Defecto"
+#~ msgstr "Default Permissions"
+
+#~ msgid "Buscar Permiso"
+#~ msgstr "Search for Permission"
+
+#~ msgid "Eliminar Permiso"
+#~ msgstr "Delete Permission"
+
 #~ msgid "Es necesario asignar un elemento del tipo usuario, grupo o perfil"
 #~ msgstr "An element of type user, group or profile need to be set"
 
 #~ msgid "No hay permisos definidos"
 #~ msgstr "There aren't any defined permissions"
+
+#~ msgid ""
+#~ "Prioridad de asignación en caso de coincidir con otros permisos asignados "
+#~ "por usuario, grupo o perfil."
+#~ msgstr ""
+#~ "Assignment priority if permissions match with others assigned by user, "
+#~ "group or profile."
+
+#~ msgid ""
+#~ "Indica si los permisos serán forzados al crear o modificar la cuenta."
+#~ msgstr ""
+#~ "Enforces the permissions to be set either on creating or updating an "
+#~ "account ."
+
+#~ msgid "Los permisos serán añadidos a los existentes."
+#~ msgstr "Permissions will be merged with the existing ones."
+
+#~ msgid "Gestión Permisos"
+#~ msgstr "Permissions Management"
+
+#~ msgid "La clave no cumple los carácteres requeridos"
+#~ msgstr "Password does not contain the required characters"
+
+#~ msgid "Es necesario que la clave contenga letras"
+#~ msgstr "Password needs to contain letters"
+
+#~ msgid "Es necesario que la clave contenga minúsculas"
+#~ msgstr "Password needs to contain lower case letters"
+
+#~ msgid "Es necesario que la clave contenga mayúsculas"
+#~ msgstr "Password needs to contain upper case letters"
+
+#~ msgid "Es necesario que la clave contenga números"
+#~ msgstr "Password needs to contain numbers"
+
+#~ msgid "Es necesario que la clave contenga símbolos"
+#~ msgstr "Password needs to contain symbols"
+
+#~ msgid "Error al desconectar del servidor de LDAP"
+#~ msgstr "Error while disconnecting from LDAP server"
+
+#~ msgid "Valor no encontrada"
+#~ msgstr "Value not found"
+
+#~ msgid "Error al eliminar los valores"
+#~ msgstr "Error while deleting the values"
+
+#~ msgid "Dirección IP no establecida"
+#~ msgstr "IP address not set"
+
+#~ msgid "Valores eliminados"
+#~ msgstr "Values deleted"
+
+#~ msgid "Valor eliminado"
+#~ msgstr "Value deleted"
+
+#~ msgid "Valor creado"
+#~ msgstr "Value created"
+
+#~ msgid "Valor actualizado"
+#~ msgstr "Value updated"
+
+#~ msgid "Tipo de valor no definido o incorrecto"
+#~ msgstr "Value type not set or incorrect"
+
+#~ msgid "Expresión regular inválida"
+#~ msgstr "Invalid regular expression"

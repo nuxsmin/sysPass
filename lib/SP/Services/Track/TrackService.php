@@ -32,6 +32,7 @@ use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 
 /**
  * Class TrackService
@@ -129,15 +130,17 @@ final class TrackService extends Service
             $attempts = $this->getTracksForClientFromTime($trackRequest);
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
+                $delaySeconds = self::TIME_SLEEP * $attempts;
+
                 $this->eventDispatcher->notifyEvent('track.delay',
                     new Event($this, EventMessage::factory()
                         ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
-                        ->addDetail(__u('Segundos'), self::TIME_SLEEP * $attempts))
+                        ->addDetail(__u('Segundos'), $delaySeconds))
                 );
 
-                logger('Tracking delay: ' . self::TIME_SLEEP * $attempts . 's');
+                logger('Tracking delay: ' . $delaySeconds . 's');
 
-                sleep(self::TIME_SLEEP * $attempts);
+                sleep($delaySeconds);
 
                 return true;
             }
@@ -168,11 +171,18 @@ final class TrackService extends Service
      * @param TrackRequest $trackRequest
      *
      * @return int
+     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function add(TrackRequest $trackRequest)
     {
+        if ($trackRequest->getIpv4() === null
+            && $trackRequest->getIpv6() === null
+        ) {
+            throw new ServiceException(__u('Dirección IP no establecida'));
+        }
+
         $result = $this->trackRepository->add($trackRequest);
 
         $this->eventDispatcher->notifyEvent('track.add',

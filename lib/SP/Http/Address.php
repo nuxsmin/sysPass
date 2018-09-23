@@ -31,7 +31,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
  *
  * @package SP\Http
  */
-class Address
+final class Address
 {
     const PATTERN_IP_ADDRESS = '#^(?<address>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})(?:/(?:(?<mask>[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})|(?<cidr>[\d]{1,2})))?$#';
 

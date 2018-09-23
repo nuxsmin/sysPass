@@ -25,6 +25,7 @@
 namespace SP\Repositories\Track;
 
 use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Http\Address;
 
 /**
  * Class TrackRequest
@@ -33,10 +34,25 @@ use SP\Core\Exceptions\InvalidArgumentException;
  */
 final class TrackRequest
 {
+    /**
+     * @var int
+     */
     public $time;
+    /**
+     * @var string
+     */
     public $source;
+    /**
+     * @var int
+     */
     public $userId;
+    /**
+     * @var string
+     */
     protected $ipv6;
+    /**
+     * @var string
+     */
     protected $ipv4;
 
     /**
@@ -46,16 +62,13 @@ final class TrackRequest
      */
     public function setTrackIp($address)
     {
-        $ip = @inet_pton($address);
+        $binary = Address::toBinary($address);
+        $length = strlen($binary);
 
-        if (strlen($ip) === 4) {
-            $this->ipv4 = $ip;
-        } elseif (strlen($ip) > 4) {
-            $this->ipv6 = $ip;
-        } elseif ($ip === false) {
-            logger(sprintf('%s : %s', __('IP inválida'), $address));
-
-            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
+        if ($length === 4) {
+            $this->ipv4 = $binary;
+        } else {
+            $this->ipv6 = $binary;
         }
     }
 

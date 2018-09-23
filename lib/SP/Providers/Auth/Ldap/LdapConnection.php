@@ -187,8 +187,8 @@ final class LdapConnection implements LdapConnectionInterface
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
                         ->addDetail(__u('Servidor'), $this->ldapParams->getServer())
-                        ->addDetail(__u('TLS'), __u('ON'))
-                        ->addDetail(__u('LDAP ERROR'), self::getLdapErrorMessage($this->ldapHandler))));
+                        ->addDetail('TLS', __u('ON'))
+                        ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))));
 
                 throw new LdapException(__u('No es posible conectar con el servidor de LDAP'));
             }

@@ -33,7 +33,7 @@ use SP\Providers\Auth\AuthInterface;
  *
  * @package Auth\Ldap
  */
-class LdapAuth implements AuthInterface
+final class LdapAuth implements AuthInterface
 {
     const ACCOUNT_EXPIRED = 701;
     const ACCOUNT_NO_GROUPS = 702;

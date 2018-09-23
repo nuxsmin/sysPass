@@ -77,7 +77,8 @@ final class Language
         'po_PO' => 'Polski',
         'ru_RU' => 'русский',
         'nl_NL' => 'Nederlands',
-        'pt_BR' => 'Português'
+        'pt_BR' => 'Português',
+        'da' => 'Dansk'
     ];
     /**
      * @var ConfigData

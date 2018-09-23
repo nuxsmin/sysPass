@@ -49,7 +49,8 @@ CREATE TABLE `Account` (
   CONSTRAINT `fk_Account_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ItemPreset`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -81,7 +82,8 @@ CREATE TABLE `ItemPreset`
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountFile`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -102,7 +104,8 @@ CREATE TABLE `AccountFile` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountHistory`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -150,7 +153,8 @@ CREATE TABLE `AccountHistory` (
   CONSTRAINT `fk_AccountHistory_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToFavorite`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -169,7 +173,8 @@ CREATE TABLE `AccountToFavorite` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToTag`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -188,7 +193,8 @@ CREATE TABLE `AccountToTag` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToUser`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -208,7 +214,8 @@ CREATE TABLE `AccountToUser` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AccountToUserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -228,7 +235,8 @@ CREATE TABLE `AccountToUserGroup` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `AuthToken`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -251,7 +259,8 @@ CREATE TABLE `AuthToken` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Category`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -265,7 +274,8 @@ CREATE TABLE `Category` (
   UNIQUE KEY `uk_Category_01` (`hash`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Client`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -280,7 +290,8 @@ CREATE TABLE `Client` (
   KEY `uk_Client_01` (`hash`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Config`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -291,7 +302,8 @@ CREATE TABLE `Config` (
   PRIMARY KEY (`parameter`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldData`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -311,7 +323,8 @@ CREATE TABLE `CustomFieldData` (
   CONSTRAINT `fk_CustomFieldData_definitionId` FOREIGN KEY (`definitionId`) REFERENCES `CustomFieldDefinition` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldDefinition`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -331,7 +344,8 @@ CREATE TABLE `CustomFieldDefinition` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `CustomFieldType`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -344,7 +358,8 @@ CREATE TABLE `CustomFieldType` (
   UNIQUE KEY `uk_CustomFieldType_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `EventLog`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -361,12 +376,20 @@ CREATE TABLE `EventLog` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 INSERT INTO CustomFieldType (id, name, text)
-VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
-  (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
-  (10, 'textarea', 'Área de Texto');
+VALUES (1, 'text', 'Texto'),
+       (2, 'password', 'Clave'),
+       (3, 'date', 'Fecha'),
+       (4, 'number', 'Número'),
+       (5, 'email', 'Email'),
+       (6, 'telephone', 'Teléfono'),
+       (7, 'url', 'URL'),
+       (8, 'color', 'Color'),
+       (9, 'wiki', 'Wiki'),
+       (10, 'textarea', 'Área de Texto');
 DROP TABLE IF EXISTS `Notification`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -387,7 +410,8 @@ CREATE TABLE `Notification` (
   CONSTRAINT `fk_Notification_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Plugin`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -402,7 +426,8 @@ CREATE TABLE `Plugin` (
   UNIQUE KEY `uk_Plugin_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `PublicLink`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -429,7 +454,8 @@ CREATE TABLE `PublicLink` (
   CONSTRAINT `fk_PublicLink_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Tag`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -443,7 +469,8 @@ CREATE TABLE `Tag` (
   KEY `idx_Tag_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Track`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -453,14 +480,15 @@ CREATE TABLE `Track` (
   `userId` smallint(5) unsigned      DEFAULT NULL,
   `source` varchar(100)     NOT NULL,
   `time`   int(10) unsigned NOT NULL,
-  `ipv4`   binary(4)        NOT NULL,
+  `ipv4`   binary(4)                 DEFAULT NULL,
   `ipv6`   binary(16)                DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_Track_01` (`userId`),
   KEY `idx_Track_02` (`time`, `ipv4`, `ipv6`, `source`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -499,7 +527,8 @@ CREATE TABLE `User` (
   CONSTRAINT `fk_User_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -511,7 +540,8 @@ CREATE TABLE `UserGroup` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserPassRecover`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -529,7 +559,8 @@ CREATE TABLE `UserPassRecover` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserProfile`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -541,7 +572,8 @@ CREATE TABLE `UserProfile` (
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `UserToUserGroup`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -560,7 +592,8 @@ CREATE TABLE `UserToUserGroup` (
     ON UPDATE CASCADE
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COLLATE utf8_unicode_ci;
+  DEFAULT CHARSET = utf8
+  COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `account_data_v`;
 /*!50001 DROP VIEW IF EXISTS `account_data_v`*/;
@@ -642,41 +675,40 @@ SET character_set_client = @saved_cs_client;
 /*!50001 CREATE ALGORITHM = UNDEFINED */
   /*!50013 SQL SECURITY DEFINER */
   /*!50001 VIEW `account_data_v` AS
-  select
-    `Account`.`id`                              AS `id`,
-    `Account`.`name`                            AS `name`,
-    `Account`.`categoryId`                      AS `categoryId`,
-    `Account`.`userId`                          AS `userId`,
-    `Account`.`clientId`                        AS `clientId`,
-    `Account`.`userGroupId`                     AS `userGroupId`,
-    `Account`.`userEditId`                      AS `userEditId`,
-    `Account`.`login`                           AS `login`,
-    `Account`.`url`                             AS `url`,
-    `Account`.`notes`                           AS `notes`,
-    `Account`.`countView`                       AS `countView`,
-    `Account`.`countDecrypt`                    AS `countDecrypt`,
-    `Account`.`dateAdd`                         AS `dateAdd`,
-    `Account`.`dateEdit`                        AS `dateEdit`,
-    conv(`Account`.`otherUserEdit`, 10, 2)      AS `otherUserEdit`,
-    conv(`Account`.`otherUserGroupEdit`, 10, 2) AS `otherUserGroupEdit`,
-    conv(`Account`.`isPrivate`, 10, 2)          AS `isPrivate`,
-    conv(`Account`.`isPrivateGroup`, 10, 2)     AS `isPrivateGroup`,
-    `Account`.`passDate`                        AS `passDate`,
-    `Account`.`passDateChange`                  AS `passDateChange`,
-    `Account`.`parentId`                        AS `parentId`,
-    `Category`.`name`                           AS `categoryName`,
-    `Client`.`name`                             AS `clientName`,
-    `ug`.`name`                                 AS `userGroupName`,
-    `u1`.`name`                                 AS `userName`,
-    `u1`.`login`                                AS `userLogin`,
-    `u2`.`name`                                 AS `userEditName`,
-    `u2`.`login`                                AS `userEditLogin`,
-    `PublicLink`.`hash`                         AS `publicLinkHash`
+  select `Account`.`id`                              AS `id`,
+         `Account`.`name`                            AS `name`,
+         `Account`.`categoryId`                      AS `categoryId`,
+         `Account`.`userId`                          AS `userId`,
+         `Account`.`clientId`                        AS `clientId`,
+         `Account`.`userGroupId`                     AS `userGroupId`,
+         `Account`.`userEditId`                      AS `userEditId`,
+         `Account`.`login`                           AS `login`,
+         `Account`.`url`                             AS `url`,
+         `Account`.`notes`                           AS `notes`,
+         `Account`.`countView`                       AS `countView`,
+         `Account`.`countDecrypt`                    AS `countDecrypt`,
+         `Account`.`dateAdd`                         AS `dateAdd`,
+         `Account`.`dateEdit`                        AS `dateEdit`,
+         conv(`Account`.`otherUserEdit`, 10, 2)      AS `otherUserEdit`,
+         conv(`Account`.`otherUserGroupEdit`, 10, 2) AS `otherUserGroupEdit`,
+         conv(`Account`.`isPrivate`, 10, 2)          AS `isPrivate`,
+         conv(`Account`.`isPrivateGroup`, 10, 2)     AS `isPrivateGroup`,
+         `Account`.`passDate`                        AS `passDate`,
+         `Account`.`passDateChange`                  AS `passDateChange`,
+         `Account`.`parentId`                        AS `parentId`,
+         `Category`.`name`                           AS `categoryName`,
+         `Client`.`name`                             AS `clientName`,
+         `ug`.`name`                                 AS `userGroupName`,
+         `u1`.`name`                                 AS `userName`,
+         `u1`.`login`                                AS `userLogin`,
+         `u2`.`name`                                 AS `userEditName`,
+         `u2`.`login`                                AS `userEditLogin`,
+         `PublicLink`.`hash`                         AS `publicLinkHash`
   from ((((((`Account`
-    left join `Category` on (`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug`
+      left join `Category` on (`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug`
       on (`Account`.`userGroupId` = `ug`.`id`)) join `User` `u1` on (`Account`.`userId` = `u1`.`id`)) join `User` `u2`
       on (`Account`.`userEditId` = `u2`.`id`)) left join `Client` on (`Account`.`clientId` = `Client`.`id`)) left join
-    `PublicLink` on (`Account`.`id` = `PublicLink`.`itemId`)) */;
+      `PublicLink` on (`Account`.`id` = `PublicLink`.`itemId`)) */;
 /*!50001 SET character_set_client = @saved_cs_client */;
 /*!50001 SET character_set_results = @saved_cs_results */;
 /*!50001 SET collation_connection = @saved_col_connection */;
@@ -691,42 +723,39 @@ SET character_set_client = @saved_cs_client;
 /*!50001 CREATE ALGORITHM = UNDEFINED */
   /*!50013 SQL SECURITY DEFINER */
   /*!50001 VIEW `account_search_v` AS
-  SELECT
-    `Account`.`id`                                       AS `id`,
-    `Account`.`clientId`                                 AS `clientId`,
-    `Account`.`categoryId`                               AS `categoryId`,
-    `Account`.`name`                                     AS `name`,
-    `Account`.`login`                                    AS `login`,
-    `Account`.`url`                                      AS `url`,
-    `Account`.`notes`                                    AS `notes`,
-    `Account`.`userId`                                   AS `userId`,
-    `Account`.`userGroupId`                              AS `userGroupId`,
-    `Account`.`otherUserEdit`                            AS `otherUserEdit`,
-    `Account`.`otherUserGroupEdit`                       AS `otherUserGroupEdit`,
-    `Account`.`isPrivate`                                AS `isPrivate`,
-    `Account`.`isPrivateGroup`                           AS `isPrivateGroup`,
-    `Account`.`passDate`                                 AS `passDate`,
-    `Account`.`passDateChange`                           AS `passDateChange`,
-    `Account`.`parentId`                                 AS `parentId`,
-    `Account`.`countView`                                AS `countView`,
-    `Account`.`dateEdit`                                 AS `dateEdit`,
-    `User`.`name`                                        AS `userName`,
-    `User`.`login`                                       AS `userLogin`,
-    `UserGroup`.`name`                                   AS `userGroupName`,
-    `Category`.`name`                                    AS `categoryName`,
-    `Client`.`name`                                      AS `clientName`,
-    (SELECT count(0)
-     FROM `AccountFile`
-     WHERE (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files`,
-    `PublicLink`.`hash`                                  AS `publicLinkHash`,
-    `PublicLink`.`dateExpire`                            AS `publicLinkDateExpire`,
-    `PublicLink`.`totalCountViews`                       AS `publicLinkTotalCountViews`
+  SELECT `Account`.`id`                                                                          AS `id`,
+         `Account`.`clientId`                                                                    AS `clientId`,
+         `Account`.`categoryId`                                                                  AS `categoryId`,
+         `Account`.`name`                                                                        AS `name`,
+         `Account`.`login`                                                                       AS `login`,
+         `Account`.`url`                                                                         AS `url`,
+         `Account`.`notes`                                                                       AS `notes`,
+         `Account`.`userId`                                                                      AS `userId`,
+         `Account`.`userGroupId`                                                                 AS `userGroupId`,
+         `Account`.`otherUserEdit`                                                               AS `otherUserEdit`,
+         `Account`.`otherUserGroupEdit`                                                          AS `otherUserGroupEdit`,
+         `Account`.`isPrivate`                                                                   AS `isPrivate`,
+         `Account`.`isPrivateGroup`                                                              AS `isPrivateGroup`,
+         `Account`.`passDate`                                                                    AS `passDate`,
+         `Account`.`passDateChange`                                                              AS `passDateChange`,
+         `Account`.`parentId`                                                                    AS `parentId`,
+         `Account`.`countView`                                                                   AS `countView`,
+         `Account`.`dateEdit`                                                                    AS `dateEdit`,
+         `User`.`name`                                                                           AS `userName`,
+         `User`.`login`                                                                          AS `userLogin`,
+         `UserGroup`.`name`                                                                      AS `userGroupName`,
+         `Category`.`name`                                                                       AS `categoryName`,
+         `Client`.`name`                                                                         AS `clientName`,
+         (SELECT count(0) FROM `AccountFile` WHERE (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files`,
+         `PublicLink`.`hash`                                                                     AS `publicLinkHash`,
+         `PublicLink`.`dateExpire`                                                               AS `publicLinkDateExpire`,
+         `PublicLink`.`totalCountViews`                                                          AS `publicLinkTotalCountViews`
   FROM `Account`
-    INNER JOIN `Category` ON `Account`.`categoryId` = `Category`.`id`
-    INNER JOIN `Client` ON `Client`.`id` = `Account`.`clientId`
-    INNER JOIN `User` ON `Account`.`userId` = `User`.`id`
-    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id`
-    LEFT JOIN `PublicLink` ON `Account`.`id` = `PublicLink`.`itemId` */;
+         INNER JOIN `Category` ON `Account`.`categoryId` = `Category`.`id`
+         INNER JOIN `Client` ON `Client`.`id` = `Account`.`clientId`
+         INNER JOIN `User` ON `Account`.`userId` = `User`.`id`
+         INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id`
+         LEFT JOIN `PublicLink` ON `Account`.`id` = `PublicLink`.`itemId` */;
 /*!50001 SET character_set_client = @saved_cs_client */;
 /*!50001 SET character_set_results = @saved_cs_results */;
 /*!50001 SET collation_connection = @saved_col_connection */;

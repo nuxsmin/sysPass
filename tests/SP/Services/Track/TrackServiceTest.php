@@ -27,6 +27,7 @@ namespace SP\Tests\Services\Track;
 use SP\DataModel\TrackData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
+use SP\Services\ServiceException;
 use SP\Services\Track\TrackService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
@@ -83,6 +84,7 @@ class TrackServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testAdd()
     {
@@ -102,6 +104,23 @@ class TrackServiceTest extends DatabaseTestCase
         $this->assertEquals($data->time, $resultData->getTime());
         $this->assertEquals($data->source, $resultData->getSource());
         $this->assertEquals('192.168.0.1', $resultData->getIpv4());
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testAddNoAddress()
+    {
+        $data = new TrackRequest();
+        $data->userId = 1;
+        $data->time = time();
+        $data->source = __METHOD__;
+
+        $this->expectException(ServiceException::class);
+
+        self::$service->add($data);
     }
 
     /**

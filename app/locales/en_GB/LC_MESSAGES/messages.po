@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-02 20:07+0100\n"
-"PO-Revision-Date: 2018-09-02 20:12+0100\n"
+"POT-Creation-Date: 2018-09-24 00:44+0200\n"
+"PO-Revision-Date: 2018-09-24 00:45+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_GB\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../modules\n"
 "X-Poedit-SearchPath-1: ../../../../lib\n"
@@ -73,34 +73,35 @@ msgid "Consulte con el administrador"
 msgstr "Please contact to the administrator"
 
 # Not available
-#: ../../../../lib/SP/Core/Acl/Acl.php:282
-#: ../../../../lib/SP/Services/Auth/LoginService.php:586
+#: ../../../../lib/SP/Core/Acl/Acl.php:287
+#: ../../../../lib/SP/Services/Auth/LoginService.php:589
 msgid "N/D"
 msgstr "N/A"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:287
+#: ../../../../lib/SP/Core/Acl/Acl.php:292
 msgid "Acceso denegado"
 msgstr "Access denied"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:288
+#: ../../../../lib/SP/Core/Acl/Acl.php:293
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:30
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:32
 msgid "Acción"
 msgstr "Action"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:289
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:410
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:165
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:114
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:126
-#: ../../../../lib/SP/Services/Auth/LoginService.php:215
-#: ../../../../lib/SP/Services/Auth/LoginService.php:233
-#: ../../../../lib/SP/Services/Auth/LoginService.php:372
-#: ../../../../lib/SP/Services/Auth/LoginService.php:439
-#: ../../../../lib/SP/Services/Auth/LoginService.php:547
-#: ../../../../lib/SP/Services/Auth/LoginService.php:590
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:230
+#: ../../../../lib/SP/Core/Acl/Acl.php:294
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:110
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:142
+#: ../../../../lib/SP/Services/Auth/LoginService.php:217
+#: ../../../../lib/SP/Services/Auth/LoginService.php:235
+#: ../../../../lib/SP/Services/Auth/LoginService.php:375
+#: ../../../../lib/SP/Services/Auth/LoginService.php:442
+#: ../../../../lib/SP/Services/Auth/LoginService.php:550
+#: ../../../../lib/SP/Services/Auth/LoginService.php:593
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:238
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:235
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:102
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:107
@@ -121,7 +122,7 @@ msgstr "Action"
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:20
 #: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:65
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:52
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:129
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:146
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:104
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:111
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:230
@@ -173,15 +174,6 @@ msgstr "Context not initialized"
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../lib/SP/Core/Crypt/CryptPKI.php:102
-msgid "No es posible generar las claves RSA"
-msgstr "Unable to generate the RSA keys"
-
-#: ../../../../lib/SP/Core/Crypt/CryptPKI.php:135
-#: ../../../../lib/SP/Core/Crypt/CryptPKI.php:168
-msgid "El archivo de clave no existe"
-msgstr "The key file does not exist"
-
 #: ../../../../lib/SP/Core/Crypt/OldCrypt.php:176
 #: ../../../../lib/SP/Core/Crypt/OldCrypt.php:186
 #: ../../../../lib/SP/Repositories/AuthToken/AuthTokenRepository.php:59
@@ -195,12 +187,12 @@ msgstr "The key file does not exist"
 #: ../../../../lib/SP/Services/Api/ApiService.php:129
 #: ../../../../lib/SP/Services/Api/ApiService.php:227
 #: ../../../../lib/SP/Services/Api/ApiService.php:235
-#: ../../../../lib/SP/Services/Auth/LoginService.php:186
-#: ../../../../lib/SP/Services/Auth/LoginService.php:337
-#: ../../../../lib/SP/Services/Auth/LoginService.php:486
-#: ../../../../lib/SP/Services/Auth/LoginService.php:491
-#: ../../../../lib/SP/Services/Auth/LoginService.php:523
-#: ../../../../lib/SP/Services/Auth/LoginService.php:630
+#: ../../../../lib/SP/Services/Auth/LoginService.php:187
+#: ../../../../lib/SP/Services/Auth/LoginService.php:340
+#: ../../../../lib/SP/Services/Auth/LoginService.php:489
+#: ../../../../lib/SP/Services/Auth/LoginService.php:494
+#: ../../../../lib/SP/Services/Auth/LoginService.php:526
+#: ../../../../lib/SP/Services/Auth/LoginService.php:633
 #: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:306
 #: ../../../../lib/SP/Services/CustomField/CustomFieldService.php:203
 #: ../../../../lib/SP/Services/Export/XmlVerifyService.php:108
@@ -232,6 +224,7 @@ msgid "Clase no válida para iconos"
 msgstr "Invalid icons class"
 
 #: ../../../../lib/SP/DataModel/PublicLinkListData.php:88
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:190
 #: ../../../modules/web/Controllers/AccountController.php:227
 msgid "ON"
 msgstr "ON"
@@ -253,8 +246,6 @@ msgstr "Unable to retrieve the \"%s\" template: %s"
 #: ../../../../lib/SP/Http/Address.php:70
 #: ../../../../lib/SP/Http/Address.php:90
 #: ../../../../lib/SP/Http/Address.php:109
-#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:56
-#: ../../../../lib/SP/Repositories/Track/TrackRequest.php:58
 msgid "IP inválida"
 msgstr "Invalid IP"
 
@@ -373,64 +364,26 @@ msgstr "New Plugin"
 msgid "Nombre"
 msgstr "Name"
 
-#: ../../../../lib/SP/Providers/Auth/AuthProvider.php:197
+#: ../../../../lib/SP/Providers/Auth/AuthProvider.php:208
 msgid "Método no disponible"
 msgstr "Method unavailable"
 
-#: ../../../../lib/SP/Providers/Auth/AuthProvider.php:201
+#: ../../../../lib/SP/Providers/Auth/AuthProvider.php:212
 msgid "Método ya inicializado"
 msgstr "Method already initialized"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:123
-#: ../../../modules/web/Controllers/ConfigLdapController.php:152
-#: ../../../modules/web/Controllers/ConfigLdapController.php:195
-msgid "Conexión a LDAP correcta"
-msgstr "LDAP connection OK"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:162
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:167
-msgid "No es posible conectar con el servidor de LDAP"
-msgstr "Unable to connect to the LDAP server"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:163
-#: ../../../modules/web/themes/material-blue/views/config/general-events.inc:68
-#: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:37
-#: ../../../modules/web/themes/material-blue/views/config/info.inc:64
-#: ../../../modules/web/themes/material-blue/views/config/info.inc:67
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:74
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:99
-#: ../../../modules/web/themes/material-blue/views/config/mail.inc:57
-#: ../../../modules/web/themes/material-blue/views/config/mail.inc:64
-msgid "Servidor"
-msgstr "Server"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:191
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:194
-msgid "Los parámetros de LDAP no están configurados"
-msgstr "The LDAP parameters are not set"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:239
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:244
-msgid "Error al conectar (BIND)"
-msgstr "Connection error (BIND)"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:409
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:416
-msgid "Error al localizar el usuario en LDAP"
-msgstr "Error while searching the user on LDAP"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:493
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:500
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:119
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:125
 msgid "Error al buscar RDN de grupo"
 msgstr "Error while searching the group RDN"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:494
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:140
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:166
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:115
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:127
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:137
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:120
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:111
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:143
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:140
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:114
 #: ../../../modules/web/Controllers/UserGroupController.php:220
@@ -438,8 +391,8 @@ msgstr "Error while searching the group RDN"
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:269
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:272
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:186
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:213
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:203
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:230
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:43
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:45
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
@@ -448,26 +401,64 @@ msgstr "Error while searching the group RDN"
 msgid "Grupo"
 msgstr "Group"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:543
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:548
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:200
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:204
+msgid "Error al localizar el usuario en LDAP"
+msgstr "Error while searching the user on LDAP"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:249
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:254
 msgid "Error al buscar objetos en DN base"
 msgstr "Error while searching objects in base DN"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:125
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:153
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:97
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:95
+#: ../../../modules/web/Controllers/ConfigLdapController.php:154
+#: ../../../modules/web/Controllers/ConfigLdapController.php:197
+msgid "Conexión a LDAP correcta"
+msgstr "LDAP connection OK"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:141
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:145
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:188
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:193
+msgid "No es posible conectar con el servidor de LDAP"
+msgstr "Unable to connect to the LDAP server"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:142
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:189
+#: ../../../modules/web/themes/material-blue/views/config/general-events.inc:68
+#: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:37
+#: ../../../modules/web/themes/material-blue/views/config/info.inc:64
+#: ../../../modules/web/themes/material-blue/views/config/info.inc:67
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:91
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:116
+#: ../../../modules/web/themes/material-blue/views/config/mail.inc:57
+#: ../../../modules/web/themes/material-blue/views/config/mail.inc:64
+msgid "Servidor"
+msgstr "Server"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:169
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:171
+msgid "Los parámetros de LDAP no están configurados"
+msgstr "The LDAP parameters are not set"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:231
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:237
+msgid "Error al conectar (BIND)"
+msgstr "Connection error (BIND)"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:301
+msgid "Error al desconectar del servidor de LDAP"
+msgstr "Error while disconnecting from LDAP server"
+
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:111
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:109
 msgid "Usuario verificado en grupo"
 msgstr "User in group verified"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:139
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:113
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:120
-msgid "Error al buscar el grupo de usuarios"
-msgstr "Error while searching users group"
-
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:164
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:125
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:144
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:141
 msgid "Usuario no pertenece al grupo"
 msgstr "The user doesn't belong to the group"
 
@@ -1012,7 +1003,7 @@ msgid "Fomato incorrecto"
 msgstr "Invalid format"
 
 #: ../../../../lib/SP/Services/Api/ApiService.php:96
-#: ../../../../lib/SP/Services/Auth/LoginService.php:136
+#: ../../../../lib/SP/Services/Auth/LoginService.php:137
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 #: ../../../modules/web/Controllers/UserPassResetController.php:124
 msgid "Intentos excedidos"
@@ -1027,34 +1018,34 @@ msgstr "Wrong parameters"
 msgid "Acceso no permitido"
 msgstr "Unauthorized access"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:156
-#: ../../../../lib/SP/Services/Auth/LoginService.php:442
-#: ../../../../lib/SP/Services/Auth/LoginService.php:449
-#: ../../../../lib/SP/Services/Auth/LoginService.php:557
-#: ../../../../lib/SP/Services/Auth/LoginService.php:562
-#: ../../../../lib/SP/Services/Auth/LoginService.php:601
-#: ../../../../lib/SP/Services/Auth/LoginService.php:606
+#: ../../../../lib/SP/Services/Auth/LoginService.php:157
+#: ../../../../lib/SP/Services/Auth/LoginService.php:445
+#: ../../../../lib/SP/Services/Auth/LoginService.php:452
+#: ../../../../lib/SP/Services/Auth/LoginService.php:560
+#: ../../../../lib/SP/Services/Auth/LoginService.php:565
+#: ../../../../lib/SP/Services/Auth/LoginService.php:604
+#: ../../../../lib/SP/Services/Auth/LoginService.php:609
 msgid "Login incorrecto"
 msgstr "Wrong login"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:214
-#: ../../../../lib/SP/Services/Auth/LoginService.php:221
+#: ../../../../lib/SP/Services/Auth/LoginService.php:216
+#: ../../../../lib/SP/Services/Auth/LoginService.php:223
 msgid "Usuario deshabilitado"
 msgstr "User disabled"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:266
+#: ../../../../lib/SP/Services/Auth/LoginService.php:269
 msgid "Usando clave temporal"
 msgstr "Using temporary password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:274
-#: ../../../../lib/SP/Services/Auth/LoginService.php:280
-#: ../../../../lib/SP/Services/Auth/LoginService.php:293
-#: ../../../../lib/SP/Services/Auth/LoginService.php:299
+#: ../../../../lib/SP/Services/Auth/LoginService.php:277
+#: ../../../../lib/SP/Services/Auth/LoginService.php:283
+#: ../../../../lib/SP/Services/Auth/LoginService.php:296
+#: ../../../../lib/SP/Services/Auth/LoginService.php:302
 msgid "Clave maestra incorrecta"
 msgstr "Wrong master password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:288
-#: ../../../../lib/SP/Services/Auth/LoginService.php:307
+#: ../../../../lib/SP/Services/Auth/LoginService.php:291
+#: ../../../../lib/SP/Services/Auth/LoginService.php:310
 #: ../../../../lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: ../../../../lib/SP/Util/ErrorUtil.php:144
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:68
@@ -1063,19 +1054,19 @@ msgstr "Wrong master password"
 msgid "Clave maestra actualizada"
 msgstr "Master password updated"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:313
+#: ../../../../lib/SP/Services/Auth/LoginService.php:316
 msgid "Es necesaria su clave anterior"
 msgstr "Your previous password is needed"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:325
+#: ../../../../lib/SP/Services/Auth/LoginService.php:328
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "The Master Password either is not saved or is wrong"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:437
-#: ../../../../lib/SP/Services/Auth/LoginService.php:500
-#: ../../../../lib/SP/Services/Auth/LoginService.php:546
-#: ../../../../lib/SP/Services/Auth/LoginService.php:589
-#: ../../../modules/web/Controllers/AccountFileController.php:233
+#: ../../../../lib/SP/Services/Auth/LoginService.php:440
+#: ../../../../lib/SP/Services/Auth/LoginService.php:503
+#: ../../../../lib/SP/Services/Auth/LoginService.php:549
+#: ../../../../lib/SP/Services/Auth/LoginService.php:592
+#: ../../../modules/web/Controllers/AccountFileController.php:235
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:104
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:104
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:106
@@ -1089,22 +1080,22 @@ msgstr "The Master Password either is not saved or is wrong"
 msgid "Tipo"
 msgstr "Type"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:438
-#: ../../../../lib/SP/Services/Auth/LoginService.php:501
+#: ../../../../lib/SP/Services/Auth/LoginService.php:441
+#: ../../../../lib/SP/Services/Auth/LoginService.php:504
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:457
-#: ../../../../lib/SP/Services/Auth/LoginService.php:462
+#: ../../../../lib/SP/Services/Auth/LoginService.php:460
+#: ../../../../lib/SP/Services/Auth/LoginService.php:465
 msgid "Cuenta expirada"
 msgstr "Account expired"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:470
-#: ../../../../lib/SP/Services/Auth/LoginService.php:475
+#: ../../../../lib/SP/Services/Auth/LoginService.php:473
+#: ../../../../lib/SP/Services/Auth/LoginService.php:478
 msgid "El usuario no tiene grupos asociados"
 msgstr "The user has no associated groups"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:591
+#: ../../../../lib/SP/Services/Auth/LoginService.php:594
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:10
 msgid "Autentificación"
 msgstr "Authentication"
@@ -1290,7 +1281,7 @@ msgstr "Users"
 
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:78
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:90
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:52
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:84
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:43
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:261
 msgid "Grupos"
@@ -1380,12 +1371,12 @@ msgid "Cuenta importada"
 msgstr "Account imported"
 
 #: ../../../../lib/SP/Services/Import/CsvImportBase.php:159
-#: ../../../modules/api/Controllers/AccountController.php:67
-#: ../../../modules/api/Controllers/AccountController.php:99
-#: ../../../modules/api/Controllers/AccountController.php:133
-#: ../../../modules/api/Controllers/AccountController.php:180
-#: ../../../modules/api/Controllers/AccountController.php:229
-#: ../../../modules/api/Controllers/AccountController.php:302
+#: ../../../modules/api/Controllers/AccountController.php:72
+#: ../../../modules/api/Controllers/AccountController.php:104
+#: ../../../modules/api/Controllers/AccountController.php:140
+#: ../../../modules/api/Controllers/AccountController.php:189
+#: ../../../modules/api/Controllers/AccountController.php:238
+#: ../../../modules/api/Controllers/AccountController.php:311
 #: ../../../modules/api/Controllers/ClientController.php:64
 #: ../../../modules/api/Controllers/ClientController.php:94
 #: ../../../modules/api/Controllers/ClientController.php:125
@@ -1397,7 +1388,7 @@ msgstr "Account imported"
 #: ../../../modules/web/Controllers/AccountController.php:835
 #: ../../../modules/web/Controllers/AccountController.php:885
 #: ../../../modules/web/Controllers/AccountController.php:919
-#: ../../../modules/web/Controllers/AccountFileController.php:232
+#: ../../../modules/web/Controllers/AccountFileController.php:234
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:112
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:147
 #: ../../../modules/web/Controllers/AccountManagerController.php:115
@@ -1442,7 +1433,7 @@ msgid "Verifique los permisos del usuario del servidor web"
 msgstr "Please check the web server user permissions"
 
 #: ../../../../lib/SP/Services/Import/FileImport.php:100
-#: ../../../modules/web/Controllers/AccountFileController.php:181
+#: ../../../modules/web/Controllers/AccountFileController.php:184
 msgid "Tipo de archivo no soportado"
 msgstr "File type not allowed"
 
@@ -1451,8 +1442,8 @@ msgid "Compruebe la extensión del archivo"
 msgstr "Please, check the file extension"
 
 #: ../../../../lib/SP/Services/Import/FileImport.php:116
-#: ../../../modules/web/Controllers/AccountFileController.php:196
-#: ../../../modules/web/Controllers/AccountFileController.php:217
+#: ../../../modules/web/Controllers/AccountFileController.php:199
+#: ../../../modules/web/Controllers/AccountFileController.php:219
 msgid "Error interno al leer el archivo"
 msgstr "Internal error while reading the file"
 
@@ -1746,13 +1737,13 @@ msgstr "Value not found"
 msgid "Error al eliminar los valores"
 msgstr "Error while deleting the values"
 
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:106
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:188
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:109
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:196
 msgid "Objetos encontrados"
 msgstr "Objects found"
 
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:131
-#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:221
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:134
+#: ../../../../lib/SP/Services/Ldap/LdapImportService.php:229
 msgid "Importado desde LDAP"
 msgstr "Imported from LDAP"
 
@@ -1851,32 +1842,36 @@ msgstr "Unable to create the lock file"
 msgid "Esperando actualización de progreso ..."
 msgstr "Waiting for progress updating ..."
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:85
-#: ../../../../lib/SP/Services/Track/TrackService.php:102
+#: ../../../../lib/SP/Services/Track/TrackService.php:86
+#: ../../../../lib/SP/Services/Track/TrackService.php:103
 msgid "Track no encontrado"
 msgstr "Track not found"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:134
+#: ../../../../lib/SP/Services/Track/TrackService.php:137
 #, php-format
 msgid "Intentos excedidos (%d/%d)"
 msgstr "Attempts exceeded (%d/%d)"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:135
+#: ../../../../lib/SP/Services/Track/TrackService.php:138
 msgid "Segundos"
 msgstr "Seconds"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:62
-#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:85
+#: ../../../../lib/SP/Services/Track/TrackService.php:183
+msgid "Dirección IP no establecida"
+msgstr "IP address not set"
+
+#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:63
+#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:86
 msgid "Actualizar Aplicación"
 msgstr "Update Application"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:69
+#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:70
 msgid "Error al aplicar la actualización de la aplicación"
 msgstr "Error while applying the application update"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:71
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:90
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:98
+#: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:72
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:97
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:105
 msgid "Compruebe el registro de eventos para más detalles"
 msgstr "Please, check the event log for more details"
 
@@ -1912,7 +1907,7 @@ msgstr "Parameter"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:113
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:229
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:165
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:160
 #: ../../../modules/web/Controllers/ConfigBackupController.php:118
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:40
 #: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:28
@@ -1925,11 +1920,11 @@ msgid "Error al actualizar la configuración"
 msgstr "Error while updating the configuration"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:122
-#: ../../../modules/web/Controllers/AccountFileController.php:83
-#: ../../../modules/web/Controllers/AccountFileController.php:96
-#: ../../../modules/web/Controllers/AccountFileController.php:136
-#: ../../../modules/web/Controllers/AccountFileController.php:230
-#: ../../../modules/web/Controllers/AccountFileController.php:327
+#: ../../../modules/web/Controllers/AccountFileController.php:84
+#: ../../../modules/web/Controllers/AccountFileController.php:97
+#: ../../../modules/web/Controllers/AccountFileController.php:137
+#: ../../../modules/web/Controllers/AccountFileController.php:232
+#: ../../../modules/web/Controllers/AccountFileController.php:329
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:70
 msgid "Archivo"
 msgstr "File"
@@ -1958,27 +1953,27 @@ msgstr "Field updated"
 msgid "Campo"
 msgstr "Field"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:81
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:124
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:88
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:119
 msgid "Actualizar BBDD"
 msgstr "Update DB"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:88
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:95
 msgid "Error al aplicar la actualización auxiliar"
 msgstr "Error while applying an auxiliary update"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:96
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:174
 #: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:178
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:182
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Error while updating the database"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:156
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:158
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:151
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:153
 msgid "El archivo de actualización no contiene datos"
 msgstr "The update file does not contain data"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:188
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:184
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Database updating was completed successfully."
 
@@ -2061,7 +2056,7 @@ msgstr "Profile not found"
 msgid "Consulta en blanco"
 msgstr "Blank query"
 
-#: ../../../../lib/SP/Storage/Database/Database.php:270
+#: ../../../../lib/SP/Storage/Database/Database.php:272
 msgid "Restricción de integridad"
 msgstr "Integrity constraint"
 
@@ -2158,7 +2153,7 @@ msgid "Opción no disponible"
 msgstr "Option unavailable"
 
 #: ../../../../lib/SP/Util/ErrorUtil.php:140
-#: ../../../modules/web/Controllers/AccountFileController.php:259
+#: ../../../modules/web/Controllers/AccountFileController.php:261
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:59
 #: ../../../modules/web/Controllers/AccountManagerController.php:57
 #: ../../../modules/web/Controllers/AuthTokenController.php:65
@@ -2269,16 +2264,16 @@ msgstr "Error while doing the query"
 msgid "URL de conexión no establecida"
 msgstr "Connection URL not set"
 
-#: ../../../modules/api/Controllers/AccountController.php:65
+#: ../../../modules/api/Controllers/AccountController.php:70
 msgid "Cuenta visualizada"
 msgstr "Account displayed"
 
-#: ../../../modules/api/Controllers/AccountController.php:66
-#: ../../../modules/api/Controllers/AccountController.php:98
-#: ../../../modules/api/Controllers/AccountController.php:132
-#: ../../../modules/api/Controllers/AccountController.php:179
-#: ../../../modules/api/Controllers/AccountController.php:228
-#: ../../../modules/api/Controllers/AccountController.php:301
+#: ../../../modules/api/Controllers/AccountController.php:71
+#: ../../../modules/api/Controllers/AccountController.php:103
+#: ../../../modules/api/Controllers/AccountController.php:139
+#: ../../../modules/api/Controllers/AccountController.php:188
+#: ../../../modules/api/Controllers/AccountController.php:237
+#: ../../../modules/api/Controllers/AccountController.php:310
 #: ../../../modules/web/Controllers/AccountController.php:224
 #: ../../../modules/web/Controllers/AccountController.php:557
 #: ../../../modules/web/Controllers/AccountController.php:611
@@ -2290,7 +2285,7 @@ msgstr "Account displayed"
 #: ../../../modules/web/Controllers/AccountController.php:834
 #: ../../../modules/web/Controllers/AccountController.php:884
 #: ../../../modules/web/Controllers/AccountController.php:918
-#: ../../../modules/web/Controllers/AccountFileController.php:231
+#: ../../../modules/web/Controllers/AccountFileController.php:233
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:111
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:146
 #: ../../../modules/web/Controllers/AccountManagerController.php:114
@@ -2303,12 +2298,12 @@ msgstr "Account displayed"
 msgid "Cuenta"
 msgstr "Account"
 
-#: ../../../modules/api/Controllers/AccountController.php:68
-#: ../../../modules/api/Controllers/AccountController.php:100
-#: ../../../modules/api/Controllers/AccountController.php:134
-#: ../../../modules/api/Controllers/AccountController.php:181
-#: ../../../modules/api/Controllers/AccountController.php:230
-#: ../../../modules/api/Controllers/AccountController.php:303
+#: ../../../modules/api/Controllers/AccountController.php:73
+#: ../../../modules/api/Controllers/AccountController.php:105
+#: ../../../modules/api/Controllers/AccountController.php:141
+#: ../../../modules/api/Controllers/AccountController.php:190
+#: ../../../modules/api/Controllers/AccountController.php:239
+#: ../../../modules/api/Controllers/AccountController.php:312
 #: ../../../modules/api/Controllers/CategoryController.php:92
 #: ../../../modules/api/Controllers/CategoryController.php:122
 #: ../../../modules/api/Controllers/CategoryController.php:151
@@ -2321,19 +2316,19 @@ msgstr "Account"
 #: ../../../modules/web/Controllers/ItemPresetController.php:274
 #: ../../../modules/web/Controllers/ItemPresetController.php:307
 #: ../../../modules/web/Controllers/ItemPresetController.php:346
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:138
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:140
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:94
 msgid "ID"
 msgstr "ID"
 
-#: ../../../modules/api/Controllers/AccountController.php:97
+#: ../../../modules/api/Controllers/AccountController.php:102
 #: ../../../modules/web/Controllers/AccountController.php:556
 #: ../../../modules/web/Controllers/AccountController.php:610
 msgid "Clave visualizada"
 msgstr "Password viewed"
 
-#: ../../../modules/api/Controllers/AccountController.php:131
-#: ../../../modules/api/Controllers/AccountController.php:137
+#: ../../../modules/api/Controllers/AccountController.php:138
+#: ../../../modules/api/Controllers/AccountController.php:144
 #: ../../../modules/web/Controllers/AccountController.php:794
 #: ../../../modules/web/Controllers/AccountController.php:805
 #: ../../../modules/web/Controllers/UserController.php:411
@@ -2343,22 +2338,22 @@ msgstr "Password viewed"
 msgid "Clave actualizada"
 msgstr "Password updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:178
-#: ../../../modules/api/Controllers/AccountController.php:184
+#: ../../../modules/api/Controllers/AccountController.php:187
+#: ../../../modules/api/Controllers/AccountController.php:193
 #: ../../../modules/web/Controllers/AccountController.php:708
 #: ../../../modules/web/Controllers/AccountController.php:719
 msgid "Cuenta creada"
 msgstr "Account added"
 
-#: ../../../modules/api/Controllers/AccountController.php:227
-#: ../../../modules/api/Controllers/AccountController.php:233
+#: ../../../modules/api/Controllers/AccountController.php:236
+#: ../../../modules/api/Controllers/AccountController.php:242
 #: ../../../modules/web/Controllers/AccountController.php:753
 #: ../../../modules/web/Controllers/AccountController.php:764
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:300
-#: ../../../modules/api/Controllers/AccountController.php:306
+#: ../../../modules/api/Controllers/AccountController.php:309
+#: ../../../modules/api/Controllers/AccountController.php:315
 #: ../../../modules/web/Controllers/AccountController.php:883
 #: ../../../modules/web/Controllers/AccountController.php:888
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:110
@@ -2472,7 +2467,7 @@ msgstr "Send details in the response"
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:288
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:291
 #: ../../../modules/web/themes/material-blue/views/config/general-proxy.inc:79
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:150
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:167
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:117
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:124
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:250
@@ -2496,8 +2491,8 @@ msgstr "Password"
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:89
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:104
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:173
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:129
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:131
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:83
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:85
 msgid "Fecha Caducidad Clave"
 msgstr "Password Expiry Date"
 
@@ -2549,7 +2544,7 @@ msgstr "Notes about the account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:89
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:111
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:130
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:194
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:106
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:19
 msgid "Cuenta Privada"
@@ -2557,15 +2552,15 @@ msgstr "Private Account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:90
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:112
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:146
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:211
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:38
 msgid "Cuenta Privada Grupo"
 msgstr "Private Account for Group"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:92
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:114
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:228
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:230
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:236
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:238
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:8
 msgid "Cuenta Vinculada"
 msgstr "Linked Account"
@@ -2791,89 +2786,89 @@ msgstr "Favorite added"
 msgid "Favorito eliminado"
 msgstr "Favorite deleted"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:69
-#: ../../../modules/web/Controllers/AccountFileController.php:121
+#: ../../../modules/web/Controllers/AccountFileController.php:70
+#: ../../../modules/web/Controllers/AccountFileController.php:122
 msgid "El archivo no existe"
 msgstr "The file does not exist"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:82
-#: ../../../modules/web/Controllers/AccountFileController.php:95
+#: ../../../modules/web/Controllers/AccountFileController.php:83
+#: ../../../modules/web/Controllers/AccountFileController.php:96
 msgid "Archivo visualizado"
 msgstr "File viewed"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:107
+#: ../../../modules/web/Controllers/AccountFileController.php:108
 #: ../../../config/strings.js.inc:40
 msgid "Archivo no soportado para visualizar"
 msgstr "File not supported for preview"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:135
+#: ../../../modules/web/Controllers/AccountFileController.php:136
 msgid "Archivo descargado"
 msgstr "File downloaded"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:160
+#: ../../../modules/web/Controllers/AccountFileController.php:161
 msgid "CONSULTA INVÁLIDA"
 msgstr "INVALID QUERY"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:166
+#: ../../../modules/web/Controllers/AccountFileController.php:167
 msgid "No hay extensiones permitidas"
 msgstr "There aren't any allowed extensions"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:183
+#: ../../../modules/web/Controllers/AccountFileController.php:186
 #, php-format
 msgid "Extensión: %s"
 msgstr "Extension: %s"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:188
+#: ../../../modules/web/Controllers/AccountFileController.php:191
 msgid "Archivo inválido"
 msgstr "Invalid file"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:190
+#: ../../../modules/web/Controllers/AccountFileController.php:193
 #, php-format
 msgid "Archivo: %s"
 msgstr "File: %s"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:198
+#: ../../../modules/web/Controllers/AccountFileController.php:201
 #, php-format
 msgid "Máximo tamaño: %s"
 msgstr "Maximum size: %s"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:206
+#: ../../../modules/web/Controllers/AccountFileController.php:209
 msgid "Tamaño de archivo superado"
 msgstr "File size exceeded"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:208
+#: ../../../modules/web/Controllers/AccountFileController.php:211
 #, php-format
 msgid "Máximo tamaño: %d KB"
 msgstr "Maximum size: %d KB"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:229
-#: ../../../modules/web/Controllers/AccountFileController.php:238
+#: ../../../modules/web/Controllers/AccountFileController.php:231
+#: ../../../modules/web/Controllers/AccountFileController.php:240
 msgid "Archivo guardado"
 msgstr "File saved"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:234
+#: ../../../modules/web/Controllers/AccountFileController.php:236
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:105
 msgid "Tamaño"
 msgstr "Size"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:318
-#: ../../../modules/web/Controllers/AccountFileController.php:321
+#: ../../../modules/web/Controllers/AccountFileController.php:320
+#: ../../../modules/web/Controllers/AccountFileController.php:323
 msgid "Archivos eliminados"
 msgstr "Files deleted"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:326
+#: ../../../modules/web/Controllers/AccountFileController.php:328
 msgid "Archivo eliminado"
 msgstr "File deleted"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:332
+#: ../../../modules/web/Controllers/AccountFileController.php:334
 msgid "Archivo Eliminado"
 msgstr "File Deleted"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:368
+#: ../../../modules/web/Controllers/AccountFileController.php:370
 msgid "Gestión de archivos deshabilitada"
 msgstr "Files management disabled"
 
-#: ../../../modules/web/Controllers/AccountFileController.php:385
+#: ../../../modules/web/Controllers/AccountFileController.php:387
 msgid "No hay archivos asociados a la cuenta"
 msgstr "There are no linked files for the account"
 
@@ -2991,7 +2986,7 @@ msgstr "Public links disabled"
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:92
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:151
 #: ../../../modules/web/Controllers/ConfigImportController.php:56
-#: ../../../modules/web/Controllers/ConfigLdapController.php:216
+#: ../../../modules/web/Controllers/ConfigLdapController.php:218
 #: ../../../modules/web/Controllers/Traits/ConfigTrait.php:55
 #: ../../../modules/web/Forms/UserForm.php:131
 #: ../../../modules/web/Forms/UserForm.php:153
@@ -3001,7 +2996,7 @@ msgstr "Ey, this is a DEMO!!"
 
 #: ../../../modules/web/Controllers/ConfigBackupController.php:86
 #: ../../../modules/web/Controllers/UserPassResetController.php:173
-#: ../../../modules/web/Forms/AccountForm.php:157
+#: ../../../modules/web/Forms/AccountForm.php:154
 #: ../../../modules/web/Forms/UserForm.php:161
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
@@ -3119,7 +3114,7 @@ msgid "Cuentas importadas"
 msgstr "Accounts imported"
 
 #: ../../../modules/web/Controllers/ConfigImportController.php:80
-#: ../../../modules/web/Controllers/ConfigLdapController.php:256
+#: ../../../modules/web/Controllers/ConfigLdapController.php:260
 msgid "Importación finalizada"
 msgstr "Import finished"
 
@@ -3128,59 +3123,59 @@ msgid "No se importaron cuentas"
 msgstr "No accounts were imported"
 
 #: ../../../modules/web/Controllers/ConfigLdapController.php:69
-#: ../../../modules/web/Controllers/ConfigLdapController.php:137
-#: ../../../modules/web/Controllers/ConfigLdapController.php:173
+#: ../../../modules/web/Controllers/ConfigLdapController.php:139
+#: ../../../modules/web/Controllers/ConfigLdapController.php:175
 msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:87
+#: ../../../modules/web/Controllers/ConfigLdapController.php:88
 msgid "LDAP habiltado"
 msgstr "LDAP enabled"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:92
+#: ../../../modules/web/Controllers/ConfigLdapController.php:93
 msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:94
+#: ../../../modules/web/Controllers/ConfigLdapController.php:95
 #: ../../../modules/web/Controllers/ConfigMailController.php:102
 #: ../../../config/strings.js.inc:80
 msgid "Sin cambios"
 msgstr "No changes"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:114
-#: ../../../modules/web/Controllers/ConfigLdapController.php:236
+#: ../../../modules/web/Controllers/ConfigLdapController.php:115
+#: ../../../modules/web/Controllers/ConfigLdapController.php:238
 msgid "Parámetros de LDAP incorrectos"
 msgstr "Wrong LDAP parameters"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:147
-#: ../../../modules/web/Controllers/ConfigLdapController.php:189
+#: ../../../modules/web/Controllers/ConfigLdapController.php:149
+#: ../../../modules/web/Controllers/ConfigLdapController.php:191
 msgid "Resultados"
 msgstr "Results"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:153
-#: ../../../modules/web/Controllers/ConfigLdapController.php:196
+#: ../../../modules/web/Controllers/ConfigLdapController.php:155
+#: ../../../modules/web/Controllers/ConfigLdapController.php:198
 #, php-format
 msgid "Objetos encontrados: %d"
 msgstr "Objects found: %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:242
+#: ../../../modules/web/Controllers/ConfigLdapController.php:245
 msgid "Importación LDAP"
 msgstr "LDAP Import"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:260
+#: ../../../modules/web/Controllers/ConfigLdapController.php:264
 msgid "No se encontraron objetos para sincronizar"
 msgstr "There aren't any objects to synchronize"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:265
+#: ../../../modules/web/Controllers/ConfigLdapController.php:269
 msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP users import finished"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:267
+#: ../../../modules/web/Controllers/ConfigLdapController.php:271
 #, php-format
 msgid "Usuarios importados: %d / %d"
 msgstr "Imported users: %d / %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:268
+#: ../../../modules/web/Controllers/ConfigLdapController.php:272
 #, php-format
 msgid "Errores: %d"
 msgstr "Errors: %d"
@@ -3353,8 +3348,8 @@ msgstr "View Current"
 #: ../../../modules/web/themes/material-blue/views/config/general.inc:22
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:89
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:151
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:275
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:420
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:292
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:437
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:206
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:291
 #: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:167
@@ -3946,6 +3941,7 @@ msgstr "Search for Tag"
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:145
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:146
 #: ../../../modules/web/Controllers/TagController.php:98
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:217
 #: ../../../config/actions.xml:493
 msgid "Nueva Etiqueta"
 msgstr "New Tag"
@@ -3996,7 +3992,7 @@ msgstr "Delete User"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:218
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:219
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:440
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:457
 msgid "Importar usuarios de LDAP"
 msgstr "Import users from LDAP"
 
@@ -4264,20 +4260,20 @@ msgstr "Error while saving the configuration"
 msgid "Error al actualizar los datos del campo personalizado"
 msgstr "Error while updating custom field's data"
 
-#: ../../../modules/web/Controllers/UpgradeController.php:65
+#: ../../../modules/web/Controllers/UpgradeController.php:67
 msgid "Es necesario confirmar la actualización"
 msgstr "The updating need to be confirmed"
 
-#: ../../../modules/web/Controllers/UpgradeController.php:69
+#: ../../../modules/web/Controllers/UpgradeController.php:71
 msgid "Código de seguridad incorrecto"
 msgstr "Wrong security code"
 
-#: ../../../modules/web/Controllers/UpgradeController.php:90
+#: ../../../modules/web/Controllers/UpgradeController.php:92
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:78
 msgid "Aplicación actualizada correctamente"
 msgstr "Application successfully updated"
 
-#: ../../../modules/web/Controllers/UpgradeController.php:90
+#: ../../../modules/web/Controllers/UpgradeController.php:92
 msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
@@ -4389,24 +4385,20 @@ msgstr "Preferences updated"
 msgid "Preferencias"
 msgstr "Preferences"
 
-#: ../../../modules/web/Forms/AccountForm.php:153
+#: ../../../modules/web/Forms/AccountForm.php:150
 msgid "Es necesaria una clave"
 msgstr "A key is needed"
 
-#: ../../../modules/web/Forms/AccountForm.php:197
+#: ../../../modules/web/Forms/AccountForm.php:164
 msgid "Es necesario un nombre de cuenta"
 msgstr "An account name needed"
 
-#: ../../../modules/web/Forms/AccountForm.php:201
+#: ../../../modules/web/Forms/AccountForm.php:168
 #: ../../../modules/web/Forms/ClientForm.php:84
 msgid "Es necesario un nombre de cliente"
 msgstr "A client name needed"
 
-#: ../../../modules/web/Forms/AccountForm.php:205
-msgid "Es necesario un usuario"
-msgstr "An username is needed"
-
-#: ../../../modules/web/Forms/AccountForm.php:209
+#: ../../../modules/web/Forms/AccountForm.php:172
 msgid "Es necesario una categoría"
 msgstr "A category is needed"
 
@@ -4511,8 +4503,10 @@ msgid "Ver Detalles"
 msgstr "View Details"
 
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:35
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:34
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:72
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:64
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:68
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:134
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:138
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:24
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:63
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:97
@@ -4708,21 +4702,21 @@ msgid "Vaciar el registro de eventos?"
 msgstr "Clear event log?"
 
 #: ../../../config/strings.js.inc:47
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:113
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:177
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:276
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:87
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:57
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:233
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:250
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:49
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:145
 msgid "Seleccionar Grupo"
 msgstr "Select Group"
 
 #: ../../../config/strings.js.inc:48
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:96
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:160
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:112
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:30
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:258
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:275
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:32
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:74
@@ -5010,18 +5004,18 @@ msgstr "Notes"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:129
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:131
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:245
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:247
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:253
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:255
 msgid "Historial"
 msgstr "History"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:136
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:252
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:260
 msgid "Seleccionar fecha"
 msgstr "Select date"
 
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:147
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:264
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:272
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:27
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:29
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:284
@@ -5029,47 +5023,49 @@ msgstr "Select date"
 msgid "Última Modificación"
 msgstr "Last Modification"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:18
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:56
-#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:8
-#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:47
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:48
-msgid "Ver"
-msgstr "View"
-
 #: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:22
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:38
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:54
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:12
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:28
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:51
 msgid "Seleccionar Usuarios"
 msgstr "Select Users"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:60
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:76
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:32
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:36
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:102
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:106
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:8
+#: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:47
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:48
+msgid "Ver"
+msgstr "View"
+
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:124
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:51
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:67
 msgid "Seleccionar Grupos"
 msgstr "Select Groups"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:93
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:157
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:37
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:39
 msgid "Creador"
 msgstr "Creator"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:110
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:174
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:45
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:47
 msgid "Grupo Principal"
 msgstr "Main Group"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:135
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:200
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:177
 msgid "Privada"
 msgstr "Private"
 
-#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:151
+#: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:217
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:193
 msgid "Privada Grupo"
 msgstr "Private for Group"
@@ -5100,21 +5096,21 @@ msgstr "Permissions"
 msgid "Seleccionar Etiquetas"
 msgstr "Select Tags"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:238
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:246
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:21
 msgid "Seleccionar Cuenta"
 msgstr "Select Account"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:271
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:273
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:276
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:279
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:281
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:284
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:180
 msgid "Enlace Público"
 msgstr "Public Link"
 
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:284
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:286
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:289
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:292
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:294
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:297
 msgid "Enlace Directo"
 msgstr "Direct Link"
 
@@ -5125,26 +5121,16 @@ msgstr "Date Added"
 
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:55
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:57
-msgid "Usuarios Secundarios"
-msgstr "Secondary Users"
-
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:78
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:80
-msgid "Grupos Secundarios"
-msgstr "Secondary Groups"
-
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:101
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:103
 msgid "Fecha Edición"
 msgstr "Date Modified"
 
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:109
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:111
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:63
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:65
 msgid "Editor"
 msgstr "Editor"
 
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:119
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:121
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:73
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:75
 msgid "Fecha de Clave"
 msgstr "Password Date"
 
@@ -5751,8 +5737,8 @@ msgstr "Domain name"
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:83
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:43
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:53
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:219
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:229
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:236
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:246
 msgid "Grupo por Defecto"
 msgstr "Default Group"
 
@@ -5763,8 +5749,8 @@ msgstr "Sets the default users group for newly SSO users"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:98
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:108
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:244
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:254
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:261
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:271
 msgid "Perfil por Defecto"
 msgstr "Default Profile"
 
@@ -6158,106 +6144,110 @@ msgstr "Active Directory"
 msgid "Habilita el modo de conexión con LDAP de Active Directory."
 msgstr "Enables Active Directory LDAP connection mode."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:79
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:81
+msgid "Habilita la conexión mediante TLS."
+msgstr "Enables the connection over TLS"
+
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:96
 msgid "Nombre o dirección IP del servidor de LDAP."
 msgstr "Hostname or IP address of the LDAP server."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:83
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:114
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:165
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:199
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:100
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:131
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:182
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:216
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:128
 msgid "Ejemplos:"
 msgstr "Examples:"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:105
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:122
 msgid "Usuario de conexión"
 msgstr "Bind User"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:110
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:127
 msgid "Usuario para conectar con el servicio de LDAP."
 msgstr "User to connect to the LDAP service."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:135
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:152
 msgid "Clave de conexión"
 msgstr "Bind Password"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:140
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:157
 msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP connection user password"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:156
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:180
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:173
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:197
 msgid "Base de búsqueda"
 msgstr "Search base"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:161
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:178
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr "LDAP base to perform the LDAP users searching."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:191
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:208
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr "LDAP group that the user must belong for granting to log in."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:195
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:212
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
 msgstr "This group needs to be placed in the LDAP search base."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:224
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:241
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Sets the default users group for newly LDAP users"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:249
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:266
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Sets the default profile for the newly created LDAP users."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:301
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:318
 msgid "Importación"
 msgstr "Import"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:307
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:317
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:324
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:334
 msgid "Atributo Login"
 msgstr "Login Attribute"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:312
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:329
 msgid ""
 "Define el atributo a utilizar para el login del usuario en la importación."
 msgstr "Defines the attribute for the user's login when importing."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:330
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:340
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:347
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:357
 msgid "Atributo Nombre"
 msgstr "Name Attribute"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:335
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:352
 msgid ""
 "Define el atributo a utilizar para el nombre del usuario en la importación."
 msgstr "Defines the attribute for the user's name when importing."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:365
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:382
 msgid "Importar Grupos"
 msgstr "Import Groups"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:374
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:384
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:391
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:401
 msgid "Atributo Nombre Grupo"
 msgstr "Group Name Attribute"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:379
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:396
 msgid ""
 "Define el atributo a utilizar para el nombre del grupo en la importación."
 msgstr "Defines the attribute for the user group name when importing."
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:395
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:409
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:412
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:426
 msgid "Filtro"
 msgstr "Filter"
 
-#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:400
+#: ../../../modules/web/themes/material-blue/views/config/ldap.inc:417
 msgid "Filtro para importar usuarios o grupos de LDAP."
 msgstr "Filter for importing LDAP users or groups."
 
@@ -7376,6 +7366,27 @@ msgstr "Text"
 #: ../../../config/strings.xml:9
 msgid "Link"
 msgstr "Link"
+
+#~ msgid "LDAP ERROR"
+#~ msgstr "LDAP ERROR"
+
+#~ msgid "No es posible generar las claves RSA"
+#~ msgstr "Unable to generate the RSA keys"
+
+#~ msgid "El archivo de clave no existe"
+#~ msgstr "The key file does not exist"
+
+#~ msgid "Error al buscar el grupo de usuarios"
+#~ msgstr "Error while searching users group"
+
+#~ msgid "Es necesario un usuario"
+#~ msgstr "An username is needed"
+
+#~ msgid "Usuarios Secundarios"
+#~ msgstr "Secondary Users"
+
+#~ msgid "Grupos Secundarios"
+#~ msgstr "Secondary Groups"
 
 #~ msgid "Gestión Permisos"
 #~ msgstr "Permissions Management"
