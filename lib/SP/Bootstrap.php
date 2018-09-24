@@ -191,7 +191,7 @@ final class Bootstrap
                     /** @var \Klein\Request $request */
                     $route = Filter::getString($request->param('r', 'index/index'));
 
-                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>/[a-zA-Z\d\.]+)?#', $route, $matches)) {
+                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d\.]+)+)?#', $route, $matches)) {
                         throw new RuntimeException($oops);
                     }
 
