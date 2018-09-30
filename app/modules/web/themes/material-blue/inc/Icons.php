@@ -66,8 +66,8 @@ $themeIcons->addIcon('notices', new FontIcon('notifications', 'mdl-color-text--i
 $themeIcons->addIcon('remove', new FontIcon('remove', 'mdl-color-text--indigo-A200', __u('Eliminar')));
 $themeIcons->addIcon('previous', new FontIcon('chevron_left', null, __u('Página anterior')));
 $themeIcons->addIcon('next', new FontIcon('chevron_right', null, __u('Página siguiente')));
-$themeIcons->addIcon('first', new FontIcon('arrow_back', null, __u('Primera página')));
-$themeIcons->addIcon('last', new FontIcon('arrow_forward', null, __u('Última página')));
+$themeIcons->addIcon('first', new FontIcon('first_page', null, __u('Primera página')));
+$themeIcons->addIcon('last', new FontIcon('last_page', null, __u('Última página')));
 $themeIcons->addIcon('up', new FontIcon('arrow_drop_up'));
 $themeIcons->addIcon('down', new FontIcon('arrow_drop_down'));
 

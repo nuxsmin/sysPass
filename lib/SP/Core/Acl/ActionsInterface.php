@@ -175,8 +175,13 @@ interface ActionsInterface
     const ITEMPRESET_CREATE = 1804;
     const ITEMPRESET_EDIT = 1805;
     const ITEMPRESET_DELETE = 1806;
+    const TRACK = 1901;
+    const TRACK_SEARCH = 1902;
+    const TRACK_UNLOCK = 1903;
+    const TRACK_CLEAR = 1904;
     const ITEMS_MANAGE = 5001;
     const ACCESS_MANAGE = 5002;
+    const SECURITY_MANAGE = 5003;
     const USERSETTINGS = 5010;
     const USERSETTINGS_GENERAL = 5011;
 }

@@ -67,7 +67,7 @@ final class NotificationGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($this->getSearchAction());
+        $grid->setDataActions($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
         $this->isAdminApp = (bool)$this->context->getUserData()->getIsAdminApp();

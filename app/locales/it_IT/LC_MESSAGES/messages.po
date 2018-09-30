@@ -23,14 +23,14 @@ msgid "Buscar Cuentas"
 msgstr "Cerca account"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:145 ../../../config/actions.xml:475
+#: ../../../config/actions.xml:151 ../../../config/actions.xml:481
 msgid "Ver Cuenta"
 msgstr "Vedi Account"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:463
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:464
-#: ../../../config/actions.xml:187
+#: ../../../config/actions.xml:193
 msgid "Copiar Cuenta"
 msgstr "Copia account"
 
@@ -39,18 +39,18 @@ msgstr "Copia account"
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:18
-#: ../../../config/actions.xml:157
+#: ../../../config/actions.xml:163
 msgid "Editar Cuenta"
 msgstr "Modifica account"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:175
+#: ../../../config/actions.xml:181
 msgid "Editar Clave de Cuenta"
 msgstr "Modifica la password dell'account"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:81
-#: ../../../config/actions.xml:253
+#: ../../../config/actions.xml:259
 msgid "Ver Historial"
 msgstr "Vedi la cronologia"
 
@@ -80,6 +80,7 @@ msgstr "Gestione Categorie"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:55
+#, fuzzy
 msgid "Gestión Clientes"
 msgstr "Gestione Clienti"
 
@@ -94,17 +95,17 @@ msgid "Gestión Autorizaciones API"
 msgstr "Gestione Autorizzazioni API"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:109
+#: ../../../config/actions.xml:115
 msgid "Gestión Usuarios"
 msgstr "Gestione Utenti"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:115
+#: ../../../config/actions.xml:121
 msgid "Gestión Grupos"
 msgstr "Gestione Gruppi"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:121
+#: ../../../config/actions.xml:127
 msgid "Gestión Perfiles"
 msgstr "Gestione Profili"
 
@@ -113,26 +114,26 @@ msgstr "Gestione Profili"
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:61
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
-#: ../../../config/actions.xml:673
+#: ../../../config/actions.xml:679
 msgid "Configuración"
 msgstr "Configurazione"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:442
-#: ../../../config/actions.xml:679
+#: ../../../config/actions.xml:685
 msgid "Configuración General"
 msgstr "Configurazione Generale"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:268
+#: ../../../modules/web/Controllers/ConfigManagerController.php:269
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
 msgid "Encriptación"
 msgstr "Crittografia"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ConfigManagerController.php:322
+#: ../../../modules/web/Controllers/ConfigManagerController.php:323
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:17
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:70
-#: ../../../config/actions.xml:721
+#: ../../../config/actions.xml:727
 msgid "Copia de Seguridad"
 msgstr "Copia di backup"
 
@@ -217,9 +218,9 @@ msgstr "Errore durante la creazione della categoria"
 #: ../../../modules/api/Controllers/CategoryController.php:91
 #: ../../../modules/api/Controllers/CategoryController.php:121
 #: ../../../modules/api/Controllers/CategoryController.php:150
-#: ../../../modules/web/Controllers/CategoryController.php:215
-#: ../../../modules/web/Controllers/CategoryController.php:249
-#: ../../../modules/web/Controllers/CategoryController.php:289
+#: ../../../modules/web/Controllers/CategoryController.php:220
+#: ../../../modules/web/Controllers/CategoryController.php:254
+#: ../../../modules/web/Controllers/CategoryController.php:294
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:228
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:100
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:101
@@ -240,7 +241,7 @@ msgstr "Errore durante la rimozione della categoria"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:182
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:183
-#: ../../../config/actions.xml:313
+#: ../../../config/actions.xml:319
 msgid "Eliminar Categoría"
 msgstr "Rimuovi categoria"
 
@@ -266,6 +267,7 @@ msgid "Opción no disponible"
 msgstr "Opzione non disponibile"
 
 #: ../../../../lib/SP/Core/Acl/AccountPermissionException.php:45
+#: ../../../../lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: ../../../../lib/SP/Core/Acl/UnauthorizedPageException.php:45
 #: ../../../../lib/SP/Util/ErrorUtil.php:129
 #: ../../../../lib/SP/Util/ErrorUtil.php:133
@@ -284,6 +286,7 @@ msgstr "Verificare con l'amministratore"
 msgid "No tiene permisos para acceder a esta página"
 msgstr "Non hai il permesso di accedere a questa pagina"
 
+#: ../../../../lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: ../../../../lib/SP/Util/ErrorUtil.php:140
 #: ../../../modules/web/Controllers/AccountFileController.php:261
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:59
@@ -295,13 +298,13 @@ msgstr "Non hai il permesso di accedere a questa pagina"
 #: ../../../modules/web/Controllers/AuthTokenController.php:235
 #: ../../../modules/web/Controllers/AuthTokenController.php:270
 #: ../../../modules/web/Controllers/AuthTokenController.php:319
-#: ../../../modules/web/Controllers/CategoryController.php:63
-#: ../../../modules/web/Controllers/CategoryController.php:95
-#: ../../../modules/web/Controllers/CategoryController.php:159
-#: ../../../modules/web/Controllers/CategoryController.php:189
-#: ../../../modules/web/Controllers/CategoryController.php:232
-#: ../../../modules/web/Controllers/CategoryController.php:272
-#: ../../../modules/web/Controllers/CategoryController.php:312
+#: ../../../modules/web/Controllers/CategoryController.php:66
+#: ../../../modules/web/Controllers/CategoryController.php:100
+#: ../../../modules/web/Controllers/CategoryController.php:164
+#: ../../../modules/web/Controllers/CategoryController.php:194
+#: ../../../modules/web/Controllers/CategoryController.php:237
+#: ../../../modules/web/Controllers/CategoryController.php:277
+#: ../../../modules/web/Controllers/CategoryController.php:317
 #: ../../../modules/web/Controllers/ClientController.php:64
 #: ../../../modules/web/Controllers/ClientController.php:96
 #: ../../../modules/web/Controllers/ClientController.php:160
@@ -316,7 +319,7 @@ msgstr "Non hai il permesso di accedere a questa pagina"
 #: ../../../modules/web/Controllers/CustomFieldController.php:221
 #: ../../../modules/web/Controllers/CustomFieldController.php:258
 #: ../../../modules/web/Controllers/CustomFieldController.php:295
-#: ../../../modules/web/Controllers/EventlogController.php:94
+#: ../../../modules/web/Controllers/EventlogController.php:101
 #: ../../../modules/web/Controllers/ItemPresetController.php:67
 #: ../../../modules/web/Controllers/ItemPresetController.php:149
 #: ../../../modules/web/Controllers/ItemPresetController.php:184
@@ -342,13 +345,13 @@ msgstr "Non hai il permesso di accedere a questa pagina"
 #: ../../../modules/web/Controllers/PublicLinkController.php:259
 #: ../../../modules/web/Controllers/PublicLinkController.php:291
 #: ../../../modules/web/Controllers/PublicLinkController.php:333
-#: ../../../modules/web/Controllers/TagController.php:62
-#: ../../../modules/web/Controllers/TagController.php:94
-#: ../../../modules/web/Controllers/TagController.php:154
-#: ../../../modules/web/Controllers/TagController.php:184
-#: ../../../modules/web/Controllers/TagController.php:218
-#: ../../../modules/web/Controllers/TagController.php:249
-#: ../../../modules/web/Controllers/TagController.php:280
+#: ../../../modules/web/Controllers/TagController.php:65
+#: ../../../modules/web/Controllers/TagController.php:99
+#: ../../../modules/web/Controllers/TagController.php:159
+#: ../../../modules/web/Controllers/TagController.php:189
+#: ../../../modules/web/Controllers/TagController.php:223
+#: ../../../modules/web/Controllers/TagController.php:254
+#: ../../../modules/web/Controllers/TagController.php:285
 #: ../../../modules/web/Controllers/UserController.php:69
 #: ../../../modules/web/Controllers/UserController.php:101
 #: ../../../modules/web/Controllers/UserController.php:186
@@ -412,7 +415,7 @@ msgstr "Il numero di campi non è corretto (%d)"
 msgid "Compruebe el formato del archivo CSV en línea %s"
 msgstr "Controlla il formato file CSV alla linea %s"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:339
+#: ../../../modules/web/Controllers/ConfigManagerController.php:340
 msgid "Importar Cuentas"
 msgstr "Importa account"
 
@@ -442,6 +445,7 @@ msgstr "Testo"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:102
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:116
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:98
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:112
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:182
@@ -524,7 +528,7 @@ msgstr "Errore durante l'eliminazione del client"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:185
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:186
-#: ../../../config/actions.xml:343
+#: ../../../config/actions.xml:349
 msgid "Eliminar Cliente"
 msgstr "Rimuovi cliente"
 
@@ -542,12 +546,12 @@ msgid "Compruebe los datos de conexión"
 msgstr "Controlla i dati di connessione"
 
 #. Not available
-#: ../../../../lib/SP/Core/Acl/Acl.php:287
+#: ../../../../lib/SP/Core/Acl/Acl.php:289
 #: ../../../../lib/SP/Services/Auth/LoginService.php:589
 msgid "N/D"
 msgstr "N/D"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:293
+#: ../../../../lib/SP/Core/Acl/Acl.php:295
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:30
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:32
@@ -610,14 +614,14 @@ msgstr "Verifica le autorizzazioni della directory temporanea"
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:189
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:190
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:30
-#: ../../../config/actions.xml:217 ../../../config/actions.xml:457
+#: ../../../config/actions.xml:223 ../../../config/actions.xml:463
 msgid "Eliminar Archivo"
 msgstr "Elimina file"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:200
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:201
-#: ../../../config/actions.xml:613
+#: ../../../config/actions.xml:619
 msgid "Eliminar Grupo"
 msgstr "Elimina gruppo"
 
@@ -695,7 +699,7 @@ msgstr "Aggiornamento della versione fatta."
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:113
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:229
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:160
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:161
 #: ../../../modules/web/Controllers/ConfigBackupController.php:118
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:40
 #: ../../../modules/web/themes/material-blue/views/plugin/plugin.inc:28
@@ -739,6 +743,7 @@ msgid "Indicar el usuario de la BBDD"
 msgstr "Indicare l'utente del BBDD"
 
 #: ../../../../lib/SP/Services/Install/Installer.php:136
+#, fuzzy
 msgid "Usuario con permisos de administrador de la Base de Datos"
 msgstr "Utente con autorizzazioni di amministratore del database"
 
@@ -867,6 +872,7 @@ msgstr "Eventi vuoti"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
+#, fuzzy
 msgid "Vaciar registro de eventos"
 msgstr "Registrazione vuota di eventi"
 
@@ -900,7 +906,7 @@ msgstr "Mancata esecuzione dell'operazione"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:198
 #: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:199
-#: ../../../config/actions.xml:643
+#: ../../../config/actions.xml:649
 msgid "Eliminar Perfil"
 msgstr "Elimina profilo"
 
@@ -924,15 +930,15 @@ msgstr "Non è possibile ottenere la variabile \"%s\""
 msgid "No es posible destruir la variable \"%s\""
 msgstr "Non è possibile distruggere la variabile \"%s\""
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:174
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:178
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:104
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:175
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:179
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Errore durante l'applicazione dell'aggiornamento del database"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:72
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:97
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:105
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:98
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:106
 msgid "Compruebe el registro de eventos para más detalles"
 msgstr "Controlla il registro eventi per maggiori dettagli"
 
@@ -940,12 +946,12 @@ msgstr "Controlla il registro eventi per maggiori dettagli"
 msgid "Acceder"
 msgstr "Accedere"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:95
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:96
 msgid "Error al aplicar la actualización auxiliar"
 msgstr "Errore durante l'applicazione dell'aggiornamento ausiliario"
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:88
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:119
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:89
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:120
 msgid "Actualizar BBDD"
 msgstr "Aggiorna BBDD"
 
@@ -954,7 +960,7 @@ msgstr "Aggiorna BBDD"
 msgid "No es necesario actualizar la Base de Datos."
 msgstr "Non è necessario aggiornare il database."
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:184
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:185
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Aggiornamento del database eseguito correttamente."
 
@@ -971,7 +977,7 @@ msgstr "Non è stato possibile effettuare la richiesta di modifica password."
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:201
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:202
-#: ../../../config/actions.xml:577
+#: ../../../config/actions.xml:583
 msgid "Eliminar Usuario"
 msgstr "Elimina utente"
 
@@ -1117,6 +1123,7 @@ msgid "Tamaño de archivo no permitido"
 msgstr "La dimensione del file non è consentita"
 
 #: ../../../config/strings.js.inc:46
+#, fuzzy
 msgid "Vaciar el registro de eventos?"
 msgstr "Cancellare il registro degli eventi?"
 
@@ -1197,7 +1204,7 @@ msgstr "Copia utente"
 #. (itstool) path: action/text
 #: ../../../config/strings.js.inc:60
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:36
-#: ../../../config/actions.xml:193 ../../../config/actions.xml:265
+#: ../../../config/actions.xml:199 ../../../config/actions.xml:271
 msgid "Copiar Clave"
 msgstr "Copy Password"
 
@@ -1213,6 +1220,7 @@ msgstr "Includi maiuscole"
 
 #: ../../../config/strings.js.inc:63
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:102
+#, fuzzy
 msgid "Incluir Símbolos"
 msgstr "Includi simboli"
 
@@ -1313,33 +1321,34 @@ msgstr "Modulo"
 msgid "Eliminar Campo"
 msgstr "Rimuovi campo"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:308
+#: ../../../modules/web/Controllers/ConfigManagerController.php:309
 msgid "Último backup"
 msgstr "Ultimo backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:308
+#: ../../../modules/web/Controllers/ConfigManagerController.php:309
 msgid "No se encontraron backups"
 msgstr "Non sono stati trovati backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:320
+#: ../../../modules/web/Controllers/ConfigManagerController.php:321
 msgid "Última exportación"
 msgstr "Ultima esportazione"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:320
+#: ../../../modules/web/Controllers/ConfigManagerController.php:321
 msgid "No se encontró archivo de exportación"
 msgstr "Nessun file di esportazione trovato"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:361
+#: ../../../modules/web/Controllers/ConfigManagerController.php:362
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:63
 msgid "Información"
 msgstr "Informazioni"
 
-#: ../../../modules/web/Controllers/EventlogController.php:112
-#: ../../../modules/web/Controllers/EventlogController.php:115
+#: ../../../modules/web/Controllers/EventlogController.php:119
+#: ../../../modules/web/Controllers/EventlogController.php:122
 msgid "Registro de eventos vaciado"
 msgstr "Registro eventi vuoto"
 
 #: ../../../../lib/SP/Repositories/EventLog/EventlogRepository.php:53
+#, fuzzy
 msgid "Error al vaciar el registro de eventos"
 msgstr "Errore durante lo svuotamento del registro eventi"
 
@@ -1354,21 +1363,18 @@ msgid "Buscar"
 msgstr "Ricerca"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:290
 #: ../../../config/actions.xml:103
 msgid "Usuarios y Accesos"
 msgstr "Utenti e accesso"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:304
 #: ../../../config/actions.xml:43
 msgid "Elementos y Personalización"
 msgstr "Elementi e personalizzazione"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:88
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:318
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
 #: ../../../modules/web/themes/material-blue/views/eventlog/index.inc:1
-#: ../../../config/actions.xml:127
+#: ../../../config/actions.xml:133
 msgid "Registro de Eventos"
 msgstr "Registro degli eventi"
 
@@ -1447,13 +1453,13 @@ msgstr "Accounts Admin"
 msgid "Deshabilitado"
 msgstr "Disabilitato"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:233
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:234
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:236
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:237
 msgid "Ver Detalles de Usuario"
 msgstr "Vedi dettagli utente"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:250
-#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:251
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:253
+#: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:254
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:62
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:120
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:126
@@ -1993,6 +1999,7 @@ msgid "La clave maestra es utilizada para encriptar las claves de las cuentas de
 msgstr "La password master viene utilizzata per crittografare le chiavi degli account sysPass per mantenerle sicure."
 
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:154
+#, fuzzy
 msgid "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos."
 msgstr "Si consiglia di cambiarlo ogni tanto e utilizzare una chiave complessa che include numeri, lettere e simboli."
 
@@ -2029,15 +2036,15 @@ msgstr "Genera"
 msgid "No se encontraron registros"
 msgstr "Nessun dato trovato"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:100
 msgid "Fecha / Hora"
 msgstr "Data / ora"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:103
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:102
 msgid "Evento"
 msgstr "Evento"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
@@ -2061,7 +2068,7 @@ msgstr "Ultima pagina"
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:155
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:156
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:45
-#: ../../../config/actions.xml:199 ../../../config/actions.xml:445
+#: ../../../config/actions.xml:205 ../../../config/actions.xml:451
 msgid "Ver Archivo"
 msgstr "Vedi File"
 
@@ -2131,6 +2138,7 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Trascina qui il file o fai clic per selezionare"
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:103
+#, fuzzy
 msgid "Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV."
 msgstr "Permette di importare account, categorie e client da file XML e CSV."
 
@@ -2333,6 +2341,7 @@ msgstr "Disabiltata"
 
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:146
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:154
+#, fuzzy
 msgid "Dirección de correo de envío"
 msgstr "Indirizzo mail  di spedizione"
 
@@ -2488,6 +2497,7 @@ msgid "Gestión de categorías"
 msgstr "Gestione delle categorie"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:326
+#, fuzzy
 msgid "Gestión de clientes"
 msgstr "Gestione dei clienti"
 
@@ -2717,6 +2727,7 @@ msgid "URL de búsqueda Wiki"
 msgstr "URL di ricerca Wiki"
 
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:58
+#, fuzzy
 msgid "URL que utiliza la wiki para realizar una búsqueda de una página."
 msgstr "URL utilizzato dalla wiki per eseguire una ricerca su una pagina."
 
@@ -2737,6 +2748,7 @@ msgid "URL de página en Wiki"
 msgstr "URL della pagina in Wiki"
 
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:91
+#, fuzzy
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
 msgstr "URL utilizzato dal wiki per accedere ai dettagli di una pagina."
 
@@ -2825,6 +2837,7 @@ msgid "Usuario acceso BBDD"
 msgstr "Accesso utente BBDD"
 
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:84
+#, fuzzy
 msgid "Usuario con permisos de administrador de MySQL"
 msgstr "Utente con permessi di amministratore MySQL"
 
@@ -3036,19 +3049,19 @@ msgstr "DokuWiki abilitato"
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki disabilitato"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:167
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:166
 msgid "Buscar Evento"
 msgstr "Cerca evento"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:132
-#: ../../../config/actions.xml:319
+#: ../../../config/actions.xml:325
 msgid "Buscar Categoría"
 msgstr "Cerca categoria"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:135
-#: ../../../config/actions.xml:349
+#: ../../../config/actions.xml:355
 msgid "Buscar Cliente"
 msgstr "Cerca cliente"
 
@@ -3058,20 +3071,20 @@ msgstr "Campo di ricerca"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:140
-#: ../../../config/actions.xml:469
+#: ../../../config/actions.xml:475
 msgid "Buscar Archivo"
 msgstr "Cerca archivio"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:130
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:140
-#: ../../../config/actions.xml:487 ../../../config/actions.xml:787
+#: ../../../config/actions.xml:493 ../../../config/actions.xml:793
 msgid "Buscar Cuenta"
 msgstr "Cerca account"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:151
-#: ../../../config/actions.xml:589
+#: ../../../config/actions.xml:595
 msgid "Buscar Usuario"
 msgstr "Cerca utente"
 
@@ -3083,13 +3096,13 @@ msgstr "Importa utenti LDAP"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:133
-#: ../../../config/actions.xml:619
+#: ../../../config/actions.xml:625
 msgid "Buscar Grupo"
 msgstr "Cerca gruppo"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:131
-#: ../../../config/actions.xml:649
+#: ../../../config/actions.xml:655
 msgid "Buscar Perfil"
 msgstr "Cerca profilo"
 
@@ -3152,31 +3165,31 @@ msgstr "Tags"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:130
-#: ../../../config/actions.xml:517
+#: ../../../config/actions.xml:523
 msgid "Buscar Etiqueta"
 msgstr "Cerca per Tag"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:145
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:146
-#: ../../../modules/web/Controllers/TagController.php:98
+#: ../../../modules/web/Controllers/TagController.php:103
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:217
-#: ../../../config/actions.xml:493
+#: ../../../config/actions.xml:499
 msgid "Nueva Etiqueta"
 msgstr "Nuova Tag"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:163
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:164
-#: ../../../modules/web/Controllers/TagController.php:157
-#: ../../../config/actions.xml:505
+#: ../../../modules/web/Controllers/TagController.php:162
+#: ../../../config/actions.xml:511
 msgid "Editar Etiqueta"
 msgstr "Modifica Tag"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:180
 #: ../../../modules/web/Controllers/Helpers/Grid/TagGrid.php:181
-#: ../../../config/actions.xml:511
+#: ../../../config/actions.xml:517
 msgid "Eliminar Etiqueta"
 msgstr "Elimina Tag"
 
@@ -3198,7 +3211,7 @@ msgstr "Plugins"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:134
-#: ../../../config/actions.xml:535
+#: ../../../config/actions.xml:541
 msgid "Buscar Plugin"
 msgstr "Cerca plugin"
 
@@ -3206,7 +3219,7 @@ msgstr "Cerca plugin"
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:149
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:150
 #: ../../../modules/web/Controllers/PluginController.php:120
-#: ../../../config/actions.xml:529
+#: ../../../config/actions.xml:535
 msgid "Ver Plugin"
 msgstr "VediPlugin"
 
@@ -3242,13 +3255,13 @@ msgstr "Leggi"
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:65
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:105
 #: ../../../modules/web/themes/material-blue/views/notification/index.inc:1
-#: ../../../config/actions.xml:667
+#: ../../../config/actions.xml:673
 msgid "Notificaciones"
 msgstr "Notifiche"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:158
-#: ../../../config/actions.xml:829
+#: ../../../config/actions.xml:835
 msgid "Buscar Notificación"
 msgstr "Ricerca notifica"
 
@@ -3256,21 +3269,21 @@ msgstr "Ricerca notifica"
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:191
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:192
 #: ../../../modules/web/Controllers/NotificationController.php:103
-#: ../../../config/actions.xml:799
+#: ../../../config/actions.xml:805
 msgid "Ver Notificación"
 msgstr "Vedi notifica"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:221
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:222
-#: ../../../config/actions.xml:823
+#: ../../../config/actions.xml:829
 msgid "Marcar Notificación"
 msgstr "Segna notifica"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:256
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:257
-#: ../../../config/actions.xml:817
+#: ../../../config/actions.xml:823
 msgid "Eliminar Notificación"
 msgstr "Elimina notifica"
 
@@ -3291,19 +3304,19 @@ msgstr "Link eliminato"
 
 #: ../../../modules/api/Controllers/TagController.php:88
 #: ../../../modules/api/Controllers/TagController.php:92
-#: ../../../modules/web/Controllers/TagController.php:229
+#: ../../../modules/web/Controllers/TagController.php:234
 msgid "Etiqueta creada"
 msgstr "Tag aggiunta"
 
 #: ../../../modules/api/Controllers/TagController.php:116
 #: ../../../modules/api/Controllers/TagController.php:121
-#: ../../../modules/web/Controllers/TagController.php:260
+#: ../../../modules/web/Controllers/TagController.php:265
 msgid "Etiqueta actualizada"
 msgstr "Tag aggiornata"
 
 #: ../../../modules/api/Controllers/TagController.php:145
 #: ../../../modules/api/Controllers/TagController.php:149
-#: ../../../modules/web/Controllers/TagController.php:203
+#: ../../../modules/web/Controllers/TagController.php:208
 msgid "Etiqueta eliminada"
 msgstr "Tag rimossa"
 
@@ -3361,7 +3374,8 @@ msgid "Solicitud realizada"
 msgstr "Richiesta effettuata"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:421
+#: ../../../config/actions.xml:427
+#, fuzzy
 msgid "Ver Enlace Público"
 msgstr "Vedi Link pubblico"
 
@@ -3597,7 +3611,7 @@ msgstr "Errore durante la creazione del plug-in"
 
 #. (itstool) path: action/text
 #: ../../../../lib/SP/Plugin/PluginManager.php:245
-#: ../../../config/actions.xml:523
+#: ../../../config/actions.xml:529
 msgid "Nuevo Plugin"
 msgstr "Nuovo Plugin"
 
@@ -3714,7 +3728,7 @@ msgid "Error al obtener los datos del usuario"
 msgstr "Errore nell'ottenere dati utente"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:769
+#: ../../../config/actions.xml:775
 msgid "Sincronización LDAP"
 msgstr "LDAP sincronizzazione"
 
@@ -3815,7 +3829,7 @@ msgstr "Imposta preferito"
 #. (itstool) path: action/text
 #: ../../../config/strings.js.inc:75
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:137
-#: ../../../config/actions.xml:247
+#: ../../../config/actions.xml:253
 msgid "Eliminar Favorito"
 msgstr "Rimuovi preferito"
 
@@ -3919,7 +3933,7 @@ msgstr "Link pubblico"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:352
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:353
-#: ../../../config/actions.xml:415
+#: ../../../config/actions.xml:421
 msgid "Crear Enlace Público"
 msgstr "Crea un collegamento pubblico"
 
@@ -4087,6 +4101,7 @@ msgid "URL base de DokuWiki."
 msgstr "URL di base di DokuWiki."
 
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:235
+#, fuzzy
 msgid "Usuario para conectar a la API de DokuWiki."
 msgstr "Utente per connettersi all'API DokuWiki."
 
@@ -4099,7 +4114,7 @@ msgstr "Spazio dei nomi"
 msgid "Namespace utilizado para buscar las páginas."
 msgstr "Spazio dei nomi utilizzato per cercare nelle pagine."
 
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:102
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:101
 msgid "Nivel"
 msgstr "Livello"
 
@@ -4221,7 +4236,7 @@ msgstr "Questo codice può essere trovato nel file di configurazione sysPass con
 
 #. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:2
-#: ../../../config/actions.xml:271
+#: ../../../config/actions.xml:277
 msgid "Ver Wiki"
 msgstr "Vedi Wiki"
 
@@ -4234,18 +4249,11 @@ msgstr "Cerca risultati per '%s'"
 msgid "Página"
 msgstr "Pagina"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:357
+#: ../../../modules/web/Controllers/ConfigManagerController.php:358
 msgid "No instalado"
 msgstr "Non installato"
 
-#: ../../../../lib/SP/Api/SyspassApi.php:86
-#: ../../../../lib/SP/Api/SyspassApi.php:191
-#: ../../../../lib/SP/Api/SyspassApi.php:229
-#: ../../../../lib/SP/Api/SyspassApi.php:282
-#: ../../../../lib/SP/Api/SyspassApi.php:318
-#: ../../../../lib/SP/Api/SyspassApi.php:371
-#: ../../../../lib/SP/Api/SyspassApi.php:407
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApiBase.php:218
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:102
 msgid "Origen"
 msgstr "Sorgente"
 
@@ -4359,7 +4367,7 @@ msgstr "Utenti importati"
 msgid "Solicitud"
 msgstr "Richiesta"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:292
+#: ../../../../lib/SP/Core/Acl/Acl.php:294
 msgid "Acceso denegado"
 msgstr "Accesso negato"
 
@@ -4393,8 +4401,8 @@ msgstr "Profili eliminati"
 msgid "Clientes eliminados"
 msgstr "Clienti eliminati"
 
-#: ../../../modules/web/Controllers/CategoryController.php:201
-#: ../../../modules/web/Controllers/CategoryController.php:204
+#: ../../../modules/web/Controllers/CategoryController.php:206
+#: ../../../modules/web/Controllers/CategoryController.php:209
 msgid "Categorías eliminadas"
 msgstr "Categorie eliminate"
 
@@ -4413,7 +4421,7 @@ msgstr "Campi eliminati"
 msgid "Enlaces eliminados"
 msgstr "Collegamenti cancellati"
 
-#: ../../../modules/web/Controllers/TagController.php:195
+#: ../../../modules/web/Controllers/TagController.php:200
 msgid "Etiquetas eliminadas"
 msgstr "Tags eliminate"
 
@@ -4653,7 +4661,7 @@ msgstr "Impossibile aggiornare l'hash della password principale"
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:239
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:240
 #: ../../../modules/web/Controllers/NotificationController.php:210
-#: ../../../config/actions.xml:811
+#: ../../../config/actions.xml:817
 msgid "Editar Notificación"
 msgstr "Modifica notifica"
 
@@ -4795,7 +4803,7 @@ msgstr "Numero massimo di tentativi superati"
 msgid "Clave del token"
 msgstr "Token's Password"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:137
+#: ../../../../lib/SP/Services/Track/TrackService.php:162
 msgid "Intentos excedidos (%d/%d)"
 msgstr "Numero massimo di tentativi superati (%d/%d)"
 
@@ -4814,28 +4822,29 @@ msgstr "Indirizzo IP non valido"
 msgid "Token no encontrado"
 msgstr "Token non trovato"
 
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:63
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:68
 msgid "Error al crear track"
 msgstr "Errore durante la creazione della traccia"
 
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:80
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:85
 msgid "Error al eliminar track"
 msgstr "Errore durante l'eliminazione della traccia"
 
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:109
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:102
 msgid "Error al actualizar track"
 msgstr "Errore durante l'aggiornamento della traccia"
 
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:108
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:146
 msgid "Error al obtener track"
 msgstr "Errore nell'ottenere traccia"
 
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:131
-#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:163
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:169
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:202
 msgid "Error al obtener tracks"
 msgstr "Errore durante il recupero delle tracce"
 
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:182
+#, fuzzy
 msgid "Los elementos exportados son cuentas, clientes, categorías y etiquetas."
 msgstr "Gli articoli esportati sono account, clienti, categorie e tag."
 
@@ -5105,7 +5114,7 @@ msgid "Error al eliminar tokens"
 msgstr "Error while removing the tokens"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:751
+#: ../../../config/actions.xml:757
 msgid "Exportación"
 msgstr "Export"
 
@@ -5226,7 +5235,7 @@ msgstr "Error while removing the links"
 msgid "No es posible crear archivo de bloqueo"
 msgstr "Unable to create the lock file"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:138
+#: ../../../../lib/SP/Services/Track/TrackService.php:163
 msgid "Segundos"
 msgstr "Seconds"
 
@@ -5477,7 +5486,7 @@ msgstr "View Field"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:332
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:333
-#: ../../../config/actions.xml:433
+#: ../../../config/actions.xml:439
 msgid "Actualizar Enlace Público"
 msgstr "Update Public Link"
 
@@ -5492,6 +5501,8 @@ msgstr "Unavailable"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:182
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:183
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:159
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:160
 msgid "Refrescar"
 msgstr "Refresh"
 
@@ -5516,8 +5527,8 @@ msgid "Notificaciones no disponibles"
 msgstr "Notifications not available"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/TagController.php:283
-#: ../../../config/actions.xml:499
+#: ../../../modules/web/Controllers/TagController.php:288
+#: ../../../config/actions.xml:505
 msgid "Ver Etiqueta"
 msgstr "View Tag"
 
@@ -5656,7 +5667,7 @@ msgstr "Custom field not found"
 #: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:212
 #: ../../../../lib/SP/Services/Plugin/PluginService.php:137
 msgid "Error al eliminar los plugins"
-msgstr "Error while deleting plugins"
+msgstr "Error while deleting the plugins"
 
 #: ../../../../lib/SP/Services/Account/AccountService.php:219
 msgid "Clave maestra no establecida"
@@ -5686,7 +5697,7 @@ msgstr "Error while creating 'admin' user"
 
 #: ../../../../lib/SP/Services/Install/MySQL.php:309
 msgid "Error al seleccionar la BBDD '%s' (%s)"
-msgstr "Error while selecting database '%s' (%s)"
+msgstr "Error while selecting '%s' database (%s)"
 
 #: ../../../../lib/SP/Services/Mail/MailService.php:190
 msgid "Servicio de correo no disponible"
@@ -5702,8 +5713,9 @@ msgstr "Error while retrieving master pass from context"
 msgid "Error ol establecer la clave maestra en el contexto"
 msgstr "Error while setting master password in context"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:86
-#: ../../../../lib/SP/Services/Track/TrackService.php:103
+#: ../../../../lib/SP/Services/Track/TrackService.php:87
+#: ../../../../lib/SP/Services/Track/TrackService.php:101
+#: ../../../../lib/SP/Services/Track/TrackService.php:128
 msgid "Track no encontrado"
 msgstr "Track not found"
 
@@ -5884,47 +5896,47 @@ msgid "Gestión Plugins"
 msgstr "Plugins Management"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:133
+#: ../../../config/actions.xml:139
 msgid "Buscar Eventos"
 msgstr "Search for Events"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:139
+#: ../../../config/actions.xml:145
 msgid "Limpiar Eventos"
 msgstr "Clear Events"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:223
+#: ../../../config/actions.xml:229
 msgid "Buscar Archivos"
 msgstr "Search for Files"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:229
+#: ../../../config/actions.xml:235
 msgid "Listar Archivos"
 msgstr "List Files"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:235
+#: ../../../config/actions.xml:241
 msgid "Ver Favoritos"
 msgstr "Show Favorites"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:241
+#: ../../../config/actions.xml:247
 msgid "Añadir Favorito"
 msgstr "Mark as Favorite"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:277
+#: ../../../config/actions.xml:283
 msgid "Añadir Wiki"
 msgstr "Add Wiki"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:283
+#: ../../../config/actions.xml:289
 msgid "Editar Wiki"
 msgstr "Edit Wiki"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:289
+#: ../../../config/actions.xml:295
 msgid "Eliminar Wiki"
 msgstr "Delete Wiki"
 
@@ -5934,162 +5946,162 @@ msgid "Nuevo CLiente"
 msgstr "New Client"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:355
+#: ../../../config/actions.xml:361
 msgid "Nuevo Token API"
 msgstr "New API Token"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:361
+#: ../../../config/actions.xml:367
 msgid "Ver Token API"
 msgstr "View API Token"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:367
+#: ../../../config/actions.xml:373
 msgid "Editar Token API"
 msgstr "Edit API Token"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:373
+#: ../../../config/actions.xml:379
 msgid "Eliminar Token API"
 msgstr "Delete API Token"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:379
+#: ../../../config/actions.xml:385
 msgid "Buscar Token API"
 msgstr "Search for API Token"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:385
+#: ../../../config/actions.xml:391
 msgid "Nuevo Campo Personalizado"
 msgstr "New Custom Field"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:391
+#: ../../../config/actions.xml:397
 msgid "Ver Campo Personalizado"
 msgstr "Show Custom Field"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:397
+#: ../../../config/actions.xml:403
 msgid "Editar Campo Personalizado"
 msgstr "Edit Custom Field"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:403
+#: ../../../config/actions.xml:409
 msgid "Eliminar Campo Personalizado"
 msgstr "Delete Custom Field"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:409
+#: ../../../config/actions.xml:415
 msgid "Buscar Campo Personalizado"
 msgstr "Search for Custom Field"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:427
+#: ../../../config/actions.xml:433
 msgid "Eliminar Enlace Público"
 msgstr "Delete Public Link"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:439
+#: ../../../config/actions.xml:445
 msgid "Buscar Enlace Público"
 msgstr "Search for Public Link"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:541
+#: ../../../config/actions.xml:547
 msgid "Habilitar Plugin"
 msgstr "Enable Plugin"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:547
+#: ../../../config/actions.xml:553
 msgid "Deshabilitar Plugin"
 msgstr "Disable Plugin"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:553
+#: ../../../config/actions.xml:559
 msgid "Restablecer Plugin"
 msgstr "Reset Plugin"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:583
+#: ../../../config/actions.xml:589
 msgid "Editar Clave Usuario"
 msgstr "Edit User Password"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:655
+#: ../../../config/actions.xml:661
 msgid "Configuración Usuario"
 msgstr "User Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:661
+#: ../../../config/actions.xml:667
 msgid "Preferencias General"
 msgstr "General Preferences"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:685
+#: ../../../config/actions.xml:691
 msgid "Configuración Cuentas"
 msgstr "Accounts Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:691
+#: ../../../config/actions.xml:697
 msgid "Configuración Wiki"
 msgstr "Wiki Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:697
+#: ../../../config/actions.xml:703
 msgid "Configuración Encriptación"
 msgstr "Encryption Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:703
+#: ../../../config/actions.xml:709
 msgid "Actualizar Hash"
 msgstr "Update Hash"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:709
+#: ../../../config/actions.xml:715
 msgid "Clave Maestra Temporal"
 msgstr "Temporary Master Password"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:715
+#: ../../../config/actions.xml:721
 msgid "Configuración Copia de Seguridad"
 msgstr "Backup Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:727
+#: ../../../config/actions.xml:733
 msgid "Configuración Importación"
 msgstr "Import Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:733
+#: ../../../config/actions.xml:739
 msgid "Importar CSV"
 msgstr "CSV Import"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:739
+#: ../../../config/actions.xml:745
 msgid "Importar XML"
 msgstr "XML Import"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:745
+#: ../../../config/actions.xml:751
 msgid "Configuración Exportación"
 msgstr "Export Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:757
+#: ../../../config/actions.xml:763
 msgid "Configuración Email"
 msgstr "Email Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:763
+#: ../../../config/actions.xml:769
 msgid "Configuración LDAP"
 msgstr "LDAP Configuration"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:775
+#: ../../../config/actions.xml:781
 msgid "Gestión de Cuenta (H)"
 msgstr "Account Management (H)"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:805
+#: ../../../config/actions.xml:811
 msgid "Crear Notificación"
 msgstr "Create Notification"
 
@@ -6097,8 +6109,8 @@ msgstr "Create Notification"
 msgid "Si está importando un archivo exportado desde el mismo origen, los datos pueden estar comprometidos."
 msgstr "If you are importing an exported file from the same origin, the data could be compromised."
 
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:151
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:153
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:152
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:154
 msgid "El archivo de actualización no contiene datos"
 msgstr "The update file does not contain data"
 
@@ -6298,7 +6310,7 @@ msgstr "Value not found"
 msgid "Error al eliminar los valores"
 msgstr "Error while deleting the values"
 
-#: ../../../../lib/SP/Services/Track/TrackService.php:183
+#: ../../../../lib/SP/Services/Track/TrackService.php:208
 msgid "Dirección IP no establecida"
 msgstr "IP address not set"
 
@@ -6308,7 +6320,7 @@ msgstr "Preset Values"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:145
-#: ../../../config/actions.xml:841
+#: ../../../config/actions.xml:847
 msgid "Buscar Valor"
 msgstr "Search for Value"
 
@@ -6352,26 +6364,26 @@ msgstr "New Account Password Preset"
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:256
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:257
 #: ../../../modules/web/Controllers/ItemPresetController.php:225
-#: ../../../config/actions.xml:859
+#: ../../../config/actions.xml:865
 msgid "Editar Valor"
 msgstr "Edit Value"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:273
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:274
-#: ../../../config/actions.xml:865
+#: ../../../config/actions.xml:871
 msgid "Eliminar Valor"
 msgstr "Delete Value"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ItemPresetController.php:70
-#: ../../../config/actions.xml:847
+#: ../../../config/actions.xml:853
 msgid "Ver Valor"
 msgstr "Display Value"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ItemPresetController.php:195
-#: ../../../config/actions.xml:853
+#: ../../../config/actions.xml:859
 msgid "Nuevo Valor"
 msgstr "New Value"
 
@@ -6465,7 +6477,57 @@ msgid "Gestión de Valores por Defecto"
 msgstr "Default Values Management"
 
 #. (itstool) path: action/text
-#: ../../../config/actions.xml:835
+#: ../../../config/actions.xml:841
 msgid "Gestión Valores Predeterminados"
 msgstr "Preset Values Management"
+
+#: ../../../../lib/SP/Repositories/Track/TrackRepository.php:118
+msgid "Error al vaciar tracks"
+msgstr "Error while clearing tracks out"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:88
+msgid "Tracks"
+msgstr "Tracks"
+
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:101
+msgid "Fecha Desbloqueo"
+msgstr "Date Unlocked"
+
+#. (itstool) path: action/text
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:143
+#: ../../../config/actions.xml:883
+msgid "Buscar Track"
+msgstr "Search for track"
+
+#: ../../../modules/web/Controllers/TrackController.php:110
+msgid "Track desbloqueado"
+msgstr "Track unlocked"
+
+#: ../../../modules/web/Controllers/TrackController.php:135
+msgid "Tracks limpiados"
+msgstr "Tracks cleared out"
+
+#: ../../../config/strings.js.inc:96
+msgid "Vaciar los tracks?"
+msgstr "Clear tracks out?"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:109
+msgid "Seguridad y Auditoría"
+msgstr "Security and Audit"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:877
+msgid "Gestión de Tracks"
+msgstr "Tracks Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:889
+msgid "Desbloquear track"
+msgstr "Unlock track"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:895
+msgid "Vaciar tracks"
+msgstr "Clear tracks out"
 

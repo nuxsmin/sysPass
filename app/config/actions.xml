@@ -104,6 +104,12 @@
         <route>accessManager/index</route>
     </action>
     <action multiple="1">
+        <id>5003</id>
+        <name>SECURITY_MANAGE</name>
+        <text>Seguridad y Auditoría</text>
+        <route>securityManager/index</route>
+    </action>
+    <action multiple="1">
         <id>701</id>
         <name>USER</name>
         <text>Gestión Usuarios</text>
@@ -864,5 +870,29 @@
         <name>ITEMPRESET_DELETE</name>
         <text>Eliminar Valor</text>
         <route>itemPreset/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1901</id>
+        <name>TRACK</name>
+        <text>Gestión de Tracks</text>
+        <route>track/index</route>
+    </action>
+    <action multiple="1">
+        <id>1902</id>
+        <name>TRACK_SEARCH</name>
+        <text>Buscar Track</text>
+        <route>track/search</route>
+    </action>
+    <action multiple="1">
+        <id>1903</id>
+        <name>TRACK_UNLOCK</name>
+        <text>Desbloquear track</text>
+        <route>track/unlock</route>
+    </action>
+    <action multiple="1">
+        <id>1904</id>
+        <name>TRACK_CLEAR</name>
+        <text>Vaciar tracks</text>
+        <route>track/clear</route>
     </action>
 </actions>

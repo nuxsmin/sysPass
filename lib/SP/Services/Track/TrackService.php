@@ -26,6 +26,7 @@ namespace SP\Services\Track;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
 use SP\Http\Request;
 use SP\Repositories\NoSuchItemException;
@@ -74,7 +75,7 @@ final class TrackService extends Service
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      *
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -85,6 +86,30 @@ final class TrackService extends Service
         if ($this->trackRepository->delete($id) === 0) {
             throw new NoSuchItemException(__u('Track no encontrado'));
         }
+    }
+
+    /**
+     * @param $id int
+     *
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws NoSuchItemException
+     */
+    public function unlock($id)
+    {
+        if ($this->trackRepository->unlock($id) === 0) {
+            throw new NoSuchItemException(__u('Track no encontrado'));
+        }
+    }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function clear()
+    {
+        return $this->trackRepository->clear();
     }
 
     /**
@@ -191,6 +216,18 @@ final class TrackService extends Service
         );
 
         return $result;
+    }
+
+    /**
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        return $this->trackRepository->search($itemSearchData);
     }
 
     /**

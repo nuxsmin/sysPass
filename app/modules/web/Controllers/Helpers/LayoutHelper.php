@@ -287,7 +287,7 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
             $actionAccessManager = new DataGridAction();
             $actionAccessManager->setId(ActionsInterface::ACCESS_MANAGE);
-            $actionAccessManager->setTitle(__('Usuarios y Accesos'));
+            $actionAccessManager->setTitle(Acl::getActionInfo(ActionsInterface::ACCESS_MANAGE));
             $actionAccessManager->setIcon($icons->getIconAccount());
             $actionAccessManager->setData([
                 'historyReset' => 0,
@@ -301,7 +301,7 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
             $actionItemManager = new DataGridAction();
             $actionItemManager->setId(ActionsInterface::ITEMS_MANAGE);
-            $actionItemManager->setTitle(__('Elementos y Personalización'));
+            $actionItemManager->setTitle(Acl::getActionInfo(ActionsInterface::ITEMS_MANAGE));
             $actionItemManager->setIcon($icons->getIconGroup());
             $actionItemManager->setData([
                 'historyReset' => 0,
@@ -312,18 +312,18 @@ final class LayoutHelper extends HelperBase
             $actions[] = $actionItemManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::EVENTLOG) && $this->configData->isLogEnabled()) {
-            $actionEventlog = new DataGridAction();
-            $actionEventlog->setId(ActionsInterface::EVENTLOG);
-            $actionEventlog->setTitle(__('Registro de Eventos'));
-            $actionEventlog->setIcon($icons->getIconHeadline());
-            $actionEventlog->setData([
-                'historyReset' => 1,
-                'view' => 'eventlog',
-                'route' => Acl::getActionRoute(ActionsInterface::EVENTLOG)
+        if ($acl->checkUserAccess(ActionsInterface::SECURITY_MANAGE)) {
+            $actionSecurityManager = new DataGridAction();
+            $actionSecurityManager->setId(ActionsInterface::SECURITY_MANAGE);
+            $actionSecurityManager->setTitle(Acl::getActionInfo(ActionsInterface::SECURITY_MANAGE));
+            $actionSecurityManager->setIcon($icons->getIconByName('security'));
+            $actionSecurityManager->setData([
+                'historyReset' => 0,
+                'view' => 'datatabs',
+                'route' => Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE)
             ]);
 
-            $actions[] = $actionEventlog;
+            $actions[] = $actionSecurityManager;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::PLUGIN)) {

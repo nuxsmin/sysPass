@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Html\DataGrid\DataGridAction;
@@ -34,14 +33,15 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Http\Address;
 use SP\Storage\Database\QueryResult;
 
 /**
- * Class CategoryGrid
+ * Class TrackGrid
  *
  * @package SP\Modules\Web\Controllers\Helpers\Grid
  */
-final class CategoryGrid extends GridBase
+final class TrackGrid extends GridBase
 {
     /**
      * @var QueryResult
@@ -64,10 +64,9 @@ final class CategoryGrid extends GridBase
         $grid->setDataActions($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->setDataActions($this->getCreateAction());
-        $grid->setDataActions($this->getEditAction());
-        $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
+        $grid->setDataActions($this->getRefrestAction());
+        $grid->setDataActions($this->getClearAction());
+        $grid->setDataActions($this->getUnlockAction());
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -81,12 +80,12 @@ final class CategoryGrid extends GridBase
     {
         // Grid
         $gridTab = new DataGridTab($this->view->getTheme());
-        $gridTab->setId('tblCategories');
+        $gridTab->setId('tblTracks');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Categorías'));
+        $gridTab->setTitle(__('Tracks'));
 
         return $gridTab;
     }
@@ -98,8 +97,12 @@ final class CategoryGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Descripción'));
+        $gridHeader->addHeader(__('Fecha'));
+        $gridHeader->addHeader(__('Fecha Desbloqueo'));
+        $gridHeader->addHeader(__('Origen'));
+        $gridHeader->addHeader('IPv4');
+        $gridHeader->addHeader('IPv6');
+        $gridHeader->addHeader(__('Usuario'));
 
         return $gridHeader;
     }
@@ -112,8 +115,16 @@ final class CategoryGrid extends GridBase
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
-        $gridData->addDataRowSource('name');
-        $gridData->addDataRowSource('description');
+        $gridData->addDataRowSource('dateTime');
+        $gridData->addDataRowSource('dateTimeUnlock');
+        $gridData->addDataRowSource('source');
+        $gridData->addDataRowSource('ipv4', null, function ($value) {
+            return $value !== null ? Address::fromBinary($value) : '';
+        });
+        $gridData->addDataRowSource('ipv6', null, function ($value) {
+            return $value !== null ? Address::fromBinary($value) : '';
+        });
+        $gridData->addDataRowSource('userId');
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -126,12 +137,12 @@ final class CategoryGrid extends GridBase
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::CATEGORY_SEARCH);
+        $gridActionSearch->setId(ActionsInterface::TRACK_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
-        $gridActionSearch->setName('frmSearchCategory');
-        $gridActionSearch->setTitle(__('Buscar Categoría'));
+        $gridActionSearch->setName('frmSearchTrack');
+        $gridActionSearch->setTitle(__('Buscar Track'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH));
+        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
 
         return $gridActionSearch;
     }
@@ -139,17 +150,17 @@ final class CategoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAction()
+    private function getRefrestAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_CREATE);
+        $gridAction->setId(ActionsInterface::TRACK_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nueva Categoría'));
-        $gridAction->setTitle(__('Nueva Categoría'));
-        $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
-        $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
+        $gridAction->setName(__('Refrescar'));
+        $gridAction->setTitle(__('Refrescar'));
+        $gridAction->setIcon($this->icons->getIconRefresh());
+        $gridAction->setOnClickFunction('appMgmt/search');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
 
         return $gridAction;
     }
@@ -157,33 +168,35 @@ final class CategoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEditAction()
+    private function getClearAction()
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_EDIT);
+        $gridAction->setId(ActionsInterface::TRACK_CLEAR);
+        $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setSkip(true);
+        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
+        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_CLEAR));
+        $gridAction->setIcon($this->icons->getIconClear());
+        $gridAction->setOnClickFunction('track/clear');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_CLEAR));
+
+        return $gridAction;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    private function getUnlockAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::TRACK_UNLOCK);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Categoría'));
-        $gridAction->setTitle(__('Editar Categoría'));
-        $gridAction->setIcon($this->icons->getIconEdit());
-        $gridAction->setOnClickFunction('appMgmt/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT));
-
-        return $gridAction;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    private function getDeleteAction()
-    {
-        $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CATEGORY_DELETE);
-        $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Categoría'));
-        $gridAction->setTitle(__('Eliminar Categoría'));
-        $gridAction->setIcon($this->icons->getIconDelete());
-        $gridAction->setOnClickFunction('appMgmt/delete');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE));
+        $gridAction->setName(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
+        $gridAction->setTitle(Acl::getActionInfo(ActionsInterface::TRACK_UNLOCK));
+        $gridAction->setIcon($this->icons->getIconCheck());
+        $gridAction->setOnClickFunction('track/unlock');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_UNLOCK));
+        $gridAction->setFilterRowSource('tracked', 0);
 
         return $gridAction;
     }

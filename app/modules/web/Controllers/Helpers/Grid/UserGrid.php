@@ -62,7 +62,7 @@ final class UserGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($this->getSearchAction());
+        $grid->setDataActions($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
         $grid->setDataActions($this->getCreateAction());
@@ -225,6 +225,9 @@ final class UserGrid extends GridBase
         return $gridAction;
     }
 
+    /**
+     * @return DataGridAction
+     */
     private function getViewAction()
     {
         $gridAction = new DataGridAction();

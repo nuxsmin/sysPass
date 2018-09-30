@@ -58,7 +58,7 @@
                                 data-action-route="user/editPass"
                                 data-item-id="<?php echo $context_userId; ?>"
                                 data-sk="<?php echo $sk; ?>">
-                                <i class="material-icons">security</i>
+                                <i class="material-icons">lock</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
                             </li>
                         <?php endif; ?>

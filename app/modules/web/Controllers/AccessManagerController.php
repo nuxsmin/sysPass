@@ -40,7 +40,7 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 
 /**
- * Class AccessMgmtController
+ * Class AccessManagerController
  *
  * @package SP\Modules\Web\Controllers
  */
@@ -56,6 +56,8 @@ final class AccessManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -67,6 +69,8 @@ final class AccessManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -108,12 +112,13 @@ final class AccessManagerController extends ControllerBase
      * Returns users' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getUsersList()
     {
-
         return $this->dic->get(UserGrid::class)
             ->getGrid($this->dic->get(UserService::class)->search($this->itemSearchData))
             ->updatePager();
@@ -123,6 +128,8 @@ final class AccessManagerController extends ControllerBase
      * Returns users group data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -137,6 +144,8 @@ final class AccessManagerController extends ControllerBase
      * Returns users profile data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -151,6 +160,8 @@ final class AccessManagerController extends ControllerBase
      * Returns API tokens data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -165,6 +176,8 @@ final class AccessManagerController extends ControllerBase
      * Returns public links data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

@@ -40,83 +40,83 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var callable
      */
-    protected $_runtimeFilter;
+    protected $runtimeFilter;
     /**
      * El nombre de la acción
      *
      * @var string
      */
-    protected $_name = '';
+    protected $name = '';
     /**
      * El título de la acción
      *
      * @var string
      */
-    protected $_title = '';
+    protected $title = '';
     /**
      * El id de la acción
      *
      * @var int
      */
-    protected $_id = 0;
+    protected $id = 0;
     /**
      * La función javascript del evento OnClick
      *
      * @var string
      */
-    protected $_onClickFunction = '';
+    protected $onClickFunction = '';
     /**
      * Los argumentos de la función OnClick
      *
      * @var array
      */
-    protected $_onClickArgs = [];
+    protected $onClickArgs = [];
     /**
      * El icono de la acción
      *
      * @var IconInterface
      */
-    protected $_icon;
+    protected $icon;
     /**
      * Si se debe de omitir para los elementos del listado
      *
      * @var bool
      */
-    protected $_isSkip = false;
+    protected $isSkip = false;
     /**
      * La columna de origen de datos que condiciona esta acción
      *
      * @var string
      */
-    protected $_filterRowSource;
+    protected $filterRowSource;
     /**
      * Si es una acción de ayuda
      *
      * @var bool
      */
-    protected $_isHelper;
+    protected $isHelper;
     /**
      * El tipo de acción
      *
      * @var int
      */
-    protected $_type = 0;
+    protected $type = 0;
     /**
      * Atributos de datos adicionales
      *
      * @var array
      */
-    protected $_data = [];
+    protected $data = [];
     /**
      * Atributos adicionales
      *
      * @var array
      */
-    protected $_attributes = [];
+    protected $attributes = [];
     /**
      * @var array
      */
-    protected $_classes = [];
+    protected $classes = [];
 
     /**
      * DataGridActionBase constructor.
@@ -125,7 +125,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function __construct($id = null)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
     /**
@@ -135,7 +135,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getRuntimeFilter()
     {
-        return $this->_runtimeFilter;
+        return $this->runtimeFilter;
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function setRuntimeFilter($class, $method)
     {
         if (method_exists($class, $method)) {
-            $this->_runtimeFilter = function ($filter) use ($method) {
+            $this->runtimeFilter = function ($filter) use ($method) {
 //                new \ReflectionMethod($class, $method);
                 return $filter->{$method}();
             };
@@ -166,7 +166,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
 
         return $this;
     }
@@ -186,7 +186,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -196,7 +196,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
 
         return $this;
     }
@@ -206,7 +206,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getTitle()
     {
-        return $this->_title;
+        return $this->title;
     }
 
     /**
@@ -216,7 +216,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setTitle($title)
     {
-        $this->_title = $title;
+        $this->title = $title;
 
         return $this;
     }
@@ -228,7 +228,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setOnClickFunction($function)
     {
-        $this->_onClickFunction = $function;
+        $this->onClickFunction = $function;
 
         return $this;
     }
@@ -240,7 +240,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setOnClickArgs($args)
     {
-        $this->_onClickArgs[] = $args;
+        $this->onClickArgs[] = $args;
 
         return $this;
     }
@@ -252,11 +252,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
     {
         $args = [];
 
-        foreach ($this->_onClickArgs as $arg) {
+        foreach ($this->onClickArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;
         }
 
-        return count($args) > 0 ? $this->_onClickFunction . '(' . implode(',', $args) . ')' : $this->_onClickFunction;
+        return count($args) > 0 ? $this->onClickFunction . '(' . implode(',', $args) . ')' : $this->onClickFunction;
     }
 
     /**
@@ -264,7 +264,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getIcon()
     {
-        return $this->_icon;
+        return $this->icon;
     }
 
     /**
@@ -274,7 +274,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setIcon($icon)
     {
-        $this->_icon = $icon;
+        $this->icon = $icon;
 
         return $this;
     }
@@ -286,7 +286,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setSkip($skip)
     {
-        $this->_isSkip = $skip;
+        $this->isSkip = $skip;
 
         return $this;
     }
@@ -296,7 +296,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function isSkip()
     {
-        return $this->_isSkip;
+        return $this->isSkip;
     }
 
     /**
@@ -304,7 +304,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function isHelper()
     {
-        return $this->_isHelper;
+        return $this->isHelper;
     }
 
     /**
@@ -314,7 +314,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setIsHelper($helper)
     {
-        $this->_isHelper = $helper;
+        $this->isHelper = $helper;
 
         return $this;
     }
@@ -324,7 +324,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getFilterRowSource()
     {
-        return $this->_filterRowSource;
+        return $this->filterRowSource;
     }
 
     /**
@@ -337,7 +337,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setFilterRowSource($rowSource, $value = 1)
     {
-        $this->_filterRowSource[] = ['field' => $rowSource, 'value' => $value];
+        $this->filterRowSource[] = ['field' => $rowSource, 'value' => $value];
 
         return $this;
     }
@@ -347,7 +347,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getType()
     {
-        return $this->_type;
+        return $this->type;
     }
 
     /**
@@ -357,7 +357,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setType($type)
     {
-        $this->_type = $type;
+        $this->type = $type;
 
         return $this;
     }
@@ -367,7 +367,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getData()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -377,7 +377,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setData(array $data)
     {
-        $this->_data = $data;
+        $this->data = $data;
 
         return $this;
     }
@@ -392,7 +392,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function addData($name, $data)
     {
-        $this->_data[$name] = $data;
+        $this->data[$name] = $data;
 
         return $this;
     }
@@ -402,7 +402,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getAttributes()
     {
-        return $this->_attributes;
+        return $this->attributes;
     }
 
     /**
@@ -414,7 +414,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setAttributes(array $attributes)
     {
-        $this->_attributes = $attributes;
+        $this->attributes = $attributes;
 
         return $this;
     }
@@ -429,7 +429,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function addAttribute($name, $value)
     {
-        $this->_attributes[$name] = $value;
+        $this->attributes[$name] = $value;
 
         return $this;
     }
@@ -441,7 +441,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getClassesAsString()
     {
-        return implode(' ', $this->_classes);
+        return implode(' ', $this->classes);
     }
 
     /**
@@ -451,7 +451,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getClasses()
     {
-        return $this->_classes;
+        return $this->classes;
     }
 
     /**
@@ -461,7 +461,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setClasses(array $classes)
     {
-        $this->_classes = $classes;
+        $this->classes = $classes;
     }
 
     /**
@@ -473,7 +473,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function addClass($value)
     {
-        $this->_classes[] = $value;
+        $this->classes[] = $value;
 
         return $this;
     }

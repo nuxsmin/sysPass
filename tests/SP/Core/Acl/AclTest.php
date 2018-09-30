@@ -267,7 +267,13 @@ class AclTest extends TestCase
             [1405, 'notification/edit'],
             [1406, 'notification/delete'],
             [1407, 'notification/check'],
-            [1402, 'notification/search']
+            [1402, 'notification/search'],
+            [1801, 'itemPreset/index'],
+            [1802, 'itemPreset/search'],
+            [1803, 'itemPreset/view'],
+            [1804, 'itemPreset/create'],
+            [1805, 'itemPreset/edit'],
+            [1806, 'itemPreset/delete']
         ];
     }
 
@@ -426,6 +432,11 @@ class AclTest extends TestCase
             ActionsInterface::CONFIG,
             ActionsInterface::CONFIG_GENERAL,
             ActionsInterface::PLUGIN,
+            ActionsInterface::PLUGIN_SEARCH,
+            ActionsInterface::PLUGIN_DISABLE,
+            ActionsInterface::PLUGIN_ENABLE,
+            ActionsInterface::PLUGIN_RESET,
+            ActionsInterface::PLUGIN_VIEW,
             ActionsInterface::CONFIG_ACCOUNT,
             ActionsInterface::CONFIG_WIKI,
             ActionsInterface::CONFIG_LDAP,

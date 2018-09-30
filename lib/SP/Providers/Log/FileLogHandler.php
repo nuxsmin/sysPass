@@ -42,10 +42,6 @@ final class FileLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
-        'database.'
-    ];
-
     const MESSAGE_FORMAT = '%s;%s';
 
     /**
@@ -64,7 +60,7 @@ final class FileLogHandler extends Provider implements EventReceiver
      */
     public function getEvents()
     {
-        return self::EVENTS;
+        return LogInterface::EVENTS;
     }
 
     /**
@@ -122,6 +118,6 @@ final class FileLogHandler extends Provider implements EventReceiver
     protected function initialize(Container $dic)
     {
         $this->language = $dic->get(Language::class);
-        $this->events = $this->parseEventsToRegex(self::EVENTS);
+        $this->events = $this->parseEventsToRegex(LogInterface::EVENTS);
     }
 }

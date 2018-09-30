@@ -24,9 +24,14 @@
 
 namespace SP\Repositories\Track;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
 use SP\Repositories\Repository;
+use SP\Services\Track\TrackService;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class TrackRepository
@@ -80,6 +85,39 @@ final class TrackRepository extends Repository
         $queryData->setOnErrorMessage(__u('Error al eliminar track'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
+     * @param $id int
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function unlock($id)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Track SET timeUnlock = UNIX_TIMESTAMP() WHERE id = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar track'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
+     * Clears tracks
+     *
+     * @return bool con el resultado
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function clear()
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('TRUNCATE TABLE Track');
+        $queryData->setOnErrorMessage(__u('Error al vaciar tracks'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
     }
 
     /**
@@ -149,7 +187,8 @@ final class TrackRepository extends Repository
             FROM Track 
             WHERE `time` >= ? 
             AND (ipv4 = ? OR ipv6 = ?) 
-            AND `source` = ?';
+            AND `source` = ?
+            AND timeUnlock IS NULL';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(TrackData::class);
@@ -163,5 +202,48 @@ final class TrackRepository extends Repository
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
         return $this->db->doSelect($queryData);
+    }
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        $queryData = new QueryData();
+        $queryData->setSelect('
+        id, 
+        userId, 
+        source, 
+        time, 
+        timeUnlock, 
+        FROM_UNIXTIME(time) as dateTime, 
+        FROM_UNIXTIME(timeUnlock) as dateTimeUnlock, 
+        ipv4, 
+        ipv6, 
+        IF(`time` >= ? AND `timeUnlock` IS NULL, 1, 0) AS tracked
+        ');
+        $queryData->addParam(time() - TrackService::TIME_TRACKING);
+
+        $queryData->setFrom('Track');
+        $queryData->setOrder('time DESC');
+
+        if (!empty($itemSearchData->getSeachString())) {
+            $queryData->setWhere('source LIKE ?');
+
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParam($search);
+        }
+
+        $queryData->setLimit('?,?');
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
+
+        return $this->db->doSelect($queryData, true);
     }
 }

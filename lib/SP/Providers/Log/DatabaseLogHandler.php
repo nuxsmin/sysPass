@@ -43,32 +43,6 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
-        'show.',
-        'create.',
-        'delete.',
-        'edit.',
-        'exception',
-        'save.',
-        'show.account.pass',
-        'show.account.link',
-        'copy.account.pass',
-        'clear.eventlog',
-        'login.',
-        'logout',
-        'track.',
-        'acl.deny',
-        'check.tempMasterPassword',
-        'expire.tempMasterPassword',
-        'refresh.masterPassword',
-        'update.',
-        'import.ldap.',
-        'run.',
-        'send.mail',
-        'show.authToken',
-        'clear.eventlog'
-    ];
-
     /**
      * @var EventlogService
      */
@@ -147,7 +121,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      */
     public function getEvents()
     {
-        return self::EVENTS;
+        return LogInterface::EVENTS;
     }
 
     /**
@@ -164,7 +138,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
         if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(self::EVENTS);
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS);
         } else {
             $this->events = $this->parseEventsToRegex($configEvents);
         }

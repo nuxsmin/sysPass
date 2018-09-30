@@ -43,30 +43,6 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const EVENTS = [
-        'create.',
-        'delete.',
-        'edit.',
-        'exception',
-        'save.',
-        'show.account.pass',
-        'show.account.link',
-        'copy.account.pass',
-        'clear.eventlog',
-        'login.',
-        'logout',
-        'track.',
-        'acl.deny',
-        'check.tempMasterPassword',
-        'expire.tempMasterPassword',
-        'refresh.masterPassword',
-        'update.',
-        'import.ldap.',
-        'run.',
-        'send.mail',
-        'show.authToken'
-    ];
-
     const MESSAGE_FORMAT = '%s;%s';
 
     /**
@@ -89,7 +65,7 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
      */
     public function getEvents()
     {
-        return self::EVENTS;
+        return LogInterface::EVENTS;
     }
 
     /**
@@ -166,7 +142,7 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
         $configEvents = $configData->getLogEvents();
 
         if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(self::EVENTS);
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS);
         } else {
             $this->events = $this->parseEventsToRegex($configEvents);
         }

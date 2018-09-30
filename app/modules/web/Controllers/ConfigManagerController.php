@@ -33,7 +33,7 @@ use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
-use SP\Providers\Log\DatabaseLogHandler;
+use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
 use SP\Services\Config\ConfigService;
@@ -146,7 +146,7 @@ final class ConfigManagerController extends ControllerBase
 
         $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
 
-        $events = array_merge(DatabaseLogHandler::EVENTS, $this->configData->getLogEvents());
+        $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
 
         sort($events, SORT_STRING);
 

@@ -1080,8 +1080,7 @@ sysPass.Actions = function (log) {
 
     /**
      * sysPassApp tabs actions
-     *
-     * @type {{state: {tab: {index: number, refresh: boolean, route: string}, itemId: number, update: update}, save: save}}
+     * @type {{state: {tab: {index: number, refresh: boolean, route: string}, itemId: number, update: update}, save: save, refresh: refresh}}
      */
     const tabs = {
         state: {
@@ -1136,6 +1135,14 @@ sysPass.Actions = function (log) {
                     }
                 }
             });
+        },
+        refresh: function ($obj) {
+            this.state.update($obj);
+
+            getContent({
+                r: this.state.tab.route,
+                tabIndex: this.state.tab.index
+            });
         }
     };
 
@@ -1186,8 +1193,6 @@ sysPass.Actions = function (log) {
             grid.delete($obj, function (items) {
                 const itemId = $obj.data("item-id");
 
-                console.info(itemId);
-
                 const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
@@ -1233,16 +1238,6 @@ sysPass.Actions = function (log) {
      * @type {{nav: eventlog.nav, clear: eventlog.clear}}
      */
     const eventlog = {
-        search: function ($obj) {
-            log.info("eventlog:search");
-
-            grid.search($obj);
-        },
-        nav: function ($obj) {
-            log.info("eventlog:nav");
-
-            grid.nav($obj);
-        },
         clear: function ($obj) {
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[20] + "</p></div>";
 
@@ -1261,20 +1256,7 @@ sysPass.Actions = function (log) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        const opts = sysPassApp.requests.getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-                        opts.method = "get";
-                        opts.data = {sk: sysPassApp.sk.get(), isAjax: 1};
-
-                        sysPassApp.requests.getActionCall(opts, function (json) {
-                            sysPassApp.msg.out(json);
-
-                            if (json.status === 0) {
-                                getContent({r: $obj.data("action-next")});
-                            }
-
-                            sysPassApp.sk.set(json.csrf);
-                        });
+                        tabs.save($obj);
                     }
                 }
             });
@@ -1676,6 +1658,52 @@ sysPass.Actions = function (log) {
         });
     };
 
+    const track = {
+        unlock: function ($obj) {
+            log.info("track:unlock");
+
+            const opts = sysPassApp.requests.getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
+            opts.data = {
+                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
+                sk: sysPassApp.sk.get(),
+                isAjax: 1
+            };
+
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
+
+                tabs.refresh($obj);
+            });
+        },
+        clear: function ($obj) {
+            log.info("track:clear");
+
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[71] + "</p></div>";
+
+            mdlDialog().show({
+                text: atext,
+                negative: {
+                    title: sysPassApp.config.LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
+                    }
+                },
+                positive: {
+                    title: sysPassApp.config.LANG[43],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        tabs.save($obj);
+                    }
+                }
+            });
+        }
+    };
+
     return {
         doAction: doAction,
         getContent: getContent,
@@ -1696,6 +1724,7 @@ sysPass.Actions = function (log) {
         notification: notification,
         wiki: wiki,
         items: items,
-        ldap: ldap
+        ldap: ldap,
+        track: track
     };
 };

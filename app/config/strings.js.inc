@@ -92,5 +92,6 @@ return [
     67 => __('Hay una versión más reciente del plugin {0} ({1})'),
     68 => __('Actualizado'),
     69 => __('Error al comprobar actualizaciones'),
-    70 => __('Avisos de sysPass')
+    70 => __('Avisos de sysPass'),
+    71 => __('Vaciar los tracks?')
 ];

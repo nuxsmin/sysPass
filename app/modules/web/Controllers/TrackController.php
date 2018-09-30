@@ -25,47 +25,49 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\UnauthorizedActionException;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
-use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
+use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Services\EventLog\EventlogService;
+use SP\Services\Track\TrackService;
 
 /**
- * Class EventlogController
+ * Class TrackController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class EventlogController extends ControllerBase
+final class TrackController extends ControllerBase
 {
     use JsonTrait, ItemTrait;
 
     /**
-     * @var EventlogService
+     * @var TrackService
      */
-    protected $eventLogService;
+    protected $trackService;
 
     /**
-     * indexAction
+     * Search action
      *
+     * @return bool
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws UnauthorizedActionException
      */
-    public function indexAction()
+    public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::EVENTLOG)) {
-            return;
+        if (!$this->acl->checkUserAccess(Acl::TRACK_SEARCH)) {
+            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
         }
 
-        $this->view->addTemplate('index');
-
+        $this->view->addTemplate('datagrid-table', 'grid');
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -81,45 +83,56 @@ final class EventlogController extends ControllerBase
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        $eventlogGrid = $this->dic->get(EventlogGrid::class);
+        $itemsGridHelper = $this->dic->get(TrackGrid::class);
 
-        return $eventlogGrid->updatePager($eventlogGrid->getGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
+        return $itemsGridHelper->updatePager($itemsGridHelper->getGrid($this->trackService->search($itemSearchData)), $itemSearchData);
     }
 
     /**
-     * searchAction
+     * Unlocks a track
+     *
+     * @param int $id
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws UnauthorizedActionException
      */
-    public function searchAction()
+    public function unlockAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+        if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
+            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
         }
 
-        $this->view->addTemplate('datagrid-table-simple', 'grid');
-        $this->view->assign('data', $this->getSearchGrid());
+        try {
+            $this->trackService->unlock($id);
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+            $this->eventDispatcher->notifyEvent('unlock.track', new Event($this));
+
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track desbloqueado'));
+        } catch (\Exception $e) {
+            processException($e);
+
+            return $this->returnJsonResponseException($e);
+        }
     }
 
     /**
-     * clearAction
+     * Clears tracks
+     *
+     * @return bool
+     * @throws UnauthorizedActionException
      */
     public function clearAction()
     {
+        if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {
+            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+        }
+
         try {
-            $this->eventLogService->clear();
+            $this->trackService->clear();
 
-            $this->eventDispatcher->notifyEvent('clear.eventlog',
-                new Event($this, EventMessage::factory()->addDescription(__u('Registro de eventos vaciado')))
-            );
+            $this->eventDispatcher->notifyEvent('clear.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Registro de eventos vaciado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks limpiados'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -136,6 +149,6 @@ final class EventlogController extends ControllerBase
     {
         $this->checkLoggedIn();
 
-        $this->eventLogService = $this->dic->get(EventlogService::class);
+        $this->trackService = $this->dic->get(TrackService::class);
     }
 }

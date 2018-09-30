@@ -61,7 +61,7 @@ final class PluginGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($this->getSearchAction());
+        $grid->setDataActions($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
         $grid->setDataActions($this->getViewAction());

@@ -27,13 +27,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
+use SP\Html\DataGrid\DataGridTab;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -61,8 +61,8 @@ final class EventlogGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($this->getSearchAction());
-        $grid->setPager($this->getPager($searchAction)->setOnClickFunction('eventlog/nav'));
+        $grid->setDataActions($searchAction);
+        $grid->setPager($this->getPager($searchAction));
 
         $grid->setDataActions($this->getRefrestAction());
         $grid->setDataActions($this->getClearAction());
@@ -78,16 +78,15 @@ final class EventlogGrid extends GridBase
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $dataGrid = new DataGrid($this->view->getTheme());
-        $dataGrid->setId('tblEventLog');
-        $dataGrid->setDataTableTemplate('datagrid-table-simple', 'grid');
-        $dataGrid->setDataRowTemplate('datagrid-rows', $this->view->getBase());
-        $dataGrid->setDataPagerTemplate('datagrid-nav-full', 'grid');
-        $dataGrid->setHeader($this->getHeader());
-        $dataGrid->setData($this->getData());
-        $dataGrid->setTitle(__('Registro de Eventos'));
+        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab->setId('tblEventLog');
+        $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
+        $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $gridTab->setHeader($this->getHeader());
+        $gridTab->setData($this->getData());
+        $gridTab->setTitle(__('Registro de Eventos'));
 
-        return $dataGrid;
+        return $gridTab;
     }
 
     /**
@@ -165,7 +164,7 @@ final class EventlogGrid extends GridBase
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchEvent');
         $gridActionSearch->setTitle(__('Buscar Evento'));
-        $gridActionSearch->setOnSubmitFunction('eventlog/search');
+        $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
 
         return $gridActionSearch;
@@ -179,12 +178,12 @@ final class EventlogGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::EVENTLOG_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setSkip(true);
         $gridAction->setName(__('Refrescar'));
         $gridAction->setTitle(__('Refrescar'));
         $gridAction->setIcon($this->icons->getIconRefresh());
-        $gridAction->setOnClickFunction('eventlog/search');
+        $gridAction->setOnClickFunction('appMgmt/search');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
-        $gridAction->addData('target', '#data-table-tblEventLog');
 
         return $gridAction;
     }
@@ -197,12 +196,12 @@ final class EventlogGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::EVENTLOG_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
+        $gridAction->setSkip(true);
         $gridAction->setName(__('Vaciar registro de eventos'));
         $gridAction->setTitle(__('Vaciar registro de eventos'));
         $gridAction->setIcon($this->icons->getIconClear());
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));
-        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::EVENTLOG));
 
         return $gridAction;
     }

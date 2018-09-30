@@ -50,6 +50,10 @@ class TrackData extends DataModelBase
      */
     public $time = 0;
     /**
+     * @var int
+     */
+    public $timeUnlock = 0;
+    /**
      * @var string
      */
     public $ipv4;
@@ -198,5 +202,21 @@ class TrackData extends DataModelBase
     public function getTrackIpv6Bin()
     {
         return $this->ipv6;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeUnlock(): int
+    {
+        return $this->timeUnlock;
+    }
+
+    /**
+     * @param int $timeUnlock
+     */
+    public function setTimeUnlock(int $timeUnlock)
+    {
+        $this->timeUnlock = $timeUnlock;
     }
 }
