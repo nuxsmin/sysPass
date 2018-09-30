@@ -28,7 +28,8 @@
     "php-di/php-di": "^6.0",
     "doctrine/common": "~v2.7",
     "guzzlehttp/guzzle": "~6.3",
-    "monolog/monolog": "^1.23"
+    "monolog/monolog": "^1.23",
+    "ext-pdo": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^6",

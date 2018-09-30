@@ -204,30 +204,21 @@ final class Database implements DatabaseInterface
      */
     private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
+        $query = $queryData->getQuery();
+        $params = $queryData->getParams();
+
         if ($isCount === true) {
             $query = $queryData->getQueryCount();
-            $paramMaxIndex = count($queryData->getParams()) - 3;
-        } else {
-            $query = $queryData->getQuery();
+            $params = $this->getParamsForCount($queryData);
         }
 
         try {
             $connection = $this->dbHandler->getConnection();
 
-            $params = $queryData->getParams();
-
             if (!empty($params)) {
                 $stmt = $connection->prepare($query);
-                $paramIndex = 0;
 
                 foreach ($params as $param => $value) {
-                    if ($isCount === true
-                        && $queryData->getLimit() !== ''
-                        && $paramIndex > $paramMaxIndex
-                    ) {
-                        continue;
-                    }
-
                     // Si la clave es un número utilizamos marcadores de posición "?" en
                     // la consulta. En caso contrario marcadores de nombre
                     $param = is_int($param) ? $param + 1 : ':' . $param;
@@ -235,14 +226,10 @@ final class Database implements DatabaseInterface
                     if ($param === 'blobcontent') {
                         $stmt->bindValue($param, $value, PDO::PARAM_LOB);
                     } elseif (is_int($value)) {
-//                        error_log("INT: " . $param . " -> " . $value);
                         $stmt->bindValue($param, $value, PDO::PARAM_INT);
                     } else {
-//                        error_log("STR: " . $param . " -> " . print_r($value, true));
                         $stmt->bindValue($param, $value);
                     }
-
-                    $paramIndex++;
                 }
 
                 $stmt->execute();
@@ -279,6 +266,21 @@ final class Database implements DatabaseInterface
 
             throw new QueryException($e->getMessage(), QueryException::CRITICAL, $e->getCode(), 0, $e);
         }
+    }
+
+    /**
+     * Strips out the unused params from the query count
+     *
+     * @param QueryData $queryData
+     *
+     * @return array
+     */
+    private function getParamsForCount(QueryData $queryData)
+    {
+        $countSelect = substr_count($queryData->getSelect(), '?');
+        $countWhere = substr_count($queryData->getWhere(), '?');
+
+        return array_slice($queryData->getParams(), $countSelect, $countWhere);
     }
 
     /**
