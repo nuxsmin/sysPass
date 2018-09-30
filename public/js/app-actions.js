@@ -506,6 +506,9 @@ sysPass.Actions = function (log) {
             log.info("items:update");
 
             const $dst = $("#" + $obj.data("item-dst"))[0].selectize;
+
+            const selected = $dst.getValue();
+
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = sysPassApp.requests.getRequestOpts();
@@ -518,6 +521,7 @@ sysPass.Actions = function (log) {
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     callback(json);
+                    $dst.setValue(selected, true);
                 });
             });
         }
