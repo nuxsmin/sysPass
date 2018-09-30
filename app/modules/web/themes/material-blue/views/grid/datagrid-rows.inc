@@ -14,9 +14,22 @@ use SP\Html\Html;
     foreach ($data->getData()->getData() as $dataIndex => $dataItem): ?>
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
-                <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
-                <?php $value = $rowSrc['filter'] !== null && $rowSrc['filter'] ? $rowSrc['filter']($value) : $value; ?>
-                <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 150 / $numFields) : '&nbsp;'; // Fix height ?></td>
+                <?php
+                if ($rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name'])):
+                    $value = $dataItem->{$rowSrc['name']}();
+                else:
+                    $value = $dataItem->{$rowSrc['name']};
+                endif;
+
+                $value = $rowSrc['filter'] !== null ? $rowSrc['filter']($value) : $value;
+
+                if ($value !== ''):
+                    $value = $rowSrc['truncate'] === true ? Html::truncate($value, 150 / $numFields) : $value;
+                else:
+                    $value = '&nbsp;';
+                endif;
+                ?>
+                <td class="cell-data"><?php echo $value; ?></td>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>

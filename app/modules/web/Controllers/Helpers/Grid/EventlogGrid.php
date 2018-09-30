@@ -120,7 +120,7 @@ final class EventlogGrid extends GridBase
         $gridData->addDataRowSource('id');
         $gridData->addDataRowSource('date');
         $gridData->addDataRowSource('level');
-        $gridData->addDataRowSource('action');
+        $gridData->addDataRowSource('action', null, null, false);
         $gridData->addDataRowSource('login');
         $gridData->addDataRowSource('ipAddress', false,
             function ($value) use ($isDemoMode) {
@@ -147,7 +147,7 @@ final class EventlogGrid extends GridBase
 //                }
 
                 return str_replace(PHP_EOL, '<br>', $text);
-            });
+            }, false);
         $gridData->setData($this->queryResult);
 
         return $gridData;

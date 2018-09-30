@@ -230,13 +230,18 @@ final class Acl implements ActionsInterface
                     || $userProfile->isMgmProfiles()
                     || $userProfile->isMgmApiTokens());
             case self::SECURITY_MANAGE:
-                return $userProfile->isEvl();
+                return $userProfile->isEvl()
+                    || $userProfile->isMgmUsers();
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_VIEW:
             case self::USER_CREATE:
             case self::USER_EDIT:
             case self::USER_DELETE:
+            case self::TRACK:
+            case self::TRACK_SEARCH:
+            case self::TRACK_CLEAR:
+            case self::TRACK_UNLOCK:
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión

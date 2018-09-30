@@ -42,8 +42,9 @@ interface DataGridDataInterface
      * @param string        $source
      * @param bool          $isMethod
      * @param callable|null $filter
+     * @param bool          $truncate
      */
-    public function addDataRowSource($source, $isMethod = false, callable $filter = null);
+    public function addDataRowSource($source, $isMethod = false, callable $filter = null, $truncate = true);
 
     /**
      * Devolver los orígenes de datos de la consulta

@@ -112,17 +112,36 @@ final class TrackGrid extends GridBase
      */
     protected function getData(): DataGridData
     {
+        $demo = $this->configData->isDemoEnabled();
+
+
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('dateTime');
         $gridData->addDataRowSource('dateTimeUnlock');
-        $gridData->addDataRowSource('source');
-        $gridData->addDataRowSource('ipv4', null, function ($value) {
-            return $value !== null ? Address::fromBinary($value) : '';
+        $gridData->addDataRowSource('source', null, null, false);
+        $gridData->addDataRowSource('ipv4', null, function ($value) use ($demo) {
+            if ($value !== null) {
+                if ($demo) {
+                    return '*.*.*.*';
+                }
+
+                return Address::fromBinary($value);
+            }
+
+            return '&nbsp;';
         });
-        $gridData->addDataRowSource('ipv6', null, function ($value) {
-            return $value !== null ? Address::fromBinary($value) : '';
+        $gridData->addDataRowSource('ipv6', null, function ($value) use ($demo) {
+            if ($value !== null) {
+                if ($demo) {
+                    return '*.*.*.*';
+                }
+
+                return Address::fromBinary($value);
+            }
+
+            return '&nbsp;';
         });
         $gridData->addDataRowSource('userId');
         $gridData->setData($this->queryResult);
