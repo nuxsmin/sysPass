@@ -239,11 +239,10 @@ final class LayoutHelper extends HelperBase
             $userType = $icons->getIconAccAdmin();
         }
 
-        $this->view->assign('context_userType', $userType);
-        $this->view->assign('context_userId', $userData->getId());
-        $this->view->assign('context_userLogin', mb_strtoupper($userData->getLogin()));
-        $this->view->assign('context_userName', $userData->getName() ?: mb_strtoupper($this->view->userLogin));
-        $this->view->assign('context_userGroup', $userData->getUserGroupName());
+        $this->view->assign('ctx_userType', $userType);
+        $this->view->assign('ctx_userLogin', mb_strtoupper($userData->getLogin()));
+        $this->view->assign('ctx_userName', $userData->getName() ?: mb_strtoupper($userData->getLogin()));
+        $this->view->assign('ctx_userGroup', $userData->getUserGroupName());
         $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
         $this->view->assign('notifications', 0);
     }

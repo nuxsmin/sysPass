@@ -63,7 +63,7 @@
                 </td>
             </tr>
 
-            <?php if (!$isView && $userIsAdminApp): ?>
+            <?php if (!$isView && $ctx_userIsAdminApp): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usuario'); ?></td>
                     <td class="valField">

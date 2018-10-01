@@ -157,7 +157,7 @@
                 </div>
             </div>
         </li>
-        <?php if ($userIsAdminApp): ?>
+        <?php if ($ctx_userIsAdminApp): ?>
             <li>
                 <button type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"

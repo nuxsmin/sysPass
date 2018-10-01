@@ -28,7 +28,7 @@
             <?php echo $lastBackupTime; ?>
         </td>
     </tr>
-    <?php if ($userIsAdminApp): ?>
+    <?php if ($ctx_userIsAdminApp): ?>
         <tr>
             <td class="descField">
                 <?php echo __('Descargar Actual'); ?>
@@ -106,7 +106,7 @@
                 <?php echo $lastExportTime; ?>
             </td>
         </tr>
-        <?php if ($userIsAdminApp): ?>
+        <?php if ($ctx_userIsAdminApp): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Descargar Actual'); ?>

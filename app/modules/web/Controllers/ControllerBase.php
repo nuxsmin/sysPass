@@ -116,10 +116,10 @@ abstract class ControllerBase
     {
         $this->view->assign('timeStart', $this->router->request()->server()->get('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
-        $this->view->assign('userId', $this->userData->getId());
-        $this->view->assign('userGroupId', $this->userData->getUserGroupId());
-        $this->view->assign('userIsAdminApp', $this->userData->getIsAdminApp());
-        $this->view->assign('userIsAdminAcc', $this->userData->getIsAdminAcc());
+        $this->view->assign('ctx_userId', $this->userData->getId());
+        $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
+        $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
+        $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
         $this->view->assign('icons', $this->theme->getIcons());

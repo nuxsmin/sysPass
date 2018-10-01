@@ -178,7 +178,7 @@
                     <tr>
                         <td>
                             <ul class="user-list-action mdl-list">
-                                <?php if ($userIsAdminApp || $isDemo): ?>
+                                <?php if ($ctx_userIsAdminApp || $isDemo): ?>
                                     <li class="mdl-list__item mdl-list__item--two-line">
                                         <div class="mdl-switch__box">
                                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"

@@ -56,7 +56,7 @@
                             <li id="btnUserPass" class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
-                                data-item-id="<?php echo $context_userId; ?>"
+                                data-item-id="<?php echo $ctx_userId; ?>"
                                 data-sk="<?php echo $sk; ?>">
                                 <i class="material-icons">lock</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
@@ -120,7 +120,7 @@
                        title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
-                       data-item-id="<?php echo $context_userId; ?>"
+                       data-item-id="<?php echo $ctx_userId; ?>"
                        data-sk="<?php echo $sk; ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Cambiar Clave de Usuario'); ?>
@@ -132,14 +132,14 @@
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
-                    <span id="user-name"><?php echo $context_userName; ?></span>
+                    <span id="user-name"><?php echo $ctx_userName; ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $context_userGroup); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $ctx_userGroup); ?></span>
                     <?php /** @var \SP\Html\Assets\IconInterface $userType */
-                    if ($context_userType !== null): ?>
-                        <i id="user-type" class="material-icons"><?php echo $context_userType->getIcon(); ?></i>
+                    if ($ctx_userType !== null): ?>
+                        <i id="user-type" class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
                         <span for="user-type"
-                              class="mdl-tooltip mdl-tooltip--top"><?php echo $context_userType->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $ctx_userType->getTitle(); ?></span>
                     <?php endif; ?>
                 </a>
 
