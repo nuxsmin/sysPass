@@ -70,31 +70,6 @@ final class MailHandler extends Provider implements EventReceiver
     private $request;
 
     /**
-     * Evento de actualización
-     *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
-     */
-    public function updateEvent($eventType, Event $event)
-    {
-        if (($eventMessage = $event->getEventMessage()) !== null) {
-            try {
-                $configData = $this->config->getConfigData();
-                $userData = $this->context->getUserData();
-
-                $mailMessage = new MailMessage();
-                $mailMessage->addDescription($eventMessage->composeText());
-                $mailMessage->addDescription(sprintf(__('Realizado por: %s (%s)'), $userData->getName(), $userData->getLogin()));
-                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), $this->request->getClientAddress(true)));
-
-                $this->mailService->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
-            } catch (\Exception $e) {
-                processException($e);
-            }
-        }
-    }
-
-    /**
      * Devuelve los eventos que implementa el observador
      *
      * @return array
@@ -129,6 +104,31 @@ final class MailHandler extends Provider implements EventReceiver
     public function update(SplSubject $subject)
     {
         $this->updateEvent('update', new Event($subject));
+    }
+
+    /**
+     * Evento de actualización
+     *
+     * @param string $eventType Nombre del evento
+     * @param Event  $event     Objeto del evento
+     */
+    public function updateEvent($eventType, Event $event)
+    {
+        if (($eventMessage = $event->getEventMessage()) !== null) {
+            try {
+                $configData = $this->config->getConfigData();
+                $userData = $this->context->getUserData();
+
+                $mailMessage = new MailMessage();
+                $mailMessage->addDescription($eventMessage->composeText());
+                $mailMessage->addDescription(sprintf(__('Realizado por: %s (%s)'), $userData->getName(), $userData->getLogin()));
+                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), $this->request->getClientAddress(true)));
+
+                $this->mailService->send($eventMessage->getDescription(true), $configData->getMailFrom(), $mailMessage);
+            } catch (\Exception $e) {
+                processException($e);
+            }
+        }
     }
 
     /**
