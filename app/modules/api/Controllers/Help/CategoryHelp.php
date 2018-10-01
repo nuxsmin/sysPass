@@ -29,7 +29,7 @@ namespace SP\Modules\Api\Controllers\Help;
  *
  * @package SP\Modules\Api\Controllers\Help
  */
-class CategoryHelp implements HelpInterface
+final class CategoryHelp implements HelpInterface
 {
     use HelpTrait;
 

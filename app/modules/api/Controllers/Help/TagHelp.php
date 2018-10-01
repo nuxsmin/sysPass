@@ -29,7 +29,7 @@ namespace SP\Modules\Api\Controllers\Help;
  *
  * @package SP\Modules\Api\Controllers\Help
  */
-class TagHelp implements HelpInterface
+final class TagHelp implements HelpInterface
 {
     use HelpTrait;
 

@@ -38,7 +38,7 @@ use SP\Storage\Database\QueryData;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeCustomFieldData extends Service
+final class UpgradeCustomFieldData extends Service
 {
     /**
      * @var Database

@@ -22,16 +22,23 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util\Wiki;
+namespace SP\Core;
 
-use SP\Http\XMLRPCResponseParse;
 
 /**
- * Class DokuWikiApiParse para el parseo de las respuestas de DokuWiki
+ * Interface AppInfoInterface
  *
- * @package SP\Util\Wiki
+ * @package SP\Core
  */
-class DokuWikiApiParse extends XMLRPCResponseParse
+interface AppInfoInterface
 {
-
+    const APP_NAME = 'sysPass';
+    const APP_DESC = 'Systems Password Manager';
+    const APP_ALIAS = 'SPM';
+    const APP_WEBSITE_URL = 'https://www.syspass.org';
+    const APP_BLOG_URL = 'https://www.cygnux.org';
+    const APP_DOC_URL = 'https://doc.syspass.org';
+    const APP_UPDATES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
+    const APP_NOTICES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
+    const APP_ISSUES_URL = 'https://github.com/nuxsmin/sysPass/issues';
 }

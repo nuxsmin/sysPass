@@ -24,6 +24,7 @@
 
 namespace SP\Services\Crypt;
 
+use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
@@ -209,7 +210,7 @@ final class TemporaryMasterPassService extends Service
     private function getMessageForEmail($key)
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
+        $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), AppInfoInterface::APP_NAME));
         $mailMessage->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(sprintf(__('La nueva clave es: %s'), $key));

@@ -26,10 +26,6 @@ namespace SP\Util;
 
 use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
-use SP\Bootstrap;
-use SP\Config\ConfigData;
-use SP\Core\Exceptions\SPException;
-use SP\Core\PhpExtensionChecker;
 
 defined('APP_ROOT') || die();
 
@@ -126,102 +122,6 @@ final class Util
     }
 
     /**
-     * Obtener datos desde una URL usando CURL
-     *
-     * @param string    $url
-     * @param array     $data
-     * @param bool|null $useCookie
-     * @param bool      $weak
-     *
-     * @return bool|string
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
-     *
-     * TODO: Use Guzzle
-     *
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws SPException
-     */
-    public static function getDataFromUrl($url, array $data = null, $useCookie = false, $weak = false)
-    {
-        /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
-
-        Bootstrap::getContainer()->get(PhpExtensionChecker::class)->checkCurlAvailable(true);
-
-        $ch = curl_init($url);
-
-        if ($ConfigData->isProxyEnabled()) {
-            curl_setopt($ch, CURLOPT_PROXY, $ConfigData->getProxyServer());
-            curl_setopt($ch, CURLOPT_PROXYPORT, $ConfigData->getProxyPort());
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-
-            $proxyUser = $ConfigData->getProxyUser();
-
-            if ($proxyUser) {
-                $proxyAuth = $proxyUser . ':' . $ConfigData->getProxyPass();
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyAuth);
-            }
-        }
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'sysPass-App');
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-
-        if ($weak === true) {
-            // Trust SSL enabled server
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        }
-
-        if (null !== $data) {
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $data['type']);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data['data']);
-        }
-
-        if ($useCookie) {
-            $cookie = self::getUserCookieFile();
-
-            if ($cookie) {
-                if (!SessionFactory::getCurlCookieSession()) {
-                    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-                    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
-
-                    SessionFactory::setCurlCookieSession(true);
-                }
-
-                curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
-            }
-        }
-
-        $data = curl_exec($ch);
-
-        $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        if ($data === false || $httpStatus !== 200) {
-            throw new SPException(curl_error($ch), SPException::WARNING);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Devuelve el nombre de archivo a utilizar para las cookies del usuario
-     *
-     * @return string|false
-     */
-    public static function getUserCookieFile()
-    {
-        $tempDir = self::getTempDir();
-
-        return $tempDir ? $tempDir . DIRECTORY_SEPARATOR . md5('syspass-' . SessionFactory::getUserData()->getLogin()) : false;
-    }
-
-    /**
      * Comprueba y devuelve un directorio temporal válido
      *
      * @return bool|string
@@ -251,35 +151,6 @@ final class Util
         }
 
         return $checkDir($sysTmp);
-    }
-
-    /**
-     * Devuelve información sobre la aplicación.
-     *
-     * @param string $index con la key a devolver
-     *
-     * @return array|string con las propiedades de la aplicación
-     */
-    public static function getAppInfo($index = null)
-    {
-        $appinfo = [
-            'appname' => 'sysPass',
-            'appdesc' => 'Systems Password Manager',
-            'appalias' => 'SPM',
-            'appwebsite' => 'https://www.syspass.org',
-            'appblog' => 'https://www.cygnux.org',
-            'appdoc' => 'https://doc.syspass.org',
-            'appupdates' => 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest',
-            'appnotices' => 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices',
-            'apphelp' => 'https://github.com/nuxsmin/sysPass/issues',
-            'appchangelog' => 'https://github.com/nuxsmin/sysPass/blob/master/CHANGELOG'
-        ];
-
-        if (null !== $index && isset($appinfo[$index])) {
-            return $appinfo[$index];
-        }
-
-        return $appinfo;
     }
 
     /**

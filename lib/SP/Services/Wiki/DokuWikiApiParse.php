@@ -22,36 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Api\Controllers\Help;
+namespace SP\Services\Wiki;
+
+use SP\Http\XMLRPCResponseParse;
 
 /**
- * Class ConfigHelp
+ * Class DokuWikiApiParse para el parseo de las respuestas de DokuWiki
  *
- * @package SP\Modules\Api\Controllers\Help
+ * @package SP\Services\Wiki
+ * @deprecated
  */
-final class ConfigHelp implements HelpInterface
+class DokuWikiApiParse extends XMLRPCResponseParse
 {
-    use HelpTrait;
 
-    /**
-     * @return array
-     */
-    public static function backup()
-    {
-        return
-            [
-                self::getItem('path', __('Ruta'))
-            ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function export()
-    {
-        return
-            [
-                self::getItem('path', __('Ruta'))
-            ];
-    }
 }

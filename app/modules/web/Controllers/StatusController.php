@@ -26,10 +26,10 @@ namespace SP\Modules\Web\Controllers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use SP\Core\AppInfoInterface;
 use SP\Core\Exceptions\CheckException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\Util;
 use SP\Util\Version;
 
 /**
@@ -44,6 +44,9 @@ final class StatusController extends SimpleControllerBase
     /**
      * checkReleaseAction
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkReleaseAction()
@@ -52,7 +55,7 @@ final class StatusController extends SimpleControllerBase
             $this->extensionChecker->checkCurlAvailable(true);
 
             $request = $this->dic->get(Client::class)
-                ->request('GET', Util::getAppInfo('appupdates'));
+                ->request('GET', AppInfoInterface::APP_UPDATES_URL);
 
             if ($request->getStatusCode() === 200
                 && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
@@ -101,6 +104,9 @@ final class StatusController extends SimpleControllerBase
     /**
      * checkNoticesAction
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkNoticesAction()
@@ -109,7 +115,7 @@ final class StatusController extends SimpleControllerBase
             $this->extensionChecker->checkCurlAvailable(true);
 
             $request = $this->dic->get(Client::class)
-                ->request('GET', Util::getAppInfo('appnotices'));
+                ->request('GET', AppInfoInterface::APP_NOTICES_URL);
 
             if ($request->getStatusCode() === 200
                 && strpos($request->getHeaderLine('content-type'), 'application/json') !== false

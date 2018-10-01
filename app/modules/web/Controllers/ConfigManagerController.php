@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
+use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
@@ -44,7 +45,6 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
-use SP\Util\Util;
 
 /**
  * Class ConfigManagerController
@@ -279,7 +279,7 @@ final class ConfigManagerController extends ControllerBase
         $template->addTemplate('backup');
         $template->assign('pharIsAvailable', $this->extensionChecker->checkPharAvailable());
 
-        $template->assign('siteName', Util::getAppInfo('appname'));
+        $template->assign('siteName', AppInfoInterface::APP_NAME);
         $template->assign('backupDir', BACKUP_PATH);
         $template->assign('backupPath', Bootstrap::$WEBROOT . '/backup');
 

@@ -32,7 +32,7 @@ use SP\DataModel\ItemPreset\Password;
  *
  * @package SP\Mvc\Controller
  */
-class PasswordValidator implements ValidatorInterface
+final class PasswordValidator implements ValidatorInterface
 {
     /**
      * @var Password

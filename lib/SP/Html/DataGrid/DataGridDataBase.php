@@ -41,36 +41,36 @@ abstract class DataGridDataBase implements DataGridDataInterface
      *
      * @var array
      */
-    private $_data = [];
+    private $data = [];
     /**
      * Las columnas a mostrar de los datos obtenidos
      *
      * @var array
      */
-    private $_sources = [];
+    private $sources = [];
     /**
      * La columna que identifica cada elemento de los datos de la matriz
      *
      * @var int
      */
-    private $_sourceId = 0;
+    private $sourceId = 0;
     /**
      * Las columnas a mostrar de los datos obtenidos que son representadas con iconos
      *
      * @var array
      */
-    private $_sourcesWithIcon = [];
+    private $sourcesWithIcon = [];
     /**
      * @var int
      */
-    private $_dataCount = 0;
+    private $dataCount = 0;
 
     /**
      * @return array
      */
     public function getDataRowSourcesWithIcon()
     {
-        return $this->_sourcesWithIcon;
+        return $this->sourcesWithIcon;
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function addDataRowSource($source, $isMethod = false, callable $filter = null, $truncate = true)
     {
-        $this->_sources[] = [
+        $this->sources[] = [
             'name' => $source,
             'isMethod' => $isMethod,
             'filter' => $filter,
@@ -94,7 +94,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function setDataRowSourceId($id)
     {
-        $this->_sourceId = $id;
+        $this->sourceId = $id;
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function getDataRowSources()
     {
-        return $this->_sources;
+        return $this->sources;
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function getDataRowSourceId()
     {
-        return $this->_sourceId;
+        return $this->sourceId;
     }
 
     /**
@@ -118,7 +118,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function getData()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -126,8 +126,8 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function setData(QueryResult $queryResult)
     {
-        $this->_dataCount = $queryResult->getTotalNumRows();
-        $this->_data = $queryResult->getDataAsArray();
+        $this->dataCount = $queryResult->getTotalNumRows();
+        $this->data = $queryResult->getDataAsArray();
     }
 
     /**
@@ -137,7 +137,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
     {
-        $this->_sourcesWithIcon[] = [
+        $this->sourcesWithIcon[] = [
             'field' => $source,
             'icon' => $icon,
             'value' => $value
@@ -151,6 +151,6 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function getDataCount()
     {
-        return $this->_dataCount;
+        return $this->dataCount;
     }
 }

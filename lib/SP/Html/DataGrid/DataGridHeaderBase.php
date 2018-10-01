@@ -38,23 +38,23 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
      *
      * @var array
      */
-    private $_headers = array();
+    private $headers = [];
     /**
      * El ancho de las columnas
      *
      * @var int
      */
-    private $_width = 0;
+    private $width = 0;
 
     /**
      * @param $header string
      */
     public function addHeader($header)
     {
-        $this->_headers[] = $header;
+        $this->headers[] = $header;
 
-        $numHeaders = count($this->_headers);
-        $this->_width = ($numHeaders > 0) ? floor(65 / $numHeaders) : 65;
+        $numHeaders = count($this->headers);
+        $this->width = ($numHeaders > 0) ? floor(65 / $numHeaders) : 65;
     }
 
     /**
@@ -62,7 +62,7 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
      */
     public function getWidth()
     {
-        return $this->_width;
+        return $this->width;
     }
 
     /**
@@ -70,6 +70,6 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
      */
     public function getHeaders()
     {
-        return $this->_headers;
+        return $this->headers;
     }
 }

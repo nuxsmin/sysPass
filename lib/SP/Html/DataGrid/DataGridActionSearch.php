@@ -36,14 +36,14 @@ final class DataGridActionSearch extends DataGridActionBase
     /**
      * @var string
      */
-    private $_onSubmitFunction = '';
+    private $onSubmitFunction = '';
 
     /**
      * Los argumentos de la función OnSubmit
      *
      * @var array
      */
-    private $_onSubmitArgs = [];
+    private $onSubmitArgs = [];
 
     /**
      * DataGridActionSearch constructor.
@@ -64,11 +64,11 @@ final class DataGridActionSearch extends DataGridActionBase
     {
         $args = [];
 
-        foreach ($this->_onSubmitArgs as $arg) {
+        foreach ($this->onSubmitArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;
         }
 
-        return count($args) > 0 ? 'return ' . $this->_onSubmitFunction . '(' . implode(',', $args) . ');' : $this->_onSubmitFunction;
+        return count($args) > 0 ? 'return ' . $this->onSubmitFunction . '(' . implode(',', $args) . ');' : $this->onSubmitFunction;
     }
 
     /**
@@ -76,7 +76,7 @@ final class DataGridActionSearch extends DataGridActionBase
      */
     public function setOnSubmitFunction($onSubmitFunction)
     {
-        $this->_onSubmitFunction = $onSubmitFunction;
+        $this->onSubmitFunction = $onSubmitFunction;
     }
 
     /**
@@ -84,6 +84,6 @@ final class DataGridActionSearch extends DataGridActionBase
      */
     public function setOnSubmitArgs($args)
     {
-        $this->_onSubmitArgs[] = $args;
+        $this->onSubmitArgs[] = $args;
     }
 }

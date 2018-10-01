@@ -33,7 +33,7 @@ use SP\Http\Json;
  *
  * @package SP\Mvc\View\Components
  */
-class SelectItemAdapter implements ItemAdapterInterface
+final class SelectItemAdapter implements ItemAdapterInterface
 {
     /**
      * @var array

@@ -37,7 +37,7 @@ use SP\Services\ItemPreset\ItemPresetService;
  *
  * @package SP\Services\Account
  */
-class AccountPresetService
+final class AccountPresetService
 {
     /**
      * @var ItemPresetService

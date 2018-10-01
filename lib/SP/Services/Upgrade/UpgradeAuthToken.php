@@ -36,7 +36,7 @@ use SP\Services\Service;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeAuthToken extends Service
+final class UpgradeAuthToken extends Service
 {
     /**
      * @var AuthTokenService

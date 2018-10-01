@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>">
 <head>
-    <title><?php echo $appInfo['appname'], ' :: ', $appInfo['appdesc']; ?></title>
+    <title><?php printf('%s :: %s', $app_name, $app_desc); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="<?php echo $logoIcon; ?>">
@@ -21,7 +21,8 @@
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>" data-upgraded="<?php echo (int)$this->isUpgraded(); ?>">
+    <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>"
+         data-upgraded="<?php echo (int)$this->isUpgraded(); ?>">
         <?php
         if (isset($useFixedHeader)):
             include $this->includePartial('fixed-header');

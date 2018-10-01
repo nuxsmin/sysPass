@@ -26,8 +26,8 @@ namespace SP\Providers\Mail;
 
 use DI\Container;
 use PHPMailer\PHPMailer\PHPMailer;
+use SP\Core\AppInfoInterface;
 use SP\Providers\Provider;
-use SP\Util\Util;
 
 /**
  * Class MailProvider
@@ -55,7 +55,7 @@ final class MailProvider extends Provider
      */
     public function getMailer(MailParams $mailParams)
     {
-        $appName = Util::getAppInfo('appname');
+        $appName = AppInfoInterface::APP_NAME;
 
         try {
             $this->mailer->SMTPAutoTLS = false;

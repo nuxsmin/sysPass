@@ -25,6 +25,7 @@
 namespace SP\Services\Backup;
 
 use SP\Config\ConfigData;
+use SP\Core\AppInfoInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
@@ -36,7 +37,6 @@ use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\QueryData;
 use SP\Storage\File\FileHandler;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die();
 
@@ -80,13 +80,11 @@ final class FileBackupService extends Service
 
         $this->checkBackupDir();
 
-        $siteName = Util::getAppInfo('appname');
-
         // Generar hash unico para evitar descargas no permitidas
         $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
 
-        $this->backupFileApp = $this->path . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
-        $this->backupFileDb = $this->path . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
+        $this->backupFileApp = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '-' . $backupUniqueHash . '.tar';
+        $this->backupFileDb = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $backupUniqueHash . '.sql';
 
         try {
             $this->deleteOldBackups();

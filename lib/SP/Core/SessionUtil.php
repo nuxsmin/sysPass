@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class SessionUtil
+final class SessionUtil
 {
     /**
      * Limpiar la sesión del usuario

@@ -22,19 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util\Wiki;
+namespace SP\Services\Wiki;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\SessionFactory;
-use SP\Log\Log;
-use SP\Log\LogLevel;
 
 defined('APP_ROOT') || die();
 
 /**
  * Class DokuWikiApi para realizar consultas a la API de DokuWiki
  *
- * @package SP\Util\Wiki
+ * @package SP\Services\Wiki
+ * @deprecated
  */
 class DokuWikiApi extends DokuWikiApiBase
 {
@@ -76,7 +74,6 @@ class DokuWikiApi extends DokuWikiApiBase
             $this->logException($e);
             throw $e;
         } catch (\InvalidArgumentException $e) {
-            Log::writeNewLog('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
             throw new SPException($e->getMessage(), SPException::WARNING);
         }
     }

@@ -25,9 +25,7 @@
 namespace SP\Html;
 
 use Klein\Klein;
-use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die();
 
@@ -116,11 +114,9 @@ final class Minify
 
             // Obtener el recurso desde una URL
             if ($file['type'] === 'url') {
-                try {
-                    $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
-                } catch (SPException $e) {
-                    processException($e);
-                }
+                logger('URL:' . $file['name']);
+
+//                    $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
             } else {
                 if ($file['min'] === true && $disableMinify === false) {
                     $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;

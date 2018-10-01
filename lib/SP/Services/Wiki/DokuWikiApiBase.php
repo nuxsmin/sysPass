@@ -22,10 +22,9 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util\Wiki;
+namespace SP\Services\Wiki;
 
 use DOMDocument;
-use DOMException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
@@ -35,7 +34,8 @@ use SP\Util\Util;
 /**
  * Class DokuWikiApiBase
  *
- * @package SP\Util\Wiki
+ * @package SP\Services\Wiki
+ * @deprecated
  */
 abstract class DokuWikiApiBase
 {
@@ -130,7 +130,7 @@ abstract class DokuWikiApiBase
 
             $this->params = $this->xml->createElement('params');
             $this->root->appendChild($this->params);
-        } catch (DOMException $e) {
+        } catch (\Exception $e) {
             throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
@@ -158,13 +158,15 @@ abstract class DokuWikiApiBase
 
             $xmlParam->appendChild($xmlValue);
             $this->params->appendChild($xmlParam);
-        } catch (DOMException $e) {
+        } catch (\Exception $e) {
             throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
     /**
      * Enviar el XML a la wiki y devolver la respuesta
+     *
+     * @throws SPException
      */
     protected function callWiki()
     {

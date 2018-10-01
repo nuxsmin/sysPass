@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Core
  */
-class ThemeIcons
+final class ThemeIcons
 {
     /**
      * @var IconInterface[]

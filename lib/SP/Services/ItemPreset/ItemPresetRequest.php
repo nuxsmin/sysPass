@@ -32,7 +32,7 @@ use SP\DataModel\ItemPresetData;
  *
  * @package SP\Services\ItemPreset
  */
-class ItemPresetRequest
+final class ItemPresetRequest
 {
     /**
      * @var ItemPresetData

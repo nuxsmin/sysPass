@@ -29,7 +29,10 @@
     "doctrine/common": "~v2.7",
     "guzzlehttp/guzzle": "~6.3",
     "monolog/monolog": "^1.23",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-dom": "*",
+    "ext-gd": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^6",

@@ -29,7 +29,7 @@ namespace SP\Services\Account;
  *
  * @package SP\Account
  */
-class AccountRequest
+final class AccountRequest
 {
     /**
      * @var int

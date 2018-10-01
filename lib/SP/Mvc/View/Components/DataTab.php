@@ -32,7 +32,7 @@ use SP\Mvc\View\Template;
  *
  * @package SP\Mvc\View\Components
  */
-class DataTab
+final class DataTab
 {
     /**
      * @var string

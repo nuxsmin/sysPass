@@ -45,7 +45,7 @@ use SP\Util\Filter;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ItemPresetController extends ControllerBase implements CrudControllerInterface
+final class ItemPresetController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 

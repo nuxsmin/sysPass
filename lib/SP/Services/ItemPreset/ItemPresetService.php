@@ -37,7 +37,7 @@ use SP\Storage\Database\QueryResult;
  *
  * @package SP\Services\Account
  */
-class ItemPresetService extends Service
+final class ItemPresetService extends Service
 {
     /**
      * @var ItemPresetRepository

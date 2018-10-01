@@ -49,13 +49,13 @@
         </div>
 
         <div id="project">
-            <a id="app-info" href="<?php echo $appInfo['appwebsite']; ?>" target="_blank">
-                <?php echo $appInfo['appname'], ' ', $appVersion; ?>
+            <a id="app-info" href="<?php echo $app_website_url; ?>" target="_blank">
+                <?php echo $app_name, ' ', $app_version; ?>
             </a>
             <span for="app-info"
                   class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Ayuda :: FAQ :: Changelog'); ?></span>
             &nbsp;::&nbsp;
-            <a id="app-project" href="<?php echo $appInfo['appblog']; ?>" target="_blank">cygnux.org</a>
+            <a id="app-project" href="<?php echo $app_blog_url; ?>" target="_blank">cygnux.org</a>
             <span for="app-project"
                   class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Un proyecto de cygnux.org'); ?></span>
         </div>

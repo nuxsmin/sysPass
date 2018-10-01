@@ -26,6 +26,7 @@ namespace SP\Services\Mail;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Bootstrap;
+use SP\Core\AppInfoInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
@@ -35,7 +36,6 @@ use SP\Providers\Mail\MailProvider;
 use SP\Providers\Mail\MailProviderException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Util\Util;
 
 /**
  * Class MailService
@@ -48,10 +48,6 @@ final class MailService extends Service
      * @var PHPMailer
      */
     protected $mailer;
-    /**
-     * @var array
-     */
-    private $appInfo;
 
     /**
      * Checks mail params by sending a test email
@@ -100,7 +96,7 @@ final class MailService extends Service
         return [
             '',
             '--',
-            sprintf('%s - %s', $this->appInfo['appname'], $this->appInfo['appdesc']),
+            sprintf('%s - %s', AppInfoInterface::APP_NAME, AppInfoInterface::APP_DESC),
             Html::anchorText(Bootstrap::$WEBURI)
         ];
     }
@@ -112,7 +108,7 @@ final class MailService extends Service
      */
     protected function getSubjectForAction($action)
     {
-        return sprintf('%s - %s', $this->appInfo['appname'], $action);
+        return sprintf('%s - %s', AppInfoInterface::APP_NAME, $action);
     }
 
     /**
@@ -189,8 +185,6 @@ final class MailService extends Service
         } else {
             throw new ServiceException(__u('Servicio de correo no disponible'));
         }
-
-        $this->appInfo = Util::getAppInfo();
     }
 
     /**

@@ -5,7 +5,7 @@
 ?>
 <div id="actions" class="installer" align="center">
     <div id="page-title">
-        <h1><?php printf(__('Instalación  %s'), $appVersion); ?></h1>
+        <h1><?php printf(__('Instalación  %s'), $app_version); ?></h1>
     </div>
 
     <?php include $this->includePartial('error-list'); ?>

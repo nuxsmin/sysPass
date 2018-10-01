@@ -29,7 +29,7 @@ namespace SP\Mvc\Controller\Validators;
  *
  * @package SP\Util
  */
-class Validator
+final class Validator
 {
     /**
      * @param string $string

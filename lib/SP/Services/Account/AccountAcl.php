@@ -31,7 +31,7 @@ use SP\Core\Acl\Acl;
  *
  * @package SP\Account
  */
-class AccountAcl
+final class AccountAcl
 {
     /**
      * @var bool

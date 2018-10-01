@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -36,7 +37,6 @@ use SP\Html\DataGrid\DataGridAction;
 use SP\Http\Uri;
 use SP\Plugin\PluginManager;
 use SP\Services\Install\Installer;
-use SP\Util\Util;
 use SP\Util\Version;
 
 /**
@@ -101,8 +101,11 @@ final class LayoutHelper extends HelperBase
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('sk', $this->loggedIn ? $this->context->generateSecurityKey() : '');
-        $this->view->assign('appInfo', Util::getAppInfo());
-        $this->view->assign('appVersion', Installer::VERSION_TEXT);
+        $this->view->assign('app_name', AppInfoInterface::APP_NAME);
+        $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
+        $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
+        $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
+        $this->view->assign('app_version', Installer::VERSION_TEXT);
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
         $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');
@@ -336,7 +339,7 @@ final class LayoutHelper extends HelperBase
                 'route' => Acl::getActionRoute(ActionsInterface::PLUGIN)
             ]);
 
-            $actions[] =  $actionPlugins;
+            $actions[] = $actionPlugins;
         }
 
         if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {

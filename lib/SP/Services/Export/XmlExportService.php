@@ -28,6 +28,7 @@ use DOMXPath;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
+use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
@@ -40,7 +41,6 @@ use SP\Services\Client\ClientService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\Tag\TagService;
-use SP\Util\Util;
 use SP\Util\Version;
 
 defined('APP_ROOT') || die();
@@ -129,7 +129,7 @@ final class XmlExportService extends Service
         $this->configData->setExportHash($exportUniqueHash);
         $this->config->saveConfig($this->configData);
 
-        return $this->exportPath . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+        return $this->exportPath . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '-' . $exportUniqueHash . '.xml';
     }
 
     /**

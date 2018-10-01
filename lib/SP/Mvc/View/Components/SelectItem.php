@@ -29,7 +29,7 @@ namespace SP\Mvc\View\Components;
  *
  * @package SP\Mvc\View\Components
  */
-class SelectItem
+final class SelectItem
 {
     /**
      * @var int

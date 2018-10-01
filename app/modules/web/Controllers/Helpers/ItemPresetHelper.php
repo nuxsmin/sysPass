@@ -38,7 +38,7 @@ use SP\Services\UserGroup\UserGroupService;
  *
  * @package SP\Modules\Web\Controllers\Helpers
  */
-class ItemPresetHelper extends HelperBase
+final class ItemPresetHelper extends HelperBase
 {
     /**
      * @var SelectItemAdapter

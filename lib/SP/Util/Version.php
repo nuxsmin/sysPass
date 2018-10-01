@@ -31,9 +31,8 @@ use SP\Services\Install\Installer;
  *
  * @package SP\Util
  */
-class Version
+final class Version
 {
-
     /**
      * Devolver versión normalizada en cadena
      *

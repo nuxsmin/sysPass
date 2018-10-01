@@ -83,7 +83,7 @@
 
     <?php if (isset($useMenu) && $loggedIn): ?>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title"><?php echo $appInfo['appname']; ?></span>
+            <span class="mdl-layout-title"><?php echo $app_name; ?></span>
             <nav class="mdl-navigation">
                 <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
                 foreach ($actions as $action): ?>
@@ -165,7 +165,7 @@
                         <span class="status-info"><?php echo __('Demo'); ?></span>
                     <?php endif; ?>
 
-                    <?php echo $appInfo['appname'], ' ', $appVersion; ?>
+                    <?php echo $app_name, ' ', $app_version; ?>
                 </a>
             </nav>
         </div>
