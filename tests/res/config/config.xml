@@ -9,11 +9,11 @@
   <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
   <authBasicDomain></authBasicDomain>
   <authBasicEnabled>1</authBasicEnabled>
-  <backup_hash>f68384d4b83f454a5883da0127585c3280e537fb</backup_hash>
+  <backup_hash>31886087e728255b01dbce0c08ff2e54b5b633e2</backup_hash>
   <checkUpdates>0</checkUpdates>
   <checknotices>0</checknotices>
-  <configDate>1535914890</configDate>
-  <configHash>f161c2620dd57aaf1b937bfef0a3a0d892d533bd</configHash>
+  <configDate>1538352842</configDate>
+  <configHash>c82c662c26a397798f8bf984cf5492c890571974</configHash>
   <configSaver></configSaver>
   <configVersion></configVersion>
   <databaseVersion></databaseVersion>
@@ -32,7 +32,7 @@
   <dokuwikiUrlBase></dokuwikiUrlBase>
   <dokuwikiUser></dokuwikiUser>
   <encryptSession>0</encryptSession>
-  <export_hash>0dc631329a819b0e553a12ce94eb6adab4cc77ed</export_hash>
+  <export_hash>aab488455bd1e70816a491b44b1be68f34e79618</export_hash>
   <filesAllowedExts>
     <item type="filesAllowedExts">PDF</item>
     <item type="filesAllowedExts">JPG</item>
@@ -64,7 +64,7 @@
   <ldapGroup></ldapGroup>
   <ldapProxyUser></ldapProxyUser>
   <ldapServer></ldapServer>
-  <ldapUserattr></ldapUserattr>
+  <ldapTlsEnabled>0</ldapTlsEnabled>
   <logEnabled>1</logEnabled>
   <logEvents></logEvents>
   <mailAuthenabled>0</mailAuthenabled>

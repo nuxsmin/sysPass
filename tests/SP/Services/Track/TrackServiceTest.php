@@ -197,4 +197,19 @@ class TrackServiceTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$service->getTracksForClientFromTime($data));
     }
+
+    public function testClear()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testUnlock()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testSearch()
+    {
+        $this->markTestIncomplete();
+    }
 }

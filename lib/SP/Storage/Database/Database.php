@@ -278,9 +278,10 @@ final class Database implements DatabaseInterface
     private function getParamsForCount(QueryData $queryData)
     {
         $countSelect = substr_count($queryData->getSelect(), '?');
+        $countFrom = substr_count($queryData->getFrom(), '?');
         $countWhere = substr_count($queryData->getWhere(), '?');
 
-        return array_slice($queryData->getParams(), $countSelect, $countWhere);
+        return array_slice($queryData->getParams(), $countSelect, $countFrom + $countWhere);
     }
 
     /**

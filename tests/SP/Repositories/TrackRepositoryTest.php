@@ -78,6 +78,7 @@ class TrackRepositoryTest extends DatabaseTestCase
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function testGetById()
     {
@@ -125,6 +126,7 @@ class TrackRepositoryTest extends DatabaseTestCase
     /**
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function testGetAll()
     {
@@ -173,5 +175,20 @@ class TrackRepositoryTest extends DatabaseTestCase
         $result = self::$repository->getTracksForClientFromTime($data);
 
         $this->assertEquals(0, $result->getNumRows());
+    }
+
+    public function testClear()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testUnlock()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testSearch()
+    {
+        $this->markTestIncomplete();
     }
 }
