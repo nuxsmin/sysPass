@@ -45,17 +45,6 @@
         </div>
 
         <div class="search-filters">
-            <?php if ($showGlobalSearch && !$isAdmin): ?>
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="globalSearch"
-                       title="<?php echo __('Búsqueda global'); ?>">
-                    <input type="checkbox" id="globalSearch" class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="chkgsearch" tabindex="2"
-                        <?php echo $searchGlobal ? 'checked="checked"' : ''; ?>/>
-                    <span class="mdl-switch__label" title="<?php echo __('Búsqueda global'); ?>"></span>
-                </label>
-                <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
-            <?php endif; ?>
-
             <select id="client" name="client" class="select-box select-box-deselect" tabindex="3">
                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
@@ -76,6 +65,20 @@
         </div>
 
         <div class="search-filters">
+
+            <div class="filter-buttons">
+                <?php if ($showGlobalSearch && !$isAdmin): ?>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="globalSearch"
+                           title="<?php echo __('Búsqueda global'); ?>">
+                        <input type="checkbox" id="globalSearch" class="mdl-switch__input mdl-color-text--indigo-400"
+                               name="chkgsearch" tabindex="2"
+                            <?php echo $searchGlobal ? 'checked="checked"' : ''; ?>/>
+                        <span class="mdl-switch__label" title="<?php echo __('Búsqueda global'); ?>"></span>
+                    </label>
+                    <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
+                <?php endif; ?>
+            </div>
+
             <div class="filter-buttons">
                 <button type="button" id="btn-favorite"
                         class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
@@ -92,6 +95,7 @@
                 <span for="btn-reset"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
             </div>
+            
             <div class="filter-buttons filter-slider">
                 <span id="txt-slider"></span>
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"

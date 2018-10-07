@@ -198,6 +198,9 @@ final class UserPassService extends Service
 
             $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());
 
+            // Update the time when master password was set
+            $this->context->getUserData()->setLastUpdateMPass(time());
+
             $this->setMasterKeyInContext($userMPass);
 
             return $response;

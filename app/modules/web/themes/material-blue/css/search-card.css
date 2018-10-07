@@ -3,7 +3,7 @@
 #content #data-search {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
   text-align: center;
   padding: 0.5em 0;
   width: 100%;
