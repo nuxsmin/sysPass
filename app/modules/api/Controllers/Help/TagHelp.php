@@ -58,6 +58,18 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
+    public static function edit()
+    {
+        return
+            [
+                self::getItem('id', __('Id de etiqueta'), true),
+                self::getItem('name', __('Nombre de la etiqueta'), true)
+            ];
+    }
+
+    /**
+     * @return array
+     */
     public static function search()
     {
         return

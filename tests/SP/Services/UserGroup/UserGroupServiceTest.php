@@ -164,6 +164,7 @@ class UserGroupServiceTest extends DatabaseTestCase
         $data->setId(2);
         $data->setName('Test group');
         $data->setDescription('Group for demo users');
+        $data->setUsers([2]);
 
         self::$service->update($data);
 
@@ -209,6 +210,7 @@ class UserGroupServiceTest extends DatabaseTestCase
         $data->setId(6);
         $data->setName('Test group');
         $data->setDescription('Group for demo users');
+        $data->setUsers([2]);
 
         $this->assertEquals($data->getId(), self::$service->create($data));
 

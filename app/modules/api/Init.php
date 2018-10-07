@@ -25,6 +25,7 @@
 namespace SP\Modules\Api;
 
 use Psr\Container\ContainerInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
@@ -68,9 +69,11 @@ final class Init extends ModuleBase
     /**
      * @param string $controller
      *
+     * @throws ContextException
      * @throws InitializationException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Context\ContextException
      */
     public function initialize($controller)
     {

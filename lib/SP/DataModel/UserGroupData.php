@@ -48,7 +48,7 @@ class UserGroupData extends DataModelBase implements DataModelInterface
     /**
      * @var array
      */
-    public $users = [];
+    public $users;
 
     /**
      * @return int
@@ -87,7 +87,7 @@ class UserGroupData extends DataModelBase implements DataModelInterface
      */
     public function getUsers()
     {
-        return is_array($this->users) ? $this->users : [];
+        return $this->users;
     }
 
     /**

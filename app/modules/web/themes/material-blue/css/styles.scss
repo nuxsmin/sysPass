@@ -234,41 +234,7 @@
     }
     .account-permissions {
       width: 100%;
-      .tag-list-box {
-        margin-bottom: 1em;
-        .tag-list-header {
-          text-align: left;
-          border-bottom: 1px solid #d9d9d9;
-          color: $color-bluegrey-fg;
-          font-size: 12px;
-          font-weight: bold;
-          margin-bottom: .5em;
-        }
-        .tag-list-body {
-          .tags-list-items {
-            display: inline-block;
-            padding: .5em;
-            width: 95%;
-            height: 3em;
-            border: 1px solid #cccccc;
-            @include border-radius(3px);
-          }
-        }
-        i.select-icon {
-          margin-right: .5em;
-          color: $color-bluegrey-fg;
-          font-size: 18px;
-        }
-      }
     }
-  }
-  span.tag {
-    margin: 0 3px 3px 0;
-    padding: 3px;
-    background: $color-indigo-fg;
-    color: #fff;
-    border: 0 solid rgba(0, 0, 0, 0);
-    @include border-radius(3px);
   }
   .extra-info {
     margin-top: 20px;
@@ -1176,6 +1142,44 @@ fieldset.warning {
   text-align: center;
   margin: 1em 0;
   font-size: 1.5em;
+}
+
+div.tag-list-box {
+  margin-bottom: 1em;
+  .tag-list-header {
+    text-align: left;
+    border-bottom: 1px solid #d9d9d9;
+    color: $color-bluegrey-fg;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: .5em;
+  }
+  .tag-list-body {
+    .tags-list-items {
+      display: inline-block;
+      padding: .5em;
+      width: 95%;
+      height: 3em;
+      border-bottom: 1px solid rgba(0, 0, 0, .12);
+      @include border-radius(3px);
+    }
+  }
+  i.select-icon {
+    margin-right: .5em;
+    color: $color-bluegrey-fg;
+    font-size: 18px;
+  }
+}
+
+div.tag-list-box, div.tags-box {
+  span.tag {
+    margin: 0 3px 3px 0;
+    padding: 3px;
+    background: $color-indigo-fg;
+    color: #fff;
+    border: none;
+    @include border-radius(3px);
+  }
 }
 
 @import "login";

@@ -276,7 +276,13 @@ final class ApiService extends Service
      */
     public function getParamArray($param, $required = false, $default = null)
     {
-        return Filter::getArray($this->getParam($param, $required, $default));
+        $array = $this->getParam($param, $required, $default);
+
+        if ($array !== null) {
+            return Filter::getArray($array);
+        }
+
+        return $array;
     }
 
     /**

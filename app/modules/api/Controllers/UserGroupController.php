@@ -28,22 +28,22 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\TagData;
+use SP\DataModel\UserGroupData;
 use SP\Modules\Api\Controllers\Help\TagHelp;
 use SP\Services\Api\ApiResponse;
-use SP\Services\Tag\TagService;
+use SP\Services\UserGroup\UserGroupService;
 
 /**
- * Class TagController
+ * Class UserGroupController
  *
  * @package SP\Modules\Api\Controllers
  */
-final class TagController extends ControllerBase
+final class UserGroupController extends ControllerBase
 {
     /**
-     * @var TagService
+     * @var UserGroupService
      */
-    private $tagService;
+    private $userGroupService;
 
     /**
      * viewAction
@@ -51,19 +51,19 @@ final class TagController extends ControllerBase
     public function viewAction()
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_VIEW);
+            $this->setupApi(ActionsInterface::GROUP_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
-            $tagData = $this->tagService->getById($id);
+            $userGroupData = $this->userGroupService->getById($id);
 
-            $this->eventDispatcher->notifyEvent('show.tag',
+            $this->eventDispatcher->notifyEvent('show.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Etiqueta visualizada'))
-                    ->addDetail(__u('Nombre'), $tagData->getName())
+                    ->addDescription(__u('Grupo visualizado'))
+                    ->addDetail(__u('Nombre'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id));
         } catch (\Exception $e) {
             processException($e);
 
@@ -77,21 +77,23 @@ final class TagController extends ControllerBase
     public function createAction()
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_CREATE);
+            $this->setupApi(ActionsInterface::GROUP_CREATE);
 
-            $tagData = new TagData();
-            $tagData->setName($this->apiService->getParamString('name', true));
+            $userGroupData = new UserGroupData();
+            $userGroupData->setName($this->apiService->getParamString('name', true));
+            $userGroupData->setDescription($this->apiService->getParamString('description'));
+            $userGroupData->setUsers($this->apiService->getParamArray('usersId'));
 
-            $id = $this->tagService->create($tagData);
+            $id = $this->userGroupService->create($userGroupData);
 
-            $this->eventDispatcher->notifyEvent('create.tag',
+            $this->eventDispatcher->notifyEvent('create.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Etiqueta creada'))
-                    ->addDetail(__u('Nombre'), $tagData->getName())
+                    ->addDescription(__u('Grupo creado'))
+                    ->addDetail(__u('Nombre'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Etiqueta creada')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Grupo creado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -105,22 +107,24 @@ final class TagController extends ControllerBase
     public function editAction()
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_EDIT);
+            $this->setupApi(ActionsInterface::GROUP_EDIT);
 
-            $tagData = new TagData();
-            $tagData->setId($this->apiService->getParamInt('id', true));
-            $tagData->setName($this->apiService->getParamString('name', true));
+            $userGroupData = new UserGroupData();
+            $userGroupData->setId($this->apiService->getParamInt('id', true));
+            $userGroupData->setName($this->apiService->getParamString('name', true));
+            $userGroupData->setDescription($this->apiService->getParamString('description'));
+            $userGroupData->setUsers($this->apiService->getParamArray('usersId'));
 
-            $this->tagService->update($tagData);
+            $this->userGroupService->update($userGroupData);
 
-            $this->eventDispatcher->notifyEvent('edit.tag',
+            $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Etiqueta actualizada'))
-                    ->addDetail(__u('Nombre'), $tagData->getName())
-                    ->addDetail('ID', $tagData->getId()))
+                    ->addDescription(__u('Grupo actualizado'))
+                    ->addDetail(__u('Nombre'), $userGroupData->getName())
+                    ->addDetail('ID', $userGroupData->getId()))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Etiqueta actualizada')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Grupo actualizado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -134,22 +138,22 @@ final class TagController extends ControllerBase
     public function deleteAction()
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_DELETE);
+            $this->setupApi(ActionsInterface::GROUP_DELETE);
 
             $id = $this->apiService->getParamInt('id', true);
 
-            $tagData = $this->tagService->getById($id);
+            $userGroupData = $this->userGroupService->getById($id);
 
-            $this->tagService->delete($id);
+            $this->userGroupService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.tag',
+            $this->eventDispatcher->notifyEvent('delete.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Etiqueta eliminada'))
-                    ->addDetail(__u('Nombre'), $tagData->getName())
+                    ->addDescription(__u('Grupo eliminado'))
+                    ->addDetail(__u('Nombre'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Etiqueta eliminada')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Grupo eliminado')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -163,15 +167,15 @@ final class TagController extends ControllerBase
     public function searchAction()
     {
         try {
-            $this->setupApi(ActionsInterface::TAG_SEARCH);
+            $this->setupApi(ActionsInterface::GROUP_SEARCH);
 
             $itemSearchData = new ItemSearchData();
             $itemSearchData->setSeachString($this->apiService->getParamString('text'));
             $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
 
-            $this->eventDispatcher->notifyEvent('search.tag', new Event($this));
+            $this->eventDispatcher->notifyEvent('search.userGroup', new Event($this));
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->tagService->search($itemSearchData)->getDataAsArray()));
+            $this->returnResponse(ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray()));
         } catch (\Exception $e) {
             processException($e);
 
@@ -186,7 +190,7 @@ final class TagController extends ControllerBase
      */
     protected function initialize()
     {
-        $this->tagService = $this->dic->get(TagService::class);
+        $this->userGroupService = $this->dic->get(UserGroupService::class);
         $this->apiService->setHelpClass(TagHelp::class);
     }
 }

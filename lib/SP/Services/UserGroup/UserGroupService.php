@@ -80,7 +80,10 @@ final class UserGroupService extends Service
             throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
         }
 
-        return $result->getData();
+        $data = $result->getData(UserGroupData::class);
+        $data->setUsers($this->userToUserGroupService->getUsersByGroupId($id));
+
+        return $data;
     }
 
     /**
@@ -126,8 +129,10 @@ final class UserGroupService extends Service
         return $this->transactionAware(function () use ($itemData) {
             $id = $this->userGroupRepository->create($itemData);
 
-            if (count($itemData->getUsers()) > 0) {
-                $this->userToUserGroupService->add($id, $itemData->getUsers());
+            $users = $itemData->getUsers();
+
+            if ($users !== null) {
+                $this->userToUserGroupService->add($id, $users);
             }
 
             return $id;
@@ -144,7 +149,11 @@ final class UserGroupService extends Service
         $this->transactionAware(function () use ($itemData) {
             $this->userGroupRepository->update($itemData);
 
-            $this->userToUserGroupService->update($itemData->getId(), $itemData->getUsers());
+            $users = $itemData->getUsers();
+
+            if ($users !== null) {
+                $this->userToUserGroupService->update($itemData->getId(), $users);
+            }
         });
     }
 

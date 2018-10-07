@@ -89,6 +89,11 @@ final class AuthTokenService extends Service
             ActionsInterface::TAG_CREATE => Acl::getActionInfo(ActionsInterface::TAG_CREATE),
             ActionsInterface::TAG_EDIT => Acl::getActionInfo(ActionsInterface::TAG_EDIT),
             ActionsInterface::TAG_DELETE => Acl::getActionInfo(ActionsInterface::TAG_DELETE),
+            ActionsInterface::GROUP_VIEW => Acl::getActionInfo(ActionsInterface::GROUP_VIEW),
+            ActionsInterface::GROUP_CREATE => Acl::getActionInfo(ActionsInterface::GROUP_CREATE),
+            ActionsInterface::GROUP_EDIT => Acl::getActionInfo(ActionsInterface::GROUP_EDIT),
+            ActionsInterface::GROUP_DELETE => Acl::getActionInfo(ActionsInterface::GROUP_DELETE),
+            ActionsInterface::GROUP_SEARCH => Acl::getActionInfo(ActionsInterface::GROUP_SEARCH),
             ActionsInterface::CONFIG_BACKUP_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_BACKUP_RUN),
             ActionsInterface::CONFIG_EXPORT_RUN => Acl::getActionInfo(ActionsInterface::CONFIG_EXPORT_RUN)
         ];

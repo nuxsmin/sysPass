@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 use SP\Http\JsonResponse;
@@ -61,7 +62,10 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Search action
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @return bool
+     * @throws ConstraintException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
@@ -81,7 +85,9 @@ final class UserGroupController extends ControllerBase implements CrudController
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
@@ -125,7 +131,7 @@ final class UserGroupController extends ControllerBase implements CrudController
      *
      * @param $userGroupId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Repositories\NoSuchItemException
@@ -134,10 +140,15 @@ final class UserGroupController extends ControllerBase implements CrudController
     {
         $this->view->addTemplate('user_group', 'itemshow');
 
-        $group = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
+        $userGroupData = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 
-        $this->view->assign('group', $group);
-        $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected($this->userToUserGroupService->getUsersByGroupId($userGroupId)));
+        $this->view->assign('group', $userGroupData);
+
+        $users = $userGroupData->getUsers() ?: [];
+
+        $this->view->assign('users',
+            SelectItemAdapter::factory(UserService::getItemsBasic())
+                ->getItemsFromModelSelected($users));
         $this->view->assign('usedBy', $this->userGroupService->getUsageByUsers($userGroupId));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
@@ -344,6 +355,5 @@ final class UserGroupController extends ControllerBase implements CrudController
         $this->checkLoggedIn();
 
         $this->userGroupService = $this->dic->get(UserGroupService::class);
-        $this->userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
     }
 }

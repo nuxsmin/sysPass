@@ -59,6 +59,19 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
+    public static function edit()
+    {
+        return
+            [
+                self::getItem('id', __('Id de categoría'), true),
+                self::getItem('name', __('Nombre de la categoría'), true),
+                self::getItem('description', __('Descripción de la categoría'))
+            ];
+    }
+
+    /**
+     * @return array
+     */
     public static function search()
     {
         return

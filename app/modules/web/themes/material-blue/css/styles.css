@@ -380,37 +380,6 @@ body.userpassreset {
     display: none; }
   #content .data .account-permissions {
     width: 100%; }
-    #content .data .account-permissions .tag-list-box {
-      margin-bottom: 1em; }
-      #content .data .account-permissions .tag-list-box .tag-list-header {
-        text-align: left;
-        border-bottom: 1px solid #d9d9d9;
-        color: #607d8b;
-        font-size: 12px;
-        font-weight: bold;
-        margin-bottom: .5em; }
-      #content .data .account-permissions .tag-list-box .tag-list-body .tags-list-items {
-        display: inline-block;
-        padding: .5em;
-        width: 95%;
-        height: 3em;
-        border: 1px solid #cccccc;
-        border-radius: 3px !important;
-        -moz-border-radius: 3px !important;
-        -webkit-border-radius: 3px !important; }
-      #content .data .account-permissions .tag-list-box i.select-icon {
-        margin-right: .5em;
-        color: #607d8b;
-        font-size: 18px; }
-#content span.tag {
-  margin: 0 3px 3px 0;
-  padding: 3px;
-  background: #5c6bc0;
-  color: #fff;
-  border: 0 solid transparent;
-  border-radius: 3px !important;
-  -moz-border-radius: 3px !important;
-  -webkit-border-radius: 3px !important; }
 #content .extra-info {
   margin-top: 20px; }
 #content #tabs fieldset {
@@ -1152,6 +1121,39 @@ fieldset.warning {
   text-align: center;
   margin: 1em 0;
   font-size: 1.5em; }
+
+div.tag-list-box {
+  margin-bottom: 1em; }
+  div.tag-list-box .tag-list-header {
+    text-align: left;
+    border-bottom: 1px solid #d9d9d9;
+    color: #607d8b;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: .5em; }
+  div.tag-list-box .tag-list-body .tags-list-items {
+    display: inline-block;
+    padding: .5em;
+    width: 95%;
+    height: 3em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 3px !important;
+    -moz-border-radius: 3px !important;
+    -webkit-border-radius: 3px !important; }
+  div.tag-list-box i.select-icon {
+    margin-right: .5em;
+    color: #607d8b;
+    font-size: 18px; }
+
+div.tag-list-box span.tag, div.tags-box span.tag {
+  margin: 0 3px 3px 0;
+  padding: 3px;
+  background: #5c6bc0;
+  color: #fff;
+  border: none;
+  border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  -webkit-border-radius: 3px !important; }
 
 #box-pub-noheader #box-login {
   position: relative;

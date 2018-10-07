@@ -13,7 +13,6 @@
  *
  * @author Brian Reavis <brian@thirdroute.com>
  */
-
 @import "base";
 
 .selectize-control.plugin-drag_drop.multi > .selectize-input > div.ui-sortable-placeholder {
@@ -153,8 +152,8 @@
 }
 
 .selectize-input {
-  border: 1px solid #cccccc;
-  padding: 6px 12px;
+  border-bottom: 1px solid #cccccc;
+  padding: 3px 0;
   display: inline-block;
   width: 300px;
   overflow: hidden;
@@ -165,9 +164,9 @@
   box-sizing: border-box;
   -webkit-box-shadow: none;
   box-shadow: none;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  //-webkit-border-radius: 4px;
+  //-moz-border-radius: 4px;
+  //border-radius: 4px;
 }
 
 .selectize-input.has-items {
@@ -190,14 +189,8 @@
 }
 
 .selectize-input.focus {
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-.selectize-input.dropdown-active {
-  -webkit-border-radius: 4px 4px 0 0;
-  -moz-border-radius: 4px 4px 0 0;
-  border-radius: 4px 4px 0 0;
+  -webkit-box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .selectize-input > * {
@@ -248,6 +241,9 @@
   -webkit-user-select: auto !important;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
+  font-size: 16px;
+  color: #888;
+  color: rgba(0, 0, 0, .5);
 }
 
 .selectize-input > input::-ms-clear {
@@ -380,7 +376,7 @@
 }
 
 .selectize-control .selectize-input.disabled {
-  opacity: 0.5;
+  //opacity: 0.5;
   background-color: #ffffff;
 }
 
@@ -429,13 +425,13 @@
 }
 
 .selectize-input {
-  min-height: 34px;
+  min-height: 30px;
 }
 
 .selectize-input.dropdown-active {
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  //-webkit-border-radius: 4px;
+  //-moz-border-radius: 4px;
+  //border-radius: 4px;
 }
 
 .selectize-input.dropdown-active::before {
@@ -447,9 +443,11 @@
   border-color: $color-bluegrey-fg;
   outline: 0;
   /*-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);*/
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 3px rgba(96, 125, 139, 0.6);
+  //-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 3px rgba(96, 125, 139, 0.6);
+  -webkit-box-shadow: inset 0 -1px 1px rgba(0, 0, 0, .075);
   /*box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);*/
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 3px rgba(96, 125, 139, 0.6);
+  //box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 3px rgba(96, 125, 139, 0.6);
+  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, .075);
 }
 
 .has-error .selectize-input {
@@ -486,4 +484,3 @@
   -moz-border-radius: 0;
   border-radius: 0;
 }
-

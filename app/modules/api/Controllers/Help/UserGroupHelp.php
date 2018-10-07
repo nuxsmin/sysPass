@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,11 +25,11 @@
 namespace SP\Modules\Api\Controllers\Help;
 
 /**
- * Class ClientHelp
+ * Class UserGroupHelp
  *
  * @package SP\Modules\Api\Controllers\Help
  */
-final class ClientHelp implements HelpInterface
+final class UserGroupHelp implements HelpInterface
 {
     use HelpTrait;
 
@@ -40,7 +40,7 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true)
+                self::getItem('id', __('Id de grupo'), true)
             ];
     }
 
@@ -51,9 +51,9 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('name', __('Nombre del cliente'), true),
-                self::getItem('description', __('Descripción del cliente')),
-                self::getItem('global', __('Global'))
+                self::getItem('name', __('Nombre del grupo'), true),
+                self::getItem('description', __('Descripción del grupo')),
+                self::getItem('usersId', __('Array con Ids de usuarios'))
             ];
     }
 
@@ -64,10 +64,10 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true),
-                self::getItem('name', __('Nombre del cliente'), true),
-                self::getItem('description', __('Descripción del cliente')),
-                self::getItem('global', __('Global'))
+                self::getItem('id', __('Id de grupo'), true),
+                self::getItem('name', __('Nombre del grupo'), true),
+                self::getItem('description', __('Descripción del grupo')),
+                self::getItem('usersId', __('Array con Ids de usuarios'))
             ];
     }
 
@@ -90,7 +90,7 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true)
+                self::getItem('id', __('Id de grupo'), true)
             ];
     }
 }

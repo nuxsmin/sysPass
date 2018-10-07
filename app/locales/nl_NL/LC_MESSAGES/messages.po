@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-10-01 00:06+0200\n"
+"POT-Creation-Date: 2018-10-06 12:50+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nlmaca\n"
@@ -10,10 +10,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.11\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
 "X-Poedit-Basepath: .\n"
-"X-Contributors: Marijn van der Kruijt, Nadermane, Niels, Nlmaca, Tom\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../modules\n"
 "X-Poedit-SearchPath-1: ../../../../lib\n"
@@ -77,12 +77,12 @@ msgstr "Niet mogelijk om de  \"%s\" variabele terug te zetten"
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Fout bij het laden van de plugin \"%s\""
 
-#: ../../../../lib/SP/Providers/Mail/MailHandler.php:87
+#: ../../../../lib/SP/Providers/Mail/MailHandler.php:124
 #, php-format
 msgid "Realizado por: %s (%s)"
 msgstr "Uitgevoerd door: %s (%s)"
 
-#: ../../../../lib/SP/Providers/Mail/MailHandler.php:88
+#: ../../../../lib/SP/Providers/Mail/MailHandler.php:125
 #, fuzzy, php-format
 msgid "Dirección IP: %s"
 msgstr "IP Adres /%"
@@ -95,7 +95,7 @@ msgstr "Verzoek"
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:125
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:156
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:74
-#: ../../../modules/web/Controllers/ConfigManagerController.php:172
+#: ../../../modules/web/Controllers/ConfigManagerController.php:171
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:86
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:20
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:389
@@ -126,12 +126,12 @@ msgstr "Geupdate accounts: %d / %d - %d%% - VTA: %ds (%.2f/s)"
 msgid "N/D"
 msgstr "N/A"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:135
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:133
 #, php-format
 msgid "No es posible crear el directorio de backups (\"%s\")"
 msgstr "Kan backups map (\"%s\") niet aanmaken."
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:297
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:295
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:9
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:5
 #: ../../../modules/web/themes/material-blue/views/config/general-site.inc:10
@@ -147,12 +147,12 @@ msgstr "The '%s' extension is unavailable"
 msgid "Parámetro no encontrado (%s)"
 msgstr "Parameter not found (%s)"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:212
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "hoofdwachtwoord %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:214
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -160,17 +160,17 @@ msgstr ""
 "Er is een nieuw hoofdwachtwoord gemaakt voor sysPass, dus de volgende keer "
 "dat u zich aanmeldt wordt het gevraagd."
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:215
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:216
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "Het nieuwe hoofdwachtwoord %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:217
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:218
 #, php-format
 msgid "Esta clave estará activa hasta: %s"
 msgstr "This password will be valid until: %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:219
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:220
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr "Vergeet niet u spoedig aan te melden om de wijzigingen op te slaan."
 
@@ -310,6 +310,18 @@ msgstr "Om door te kunnen gaan, dient u naar de volgende URL te gaan:"
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "Indien deze actie niet door u is aangevraagd, negeer dan dit bericht."
 
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApi.php:68
+msgid "Fallo de autentificación"
+msgstr "Authenticatiefout"
+
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApiBase.php:196
+msgid "Error al realizar la consulta"
+msgstr "Fout bij het uitvoeren van de query"
+
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApiBase.php:228
+msgid "URL de conexión no establecida"
+msgstr "Verbinding URL niet ingesteld"
+
 #: ../../../../lib/SP/Storage/File/FileCachePacked.php:57
 #, php-format
 msgid "Error al descomprimir datos del archivo (%s)"
@@ -416,18 +428,6 @@ msgstr "Herstart sessie om bij te werken"
 msgid "Se ha producido una excepción"
 msgstr "Er is een uitzondering opgetreden"
 
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApi.php:70
-msgid "Fallo de autentificación"
-msgstr "Authenticatiefout"
-
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApiBase.php:194
-msgid "Error al realizar la consulta"
-msgstr "Fout bij het uitvoeren van de query"
-
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApiBase.php:226
-msgid "URL de conexión no establecida"
-msgstr "Verbinding URL niet ingesteld"
-
 #: ../../../modules/api/Controllers/AccountController.php:144
 msgid "Clave actualizada"
 msgstr "Wachtwoord bijgewerkt"
@@ -445,15 +445,15 @@ msgstr "Account bijgewerkt"
 msgid "Cuenta eliminada"
 msgstr "Account verwijderd"
 
-#: ../../../modules/api/Controllers/CategoryController.php:95
+#: ../../../modules/api/Controllers/CategoryController.php:96
 msgid "Categoría creada"
 msgstr "Categorie toegevoegd"
 
-#: ../../../modules/api/Controllers/CategoryController.php:125
+#: ../../../modules/api/Controllers/CategoryController.php:126
 msgid "Categoría actualizada"
 msgstr "Categorie bijgewerkt"
 
-#: ../../../modules/api/Controllers/CategoryController.php:154
+#: ../../../modules/api/Controllers/CategoryController.php:155
 msgid "Categoría eliminada"
 msgstr "Categorie verwijderd"
 
@@ -555,14 +555,16 @@ msgstr "Account naam"
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:83
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:106
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:43
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:78
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:66
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:91
 msgid "Id de categoría"
 msgstr "Categorie Id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:84
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:107
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:43
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:79
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:67
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:93
 #, fuzzy
 msgid "Id de cliente"
 msgstr "Klant Id"
@@ -618,17 +620,19 @@ msgid "Array con Ids de etiquetas"
 msgstr "Array with tags id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:126
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:66
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:67
-#: ../../../modules/api/Controllers/Help/TagHelp.php:65
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:79
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:81
+#: ../../../modules/api/Controllers/Help/TagHelp.php:77
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:81
 #: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:16
 msgid "Texto a buscar"
 msgstr "Zoek naar tekst"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:127
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:67
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:68
-#: ../../../modules/api/Controllers/Help/TagHelp.php:66
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:80
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:82
+#: ../../../modules/api/Controllers/Help/TagHelp.php:78
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:82
 msgid "Número de resultados a mostrar"
 msgstr "Aantal weer te geven resultaten"
 
@@ -650,28 +654,33 @@ msgid "Operador de filtrado"
 msgstr "Filtering operator"
 
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:54
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:23
 msgid "Nombre de la categoría"
 msgstr "Categorie Naam"
 
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:55
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:68
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:35
 msgid "Descripción de la categoría"
 msgstr "Categorie Omschrijving"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:54
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:68
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:26
 #, fuzzy
 msgid "Nombre del cliente"
 msgstr "Klantnaam"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:55
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:69
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:39
 #, fuzzy
 msgid "Descripción del cliente"
 msgstr "Klant omschrijving"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:56
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:70
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:102
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:142
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:62
@@ -685,26 +694,63 @@ msgid "Ruta"
 msgstr "Path"
 
 #: ../../../modules/api/Controllers/Help/TagHelp.php:43
-#: ../../../modules/api/Controllers/Help/TagHelp.php:77
+#: ../../../modules/api/Controllers/Help/TagHelp.php:65
+#: ../../../modules/api/Controllers/Help/TagHelp.php:89
 msgid "Id de etiqueta"
 msgstr "Tag Id"
 
 #: ../../../modules/api/Controllers/Help/TagHelp.php:54
+#: ../../../modules/api/Controllers/Help/TagHelp.php:66
 #: ../../../modules/web/themes/material-blue/views/itemshow/tag.inc:23
 msgid "Nombre de la etiqueta"
 msgstr "Tag naam"
 
-#: ../../../modules/api/Controllers/TagController.php:92
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:43
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:67
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:93
+msgid "Id de grupo"
+msgstr "Group Id"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:54
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:68
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:26
+msgid "Nombre del grupo"
+msgstr "Groep naam"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:55
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:69
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:39
+msgid "Descripción del grupo"
+msgstr "Groep omschrijving"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:56
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:70
+msgid "Array con Ids de usuarios"
+msgstr "Array with users Id"
+
+#: ../../../modules/api/Controllers/TagController.php:94
 msgid "Etiqueta creada"
 msgstr "Label toegevoegd"
 
-#: ../../../modules/api/Controllers/TagController.php:121
+#: ../../../modules/api/Controllers/TagController.php:123
 msgid "Etiqueta actualizada"
 msgstr "Label geupdate"
 
-#: ../../../modules/api/Controllers/TagController.php:149
+#: ../../../modules/api/Controllers/TagController.php:152
 msgid "Etiqueta eliminada"
 msgstr "Label verwijderd"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:96
+msgid "Grupo creado"
+msgstr "Groep toegevoegd"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:127
+msgid "Grupo actualizado"
+msgstr "Groep bijgewerkt"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:156
+msgid "Grupo eliminado"
+msgstr "Groep verwijderd"
 
 #: ../../../modules/web/Controllers/AccountController.php:149
 #: ../../../modules/web/Controllers/AccountController.php:204
@@ -719,7 +765,7 @@ msgstr "Account details"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountController.php:256
 #: ../../../modules/web/Controllers/AccountController.php:300
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:276
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:278
 #: ../../../config/actions.xml:157
 msgid "Nueva Cuenta"
 msgstr "Nieuw Account"
@@ -852,7 +898,7 @@ msgstr "Imported users: %d / %d"
 msgid "Errores: %d"
 msgstr "Errors: %d"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:158
+#: ../../../modules/web/Controllers/ConfigManagerController.php:157
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:131
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:12
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
@@ -860,60 +906,60 @@ msgid "General"
 msgstr "Algemeen"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ConfigManagerController.php:187
+#: ../../../modules/web/Controllers/ConfigManagerController.php:186
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:26
 #: ../../../config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:206
+#: ../../../modules/web/Controllers/ConfigManagerController.php:205
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:232
+#: ../../../modules/web/Controllers/ConfigManagerController.php:231
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:10
 msgid "Correo"
 msgstr "Email"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:269
+#: ../../../modules/web/Controllers/ConfigManagerController.php:268
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
 msgid "Encriptación"
 msgstr "Encryptie"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:309
+#: ../../../modules/web/Controllers/ConfigManagerController.php:308
 msgid "Último backup"
 msgstr "Laatste backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:309
+#: ../../../modules/web/Controllers/ConfigManagerController.php:308
 #, fuzzy
 msgid "No se encontraron backups"
 msgstr "Er zijn geen backups beschikbaar"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:321
+#: ../../../modules/web/Controllers/ConfigManagerController.php:320
 msgid "Última exportación"
 msgstr "Laatste export"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:321
+#: ../../../modules/web/Controllers/ConfigManagerController.php:320
 msgid "No se encontró archivo de exportación"
 msgstr "Geen export bestand gevonden"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ConfigManagerController.php:323
+#: ../../../modules/web/Controllers/ConfigManagerController.php:322
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:17
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:70
 #: ../../../config/actions.xml:727
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:340
+#: ../../../modules/web/Controllers/ConfigManagerController.php:339
 msgid "Importar Cuentas"
 msgstr "Importeer Accounts"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:358
+#: ../../../modules/web/Controllers/ConfigManagerController.php:357
 msgid "No instalado"
 msgstr "Niet geïnstalleerd"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:362
+#: ../../../modules/web/Controllers/ConfigManagerController.php:361
 msgid "Información"
 msgstr "Informatie"
 
@@ -1388,8 +1434,8 @@ msgstr "Zoeken naar Gebeurtenis"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:182
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:183
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:159
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:160
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:178
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:179
 msgid "Refrescar"
 msgstr "Refresh"
 
@@ -1616,7 +1662,7 @@ msgid "Eliminar Notificación"
 msgstr "Verwijder Notificatie"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:89
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:332
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:334
 #: ../../../modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
@@ -1767,7 +1813,7 @@ msgid "Origen"
 msgstr "Doel"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:143
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
 #: ../../../config/actions.xml:883
 msgid "Buscar Track"
 msgstr "Search for track"
@@ -1829,7 +1875,7 @@ msgstr "Zoeken naar Groep"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:148
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:149
-#: ../../../modules/web/Controllers/UserGroupController.php:106
+#: ../../../modules/web/Controllers/UserGroupController.php:112
 #: ../../../config/actions.xml:607
 msgid "Nuevo Grupo"
 msgstr "Nieuwe Groep"
@@ -1837,7 +1883,7 @@ msgstr "Nieuwe Groep"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:166
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:167
-#: ../../../modules/web/Controllers/UserGroupController.php:319
+#: ../../../modules/web/Controllers/UserGroupController.php:327
 #: ../../../config/actions.xml:601
 msgid "Ver Grupo"
 msgstr "Bekijk Groep"
@@ -1845,7 +1891,7 @@ msgstr "Bekijk Groep"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:183
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:184
-#: ../../../modules/web/Controllers/UserGroupController.php:171
+#: ../../../modules/web/Controllers/UserGroupController.php:179
 #: ../../../config/actions.xml:613
 msgid "Editar Grupo"
 msgstr "Wijzig Broep"
@@ -1896,12 +1942,12 @@ msgstr "Wijzig Profiel"
 msgid "Eliminar Perfil"
 msgstr "Verwijder Profiel"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:263
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:265
 msgid "Buscar"
 msgstr "zoek"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:346
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:348
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
 #: ../../../config/actions.xml:679
@@ -2745,7 +2791,7 @@ msgstr "Resultaat like Kaarten"
 #, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr ""
-" Maakt het mogelijk rekening te houden met de zoekresultaten als een "
+"Maakt het mogelijk rekening te houden met de zoekresultaten als een "
 "kaartformaat te laten zien."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:179
@@ -3106,7 +3152,7 @@ msgid ""
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
 "la clave maestra original."
 msgstr ""
-" Het tijdelijke wachtwoord wordt gebruikt als een hoofdwachtwoord voor de "
+"Het tijdelijke wachtwoord wordt gebruikt als een hoofdwachtwoord voor de "
 "gebruikers die dit moeten invoeren bij het inloggen. Hierdoor is het niet "
 "nodig om hen het echte Master Password te vertellen."
 
@@ -3388,12 +3434,12 @@ msgstr "Standaard Gebruiker"
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:21
 #, fuzzy
 msgid "Define el usuario por defecto para las cuentas importadas."
-msgstr " Bepaalt de standaard gebruiker voor de geïmporteerde accounts."
+msgstr "Bepaalt de standaard gebruiker voor de geïmporteerde accounts."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:48
 #, fuzzy
 msgid "Define el grupo por defecto para las cuentas importadas."
-msgstr " Bepaalt de standaard groep voor de geïmporteerde accounts."
+msgstr "Bepaalt de standaard groep voor de geïmporteerde accounts."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:70
 msgid "Archivo"
@@ -3420,11 +3466,10 @@ msgstr ""
 "CSV -bestanden."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:107
-#, fuzzy
 msgid ""
 "Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
 "flecha."
-msgstr " Drag & Drop het bestand naar de import zone of klik op de pijl."
+msgstr "Drag & Drop het bestand naar de import zone of klik op de pijl."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:109
 #, fuzzy
@@ -3432,8 +3477,8 @@ msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
 msgstr ""
-" Voor KeePass of KeePassX bestanden, zal de naam van de klant zijn KeePass "
-"of KeePassX en de categorie naam als de groepsnamen ."
+"Voor KeePass of KeePassX bestanden, zal de naam van de klant zijn KeePass of "
+"KeePassX en de categorie naam als de groepsnamen ."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:111
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
@@ -3633,9 +3678,8 @@ msgid "Base de búsqueda"
 msgstr "Zoek basis."
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:178
-#, fuzzy
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
-msgstr " LDAP uitvalsbasis om de LDAP-gebruikers zoekopdrachten te doen."
+msgstr "LDAP uitvalsbasis om de LDAP-gebruikers zoekopdrachten te doen."
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:208
 #, fuzzy
@@ -3651,13 +3695,13 @@ msgstr " Deze groep moet in de LDAP-zoekbasis worden geplaatst ."
 #, fuzzy
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
-msgstr " Definieer de standaard gebruikers groep voor nieuwe LDAP-gebruikers."
+msgstr "Definieer de standaard gebruikers groep voor nieuwe LDAP-gebruikers."
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:266
 #, fuzzy
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
-msgstr " Definieert het standaard profiel voor de nieuwe LDAP-gebruikers ."
+msgstr "Definieert het standaard profiel voor de nieuwe LDAP-gebruikers ."
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:318
 msgid "Importación"
@@ -4122,14 +4166,6 @@ msgstr "Master Wachtwoord datum"
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:304
 msgid "Usado en"
 msgstr "Used in"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:26
-msgid "Nombre del grupo"
-msgstr "Groep naam"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:39
-msgid "Descripción del grupo"
-msgstr "Groep omschrijving"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:69
@@ -4910,6 +4946,15 @@ msgstr "Tekst"
 msgid "Link"
 msgstr "Link"
 
+#~ msgid "CONSULTA INVÁLIDA"
+#~ msgstr "ONGELDIGE QUERY"
+
+#~ msgid "La sesión no se ha iniciado o ha caducado"
+#~ msgstr "Sessie niet gestart of verlopen"
+
+#~ msgid "Es necesario un nombre de cuenta"
+#~ msgstr "Een accountnaam is vereist"
+
 #, fuzzy
 #~ msgid "Es necesario un nombre de cliente"
 #~ msgstr "Een klantennaam is vereist"
@@ -5004,15 +5049,9 @@ msgstr "Link"
 #~ msgid "Nombre de grupo duplicado"
 #~ msgstr "Dubbele groepnaam"
 
-#~ msgid "Grupo creado"
-#~ msgstr "Groep toegevoegd"
-
 #, fuzzy
 #~ msgid "Error al crear el grupo"
 #~ msgstr "Fout bij aanmaken groep"
-
-#~ msgid "Grupo actualizado"
-#~ msgstr "Groep bijgewerkt"
 
 #, fuzzy
 #~ msgid "Error al actualizar el grupo"
@@ -5020,9 +5059,6 @@ msgstr "Link"
 
 #~ msgid "No es posible eliminar"
 #~ msgstr "Fout bij verwijderen"
-
-#~ msgid "Grupo eliminado"
-#~ msgstr "Groep verwijderd"
 
 #, fuzzy
 #~ msgid "Error al eliminar el grupo"
@@ -5947,7 +5983,9 @@ msgstr "Link"
 #~ msgstr "Remote syslog uitegeschakels"
 
 #~ msgid "Error al guardar la configuración"
-#~ msgstr "Fout bij het opslaan van de configuratie"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het opslaan van de configuratie"
 
 #~ msgid "Faltan parámetros de DokuWiki"
 #~ msgstr "Ontbrekende DokuWiki-parameters"
@@ -6001,7 +6039,9 @@ msgstr "Link"
 #~ msgstr "Verzoek niet verzonden via email"
 
 #~ msgid "Solicitud realizada"
-#~ msgstr "Aanvraag gedaan"
+#~ msgstr ""
+#~ "\n"
+#~ "Aanvraag gedaan"
 
 #~ msgid "Detalles de Plugin"
 #~ msgstr "Plugin Details"
@@ -6028,13 +6068,17 @@ msgstr "Link"
 #~ msgstr "Klant toevoegen"
 
 #~ msgid "Observador no inicializado"
-#~ msgstr "Waarnemer niet geïnitialiseerd"
+#~ msgstr ""
+#~ "\n"
+#~ "Waarnemer niet geïnitialiseerd"
 
 #~ msgid "Es necesario un objeto"
 #~ msgstr "Een object is nodig"
 
 #~ msgid "Indicar la clave de la BBDD"
-#~ msgstr "Vul alstublieft het database wachtwoord in"
+#~ msgstr ""
+#~ "\n"
+#~ "Vul alstublieft het database wachtwoord in"
 
 #~ msgid "Clave del usuario administrador de la Base de Datos"
 #~ msgstr "Database administrator's wachtwoord"
@@ -6046,7 +6090,9 @@ msgstr "Link"
 #~ msgstr "De database bestaat niet"
 
 #~ msgid "Es necesario crearla y asignar los permisos necesarios"
-#~ msgstr "U moet het creëren en de benodigde rechten toewijzen"
+#~ msgstr ""
+#~ "\n"
+#~ "U moet het creëren en de benodigde rechten toewijzen"
 
 #~ msgid "La plantilla no contiene archivos"
 #~ msgstr "De template bevat geen bestanden"
@@ -6077,7 +6123,9 @@ msgstr "Link"
 #~ msgstr "Encryptie wachtwoord niet ingesteld"
 
 #~ msgid "Extensión '%s' no cargada"
-#~ msgstr "Uitbreiding '% s' niet geladen"
+#~ msgstr ""
+#~ "\n"
+#~ "Uitbreiding '% s' niet geladen"
 
 #~ msgid "Categoría duplicada"
 #~ msgstr "Categorie gedupliceerd"
@@ -6101,7 +6149,9 @@ msgstr "Link"
 #~ msgstr "Aangepaste velden niet gevonden"
 
 #~ msgid "No hay datos de campos personalizados"
-#~ msgstr "Er zijn geen gegevens uit aangepaste velden"
+#~ msgstr ""
+#~ "\n"
+#~ "Er zijn geen gegevens uit aangepaste velden"
 
 #~ msgid "Error al migrar campos personalizados"
 #~ msgstr "Fout bij het migreren van de aangepaste velden"
@@ -6176,10 +6226,14 @@ msgstr "Link"
 #~ msgstr "Fout bij het vernieuwen van de link"
 
 #~ msgid "Actualizar Enlace"
-#~ msgstr "Update Link"
+#~ msgstr ""
+#~ "\n"
+#~ "Update Link"
 
 #~ msgid "Error al obtener enlace"
-#~ msgstr "Fout bij het ophalen van de link"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het ophalen van de link"
 
 #~ msgid "ON"
 #~ msgstr "AAN"
@@ -6242,7 +6296,9 @@ msgstr "Link"
 #~ msgstr "Socket is niet geïnitialiseerd"
 
 #~ msgid "Error al enviar datos"
-#~ msgstr "Fout bij het verzenden van de gegevens"
+#~ msgstr ""
+#~ "\n"
+#~ "Fout bij het verzenden van de gegevens"
 
 #~ msgid "Respuesta"
 #~ msgstr "Antwoord"
@@ -6303,7 +6359,9 @@ msgstr "Link"
 #~ msgstr "Autorisatie toevoegen"
 
 #~ msgid "Crear Campo"
-#~ msgstr "Veld toevoegen"
+#~ msgstr ""
+#~ "\n"
+#~ "Veld toevoegen"
 
 #~ msgid "Actualizar Campo"
 #~ msgstr "Veld bijwerken"
@@ -6312,22 +6370,32 @@ msgstr "Link"
 #~ msgstr "Link aanmaken"
 
 #~ msgid "Crear Etiqueta"
-#~ msgstr "Voeg tag toe"
+#~ msgstr ""
+#~ "\n"
+#~ "Voeg tag toe"
 
 #~ msgid "Actualizar Etiqueta"
-#~ msgstr "Update Tag"
+#~ msgstr ""
+#~ "\n"
+#~ "Update Tag"
 
 #~ msgid "Actualizar Plugin"
-#~ msgstr "Update Plugin"
+#~ msgstr ""
+#~ "\n"
+#~ " Update Plugin"
 
 #~ msgid "Crear Cuenta"
-#~ msgstr "Account toevoegen"
+#~ msgstr ""
+#~ "\n"
+#~ "Account toevoegen"
 
 #~ msgid "Usuarios importados"
-#~ msgstr "Geimporteerde gebruikers"
+#~ msgstr ""
+#~ "\n"
+#~ "Geimporteerde gebruikers"
 
 #~ msgid "Acceso denegado"
-#~ msgstr "Toegang geweigerd"
+#~ msgstr "Toegang geweigerd\n"
 
 #~ msgid "Error al añadir las etiquetas de la cuenta"
 #~ msgstr "Error tijdens het toevoegen van de account tags"
@@ -6993,3 +7061,6 @@ msgstr "Link"
 
 #~ msgid "Tracks limpiados"
 #~ msgstr "Tracks cleared out"
+
+#~ msgid "Grupo visualizado"
+#~ msgstr "Group viewed"

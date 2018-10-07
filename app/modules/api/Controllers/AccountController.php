@@ -60,20 +60,20 @@ final class AccountController extends ControllerBase
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_VIEW);
 
-            $accountId = $this->apiService->getParamInt('id', true);
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $id = $this->apiService->getParamInt('id', true);
+            $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
-            $this->accountService->incrementViewCounter($accountId);
+            $this->accountService->incrementViewCounter($id);
 
             $this->eventDispatcher->notifyEvent('show.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta visualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId));
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 
@@ -89,23 +89,23 @@ final class AccountController extends ControllerBase
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_VIEW_PASS);
 
-            $accountId = $this->apiService->getParamInt('id', true);
-            $accountPassData = $this->accountService->getPasswordForId($accountId);
+            $id = $this->apiService->getParamInt('id', true);
+            $accountPassData = $this->accountService->getPasswordForId($id);
             $password = Crypt::decrypt($accountPassData->getPass(), $accountPassData->getKey(), $this->apiService->getMasterPass());
 
-            $this->accountService->incrementDecryptCounter($accountId);
+            $this->accountService->incrementDecryptCounter($id);
 
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('show.account.pass',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Clave visualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $accountId));
+            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $id));
         } catch (\Exception $e) {
             processException($e);
 
@@ -136,9 +136,9 @@ final class AccountController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.account.pass',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Clave actualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $accountDetails->getId()))
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Clave actualizada')));
@@ -185,9 +185,9 @@ final class AccountController extends ControllerBase
             $this->eventDispatcher->notifyEvent('create.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta creada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $accountDetails->getId()))
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Cuenta creada')));
@@ -234,9 +234,9 @@ final class AccountController extends ControllerBase
             $this->eventDispatcher->notifyEvent('edit.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta actualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $accountDetails->getId()))
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Cuenta actualizada')));
@@ -298,21 +298,21 @@ final class AccountController extends ControllerBase
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_DELETE);
 
-            $accountId = $this->apiService->getParamInt('id', true);
+            $id = $this->apiService->getParamInt('id', true);
 
-            $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
+            $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
-            $this->accountService->delete($accountId);
+            $this->accountService->delete($id);
 
             $this->eventDispatcher->notifyEvent('delete.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Cuenta eliminada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Nombre'), $accountDetails->getName())
                     ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('ID'), $accountDetails->getId()))
+                    ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Cuenta eliminada')));
+            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id, __('Cuenta eliminada')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -321,6 +321,8 @@ final class AccountController extends ControllerBase
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function initialize()

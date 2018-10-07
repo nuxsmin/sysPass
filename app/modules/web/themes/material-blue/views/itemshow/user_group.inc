@@ -46,15 +46,30 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Usuarios'); ?></div>
 
-                    <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
-                            title="<?php echo __('Usuarios'); ?>" <?php echo $disabled; ?>>
-                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
-                        foreach ($users as $user): ?>
-                            <option
-                                    value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <?php if (!$isView): ?>
+                        <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
+                                title="<?php echo __('Usuarios'); ?>" <?php echo $disabled; ?>>
+                            <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
+                            foreach ($users as $user): ?>
+                                <option
+                                        value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php else: ?>
+                        <div class="tag-list-box">
+                            <div class="tag-list-body">
+                                <div class="tags-list-items">
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
+                                    foreach ($users as $user): ?>
+                                        <?php if ($user->isSelected()): ?>
+                                            <span class="tag"><?php echo $user->getName(); ?></span>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </td>
             </tr>
 

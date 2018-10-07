@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 12:57+0200\n"
-"PO-Revision-Date: 2018-09-30 12:59+0200\n"
+"POT-Creation-Date: 2018-10-06 12:40+0200\n"
+"PO-Revision-Date: 2018-10-06 12:40+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_GB\n"
@@ -74,23 +74,23 @@ msgid "Consulte con el administrador"
 msgstr "Please contact to the administrator"
 
 # Not available
-#: ../../../../lib/SP/Core/Acl/Acl.php:289
+#: ../../../../lib/SP/Core/Acl/Acl.php:294
 #: ../../../../lib/SP/Services/Auth/LoginService.php:589
 msgid "N/D"
 msgstr "N/A"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:294
+#: ../../../../lib/SP/Core/Acl/Acl.php:299
 msgid "Acceso denegado"
 msgstr "Access denied"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:295
+#: ../../../../lib/SP/Core/Acl/Acl.php:300
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:103
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:30
 #: ../../../modules/web/themes/material-blue/views/itemshow/auth_token.inc:32
 msgid "Acción"
 msgstr "Action"
 
-#: ../../../../lib/SP/Core/Acl/Acl.php:296
+#: ../../../../lib/SP/Core/Acl/Acl.php:301
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
@@ -225,13 +225,13 @@ msgstr "Action not found"
 #: ../../../modules/web/Controllers/UserController.php:357
 #: ../../../modules/web/Controllers/UserController.php:398
 #: ../../../modules/web/Controllers/UserController.php:435
-#: ../../../modules/web/Controllers/UserGroupController.php:70
-#: ../../../modules/web/Controllers/UserGroupController.php:102
-#: ../../../modules/web/Controllers/UserGroupController.php:168
-#: ../../../modules/web/Controllers/UserGroupController.php:198
-#: ../../../modules/web/Controllers/UserGroupController.php:238
-#: ../../../modules/web/Controllers/UserGroupController.php:277
-#: ../../../modules/web/Controllers/UserGroupController.php:316
+#: ../../../modules/web/Controllers/UserGroupController.php:74
+#: ../../../modules/web/Controllers/UserGroupController.php:108
+#: ../../../modules/web/Controllers/UserGroupController.php:176
+#: ../../../modules/web/Controllers/UserGroupController.php:206
+#: ../../../modules/web/Controllers/UserGroupController.php:246
+#: ../../../modules/web/Controllers/UserGroupController.php:285
+#: ../../../modules/web/Controllers/UserGroupController.php:324
 #: ../../../modules/web/Controllers/UserProfileController.php:64
 #: ../../../modules/web/Controllers/UserProfileController.php:96
 #: ../../../modules/web/Controllers/UserProfileController.php:163
@@ -287,7 +287,7 @@ msgstr "Session cannot be initialized"
 #: ../../../../lib/SP/Services/Auth/LoginService.php:494
 #: ../../../../lib/SP/Services/Auth/LoginService.php:526
 #: ../../../../lib/SP/Services/Auth/LoginService.php:633
-#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:306
+#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:311
 #: ../../../../lib/SP/Services/CustomField/CustomFieldService.php:203
 #: ../../../../lib/SP/Services/Export/XmlVerifyService.php:108
 #: ../../../../lib/SP/Services/Import/XmlFileImport.php:79
@@ -426,6 +426,28 @@ msgid "Nuevo Plugin"
 msgstr "New Plugin"
 
 #: ../../../../lib/SP/Plugin/PluginManager.php:246
+#: ../../../modules/api/Controllers/AccountController.php:71
+#: ../../../modules/api/Controllers/AccountController.php:103
+#: ../../../modules/api/Controllers/AccountController.php:139
+#: ../../../modules/api/Controllers/AccountController.php:188
+#: ../../../modules/api/Controllers/AccountController.php:237
+#: ../../../modules/api/Controllers/AccountController.php:310
+#: ../../../modules/api/Controllers/CategoryController.php:63
+#: ../../../modules/api/Controllers/CategoryController.php:92
+#: ../../../modules/api/Controllers/CategoryController.php:122
+#: ../../../modules/api/Controllers/CategoryController.php:151
+#: ../../../modules/api/Controllers/ClientController.php:64
+#: ../../../modules/api/Controllers/ClientController.php:94
+#: ../../../modules/api/Controllers/ClientController.php:125
+#: ../../../modules/api/Controllers/ClientController.php:154
+#: ../../../modules/api/Controllers/TagController.php:62
+#: ../../../modules/api/Controllers/TagController.php:90
+#: ../../../modules/api/Controllers/TagController.php:119
+#: ../../../modules/api/Controllers/TagController.php:148
+#: ../../../modules/api/Controllers/UserGroupController.php:62
+#: ../../../modules/api/Controllers/UserGroupController.php:92
+#: ../../../modules/api/Controllers/UserGroupController.php:123
+#: ../../../modules/api/Controllers/UserGroupController.php:152
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:221
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:98
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:99
@@ -437,8 +459,8 @@ msgstr "New Plugin"
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:111
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:102
 #: ../../../modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:102
-#: ../../../modules/web/Controllers/UserGroupController.php:254
-#: ../../../modules/web/Controllers/UserGroupController.php:293
+#: ../../../modules/web/Controllers/UserGroupController.php:262
+#: ../../../modules/web/Controllers/UserGroupController.php:301
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:22
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:33
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:15
@@ -480,7 +502,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:140
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:114
-#: ../../../modules/web/Controllers/UserGroupController.php:220
+#: ../../../modules/web/Controllers/UserGroupController.php:228
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:137
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:269
@@ -556,12 +578,12 @@ msgstr "User in group verified"
 msgid "Usuario no pertenece al grupo"
 msgstr "The user doesn't belong to the group"
 
-#: ../../../../lib/SP/Providers/Mail/MailHandler.php:87
+#: ../../../../lib/SP/Providers/Mail/MailHandler.php:124
 #, php-format
 msgid "Realizado por: %s (%s)"
 msgstr "Performed by: %s (%s)"
 
-#: ../../../../lib/SP/Providers/Mail/MailHandler.php:88
+#: ../../../../lib/SP/Providers/Mail/MailHandler.php:125
 #, php-format
 msgid "Dirección IP: %s"
 msgstr "IP Address: %s"
@@ -580,7 +602,7 @@ msgstr "Request"
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:156
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: ../../../modules/web/Controllers/ConfigBackupController.php:120
-#: ../../../modules/web/Controllers/ConfigManagerController.php:172
+#: ../../../modules/web/Controllers/ConfigManagerController.php:171
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:86
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:20
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:389
@@ -1202,49 +1224,49 @@ msgstr "The user has no associated groups"
 msgid "Autentificación"
 msgstr "Authentication"
 
-#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:134
-#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:272
-#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:286
+#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:139
+#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:277
+#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:291
 msgid "Token no encontrado"
 msgstr "Token not found"
 
-#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:153
+#: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:158
 msgid "Error al eliminar tokens"
 msgstr "Error while removing the tokens"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:96
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:94
 msgid "Realizar Backup"
 msgstr "Make Backup"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:103
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:101
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Error while doing the backup in compatibility mode"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:114
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:112
 msgid "Error al realizar el backup"
 msgstr "Error while doing the backup"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:116
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:114
 #: ../../../../lib/SP/Services/Export/XmlExportService.php:167
 #: ../../../modules/web/Controllers/ConfigImportController.php:80
 #: ../../../modules/web/Controllers/ConfigImportController.php:83
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Please check out the event log for more details"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:135
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:133
 #, php-format
 msgid "No es posible crear el directorio de backups (\"%s\")"
 msgstr "Unable to create the backups directory (\"%s\")"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:140
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:138
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Please, check the backup directory permissions"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:169
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:167
 msgid "Copiando base de datos"
 msgstr "Copying database"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:297
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:295
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:9
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:5
 #: ../../../modules/web/themes/material-blue/views/config/general-site.inc:10
@@ -1254,12 +1276,12 @@ msgstr "Copying database"
 msgid "La extensión '%s' no está disponible"
 msgstr "The '%s' extension is unavailable"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:305
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:340
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:303
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:338
 msgid "Copiando aplicación"
 msgstr "Copying application"
 
-#: ../../../../lib/SP/Services/Backup/FileBackupService.php:335
+#: ../../../../lib/SP/Services/Backup/FileBackupService.php:333
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "This operation is only available on Linux environments"
 
@@ -1290,29 +1312,29 @@ msgstr "Unable to restore configuration"
 msgid "Parámetro no encontrado (%s)"
 msgstr "Parameter not found (%s)"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:102
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:103
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:109
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:110
 msgid "Error al generar clave temporal"
 msgstr "Error while generating the temporary password"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:130
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:180
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:131
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:181
 msgid "Clave temporal caducada"
 msgstr "Temporary password expired"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:159
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:160
 msgid "Error al comprobar clave temporal"
 msgstr "Error while checking the temporary password"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:212
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "Master Password %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:214
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -1320,17 +1342,17 @@ msgstr ""
 "A new sysPass master password has been generated, so the next time you log "
 "into the application it will be requested."
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:215
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:216
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "The new Master Password is: %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:217
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:218
 #, php-format
 msgid "Esta clave estará activa hasta: %s"
 msgstr "This password will be valid until: %s"
 
-#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:219
+#: ../../../../lib/SP/Services/Crypt/TemporaryMasterPassService.php:220
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
@@ -1479,10 +1501,6 @@ msgstr "Account imported"
 #: ../../../modules/api/Controllers/AccountController.php:189
 #: ../../../modules/api/Controllers/AccountController.php:238
 #: ../../../modules/api/Controllers/AccountController.php:311
-#: ../../../modules/api/Controllers/ClientController.php:64
-#: ../../../modules/api/Controllers/ClientController.php:94
-#: ../../../modules/api/Controllers/ClientController.php:125
-#: ../../../modules/api/Controllers/ClientController.php:154
 #: ../../../modules/web/Controllers/AccountController.php:225
 #: ../../../modules/web/Controllers/AccountController.php:710
 #: ../../../modules/web/Controllers/AccountController.php:755
@@ -1588,10 +1606,6 @@ msgid "Categoría importada"
 msgstr "Category imported"
 
 #: ../../../../lib/SP/Services/Import/KeepassImport.php:104
-#: ../../../modules/api/Controllers/CategoryController.php:63
-#: ../../../modules/api/Controllers/CategoryController.php:91
-#: ../../../modules/api/Controllers/CategoryController.php:121
-#: ../../../modules/api/Controllers/CategoryController.php:150
 #: ../../../modules/web/Controllers/CategoryController.php:220
 #: ../../../modules/web/Controllers/CategoryController.php:254
 #: ../../../modules/web/Controllers/CategoryController.php:294
@@ -1849,11 +1863,11 @@ msgstr "Objects found"
 msgid "Importado desde LDAP"
 msgstr "Imported from LDAP"
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:70
+#: ../../../../lib/SP/Services/Mail/MailService.php:66
 msgid "Prueba de correo"
 msgstr "Mail test"
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:71
+#: ../../../../lib/SP/Services/Mail/MailService.php:67
 msgid ""
 "Esto es una prueba de correo para verificar el correcto funcionamiento de la "
 "configuración."
@@ -1861,23 +1875,23 @@ msgstr ""
 "This is a test email in order to verify that the configuration is working "
 "right."
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:85
-#: ../../../../lib/SP/Services/Mail/MailService.php:155
+#: ../../../../lib/SP/Services/Mail/MailService.php:81
+#: ../../../../lib/SP/Services/Mail/MailService.php:151
 msgid "Error al enviar correo"
 msgstr "Error while sending the email"
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:145
+#: ../../../../lib/SP/Services/Mail/MailService.php:141
 #: ../../../modules/web/Controllers/ConfigMailController.php:138
 #: ../../../modules/web/Controllers/ConfigMailController.php:144
 msgid "Correo enviado"
 msgstr "Email sent"
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:146
+#: ../../../../lib/SP/Services/Mail/MailService.php:142
 #: ../../../modules/web/Controllers/ConfigMailController.php:139
 msgid "Destinatario"
 msgstr "Recipient"
 
-#: ../../../../lib/SP/Services/Mail/MailService.php:190
+#: ../../../../lib/SP/Services/Mail/MailService.php:186
 msgid "Servicio de correo no disponible"
 msgstr "Mail service unavailable"
 
@@ -2115,13 +2129,13 @@ msgid "Usuario no encontrado"
 msgstr "User not found"
 
 #: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:80
-#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:95
-#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:178
+#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:98
+#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:187
 #: ../../../../lib/SP/Services/UserGroup/UserToUserGroupService.php:57
 msgid "Grupo no encontrado"
 msgstr "Group not found"
 
-#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:112
+#: ../../../../lib/SP/Services/UserGroup/UserGroupService.php:115
 msgid "Error al eliminar los grupos"
 msgstr "Error while deleting the groups"
 
@@ -2155,11 +2169,23 @@ msgstr "Wrong hash or expired"
 msgid "Perfil no encontrado"
 msgstr "Profile not found"
 
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApi.php:68
+msgid "Fallo de autentificación"
+msgstr "Authentication error"
+
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApiBase.php:196
+msgid "Error al realizar la consulta"
+msgstr "Error while doing the query"
+
+#: ../../../../lib/SP/Services/Wiki/DokuWikiApiBase.php:228
+msgid "URL de conexión no establecida"
+msgstr "Connection URL not set"
+
 #: ../../../../lib/SP/Storage/Database/Database.php:131
 msgid "Consulta en blanco"
 msgstr "Blank query"
 
-#: ../../../../lib/SP/Storage/Database/Database.php:272
+#: ../../../../lib/SP/Storage/Database/Database.php:259
 msgid "Restricción de integridad"
 msgstr "Integrity constraint"
 
@@ -2264,74 +2290,9 @@ msgstr "An exception occured"
 msgid "Imagen no válida"
 msgstr "Invalid image"
 
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApi.php:70
-msgid "Fallo de autentificación"
-msgstr "Authentication error"
-
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApiBase.php:194
-msgid "Error al realizar la consulta"
-msgstr "Error while doing the query"
-
-#: ../../../../lib/SP/Util/Wiki/DokuWikiApiBase.php:226
-msgid "URL de conexión no establecida"
-msgstr "Connection URL not set"
-
 #: ../../../modules/api/Controllers/AccountController.php:70
 msgid "Cuenta visualizada"
 msgstr "Account displayed"
-
-#: ../../../modules/api/Controllers/AccountController.php:71
-#: ../../../modules/api/Controllers/AccountController.php:103
-#: ../../../modules/api/Controllers/AccountController.php:139
-#: ../../../modules/api/Controllers/AccountController.php:188
-#: ../../../modules/api/Controllers/AccountController.php:237
-#: ../../../modules/api/Controllers/AccountController.php:310
-#: ../../../modules/web/Controllers/AccountController.php:224
-#: ../../../modules/web/Controllers/AccountController.php:557
-#: ../../../modules/web/Controllers/AccountController.php:611
-#: ../../../modules/web/Controllers/AccountController.php:645
-#: ../../../modules/web/Controllers/AccountController.php:674
-#: ../../../modules/web/Controllers/AccountController.php:709
-#: ../../../modules/web/Controllers/AccountController.php:754
-#: ../../../modules/web/Controllers/AccountController.php:795
-#: ../../../modules/web/Controllers/AccountController.php:834
-#: ../../../modules/web/Controllers/AccountController.php:884
-#: ../../../modules/web/Controllers/AccountController.php:918
-#: ../../../modules/web/Controllers/AccountFileController.php:233
-#: ../../../modules/web/Controllers/AccountHistoryManagerController.php:111
-#: ../../../modules/web/Controllers/AccountHistoryManagerController.php:146
-#: ../../../modules/web/Controllers/AccountManagerController.php:114
-#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:101
-#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:103
-#: ../../../modules/web/themes/material-blue/views/account/account-history.inc:15
-#: ../../../modules/web/themes/material-blue/views/account/account.inc:24
-#: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:16
-#: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:18
-msgid "Cuenta"
-msgstr "Account"
-
-#: ../../../modules/api/Controllers/AccountController.php:73
-#: ../../../modules/api/Controllers/AccountController.php:105
-#: ../../../modules/api/Controllers/AccountController.php:141
-#: ../../../modules/api/Controllers/AccountController.php:190
-#: ../../../modules/api/Controllers/AccountController.php:239
-#: ../../../modules/api/Controllers/AccountController.php:312
-#: ../../../modules/api/Controllers/CategoryController.php:92
-#: ../../../modules/api/Controllers/CategoryController.php:122
-#: ../../../modules/api/Controllers/CategoryController.php:151
-#: ../../../modules/api/Controllers/ClientController.php:65
-#: ../../../modules/api/Controllers/ClientController.php:95
-#: ../../../modules/api/Controllers/ClientController.php:126
-#: ../../../modules/api/Controllers/ClientController.php:155
-#: ../../../modules/api/Controllers/TagController.php:118
-#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
-#: ../../../modules/web/Controllers/ItemPresetController.php:274
-#: ../../../modules/web/Controllers/ItemPresetController.php:307
-#: ../../../modules/web/Controllers/ItemPresetController.php:346
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:92
-#: ../../../modules/web/themes/material-blue/views/account/details.inc:94
-msgid "ID"
-msgstr "ID"
 
 #: ../../../modules/api/Controllers/AccountController.php:102
 #: ../../../modules/web/Controllers/AccountController.php:556
@@ -2379,22 +2340,22 @@ msgstr "Account removed"
 msgid "Categoría visualizada"
 msgstr "Category displayed"
 
-#: ../../../modules/api/Controllers/CategoryController.php:90
-#: ../../../modules/api/Controllers/CategoryController.php:95
+#: ../../../modules/api/Controllers/CategoryController.php:91
+#: ../../../modules/api/Controllers/CategoryController.php:96
 #: ../../../modules/web/Controllers/CategoryController.php:253
 #: ../../../modules/web/Controllers/CategoryController.php:257
 msgid "Categoría creada"
 msgstr "Category added"
 
-#: ../../../modules/api/Controllers/CategoryController.php:120
-#: ../../../modules/api/Controllers/CategoryController.php:125
+#: ../../../modules/api/Controllers/CategoryController.php:121
+#: ../../../modules/api/Controllers/CategoryController.php:126
 #: ../../../modules/web/Controllers/CategoryController.php:293
 #: ../../../modules/web/Controllers/CategoryController.php:297
 msgid "Categoría actualizada"
 msgstr "Category updated"
 
-#: ../../../modules/api/Controllers/CategoryController.php:149
-#: ../../../modules/api/Controllers/CategoryController.php:154
+#: ../../../modules/api/Controllers/CategoryController.php:150
+#: ../../../modules/api/Controllers/CategoryController.php:155
 #: ../../../modules/web/Controllers/CategoryController.php:219
 #: ../../../modules/web/Controllers/CategoryController.php:223
 msgid "Categoría eliminada"
@@ -2521,14 +2482,16 @@ msgstr "Account name"
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:83
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:106
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:43
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:78
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:66
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:91
 msgid "Id de categoría"
 msgstr "Category Id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:84
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:107
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:43
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:79
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:67
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:93
 msgid "Id de cliente"
 msgstr "Client Id"
 
@@ -2583,17 +2546,19 @@ msgid "Array con Ids de etiquetas"
 msgstr "Array with tags id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:126
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:66
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:67
-#: ../../../modules/api/Controllers/Help/TagHelp.php:65
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:79
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:81
+#: ../../../modules/api/Controllers/Help/TagHelp.php:77
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:81
 #: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:16
 msgid "Texto a buscar"
 msgstr "Text to search"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:127
-#: ../../../modules/api/Controllers/Help/CategoryHelp.php:67
-#: ../../../modules/api/Controllers/Help/ClientHelp.php:68
-#: ../../../modules/api/Controllers/Help/TagHelp.php:66
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:80
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:82
+#: ../../../modules/api/Controllers/Help/TagHelp.php:78
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:82
 msgid "Número de resultados a mostrar"
 msgstr "Number of results to show"
 
@@ -2614,26 +2579,31 @@ msgid "Operador de filtrado"
 msgstr "Filtering operator"
 
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:54
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:23
 msgid "Nombre de la categoría"
 msgstr "Category name"
 
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:55
+#: ../../../modules/api/Controllers/Help/CategoryHelp.php:68
 #: ../../../modules/web/themes/material-blue/views/itemshow/category.inc:35
 msgid "Descripción de la categoría"
 msgstr "Category description"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:54
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:68
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:26
 msgid "Nombre del cliente"
 msgstr "Client name"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:55
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:69
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:39
 msgid "Descripción del cliente"
 msgstr "Client description"
 
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:56
+#: ../../../modules/api/Controllers/Help/ClientHelp.php:70
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:102
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:142
 #: ../../../modules/web/themes/material-blue/views/itemshow/client.inc:62
@@ -2642,45 +2612,88 @@ msgid "Global"
 msgstr "Global"
 
 #: ../../../modules/api/Controllers/Help/TagHelp.php:43
-#: ../../../modules/api/Controllers/Help/TagHelp.php:77
+#: ../../../modules/api/Controllers/Help/TagHelp.php:65
+#: ../../../modules/api/Controllers/Help/TagHelp.php:89
 msgid "Id de etiqueta"
 msgstr "Tag Id"
 
 #: ../../../modules/api/Controllers/Help/TagHelp.php:54
+#: ../../../modules/api/Controllers/Help/TagHelp.php:66
 #: ../../../modules/web/themes/material-blue/views/itemshow/tag.inc:23
 msgid "Nombre de la etiqueta"
 msgstr "Tag name"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:43
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:67
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:93
+msgid "Id de grupo"
+msgstr "Group Id"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:54
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:68
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:26
+msgid "Nombre del grupo"
+msgstr "Group name"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:55
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:69
+#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:39
+msgid "Descripción del grupo"
+msgstr "Group description"
+
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:56
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:70
+msgid "Array con Ids de usuarios"
+msgstr "Array with users Id"
 
 #: ../../../modules/api/Controllers/TagController.php:61
 msgid "Etiqueta visualizada"
 msgstr "Tag displayed"
 
-#: ../../../modules/api/Controllers/TagController.php:62
 #: ../../../modules/api/Controllers/TagController.php:89
-#: ../../../modules/api/Controllers/TagController.php:117
-#: ../../../modules/api/Controllers/TagController.php:146
-msgid "Etiqueta"
-msgstr "Tag"
-
-#: ../../../modules/api/Controllers/TagController.php:88
-#: ../../../modules/api/Controllers/TagController.php:92
+#: ../../../modules/api/Controllers/TagController.php:94
 #: ../../../modules/web/Controllers/TagController.php:234
 msgid "Etiqueta creada"
 msgstr "Tag added"
 
-#: ../../../modules/api/Controllers/TagController.php:116
-#: ../../../modules/api/Controllers/TagController.php:121
+#: ../../../modules/api/Controllers/TagController.php:118
+#: ../../../modules/api/Controllers/TagController.php:123
 #: ../../../modules/web/Controllers/TagController.php:265
 msgid "Etiqueta actualizada"
 msgstr "Tag updated"
 
-#: ../../../modules/api/Controllers/TagController.php:145
-#: ../../../modules/api/Controllers/TagController.php:149
+#: ../../../modules/api/Controllers/TagController.php:147
+#: ../../../modules/api/Controllers/TagController.php:152
 #: ../../../modules/web/Controllers/TagController.php:208
 msgid "Etiqueta eliminada"
 msgstr "Tag removed"
 
-#: ../../../modules/api/Init.php:132
+#: ../../../modules/api/Controllers/UserGroupController.php:61
+msgid "Grupo visualizado"
+msgstr "Group viewed"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:91
+#: ../../../modules/api/Controllers/UserGroupController.php:96
+#: ../../../modules/web/Controllers/UserGroupController.php:261
+#: ../../../modules/web/Controllers/UserGroupController.php:265
+msgid "Grupo creado"
+msgstr "Group added"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:122
+#: ../../../modules/api/Controllers/UserGroupController.php:127
+#: ../../../modules/web/Controllers/UserGroupController.php:300
+#: ../../../modules/web/Controllers/UserGroupController.php:304
+msgid "Grupo actualizado"
+msgstr "Group updated"
+
+#: ../../../modules/api/Controllers/UserGroupController.php:151
+#: ../../../modules/api/Controllers/UserGroupController.php:156
+#: ../../../modules/web/Controllers/UserGroupController.php:227
+#: ../../../modules/web/Controllers/UserGroupController.php:231
+msgid "Grupo eliminado"
+msgstr "Group deleted"
+
+#: ../../../modules/api/Init.php:135
 msgid "Es necesario actualizar"
 msgstr "Updating needed"
 
@@ -2698,6 +2711,30 @@ msgstr "Account Details"
 msgid "Enlace visualizado"
 msgstr "Link viewed"
 
+#: ../../../modules/web/Controllers/AccountController.php:224
+#: ../../../modules/web/Controllers/AccountController.php:557
+#: ../../../modules/web/Controllers/AccountController.php:611
+#: ../../../modules/web/Controllers/AccountController.php:645
+#: ../../../modules/web/Controllers/AccountController.php:674
+#: ../../../modules/web/Controllers/AccountController.php:709
+#: ../../../modules/web/Controllers/AccountController.php:754
+#: ../../../modules/web/Controllers/AccountController.php:795
+#: ../../../modules/web/Controllers/AccountController.php:834
+#: ../../../modules/web/Controllers/AccountController.php:884
+#: ../../../modules/web/Controllers/AccountController.php:918
+#: ../../../modules/web/Controllers/AccountFileController.php:233
+#: ../../../modules/web/Controllers/AccountHistoryManagerController.php:111
+#: ../../../modules/web/Controllers/AccountHistoryManagerController.php:146
+#: ../../../modules/web/Controllers/AccountManagerController.php:114
+#: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:101
+#: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:103
+#: ../../../modules/web/themes/material-blue/views/account/account-history.inc:15
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:24
+#: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:16
+#: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:18
+msgid "Cuenta"
+msgstr "Account"
+
 #: ../../../modules/web/Controllers/AccountController.php:226
 msgid "Agente"
 msgstr "Agent"
@@ -2709,7 +2746,7 @@ msgstr "HTTPS"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountController.php:256
 #: ../../../modules/web/Controllers/AccountController.php:300
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:276
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:278
 #: ../../../config/actions.xml:157
 msgid "Nueva Cuenta"
 msgstr "New Account"
@@ -3209,7 +3246,7 @@ msgstr "Mail disabled"
 msgid "Compruebe su buzón de correo"
 msgstr "Please, check your inbox"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:158
+#: ../../../modules/web/Controllers/ConfigManagerController.php:157
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:131
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:12
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:441
@@ -3217,59 +3254,59 @@ msgid "General"
 msgstr "General"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ConfigManagerController.php:187
+#: ../../../modules/web/Controllers/ConfigManagerController.php:186
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:26
 #: ../../../config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:206
+#: ../../../modules/web/Controllers/ConfigManagerController.php:205
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:232
+#: ../../../modules/web/Controllers/ConfigManagerController.php:231
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:10
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:269
+#: ../../../modules/web/Controllers/ConfigManagerController.php:268
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:457
 msgid "Encriptación"
 msgstr "Encryption"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:309
+#: ../../../modules/web/Controllers/ConfigManagerController.php:308
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:309
+#: ../../../modules/web/Controllers/ConfigManagerController.php:308
 msgid "No se encontraron backups"
 msgstr "There aren't any backups available"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:321
+#: ../../../modules/web/Controllers/ConfigManagerController.php:320
 msgid "Última exportación"
 msgstr "Last export"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:321
+#: ../../../modules/web/Controllers/ConfigManagerController.php:320
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/ConfigManagerController.php:323
+#: ../../../modules/web/Controllers/ConfigManagerController.php:322
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:17
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:70
 #: ../../../config/actions.xml:727
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:340
+#: ../../../modules/web/Controllers/ConfigManagerController.php:339
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:358
+#: ../../../modules/web/Controllers/ConfigManagerController.php:357
 msgid "No instalado"
 msgstr "Not installed"
 
-#: ../../../modules/web/Controllers/ConfigManagerController.php:362
+#: ../../../modules/web/Controllers/ConfigManagerController.php:361
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:63
 msgid "Información"
 msgstr "Information"
@@ -3615,6 +3652,15 @@ msgstr "Delete Field"
 msgid "Registro de Eventos"
 msgstr "Event Log"
 
+#: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
+#: ../../../modules/web/Controllers/ItemPresetController.php:274
+#: ../../../modules/web/Controllers/ItemPresetController.php:307
+#: ../../../modules/web/Controllers/ItemPresetController.php:346
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:92
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:94
+msgid "ID"
+msgstr "ID"
+
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:100
 msgid "Fecha / Hora"
 msgstr "Date / Time"
@@ -3644,8 +3690,8 @@ msgstr "Search for Events"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:182
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:183
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:159
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:160
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:178
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:179
 msgid "Refrescar"
 msgstr "Refresh"
 
@@ -3844,7 +3890,7 @@ msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:89
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:332
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:334
 #: ../../../modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
@@ -3988,7 +4034,7 @@ msgid "Origen"
 msgstr "Source"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:143
+#: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
 #: ../../../config/actions.xml:883
 msgid "Buscar Track"
 msgstr "Search for track"
@@ -4050,7 +4096,7 @@ msgstr "Search for Group"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:148
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:149
-#: ../../../modules/web/Controllers/UserGroupController.php:106
+#: ../../../modules/web/Controllers/UserGroupController.php:112
 #: ../../../config/actions.xml:607
 msgid "Nuevo Grupo"
 msgstr "New Group"
@@ -4058,7 +4104,7 @@ msgstr "New Group"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:166
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:167
-#: ../../../modules/web/Controllers/UserGroupController.php:319
+#: ../../../modules/web/Controllers/UserGroupController.php:327
 #: ../../../config/actions.xml:601
 msgid "Ver Grupo"
 msgstr "View Group"
@@ -4066,7 +4112,7 @@ msgstr "View Group"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:183
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:184
-#: ../../../modules/web/Controllers/UserGroupController.php:171
+#: ../../../modules/web/Controllers/UserGroupController.php:179
 #: ../../../config/actions.xml:613
 msgid "Editar Grupo"
 msgstr "Edit Group"
@@ -4117,13 +4163,13 @@ msgstr "Edit Profile"
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:263
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:265
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Buscar"
 msgstr "Search"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:346
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:348
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:61
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
@@ -4250,11 +4296,11 @@ msgstr "Link deleted"
 msgid "Enlace creado"
 msgstr "Link created"
 
-#: ../../../modules/web/Controllers/StatusController.php:91
+#: ../../../modules/web/Controllers/StatusController.php:94
 msgid "Versión no disponible"
 msgstr "Version unavailable"
 
-#: ../../../modules/web/Controllers/StatusController.php:136
+#: ../../../modules/web/Controllers/StatusController.php:142
 msgid "Notificaciones no disponibles"
 msgstr "Notifications not available"
 
@@ -4331,25 +4377,10 @@ msgstr "User updated"
 msgid "Ver Usuario"
 msgstr "View User"
 
-#: ../../../modules/web/Controllers/UserGroupController.php:208
-#: ../../../modules/web/Controllers/UserGroupController.php:211
+#: ../../../modules/web/Controllers/UserGroupController.php:216
+#: ../../../modules/web/Controllers/UserGroupController.php:219
 msgid "Grupos eliminados"
 msgstr "Groups deleted"
-
-#: ../../../modules/web/Controllers/UserGroupController.php:219
-#: ../../../modules/web/Controllers/UserGroupController.php:223
-msgid "Grupo eliminado"
-msgstr "Group deleted"
-
-#: ../../../modules/web/Controllers/UserGroupController.php:253
-#: ../../../modules/web/Controllers/UserGroupController.php:257
-msgid "Grupo creado"
-msgstr "Group added"
-
-#: ../../../modules/web/Controllers/UserGroupController.php:292
-#: ../../../modules/web/Controllers/UserGroupController.php:296
-msgid "Grupo actualizado"
-msgstr "Group updated"
 
 #: ../../../modules/web/Controllers/UserPassResetController.php:90
 msgid "Datos incorrectos"
@@ -5569,7 +5600,7 @@ msgstr ""
 
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:182
 msgid "Los elementos exportados son cuentas, clientes, categorías y etiquetas."
-msgstr "The exported items are accounts, customers, categories and tags."
+msgstr "The exported items are accounts, clients, categories and tags."
 
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:184
 msgid ""
@@ -6010,8 +6041,7 @@ msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
 msgstr ""
-"Allows to import the Accounts, Categories and Customers from XML or CSV "
-"files."
+"Allows to import the Accounts, Categories and Clients from XML or CSV files."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:105
 msgid ""
@@ -6671,14 +6701,6 @@ msgstr "Master Password Date"
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:304
 msgid "Usado en"
 msgstr "Used in"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:26
-msgid "Nombre del grupo"
-msgstr "Group name"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:39
-msgid "Descripción del grupo"
-msgstr "Group description"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_group.inc:69
@@ -7429,6 +7451,9 @@ msgstr "Text"
 msgid "Link"
 msgstr "Link"
 
+#~ msgid "Etiqueta"
+#~ msgstr "Tag"
+
 #~ msgid "LDAP ERROR"
 #~ msgstr "LDAP ERROR"
 
@@ -7772,7 +7797,7 @@ msgstr "Link"
 #~ "needed."
 
 #~ msgid "Actualizando IDs de clientes"
-#~ msgstr "Updating customers ID"
+#~ msgstr "Updating clients ID"
 
 #~ msgid "Actualizando IDs de grupos"
 #~ msgstr "Updating groups ID"
