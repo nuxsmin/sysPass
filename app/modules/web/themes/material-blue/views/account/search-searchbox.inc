@@ -16,8 +16,9 @@
                 <label class="mdl-textfield__label" for="search"><?php echo __('Texto a buscar'); ?></label>
             </div>
 
-            <div id="help-account_search" class="icon material-icons mdl-color-text--indigo-A100 btn-help"
-                 data-help="help-account-search">help_outline
+            <div id="help-account_search"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?> btn-help"
+                 data-help="help-account-search"><?php echo $icons->getIconHelp()->getIcon(); ?>
             </div>
 
             <div class="mdl-tooltip" for="help-account_search">
@@ -95,7 +96,7 @@
                 <span for="btn-reset"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
             </div>
-            
+
             <div class="filter-buttons filter-slider">
                 <span id="txt-slider"></span>
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"

@@ -49,7 +49,7 @@ $themeIcons->addIcon('publicLink', new FontIcon('link', 'mdl-color-text--teal-50
 $themeIcons->addIcon('back', new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', __u('Volver')));
 $themeIcons->addIcon('restore', new FontIcon('restore', 'mdl-color-text--teal-500', __u('Restaurar')));
 $themeIcons->addIcon('save', new FontIcon('save', 'mdl-color-text--teal-500', __u('Guardar')));
-$themeIcons->addIcon('help', new FontIcon('help_outline', 'mdl-color-text--indigo-A100', __u('Ayuda')));
+$themeIcons->addIcon('help', new FontIcon('help_outline', 'mdl-color-text--primary', __u('Ayuda')));
 $themeIcons->addIcon('clear', new FontIcon('clear_all', 'mdl-color--indigo-A200', __u('Limpiar')));
 $themeIcons->addIcon('play', new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', __u('Realizar')));
 $themeIcons->addIcon('download', new FontIcon('file_download', 'mdl-color-text--indigo-A200', __u('Descargar')));
