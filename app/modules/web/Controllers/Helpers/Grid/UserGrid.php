@@ -77,7 +77,11 @@ final class UserGrid extends GridBase
         $grid->setDataActions($this->getEditAction());
         $grid->setDataActions($this->getEditPassAction());
         $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
+        $grid->setDataActions(
+            $this->getDeleteAction()
+                ->setName(__('Eliminar Seleccionados'))
+                ->setTitle(__('Eliminar Seleccionados')),
+            true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

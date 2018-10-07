@@ -66,7 +66,11 @@ final class FileGrid extends GridBase
         $grid->setDataActions($this->getViewAction());
         $grid->setDataActions($this->getDownloadAction());
         $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions($this->getDeleteAction()->setTitle(__('Eliminar Seleccionados')), true);
+        $grid->setDataActions(
+            $this->getDeleteAction()
+                ->setName(__('Eliminar Seleccionados'))
+                ->setTitle(__('Eliminar Seleccionados')),
+            true);
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));

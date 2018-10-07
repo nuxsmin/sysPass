@@ -80,7 +80,12 @@ final class NotificationGrid extends GridBase
         $grid->setDataActions($this->setNonAdminFilter($this->getCheckAction()));
         $grid->setDataActions($this->setNonAdminFilter($this->getEditAction()));
         $grid->setDataActions($this->setNonAdminFilter($this->getDeleteAction()));
-        $grid->setDataActions($this->setNonAdminFilter($this->getDeleteAction())->setTitle(__('Eliminar Seleccionados')), true);
+        $grid->setDataActions(
+            $this->setNonAdminFilter(
+                $this->getDeleteAction()
+                    ->setTitle(__('Eliminar Seleccionados'))
+                    ->setName(__('Eliminar Seleccionados'))),
+            true);
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
