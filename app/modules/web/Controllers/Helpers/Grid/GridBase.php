@@ -81,26 +81,26 @@ abstract class GridBase extends HelperBase implements GridInterface
      *
      * @return DataGridPager
      */
-    protected function getPager(DataGridActionSearch $sourceAction)
+    final protected function getPager(DataGridActionSearch $sourceAction)
     {
-        $GridPager = new DataGridPager();
-        $GridPager->setSourceAction($sourceAction);
-        $GridPager->setOnClickFunction('appMgmt/nav');
-        $GridPager->setLimitStart(0);
-        $GridPager->setLimitCount($this->configData->getAccountCount());
-        $GridPager->setIconPrev($this->icons->getIconNavPrev());
-        $GridPager->setIconNext($this->icons->getIconNavNext());
-        $GridPager->setIconFirst($this->icons->getIconNavFirst());
-        $GridPager->setIconLast($this->icons->getIconNavLast());
+        $gridPager = new DataGridPager();
+        $gridPager->setSourceAction($sourceAction);
+        $gridPager->setOnClickFunction('appMgmt/nav');
+        $gridPager->setLimitStart(0);
+        $gridPager->setLimitCount($this->configData->getAccountCount());
+        $gridPager->setIconPrev($this->icons->getIconNavPrev());
+        $gridPager->setIconNext($this->icons->getIconNavNext());
+        $gridPager->setIconFirst($this->icons->getIconNavFirst());
+        $gridPager->setIconLast($this->icons->getIconNavLast());
 
-        return $GridPager;
+        return $gridPager;
     }
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function initialize()
+    final protected function initialize()
     {
         $this->queryTimeStart = microtime(true);
         $this->acl = $this->dic->get(Acl::class);

@@ -110,7 +110,8 @@
   border-left-color: rgba(77, 77, 77, 0); }
 
 .selectize-control {
-  position: relative; }
+  position: relative;
+  padding: 20px 0; }
 
 .selectize-dropdown,
 .selectize-input,
@@ -359,9 +360,6 @@
 
 .selectize-dropdown-header {
   padding: 6px 12px; }
-
-.selectize-input {
-  min-height: 30px; }
 
 .selectize-input.dropdown-active::before {
   display: none; }

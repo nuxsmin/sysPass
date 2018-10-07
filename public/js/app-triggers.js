@@ -355,6 +355,8 @@ sysPass.Triggers = function (log) {
                 sysPassApp.theme.viewsTriggers.common($container);
             }
 
+            initializeTags();
+
             sysPassApp.triggers.updateFormHash($container);
         },
         datatabs: function () {
@@ -437,43 +439,6 @@ sysPass.Triggers = function (log) {
                 sysPassApp.actions.items.get($selParentAccount);
             }
 
-            $(".select-box-tags").selectize({
-                persist: false,
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                plugins: ['remove_button'],
-                onInitialize: function () {
-                    const $wrapper= $(this.$wrapper[0]);
-                    const $input = $(this.$input[0]);
-
-                    $input.attr("data-hash", sysPassApp.util.hash.md5(this.getValue().join()));
-
-                    const currentItemId = $input.data("currentItemId");
-
-                    if (currentItemId !== undefined) {
-                        this.removeOption(currentItemId, true);
-                    }
-
-                    const $selectBoxTagsNext = $input.siblings(".btn-add-select");
-
-                    if ($selectBoxTagsNext.length === 1) {
-                        $wrapper.append($selectBoxTagsNext);
-                    }
-
-                    const $selectBoxIcon = $input.siblings(".select-icon");
-
-                    if ($selectBoxIcon.length === 1) {
-                        $wrapper.prepend($selectBoxIcon);
-                    }
-                },
-                onChange: function () {
-                    const $input = $(this.$input[0]);
-                    const updated = sysPassApp.util.hash.md5(this.getValue().join()) !== $input.data("hash");
-                    $input.attr("data-updated", updated);
-                }
-            });
-
             $('input:text:visible:first').focus();
         },
         install: function () {
@@ -484,6 +449,47 @@ sysPass.Triggers = function (log) {
             sysPassApp.theme.passwordDetect($form);
             selectDetect($form);
         }
+    };
+
+    const initializeTags = function () {
+        log.info("initializeTags");
+
+        $(".select-box-tags").selectize({
+            persist: false,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            plugins: ['remove_button'],
+            onInitialize: function () {
+                const $wrapper = $(this.$wrapper[0]);
+                const $input = $(this.$input[0]);
+
+                $input.attr("data-hash", sysPassApp.util.hash.md5(this.getValue().join()));
+
+                const currentItemId = $input.data("currentItemId");
+
+                if (currentItemId !== undefined) {
+                    this.removeOption(currentItemId, true);
+                }
+
+                const $selectBoxTagsNext = $input.siblings(".btn-add-select");
+
+                if ($selectBoxTagsNext.length === 1) {
+                    $wrapper.append($selectBoxTagsNext);
+                }
+
+                const $selectBoxIcon = $input.siblings(".select-icon");
+
+                if ($selectBoxIcon.length === 1) {
+                    $wrapper.prepend($selectBoxIcon);
+                }
+            },
+            onChange: function () {
+                const $input = $(this.$input[0]);
+                const updated = sysPassApp.util.hash.md5(this.getValue().join()) !== $input.data("hash");
+                $input.attr("data-updated", updated);
+            }
+        });
     };
 
     /**

@@ -128,6 +128,7 @@
 
 .selectize-control {
   position: relative;
+  padding: 20px 0;
 }
 
 .selectize-dropdown,
@@ -425,7 +426,7 @@
 }
 
 .selectize-input {
-  min-height: 30px;
+  //min-height: 30px;
 }
 
 .selectize-input.dropdown-active {

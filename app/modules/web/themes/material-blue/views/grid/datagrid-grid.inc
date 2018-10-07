@@ -68,7 +68,10 @@ if (!isset($index)): $index = 0; endif; ?>
                         <input type="hidden" name="isAjax" value="1">
                     </form>
                 </li>
-            <?php endif; endforeach; ?>
+            <?php
+            endif;
+        endforeach; ?>
+
         <li>
             <button type="button" id="btn-back-<?php echo $index; ?>"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
