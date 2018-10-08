@@ -1003,12 +1003,12 @@ sysPass.Actions = function (log) {
             log.info("link:save");
 
             const request = function (notify) {
-                const itemId = $obj.data("item-id");
+                const accountId = $obj.data("account-id");
 
                 const opts = sysPassApp.requests.getRequestOpts();
 
-                if (itemId) {
-                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + itemId + "/" + notify;
+                if (accountId) {
+                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + accountId + "/" + notify;
                 } else {
                     opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
                     opts.data = $obj.serialize();
@@ -1018,7 +1018,7 @@ sysPass.Actions = function (log) {
                     sysPassApp.msg.out(json);
 
                     if (json.status === 0) {
-                        getContent({r: $obj.data("action-next") + "/" + itemId});
+                        getContent({r: $obj.data("action-next") + "/" + accountId});
                     }
                 });
             };
@@ -1041,6 +1041,42 @@ sysPass.Actions = function (log) {
                         e.preventDefault();
 
                         request(1);
+                    }
+                }
+            });
+        },
+        delete: function ($obj) {
+            log.info("link:delete");
+
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[12] + "</p></div>";
+
+            mdlDialog().show({
+                text: atext,
+                negative: {
+                    title: sysPassApp.config.LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
+                    }
+                },
+                positive: {
+                    title: sysPassApp.config.LANG[43],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        const itemId = $obj.data("item-id");
+                        const opts = sysPassApp.requests.getRequestOpts();
+
+                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + itemId;
+
+                        sysPassApp.requests.getActionCall(opts, function (json) {
+                            sysPassApp.msg.out(json);
+
+                            if (json.status === 0) {
+                                getContent({r: $obj.data("action-next") + "/" + $obj.data("account-id")});
+                            }
+                        });
                     }
                 }
             });
@@ -1069,7 +1105,7 @@ sysPass.Actions = function (log) {
 
                     if (actionNext) {
                         getContent({
-                            r: actionNext + "/" + itemId
+                            r: actionNext + "/" + $obj.data("account-id")
                         });
                     } else {
                         getContent({

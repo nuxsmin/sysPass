@@ -44,9 +44,13 @@ final class AccountActionsDto
      */
     private $accountParentId;
     /**
-     * @var bool
+     * @var int
      */
     private $publicLinkId;
+    /**
+     * @var int
+     */
+    private $publicLinkCreatorId;
 
     /**
      * AccountActionsDto constructor.
@@ -103,7 +107,7 @@ final class AccountActionsDto
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function getPublicLinkId()
     {
@@ -111,10 +115,26 @@ final class AccountActionsDto
     }
 
     /**
-     * @param bool $publicLinkId
+     * @param int $publicLinkId
      */
-    public function setPublicLinkId($publicLinkId)
+    public function setPublicLinkId(int $publicLinkId)
     {
-        $this->publicLinkId = (int)$publicLinkId;
+        $this->publicLinkId = $publicLinkId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkCreatorId()
+    {
+        return $this->publicLinkCreatorId;
+    }
+
+    /**
+     * @param int $publicLinkCreatorId
+     */
+    public function setPublicLinkCreatorId(int $publicLinkCreatorId)
+    {
+        $this->publicLinkCreatorId = $publicLinkCreatorId;
     }
 }

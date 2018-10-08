@@ -168,6 +168,7 @@ final class AccountHelper extends HelperBase
             try {
                 $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
+                $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
                 $this->view->assign('publicLinkUrl', PublicLinkService::getLinkForHash($publicLinkData->getHash()));
                 $this->view->assign('publicLinkId', $publicLinkData->getId());

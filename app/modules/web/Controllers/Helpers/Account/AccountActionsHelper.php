@@ -73,12 +73,12 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param \SP\Services\Account\AccountAcl $accountAcl
-     * @param AccountActionsDto               $accountActionsDto
+     * @param AccountAcl        $accountAcl
+     * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
-    public function getActionsForAccount(\SP\Services\Account\AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
+    public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
         $actions = [];
 
@@ -249,13 +249,15 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param \SP\Services\Account\AccountAcl $accountAcl
-     * @param AccountActionsDto               $accountActionsDto
+     * @param AccountAcl        $accountAcl
+     * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
      */
     public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
+        $userData = $this->context->getUserData();
+
         $actions = [];
 
         if ($accountAcl->isShowDelete()) {
@@ -268,10 +270,30 @@ final class AccountActionsHelper extends HelperBase
             && $accountAcl->isShowLink()
             && $accountAcl->isShowViewPass()
         ) {
-            $action = $accountActionsDto->getPublicLinkId() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
-            $itemId = $accountActionsDto->getPublicLinkId() ?: $accountActionsDto->getAccountId();
+            $itemId = $accountActionsDto->getPublicLinkId();
 
-            $actions[] = $action->addData('item-id', $itemId);
+            if ($itemId) {
+                $actionRefresh = $this->getPublicLinkRefreshAction();
+                $actionRefresh->addData('item-id', $itemId);
+                $actionRefresh->addData('account-id', $accountActionsDto->getAccountId());
+
+                $actions[] = $actionRefresh;
+
+                if ($userData->getIsAdminApp()
+                    || $userData->getId() === $accountActionsDto->getPublicLinkCreatorId()
+                ) {
+                    $actionDelete = $this->getPublicLinkDeleteAction();
+                    $actionDelete->addData('item-id', $itemId);
+                    $actionDelete->addData('account-id', $accountActionsDto->getAccountId());
+
+                    $actions[] = $actionDelete;
+                }
+            } else {
+                $action = $this->getPublicLinkAction();
+                $action->addData('account-id', $accountActionsDto->getAccountId());
+
+                $actions[] = $action;
+            }
         }
 
         if ($accountAcl->isShowViewPass()) {
@@ -336,6 +358,29 @@ final class AccountActionsHelper extends HelperBase
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', 'link/refresh');
+        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getPublicLinkDeleteAction()
+    {
+        $icon = clone $this->icons->getIconPublicLink();
+        $icon->setIcon('link_off');
+
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::PUBLICLINK_DELETE);
+        $action->setName(__('Eliminar Enlace Público'));
+        $action->setTitle(__('Eliminar Enlace Público'));
+        $action->addClass('btn-action');
+        $action->setIcon($icon);
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_DELETE));
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', 'link/delete');
         $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
