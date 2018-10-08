@@ -516,12 +516,13 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @return \SP\Storage\Database\QueryResult
      * @throws ConstraintException
      * @throws QueryException
+     * @todo Update tests to include userId
      */
     public function getHashForItem($itemId)
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PublicLinkData::class);
-        $queryData->setQuery('SELECT id, `hash` FROM PublicLink WHERE itemId = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `hash`, userId FROM PublicLink WHERE itemId = ? LIMIT 1');
         $queryData->addParam($itemId);
         $queryData->setOnErrorMessage(__u('Error al obtener enlace'));
 
