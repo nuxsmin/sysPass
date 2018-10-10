@@ -22,21 +22,24 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Layout;
 
 defined('APP_ROOT') || die();
 
 /**
- * Class DataGridActionType para definir los tipos de acciones
+ * Interface DataGridHeader
  *
  * @package SP\Html\DataGrid
  */
-final class DataGridActionType
+interface DataGridHeaderInterface
 {
-    const MENUBAR_ITEM = 1;
-    const VIEW_ITEM = 2;
-    const EDIT_ITEM = 3;
-    const DELETE_ITEM = 4;
-    const SEARCH_ITEM = 5;
-    const SELECT_ITEM = 6;
+    /**
+     * @param $header string
+     */
+    public function addHeader($header);
+
+    /**
+     * @return array
+     */
+    public function getHeaders();
 }

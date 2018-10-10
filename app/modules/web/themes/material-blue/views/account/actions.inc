@@ -1,8 +1,8 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                      $icons
- * @var \SP\Html\DataGrid\DataGridActionInterface[] $accountActions
- * @var \SP\Html\DataGrid\DataGridActionInterface[] $accountActionsMenu
+ * @var \SP\Core\UI\ThemeIcons                             $icons
+ * @var \SP\Html\DataGrid\Action\DataGridActionInterface[] $accountActions
+ * @var \SP\Html\DataGrid\Action\DataGridActionInterface[] $accountActionsMenu
  */
 ?>
 <div class="item-actions">

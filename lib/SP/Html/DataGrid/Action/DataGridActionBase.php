@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Action;
 
 use SP\Html\Assets\IconInterface;
 
@@ -155,7 +155,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
                 return $filter->{$method}();
             };
         } else {
-            throw new \RuntimeException('Method doen\'t exist');
+            throw new \RuntimeException('Method does not exist');
         }
 
         return $this;

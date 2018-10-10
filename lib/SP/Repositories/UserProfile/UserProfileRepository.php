@@ -206,9 +206,10 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
             $queryData->addParam($search);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

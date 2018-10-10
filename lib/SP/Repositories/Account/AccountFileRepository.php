@@ -347,12 +347,29 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(FileExtData::class);
-        $queryData->setSelect('AF.id, AF.accountId, AF.name, AF.size, AF.thumb, AF.type, AF.extension, A.name as accountName, C.name as clientName');
-        $queryData->setFrom('AccountFile AF INNER JOIN Account A ON A.id = AF.accountId INNER JOIN Client C ON A.clientId = C.id');
-        $queryData->setOrder('A.name');
+        $queryData->setSelect(
+            'AccountFile.id, 
+        AccountFile.accountId, 
+        AccountFile.name, 
+        AccountFile.size, 
+        AccountFile.thumb, 
+        AccountFile.type, 
+        AccountFile.extension, 
+        Account.name as accountName, 
+        Client.name as clientName'
+        );
+        $queryData->setFrom('AccountFile 
+        INNER JOIN Account ON Account.id = AccountFile.accountId 
+        INNER JOIN Client ON Account.clientId = Client.id');
+        $queryData->setOrder('Account.name');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('AF.name LIKE ? OR AF.type LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere(
+                'AccountFile.name LIKE ? 
+            OR AccountFile.type LIKE ? 
+            OR Account.name LIKE ? 
+            OR Client.name LIKE ?'
+            );
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
@@ -361,9 +378,10 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
             $queryData->addParam($search);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

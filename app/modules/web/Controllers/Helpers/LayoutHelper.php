@@ -33,7 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
-use SP\Html\DataGrid\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\Uri;
 use SP\Plugin\PluginManager;
 use SP\Services\Install\Installer;

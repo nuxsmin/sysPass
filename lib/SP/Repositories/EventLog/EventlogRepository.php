@@ -67,7 +67,7 @@ final class EventlogRepository extends Repository
     public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
-        $queryData->setSelect('id,FROM_UNIXTIME(date) AS date,action,level,login,ipAddress,description');
+        $queryData->setSelect('id, FROM_UNIXTIME(date) AS date, action, level, login, ipAddress, description');
         $queryData->setFrom('EventLog');
         $queryData->setOrder('id DESC');
 
@@ -78,9 +78,10 @@ final class EventlogRepository extends Repository
             $queryData->setParams(array_fill(0, 4, $search));
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

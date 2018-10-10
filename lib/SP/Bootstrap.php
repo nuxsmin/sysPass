@@ -242,6 +242,8 @@ final class Bootstrap
      * @throws Core\Exceptions\CheckException
      * @throws InitializationException
      * @throws Services\Upgrade\UpgradeException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function initializeCommon()
     {
@@ -374,6 +376,8 @@ final class Bootstrap
      *
      * @throws ConfigException
      * @throws Services\Upgrade\UpgradeException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     private function initConfig()
     {
@@ -386,6 +390,8 @@ final class Bootstrap
      * Comprobar la versión de configuración y actualizarla
      *
      * @throws Services\Upgrade\UpgradeException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     private function checkConfigVersion()
     {

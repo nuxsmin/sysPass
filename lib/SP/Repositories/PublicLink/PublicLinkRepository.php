@@ -198,32 +198,32 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(PublicLinkListData::class);
-        $queryData->setSelect('PL.id, 
-              PL.itemId,
-              PL.hash,
-              PL.data,
-              PL.userId,
-              PL.typeId,
-              PL.notify,
-              PL.dateAdd,
-              PL.dateExpire,
-              PL.dateUpdate,
-              PL.countViews,
-              PL.maxCountViews,
-              PL.totalCountViews,
-              PL.useInfo,
-              U.name AS userName,
-              U.login AS userLogin,
-              A.name AS accountName,
-              C.name AS clientName');
-        $queryData->setFrom('PublicLink PL
-              INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON itemId = A.id
-              INNER JOIN Client C ON A.clientId = C.id');
-        $queryData->setOrder('PL.dateExpire DESC');
+        $queryData->setSelect('PublicLink.id, 
+              PublicLink.itemId,
+              PublicLink.hash,
+              PublicLink.data,
+              PublicLink.userId,
+              PublicLink.typeId,
+              PublicLink.notify,
+              PublicLink.dateAdd,
+              PublicLink.dateExpire,
+              PublicLink.dateUpdate,
+              PublicLink.countViews,
+              PublicLink.maxCountViews,
+              PublicLink.totalCountViews,
+              PublicLink.useInfo,
+              User.name AS userName,
+              User.login AS userLogin,
+              Account.name AS accountName,
+              Client.name AS clientName');
+        $queryData->setFrom('PublicLink
+              INNER JOIN User ON PublicLink.userId = User.id
+              INNER JOIN Account ON PublicLink.itemId = Account.id
+              INNER JOIN Client ON Account.clientId = Client.id');
+        $queryData->setOrder('PublicLink.dateExpire DESC');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('U.login LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('User.login LIKE ? OR Account.name LIKE ? OR Client.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
@@ -231,9 +231,10 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
             $queryData->addParam($search);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

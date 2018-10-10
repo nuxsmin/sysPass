@@ -30,7 +30,12 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
-use SplObjectStorage;
+use SP\Html\DataGrid\Action\DataGridActionInterface;
+use SP\Html\DataGrid\Layout\DataGridHeader;
+use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
+use SP\Html\DataGrid\Layout\DataGridHeaderSort;
+use SP\Html\DataGrid\Layout\DataGridPagerBase;
+use SP\Html\DataGrid\Layout\DataGridPagerInterface;
 
 /**
  * Class DataGridBase para crear una matriz de datos
@@ -74,7 +79,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @var DataGridActionInterface[]
      */
-    protected $actions;
+    protected $actions = [];
     /**
      * @var int
      */
@@ -84,7 +89,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @var DataGridActionInterface[]
      */
-    protected $actionsMenu;
+    protected $actionsMenu = [];
     /**
      * @var int
      */
@@ -226,24 +231,16 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setDataActions(DataGridActionInterface $action, $isMenu = false)
+    public function addDataAction(DataGridActionInterface $action, $isMenu = false)
     {
         if ($isMenu === false) {
-            if (null === $this->actions) {
-                $this->actions = new SplObjectStorage();
-            }
-
-            $this->actions->attach($action);
+            $this->actions[] = $action;
 
             if (!$action->isSkip()) {
                 $this->actionsCount++;
             }
         } else {
-            if (null === $this->actionsMenu) {
-                $this->actionsMenu = new SplObjectStorage();
-            }
-
-            $this->actionsMenu->attach($action);
+            $this->actionsMenu[] = $action;
 
             if (!$action->isSkip()) {
                 $this->actionsMenuCount++;

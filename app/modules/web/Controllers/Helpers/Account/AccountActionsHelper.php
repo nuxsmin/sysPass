@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIcons;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountSearchItem;
@@ -50,7 +50,7 @@ final class AccountActionsHelper extends HelperBase
     protected $sk;
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     public function getViewAction()
     {
@@ -166,7 +166,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     public function getEditAction()
     {
@@ -187,7 +187,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     public function getRequestAction()
     {
@@ -252,7 +252,7 @@ final class AccountActionsHelper extends HelperBase
      * @param AccountAcl        $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
-     * @return DataGridAction[]
+     * @return \SP\Html\DataGrid\Action\DataGridAction[]
      */
     public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
@@ -388,7 +388,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     public function getPublicLinkAction()
     {

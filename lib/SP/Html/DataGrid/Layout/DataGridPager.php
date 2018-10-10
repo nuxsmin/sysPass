@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,16 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Layout;
 
 defined('APP_ROOT') || die();
 
 /**
- * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
+ * Class DataGridPager
  *
  * @package SP\Html\DataGrid
  */
-final class DataGridAction extends DataGridActionBase
+final class DataGridPager extends DataGridPagerBase
 {
 
 }

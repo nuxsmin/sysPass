@@ -282,7 +282,9 @@ final class AccountController extends ControllerBase
             $accountSearchFilter->setLimitCount($this->apiService->getParamInt('count', false, 50));
             $accountSearchFilter->setSortOrder($this->apiService->getParamInt('order', false, AccountSearchFilter::SORT_DEFAULT));
 
-            $this->returnResponse(ApiResponse::makeSuccess($this->accountService->getByFilter($accountSearchFilter)));
+            $this->returnResponse(
+                ApiResponse::makeSuccess(
+                    $this->accountService->getByFilter($accountSearchFilter)->getDataAsArray()));
         } catch (\Exception $e) {
             processException($e);
 

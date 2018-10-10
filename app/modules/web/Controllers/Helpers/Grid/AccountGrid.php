@@ -26,13 +26,14 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionHelp;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -60,11 +61,13 @@ final class AccountGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($searchAction);
+        $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions(
+        $grid->addDataAction(new DataGridActionHelp('help_account_search'));
+
+        $grid->addDataAction($this->getDeleteAction());
+        $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
                 ->setTitle(__('Eliminar Seleccionados')),
@@ -93,7 +96,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @return DataGridHeader
+     * @return \SP\Html\DataGrid\Layout\DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -102,6 +105,8 @@ final class AccountGrid extends GridBase
         $gridHeader->addHeader(__('Nombre'));
         $gridHeader->addHeader(__('Cliente'));
         $gridHeader->addHeader(__('Categoría'));
+        $gridHeader->addHeader(__('Creador'));
+        $gridHeader->addHeader(__('Grupo'));
 
         return $gridHeader;
     }
@@ -117,6 +122,8 @@ final class AccountGrid extends GridBase
         $gridData->addDataRowSource('name');
         $gridData->addDataRowSource('clientName');
         $gridData->addDataRowSource('categoryName');
+        $gridData->addDataRowSource('userName');
+        $gridData->addDataRowSource('userGroupName');
         $gridData->setData($this->queryResult);
 
         return $gridData;

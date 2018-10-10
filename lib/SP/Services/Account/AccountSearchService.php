@@ -52,7 +52,7 @@ final class AccountSearchService extends Service
      * Regex filters for special searching
      */
     const FILTERS_REGEX_IS = '#(?<filter>(?:is|not):(?:expired|private))#';
-    const FILTERS_REGEX = '#(?<type>id|user|group|file|owner|maingroup):(?:"(?<filter_quoted>[\w\s\.]+)"|(?<filter>[\w\.]+))#';
+    const FILTERS_REGEX = '#(?<type>id|user|group|file|owner|maingroup|client|category):(?:"(?<filter_quoted>[\w\s\.]+)"|(?<filter>[\w\.]+))#';
     const FILTERS_REGEX_OPERATOR = '#op:(?<operator>and|or)#';
 
     const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
@@ -200,7 +200,7 @@ final class AccountSearchService extends Service
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function analyzeQueryFilters($string)
+    public function analyzeQueryFilters($string)
     {
         $this->cleanString = $string;
 
@@ -284,7 +284,9 @@ final class AccountSearchService extends Service
                     try {
                         switch ($filter['type']) {
                             case 'user':
-                                if (is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text)))) {
+                                $userData = $this->dic->get(UserService::class)->getByLogin($text);
+
+                                if (is_object($userData)) {
                                     $queryCondition->addFilter(
                                         'Account.userId = ? OR Account.id IN 
                                         (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = ? 
@@ -294,10 +296,15 @@ final class AccountSearchService extends Service
                                 }
                                 break;
                             case 'owner':
-                                $queryCondition->addFilter('Account.userLogin LIKE ?', ['%' . $text . '%']);
+                                $text = '%' . $text . '%';
+                                $queryCondition->addFilter(
+                                    'Account.userLogin LIKE ? OR Account.userName LIKE ?',
+                                    [$text, $text]);
                                 break;
                             case 'group':
-                                if (is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text)))) {
+                                $userGroupData = $this->dic->get(UserGroupService::class)->getByName($text);
+
+                                if (is_object($userGroupData)) {
                                     $queryCondition->addFilter(
                                         'Account.userGroupId = ? OR Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = ?)',
                                         [$userGroupData->getId(), $userGroupData->getId()]);
@@ -311,6 +318,12 @@ final class AccountSearchService extends Service
                                 break;
                             case 'id':
                                 $queryCondition->addFilter('Account.id = ?', [(int)$text]);
+                                break;
+                            case 'client':
+                                $queryCondition->addFilter('Account.clientName LIKE ?', ['%' . $text . '%']);
+                                break;
+                            case 'category':
+                                $queryCondition->addFilter('Account.categoryName LIKE ?', ['%' . $text . '%']);
                                 break;
                         }
 

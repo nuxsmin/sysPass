@@ -27,11 +27,11 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 use SP\Core\Acl\Acl;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
-use SP\Html\DataGrid\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Html\DataGrid\DataGridPager;
+use SP\Html\DataGrid\Layout\DataGridHeader;
+use SP\Html\DataGrid\Layout\DataGridPager;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 
 /**
@@ -77,9 +77,9 @@ abstract class GridBase extends HelperBase implements GridInterface
     /**
      * Devolver el paginador por defecto
      *
-     * @param DataGridActionSearch $sourceAction
+     * @param \SP\Html\DataGrid\Action\DataGridActionSearch $sourceAction
      *
-     * @return DataGridPager
+     * @return \SP\Html\DataGrid\Layout\DataGridPager
      */
     final protected function getPager(DataGridActionSearch $sourceAction)
     {
@@ -113,7 +113,7 @@ abstract class GridBase extends HelperBase implements GridInterface
     protected abstract function getGridLayout(): DataGridInterface;
 
     /**
-     * @return DataGridHeader
+     * @return \SP\Html\DataGrid\Layout\DataGridHeader
      */
     protected abstract function getHeader(): DataGridHeader;
 

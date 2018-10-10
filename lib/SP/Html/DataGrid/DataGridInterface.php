@@ -27,6 +27,9 @@ namespace SP\Html\DataGrid;
 defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Html\DataGrid\Action\DataGridActionInterface;
+use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
+use SP\Html\DataGrid\Layout\DataGridPagerInterface;
 
 /**
  * Interface DataGridInterface
@@ -71,7 +74,7 @@ interface DataGridInterface
      *
      * @return $this
      */
-    public function setDataActions(DataGridActionInterface $action, $isMenu = false);
+    public function addDataAction(DataGridActionInterface $action, $isMenu = false);
 
     /**
      * @return DataGridActionInterface

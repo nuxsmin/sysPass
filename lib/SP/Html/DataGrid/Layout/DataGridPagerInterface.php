@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,9 +22,10 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Layout;
 
 use SP\Html\Assets\IconInterface;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
 
 defined('APP_ROOT') || die();
 

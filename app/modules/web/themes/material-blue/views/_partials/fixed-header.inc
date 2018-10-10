@@ -15,7 +15,7 @@
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation -->
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
-                    <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
+                    <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
                     foreach ($actions as $action): ?>
                         <a id="btn-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                             <?php foreach ($action->getData() as $dataName => $dataValue): ?>
@@ -85,7 +85,7 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title"><?php echo $app_name; ?></span>
             <nav class="mdl-navigation">
-                <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
+                <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
                 foreach ($actions as $action): ?>
                     <a id="btn-drawer-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>

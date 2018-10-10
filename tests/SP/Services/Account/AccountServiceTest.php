@@ -27,6 +27,7 @@ namespace SP\Tests\Services\Account;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
@@ -457,7 +458,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setCategoryId(1);
 
         // Comprobar un Id de categoría
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(1, $result);
 
@@ -466,7 +468,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId(10);
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(0, $result);
 
@@ -475,7 +478,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(1);
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(1, $result);
 
@@ -484,7 +488,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(0, $result);
 
@@ -493,7 +498,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setCleanTxtSearch('apple.com');
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(1, $result);
         $this->assertEquals(2, $result[0]->getId());
@@ -503,7 +509,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(0, $result);
 
@@ -512,7 +519,8 @@ class AccountServiceTest extends DatabaseTestCase
         $searchFilter->setLimitCount(10);
         $searchFilter->setTagsId([1]);
 
-        $result = self::$service->getByFilter($searchFilter);
+        /** @var AccountSearchVData[] $result */
+        $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
         $this->assertCount(1, $result);
         $this->assertEquals(1, $result[0]->getId());

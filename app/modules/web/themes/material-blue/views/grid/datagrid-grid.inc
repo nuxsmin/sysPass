@@ -3,7 +3,7 @@
  * @var $icons   SP\Core\UI\ThemeIcons
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $this    \SP\Mvc\View\Template
- * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
+ * @var $action  \SP\Html\DataGrid\Action\DataGridAction|\SP\Html\DataGrid\Action\DataGridActionSearch
  */
 
 if (!isset($index)): $index = 0; endif; ?>
@@ -11,7 +11,7 @@ if (!isset($index)): $index = 0; endif; ?>
 <div class="tab-actions">
     <ul>
         <?php foreach ($data->getDataActions() as $action):
-            if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::MENUBAR_ITEM):
+            if ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::MENUBAR_ITEM):
                 ?>
                 <li>
                     <button
@@ -27,7 +27,7 @@ if (!isset($index)): $index = 0; endif; ?>
                           class="mdl-tooltip mdl-tooltip--bottom"
                           title="<?php echo $action->getTitle(); ?>"><?php echo $action->getName(); ?></span>
                 </li>
-            <?php elseif ($action->getType() === \SP\Html\DataGrid\DataGridActionType::SEARCH_ITEM): ?>
+            <?php elseif ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::SEARCH_ITEM): ?>
                 <li class="datagrid-action-search">
                     <form method="post" id="<?php echo $action->getName(); ?>"
                           name="<?php echo $action->getName(); ?>"
@@ -57,6 +57,7 @@ if (!isset($index)): $index = 0; endif; ?>
                                 class="btn-clear mdl-button mdl-js-button mdl-button--icon">
                             <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
                         </button>
+
                         <span for="btn-reset-<?php echo $index; ?>"
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
 
@@ -67,6 +68,10 @@ if (!isset($index)): $index = 0; endif; ?>
                                value="<?php echo $data->getPager()->getLimitCount(); ?>">
                         <input type="hidden" name="isAjax" value="1">
                     </form>
+                </li>
+            <?php elseif ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::HELP_ITEM): ?>
+                <li>
+                    <?php include $this->includePartial('help_account_search'); ?>
                 </li>
             <?php
             endif;

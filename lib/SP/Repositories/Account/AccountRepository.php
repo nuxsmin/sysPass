@@ -499,23 +499,29 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
-        $queryData->setSelect('Account.id, Account.name, C.name AS clientName, C2.name AS categoryName');
-        $queryData->setFrom('Account 
-        INNER JOIN Client C ON Account.clientId = C.id
-        INNER JOIN Category C2 ON Account.categoryId = C2.id');
-        $queryData->setOrder('Account.name, C.name');
+        $queryData->setSelect('id, name, clientName, categoryName, userName, userGroupName');
+        $queryData->setFrom('account_search_v');
+        $queryData->setOrder('name, clientName');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('Account.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('name LIKE ? 
+            OR clientName LIKE ? 
+            OR categoryName LIKE ? 
+            OR userName LIKE ? 
+            OR userGroupName LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }
@@ -592,7 +598,10 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
         if (!empty($searchText)) {
-            $queryFilters->addFilter('Account.name LIKE ? OR Account.login LIKE ? OR Account.url LIKE ? OR Account.notes LIKE ?', array_fill(0, 4, '%' . $searchText . '%'));
+            $queryFilters->addFilter(
+                'Account.name LIKE ? OR Account.login LIKE ? OR Account.url LIKE ? OR Account.notes LIKE ?',
+                array_fill(0, 4, '%' . $searchText . '%')
+            );
         }
 
         // Gets special search filters
@@ -620,12 +629,18 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryJoins = new QueryJoin();
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
-            $queryJoins->addJoin('INNER JOIN AccountToFavorite ON (AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = ?)', [$this->context->getUserData()->getId()]);
+            $queryJoins->addJoin(
+                'INNER JOIN AccountToFavorite ON (AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = ?)',
+                [$this->context->getUserData()->getId()]
+            );
         }
 
         if ($accountSearchFilter->hasTags()) {
             $queryJoins->addJoin('INNER JOIN AccountToTag ON AccountToTag.accountId = Account.id');
-            $queryFilters->addFilter('AccountToTag.tagId IN (' . $this->getParamsFromArray($accountSearchFilter->getTagsId()) . ')', $accountSearchFilter->getTagsId());
+            $queryFilters->addFilter(
+                'AccountToTag.tagId IN (' . $this->getParamsFromArray($accountSearchFilter->getTagsId()) . ')',
+                $accountSearchFilter->getTagsId()
+            );
 
             if (QueryCondition::CONDITION_AND === $accountSearchFilter->getFilterOperator()) {
                 $queryData->setGroupBy('Account.id HAVING COUNT(DISTINCT AccountToTag.tagId) = ' . count($accountSearchFilter->getTagsId()));

@@ -28,13 +28,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Html\Assets\FontIcon;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Storage\Database\QueryResult;
 
 /**
@@ -62,22 +62,22 @@ final class UserGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($searchAction);
+        $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->setDataActions($this->getCreateAction());
+        $grid->addDataAction($this->getCreateAction());
 
         if ($this->acl->checkUserAccess(ActionsInterface::CONFIG_IMPORT)
             && $this->configData->isLdapEnabled()
         ) {
-            $grid->setDataActions($this->getLdapSyncAction());
+            $grid->addDataAction($this->getLdapSyncAction());
         }
 
-        $grid->setDataActions($this->getViewAction());
-        $grid->setDataActions($this->getEditAction());
-        $grid->setDataActions($this->getEditPassAction());
-        $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions(
+        $grid->addDataAction($this->getViewAction());
+        $grid->addDataAction($this->getEditAction());
+        $grid->addDataAction($this->getEditPassAction());
+        $grid->addDataAction($this->getDeleteAction());
+        $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
                 ->setTitle(__('Eliminar Seleccionados')),
@@ -160,7 +160,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getCreateAction()
     {
@@ -195,7 +195,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getDeleteAction()
     {
@@ -230,7 +230,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getViewAction()
     {
@@ -247,7 +247,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getEditPassAction()
     {

@@ -22,16 +22,42 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Action;
 
 defined('APP_ROOT') || die();
 
 /**
- * Class DataGridHeader para establecer las cabeceras de la matriz
+ * Class DataGridActionHelp
  *
  * @package SP\Html\DataGrid
  */
-final class DataGridHeader extends DataGridHeaderBase
+final class DataGridActionHelp extends DataGridActionBase
 {
+    /**
+     * @var string
+     */
+    private $template;
 
+    /**
+     * DataGridActionHelp constructor.
+     *
+     * @param string $template
+     */
+    public function __construct(string $template)
+    {
+        parent::__construct(0);
+
+        $this->type = DataGridActionType::HELP_ITEM;
+        $this->template = $template;
+
+        $this->setSkip(true);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
 }

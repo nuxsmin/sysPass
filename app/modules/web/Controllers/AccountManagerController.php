@@ -31,6 +31,8 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Services\Account\AccountSearchFilter;
+use SP\Services\Account\AccountSearchService;
 use SP\Services\Account\AccountService;
 
 /**
@@ -46,10 +48,18 @@ final class AccountManagerController extends ControllerBase
      * @var AccountService
      */
     protected $accountService;
+    /**
+     * @var AccountSearchService
+     */
+    protected $accountSearchService;
 
     /**
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
@@ -68,8 +78,11 @@ final class AccountManagerController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getSearchGrid()
     {
@@ -77,7 +90,16 @@ final class AccountManagerController extends ControllerBase
 
         $accountGrid = $this->dic->get(AccountGrid::class);
 
-        return $accountGrid->updatePager($accountGrid->getGrid($this->accountService->search($itemSearchData)), $itemSearchData);
+        $filter = new AccountSearchFilter();
+        $filter->setTxtSearch($itemSearchData->getSeachString());
+        $filter->setLimitCount($itemSearchData->getLimitCount());
+        $filter->setLimitStart($itemSearchData->getLimitStart());
+        $filter->setStringFilters($this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString()));
+
+        return $accountGrid->updatePager(
+            $accountGrid->getGrid(
+                $this->accountService->getByFilter($filter)),
+            $itemSearchData);
     }
 
     /**
@@ -126,6 +148,8 @@ final class AccountManagerController extends ControllerBase
     /**
      * Initialize class
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
@@ -133,5 +157,6 @@ final class AccountManagerController extends ControllerBase
         $this->checkLoggedIn();
 
         $this->accountService = $this->dic->get(AccountService::class);
+        $this->accountSearchService = $this->dic->get(AccountSearchService::class);
     }
 }

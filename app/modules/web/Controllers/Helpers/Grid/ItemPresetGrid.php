@@ -26,13 +26,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Storage\Database\QueryResult;
 
@@ -61,16 +61,16 @@ final class ItemPresetGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($searchAction);
+        $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->setDataActions($this->getCreatePermissionAction(), true);
-        $grid->setDataActions($this->getCreatePrivateAction(), true);
-        $grid->setDataActions($this->getCreateSessionTimeoutAction(), true);
-        $grid->setDataActions($this->getCreateAccountPasswordAction(), true);
-        $grid->setDataActions($this->getEditAction());
-        $grid->setDataActions($this->getDeleteAction());
-        $grid->setDataActions($this->getDeleteAction()
+        $grid->addDataAction($this->getCreatePermissionAction(), true);
+        $grid->addDataAction($this->getCreatePrivateAction(), true);
+        $grid->addDataAction($this->getCreateSessionTimeoutAction(), true);
+        $grid->addDataAction($this->getCreateAccountPasswordAction(), true);
+        $grid->addDataAction($this->getEditAction());
+        $grid->addDataAction($this->getDeleteAction());
+        $grid->addDataAction($this->getDeleteAction()
             ->setTitle(__('Eliminar Seleccionados'))
             ->setName(__('Eliminar Seleccionados')), true);
 
@@ -97,7 +97,7 @@ final class ItemPresetGrid extends GridBase
     }
 
     /**
-     * @return DataGridHeader
+     * @return \SP\Html\DataGrid\Layout\DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {

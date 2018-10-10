@@ -379,36 +379,39 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
-        $queryData->setSelect('U.id,
-            U.name, 
-            U.login,
-            UP.name AS userProfileName,
-            UG.name AS userGroupName,
-            U.isAdminApp,
-            U.isAdminAcc,
-            U.isLdap,
-            U.isDisabled,
-            U.isChangePass');
-        $queryData->setFrom('User U INNER JOIN UserProfile UP ON U.userProfileId = UP.id INNER JOIN UserGroup UG ON U.userGroupId = UG.id');
-        $queryData->setOrder('U.name');
+        $queryData->setSelect('User.id,
+            User.name, 
+            User.login,
+            UserProfile.name AS userProfileName,
+            UserGroup.name AS userGroupName,
+            User.isAdminApp,
+            User.isAdminAcc,
+            User.isLdap,
+            User.isDisabled,
+            User.isChangePass');
+        $queryData->setFrom('User
+        INNER JOIN UserProfile ON User.userProfileId = UserProfile.id 
+        INNER JOIN UserGroup ON User.userGroupId = UserGroup.id');
+        $queryData->setOrder('User.name');
 
         if ($itemSearchData->getSeachString() !== '') {
             if ($this->context->getUserData()->getIsAdminApp()) {
-                $queryData->setWhere('U.name LIKE ? OR U.login LIKE ?');
+                $queryData->setWhere('User.name LIKE ? OR User.login LIKE ?');
             } else {
-                $queryData->setWhere('U.name LIKE ? OR U.login LIKE ? AND U.isAdminApp = 0');
+                $queryData->setWhere('User.name LIKE ? OR User.login LIKE ? AND User.isAdminApp = 0');
             }
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
         } elseif (!$this->context->getUserData()->getIsAdminApp()) {
-            $queryData->setWhere('U.isAdminApp = 0');
+            $queryData->setWhere('User.isAdminApp = 0');
         }
 
-        $queryData->setLimit('?, ?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

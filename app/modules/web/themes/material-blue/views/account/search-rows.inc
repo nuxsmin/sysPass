@@ -3,8 +3,8 @@
  * @var $data              \SP\Html\DataGrid\DataGridTab
  * @var $accountSearchItem \SP\Services\Account\AccountSearchItem
  * @var $this              \SP\Mvc\View\Template
- * @var $action            \SP\Html\DataGrid\DataGridActionBase
- * @var $actionMenu        \SP\Html\DataGrid\DataGridActionBase
+ * @var $action            \SP\Html\DataGrid\Action\DataGridActionBase
+ * @var $actionMenu        \SP\Html\DataGrid\Action\DataGridActionBase
  * @var $icons             \SP\Core\UI\ThemeIcons
  */
 ?>

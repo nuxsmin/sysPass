@@ -94,7 +94,7 @@ final class AccessManagerController extends ControllerBase
         }
 
         if ($this->checkAccess(Acl::AUTHTOKEN)) {
-            $this->tabsGridHelper->addTab($this->getApiTokensList());
+            $this->tabsGridHelper->addTab($this->getAuthTokensList());
         }
 
         if ($this->configData->isPublinksEnabled() && $this->checkAccess(Acl::PUBLICLINK)) {
@@ -165,7 +165,7 @@ final class AccessManagerController extends ControllerBase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    protected function getApiTokensList()
+    protected function getAuthTokensList()
     {
         return $this->dic->get(AuthTokenGrid::class)
             ->getGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))

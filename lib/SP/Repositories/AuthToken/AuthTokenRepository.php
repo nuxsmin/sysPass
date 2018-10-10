@@ -179,27 +179,27 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        $query = /** @lang SQL */
-            'SELECT AT.id,
-            AT.userId,
-            AT.actionId, 
-            AT.token,
-            CONCAT(U.name, \' (\', U.login, \')\') AS userLogin 
-            FROM AuthToken AT 
-            INNER JOIN User U ON userid = U.id';
-
         $queryData = new QueryData();
+        $queryData->setSelect('AuthToken.id,
+            AuthToken.userId,
+            AuthToken.actionId, 
+            AuthToken.token,
+            CONCAT(User.name, \' (\', User.login, \')\') AS userLogin');
+        $queryData->setFrom('AuthToken 
+            INNER JOIN User ON AuthToken.userid = User.id');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $search = '%' . $itemSearchData->getSeachString() . '%';
-            $query .= ' WHERE U.login LIKE ?';
+            $queryData->setWhere('User.login LIKE ?');
 
+            $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
         }
 
-        $queryData->setQuery($query);
-        $queryData->setOrder('U.login, AT.actionId');
-        $queryData->setLimit('?, ?', [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]);
+        $queryData->setOrder('User.login, AuthToken.actionId');
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

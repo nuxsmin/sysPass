@@ -315,8 +315,10 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
             $queryData->addParams([$search, $search]);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParams([$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]);
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

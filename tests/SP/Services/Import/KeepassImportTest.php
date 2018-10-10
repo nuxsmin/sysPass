@@ -26,6 +26,7 @@ namespace SP\Tests\Services\Import;
 
 use DI\Container;
 use SP\Core\Crypt\Crypt;
+use SP\DataModel\AccountSearchVData;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -126,7 +127,8 @@ class KeepassImportTest extends DatabaseTestCase
         $filter = new AccountSearchFilter();
         $filter->setClientId($client->getId());
 
-        $data = $accountService->getByFilter($filter);
+        /** @var AccountSearchVData[] $data */
+        $data = $accountService->getByFilter($filter)->getDataAsArray();
 
         $this->assertCount(5, $data);
 

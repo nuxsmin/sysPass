@@ -56,6 +56,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Search action
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -76,6 +79,8 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -85,7 +90,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
 
         $authTokenGrid = $this->dic->get(AuthTokenGrid::class);
 
-        return $authTokenGrid->updatePager($authTokenGrid->getGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
+        return $authTokenGrid->updatePager(
+            $authTokenGrid->getGrid($this->authTokenService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 
     /**

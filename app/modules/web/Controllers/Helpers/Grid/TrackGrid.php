@@ -26,13 +26,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Http\Address;
 use SP\Storage\Database\QueryResult;
 
@@ -61,12 +61,12 @@ final class TrackGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($searchAction);
+        $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->setDataActions($this->getRefrestAction());
-        $grid->setDataActions($this->getClearAction());
-        $grid->setDataActions($this->getUnlockAction());
+        $grid->addDataAction($this->getRefrestAction());
+        $grid->addDataAction($this->getClearAction());
+        $grid->addDataAction($this->getUnlockAction());
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -150,7 +150,7 @@ final class TrackGrid extends GridBase
     }
 
     /**
-     * @return DataGridActionSearch
+     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -167,7 +167,7 @@ final class TrackGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getRefrestAction()
     {

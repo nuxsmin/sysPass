@@ -5,7 +5,7 @@
  * @var $icons   SP\Core\UI\ThemeIcons
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $this    \SP\Mvc\View\Template
- * @var $action  SP\Html\DataGrid\DataGridAction|SP\Html\DataGrid\DataGridActionSearch
+ * @var $action  \SP\Html\DataGrid\Action\DataGridAction|\SP\Html\DataGrid\Action\DataGridActionSearch
  */
 ?>
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">

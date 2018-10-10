@@ -294,26 +294,37 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
     {
         $queryData = new QueryData();
         $queryData->setSelect(
-            'IP.id,
-            IP.type,
-            IP.userId,
-            IP.userGroupId,
-            IP.userProfileId,
-            IP.`fixed`,
-            IP.priority,
-            IP.data,
-            U.name AS userName,
-            UP.name AS userProfileName,
-            UG.name AS userGroupName');
+            'ItemPreset.id,
+            ItemPreset.type,
+            ItemPreset.userId,
+            ItemPreset.userGroupId,
+            ItemPreset.userProfileId,
+            ItemPreset.`fixed`,
+            ItemPreset.priority,
+            ItemPreset.data,
+            User.name AS userName,
+            UserProfile.name AS userProfileName,
+            UserGroup.name AS userGroupName');
         $queryData->setFrom('
-            ItemPreset IP 
-            LEFT JOIN User U ON IP.userId = U.id 
-            LEFT JOIN UserProfile UP ON IP.userProfileId = UP.id 
-            LEFT JOIN UserGroup UG ON IP.userGroupId = UG.id');
-        $queryData->setOrder('IP.type, IP.priority DESC, IP.userId DESC, IP.userProfileId DESC, IP.userGroupId DESC');
+            ItemPreset
+            LEFT JOIN User ON ItemPreset.userId = User.id 
+            LEFT JOIN UserProfile ON ItemPreset.userProfileId = UserProfile.id 
+            LEFT JOIN UserGroup ON ItemPreset.userGroupId = UserGroup.id');
+        $queryData->setOrder(
+            'ItemPreset.type, 
+            ItemPreset.priority DESC, 
+            ItemPreset.userId DESC, 
+            ItemPreset.userProfileId DESC, 
+            ItemPreset.userGroupId DESC
+            ');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('IP.type LIKE ? OR U.name LIKE ? OR UP.name LIKE ? OR UG.name LIKE ?');
+            $queryData->setWhere(
+                'ItemPreset.type LIKE ? 
+                OR User.name LIKE ? 
+                OR UserProfile.name LIKE ? 
+                OR UserGroup.name LIKE ?'
+            );
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $queryData->addParam($search);
@@ -322,9 +333,10 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
             $queryData->addParam($search);
         }
 
-        $queryData->setLimit('?,?');
-        $queryData->addParam($itemSearchData->getLimitStart());
-        $queryData->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
 
         return $this->db->doSelect($queryData, true);
     }

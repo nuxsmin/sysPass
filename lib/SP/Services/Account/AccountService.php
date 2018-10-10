@@ -31,7 +31,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\AccountPassData;
-use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\Dto\AccountHistoryCreateDto;
 use SP\DataModel\ItemPreset\AccountPermission;
@@ -714,7 +713,7 @@ final class AccountService extends Service implements AccountServiceInterface
      *
      * @param AccountSearchFilter $accountSearchFilter
      *
-     * @return AccountSearchVData[]
+     * @return QueryResult
      * @throws QueryException
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -726,7 +725,7 @@ final class AccountService extends Service implements AccountServiceInterface
         return $this->accountRepository->getByFilter(
             $accountSearchFilter,
             $accountFilterUser->getFilter($accountSearchFilter->getGlobalSearch())
-        )->getDataAsArray();
+        );
     }
 
     /**

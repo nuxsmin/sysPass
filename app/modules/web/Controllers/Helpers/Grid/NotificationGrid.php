@@ -27,14 +27,14 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionInterface;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Html\DataGrid\DataGrid;
-use SP\Html\DataGrid\DataGridAction;
-use SP\Html\DataGrid\DataGridActionInterface;
-use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
+use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Storage\Database\QueryResult;
 use SP\Util\DateUtil;
 
@@ -67,20 +67,20 @@ final class NotificationGrid extends GridBase
 
         $searchAction = $this->getSearchAction();
 
-        $grid->setDataActions($searchAction);
+        $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
         $this->isAdminApp = (bool)$this->context->getUserData()->getIsAdminApp();
 
         if ($this->isAdminApp) {
-            $grid->setDataActions($this->getCreateAction());
+            $grid->addDataAction($this->getCreateAction());
         }
 
-        $grid->setDataActions($this->getViewAction());
-        $grid->setDataActions($this->setNonAdminFilter($this->getCheckAction()));
-        $grid->setDataActions($this->setNonAdminFilter($this->getEditAction()));
-        $grid->setDataActions($this->setNonAdminFilter($this->getDeleteAction()));
-        $grid->setDataActions(
+        $grid->addDataAction($this->getViewAction());
+        $grid->addDataAction($this->setNonAdminFilter($this->getCheckAction()));
+        $grid->addDataAction($this->setNonAdminFilter($this->getEditAction()));
+        $grid->addDataAction($this->setNonAdminFilter($this->getDeleteAction()));
+        $grid->addDataAction(
             $this->setNonAdminFilter(
                 $this->getDeleteAction()
                     ->setTitle(__('Eliminar Seleccionados'))
@@ -112,7 +112,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridHeader
+     * @return \SP\Html\DataGrid\Layout\DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -151,7 +151,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridActionSearch
+     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -168,7 +168,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getCreateAction()
     {
@@ -186,7 +186,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getViewAction()
     {
@@ -217,7 +217,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getCheckAction()
     {
@@ -235,7 +235,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getEditAction()
     {
@@ -251,7 +251,7 @@ final class NotificationGrid extends GridBase
     }
 
     /**
-     * @return DataGridAction
+     * @return \SP\Html\DataGrid\Action\DataGridAction
      */
     private function getDeleteAction()
     {

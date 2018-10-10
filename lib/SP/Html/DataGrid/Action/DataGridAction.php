@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,24 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Html\DataGrid\Action;
 
 defined('APP_ROOT') || die();
 
 /**
- * Interface DataGridHeader
+ * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
  *
  * @package SP\Html\DataGrid
  */
-interface DataGridHeaderInterface
+final class DataGridAction extends DataGridActionBase
 {
-    /**
-     * @param $header string
-     */
-    public function addHeader($header);
 
-    /**
-     * @return array
-     */
-    public function getHeaders();
 }
