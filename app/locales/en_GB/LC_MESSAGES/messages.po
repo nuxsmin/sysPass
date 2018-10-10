@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 00:17+0200\n"
-"PO-Revision-Date: 2018-10-11 00:17+0200\n"
+"POT-Creation-Date: 2018-10-11 00:16+0200\n"
+"PO-Revision-Date: 2018-10-11 01:10+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_GB\n"
@@ -5087,11 +5087,11 @@ msgstr "Search for accounts which contains a file with the name 'file_name'"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/help_account_search.inc:21
 msgid "Buscar cuentas por nombre de cliente"
-msgstr "Search accounts by client name"
+msgstr "Search for accounts by client name"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/help_account_search.inc:22
 msgid "Buscar cuentas por nombre de categoría"
-msgstr "Search accounts by category name"
+msgstr "Search for accounts by category name"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/help_account_search.inc:23
 msgid "Devolver la cuenta con ID"
