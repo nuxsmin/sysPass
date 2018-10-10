@@ -66,6 +66,7 @@ final class AccountGrid extends GridBase
 
         $grid->addDataAction(new DataGridActionHelp('help_account_search'));
 
+        $grid->addDataAction($this->getViewAction());
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
@@ -143,6 +144,23 @@ final class AccountGrid extends GridBase
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH));
 
         return $gridActionSearch;
+    }
+
+    /**
+     * @return \SP\Html\DataGrid\Action\DataGridAction
+     */
+    public function getViewAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::ACCOUNT_VIEW);
+        $gridAction->setType(DataGridActionType::VIEW_ITEM);
+        $gridAction->setName(__('Detalles de Cuenta'));
+        $gridAction->setTitle(__('Detalles de Cuenta'));
+        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setOnClickFunction(Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+
+        return $gridAction;
     }
 
     /**
