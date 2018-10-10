@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-11 00:16+0200\n"
-"PO-Revision-Date: 2018-10-11 01:09+0200\n"
+"POT-Creation-Date: 2018-10-11 01:51+0200\n"
+"PO-Revision-Date: 2018-10-11 01:51+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -103,7 +103,7 @@ msgstr "Action"
 #: ../../../../lib/SP/Services/Auth/LoginService.php:550
 #: ../../../../lib/SP/Services/Auth/LoginService.php:593
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:238
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:235
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:253
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:107
 #: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:111
@@ -155,13 +155,13 @@ msgstr "Action not found"
 #: ../../../modules/web/Controllers/AccountFileController.php:261
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:59
 #: ../../../modules/web/Controllers/AccountManagerController.php:67
-#: ../../../modules/web/Controllers/AuthTokenController.php:65
-#: ../../../modules/web/Controllers/AuthTokenController.php:97
-#: ../../../modules/web/Controllers/AuthTokenController.php:162
-#: ../../../modules/web/Controllers/AuthTokenController.php:192
-#: ../../../modules/web/Controllers/AuthTokenController.php:235
-#: ../../../modules/web/Controllers/AuthTokenController.php:270
-#: ../../../modules/web/Controllers/AuthTokenController.php:319
+#: ../../../modules/web/Controllers/AuthTokenController.php:68
+#: ../../../modules/web/Controllers/AuthTokenController.php:105
+#: ../../../modules/web/Controllers/AuthTokenController.php:170
+#: ../../../modules/web/Controllers/AuthTokenController.php:200
+#: ../../../modules/web/Controllers/AuthTokenController.php:243
+#: ../../../modules/web/Controllers/AuthTokenController.php:278
+#: ../../../modules/web/Controllers/AuthTokenController.php:327
 #: ../../../modules/web/Controllers/CategoryController.php:66
 #: ../../../modules/web/Controllers/CategoryController.php:100
 #: ../../../modules/web/Controllers/CategoryController.php:164
@@ -276,8 +276,8 @@ msgstr "Session cannot be initialized"
 #: ../../../../lib/SP/Repositories/AuthToken/AuthTokenRepository.php:333
 #: ../../../../lib/SP/Repositories/AuthToken/AuthTokenRepository.php:388
 #: ../../../../lib/SP/Repositories/AuthToken/AuthTokenRepository.php:416
-#: ../../../../lib/SP/Services/Account/AccountService.php:226
-#: ../../../../lib/SP/Services/Account/AccountService.php:231
+#: ../../../../lib/SP/Services/Account/AccountService.php:227
+#: ../../../../lib/SP/Services/Account/AccountService.php:232
 #: ../../../../lib/SP/Services/Api/ApiService.php:129
 #: ../../../../lib/SP/Services/Api/ApiService.php:227
 #: ../../../../lib/SP/Services/Api/ApiService.php:235
@@ -328,7 +328,7 @@ msgstr "ON"
 msgid "OFF"
 msgstr "OFF"
 
-#: ../../../../lib/SP/Html/DataGrid/DataGridBase.php:298
+#: ../../../../lib/SP/Html/DataGrid/DataGridBase.php:303
 #: ../../../../lib/SP/Mvc/View/Template.php:122
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
@@ -429,9 +429,9 @@ msgstr "New Plugin"
 #: ../../../modules/api/Controllers/AccountController.php:71
 #: ../../../modules/api/Controllers/AccountController.php:103
 #: ../../../modules/api/Controllers/AccountController.php:139
-#: ../../../modules/api/Controllers/AccountController.php:188
-#: ../../../modules/api/Controllers/AccountController.php:237
-#: ../../../modules/api/Controllers/AccountController.php:312
+#: ../../../modules/api/Controllers/AccountController.php:185
+#: ../../../modules/api/Controllers/AccountController.php:235
+#: ../../../modules/api/Controllers/AccountController.php:310
 #: ../../../modules/api/Controllers/CategoryController.php:63
 #: ../../../modules/api/Controllers/CategoryController.php:92
 #: ../../../modules/api/Controllers/CategoryController.php:122
@@ -448,8 +448,8 @@ msgstr "New Plugin"
 #: ../../../modules/api/Controllers/UserGroupController.php:92
 #: ../../../modules/api/Controllers/UserGroupController.php:123
 #: ../../../modules/api/Controllers/UserGroupController.php:152
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:221
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:105
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:239
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:103
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:105
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:104
@@ -500,7 +500,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:111
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:143
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:140
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:109
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:110
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:118
 #: ../../../modules/web/Controllers/UserGroupController.php:231
@@ -604,7 +604,7 @@ msgstr "Request"
 #: ../../../../lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: ../../../modules/web/Controllers/ConfigBackupController.php:120
 #: ../../../modules/web/Controllers/ConfigManagerController.php:171
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:93
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:94
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:20
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:389
 #: ../../../config/actions.xml:13
@@ -640,8 +640,8 @@ msgid "Error al eliminar la cuenta"
 msgstr "Error while deleting the account"
 
 #: ../../../../lib/SP/Repositories/Account/AccountHistoryRepository.php:292
-#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:455
-#: ../../../../lib/SP/Services/Account/AccountService.php:583
+#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:450
+#: ../../../../lib/SP/Services/Account/AccountService.php:585
 msgid "Error al eliminar las cuentas"
 msgstr "Error while deleting the accounts"
 
@@ -657,16 +657,16 @@ msgid "Error al crear la cuenta"
 msgstr "Error while creating the account"
 
 #: ../../../../lib/SP/Repositories/Account/AccountRepository.php:303
-#: ../../../../lib/SP/Services/Account/AccountService.php:549
+#: ../../../../lib/SP/Services/Account/AccountService.php:551
 msgid "Error al restaurar cuenta"
 msgstr "Error on restoring the account"
 
-#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:385
+#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:380
 msgid "Error al modificar la cuenta"
 msgstr "Error while updating the account"
 
-#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:405
-#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:576
+#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:400
+#: ../../../../lib/SP/Repositories/Account/AccountRepository.php:572
 #: ../../../../lib/SP/Services/Account/AccountHistoryService.php:75
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Error while retrieving the account data"
@@ -759,7 +759,7 @@ msgstr "Error while deleting the clients"
 msgid "Error al eliminar el cliente"
 msgstr "Error while deleting the client"
 
-#: ../../../../lib/SP/Repositories/Client/ClientRepository.php:344
+#: ../../../../lib/SP/Repositories/Client/ClientRepository.php:345
 msgid "Filtro incorrecto"
 msgstr "Wrong filter"
 
@@ -823,7 +823,7 @@ msgid "Error al crear la notificación"
 msgstr "Error while adding the notification"
 
 #: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:118
-#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:427
+#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:429
 msgid "Error al modificar la notificación"
 msgstr "Error while updating the notification"
 
@@ -844,9 +844,9 @@ msgid "Error al obtener la notificación"
 msgstr "Error while retrieving notification"
 
 #: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:242
-#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:464
-#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:497
-#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:531
+#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:466
+#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:499
+#: ../../../../lib/SP/Repositories/Notification/NotificationRepository.php:533
 msgid "Error al obtener las notificaciones"
 msgstr "Error while retrieving the notifications"
 
@@ -855,11 +855,11 @@ msgid "Error al crear el plugin"
 msgstr "Error while adding the plugin"
 
 #: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:104
-#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:347
-#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:367
-#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:387
-#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:407
-#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:426
+#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:348
+#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:368
+#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:388
+#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:408
+#: ../../../../lib/SP/Repositories/Plugin/PluginRepository.php:427
 msgid "Error al actualizar el plugin"
 msgstr "Error while updating the plugin"
 
@@ -876,26 +876,26 @@ msgstr "Error while deleting the plugin"
 msgid "Error al eliminar enlace"
 msgstr "Error while removing the link"
 
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:254
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:255
 msgid "Enlace ya creado"
 msgstr "Link already created"
 
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:281
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:282
 msgid "Error al crear enlace"
 msgstr "Error while creating the link"
 
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:340
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:388
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:341
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:389
 msgid "Error al actualizar enlace"
 msgstr "Error while updating the link"
 
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:423
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:424
 msgid "Error al renovar enlace"
 msgstr "Error while renewing link"
 
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:465
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:506
-#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:527
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:466
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:507
+#: ../../../../lib/SP/Repositories/PublicLink/PublicLinkRepository.php:528
 msgid "Error al obtener enlace"
 msgstr "Error while retrieving the link"
 
@@ -955,12 +955,12 @@ msgid "Error en comprobación de hash"
 msgstr "Error while checking hash"
 
 #: ../../../../lib/SP/Repositories/User/UserRepository.php:63
-#: ../../../../lib/SP/Repositories/User/UserRepository.php:427
+#: ../../../../lib/SP/Repositories/User/UserRepository.php:430
 msgid "Login/email de usuario duplicados"
 msgstr "Duplicated user login/email"
 
 #: ../../../../lib/SP/Repositories/User/UserRepository.php:100
-#: ../../../../lib/SP/Repositories/User/UserRepository.php:674
+#: ../../../../lib/SP/Repositories/User/UserRepository.php:677
 #: ../../../../lib/SP/Services/User/UserService.php:310
 msgid "Error al actualizar el usuario"
 msgstr "Error while updating the user"
@@ -975,7 +975,7 @@ msgid "Error al eliminar el usuario"
 msgstr "Error while deleting the user"
 
 #: ../../../../lib/SP/Repositories/User/UserRepository.php:234
-#: ../../../../lib/SP/Repositories/User/UserRepository.php:548
+#: ../../../../lib/SP/Repositories/User/UserRepository.php:551
 msgid "Error al obtener los datos del usuario"
 msgstr "Error while retrieving the user's data"
 
@@ -984,11 +984,11 @@ msgstr "Error while retrieving the user's data"
 msgid "Error al eliminar los usuarios"
 msgstr "Error while deleting the users"
 
-#: ../../../../lib/SP/Repositories/User/UserRepository.php:471
+#: ../../../../lib/SP/Repositories/User/UserRepository.php:474
 msgid "Error al crear el usuario"
 msgstr "Error while creating the user"
 
-#: ../../../../lib/SP/Repositories/User/UserRepository.php:694
+#: ../../../../lib/SP/Repositories/User/UserRepository.php:697
 msgid "Error al actualizar preferencias"
 msgstr "Error while updating the preferences"
 
@@ -996,16 +996,16 @@ msgstr "Error while updating the preferences"
 msgid "Error al eliminar el grupo"
 msgstr "Error while deleting the group"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:305
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:350
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:306
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:351
 msgid "Nombre de grupo duplicado"
 msgstr "Duplicated group name"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:314
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:315
 msgid "Error al crear el grupo"
 msgstr "Error while creating the group"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:360
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:361
 msgid "Error al actualizar el grupo"
 msgstr "Error while updating the group"
 
@@ -1026,16 +1026,16 @@ msgstr "Error while removing the profile"
 msgid "Error al eliminar los perfiles"
 msgstr "Error while removing the profiles"
 
-#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:229
-#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:274
+#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:230
+#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:275
 msgid "Nombre de perfil duplicado"
 msgstr "Duplicated profile name"
 
-#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:238
+#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:239
 msgid "Error al crear perfil"
 msgstr "Error while creating the profile"
 
-#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:287
+#: ../../../../lib/SP/Repositories/UserProfile/UserProfileRepository.php:288
 #: ../../../../lib/SP/Services/UserProfile/UserProfileService.php:141
 msgid "Error al modificar perfil"
 msgstr "Error while updating the profile"
@@ -1102,18 +1102,18 @@ msgstr "Error while deleting the files"
 msgid "Archivo no encontrado"
 msgstr "File not found"
 
-#: ../../../../lib/SP/Services/Account/AccountService.php:164
-#: ../../../../lib/SP/Services/Account/AccountService.php:566
+#: ../../../../lib/SP/Services/Account/AccountService.php:163
+#: ../../../../lib/SP/Services/Account/AccountService.php:568
 msgid "Cuenta no encontrada"
 msgstr "Account not found"
 
-#: ../../../../lib/SP/Services/Account/AccountService.php:219
+#: ../../../../lib/SP/Services/Account/AccountService.php:220
 msgid "Clave maestra no establecida"
 msgstr "Master password not set"
 
-#: ../../../../lib/SP/Services/Account/AccountService.php:282
-#: ../../../../lib/SP/Services/Account/AccountService.php:639
-#: ../../../../lib/SP/Services/Account/AccountService.php:694
+#: ../../../../lib/SP/Services/Account/AccountService.php:283
+#: ../../../../lib/SP/Services/Account/AccountService.php:641
+#: ../../../../lib/SP/Services/Account/AccountService.php:696
 msgid "La cuenta no existe"
 msgstr "The account doesn't exist"
 
@@ -1499,9 +1499,9 @@ msgstr "Account imported"
 #: ../../../modules/api/Controllers/AccountController.php:72
 #: ../../../modules/api/Controllers/AccountController.php:104
 #: ../../../modules/api/Controllers/AccountController.php:140
-#: ../../../modules/api/Controllers/AccountController.php:189
-#: ../../../modules/api/Controllers/AccountController.php:238
-#: ../../../modules/api/Controllers/AccountController.php:313
+#: ../../../modules/api/Controllers/AccountController.php:186
+#: ../../../modules/api/Controllers/AccountController.php:236
+#: ../../../modules/api/Controllers/AccountController.php:311
 #: ../../../modules/web/Controllers/AccountController.php:225
 #: ../../../modules/web/Controllers/AccountController.php:710
 #: ../../../modules/web/Controllers/AccountController.php:755
@@ -1516,8 +1516,8 @@ msgstr "Account imported"
 #: ../../../modules/web/Controllers/ClientController.php:213
 #: ../../../modules/web/Controllers/ClientController.php:245
 #: ../../../modules/web/Controllers/ClientController.php:281
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:214
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:106
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:232
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:107
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
@@ -1610,8 +1610,8 @@ msgstr "Category imported"
 #: ../../../modules/web/Controllers/CategoryController.php:220
 #: ../../../modules/web/Controllers/CategoryController.php:254
 #: ../../../modules/web/Controllers/CategoryController.php:294
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:228
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:107
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:246
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:62
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:64
@@ -1999,17 +1999,17 @@ msgid "Actualización de autorizaciones API"
 msgstr "API authorizations update"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
-#: ../../../modules/web/Controllers/AuthTokenController.php:283
-#: ../../../modules/web/Controllers/AuthTokenController.php:292
-#: ../../../modules/web/Controllers/AuthTokenController.php:299
+#: ../../../modules/web/Controllers/AuthTokenController.php:291
+#: ../../../modules/web/Controllers/AuthTokenController.php:300
+#: ../../../modules/web/Controllers/AuthTokenController.php:307
 msgid "Autorización actualizada"
 msgstr "Authorization updated"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeAuthToken.php:71
-#: ../../../modules/web/Controllers/AuthTokenController.php:218
-#: ../../../modules/web/Controllers/AuthTokenController.php:284
-#: ../../../modules/web/Controllers/AuthTokenController.php:293
-#: ../../../modules/web/Controllers/AuthTokenController.php:331
+#: ../../../modules/web/Controllers/AuthTokenController.php:226
+#: ../../../modules/web/Controllers/AuthTokenController.php:292
+#: ../../../modules/web/Controllers/AuthTokenController.php:301
+#: ../../../modules/web/Controllers/AuthTokenController.php:339
 msgid "Autorización"
 msgstr "Authorization"
 
@@ -2312,22 +2312,22 @@ msgstr "Password viewed"
 msgid "Clave actualizada"
 msgstr "Password updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:187
-#: ../../../modules/api/Controllers/AccountController.php:193
+#: ../../../modules/api/Controllers/AccountController.php:184
+#: ../../../modules/api/Controllers/AccountController.php:190
 #: ../../../modules/web/Controllers/AccountController.php:708
 #: ../../../modules/web/Controllers/AccountController.php:719
 msgid "Cuenta creada"
 msgstr "Account added"
 
-#: ../../../modules/api/Controllers/AccountController.php:236
-#: ../../../modules/api/Controllers/AccountController.php:242
+#: ../../../modules/api/Controllers/AccountController.php:234
+#: ../../../modules/api/Controllers/AccountController.php:240
 #: ../../../modules/web/Controllers/AccountController.php:753
 #: ../../../modules/web/Controllers/AccountController.php:764
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:311
-#: ../../../modules/api/Controllers/AccountController.php:317
+#: ../../../modules/api/Controllers/AccountController.php:309
+#: ../../../modules/api/Controllers/AccountController.php:315
 #: ../../../modules/web/Controllers/AccountController.php:883
 #: ../../../modules/web/Controllers/AccountController.php:888
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:110
@@ -2412,8 +2412,8 @@ msgstr "Export process finished"
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:43
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:54
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:67
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:104
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:142
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:105
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:144
 msgid "Id de la cuenta"
 msgstr "Account Id"
 
@@ -2461,7 +2461,7 @@ msgstr "Password"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:70
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:91
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:113
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:114
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:89
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:104
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:175
@@ -2471,7 +2471,7 @@ msgid "Fecha Caducidad Clave"
 msgstr "Password Expiry Date"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:82
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:105
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:106
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:28
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:42
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:22
@@ -2481,7 +2481,7 @@ msgid "Nombre de cuenta"
 msgstr "Account name"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:83
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:106
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:107
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:43
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:66
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:91
@@ -2489,7 +2489,7 @@ msgid "Id de categoría"
 msgstr "Category Id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:84
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:107
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:108
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:43
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:67
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:93
@@ -2497,21 +2497,21 @@ msgid "Id de cliente"
 msgstr "Client Id"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:86
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:108
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:109
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:99
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:143
 msgid "Usuario de acceso"
 msgstr "Access user"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:87
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:109
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:110
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:86
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:130
 msgid "URL o IP de acceso"
 msgstr "Access URL or IP"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:88
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:110
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:111
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:124
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:78
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:201
@@ -2519,7 +2519,7 @@ msgid "Notas sobre la cuenta"
 msgstr "Notes about the account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:89
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:111
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:112
 #: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:194
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:106
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:19
@@ -2527,14 +2527,14 @@ msgid "Cuenta Privada"
 msgstr "Private Account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:90
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:112
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:113
 #: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:211
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:38
 msgid "Cuenta Privada Grupo"
 msgstr "Private Account for Group"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:92
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:114
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:115
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:245
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:247
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:8
@@ -2542,11 +2542,19 @@ msgid "Cuenta Vinculada"
 msgstr "Linked Account"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:93
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:115
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:116
 msgid "Array con Ids de etiquetas"
 msgstr "Array with tags id"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:126
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:94
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:117
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:43
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:67
+#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:93
+msgid "Id de grupo"
+msgstr "Group Id"
+
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:128
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:79
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:81
 #: ../../../modules/api/Controllers/Help/TagHelp.php:77
@@ -2555,7 +2563,7 @@ msgstr "Array with tags id"
 msgid "Texto a buscar"
 msgstr "Text to search"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:127
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:129
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:80
 #: ../../../modules/api/Controllers/Help/ClientHelp.php:82
 #: ../../../modules/api/Controllers/Help/TagHelp.php:78
@@ -2563,19 +2571,19 @@ msgstr "Text to search"
 msgid "Número de resultados a mostrar"
 msgstr "Number of results to show"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:128
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:130
 msgid "Id de categoría a filtrar"
 msgstr "Category Id to filter on"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:129
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:131
 msgid "Id de cliente a filtrar"
 msgstr "Client Id to filter on"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:130
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:132
 msgid "Array con Ids de etiquetas a filtrar"
 msgstr "Array with tags id for filtering"
 
-#: ../../../modules/api/Controllers/Help/AccountHelp.php:131
+#: ../../../modules/api/Controllers/Help/AccountHelp.php:133
 msgid "Operador de filtrado"
 msgstr "Filtering operator"
 
@@ -2623,12 +2631,6 @@ msgstr "Tag Id"
 #: ../../../modules/web/themes/material-blue/views/itemshow/tag.inc:23
 msgid "Nombre de la etiqueta"
 msgstr "Tag name"
-
-#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:43
-#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:67
-#: ../../../modules/api/Controllers/Help/UserGroupHelp.php:93
-msgid "Id de grupo"
-msgstr "Group Id"
 
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:54
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:68
@@ -2703,6 +2705,8 @@ msgstr "Updating needed"
 #: ../../../modules/web/Controllers/AccountController.php:476
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:157
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:158
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:26
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:45
 msgid "Detalles de Cuenta"
@@ -2765,8 +2769,8 @@ msgstr "Edit Account"
 #: ../../../modules/web/Controllers/AccountController.php:389
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:156
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:157
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:174
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:175
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:176
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: ../../../config/actions.xml:169 ../../../config/actions.xml:487
@@ -2922,37 +2926,37 @@ msgstr "Files management disabled"
 msgid "No hay archivos asociados a la cuenta"
 msgstr "There are no linked files for the account"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:101
+#: ../../../modules/web/Controllers/AuthTokenController.php:109
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:154
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:155
 msgid "Nueva Autorización"
 msgstr "New Authorization"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:165
+#: ../../../modules/web/Controllers/AuthTokenController.php:173
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:189
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:190
 msgid "Editar Autorización"
 msgstr "Edit Authorization"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:204
-#: ../../../modules/web/Controllers/AuthTokenController.php:207
+#: ../../../modules/web/Controllers/AuthTokenController.php:212
+#: ../../../modules/web/Controllers/AuthTokenController.php:215
 msgid "Autorizaciones eliminadas"
 msgstr "Authorizations deleted"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:217
-#: ../../../modules/web/Controllers/AuthTokenController.php:221
+#: ../../../modules/web/Controllers/AuthTokenController.php:225
+#: ../../../modules/web/Controllers/AuthTokenController.php:229
 msgid "Autorización eliminada"
 msgstr "Authorization deleted"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:250
+#: ../../../modules/web/Controllers/AuthTokenController.php:258
 msgid "Autorización creada"
 msgstr "Authorization added"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:322
+#: ../../../modules/web/Controllers/AuthTokenController.php:330
 msgid "Ver Autorización"
 msgstr "View Authorization"
 
-#: ../../../modules/web/Controllers/AuthTokenController.php:330
+#: ../../../modules/web/Controllers/AuthTokenController.php:338
 msgid "Autorización visualizada"
 msgstr "Authorization viewed"
 
@@ -3474,28 +3478,28 @@ msgstr "Copy Account"
 msgid "Clave de Cuenta"
 msgstr "Account Password"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:161
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:162
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:176
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:177
 msgid "Más Acciones"
 msgstr "More Actions"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:215
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
 msgid "Ordenar por Cliente"
 msgstr "Sort by Client"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:222
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:240
 msgid "Ordenar por Nombre"
 msgstr "Sort by Name"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:229
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
 msgid "Ordenar por Categoría"
 msgstr "Sort by Category"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:236
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:254
 msgid "Ordenar por Usuario"
 msgstr "Sort by Username"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:242
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:260
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:44
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:50
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:78
@@ -3506,12 +3510,12 @@ msgstr "Sort by Username"
 msgid "URL / IP"
 msgstr "URL / IP"
 
-#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:243
+#: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:261
 msgid "Ordenar por URL / IP"
 msgstr "Sort by URL / IP"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:72
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:73
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:74
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:70
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:71
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:73
@@ -3541,7 +3545,7 @@ msgstr "Sort by URL / IP"
 msgid "Eliminar Seleccionados"
 msgstr "Delete Selected"
 
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:108
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:109
 #: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:157
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:37
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:39
@@ -3549,7 +3553,7 @@ msgid "Creador"
 msgstr "Creator"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:141
+#: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:142
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:144
 #: ../../../config/actions.xml:493 ../../../config/actions.xml:793
 msgid "Buscar Cuenta"
@@ -7475,6 +7479,9 @@ msgstr "Text"
 #: ../../../config/strings.xml:9
 msgid "Link"
 msgstr "Link"
+
+#~ msgid "Id de grupo de usuario"
+#~ msgstr "User group Id"
 
 #~ msgid "Etiqueta"
 #~ msgstr "Tag"

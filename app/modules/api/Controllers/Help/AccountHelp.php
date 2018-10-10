@@ -90,7 +90,8 @@ final class AccountHelp implements HelpInterface
                 self::getItem('privateGroup', __('Cuenta Privada Grupo')),
                 self::getItem('expireDate', __('Fecha Caducidad Clave')),
                 self::getItem('parentId', __('Cuenta Vinculada')),
-                self::getItem('tagsId', __('Array con Ids de etiquetas'))
+                self::getItem('tagsId', __('Array con Ids de etiquetas')),
+                self::getItem('userGroupId', __('Id de grupo'))
             ];
     }
 
@@ -112,7 +113,8 @@ final class AccountHelp implements HelpInterface
                 self::getItem('privateGroup', __('Cuenta Privada Grupo')),
                 self::getItem('expireDate', __('Fecha Caducidad Clave')),
                 self::getItem('parentId', __('Cuenta Vinculada')),
-                self::getItem('tagsId', __('Array con Ids de etiquetas'))
+                self::getItem('tagsId', __('Array con Ids de etiquetas')),
+                self::getItem('userGroupId', __('Id de grupo'))
             ];
     }
 

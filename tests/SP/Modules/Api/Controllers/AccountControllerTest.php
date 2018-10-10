@@ -54,7 +54,7 @@ class AccountControllerTest extends WebTestCase
                 'url' => 'http://syspass.org',
                 'notes' => "test\n\ntest",
                 'isPrivate' => 1,
-                'isPrivateGroup' => 1,
+                'isPrivateGroup' => 1
             ],
             'id' => 1
         ];

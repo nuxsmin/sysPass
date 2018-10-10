@@ -169,14 +169,11 @@ final class AccountController extends ControllerBase
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
             $accountRequest->userId = $this->context->getUserData()->getId();
-            $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
+            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId');
             $accountRequest->tags = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
+            $accountRequest->pass = $this->apiService->getParamRaw('pass', true);
 
             $this->accountPresetService->checkPasswordPreset($accountRequest);
-
-            $pass = $this->accountService->getPasswordEncrypted($this->apiService->getParamRaw('pass', true), $this->apiService->getMasterPass());
-            $accountRequest->pass = $pass['pass'];
-            $accountRequest->key = $pass['key'];
 
             $accountId = $this->accountService->create($accountRequest);
 
@@ -219,6 +216,7 @@ final class AccountController extends ControllerBase
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
             $accountRequest->userEditId = $this->context->getUserData()->getId();
+            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId');
 
             $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 

@@ -177,7 +177,9 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function create(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
+        $accountRequest->changePermissions = AccountAclService::getShowPermission(
+            $this->context->getUserData(),
+            $this->context->getUserProfile());
         $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->context->getUserData()->getUserGroupId();
 
         if (empty($accountRequest->key)) {
@@ -409,11 +411,12 @@ final class AccountService extends Service implements AccountServiceInterface
     public function update(AccountRequest $accountRequest)
     {
         $this->transactionAware(function () use ($accountRequest) {
-            $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
+            $accountRequest->changePermissions = AccountAclService::getShowPermission(
+                $this->context->getUserData(),
+                $this->context->getUserProfile());
 
-            // Cambiar el grupo principal si el usuario es Admin
-            $accountRequest->changeUserGroup = ($accountRequest->userGroupId > 0
-                && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
+            $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
+                && $accountRequest->changePermissions;
 
             $this->addHistory($accountRequest->id);
 

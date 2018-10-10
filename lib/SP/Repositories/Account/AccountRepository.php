@@ -371,11 +371,6 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
             $queryAssignment->addField('userGroupId', $itemData->userGroupId);
         }
 
-        if ($itemData->changePermissions) {
-            $queryAssignment->addField('otherUserEdit', $itemData->otherUserEdit);
-            $queryAssignment->addField('otherUserGroupEdit', $itemData->otherUserGroupEdit);
-        }
-
         $query = /** @lang SQL */
             'UPDATE Account SET ' . $queryAssignment->getAssignments() . ' WHERE id = ?';
 
