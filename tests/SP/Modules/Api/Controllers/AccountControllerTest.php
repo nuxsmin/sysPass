@@ -54,7 +54,9 @@ class AccountControllerTest extends WebTestCase
                 'url' => 'http://syspass.org',
                 'notes' => "test\n\ntest",
                 'isPrivate' => 1,
-                'isPrivateGroup' => 1
+                'isPrivateGroup' => 1,
+                'userId' => 1,
+                'userGroupId' => 1
             ],
             'id' => 1
         ];
@@ -69,6 +71,50 @@ class AccountControllerTest extends WebTestCase
         $this->assertEquals('Account added', $result->result->resultMessage);
 
         return $result->result->itemId;
+    }
+
+    public function testCreateActionNoUserData()
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/create',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'tokenPass' => ApiTest::API_PASS,
+                'name' => 'API test',
+                'categoryId' => 2,
+                'clientId' => 2,
+                'login' => 'root',
+                'pass' => 'password_test',
+                'expireDate' => time() + 86400,
+                'url' => 'http://syspass.org',
+                'notes' => "test\n\ntest",
+                'isPrivate' => 1,
+                'isPrivateGroup' => 1
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result);
+        $this->assertEquals(4, $result->result->itemId);
+        $this->assertEquals('Account added', $result->result->resultMessage);
+
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/delete',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $result->result->itemId,
+            ],
+            'id' => 1
+        ];
+
+        self::postJson(ApiTest::API_URL, $data);
     }
 
     /**
@@ -564,7 +610,9 @@ class AccountControllerTest extends WebTestCase
                 'notes' => "test\n\ntest\nedit",
                 'isPrivate' => 0,
                 'isPrivateGroup' => 0,
-            ],
+                'userId' => 1,
+                'userGroupId' => 1
+             ],
             'id' => 1
         ];
 
@@ -613,6 +661,42 @@ class AccountControllerTest extends WebTestCase
         $this->assertGreaterThan(0, $result->result->result->passDate);
         $this->assertGreaterThan(0, $result->result->result->passDateChange);
         $this->assertEquals(0, $result->result->result->parentId);
+    }
+
+    /**
+     * @depends testCreateAction
+     *
+     * @param int $id
+     */
+    public function testEditActionNoUserData($id)
+    {
+        $data = [
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => ApiTest::API_TOKEN,
+                'id' => $id,
+                'name' => 'API test edit',
+                'categoryId' => 3,
+                'clientId' => 1,
+                'login' => 'admin',
+                'expireDate' => time() + 86400,
+                'url' => 'http://demo.syspass.org',
+                'notes' => "test\n\ntest\nedit",
+                'isPrivate' => 0,
+                'isPrivateGroup' => 0
+            ],
+            'id' => 1
+        ];
+
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals(0, $result->result->resultCode);
+        $this->assertNull($result->result->count);
+        $this->assertInstanceOf(\stdClass::class, $result->result);
+        $this->assertEquals(3, $result->result->itemId);
+        $this->assertEquals('Account updated', $result->result->resultMessage);
     }
 
     /**

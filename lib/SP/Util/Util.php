@@ -328,4 +328,19 @@ final class Util
 
         return [0, 0];
     }
+
+    /**
+     * Adaptador para convertir una cadena de IDs a un array
+     *
+     * @param string $itemsId
+     * @param string $delimiter
+     *
+     * @return array
+     */
+    public static function itemsIdAdapter(string $itemsId, $delimiter = ','): array
+    {
+        return array_map(function ($value) {
+            return intval($value);
+        }, explode($delimiter, $itemsId));
+    }
 }

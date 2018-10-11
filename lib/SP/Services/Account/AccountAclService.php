@@ -333,14 +333,14 @@ final class AccountAclService extends Service
         $isAccountFullGroupAccess = $this->config->getConfigData()->isAccountFullGroupAccess();
 
         // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
-        return array_filter($this->accountAclDto->getUserGroupsId(),
+        return array_values(array_filter($this->accountAclDto->getUserGroupsId(),
             function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
                 return (int)$value->id === $userGroupId
                     // o... permitir los grupos que no sean el principal del usuario?
                     || ($isAccountFullGroupAccess
                         // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
                         && in_array((int)$value->id, $userGroups));
-            });
+            }));
     }
 
     /**

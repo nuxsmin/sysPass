@@ -17,8 +17,7 @@
                         <div class="tag-list-box">
                             <?php if (!$isView): ?>
                                 <select id="other_users_view" name="other_users_view[]" multiple="multiple"
-                                        class="select-box-tags"
-                                        data-current-item-id="<?php echo $ctx_userId; ?>" <?php echo $disabled; ?>>
+                                        class="select-box-tags" <?php echo $disabled; ?>>
                                     <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersView */
                                     foreach ($otherUsersView as $otherUser): ?>
@@ -49,8 +48,7 @@
                         <div class="tag-list-box">
                             <?php if (!$isView): ?>
                                 <select id="other_users_edit" name="other_users_edit[]" multiple="multiple"
-                                        class="select-box-tags"
-                                        data-current-item-id="<?php echo $ctx_userId; ?>" <?php echo $disabled; ?>>
+                                        class="select-box-tags" <?php echo $disabled; ?>>
                                     <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsersEdit */
                                     foreach ($otherUsersEdit as $otherUser): ?>
@@ -87,8 +85,7 @@
                         <div class="tag-list-box">
                             <?php if (!$isView): ?>
                                 <select id="other_usergroups_view" name="other_usergroups_view[]" multiple="multiple"
-                                        class="select-box-tags"
-                                        data-current-item-id="<?php echo $ctx_userGroupId; ?>" <?php echo $disabled; ?>>
+                                        class="select-box-tags" <?php echo $disabled; ?>>
                                     <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsView */
                                     foreach ($otherUserGroupsView as $otherUserGroup): ?>
@@ -119,8 +116,7 @@
                         <div class="tag-list-box">
                             <?php if (!$isView): ?>
                                 <select id="other_usergroups_edit" name="other_usergroups_edit[]" multiple="multiple"
-                                        class="select-box-tags"
-                                        data-current-item-id="<?php echo $ctx_userGroupId; ?>" <?php echo $disabled; ?>>
+                                        class="select-box-tags" <?php echo $disabled; ?>>
                                     <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroupsEdit */
                                     foreach ($otherUserGroupsEdit as $otherUserGroup): ?>
@@ -152,9 +148,12 @@
             </tr>
         <?php endif; ?>
 
-        <?php if (isset($editAction) && ($ctx_userIsAdminApp || $ctx_userIsAdminAcc || $ctx_userId === $accountData->getUserId())): ?>
+        <?php if (isset($editAction)
+            && ($ctx_userIsAdminApp
+                || $ctx_userIsAdminAcc
+                || $ctx_userId === $accountData->getUserId())): ?>
             <tr>
-                <td class="descField"><?php echo __('Creador'); ?></td>
+                <td class="descField"><?php echo __('Propietario'); ?></td>
                 <td class="valField">
                     <select id="owner_id" name="owner_id" class="select-box" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>

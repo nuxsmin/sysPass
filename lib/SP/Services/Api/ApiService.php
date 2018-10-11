@@ -197,11 +197,13 @@ final class ApiService extends Service
      */
     private function setupUser()
     {
-        $userLoginResponse = UserService::mapUserLoginResponse($this->dic->get(UserService::class)->getById($this->authTokenData->getUserId()));
+        $userLoginResponse = UserService::mapUserLoginResponse($this->dic->get(UserService::class)
+            ->getById($this->authTokenData->getUserId()));
         $userLoginResponse->getIsDisabled() && $this->accessDenied();
 
         $this->context->setUserData($userLoginResponse);
-        $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
+        $this->context->setUserProfile($this->dic->get(UserProfileService::class)
+            ->getById($userLoginResponse->getUserProfileId())->getProfile());
     }
 
     /**

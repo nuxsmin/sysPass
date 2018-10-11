@@ -486,6 +486,9 @@ sysPass.Triggers = function (log) {
             },
             onChange: function () {
                 const $input = $(this.$input[0]);
+
+                // Calculates the current data hash and compares it against the orginal one.
+                // It sets the data-updated attribute to the comparation result
                 const updated = sysPassApp.util.hash.md5(this.getValue().join()) !== $input.data("hash");
                 $input.attr("data-updated", updated);
             }

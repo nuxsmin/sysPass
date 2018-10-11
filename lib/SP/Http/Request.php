@@ -331,10 +331,10 @@ final class Request
      *
      * @return int
      */
-    public function analyzeInt(string $param, int $default = null): int
+    public function analyzeInt(string $param, int $default = null)
     {
         if (!$this->params->exists($param)) {
-            return (int)$default;
+            return $default;
         }
 
         return Filter::getInt($this->params->get($param));

@@ -126,6 +126,10 @@ final class AccountRequest
     /**
      * @var bool
      */
+    public $changeOwner = false;
+    /**
+     * @var bool
+     */
     public $changeUserGroup = false;
     /**
      * @var bool

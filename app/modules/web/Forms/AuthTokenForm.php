@@ -87,16 +87,16 @@ final class AuthTokenForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if ($this->authTokenData->getUserId() === 0) {
+        if (0 === $this->authTokenData->getUserId()) {
             throw new ValidationException(__u('Usuario no indicado'));
         }
 
-        if ($this->authTokenData->getActionId() === 0) {
+        if (0 === $this->authTokenData->getActionId()) {
             throw new ValidationException(__u('Acción no indicada'));
         }
 
         if ((AuthTokenService::isSecuredAction($this->authTokenData->getActionId()) || $this->isRefresh())
-            && $this->authTokenData->getHash() === ''
+            && empty($this->authTokenData->getHash())
         ) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }

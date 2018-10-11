@@ -124,7 +124,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 1;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        $this->assertEquals(3, self::$repository->update($accountRequest));
+        self::$repository->updateByType($accountRequest, false);
 
         $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
@@ -141,12 +141,12 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
         $accountRequest->userGroupsView = [10];
 
-        self::$repository->update($accountRequest);
+        self::$repository->updateByType($accountRequest, false);
 
         $accountRequest->id = 3;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        self::$repository->update($accountRequest);
+        self::$repository->updateByType($accountRequest, false);
     }
 
     /**
@@ -161,7 +161,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsEdit = [2, 3];
 
-        $this->assertEquals(3, self::$repository->updateEdit($accountRequest));
+        $this->assertEquals(3, self::$repository->updateByType($accountRequest, true));
 
         $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
@@ -177,13 +177,30 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsEdit = [10];
 
-        self::$repository->updateEdit($accountRequest);
+        self::$repository->updateByType($accountRequest, true);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsEdit = [2, 3];
 
-        self::$repository->updateEdit($accountRequest);
+        self::$repository->updateByType($accountRequest, true);
+    }
+
+    /**
+     * Comprobar la eliminación de grupos de usuarios por Id de cuenta
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testViewDeleteByAccountId()
+    {
+        $this->assertEquals(1, self::$repository->deleteTypeByAccountId(2, false));
+
+        $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, false));
+
+        $this->assertEquals(1, $this->conn->getRowCount('AccountToUserGroup'));
     }
 
     /**
@@ -195,6 +212,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     public function testDeleteByAccountId()
     {
         $this->assertEquals(1, self::$repository->deleteByAccountId(1));
+
         $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(1)->getNumRows());
 
         $this->assertEquals(0, self::$repository->deleteByAccountId(10));
@@ -214,7 +232,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsEdit = [1, 2, 3];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
 
         $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
@@ -229,13 +247,13 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsEdit = [10];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
 
         // Comprobar que se lanza excepción al añadir grupos de usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsEdit = [1, 2, 3];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
     }
 
     /**
@@ -250,7 +268,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        $this->assertEquals(3, self::$repository->add($accountRequest));
+        $this->assertEquals(3, self::$repository->addByType($accountRequest, false));
 
         $result = self::$repository->getUserGroupsByAccountId($accountRequest->id);
 
@@ -268,13 +286,13 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->userGroupsView = [10];
 
-        self::$repository->add($accountRequest);
+        self::$repository->addByType($accountRequest, false);
 
         // Comprobar que se lanza excepción al añadir grupos de usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->userGroupsView = [1, 2, 3];
 
-        self::$repository->add($accountRequest);
+        self::$repository->addByType($accountRequest, false);
     }
 
     /**
@@ -285,10 +303,10 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteEditByAccountId()
     {
-        $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteTypeByAccountId(1, true));
         $this->assertEquals(0, self::$repository->getUserGroupsByAccountId(1)->getNumRows());
 
-        $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, true));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUserGroup'));
     }

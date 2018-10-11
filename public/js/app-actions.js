@@ -1149,7 +1149,13 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = $obj.data("action-method") || "post";
-            opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
+            opts.data = $obj.serialize();
+            opts.data += "&sk=" + sysPassApp.sk.get();
+
+            // Sets which "select" elements should be updated
+            $("select.select-box-tags[data-hash][data-updated=true]").each(function (index, value) {
+                opts.data += "&" + value.getAttribute("id") + "_update=1";
+            });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
@@ -1198,8 +1204,16 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
+
+            const items = grid.getSelection($obj);
+
+            if (items === false) {
+                return;
+            }
+
             opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
+                r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
+                items: items,
                 sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
@@ -1231,13 +1245,11 @@ sysPass.Actions = function (log) {
             tabs.state.update($obj);
 
             grid.delete($obj, function (items) {
-                const itemId = $obj.data("item-id");
-
                 const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
-                    r: $obj.data("action-route") + (itemId > 0 ? "/" + itemId : ''),
+                    r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
                     items: items,
                     sk: sysPassApp.sk.get(),
                     isAjax: 1
@@ -1462,13 +1474,11 @@ sysPass.Actions = function (log) {
             log.info("notification:delete");
 
             grid.delete($obj, function (items) {
-                const itemId = $obj.data("item-id");
-
                 const opts = sysPassApp.requests.getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
-                    r: $obj.data("action-route") + (itemId ? "/" + itemId : ''),
+                    r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
                     items: items,
                     sk: sysPassApp.sk.get(),
                     isAjax: 1
@@ -1507,7 +1517,7 @@ sysPass.Actions = function (log) {
     /**
      * sysPassApp grids actions
      *
-     * @type {{search: search, nav: nav, delete: delete}}
+     * @type {{search: search, nav: nav, delete: delete, getSelection: getSelection}}
      */
     const grid = {
         search: function ($obj) {
@@ -1546,17 +1556,11 @@ sysPass.Actions = function (log) {
         },
         delete: function ($obj, onAccept) {
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[12] + "</p></div>";
-            const selection = $obj.data("selection");
-            const items = [];
 
-            if (selection) {
-                $(selection).find(".is-selected").each(function () {
-                    items.push($(this).data("item-id"));
-                });
+            const items = grid.getSelection($obj);
 
-                if (items.length === 0) {
-                    return;
-                }
+            if (items === false) {
+                return;
             }
 
             mdlDialog().show({
@@ -1580,6 +1584,22 @@ sysPass.Actions = function (log) {
                     }
                 }
             });
+        },
+        getSelection: function ($obj) {
+            const selection = $obj.data("selection");
+            const items = [];
+
+            if (selection) {
+                $(selection).find(".is-selected").each(function () {
+                    items.push($(this).data("item-id"));
+                });
+
+                if (items.length === 0) {
+                    return false;
+                }
+            }
+
+            return items;
         }
     };
 

@@ -294,7 +294,9 @@ sysPass.Theme = function (log) {
             // Search for an input to set the unix timestamp from a localized date
             const $dstUnix = $parent.find("input[name=" + $this.data('dst-unix') + "]");
 
-            $dstUnix.val(getUnixtime($this.val()));
+            if ($this.val() > 0) {
+                $dstUnix.val(getUnixtime($this.val()));
+            }
 
             // Evento de click para el icono de calendario
             $parent.next("i").on("click", function () {

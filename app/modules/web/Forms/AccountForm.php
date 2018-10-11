@@ -67,14 +67,21 @@ final class AccountForm extends FormBase implements FormInterface
                 break;
             case ActionsInterface::ACCOUNT_EDIT:
                 $this->analyzeRequestData();
+                $this->analyzeItems();
                 $this->checkCommon();
                 break;
             case ActionsInterface::ACCOUNT_CREATE:
             case ActionsInterface::ACCOUNT_COPY:
                 $this->analyzeRequestData();
+                $this->analyzeItems();
                 $this->checkCommon();
                 $this->checkPassword();
                 $this->accountPresetService->checkPasswordPreset($this->accountRequest);
+                break;
+            case ActionsInterface::ACCOUNTMGR_BULK_EDIT:
+                $this->analyzeRequestData();
+                $this->analyzeItems();
+                $this->analyzeBulkEdit();
                 break;
         }
 
@@ -88,11 +95,10 @@ final class AccountForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->accountRequest = new AccountRequest();
         $this->accountRequest->id = $this->itemId;
         $this->accountRequest->name = $this->request->analyzeString('name');
-        $this->accountRequest->clientId = $this->request->analyzeInt('client_id', 0);
-        $this->accountRequest->categoryId = $this->request->analyzeInt('category_id', 0);
+        $this->accountRequest->clientId = $this->request->analyzeInt('client_id');
+        $this->accountRequest->categoryId = $this->request->analyzeInt('category_id');
         $this->accountRequest->login = $this->request->analyzeString('login');
         $this->accountRequest->url = $this->request->analyzeString('url');
         $this->accountRequest->notes = $this->request->analyzeString('notes');
@@ -102,39 +108,14 @@ final class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->pass = $this->request->analyzeEncrypted('password');
         $this->accountRequest->isPrivate = (int)$this->request->analyzeBool('private_enabled', false);
         $this->accountRequest->isPrivateGroup = (int)$this->request->analyzeBool('private_group_enabled', false);
-        $this->accountRequest->passDateChange = $this->request->analyzeInt('password_date_expire_unix');
+
+        if ($this->request->analyzeInt('password_date_expire')) {
+            $this->accountRequest->passDateChange = $this->request->analyzeInt('password_date_expire_unix');
+        }
+
         $this->accountRequest->parentId = $this->request->analyzeInt('parent_account_id');
+        $this->accountRequest->userId = $this->request->analyzeInt('owner_id');
         $this->accountRequest->userGroupId = $this->request->analyzeInt('main_usergroup_id');
-
-        // Arrays
-        $accountOtherGroupsView = $this->request->analyzeArray('other_usergroups_view');
-        $accountOtherGroupsEdit = $this->request->analyzeArray('other_usergroups_edit');
-        $accountOtherUsersView = $this->request->analyzeArray('other_users_view');
-        $accountOtherUsersEdit = $this->request->analyzeArray('other_users_edit');
-        $accountTags = $this->request->analyzeArray('tags');
-
-        $this->accountRequest->updateUserGroupPermissions = $this->request->analyzeInt('other_usergroups_view_update') === 1 || $this->request->analyzeInt('other_usergroups_edit_update') === 1;
-        $this->accountRequest->updateUserPermissions = $this->request->analyzeInt('other_users_view_update') === 1 || $this->request->analyzeInt('other_users_edit_update') === 1;
-        $this->accountRequest->updateTags = $this->request->analyzeInt('tags_update') === 1;
-
-        if ($accountOtherUsersView) {
-            $this->accountRequest->usersView = $accountOtherUsersView;
-        }
-        if ($accountOtherUsersEdit) {
-            $this->accountRequest->usersEdit = $accountOtherUsersEdit;
-        }
-
-        if ($accountOtherGroupsView) {
-            $this->accountRequest->userGroupsView = $accountOtherGroupsView;
-        }
-
-        if ($accountOtherGroupsEdit) {
-            $this->accountRequest->userGroupsEdit = $accountOtherGroupsEdit;
-        }
-
-        if ($accountTags) {
-            $this->accountRequest->tags = $accountTags;
-        }
     }
 
     /**
@@ -152,6 +133,32 @@ final class AccountForm extends FormBase implements FormInterface
 
         if ($this->request->analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
             throw new ValidationException(__u('Las claves no coinciden'));
+        }
+    }
+
+    /**
+     * analyzeItems
+     */
+    private function analyzeItems()
+    {
+        if ($this->request->analyzeInt('other_users_view_update') === 1) {
+            $this->accountRequest->usersView = $this->request->analyzeArray('other_users_view', null, []);
+        }
+
+        if ($this->request->analyzeInt('other_users_edit_update') === 1) {
+            $this->accountRequest->usersEdit = $this->request->analyzeArray('other_users_edit', null, []);
+        }
+
+        if ($this->request->analyzeInt('other_usergroups_view_update') === 1) {
+            $this->accountRequest->userGroupsView = $this->request->analyzeArray('other_usergroups_view', null, []);
+        }
+
+        if ($this->request->analyzeInt('other_usergroups_edit_update') === 1) {
+            $this->accountRequest->userGroupsEdit = $this->request->analyzeArray('other_usergroups_edit', null, []);
+        }
+
+        if ($this->request->analyzeInt('tags_update') === 1) {
+            $this->accountRequest->tags = $this->request->analyzeArray('tags', null, []);
         }
     }
 
@@ -174,6 +181,28 @@ final class AccountForm extends FormBase implements FormInterface
     }
 
     /**
+     * analyzeBulkEdit
+     */
+    private function analyzeBulkEdit()
+    {
+        if ($this->request->analyzeBool('clear_permission_users_view', false)) {
+            $this->accountRequest->usersView = [];
+        }
+
+        if ($this->request->analyzeBool('clear_permission_users_edit', false)) {
+            $this->accountRequest->usersEdit = [];
+        }
+
+        if ($this->request->analyzeBool('clear_permission_usergroups_view', false)) {
+            $this->accountRequest->userGroupsView = [];
+        }
+
+        if ($this->request->analyzeBool('clear_permission_usergroups_edit', false)) {
+            $this->accountRequest->userGroupsEdit = [];
+        }
+    }
+
+    /**
      * @return AccountRequest
      */
     public function getItemData()
@@ -187,5 +216,6 @@ final class AccountForm extends FormBase implements FormInterface
     protected function initialize($dic)
     {
         $this->accountPresetService = $dic->get(AccountPresetService::class);
+        $this->accountRequest = new AccountRequest();
     }
 }

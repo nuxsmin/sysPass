@@ -31,7 +31,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
@@ -435,8 +434,6 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
             $this->view->assign('formRoute', 'account/saveEditPass');
 
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $accountDetailsResponse->getAccountVData()->getPassDateChange()));
-
             $this->eventDispatcher->notifyEvent('show.account.editpass', new Event($this));
 
             if ($this->isAjax === false) {
@@ -564,9 +561,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseException($e);
         }
     }
-    
+
     /**
      * @return Password
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
@@ -626,8 +625,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @return bool
      * @throws Helpers\HelperException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     public function copyPassAction($id)
     {
@@ -655,8 +659,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @return bool
      * @throws Helpers\HelperException
-     * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
     public function copyPassHistoryAction($id)
     {

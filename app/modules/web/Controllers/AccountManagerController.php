@@ -31,9 +31,19 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Forms\AccountForm;
+use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Account\AccountBulkRequest;
+use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\Account\AccountService;
+use SP\Services\Category\CategoryService;
+use SP\Services\Client\ClientService;
+use SP\Services\Tag\TagService;
+use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Util\Util;
 
 /**
  * Class AccountManagerController
@@ -142,6 +152,106 @@ final class AccountManagerController extends ControllerBase
             processException($e);
 
             return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * saveBulkEditAction
+     *
+     * @return bool
+     */
+    public function saveBulkEditAction()
+    {
+        try {
+            $form = new AccountForm($this->dic);
+            $form->validate(Acl::ACCOUNTMGR_BULK_EDIT);
+
+            $request = new AccountBulkRequest(
+                Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
+                $form->getItemData());
+            $request->setDeleteHistory($this->request->analyzeBool('delete_history', false));
+
+            if ($request->isDeleteHistory()) {
+                $accountHistoryService = $this->dic->get(AccountHistoryService::class);
+                $accountHistoryService->deleteByAccountIdBatch($request->getItemsId());
+            }
+
+            $this->accountService->updateBulk($request);
+
+//            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
+
+            $this->eventDispatcher->notifyEvent('edit.account.bulk',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuentas actualizadas')))
+            );
+
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuentas actualizadas'));
+        } catch (\Exception $e) {
+            processException($e);
+
+            return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * bulkEditAction
+     *
+     * @return bool
+     */
+    public function bulkEditAction()
+    {
+        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR)) {
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+        }
+
+        $this->view->assign('header', __('Actualización Masiva'));
+        $this->view->assign('isView', false);
+        $this->view->assign('route', 'accountManager/saveBulkEdit');
+        $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
+
+        try {
+            $this->setViewData();
+
+            $this->eventDispatcher->notifyEvent('show.account.bulkEdit', new Event($this));
+
+            return $this->returnJsonResponseData(['html' => $this->render()]);
+        } catch (\Exception $e) {
+            processException($e);
+
+            return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * Sets view data
+     */
+    protected function setViewData()
+    {
+        $this->view->addTemplate('account_bulkedit', 'itemshow');
+
+        $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
+
+        $clients = SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModel();
+        $categories = SelectItemAdapter::factory(CategoryService::getItemsBasic())->getItemsFromModel();
+        $tags = SelectItemAdapter::factory(TagService::getItemsBasic())->getItemsFromModel();
+
+        $users = SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModel();
+        $userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel();
+
+        $this->view->assign('users', $users);
+        $this->view->assign('userGroups', $userGroups);
+
+        $this->view->assign('clients', $clients);
+        $this->view->assign('categories', $categories);
+        $this->view->assign('tags', $tags);
+
+        if ($this->view->isView === true) {
+            $this->view->assign('disabled', 'disabled');
+            $this->view->assign('readonly', 'readonly');
+        } else {
+            $this->view->assign('disabled');
+            $this->view->assign('readonly');
         }
     }
 

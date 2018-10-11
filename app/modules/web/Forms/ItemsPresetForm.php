@@ -96,7 +96,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
 
         $itemPresetData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
-        $itemPresetData->setPriority($this->request->analyzeInt('priority'));
+        $itemPresetData->setPriority($this->request->analyzeInt('priority', 0));
         $itemPresetData->setType($this->request->analyzeString('type'));
 
         switch ($itemPresetData->getType()) {
@@ -156,8 +156,8 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     {
         try {
             return new SessionTimeout(
-                $this->request->analyzeString('ip_address'),
-                $this->request->analyzeInt('timeout')
+                $this->request->analyzeString('ip_address', ''),
+                $this->request->analyzeInt('timeout', 0)
             );
         } catch (InvalidArgumentException $e) {
             throw new ValidationException($e->getMessage());

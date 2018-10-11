@@ -128,7 +128,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 1;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$repository->update($accountRequest);
+        self::$repository->updateByType($accountRequest, false);
 
         $result = self::$repository->getUsersByAccountId($accountRequest->id);
         $this->assertEquals(3, $result->getNumRows());
@@ -147,12 +147,12 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $accountRequest->usersView = [10];
 
-        self::$repository->update($accountRequest);
+        self::$repository->updateByType($accountRequest, false);
 
         $accountRequest->id = 3;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$repository->update($accountRequest);
+        self::$repository->updateByType($accountRequest, false);
     }
 
     /**
@@ -167,7 +167,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersEdit = [2, 3];
 
-        self::$repository->updateEdit($accountRequest);
+        self::$repository->updateByType($accountRequest, true);
 
         $result = self::$repository->getUsersByAccountId($accountRequest->id);
         $this->assertEquals(2, $result->getNumRows());
@@ -185,13 +185,29 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersEdit = [10];
 
-        self::$repository->updateEdit($accountRequest);
+        self::$repository->updateByType($accountRequest, true);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersEdit = [2, 3];
 
-        self::$repository->updateEdit($accountRequest);
+        self::$repository->updateByType($accountRequest, true);
+    }
+
+    /**
+     * Comprobar la eliminación de usuarios por Id de cuenta
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testDeleteViewByAccountId()
+    {
+        $this->assertEquals(1, self::$repository->deleteTypeByAccountId(2, false));
+        $this->assertEquals(0, self::$repository->getUsersByAccountId(2)->getNumRows());
+
+        $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, false));
+
+        $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
     }
 
     /**
@@ -222,7 +238,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersEdit = [1, 2, 3];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
 
         $result = self::$repository->getUsersByAccountId($accountRequest->id);
         $this->assertEquals(3, $result->getNumRows());
@@ -239,13 +255,13 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersEdit = [10];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersEdit = [1, 2, 3];
 
-        self::$repository->addEdit($accountRequest);
+        self::$repository->addByType($accountRequest, true);
     }
 
     /**
@@ -260,7 +276,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 2;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$repository->add($accountRequest);
+        self::$repository->addByType($accountRequest, false);
 
         $result = self::$repository->getUsersByAccountId($accountRequest->id);
         $this->assertEquals(3, $result->getNumRows());
@@ -277,13 +293,13 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
         // Comprobar que se lanza excepción al añadir usuarios no existentes
         $accountRequest->usersView = [10];
 
-        self::$repository->add($accountRequest);
+        self::$repository->addByType($accountRequest, false);
 
         // Comprobar que se lanza excepción al añadir usuarios a cuenta no existente
         $accountRequest->id = 3;
         $accountRequest->usersView = [1, 2, 3];
 
-        self::$repository->add($accountRequest);
+        self::$repository->addByType($accountRequest, false);
     }
 
     /**
@@ -294,10 +310,10 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteEditByAccountId()
     {
-        $this->assertEquals(1, self::$repository->deleteEditByAccountId(1));
+        $this->assertEquals(1, self::$repository->deleteTypeByAccountId(1, true));
         $this->assertEquals(0, self::$repository->getUsersByAccountId(1)->getNumRows());
 
-        $this->assertEquals(0, self::$repository->deleteEditByAccountId(10));
+        $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, true));
 
         $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
     }

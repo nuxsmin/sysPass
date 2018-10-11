@@ -266,15 +266,20 @@ final class LoginService extends Service
             if ($masterPass) {
                 if ($temporaryMasterPass->checkTempMasterPass($masterPass)) {
                     $this->eventDispatcher->notifyEvent('login.masterPass.temporary',
-                        new Event($this, EventMessage::factory()->addDescription(__u('Usando clave temporal')))
+                        new Event($this,
+                            EventMessage::factory()->addDescription(__u('Usando clave temporal')))
                     );
 
                     $masterPass = $temporaryMasterPass->getUsingKey($masterPass);
                 }
 
-                if ($userPassService->updateMasterPassOnLogin($masterPass, $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK) {
+                if ($userPassService->updateMasterPassOnLogin(
+                        $masterPass,
+                        $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
+                ) {
                     $this->eventDispatcher->notifyEvent('login.masterPass',
-                        new Event($this, EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
+                        new Event($this,
+                            EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
                     );
 
                     $this->addTracking();
@@ -288,12 +293,17 @@ final class LoginService extends Service
                 }
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
+                    new Event($this,
+                        EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
                 );
             } else if ($oldPass) {
-                if (!$userPassService->updateMasterPassFromOldPass($oldPass, $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK) {
+                if ($userPassService->updateMasterPassFromOldPass(
+                        $oldPass,
+                        $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
+                ) {
                     $this->eventDispatcher->notifyEvent('login.masterPass',
-                        new Event($this, EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
+                        new Event($this,
+                            EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
                     );
 
                     $this->addTracking();
@@ -307,7 +317,8 @@ final class LoginService extends Service
                 }
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
+                    new Event($this,
+                        EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
                 );
             } else {
                 switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {

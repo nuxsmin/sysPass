@@ -68,6 +68,8 @@ final class AccountGrid extends GridBase
 
         $grid->addDataAction($this->getViewAction());
         $grid->addDataAction($this->getDeleteAction());
+
+        $grid->addDataAction($this->getBulkEditAction(), true);
         $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
@@ -106,8 +108,8 @@ final class AccountGrid extends GridBase
         $gridHeader->addHeader(__('Nombre'));
         $gridHeader->addHeader(__('Cliente'));
         $gridHeader->addHeader(__('Categoría'));
-        $gridHeader->addHeader(__('Creador'));
-        $gridHeader->addHeader(__('Grupo'));
+        $gridHeader->addHeader(__('Propietario'));
+        $gridHeader->addHeader(__('Grupo Principal'));
 
         return $gridHeader;
     }
@@ -176,6 +178,23 @@ final class AccountGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE));
+
+        return $gridAction;
+    }
+
+    /**
+     * @return \SP\Html\DataGrid\Action\DataGridAction
+     */
+    public function getBulkEditAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::ACCOUNTMGR_BULK_EDIT);
+        $gridAction->setType(DataGridActionType::EDIT_ITEM);
+        $gridAction->setName(__('Actualización Masiva'));
+        $gridAction->setTitle(__('Actualización Masiva'));
+        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setOnClickFunction('appMgmt/show');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_BULK_EDIT));
 
         return $gridAction;
     }

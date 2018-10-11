@@ -89,11 +89,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int    $id
      * @param string $type
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function setViewData(int $id = null, string $type = null)
     {
@@ -160,6 +162,8 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

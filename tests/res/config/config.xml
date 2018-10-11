@@ -9,11 +9,11 @@
   <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
   <authBasicDomain></authBasicDomain>
   <authBasicEnabled>1</authBasicEnabled>
-  <backup_hash>49cd7d086019611d6dd17dbdda9add80a86a843f</backup_hash>
+  <backup_hash>aaeac4305c3720ad2583da0b48fe9e8772baf830</backup_hash>
   <checkUpdates>0</checkUpdates>
   <checknotices>0</checknotices>
-  <configDate>1539216318</configDate>
-  <configHash>02b5d4010c10b8abda92c3d3fc982b30910c33e7</configHash>
+  <configDate>1539293913</configDate>
+  <configHash>f53ab0a1ef713674d6398b4e188e098b4090166c</configHash>
   <configSaver></configSaver>
   <configVersion></configVersion>
   <databaseVersion></databaseVersion>
@@ -32,7 +32,7 @@
   <dokuwikiUrlBase></dokuwikiUrlBase>
   <dokuwikiUser></dokuwikiUser>
   <encryptSession>0</encryptSession>
-  <export_hash>a17899853134d82a571f098b918d13c50df21923</export_hash>
+  <export_hash>6f2ae342398f2315be1702fa560634b8f1a3e408</export_hash>
   <filesAllowedExts>
     <item type="filesAllowedExts">PDF</item>
     <item type="filesAllowedExts">JPG</item>

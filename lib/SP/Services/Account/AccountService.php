@@ -299,25 +299,25 @@ final class AccountService extends Service implements AccountServiceInterface
                 if (is_array($accountRequest->userGroupsView)
                     && !empty($accountRequest->userGroupsView)
                 ) {
-                    $this->accountToUserGroupRepository->add($accountRequest);
+                    $this->accountToUserGroupRepository->addByType($accountRequest, false);
                 }
 
                 if (is_array($accountRequest->userGroupsEdit)
                     && !empty($accountRequest->userGroupsEdit)
                 ) {
-                    $this->accountToUserGroupRepository->addEdit($accountRequest);
+                    $this->accountToUserGroupRepository->addByType($accountRequest, true);
                 }
 
                 if (is_array($accountRequest->usersView)
                     && !empty($accountRequest->usersView)
                 ) {
-                    $this->accountToUserRepository->add($accountRequest);
+                    $this->accountToUserRepository->addByType($accountRequest, false);
                 }
 
                 if (is_array($accountRequest->usersEdit)
                     && !empty($accountRequest->usersEdit)
                 ) {
-                    $this->accountToUserRepository->addEdit($accountRequest);
+                    $this->accountToUserRepository->addByType($accountRequest, true);
                 }
             }
 
@@ -356,19 +356,19 @@ final class AccountService extends Service implements AccountServiceInterface
             $accountRequest->userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
 
             if (!empty($accountRequest->usersView)) {
-                $this->accountToUserRepository->add($accountRequest);
+                $this->accountToUserRepository->addByType($accountRequest, false);
             }
 
             if (!empty($accountRequest->usersEdit)) {
-                $this->accountToUserRepository->addEdit($accountRequest);
+                $this->accountToUserRepository->addByType($accountRequest, true);
             }
 
             if (!empty($accountRequest->userGroupsView)) {
-                $this->accountToUserGroupRepository->add($accountRequest);
+                $this->accountToUserGroupRepository->addByType($accountRequest, false);
             }
 
             if (!empty($accountRequest->userGroupsEdit)) {
-                $this->accountToUserGroupRepository->addEdit($accountRequest);
+                $this->accountToUserGroupRepository->addByType($accountRequest, true);
             }
         }
     }
@@ -411,9 +411,14 @@ final class AccountService extends Service implements AccountServiceInterface
     public function update(AccountRequest $accountRequest)
     {
         $this->transactionAware(function () use ($accountRequest) {
+            $userData = $this->context->getUserData();
+
             $accountRequest->changePermissions = AccountAclService::getShowPermission(
-                $this->context->getUserData(),
+                $userData,
                 $this->context->getUserProfile());
+
+            $accountRequest->changeOwner = $accountRequest->userId > 0
+                && ($userData->getIsAdminApp() || $userData->getIsAdminAcc());
 
             $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
                 && $accountRequest->changePermissions;
@@ -465,42 +470,68 @@ final class AccountService extends Service implements AccountServiceInterface
     private function updateItems(AccountRequest $accountRequest)
     {
         if ($accountRequest->changePermissions) {
-            if ($accountRequest->updateUserGroupPermissions) {
-                if (!empty($accountRequest->userGroupsView)) {
-                    $this->accountToUserGroupRepository->update($accountRequest);
+            if ($accountRequest->userGroupsView !== null) {
+                if (count($accountRequest->userGroupsView) > 0) {
+                    $this->accountToUserGroupRepository->updateByType($accountRequest, false);
                 } else {
-                    $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
-                }
-
-                if (!empty($accountRequest->userGroupsEdit)) {
-                    $this->accountToUserGroupRepository->updateEdit($accountRequest);
-                } else {
-                    $this->accountToUserGroupRepository->deleteEditByAccountId($accountRequest->id);
+                    $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, false);
                 }
             }
 
-            if ($accountRequest->updateUserPermissions) {
-                if (!empty($accountRequest->usersView)) {
-                    $this->accountToUserRepository->update($accountRequest);
+            if ($accountRequest->userGroupsEdit !== null) {
+                if (count($accountRequest->userGroupsEdit) > 0) {
+                    $this->accountToUserGroupRepository->updateByType($accountRequest, true);
                 } else {
-                    $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
+                    $this->accountToUserGroupRepository->deleteTypeByAccountId($accountRequest->id, true);
                 }
+            }
 
-                if (!empty($accountRequest->usersEdit)) {
-                    $this->accountToUserRepository->updateEdit($accountRequest);
+            if ($accountRequest->usersView !== null) {
+                if (count($accountRequest->usersView) > 0) {
+                    $this->accountToUserRepository->updateByType($accountRequest, false);
                 } else {
-                    $this->accountToUserRepository->deleteEditByAccountId($accountRequest->id);
+                    $this->accountToUserRepository->deleteTypeByAccountId($accountRequest->id, false);
+                }
+            }
+
+            if ($accountRequest->usersEdit !== null) {
+                if (count($accountRequest->usersEdit) > 0) {
+                    $this->accountToUserRepository->updateByType($accountRequest, true);
+                } else {
+                    $this->accountToUserRepository->deleteTypeByAccountId($accountRequest->id, true);
                 }
             }
         }
 
-        if ($accountRequest->updateTags) {
-            if (!empty($accountRequest->tags)) {
+        if ($accountRequest->tags !== null) {
+            if (count($accountRequest->tags) > 0) {
                 $this->accountToTagRepository->update($accountRequest);
             } else {
                 $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
             }
         }
+    }
+
+    /**
+     * Update accounts in bulk mode
+     *
+     * @param AccountBulkRequest $request
+     *
+     * @throws ServiceException
+     */
+    public function updateBulk(AccountBulkRequest $request)
+    {
+        $this->transactionAware(function () use ($request) {
+            foreach ($request->getItemsId() as $itemId) {
+                $accountRequest = $request->getAccountRequestForId($itemId);
+
+                $this->addHistory($accountRequest->id);
+
+                $this->accountRepository->updateBulk($accountRequest);
+
+                $this->updateItems($accountRequest);
+            }
+        });
     }
 
     /**

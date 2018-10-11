@@ -295,6 +295,29 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
     }
 
     /**
+     * Deletes all the items for given accounts id
+     *
+     * @param array $ids
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByAccountIdBatch(array $ids)
+    {
+        if (empty($ids)) {
+            return 0;
+        }
+
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE accountId IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
      * Checks whether the item is in use or not
      *
      * @param $id int

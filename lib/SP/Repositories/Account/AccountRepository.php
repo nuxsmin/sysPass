@@ -286,8 +286,6 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
             dst.userGroupId = src.userGroupId,
             dst.userEditId = ?,
             dst.dateEdit = NOW(),
-            dst.otherUserEdit = src.otherUserEdit + 0,
-            dst.otherUserGroupEdit = src.otherUserGroupEdit + 0,
             dst.pass = src.pass,
             dst.key = src.key,
             dst.passDate = src.passDate,
@@ -369,6 +367,59 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
 
         if ($itemData->changeUserGroup) {
             $queryAssignment->addField('userGroupId', $itemData->userGroupId);
+        }
+
+        if ($itemData->changeOwner) {
+            $queryAssignment->addField('userId', $itemData->userId);
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE Account SET ' . $queryAssignment->getAssignments() . ' WHERE id = ?';
+
+        $queryData->setQuery($query);
+        $queryData->setParams($queryAssignment->getValues());
+        $queryData->addParam($itemData->id);
+        $queryData->setOnErrorMessage(__u('Error al modificar la cuenta'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
+     * Updates an item for bulk action
+     *
+     * @param \SP\Services\Account\AccountRequest $itemData
+     *
+     * @return mixed
+     * @throws SPException
+     */
+    public function updateBulk($itemData)
+    {
+        $queryAssignment = new QueryAssignment();
+
+        $queryAssignment->setFields([
+            'userEditId',
+            'dateEdit = NOW()'
+        ], [
+            $itemData->userEditId,
+        ]);
+
+        $queryData = new QueryData();
+
+        $optional = ['clientId', 'categoryId', 'userId', 'userGroupId', 'passDateChange'];
+
+        $optionalCount = 0;
+
+        foreach ($optional as $field) {
+            if (isset($itemData->{$field}) && !empty($itemData->{$field})) {
+                $queryAssignment->addField($field, $itemData->{$field});
+                $optionalCount++;
+            } else {
+                logger(sprintf('Field \'%s\' not found in $itemData', $field), 'ERROR');
+            }
+        }
+
+        if ($optionalCount === 0) {
+            return 0;
         }
 
         $query = /** @lang SQL */

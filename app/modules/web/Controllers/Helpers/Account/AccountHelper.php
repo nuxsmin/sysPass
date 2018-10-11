@@ -148,10 +148,10 @@ final class AccountHelper extends HelperBase
                 return (int)$value->isEdit === 1;
             }));
 
-        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected($usersView, $accountData->getUserId()));
-        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected($usersEdit, $accountData->getUserId()));
-        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected($userGroupsView, $accountData->getUserGroupId()));
-        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($userGroupsEdit, $accountData->getUserGroupId()));
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected($usersView));
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected($usersEdit));
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected($userGroupsView));
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($userGroupsEdit));
 
         $this->view->assign('users', $selectUsers->getItemsFromModelSelected([$accountData->getUserId()]));
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected([$accountData->getUserGroupId()]));
@@ -189,7 +189,7 @@ final class AccountHelper extends HelperBase
         $this->view->assign('allowPrivateGroup', ($userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId()) || $userData->getIsAdminApp());
 
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
-        $this->view->assign('accountPassDateChange', $accountData->getPassDateChange() > 0 && date('Y-m-d', $accountData->getPassDateChange() ?: 0));
+        $this->view->assign('accountPassDateChange', $accountData->getPassDateChange() > 0 ? gmdate('Y-m-d', $accountData->getPassDateChange()) : 0);
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
 
         $this->view->assign('accountId', $accountData->getId());
@@ -219,7 +219,8 @@ final class AccountHelper extends HelperBase
         }
 
         if (!$this->dic->get(MasterPassService::class)
-            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
+        ) {
             throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
@@ -315,10 +316,12 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
     public function setViewForBlank($actionId)
     {
@@ -379,6 +382,8 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Services\ServiceException
      */
     public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)

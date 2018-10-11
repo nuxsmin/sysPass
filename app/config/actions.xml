@@ -488,6 +488,12 @@
         <route>accountManager/delete</route>
     </action>
     <action multiple="1">
+        <id>1305</id>
+        <name>ACCOUNTMGR_BULK_EDIT</name>
+        <text>Actualización Masiva</text>
+        <route>accountManager/bulkEdit</route>
+    </action>
+    <action multiple="1">
         <id>1302</id>
         <name>ACCOUNTMGR_SEARCH</name>
         <text>Buscar Cuenta</text>

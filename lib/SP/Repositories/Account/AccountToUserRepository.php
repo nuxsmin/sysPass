@@ -44,16 +44,75 @@ final class AccountToUserRepository extends Repository
      *
      * @param AccountRequest $accountRequest
      *
+     * @param bool           $isEdit
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(AccountRequest $accountRequest)
+    public function updateByType(AccountRequest $accountRequest, bool $isEdit)
     {
-        $this->deleteByAccountId($accountRequest->id);
-        $this->add($accountRequest);
+        $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
+        $this->addByType($accountRequest, $isEdit);
 
         return false;
+    }
+
+    /**
+     * Eliminar la asociación de grupos con cuentas.
+     *
+     * @param int  $id con el Id de la cuenta
+     * @param bool $isEdit
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteTypeByAccountId($id, bool $isEdit)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = ?');
+        $queryData->setParams([$id, (int)$isEdit]);
+        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
+     * Crear asociación de usuarios con cuentas.
+     *
+     * @param AccountRequest $accountRequest
+     * @param bool           $isEdit
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function addByType(AccountRequest $accountRequest, bool $isEdit)
+    {
+        $items = $isEdit ? $accountRequest->usersEdit : $accountRequest->usersView;
+        $values = $this->getParamsFromArray($items, '(?,?,?)');
+
+        $query = /** @lang SQL */
+            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
+              VALUES ' . $values . '
+              ON DUPLICATE KEY UPDATE isEdit = ' . (int)$isEdit;
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
+
+        $params = [];
+
+        foreach ($items as $user) {
+            $params[] = $accountRequest->id;
+            $params[] = $user;
+            $params[] = (int)$isEdit;
+        }
+
+        $queryData->setParams($params);
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -76,98 +135,6 @@ final class AccountToUserRepository extends Repository
     }
 
     /**
-     * Crear asociación de usuarios con cuentas.
-     *
-     * @param AccountRequest $accountRequest
-     *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function add(AccountRequest $accountRequest)
-    {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
-              VALUES ' . $this->getParamsFromArray($accountRequest->usersView, '(?,?,0)') . '
-              ON DUPLICATE KEY UPDATE isEdit = 0';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
-
-        foreach ($accountRequest->usersView as $user) {
-            $queryData->addParam($accountRequest->id);
-            $queryData->addParam($user);
-        }
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Actualizar la asociación de grupos con cuentas.
-     *
-     * @param AccountRequest $accountRequest
-     *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function updateEdit(AccountRequest $accountRequest)
-    {
-        $this->deleteEditByAccountId($accountRequest->id);
-        $this->addEdit($accountRequest);
-
-        return false;
-    }
-
-    /**
-     * Eliminar la asociación de grupos con cuentas.
-     *
-     * @param int $id con el Id de la cuenta
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function deleteEditByAccountId($id)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Crear asociación de usuarios con cuentas.
-     *
-     * @param AccountRequest $accountRequest
-     *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function addEdit(AccountRequest $accountRequest)
-    {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
-              VALUES ' . $this->getParamsFromArray($accountRequest->usersEdit, '(?,?,1)') . '
-              ON DUPLICATE KEY UPDATE isEdit = 1';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
-
-        foreach ($accountRequest->usersEdit as $user) {
-            $queryData->addParam($accountRequest->id);
-            $queryData->addParam($user);
-        }
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
      * Obtiene el listado de usuarios de una cuenta.
      *
      * @param int $id con el id de la cuenta
@@ -179,11 +146,11 @@ final class AccountToUserRepository extends Repository
     public function getUsersByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT U.id, U.name, U.login, AU.isEdit
-            FROM AccountToUser AU
-            INNER JOIN User U ON AU.userId = U.id
-            WHERE AU.accountId = ?
-            ORDER BY U.name';
+            'SELECT `User`.id, `User`.name, `User`.login, AccountToUser.isEdit
+            FROM AccountToUser
+            INNER JOIN `User` ON AccountToUser.userId = `User`.id
+            WHERE AccountToUser.accountId = ?
+            ORDER BY `User`.name';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

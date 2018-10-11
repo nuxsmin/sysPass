@@ -602,4 +602,43 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $data[0]->getId());
     }
+
+    /**
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testUpdateBulk()
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->userId = 1;
+        $accountRequest->userGroupId = 2;
+
+        $this->assertEquals(1, self::$repository->updateBulk($accountRequest));
+
+        $result = self::$repository->getById($accountRequest->id);
+
+        $this->assertEquals(1, $result->getNumRows());
+
+        /** @var AccountVData $data */
+        $data = $result->getData();
+
+        $this->assertEquals($accountRequest->id, $data->getId());
+        $this->assertEquals($accountRequest->userId, $data->getUserId());
+        $this->assertEquals($accountRequest->userGroupId, $data->getUserGroupId());
+        $this->assertEquals($accountRequest->passDateChange, $data->getPassDateChange());
+        $this->assertEquals($accountRequest->clientId, $data->getClientId());
+        $this->assertEquals($accountRequest->categoryId, $data->getCategoryId());
+        $this->assertEquals($accountRequest->userEditId, $data->getUserEditId());
+
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 10;
+
+        $this->assertEquals(0, self::$repository->updateBulk($accountRequest));
+    }
 }

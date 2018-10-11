@@ -87,11 +87,11 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Nombre del campo no indicado'));
         }
 
-        if ($this->customFieldDefData->getTypeId() === 0) {
+        if (0 === $this->customFieldDefData->getTypeId()) {
             throw new ValidationException(__u('Tipo del campo no indicado'));
         }
 
-        if ($this->customFieldDefData->getModuleId() === 0) {
+        if (0 === $this->customFieldDefData->getModuleId()) {
             throw new ValidationException(__u('Módulo del campo no indicado'));
         }
     }

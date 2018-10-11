@@ -168,8 +168,12 @@ final class AccountController extends ControllerBase
             $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
-            $accountRequest->userId = $this->context->getUserData()->getId();
-            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId');
+
+            $userData = $this->context->getUserData();
+
+            $accountRequest->userId = $this->apiService->getParamInt('userId', false, $userData->getId());
+            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
+
             $accountRequest->tags = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
             $accountRequest->pass = $this->apiService->getParamRaw('pass', true);
 
@@ -215,8 +219,9 @@ final class AccountController extends ControllerBase
             $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
             $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
             $accountRequest->parentId = $this->apiService->getParamInt('parentId');
+            $accountRequest->userId = $this->apiService->getParamInt('userId', false);
+            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false);
             $accountRequest->userEditId = $this->context->getUserData()->getId();
-            $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId');
 
             $tagsId = array_map('intval', $this->apiService->getParamArray('tagsId', false, []));
 

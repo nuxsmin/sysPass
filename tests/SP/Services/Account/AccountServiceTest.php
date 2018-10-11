@@ -31,6 +31,7 @@ use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
+use SP\Services\Account\AccountBulkRequest;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\Account\AccountRequest;
@@ -83,6 +84,7 @@ class AccountServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      */
     public function testCreate()
     {
@@ -663,5 +665,82 @@ class AccountServiceTest extends DatabaseTestCase
 
         $this->assertEquals($data->getPass(), $resultData->getPass());
         $this->assertEquals($data->getKey(), $resultData->getKey());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testUpdateBulk()
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->userId = 2;
+        $accountRequest->userGroupId = 2;
+        $accountRequest->tags = [2, 3];
+        $accountRequest->usersView = [2, 4];
+        $accountRequest->usersEdit = [3, 4];
+        $accountRequest->userGroupsView = [2, 3];
+        $accountRequest->userGroupsEdit = [2];
+
+        $bulkRequest = new AccountBulkRequest([1, 2], $accountRequest);
+
+        self::$service->updateBulk($bulkRequest);
+
+        $this->checkBulkData($accountRequest, 1);
+        $this->checkBulkData($accountRequest, 2);
+    }
+
+    /**
+     * @param AccountRequest     $accountRequest
+     * @param                    $accountId
+     *
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    private function checkBulkData(AccountRequest $accountRequest, $accountId)
+    {
+        $result = self::$service->getById($accountId);
+
+        self::$service->withTagsById($result);
+        self::$service->withUsersById($result);
+        self::$service->withUserGroupsById($result);
+
+        $data = $result->getAccountVData();
+
+        $this->assertEquals($accountId, $result->getId());
+        $this->assertEquals($accountRequest->userEditId, $data->getUserEditId());
+        $this->assertEquals($accountRequest->userId, $data->getUserId());
+        $this->assertEquals($accountRequest->userGroupId, $data->getUserGroupId());
+        $this->assertEquals($accountRequest->passDateChange, $data->getPassDateChange());
+        $this->assertEquals($accountRequest->clientId, $data->getClientId());
+        $this->assertEquals($accountRequest->categoryId, $data->getCategoryId());
+
+        $tags = $result->getTags();
+
+        $this->assertEquals(3, $tags[0]->getId());
+        $this->assertEquals(2, $tags[1]->getId());
+
+        $users = $result->getUsers();
+
+        $this->assertEquals(2, $users[0]->getId());
+        $this->assertEquals(0, (int)$users[0]->isEdit);
+        $this->assertEquals(3, $users[1]->getId());
+        $this->assertEquals(1, (int)$users[1]->isEdit);
+        $this->assertEquals(4, $users[2]->getId());
+        $this->assertEquals(1, (int)$users[2]->isEdit);
+
+        $groups = $result->getUserGroups();
+
+        $this->assertEquals(2, $groups[0]->getId());
+        $this->assertEquals(1, (int)$groups[0]->isEdit);
+        $this->assertEquals(3, $groups[1]->getId());
+        $this->assertEquals(0, (int)$groups[1]->isEdit);
     }
 }

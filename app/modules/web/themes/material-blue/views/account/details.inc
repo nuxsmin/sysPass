@@ -34,9 +34,9 @@
         <?php endif; ?>
 
         <tr>
-            <td class="descField"><?php echo __('Creador'); ?></td>
+            <td class="descField"><?php echo __('Propietario'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Creador'); ?></div>
+                <div class="lowres-title"><?php echo __('Propietario'); ?></div>
 
                 <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
             </td>

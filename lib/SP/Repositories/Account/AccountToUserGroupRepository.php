@@ -51,11 +51,11 @@ final class AccountToUserGroupRepository extends Repository
     public function getUserGroupsByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT G.id, G.name, AUG.isEdit
-            FROM AccountToUserGroup AUG
-            INNER JOIN UserGroup G ON AUG.userGroupId = G.id
-            WHERE AUG.accountId = ?
-            ORDER BY G.name';
+            'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
+            FROM AccountToUserGroup
+            INNER JOIN UserGroup ON AccountToUserGroup.userGroupId = UserGroup.id
+            WHERE AccountToUserGroup.accountId = ?
+            ORDER BY UserGroup.name';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -77,11 +77,11 @@ final class AccountToUserGroupRepository extends Repository
     public function getUserGroupsByUserGroupId($id)
     {
         $query = /** @lang SQL */
-            'SELECT G.id, G.name, AUG.isEdit
-            FROM AccountToUserGroup AUG
-            INNER JOIN UserGroup G ON AUG.userGroupId = G.id
-            WHERE AUG.userGroupId = ?
-            ORDER BY G.name';
+            'SELECT UserGroup.id, UserGroup.name, AccountToUserGroup.isEdit
+            FROM AccountToUserGroup
+            INNER JOIN UserGroup ON AccountToUserGroup.userGroupId = UserGroup.id
+            WHERE AccountToUserGroup.userGroupId = ?
+            ORDER BY UserGroup.name';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -110,16 +110,70 @@ final class AccountToUserGroupRepository extends Repository
 
     /**
      * @param AccountRequest $accountRequest
+     * @param bool           $isEdit
      *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(AccountRequest $accountRequest)
+    public function updateByType(AccountRequest $accountRequest, bool $isEdit)
     {
-        $this->deleteByAccountId($accountRequest->id);
+        $this->deleteTypeByAccountId($accountRequest->id, $isEdit);
 
-        return $this->add($accountRequest);
+        return $this->addByType($accountRequest, $isEdit);
+    }
+
+    /**
+     * @param int  $id
+     * @param bool $isEdit
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteTypeByAccountId($id, bool $isEdit)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = ?');
+        $queryData->setParams([$id, (int)$isEdit]);
+        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
+    }
+
+    /**
+     * @param AccountRequest $accountRequest
+     * @param bool           $isEdit
+     *
+     * @return int Last ID inserted
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function addByType(AccountRequest $accountRequest, bool $isEdit)
+    {
+        $items = $isEdit ? $accountRequest->userGroupsEdit : $accountRequest->userGroupsView;
+        $values = $this->getParamsFromArray($items, '(?,?,?)');
+
+        $query = /** @lang SQL */
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
+              VALUES ' . $values . '
+              ON DUPLICATE KEY UPDATE isEdit = ' . (int)$isEdit;
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
+
+        $params = [];
+
+        foreach ($items as $userGroup) {
+            $params[] = $accountRequest->id;
+            $params[] = $userGroup;
+            $params[] = (int)$isEdit;
+        }
+
+        $queryData->setParams($params);
+
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -135,89 +189,6 @@ final class AccountToUserGroupRepository extends Repository
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ?');
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * @param AccountRequest $accountRequest
-     *
-     * @return int Last ID inserted
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function add(AccountRequest $accountRequest)
-    {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
-              VALUES ' . $this->getParamsFromArray($accountRequest->userGroupsView, '(?,?,0)') . '
-              ON DUPLICATE KEY UPDATE isEdit = 0';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
-
-        foreach ($accountRequest->userGroupsView as $userGroup) {
-            $queryData->addParam($accountRequest->id);
-            $queryData->addParam($userGroup);
-        }
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * @param AccountRequest $accountRequest
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function updateEdit(AccountRequest $accountRequest)
-    {
-        $this->deleteEditByAccountId($accountRequest->id);
-
-        return $this->addEdit($accountRequest);
-    }
-
-    /**
-     * @param $id int
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function deleteEditByAccountId($id)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = 1');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
-
-        return $this->db->doQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * @param AccountRequest $accountRequest
-     *
-     * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function addEdit(AccountRequest $accountRequest)
-    {
-        $query = /** @lang SQL */
-            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
-              VALUES ' . $this->getParamsFromArray($accountRequest->userGroupsEdit, '(?,?,1)') . '
-              ON DUPLICATE KEY UPDATE isEdit = 1';
-
-        $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
-
-        foreach ($accountRequest->userGroupsEdit as $userGroup) {
-            $queryData->addParam($accountRequest->id);
-            $queryData->addParam($userGroup);
-        }
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

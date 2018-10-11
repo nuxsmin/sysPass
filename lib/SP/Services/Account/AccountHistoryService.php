@@ -208,6 +208,20 @@ final class AccountHistoryService extends Service
     }
 
     /**
+     * Deletes all the items for given accounts id
+     *
+     * @param array $ids
+     *
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteByAccountIdBatch(array $ids)
+    {
+        return $this->accountHistoryRepository->deleteByAccountIdBatch($ids);
+    }
+
+    /**
      * @param AccountPasswordRequest $accountRequest
      *
      * @throws SPException

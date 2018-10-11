@@ -339,8 +339,8 @@ final class AccountSearchHelper extends HelperBase
         $accountSearchFilter->setLimitStart($this->request->analyzeInt('start', 0));
         $accountSearchFilter->setLimitCount($this->request->analyzeInt('rpp', $limitCount));
         $accountSearchFilter->setGlobalSearch($this->request->analyzeBool('gsearch', false));
-        $accountSearchFilter->setClientId($this->request->analyzeInt('client'));
-        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category'));
+        $accountSearchFilter->setClientId($this->request->analyzeInt('client', 0));
+        $accountSearchFilter->setCategoryId($this->request->analyzeInt('category', 0));
         $accountSearchFilter->setTagsId($this->request->analyzeArray('tags'));
         $accountSearchFilter->setSearchFavorites($this->request->analyzeBool('searchfav', false));
         $accountSearchFilter->setTxtSearch($this->request->analyzeString('search'));

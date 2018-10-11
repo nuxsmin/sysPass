@@ -238,4 +238,19 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
         $request->id = 10;
         $this->assertEquals(0, self::$repository->updatePassword($request));
     }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testDeleteByAccountIdBatch()
+    {
+        $this->assertEquals(4, self::$repository->deleteByAccountIdBatch([1, 3]));
+
+        $this->assertEquals(0, self::$repository->deleteByAccountIdBatch([10]));
+
+        $this->assertEquals(0, self::$repository->deleteByAccountIdBatch([]));
+
+        $this->assertEquals(1, $this->conn->getRowCount('AccountHistory'));
+    }
 }

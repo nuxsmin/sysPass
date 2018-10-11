@@ -178,7 +178,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
             $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
 
-            $groupId = $this->request->analyzeInt('temporary_masterpass_group');
+            $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
             $sendEmail = $this->configData->isMailEnabled()
                 && $this->request->analyzeBool('temporary_masterpass_email')
                 && $groupId > 0;
