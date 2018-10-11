@@ -189,9 +189,10 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
             INNER JOIN User ON AuthToken.userid = User.id');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('User.login LIKE ?');
+            $queryData->setWhere('User.login LIKE ? OR User.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParam($search);
             $queryData->addParam($search);
         }
 

@@ -234,6 +234,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     public function testSearch()
     {
         $itemSearchData = new ItemSearchData();
+        $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('admin');
 
         $result = self::$repository->search($itemSearchData);
