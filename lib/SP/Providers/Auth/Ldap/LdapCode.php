@@ -24,14 +24,20 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Core\DataCollection;
 
 /**
- * Class AttributeCollection
+ * Interface LdapCode
  *
  * @package SP\Providers\Auth\Ldap
  */
-final class AttributeCollection extends DataCollection
+interface LdapCode
 {
-
+    const SUCCESS = 0;
+    const OPERATIONS_ERROR = 1;
+    const AUTH_METHOD_NOT_SUPPORTED = 7;
+    const STRONGER_AUTH_REQUIRED = 8;
+    const CONFIDENTIALITY_REQUIRED = 13;
+    const NO_SUCH_OBJECT = 32;
+    const INVALID_CREDENTIALS = 49;
+    const FILTER_ERROR = 87;
 }

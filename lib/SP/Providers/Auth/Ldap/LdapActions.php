@@ -122,7 +122,12 @@ final class LdapActions
                     ->addDetail('LDAP FILTER', $filter))
             );
 
-            throw new LdapException(__u('Error al buscar RDN de grupo'));
+            throw new LdapException(
+                __u('Error al buscar RDN de grupo'),
+                LdapException::ERROR,
+                null,
+                LdapCode::NO_SUCH_OBJECT
+            );
         }
 
         return array_filter(array_map(function ($value) {
@@ -201,7 +206,12 @@ final class LdapActions
                     ->addDetail('LDAP FILTER', $filter))
             );
 
-            throw new LdapException(__u('Error al localizar el usuario en LDAP'));
+            throw new LdapException(
+                __u('Error al localizar el usuario en LDAP'),
+                LdapException::ERROR,
+                null,
+                LdapCode::NO_SUCH_OBJECT
+            );
         }
 
         // Normalize keys for comparing
@@ -251,7 +261,12 @@ final class LdapActions
                     ->addDetail('LDAP FILTER', $filter))
             );
 
-            throw new LdapException(__u('Error al buscar objetos en DN base'));
+            throw new LdapException(
+                __u('Error al buscar objetos en DN base'),
+                LdapException::ERROR,
+                null,
+                LdapCode::OPERATIONS_ERROR
+            );
         }
 
         return $searchResults;

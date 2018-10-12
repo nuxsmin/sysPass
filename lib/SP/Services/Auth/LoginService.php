@@ -41,6 +41,7 @@ use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Providers\Auth\Ldap\LdapCode;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Service;
@@ -141,7 +142,9 @@ final class LoginService extends Service
             );
         }
 
-        if (($result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData)) !== false) {
+        $result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData);
+
+        if ($result !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
             foreach ($result as $authResult) {
                 if ($authResult->isAuthGranted() === true
@@ -446,13 +449,13 @@ final class LoginService extends Service
      */
     private function authLdap(LdapAuthData $authData)
     {
-        if ($authData->getStatusCode() > 0) {
+        if ($authData->getStatusCode() > LdapCode::SUCCESS) {
             $eventMessage = EventMessage::factory()
                 ->addDetail(__u('Tipo'), __FUNCTION__)
                 ->addDetail(__u('Servidor LDAP'), $authData->getServer())
                 ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser());
 
-            if ($authData->getStatusCode() === 49) {
+            if ($authData->getStatusCode() === LdapCode::INVALID_CREDENTIALS) {
                 $eventMessage->addDescription(__u('Login incorrecto'));
 
                 $this->addTracking();
