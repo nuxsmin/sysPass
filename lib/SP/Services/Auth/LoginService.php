@@ -386,7 +386,8 @@ final class LoginService extends Service
         }
 
         $this->eventDispatcher->notifyEvent('login.session.load',
-            new Event($this, EventMessage::factory()->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+            new Event($this, EventMessage::factory()
+                ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
         );
     }
 

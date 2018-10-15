@@ -183,7 +183,10 @@ final class Init extends ModuleBase
             }
 
             // Checks if the database is set up
-            if (!DatabaseUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
+            if (!DatabaseUtil::checkDatabaseExist(
+                $this->container->get(Database::class)->getDbHandler(),
+                $this->configData->getDbName())
+            ) {
                 $this->router->response()
                     ->redirect('index.php?r=error/databaseError')
                     ->send();

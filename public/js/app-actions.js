@@ -1351,11 +1351,28 @@ sysPass.Actions = function (log) {
         toggle: function ($obj) {
             log.info("plugin:enable");
 
-            tabs.save($obj, function () {
-                // Recargar para cargar/descargar el plugin
-                setTimeout(function () {
-                    sysPassApp.util.redirect("index.php");
-                }, 2000);
+            tabs.state.update($obj);
+
+            const itemId = $obj.data("item-id");
+
+            const opts = sysPassApp.requests.getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
+            opts.data = {
+                r: $obj.data("action-route") + "/" + itemId,
+                sk: sysPassApp.sk.get(),
+                isAjax: 1
+            };
+
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
+
+                if (json.status === 0) {
+                    // Recargar para cargar/descargar el plugin
+                    setTimeout(function () {
+                        sysPassApp.util.redirect("index.php");
+                    }, 2000);
+                }
             });
         },
         reset: function ($obj) {

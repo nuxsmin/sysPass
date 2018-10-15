@@ -111,12 +111,16 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     public function notifyEvent($eventType, Event $event)
     {
         foreach ($this->observers as $observer) {
-            $events = $observer->getEventsString();
+            if (method_exists($observer, 'getEventsString')) {
+                $events = $observer->getEventsString();
 
-            if (!empty($events)
-                && ($events === '*' || preg_match('/' . $events . '/i', $eventType))
-            ) {
-                // FIXME: update receivers Event
+                if (!empty($events)
+                    && ($events === '*' || preg_match('/' . $events . '/i', $eventType))
+                ) {
+                    // FIXME: update receivers Event
+                    $observer->updateEvent($eventType, $event);
+                }
+            } else {
                 $observer->updateEvent($eventType, $event);
             }
         }

@@ -269,4 +269,37 @@ final class StatelessContext extends ContextBase
     {
         $this->setTrasientKey('_tempmasterpass', $password);
     }
+
+    /**
+     * @param string $pluginName
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public function setPluginKey(string $pluginName, string $key, $value)
+    {
+        $ctxKey = $this->getContextKey('plugins');
+
+        $ctxKey[$pluginName][$key] = $value;
+
+        return $value;
+    }
+
+    /**
+     * @param string $pluginName
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getPluginKey(string $pluginName, string $key)
+    {
+        $ctxKey = $this->getContextKey('plugins');
+
+        if (isset($ctxKey[$pluginName][$key])) {
+            return $ctxKey[$pluginName][$key];
+        }
+
+        return null;
+    }
 }

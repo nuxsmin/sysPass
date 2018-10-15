@@ -66,6 +66,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *                            </p>
      *
      * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @since 5.1.0
      */
     public function update(SplSubject $subject)
@@ -78,6 +79,8 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function updateEvent($eventType, Event $event)
     {

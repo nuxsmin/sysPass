@@ -139,6 +139,9 @@ final class UserPassResetController extends ControllerBase
 
     /**
      * @param null $hash
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function resetAction($hash = null)
     {

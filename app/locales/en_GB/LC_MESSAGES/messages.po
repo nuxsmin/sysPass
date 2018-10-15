@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-12 00:42+0200\n"
-"PO-Revision-Date: 2018-10-12 00:42+0200\n"
+"POT-Creation-Date: 2018-10-15 02:52+0200\n"
+"PO-Revision-Date: 2018-10-15 02:55+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_GB\n"
@@ -25,12 +25,12 @@ msgstr ""
 "X-Poedit-SearchPath-1: ../../../../lib\n"
 "X-Poedit-SearchPath-2: ../../../config\n"
 
-#: ../../../../lib/SP/Bootstrap.php:267
+#: ../../../../lib/SP/Bootstrap.php:278
 #, php-format
 msgid "Versión de PHP requerida >= %s <= %s"
 msgstr "Required PHP version >= %s <= %s"
 
-#: ../../../../lib/SP/Bootstrap.php:269
+#: ../../../../lib/SP/Bootstrap.php:280
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Please update the PHP version to run sysPass"
@@ -53,7 +53,7 @@ msgid "Actual: %s - Necesario: 750"
 msgstr "Current: %s - Needed: 750"
 
 #: ../../../../lib/SP/Core/Acl/AccountPermissionException.php:45
-#: ../../../../lib/SP/Util/ErrorUtil.php:132
+#: ../../../../lib/SP/Util/ErrorUtil.php:142
 #: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:96
 msgid "No tiene permisos para acceder a esta cuenta"
 msgstr "You don't have permission to access to this account"
@@ -61,12 +61,12 @@ msgstr "You don't have permission to access to this account"
 #: ../../../../lib/SP/Core/Acl/AccountPermissionException.php:45
 #: ../../../../lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: ../../../../lib/SP/Core/Acl/UnauthorizedPageException.php:45
-#: ../../../../lib/SP/Util/ErrorUtil.php:129
-#: ../../../../lib/SP/Util/ErrorUtil.php:133
-#: ../../../../lib/SP/Util/ErrorUtil.php:137
-#: ../../../../lib/SP/Util/ErrorUtil.php:141
-#: ../../../../lib/SP/Util/ErrorUtil.php:149
-#: ../../../../lib/SP/Util/ErrorUtil.php:156
+#: ../../../../lib/SP/Util/ErrorUtil.php:139
+#: ../../../../lib/SP/Util/ErrorUtil.php:143
+#: ../../../../lib/SP/Util/ErrorUtil.php:147
+#: ../../../../lib/SP/Util/ErrorUtil.php:151
+#: ../../../../lib/SP/Util/ErrorUtil.php:159
+#: ../../../../lib/SP/Util/ErrorUtil.php:166
 #: ../../../modules/web/Controllers/ErrorController.php:124
 #: ../../../modules/web/Controllers/UserPassResetController.php:94
 #: ../../../modules/web/themes/material-blue/views/upgrade/index.inc:13
@@ -75,7 +75,7 @@ msgstr "Please contact to the administrator"
 
 # Not available
 #: ../../../../lib/SP/Core/Acl/Acl.php:294
-#: ../../../../lib/SP/Services/Auth/LoginService.php:600
+#: ../../../../lib/SP/Services/Auth/LoginService.php:604
 msgid "N/D"
 msgstr "N/A"
 
@@ -96,24 +96,24 @@ msgstr "Action"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:110
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:142
-#: ../../../../lib/SP/Services/Auth/LoginService.php:217
-#: ../../../../lib/SP/Services/Auth/LoginService.php:235
-#: ../../../../lib/SP/Services/Auth/LoginService.php:386
-#: ../../../../lib/SP/Services/Auth/LoginService.php:453
-#: ../../../../lib/SP/Services/Auth/LoginService.php:561
-#: ../../../../lib/SP/Services/Auth/LoginService.php:604
+#: ../../../../lib/SP/Services/Auth/LoginService.php:220
+#: ../../../../lib/SP/Services/Auth/LoginService.php:238
+#: ../../../../lib/SP/Services/Auth/LoginService.php:390
+#: ../../../../lib/SP/Services/Auth/LoginService.php:457
+#: ../../../../lib/SP/Services/Auth/LoginService.php:565
+#: ../../../../lib/SP/Services/Auth/LoginService.php:608
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:238
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:253
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:107
 #: ../../../modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:111
 #: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:105
-#: ../../../modules/web/Controllers/LoginController.php:102
+#: ../../../modules/web/Controllers/LoginController.php:120
 #: ../../../modules/web/Controllers/UserController.php:278
 #: ../../../modules/web/Controllers/UserController.php:312
 #: ../../../modules/web/Controllers/UserController.php:373
 #: ../../../modules/web/Controllers/UserController.php:412
-#: ../../../modules/web/Controllers/UserPassResetController.php:187
+#: ../../../modules/web/Controllers/UserPassResetController.php:190
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:55
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:61
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:91
@@ -151,7 +151,7 @@ msgid "Acción no encontrada"
 msgstr "Action not found"
 
 #: ../../../../lib/SP/Core/Acl/UnauthorizedActionException.php:46
-#: ../../../../lib/SP/Util/ErrorUtil.php:140
+#: ../../../../lib/SP/Util/ErrorUtil.php:150
 #: ../../../modules/web/Controllers/AccountFileController.php:261
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:59
 #: ../../../modules/web/Controllers/AccountManagerController.php:77
@@ -200,8 +200,8 @@ msgstr "Action not found"
 #: ../../../modules/web/Controllers/NotificationController.php:288
 #: ../../../modules/web/Controllers/NotificationController.php:315
 #: ../../../modules/web/Controllers/NotificationController.php:348
-#: ../../../modules/web/Controllers/PluginController.php:98
-#: ../../../modules/web/Controllers/PluginController.php:117
+#: ../../../modules/web/Controllers/PluginController.php:103
+#: ../../../modules/web/Controllers/PluginController.php:122
 #: ../../../modules/web/Controllers/PublicLinkController.php:71
 #: ../../../modules/web/Controllers/PublicLinkController.php:105
 #: ../../../modules/web/Controllers/PublicLinkController.php:167
@@ -244,7 +244,7 @@ msgid "No tiene permisos para realizar esta operación"
 msgstr "You don't have permission to do this operation"
 
 #: ../../../../lib/SP/Core/Acl/UnauthorizedPageException.php:45
-#: ../../../../lib/SP/Util/ErrorUtil.php:136
+#: ../../../../lib/SP/Util/ErrorUtil.php:146
 msgid "No tiene permisos para acceder a esta página"
 msgstr "You don't have permission to access this page"
 
@@ -280,14 +280,14 @@ msgstr "Session cannot be initialized"
 #: ../../../../lib/SP/Services/Account/AccountService.php:227
 #: ../../../../lib/SP/Services/Account/AccountService.php:232
 #: ../../../../lib/SP/Services/Api/ApiService.php:129
-#: ../../../../lib/SP/Services/Api/ApiService.php:227
-#: ../../../../lib/SP/Services/Api/ApiService.php:235
-#: ../../../../lib/SP/Services/Auth/LoginService.php:187
-#: ../../../../lib/SP/Services/Auth/LoginService.php:351
-#: ../../../../lib/SP/Services/Auth/LoginService.php:500
-#: ../../../../lib/SP/Services/Auth/LoginService.php:505
-#: ../../../../lib/SP/Services/Auth/LoginService.php:537
-#: ../../../../lib/SP/Services/Auth/LoginService.php:644
+#: ../../../../lib/SP/Services/Api/ApiService.php:229
+#: ../../../../lib/SP/Services/Api/ApiService.php:237
+#: ../../../../lib/SP/Services/Auth/LoginService.php:190
+#: ../../../../lib/SP/Services/Auth/LoginService.php:354
+#: ../../../../lib/SP/Services/Auth/LoginService.php:504
+#: ../../../../lib/SP/Services/Auth/LoginService.php:509
+#: ../../../../lib/SP/Services/Auth/LoginService.php:541
+#: ../../../../lib/SP/Services/Auth/LoginService.php:648
 #: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:311
 #: ../../../../lib/SP/Services/CustomField/CustomFieldService.php:203
 #: ../../../../lib/SP/Services/Export/XmlVerifyService.php:108
@@ -306,7 +306,7 @@ msgstr "Crypto module cannot be loaded"
 msgid "Error al generar datos cifrados"
 msgstr "Error while creating the encrypted data"
 
-#: ../../../../lib/SP/Core/Events/Event.php:56
+#: ../../../../lib/SP/Core/Events/Event.php:57
 msgid "Es necesario un objeto"
 msgstr "An object is needed"
 
@@ -320,17 +320,17 @@ msgstr "Invalid icons class"
 
 #: ../../../../lib/SP/DataModel/PublicLinkListData.php:88
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:190
-#: ../../../modules/web/Controllers/AccountController.php:227
+#: ../../../modules/web/Controllers/AccountController.php:226
 msgid "ON"
 msgstr "ON"
 
 #: ../../../../lib/SP/DataModel/PublicLinkListData.php:88
-#: ../../../modules/web/Controllers/AccountController.php:227
+#: ../../../modules/web/Controllers/AccountController.php:226
 msgid "OFF"
 msgstr "OFF"
 
 #: ../../../../lib/SP/Html/DataGrid/DataGridBase.php:303
-#: ../../../../lib/SP/Mvc/View/Template.php:122
+#: ../../../../lib/SP/Mvc/View/Template.php:126
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
 msgstr "Unable to retrieve the \"%s\" template: %s"
@@ -352,11 +352,11 @@ msgstr "Encoding error"
 msgid "Respuesta XML-RPC inválida"
 msgstr "Invalid XML-RPC response"
 
-#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:64
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:71
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session not started or timed out"
 
-#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:114
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:124
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
@@ -398,41 +398,69 @@ msgstr "Invalid filter type"
 msgid "Tipo de objeto incorrecto"
 msgstr "Wrong object type"
 
-#: ../../../../lib/SP/Mvc/View/Template.php:274
-#: ../../../../lib/SP/Mvc/View/Template.php:276
+#: ../../../../lib/SP/Mvc/View/Template.php:278
+#: ../../../../lib/SP/Mvc/View/Template.php:280
 #, php-format
 msgid "No es posible obtener la variable \"%s\""
 msgstr "Unable to retrieve the \"%s\" variable"
 
-#: ../../../../lib/SP/Mvc/View/Template.php:322
-#: ../../../../lib/SP/Mvc/View/Template.php:324
+#: ../../../../lib/SP/Mvc/View/Template.php:326
+#: ../../../../lib/SP/Mvc/View/Template.php:328
 #, php-format
 msgid "No es posible destruir la variable \"%s\""
 msgstr "Unable to unset the \"%s\" variable"
 
-#: ../../../../lib/SP/Mvc/View/Template.php:341
+#: ../../../../lib/SP/Mvc/View/Template.php:345
 msgid "La plantilla no contiene archivos"
 msgstr "Template does not contain files"
 
-#: ../../../../lib/SP/Plugin/PluginManager.php:113
-#: ../../../../lib/SP/Plugin/PluginManager.php:256
+#: ../../../../lib/SP/Plugin/PluginManager.php:170
+#, php-format
+msgid "Versión de plugin no compatible (%s)"
+msgstr "Plugin version not compatible (%s)"
+
+#: ../../../../lib/SP/Plugin/PluginManager.php:192
 #, php-format
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Unable to load the \"%s\" plugin"
 
+#: ../../../../lib/SP/Plugin/PluginManager.php:194
+#: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:101
+msgid "Plugin"
+msgstr "Plugin"
+
+#: ../../../../lib/SP/Plugin/PluginManager.php:219
+#: ../../../../lib/SP/Plugin/PluginManager.php:339
+#: ../../../modules/web/Controllers/PluginController.php:213
+#: ../../../modules/web/Controllers/PluginController.php:216
+msgid "Plugin deshabilitado"
+msgstr "Plugin disabled"
+
+#: ../../../../lib/SP/Plugin/PluginManager.php:254
+msgid "Plugin disponible"
+msgstr "Plugin available"
+
+#: ../../../../lib/SP/Plugin/PluginManager.php:264
+msgid "Plugin no disponible"
+msgstr "Plugin unavailable"
+
+#: ../../../../lib/SP/Plugin/PluginManager.php:294
+msgid "Plugin cargado"
+msgstr "Plugin loaded"
+
 #. (itstool) path: action/text
-#: ../../../../lib/SP/Plugin/PluginManager.php:245
+#: ../../../../lib/SP/Plugin/PluginManager.php:319
 #: ../../../config/actions.xml:535
 msgid "Nuevo Plugin"
 msgstr "New Plugin"
 
-#: ../../../../lib/SP/Plugin/PluginManager.php:246
+#: ../../../../lib/SP/Plugin/PluginManager.php:320
 #: ../../../modules/api/Controllers/AccountController.php:71
 #: ../../../modules/api/Controllers/AccountController.php:103
 #: ../../../modules/api/Controllers/AccountController.php:139
-#: ../../../modules/api/Controllers/AccountController.php:185
-#: ../../../modules/api/Controllers/AccountController.php:235
-#: ../../../modules/api/Controllers/AccountController.php:310
+#: ../../../modules/api/Controllers/AccountController.php:189
+#: ../../../modules/api/Controllers/AccountController.php:240
+#: ../../../modules/api/Controllers/AccountController.php:315
 #: ../../../modules/api/Controllers/CategoryController.php:63
 #: ../../../modules/api/Controllers/CategoryController.php:92
 #: ../../../modules/api/Controllers/CategoryController.php:122
@@ -490,7 +518,7 @@ msgid "Método ya inicializado"
 msgstr "Method already initialized"
 
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:119
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:125
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:126
 msgid "Error al buscar RDN de grupo"
 msgstr "Error while searching the group RDN"
 
@@ -518,13 +546,13 @@ msgstr "Error while searching the group RDN"
 msgid "Grupo"
 msgstr "Group"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:200
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:204
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:205
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:210
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Error while searching the user on LDAP"
 
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:249
-#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:254
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:259
+#: ../../../../lib/SP/Providers/Auth/Ldap/LdapActions.php:265
 msgid "Error al buscar objetos en DN base"
 msgstr "Error while searching objects in base DN"
 
@@ -594,7 +622,7 @@ msgid "No es posible inicializar"
 msgstr "Unable to initialize"
 
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:124
-#: ../../../modules/web/Controllers/AccountController.php:926
+#: ../../../modules/web/Controllers/AccountController.php:925
 msgid "Solicitud"
 msgstr "Request"
 
@@ -1121,7 +1149,7 @@ msgstr "The account doesn't exist"
 
 #: ../../../../lib/SP/Services/Api/ApiRequest.php:79
 #: ../../../../lib/SP/Services/Api/ApiRequest.php:113
-#: ../../../../lib/SP/Services/Api/ApiService.php:229
+#: ../../../../lib/SP/Services/Api/ApiService.php:231
 msgid "Datos inválidos"
 msgstr "Invalid data"
 
@@ -1130,7 +1158,7 @@ msgid "Fomato incorrecto"
 msgstr "Invalid format"
 
 #: ../../../../lib/SP/Services/Api/ApiService.php:96
-#: ../../../../lib/SP/Services/Auth/LoginService.php:137
+#: ../../../../lib/SP/Services/Auth/LoginService.php:138
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 #: ../../../modules/web/Controllers/UserPassResetController.php:124
 msgid "Intentos excedidos"
@@ -1145,54 +1173,54 @@ msgstr "Wrong parameters"
 msgid "Acceso no permitido"
 msgstr "Unauthorized access"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:157
-#: ../../../../lib/SP/Services/Auth/LoginService.php:456
-#: ../../../../lib/SP/Services/Auth/LoginService.php:463
-#: ../../../../lib/SP/Services/Auth/LoginService.php:571
-#: ../../../../lib/SP/Services/Auth/LoginService.php:576
-#: ../../../../lib/SP/Services/Auth/LoginService.php:615
-#: ../../../../lib/SP/Services/Auth/LoginService.php:620
+#: ../../../../lib/SP/Services/Auth/LoginService.php:160
+#: ../../../../lib/SP/Services/Auth/LoginService.php:460
+#: ../../../../lib/SP/Services/Auth/LoginService.php:467
+#: ../../../../lib/SP/Services/Auth/LoginService.php:575
+#: ../../../../lib/SP/Services/Auth/LoginService.php:580
+#: ../../../../lib/SP/Services/Auth/LoginService.php:619
+#: ../../../../lib/SP/Services/Auth/LoginService.php:624
 msgid "Login incorrecto"
 msgstr "Wrong login"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:216
-#: ../../../../lib/SP/Services/Auth/LoginService.php:223
+#: ../../../../lib/SP/Services/Auth/LoginService.php:219
+#: ../../../../lib/SP/Services/Auth/LoginService.php:226
 msgid "Usuario deshabilitado"
 msgstr "User disabled"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:270
+#: ../../../../lib/SP/Services/Auth/LoginService.php:273
 msgid "Usando clave temporal"
 msgstr "Using temporary password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:282
-#: ../../../../lib/SP/Services/Auth/LoginService.php:288
-#: ../../../../lib/SP/Services/Auth/LoginService.php:306
-#: ../../../../lib/SP/Services/Auth/LoginService.php:312
+#: ../../../../lib/SP/Services/Auth/LoginService.php:285
+#: ../../../../lib/SP/Services/Auth/LoginService.php:291
+#: ../../../../lib/SP/Services/Auth/LoginService.php:309
+#: ../../../../lib/SP/Services/Auth/LoginService.php:315
 msgid "Clave maestra incorrecta"
 msgstr "Wrong master password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:297
-#: ../../../../lib/SP/Services/Auth/LoginService.php:321
+#: ../../../../lib/SP/Services/Auth/LoginService.php:300
+#: ../../../../lib/SP/Services/Auth/LoginService.php:324
 #: ../../../../lib/SP/Services/User/UpdatedMasterPassException.php:45
-#: ../../../../lib/SP/Util/ErrorUtil.php:144
+#: ../../../../lib/SP/Util/ErrorUtil.php:154
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:68
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:142
 #: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:116
 msgid "Clave maestra actualizada"
 msgstr "Master password updated"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:327
+#: ../../../../lib/SP/Services/Auth/LoginService.php:330
 msgid "Es necesaria su clave anterior"
 msgstr "Your previous password is needed"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:339
+#: ../../../../lib/SP/Services/Auth/LoginService.php:342
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "The Master Password either is not saved or is wrong"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:451
-#: ../../../../lib/SP/Services/Auth/LoginService.php:514
-#: ../../../../lib/SP/Services/Auth/LoginService.php:560
-#: ../../../../lib/SP/Services/Auth/LoginService.php:603
+#: ../../../../lib/SP/Services/Auth/LoginService.php:455
+#: ../../../../lib/SP/Services/Auth/LoginService.php:518
+#: ../../../../lib/SP/Services/Auth/LoginService.php:564
+#: ../../../../lib/SP/Services/Auth/LoginService.php:607
 #: ../../../modules/web/Controllers/AccountFileController.php:235
 #: ../../../modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/FileGrid.php:108
@@ -1207,22 +1235,22 @@ msgstr "The Master Password either is not saved or is wrong"
 msgid "Tipo"
 msgstr "Type"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:452
-#: ../../../../lib/SP/Services/Auth/LoginService.php:515
+#: ../../../../lib/SP/Services/Auth/LoginService.php:456
+#: ../../../../lib/SP/Services/Auth/LoginService.php:519
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:471
-#: ../../../../lib/SP/Services/Auth/LoginService.php:476
+#: ../../../../lib/SP/Services/Auth/LoginService.php:475
+#: ../../../../lib/SP/Services/Auth/LoginService.php:480
 msgid "Cuenta expirada"
 msgstr "Account expired"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:484
-#: ../../../../lib/SP/Services/Auth/LoginService.php:489
+#: ../../../../lib/SP/Services/Auth/LoginService.php:488
+#: ../../../../lib/SP/Services/Auth/LoginService.php:493
 msgid "El usuario no tiene grupos asociados"
 msgstr "The user has no associated groups"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:605
+#: ../../../../lib/SP/Services/Auth/LoginService.php:609
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:10
 msgid "Autentificación"
 msgstr "Authentication"
@@ -1503,16 +1531,16 @@ msgstr "Account imported"
 #: ../../../modules/api/Controllers/AccountController.php:72
 #: ../../../modules/api/Controllers/AccountController.php:104
 #: ../../../modules/api/Controllers/AccountController.php:140
-#: ../../../modules/api/Controllers/AccountController.php:186
-#: ../../../modules/api/Controllers/AccountController.php:236
-#: ../../../modules/api/Controllers/AccountController.php:311
-#: ../../../modules/web/Controllers/AccountController.php:225
-#: ../../../modules/web/Controllers/AccountController.php:720
-#: ../../../modules/web/Controllers/AccountController.php:765
-#: ../../../modules/web/Controllers/AccountController.php:806
-#: ../../../modules/web/Controllers/AccountController.php:845
-#: ../../../modules/web/Controllers/AccountController.php:895
-#: ../../../modules/web/Controllers/AccountController.php:929
+#: ../../../modules/api/Controllers/AccountController.php:190
+#: ../../../modules/api/Controllers/AccountController.php:241
+#: ../../../modules/api/Controllers/AccountController.php:316
+#: ../../../modules/web/Controllers/AccountController.php:224
+#: ../../../modules/web/Controllers/AccountController.php:719
+#: ../../../modules/web/Controllers/AccountController.php:764
+#: ../../../modules/web/Controllers/AccountController.php:805
+#: ../../../modules/web/Controllers/AccountController.php:844
+#: ../../../modules/web/Controllers/AccountController.php:894
+#: ../../../modules/web/Controllers/AccountController.php:928
 #: ../../../modules/web/Controllers/AccountFileController.php:234
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:112
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:147
@@ -2119,7 +2147,7 @@ msgid "Enlace"
 msgstr "Link"
 
 #: ../../../../lib/SP/Services/User/UpdatedMasterPassException.php:45
-#: ../../../../lib/SP/Util/ErrorUtil.php:145
+#: ../../../../lib/SP/Util/ErrorUtil.php:155
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:68
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:142
 #: ../../../modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:116
@@ -2286,12 +2314,12 @@ msgstr "Socket not initialized"
 msgid "Error al enviar datos"
 msgstr "Error while sending the data"
 
-#: ../../../../lib/SP/Util/ErrorUtil.php:128
+#: ../../../../lib/SP/Util/ErrorUtil.php:138
 msgid "Opción no disponible"
 msgstr "Option unavailable"
 
-#: ../../../../lib/SP/Util/ErrorUtil.php:148
-#: ../../../../lib/SP/Util/ErrorUtil.php:155
+#: ../../../../lib/SP/Util/ErrorUtil.php:158
+#: ../../../../lib/SP/Util/ErrorUtil.php:165
 msgid "Se ha producido una excepción"
 msgstr "An exception occured"
 
@@ -2304,40 +2332,40 @@ msgid "Cuenta visualizada"
 msgstr "Account displayed"
 
 #: ../../../modules/api/Controllers/AccountController.php:102
-#: ../../../modules/web/Controllers/AccountController.php:554
-#: ../../../modules/web/Controllers/AccountController.php:610
+#: ../../../modules/web/Controllers/AccountController.php:553
+#: ../../../modules/web/Controllers/AccountController.php:609
 msgid "Clave visualizada"
 msgstr "Password viewed"
 
 #: ../../../modules/api/Controllers/AccountController.php:138
 #: ../../../modules/api/Controllers/AccountController.php:144
-#: ../../../modules/web/Controllers/AccountController.php:804
-#: ../../../modules/web/Controllers/AccountController.php:815
+#: ../../../modules/web/Controllers/AccountController.php:803
+#: ../../../modules/web/Controllers/AccountController.php:814
 #: ../../../modules/web/Controllers/UserController.php:411
 #: ../../../modules/web/Controllers/UserController.php:415
-#: ../../../modules/web/Controllers/UserPassResetController.php:186
-#: ../../../modules/web/Controllers/UserPassResetController.php:190
+#: ../../../modules/web/Controllers/UserPassResetController.php:189
+#: ../../../modules/web/Controllers/UserPassResetController.php:193
 msgid "Clave actualizada"
 msgstr "Password updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:184
-#: ../../../modules/api/Controllers/AccountController.php:190
-#: ../../../modules/web/Controllers/AccountController.php:718
-#: ../../../modules/web/Controllers/AccountController.php:729
+#: ../../../modules/api/Controllers/AccountController.php:188
+#: ../../../modules/api/Controllers/AccountController.php:194
+#: ../../../modules/web/Controllers/AccountController.php:717
+#: ../../../modules/web/Controllers/AccountController.php:728
 msgid "Cuenta creada"
 msgstr "Account added"
 
-#: ../../../modules/api/Controllers/AccountController.php:234
-#: ../../../modules/api/Controllers/AccountController.php:240
-#: ../../../modules/web/Controllers/AccountController.php:763
-#: ../../../modules/web/Controllers/AccountController.php:774
+#: ../../../modules/api/Controllers/AccountController.php:239
+#: ../../../modules/api/Controllers/AccountController.php:245
+#: ../../../modules/web/Controllers/AccountController.php:762
+#: ../../../modules/web/Controllers/AccountController.php:773
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
-#: ../../../modules/api/Controllers/AccountController.php:309
-#: ../../../modules/api/Controllers/AccountController.php:315
-#: ../../../modules/web/Controllers/AccountController.php:893
-#: ../../../modules/web/Controllers/AccountController.php:898
+#: ../../../modules/api/Controllers/AccountController.php:314
+#: ../../../modules/api/Controllers/AccountController.php:320
+#: ../../../modules/web/Controllers/AccountController.php:892
+#: ../../../modules/web/Controllers/AccountController.php:897
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:110
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:115
 #: ../../../modules/web/Controllers/AccountManagerController.php:145
@@ -2709,9 +2737,9 @@ msgstr "Group deleted"
 msgid "Es necesario actualizar"
 msgstr "Updating needed"
 
-#: ../../../modules/web/Controllers/AccountController.php:149
-#: ../../../modules/web/Controllers/AccountController.php:204
-#: ../../../modules/web/Controllers/AccountController.php:474
+#: ../../../modules/web/Controllers/AccountController.php:148
+#: ../../../modules/web/Controllers/AccountController.php:203
+#: ../../../modules/web/Controllers/AccountController.php:473
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:159
@@ -2721,21 +2749,21 @@ msgstr "Updating needed"
 msgid "Detalles de Cuenta"
 msgstr "Account Details"
 
-#: ../../../modules/web/Controllers/AccountController.php:223
+#: ../../../modules/web/Controllers/AccountController.php:222
 msgid "Enlace visualizado"
 msgstr "Link viewed"
 
-#: ../../../modules/web/Controllers/AccountController.php:224
-#: ../../../modules/web/Controllers/AccountController.php:555
-#: ../../../modules/web/Controllers/AccountController.php:611
-#: ../../../modules/web/Controllers/AccountController.php:650
-#: ../../../modules/web/Controllers/AccountController.php:684
-#: ../../../modules/web/Controllers/AccountController.php:719
-#: ../../../modules/web/Controllers/AccountController.php:764
-#: ../../../modules/web/Controllers/AccountController.php:805
-#: ../../../modules/web/Controllers/AccountController.php:844
-#: ../../../modules/web/Controllers/AccountController.php:894
-#: ../../../modules/web/Controllers/AccountController.php:928
+#: ../../../modules/web/Controllers/AccountController.php:223
+#: ../../../modules/web/Controllers/AccountController.php:554
+#: ../../../modules/web/Controllers/AccountController.php:610
+#: ../../../modules/web/Controllers/AccountController.php:649
+#: ../../../modules/web/Controllers/AccountController.php:683
+#: ../../../modules/web/Controllers/AccountController.php:718
+#: ../../../modules/web/Controllers/AccountController.php:763
+#: ../../../modules/web/Controllers/AccountController.php:804
+#: ../../../modules/web/Controllers/AccountController.php:843
+#: ../../../modules/web/Controllers/AccountController.php:893
+#: ../../../modules/web/Controllers/AccountController.php:927
 #: ../../../modules/web/Controllers/AccountFileController.php:233
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:111
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:146
@@ -2749,24 +2777,24 @@ msgstr "Link viewed"
 msgid "Cuenta"
 msgstr "Account"
 
-#: ../../../modules/web/Controllers/AccountController.php:226
+#: ../../../modules/web/Controllers/AccountController.php:225
 msgid "Agente"
 msgstr "Agent"
 
-#: ../../../modules/web/Controllers/AccountController.php:227
+#: ../../../modules/web/Controllers/AccountController.php:226
 msgid "HTTPS"
 msgstr "HTTPS"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:256
-#: ../../../modules/web/Controllers/AccountController.php:300
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:278
+#: ../../../modules/web/Controllers/AccountController.php:255
+#: ../../../modules/web/Controllers/AccountController.php:299
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:280
 #: ../../../config/actions.xml:157
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:344
+#: ../../../modules/web/Controllers/AccountController.php:343
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:18
@@ -2775,7 +2803,7 @@ msgid "Editar Cuenta"
 msgstr "Edit Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:389
+#: ../../../modules/web/Controllers/AccountController.php:388
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:176
@@ -2787,26 +2815,26 @@ msgstr "Edit Account"
 msgid "Eliminar Cuenta"
 msgstr "Remove Account"
 
-#: ../../../modules/web/Controllers/AccountController.php:432
+#: ../../../modules/web/Controllers/AccountController.php:431
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 msgid "Modificar Clave de Cuenta"
 msgstr "Edit Account Password"
 
-#: ../../../modules/web/Controllers/AccountController.php:649
-#: ../../../modules/web/Controllers/AccountController.php:683
+#: ../../../modules/web/Controllers/AccountController.php:648
+#: ../../../modules/web/Controllers/AccountController.php:682
 msgid "Clave copiada"
 msgstr "Password copied"
 
-#: ../../../modules/web/Controllers/AccountController.php:843
-#: ../../../modules/web/Controllers/AccountController.php:854
+#: ../../../modules/web/Controllers/AccountController.php:842
+#: ../../../modules/web/Controllers/AccountController.php:853
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:145
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:150
 msgid "Cuenta restaurada"
 msgstr "Account restored"
 
-#: ../../../modules/web/Controllers/AccountController.php:879
-#: ../../../modules/web/Controllers/AccountController.php:882
+#: ../../../modules/web/Controllers/AccountController.php:878
+#: ../../../modules/web/Controllers/AccountController.php:881
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:99
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:102
 #: ../../../modules/web/Controllers/AccountManagerController.php:131
@@ -2814,16 +2842,16 @@ msgstr "Account restored"
 msgid "Cuentas eliminadas"
 msgstr "Accounts removed"
 
-#: ../../../modules/web/Controllers/AccountController.php:919
+#: ../../../modules/web/Controllers/AccountController.php:918
 #: ../../../modules/web/Forms/NotificationForm.php:100
 msgid "Es necesaria una descripción"
 msgstr "A description is needed"
 
-#: ../../../modules/web/Controllers/AccountController.php:927
+#: ../../../modules/web/Controllers/AccountController.php:926
 msgid "Solicitante"
 msgstr "Requester"
 
-#: ../../../modules/web/Controllers/AccountController.php:930
+#: ../../../modules/web/Controllers/AccountController.php:929
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:105
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -2837,7 +2865,7 @@ msgstr "Requester"
 msgid "Descripción"
 msgstr "Description"
 
-#: ../../../modules/web/Controllers/AccountController.php:943
+#: ../../../modules/web/Controllers/AccountController.php:942
 msgid "Solicitud realizada"
 msgstr "Request done"
 
@@ -3066,7 +3094,7 @@ msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, this is a DEMO!!"
 
 #: ../../../modules/web/Controllers/ConfigBackupController.php:86
-#: ../../../modules/web/Controllers/UserPassResetController.php:173
+#: ../../../modules/web/Controllers/UserPassResetController.php:176
 #: ../../../modules/web/Forms/AccountForm.php:135
 #: ../../../modules/web/Forms/UserForm.php:161
 msgid "Las claves no coinciden"
@@ -3951,14 +3979,10 @@ msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:89
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:334
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:336
 #: ../../../modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
-
-#: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:101
-msgid "Plugin"
-msgstr "Plugin"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:118
 msgid "No disponible"
@@ -3973,7 +3997,7 @@ msgstr "Search for Plugin"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:149
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:150
-#: ../../../modules/web/Controllers/PluginController.php:120
+#: ../../../modules/web/Controllers/PluginController.php:125
 #: ../../../config/actions.xml:541
 msgid "Ver Plugin"
 msgstr "View Plugin"
@@ -4224,13 +4248,13 @@ msgstr "Edit Profile"
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:265
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:267
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Buscar"
 msgstr "Search"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:348
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:350
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:61
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
@@ -4282,15 +4306,15 @@ msgstr "Value created"
 msgid "Valor actualizado"
 msgstr "Value updated"
 
-#: ../../../modules/web/Controllers/LoginController.php:101
+#: ../../../modules/web/Controllers/LoginController.php:119
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../modules/web/Controllers/LoginController.php:103
+#: ../../../modules/web/Controllers/LoginController.php:121
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../modules/web/Controllers/LoginController.php:104
+#: ../../../modules/web/Controllers/LoginController.php:122
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -4319,18 +4343,13 @@ msgstr "Notification created"
 msgid "Notificación actualizada"
 msgstr "Notification updated"
 
-#: ../../../modules/web/Controllers/PluginController.php:181
-#: ../../../modules/web/Controllers/PluginController.php:184
+#: ../../../modules/web/Controllers/PluginController.php:188
+#: ../../../modules/web/Controllers/PluginController.php:191
 msgid "Plugin habilitado"
 msgstr "Plugin enabled"
 
-#: ../../../modules/web/Controllers/PluginController.php:206
-#: ../../../modules/web/Controllers/PluginController.php:209
-msgid "Plugin deshabilitado"
-msgstr "Plugin disabled"
-
-#: ../../../modules/web/Controllers/PluginController.php:231
-#: ../../../modules/web/Controllers/PluginController.php:234
+#: ../../../modules/web/Controllers/PluginController.php:238
+#: ../../../modules/web/Controllers/PluginController.php:241
 msgid "Plugin restablecido"
 msgstr "Plugin reset"
 
@@ -4357,11 +4376,11 @@ msgstr "Link deleted"
 msgid "Enlace creado"
 msgstr "Link created"
 
-#: ../../../modules/web/Controllers/StatusController.php:94
+#: ../../../modules/web/Controllers/StatusController.php:93
 msgid "Versión no disponible"
 msgstr "Version unavailable"
 
-#: ../../../modules/web/Controllers/StatusController.php:142
+#: ../../../modules/web/Controllers/StatusController.php:140
 msgid "Notificaciones no disponibles"
 msgstr "Notifications not available"
 
@@ -4467,7 +4486,7 @@ msgstr "Request sent"
 msgid "En breve recibirá un correo para completar la solicitud."
 msgstr "You will receive an email to complete the request shortly."
 
-#: ../../../modules/web/Controllers/UserPassResetController.php:169
+#: ../../../modules/web/Controllers/UserPassResetController.php:172
 #: ../../../modules/web/Forms/AuthTokenForm.php:101
 #: ../../../modules/web/Forms/UserForm.php:157
 msgid "La clave no puede estar en blanco"
@@ -4501,7 +4520,7 @@ msgstr "View Profile"
 msgid "Preferencias actualizadas"
 msgstr "Preferences updated"
 
-#: ../../../modules/web/Controllers/UserSettingsManagerController.php:89
+#: ../../../modules/web/Controllers/UserSettingsManagerController.php:92
 msgid "Preferencias"
 msgstr "Preferences"
 

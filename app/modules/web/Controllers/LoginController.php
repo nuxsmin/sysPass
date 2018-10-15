@@ -25,11 +25,10 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Context\SessionContext;
-use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
+use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Auth\LoginService;
@@ -54,30 +53,34 @@ final class LoginController extends ControllerBase
         try {
             $loginService = $this->dic->get(LoginService::class);
 
-            $from = $this->request->analyzeString('from');
-
-            if ($from) {
-                try {
-                    $this->request->verifySignature($this->configData->getPasswordSalt(), 'from');
-
-                    $loginService->setFrom($from);
-                } catch (SPException $e) {
-                    processException($e);
-                }
-            }
+            $from = $this->getSignedUriFromRequest();
+            $loginService->setFrom($from);
 
             $loginResponmse = $loginService->doLogin();
 
-            $forward = $this->request->getForwardedFor();
+            $this->checkForwarded();
 
-            if ($forward !== null) {
-                $this->eventDispatcher->notifyEvent('login.info',
-                    new Event($this, EventMessage::factory()
-                        ->addDetail('Forwarded', $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)))
-                );
-            }
+            $redirector = function ($route) use ($from) {
+                $uri = new Uri('index.php');
+                $uri->addParam('r', $route);
 
-            return $this->returnJsonResponseData(['url' => $loginResponmse->getRedirect()]);
+                if ($from !== null) {
+                    return $uri->addParam('from', $from)
+                        ->getUriSigned($this->configData->getPasswordSalt());
+                }
+
+                return $uri->getUri();
+            };
+
+            $this->eventDispatcher->notifyEvent('login.finish',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addData('redirect', $redirector))
+            );
+
+            return $this->returnJsonResponseData([
+                'url' => $this->session->getTrasientKey('redirect') ?: $loginResponmse->getRedirect()
+            ]);
         } catch (\Exception $e) {
             processException($e);
 
@@ -88,11 +91,26 @@ final class LoginController extends ControllerBase
     }
 
     /**
+     * checkForwarded
+     */
+    private function checkForwarded()
+    {
+        $forward = $this->request->getForwardedFor();
+
+        if ($forward !== null) {
+            $this->eventDispatcher->notifyEvent('login.info',
+                new Event($this, EventMessage::factory()
+                    ->addDetail('Forwarded', $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)))
+            );
+        }
+    }
+
+    /**
      * Logout action
      */
     public function logoutAction()
     {
-        if ($this->session->isLoggedIn()) {
+        if ($this->session->isLoggedIn() === true) {
             $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
             $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
@@ -125,30 +143,13 @@ final class LoginController extends ControllerBase
      */
     public function indexAction()
     {
-        if ($this->session->isLoggedIn() === true) {
-            $this->router->response()
-                ->redirect('index.php?r=index')
-                ->send(true);
-        }
-
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('index', 'login');
 
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
 //        $this->view->assign('updated', SessionFactory::getAppUpdated());
 
-        $from = $this->request->analyzeString('from');
-
-        if ($from) {
-            try {
-                $this->request->verifySignature($this->configData->getPasswordSalt());
-
-                $this->view->assign('from', $from);
-                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
-            } catch (SPException $e) {
-                processException($e);
-            }
-        }
+        $this->prepareSignedUriOnView();
 
         $this->view();
     }

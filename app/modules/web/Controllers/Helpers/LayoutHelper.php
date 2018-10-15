@@ -191,7 +191,9 @@ final class LayoutHelper extends HelperBase
 
         // Cargar los recursos de los plugins
         foreach ($this->dic->get(PluginManager::class)->getLoadedPlugins() as $plugin) {
-            $base = str_replace(BASE_PATH, '', $plugin->getBase());
+            $base = str_replace(APP_ROOT, '', $plugin->getBase());
+            $base .= DIRECTORY_SEPARATOR . 'public';
+            
             $jsResources = $plugin->getJsResources();
             $cssResources = $plugin->getCssResources();
 

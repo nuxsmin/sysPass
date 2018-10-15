@@ -22,34 +22,31 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers;
+namespace SP\Mvc\Controller;
 
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+
+use SP\Core\Events\EventDispatcherInterface;
+use SP\Mvc\View\Template;
 
 /**
- * Class IndexController
+ * Interface ExtensibleController
  *
- * @package SP\Modules\Web\Controllers
+ * @package SP\Mvc\Controller
  */
-final class IndexController extends ControllerBase
+interface ExtensibleControllerInterface
 {
     /**
-     * Index action
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return Template
      */
-    public function indexAction()
-    {
-        if ($this->session->isLoggedIn() === false
-            || $this->session->getAuthCompleted() === false
-        ) {
-            $this->router->response()
-                ->redirect('index.php?r=login');
-        } else {
-            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
+    public function getView(): Template;
 
-            $this->view();
-        }
-    }
+    /**
+     * @return void
+     */
+    public function displayView();
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher(): EventDispatcherInterface;
 }

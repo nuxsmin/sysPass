@@ -22,41 +22,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Log;
+namespace SP\Mvc\Controller;
+
+use SP\Mvc\View\Components\DataTab;
 
 /**
- * Interface LogInterface
+ * Interface ExtensibleTabController
  *
- * @package SP\Providers\Log
+ * @package SP\Mvc\Controller
  */
-interface LogInterface
+interface ExtensibleTabControllerInterface extends ExtensibleControllerInterface
 {
-    const EVENTS = [
-        'show.',
-        'create.',
-        'delete.',
-        'edit.',
-        'exception',
-        'save.',
-        'show.account.pass',
-        'show.account.link',
-        'copy.account.pass',
-        'clear.eventlog',
-        'login.',
-        'logout',
-        'track.',
-        'acl.deny',
-        'check.tempMasterPassword',
-        'expire.tempMasterPassword',
-        'refresh.masterPassword',
-        'update.',
-        'import.ldap.',
-        'run.',
-        'send.mail',
-        'show.authToken',
-        'clear.eventlog',
-        'clear.track',
-        'unlock.track',
-        'plugin.load.error'
-    ];
+    /**
+     * @param DataTab $tab
+     */
+    public function addTab(DataTab $tab);
 }

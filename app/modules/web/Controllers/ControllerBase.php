@@ -28,7 +28,9 @@ defined('APP_ROOT') || die();
 
 use DI\Container;
 use Psr\Container\ContainerInterface;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
@@ -200,14 +202,16 @@ abstract class ControllerBase
     /**
      * Comprobar si el usuario está logado.
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param bool $requireAuthCompleted
+     *
      * @throws AuthException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    protected function checkLoggedIn()
+    protected function checkLoggedIn($requireAuthCompleted = true)
     {
         if ($this->session->isLoggedIn()
-            && $this->session->getAuthCompleted() === true
+            && $this->session->getAuthCompleted() === $requireAuthCompleted
         ) {
             $browser = $this->dic->get(Browser::class);
 
@@ -219,11 +223,37 @@ abstract class ControllerBase
             }
         }
 
-        $this->checkLoggedInSession($this->session, $this->request, function ($redirect) {
-            $this->router->response()
-                ->redirect($redirect)
-                ->send(true);
-        });
+        $this->checkLoggedInSession(
+            $this->session,
+            $this->request,
+            function ($redirect) {
+                $this->router->response()
+                    ->redirect($redirect)
+                    ->send(true);
+            },
+            $requireAuthCompleted
+        );
+    }
+
+    /**
+     * prepareSignedUriOnView
+     *
+     * Prepares view's variables to pass in a signed URI
+     */
+    final protected function prepareSignedUriOnView()
+    {
+        $from = $this->request->analyzeString('from');
+
+        if ($from) {
+            try {
+                $this->request->verifySignature($this->configData->getPasswordSalt());
+
+                $this->view->assign('from', $from);
+                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+            } catch (SPException $e) {
+                processException($e);
+            }
+        }
     }
 
     /**

@@ -112,10 +112,14 @@ final class Template
      */
     private function checkTemplate($template, $base = null)
     {
-        if (null === $base && null === $this->base) {
+        $base = null !== $base ? $base : (null !== $this->base ? $this->base : null);
+
+        if ($base === null) {
             $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+        } elseif (is_dir($base)) {
+            $templateFile = $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         } else {
-            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . (null === $base ? $this->base : $base) . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
+            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         }
 
         if (!is_readable($templateFile)) {
@@ -338,7 +342,7 @@ final class Template
     public function render()
     {
         if (count($this->templates) === 0) {
-            throw new FileNotFoundException(__u('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(__('La plantilla no contiene archivos'));
         }
 
         extract($this->vars, EXTR_SKIP);

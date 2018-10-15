@@ -32,6 +32,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
@@ -90,6 +91,37 @@ trait WebControllerTrait
      * @var PhpExtensionChecker
      */
     protected $extensionChecker;
+    /**
+     * @var bool
+     */
+    private $setup = false;
+
+    /**
+     * Returns the signed URI component after validating its signature.
+     * This component is used for deep linking
+     *
+     * @return null|string
+     */
+    final protected function getSignedUriFromRequest()
+    {
+        if (!$this->setup) {
+            return null;
+        }
+
+        $from = $this->request->analyzeString('from');
+
+        if ($from) {
+            try {
+                $this->request->verifySignature($this->configData->getPasswordSalt(), 'from');
+            } catch (SPException $e) {
+                processException($e);
+
+                $from = null;
+            }
+        }
+
+        return $from;
+    }
 
     /**
      * @param ContainerInterface $dic
@@ -107,5 +139,7 @@ trait WebControllerTrait
         $this->request = $dic->get(Request::class);
         $this->acl = $dic->get(Acl::class);
         $this->extensionChecker = $dic->get(PhpExtensionChecker::class);
+
+        $this->setup = true;
     }
 }

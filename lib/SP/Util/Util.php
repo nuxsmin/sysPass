@@ -209,38 +209,45 @@ final class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string        $dstClass Class name
+     * @param string        $dstClass Destination class name
      * @param string|object $serialized
-     * @param string        $srcClass Nombre de la clase serializada
+     * @param string        $srcClass Old class name for removing from private methods
      *
      * @return mixed
-     * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
     public static function unserialize($dstClass, $serialized, $srcClass = null)
     {
         if (!is_object($serialized)) {
-            preg_match('/^O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
+            $match = preg_match_all('/O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
 
-            if (class_exists($matches['class'])
-                && $matches['class'] === $dstClass
-            ) {
-                return unserialize($serialized);
+            $process = false;
+
+            if ($match) {
+                foreach ($matches['class'] as $class) {
+                    if (!class_exists($class)
+                        || $class !== $dstClass
+                    ) {
+                        $process = true;
+                    }
+                }
+
+                if ($process === false) {
+                    return unserialize($serialized);
+                }
             }
 
-            // Si se indica la clase origen, se elimina el nombre
-            // de la clase en los métodos privados
-            if ($srcClass !== null) {
-                $serializedOut = preg_replace_callback(
-                    '/:\d+:"\x00' . preg_quote($srcClass, '/') . '\x00(\w+)"/',
-                    function ($matches) {
-                        return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
-                    },
-                    $serialized);
+            // Serialized data needs to be processed to change the class name
+            if ($process === true) {
+                // If source class is set, it will try to clean up the class name from private methods
+                if ($srcClass !== null) {
+                    $serialized = preg_replace_callback(
+                        '/:\d+:"\x00' . preg_quote($srcClass, '/') . '\x00(\w+)"/',
+                        function ($matches) {
+                            return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
+                        },
+                        $serialized);
+                }
 
-                return self::castToClass($serializedOut, $dstClass);
-            }
-
-            if ($matches['class'] !== $dstClass) {
                 return self::castToClass($serialized, $dstClass);
             }
         }
@@ -251,20 +258,18 @@ final class Util
     /**
      * Cast an object to another class
      *
-     * @param $object
+     * @param $cast
      * @param $class
      *
      * @return mixed
      */
-    public static function castToClass($object, $class)
+    public static function castToClass($cast, $class)
     {
-        // should avoid '__PHP_Incomplete_Class'?
+        // TODO: should avoid '__PHP_Incomplete_Class'?
 
-        if (is_object($object)) {
-            return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
-        }
+        $cast = is_object($cast) ? serialize($cast) : $cast;
 
-        return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $object));
+        return unserialize(preg_replace('/O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $cast));
     }
 
     /**

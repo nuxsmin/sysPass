@@ -40,6 +40,7 @@ use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
+use SP\Plugin\PluginManager;
 use SP\Services\Api\ApiRequest;
 use SP\Services\Api\JsonRpcResponse;
 use SP\Services\Upgrade\UpgradeConfigService;
@@ -202,8 +203,13 @@ final class Bootstrap
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
+                    $this->initializePluginClasses();
+
                     if (!method_exists($controllerClass, $method)) {
                         logger($controllerClass . '::' . $method);
+
+                        /** @var Response $response */
+                        $response->code(404);
 
                         throw new RuntimeException($oops);
                     }
@@ -222,6 +228,11 @@ final class Bootstrap
                     return call_user_func_array([new $controllerClass(self::$container, $method), $method], $params);
                 } catch (\Exception $e) {
                     processException($e);
+
+                    /** @var Response $response */
+                    if ($response->status()->getCode() !== 404) {
+                        $response->code(503);
+                    }
 
                     return __($e->getMessage());
                 }
@@ -407,6 +418,18 @@ final class Bootstrap
         ) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
             $upgradeConfigService->upgrade($configVersion, $this->configData);
+        }
+    }
+
+    /**
+     * initializePluginClasses
+     */
+    protected function initializePluginClasses()
+    {
+        $loader = require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+        foreach (PluginManager::getPlugins() as $name => $base) {
+            $loader->addPsr4($base['namespace'], $base['dir']);
         }
     }
 

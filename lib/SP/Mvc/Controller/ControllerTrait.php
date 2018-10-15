@@ -25,6 +25,7 @@
 namespace SP\Mvc\Controller;
 
 use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
@@ -53,13 +54,19 @@ trait ControllerTrait
     /**
      * Comprobar si la sesión está activa
      *
-     * @param ContextInterface $context
-     * @param Request          $request
-     * @param \Closure         $onRedirect
+     * @param SessionContext $context
+     * @param Request        $request
+     * @param \Closure       $onRedirect
+     * @param bool           $requireAuthCompleted
      */
-    protected function checkLoggedInSession(ContextInterface $context, Request $request, \Closure $onRedirect)
+    protected function checkLoggedInSession(SessionContext $context,
+                                            Request $request,
+                                            \Closure $onRedirect,
+                                            $requireAuthCompleted = true)
     {
-        if (!$context->isLoggedIn()) {
+        if ($context->isLoggedIn() === false
+            || $context->getAuthCompleted() !== $requireAuthCompleted
+        ) {
             if ($request->isJson()) {
                 $jsonResponse = new JsonResponse(__u('La sesión no se ha iniciado o ha caducado'));
                 $jsonResponse->setStatus(10);
@@ -69,6 +76,9 @@ trait ControllerTrait
                 Util::logout();
             } else {
                 try {
+                    // Analyzes if there is any direct route within the URL
+                    // then it computes the route HMAC to build a signed URI
+                    // which would be used during logging in
                     $route = $request->analyzeString('r');
                     $hash = $request->analyzeString('h');
 

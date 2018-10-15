@@ -25,12 +25,16 @@
 namespace SP\Plugin;
 
 use ReflectionClass;
+use SP\Bootstrap;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\PluginData;
 use SP\Repositories\NoSuchItemException;
+use SP\Services\Install\Installer;
 use SP\Services\Plugin\PluginService;
 
 /**
@@ -40,6 +44,10 @@ use SP\Services\Plugin\PluginService;
  */
 final class PluginManager
 {
+    /**
+     * @var array
+     */
+    private static $pluginsAvailable;
     /**
      * @var array Plugins habilitados
      */
@@ -77,6 +85,39 @@ final class PluginManager
         $this->pluginService = $pluginService;
         $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
+
+        self::$pluginsAvailable = self::getPlugins();
+    }
+
+    /**
+     * Devuelve la lista de Plugins disponibles em el directorio
+     *
+     * @return array
+     */
+    public static function getPlugins()
+    {
+        $dir = dir(PLUGINS_PATH);
+        $plugins = [];
+
+        if ($dir) {
+            while (false !== ($entry = $dir->read())) {
+                $pluginDir = PLUGINS_PATH . DIRECTORY_SEPARATOR . $entry;
+                $pluginFile = $pluginDir . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Plugin.php';
+
+                if (strpos($entry, '.') === false
+                    && is_dir($pluginDir)
+                    && file_exists($pluginFile)
+                ) {
+                    logger(sprintf('Plugin found: %s', $pluginDir));
+
+                    $plugins[$entry] = require $pluginDir . DIRECTORY_SEPARATOR . 'base.php';
+                }
+            }
+
+            $dir->close();
+        }
+
+        return $plugins;
     }
 
     /**
@@ -88,33 +129,198 @@ final class PluginManager
      */
     public function getPluginInfo($name)
     {
-        $name = ucfirst($name);
+        if (isset(self::$pluginsAvailable[$name])) {
+            return $this->loadPluginClass(
+                $name,
+                self::$pluginsAvailable[$name]['namespace']
+            );
+        }
 
-        $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
+        return null;
+    }
+
+    /**
+     * Cargar un plugin
+     *
+     * @param string $name Nombre del plugin
+     * @param string $namespace
+     *
+     * @return PluginInterface
+     */
+    public function loadPluginClass(string $name, string $namespace)
+    {
+        $name = ucfirst($name);
 
         if (isset($this->loadedPlugins[$name])) {
             return $this->loadedPlugins[$name];
         }
 
         try {
-            $reflectionClass = new \ReflectionClass($pluginClass);
+            $class = $namespace . 'Plugin';
+            $reflectionClass = new ReflectionClass($class);
 
-            /** @var PluginBase $plugin */
-            $plugin = $reflectionClass->newInstance();
+            /** @var PluginInterface $plugin */
+            $plugin = $reflectionClass->newInstance(Bootstrap::getContainer());
 
-            $this->loadedPlugins[$name] = $plugin;
+            // Do not load plugin's data if not compatible.
+            // Just return the plugin instance before disabling it
+            if (self::checkCompatibility($plugin) === false) {
+                $this->eventDispatcher->notifyEvent('plugin.load.error',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(sprintf(__('Versión de plugin no compatible (%s)'), implode('.', $plugin->getVersion()))))
+                );
 
-            return $plugin;
-        } catch (\ReflectionException $e) {
+                $this->disabledPlugins[] = $name;
+
+                return $plugin;
+            }
+
+            $pluginData = $this->pluginService->getByName($name);
+
+            if ($pluginData->getEnabled() === 1) {
+                $plugin->onLoadData($pluginData);
+
+                return $plugin;
+            } else {
+                $this->disabledPlugins[] = $name;
+            }
+        } catch (\Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception',
                 new Event($e, EventMessage::factory()
-                    ->addDescription(sprintf(__('No es posible cargar el plugin "%s"'), $name)))
+                    ->addDescription(sprintf(__('No es posible cargar el plugin "%s"'), $name))
+                    ->addDescription($e->getMessage())
+                    ->addDetail(__u('Plugin'), $name))
             );
         }
 
         return null;
+    }
+
+    /**
+     * @param PluginInterface $plugin
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function checkCompatibility(PluginInterface $plugin)
+    {
+        $pluginVersion = implode('.', $plugin->getCompatibleVersion());
+        $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
+
+        if (version_compare($pluginVersion, $appVersion) === -1) {
+            $this->pluginService->toggleEnabledByName($plugin->getName(), false);
+
+            $this->eventDispatcher->notifyEvent('edit.plugin.disable',
+                new Event($this, EventMessage::factory()
+                    ->addDetail(__u('Plugin deshabilitado'), $plugin->getName()))
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Loads the available and enabled plugins
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function loadPlugins()
+    {
+        $available = array_keys(self::$pluginsAvailable);
+        $processed = [];
+
+        // Process registered plugins in the database
+        foreach ($this->pluginService->getAll() as $plugin) {
+            $in = in_array($plugin->getName(), $available, true);
+
+            if ($in === true) {
+                if ($plugin->getEnabled() === 1) {
+                    $this->load($plugin->getName());
+                }
+
+                if ($plugin->getAvailable() === 0) {
+                    $this->pluginService->toggleAvailable($plugin->getId(), true);
+
+                    $this->eventDispatcher->notifyEvent('edit.plugin.available',
+                        new Event($this, EventMessage::factory()
+                            ->addDetail(__u('Plugin disponible'), $plugin->getName()))
+                    );
+
+                    $this->load($plugin->getName());
+                }
+            } else {
+                $this->pluginService->toggleAvailable($plugin->getId(), false);
+
+                $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__u('Plugin no disponible'), $plugin->getName()))
+                );
+            }
+
+            $processed[] = $plugin->getName();
+        }
+
+        // Search for available plugins and not registered in the database
+        foreach (array_diff($available, $processed) as $plugin) {
+            $this->registerPlugin($plugin);
+
+            $this->load($plugin);
+        }
+    }
+
+    /**
+     * @param string $pluginName
+     */
+    private function load(string $pluginName)
+    {
+        $plugin = $this->loadPluginClass(
+            $pluginName,
+            self::$pluginsAvailable[$pluginName]['namespace']
+        );
+
+        if ($plugin !== null) {
+            logger(sprintf('Plugin loaded: %s', $pluginName));
+
+            $this->eventDispatcher->notifyEvent('plugin.load',
+                new Event($this, EventMessage::factory()
+                    ->addDetail(__u('Plugin cargado'), $pluginName))
+            );
+
+            $this->loadedPlugins[$pluginName] = $plugin;
+
+            $this->eventDispatcher->attach($plugin);
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function registerPlugin(string $name)
+    {
+        $pluginData = new PluginData();
+        $pluginData->setName($name);
+        $pluginData->setEnabled(false);
+
+        $this->pluginService->create($pluginData);
+
+        $this->eventDispatcher->notifyEvent('create.plugin',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Nuevo Plugin'))
+                ->addDetail(__u('Nombre'), $name)
+            ));
+
+        $this->disabledPlugins[] = $name;
     }
 
     /**
@@ -127,6 +333,11 @@ final class PluginManager
         foreach ($this->getEnabledPlugins() as $plugin) {
             if (!in_array($plugin, $this->loadedPlugins)) {
                 $this->pluginService->toggleAvailableByName($plugin, false);
+
+                $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__u('Plugin deshabilitado'), $plugin->getName()))
+                );
             }
         }
     }
@@ -151,113 +362,6 @@ final class PluginManager
         }
 
         return $this->enabledPlugins;
-    }
-
-    /**
-     * Cargar los Plugins disponibles
-     */
-    public function loadPlugins()
-    {
-        $classLoader = new \SplClassLoader('Plugins', PLUGINS_PATH);
-        $classLoader->register();
-
-        foreach ($this->getPlugins() as $name) {
-            if (($plugin = $this->loadPlugin($name)) !== null) {
-                logger('Plugin loaded: ' . $name);
-
-                $this->eventDispatcher->attach($plugin);
-            }
-        }
-    }
-
-    /**
-     * Devuelve la lista de Plugins disponibles em el directorio
-     *
-     * @return array
-     */
-    public function getPlugins()
-    {
-        $pluginDirH = opendir(PLUGINS_PATH);
-        $plugins = [];
-
-        if ($pluginDirH) {
-            while (false !== ($entry = readdir($pluginDirH))) {
-                $pluginDir = PLUGINS_PATH . DIRECTORY_SEPARATOR . $entry;
-
-                if (strpos($entry, '.') === false
-                    && is_dir($pluginDir)
-                    && file_exists($pluginDir . DIRECTORY_SEPARATOR . $entry . 'Plugin.php')
-                ) {
-                    $plugins[] = $entry;
-                }
-            }
-
-            closedir($pluginDirH);
-        }
-
-        return $plugins;
-    }
-
-    /**
-     * Cargar un plugin
-     *
-     * @param string $name Nombre del plugin
-     *
-     * @return PluginInterface
-     */
-    public function loadPlugin($name)
-    {
-        $name = ucfirst($name);
-
-        if (isset($this->loadedPlugins[$name])) {
-            return $this->loadedPlugins[$name];
-        }
-
-        try {
-            $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
-
-            $reflectionClass = new ReflectionClass($pluginClass);
-
-            /** @var PluginInterface $plugin */
-            $plugin = $reflectionClass->newInstance();
-
-            try {
-                $pluginData = $this->pluginService->getByName($plugin);
-
-                if ($pluginData->getEnabled() === 1) {
-                    if (!empty($pluginData->getData())) {
-                        $pluginData->setData(unserialize($pluginData->getData()));
-                    }
-
-                    return $plugin;
-                } else {
-                    $this->disabledPlugins[] = $name;
-                }
-            } catch (NoSuchItemException $noSuchItemException) {
-                $pluginData = new PluginData();
-                $pluginData->setName($name);
-                $pluginData->setEnabled(0);
-
-                $this->pluginService->create($pluginData);
-
-                $this->eventDispatcher->notifyEvent('create.plugin',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Nuevo Plugin'))
-                        ->addDetail(__u('Nombre'), $name)
-                    ));
-
-                $this->disabledPlugins[] = $name;
-            }
-        } catch (\Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent('exception',
-                new Event($e, EventMessage::factory()
-                    ->addDescription(sprintf(__('No es posible cargar el plugin "%s"'), $name)))
-            );
-        }
-
-        return null;
     }
 
     /**

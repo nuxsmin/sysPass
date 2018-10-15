@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use SP\Core\AppInfoInterface;
 use SP\Core\Exceptions\CheckException;
 use SP\Http\JsonResponse;
@@ -47,7 +47,6 @@ final class StatusController extends SimpleControllerBase
      * @return bool
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkReleaseAction()
     {
@@ -92,7 +91,7 @@ final class StatusController extends SimpleControllerBase
             }
 
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Versión no disponible'));
-        } catch (ClientException $e) {
+        } catch (GuzzleException $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);
@@ -107,7 +106,6 @@ final class StatusController extends SimpleControllerBase
      * @return bool
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function checkNoticesAction()
     {
@@ -140,7 +138,7 @@ final class StatusController extends SimpleControllerBase
             }
 
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Notificaciones no disponibles'));
-        } catch (ClientException $e) {
+        } catch (GuzzleException $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);

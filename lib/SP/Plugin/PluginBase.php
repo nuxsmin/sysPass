@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,6 +23,9 @@
  */
 
 namespace SP\Plugin;
+
+use Psr\Container\ContainerInterface;
+use SP\Services\Plugin\PluginService;
 
 /**
  * Class PluginBase
@@ -51,13 +54,20 @@ abstract class PluginBase implements PluginInterface
      * @var int
      */
     protected $enabled;
+    /**
+     * @var PluginService
+     */
+    private $pluginService;
 
     /**
      * PluginBase constructor.
+     *
+     * @param ContainerInterface $dic
      */
-    public final function __construct()
+    public final function __construct(ContainerInterface $dic)
     {
-        $this->init();
+        $this->pluginService = $dic->get(PluginService::class);
+        $this->init($dic);
     }
 
     /**
@@ -79,14 +89,6 @@ abstract class PluginBase implements PluginInterface
     /**
      * @return string
      */
-    public function getBase()
-    {
-        return $this->base;
-    }
-
-    /**
-     * @return string
-     */
     public function getThemeDir()
     {
         return $this->themeDir;
@@ -98,14 +100,6 @@ abstract class PluginBase implements PluginInterface
     public function getData()
     {
         return $this->data;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
     }
 
     /**
@@ -125,6 +119,19 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
+     */
+    final public function saveData()
+    {
+        $pluginData = $this->pluginService->getByName($this->getName());
+        $pluginData->setData(serialize($this->data));
+
+        return $this->pluginService->update($pluginData);
+    }
+
+    /**
      * Establecer las locales del plugin
      */
     protected function setLocales()
@@ -134,5 +141,13 @@ abstract class PluginBase implements PluginInterface
 
         bindtextdomain($name, $locales);
         bind_textdomain_codeset($name, 'UTF-8');
+    }
+
+    /**
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this->base;
     }
 }

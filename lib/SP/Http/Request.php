@@ -374,8 +374,11 @@ final class Request
     public function verifySignature(string $key, string $param = null)
     {
         $result = false;
+        $hash = $this->params->get('h');
 
-        if (($hash = $this->params->get('h')) !== null) {
+        if ($hash !== null) {
+            // Strips out the hash param from the URI to get the
+            // route which will be checked against the computed HMAC
             if ($param === null) {
                 $uri = str_replace('&h=' . $hash, '', $this->request->uri());
                 $uri = substr($uri, strpos($uri, '?') + 1);

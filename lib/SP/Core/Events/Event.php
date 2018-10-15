@@ -25,6 +25,7 @@
 namespace SP\Core\Events;
 
 use InvalidArgumentException;
+use SP\Core\Exceptions\InvalidClassException;
 
 /**
  * Class Event
@@ -61,10 +62,24 @@ final class Event
     }
 
     /**
+     * @param null $type
+     *
      * @return object
+     * @throws InvalidClassException
      */
-    public function getSource()
+    public function getSource($type = null)
     {
+        if ($type !== null
+            && ($source = get_class($this->source)) !== $type
+            && !is_subclass_of($this->source, $type)
+        ) {
+            throw new InvalidClassException(
+                'Source type mismatch',
+                InvalidClassException::ERROR,
+                sprintf('Source: %s - Expected: %s', $source, $type)
+            );
+        }
+
         return $this->source;
     }
 

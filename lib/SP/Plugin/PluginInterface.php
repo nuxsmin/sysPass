@@ -24,6 +24,8 @@
 
 namespace SP\Plugin;
 
+use SP\DataModel\PluginData;
+
 /**
  * Interface PluginInterface
  *
@@ -86,9 +88,9 @@ interface PluginInterface extends PluginEventReceiver
     public function getData();
 
     /**
-     * @param mixed $data
+     * @param PluginData $pluginData
      */
-    public function setData($data);
+    public function onLoadData(PluginData $pluginData);
 
     /**
      * @return int

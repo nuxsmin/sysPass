@@ -188,4 +188,21 @@ interface ContextInterface
      * @param string $password
      */
     public function setTemporaryMasterPass(string $password);
+
+    /**
+     * @param string $pluginName
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public function setPluginKey(string $pluginName, string $key, $value);
+
+    /**
+     * @param string $pluginName
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getPluginKey(string $pluginName, string $key);
 }

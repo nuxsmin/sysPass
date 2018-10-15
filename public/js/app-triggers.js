@@ -113,8 +113,8 @@ sysPass.Triggers = function (log) {
 
         const plugin = $obj.data("plugin");
 
-        if (plugin !== undefined && sysPassApp.plugins.plugin !== undefined) {
-            actions = sysPassApp.plugins.plugin;
+        if (plugin !== undefined && sysPassApp.plugins[plugin] !== undefined) {
+            actions = sysPassApp.plugins[plugin];
         } else {
             actions = sysPassApp.actions;
         }
@@ -145,8 +145,8 @@ sysPass.Triggers = function (log) {
         const plugin = $obj.data("plugin");
         let actions;
 
-        if (plugin !== undefined && sysPassApp.plugins.plugin !== undefined) {
-            actions = sysPassApp.plugins.plugin;
+        if (plugin !== undefined && sysPassApp.plugins[plugin] !== undefined) {
+            actions = sysPassApp.plugins[plugin];
         } else {
             actions = sysPassApp.actions;
         }

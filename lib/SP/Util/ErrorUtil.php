@@ -54,36 +54,22 @@ final class ErrorUtil
      * @param \SP\Mvc\View\Template $view
      * @param \Exception            $e
      * @param  string               $replace Template replacement
+     * @param bool                  $render
      */
-    public static function showExceptionInView(Template $view, \Exception $e, $replace = null)
-    {
-        switch (get_class($e)) {
-            case UpdatedMasterPassException::class:
-                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $replace);
-                break;
-            case UnauthorizedPageException::class:
-                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $replace);
-                break;
-            case AccountPermissionException::class:
-                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $replace);
-                break;
-            default;
-                self::showErrorInView($view, self::ERR_EXCEPTION, $replace);
-        }
-    }
-
-    /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param \SP\Mvc\View\Template $view
-     * @param int                   $type    int con el tipo de error
-     * @param  string               $replace Template replacement
-     */
-    public static function showErrorInView(Template $view, $type, $replace = null)
+    public static function showExceptionInView(Template $view,
+                                               \Exception $e,
+                                               $replace = null,
+                                               $render = true)
     {
         if ($replace === null) {
             $view->resetTemplates();
-            $view->resetContentTemplates();
+
+            if ($view->hashContentTemplates()) {
+                $view->resetContentTemplates();
+                $view->addContentTemplate('error', Template::PARTIALS_DIR);
+            } else {
+                $view->addTemplate('error', Template::PARTIALS_DIR);
+            }
         } else {
             if ($view->hashContentTemplates()) {
                 $view->removeContentTemplate($replace);
@@ -94,6 +80,30 @@ final class ErrorUtil
             }
         }
 
+        switch (get_class($e)) {
+            case UpdatedMasterPassException::class:
+                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render);
+                break;
+            case UnauthorizedPageException::class:
+                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $render);
+                break;
+            case AccountPermissionException::class:
+                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $render);
+                break;
+            default;
+                self::showErrorInView($view, self::ERR_EXCEPTION, $render);
+        }
+    }
+
+    /**
+     * Establecer la plantilla de error con el código indicado.
+     *
+     * @param \SP\Mvc\View\Template $view
+     * @param int                   $type int con el tipo de error
+     * @param bool                  $render
+     */
+    public static function showErrorInView(Template $view, $type, $render = true)
+    {
         $error = self::getErrorTypes($type);
 
         $view->append('errors',
@@ -103,15 +113,15 @@ final class ErrorUtil
                 'hint' => $error['hint']
             ]);
 
-        try {
-            echo $view->render();
-        } catch (FileNotFoundException $e) {
-            processException($e);
+        if ($render) {
+            try {
+                echo $view->render();
+            } catch (FileNotFoundException $e) {
+                processException($e);
 
-            echo $e->getMessage();
+                echo $e->getMessage();
+            }
         }
-
-        die();
     }
 
     /**

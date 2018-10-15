@@ -126,6 +126,8 @@ final class ResourceController extends SimpleControllerBase
 
     /**
      * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function initialize()
     {

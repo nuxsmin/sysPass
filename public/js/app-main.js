@@ -31,8 +31,8 @@ sysPass.Main = function () {
         log.info("checkPluginUpdates");
 
         for (const plugin in oPublic.plugins) {
-            if (typeof oPublic.plugins.plugin.checkVersion === "function") {
-                oPublic.plugins.plugin.checkVersion().then(function (json) {
+            if (typeof oPublic.plugins[plugin].checkVersion === "function") {
+                oPublic.plugins[plugin].checkVersion().then(function (json) {
                     if (json.status === 0 && json.data.plugin !== undefined) {
                         msg.info(String.format(oPublic.config.LANG[67], json.data.plugin, json.data.remoteVersion));
                     }
@@ -52,10 +52,12 @@ sysPass.Main = function () {
         for (let i = 0; i < oPublic.config.PLUGINS.length; i++) {
             const plugin = oPublic.config.PLUGINS[i];
 
-            if (typeof sysPass.Plugin[plugin] === "function") {
-                plugins.plugin = sysPass.Plugin[plugin]();
+            if (typeof sysPass.Plugins[plugin] === "function") {
+                plugins[plugin] = sysPass.Plugins[plugin](oPublic);
             }
         }
+
+        log.info(plugins);
 
         return plugins;
     };

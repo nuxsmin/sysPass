@@ -26,17 +26,20 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Language;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
+use SP\Mvc\Controller\ExtensibleTabControllerInterface;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Mvc\View\Template;
 
 /**
  * Class UserSettingsManagerController
  *
  * @package web\Controllers
  */
-final class UserSettingsManagerController extends ControllerBase
+final class UserSettingsManagerController extends ControllerBase implements ExtensibleTabControllerInterface
 {
     /**
      * @var TabsHelper
@@ -87,6 +90,38 @@ final class UserSettingsManagerController extends ControllerBase
         $template->assign('route', 'userSettingsGeneral/save');
 
         return new DataTab(__('Preferencias'), $template);
+    }
+
+    /**
+     * @param DataTab $tab
+     */
+    public function addTab(DataTab $tab)
+    {
+        $this->tabsHelper->addTab($tab);
+    }
+
+    /**
+     * @return Template
+     */
+    public function getView(): Template
+    {
+        return $this->view;
+    }
+
+    /**
+     * @return void
+     */
+    public function displayView()
+    {
+        $this->view();
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
     }
 
     /**

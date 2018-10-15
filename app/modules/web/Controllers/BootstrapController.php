@@ -43,6 +43,10 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * Returns environment data
+     *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function getEnvironmentAction()
     {
@@ -103,6 +107,8 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     private function getAuthBasicAutologinEnabled()
     {
@@ -112,6 +118,8 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return string
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     private function getPublicKey()
     {

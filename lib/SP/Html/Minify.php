@@ -220,7 +220,7 @@ final class Minify
                 $this->addFile($filename, $minify);
             }
         } else {
-            throw new \RuntimeException('Invalid string format');
+            $this->addFile($files, $minify);
         }
 
         return $this;

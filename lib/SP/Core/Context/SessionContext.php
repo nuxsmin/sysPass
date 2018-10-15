@@ -39,7 +39,7 @@ use SP\Services\User\UserLoginResponse;
 final class SessionContext extends ContextBase
 {
     const MAX_SID_TIME = 120;
-    
+
     private static $isReset = false;
     private static $isLocked = false;
 
@@ -548,5 +548,40 @@ final class SessionContext extends ContextBase
         }
 
         $this->setContextReference($_SESSION);
+    }
+
+    /**
+     * @param string $ctxKeyName
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public function setPluginKey(string $ctxKeyName, string $key, $value)
+    {
+        /** @var ContextCollection $ctxKey */
+        $ctxKey = $this->getContextKey($ctxKeyName, new ContextCollection());
+
+        $this->setContextKey($ctxKeyName, $ctxKey->set($key, $value));
+
+        return $value;
+    }
+
+    /**
+     * @param string $ctxKeyName
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getPluginKey(string $ctxKeyName, string $key)
+    {
+        /** @var ContextCollection $ctxKey */
+        $ctxKey = $this->getContextKey($ctxKeyName);
+
+        if ($ctxKey !== null) {
+            return $ctxKey->get($key);
+        }
+
+        return null;
     }
 }

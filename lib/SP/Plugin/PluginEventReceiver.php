@@ -24,6 +24,7 @@
 
 namespace SP\Plugin;
 
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SplObserver;
 
@@ -36,8 +37,10 @@ interface PluginEventReceiver extends SplObserver
 {
     /**
      * Inicialización del observador
+     *
+     * @param ContainerInterface $dic
      */
-    public function init();
+    public function init(ContainerInterface $dic);
 
     /**
      * Evento de actualización
