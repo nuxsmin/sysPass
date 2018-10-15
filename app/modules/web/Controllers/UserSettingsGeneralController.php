@@ -60,6 +60,7 @@ final class UserSettingsGeneralController extends SimpleControllerBase
         $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
         $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
         $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
+        $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
 
         try {
             $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);

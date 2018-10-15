@@ -179,11 +179,11 @@ final class PluginManager
 
             if ($pluginData->getEnabled() === 1) {
                 $plugin->onLoadData($pluginData);
-
-                return $plugin;
             } else {
                 $this->disabledPlugins[] = $name;
             }
+
+            return $plugin;
         } catch (\Exception $e) {
             processException($e);
 

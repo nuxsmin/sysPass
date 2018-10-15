@@ -31,17 +31,12 @@
                        data-route="notification/index"
                        data-historyreset="1"
                        data-view="notifications">
-                        <i class="material-icons mdl-badge mdl-badge--overlap"
-                           data-badge="<?php echo $notifications; ?>">notifications</i>
+                        <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
+                           data-badge="0" data-color-class="mdl-color-text--amber-200">notifications</i>
                     </a>
 
-                    <span for="notifications" class="mdl-tooltip mdl-tooltip--bottom">
-                            <?php if ($notifications > 0): ?>
-                                <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
-                            <?php else: ?>
-                                <?php echo __('No hay no hay notificaciones pendientes'); ?>
-                            <?php endif; ?>
-                        </span>
+                    <span for="notifications" class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
+                    </span>
 
                     <!-- User's menu -->
                     <!-- Right aligned menu below button -->
@@ -100,17 +95,12 @@
                    data-route="notification/index"
                    data-historyreset="1"
                    data-view="notifications">
-                    <i class="material-icons mdl-badge mdl-badge--overlap"
-                       data-badge="<?php echo $notifications; ?>">notifications</i>
+                    <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
+                       data-badge="0" data-color-class="mdl-color-text--amber-200">notifications</i>
                     <?php echo __('Notificaciones'); ?>
                 </a>
 
-                <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom">
-                    <?php if ($notifications > 0): ?>
-                        <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
-                    <?php else: ?>
-                        <?php echo __('No hay no hay notificaciones pendientes'); ?>
-                    <?php endif; ?>
+                <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
                 </span>
 
                 <span class="mdl-menu__item--full-bleed-divider"></span>

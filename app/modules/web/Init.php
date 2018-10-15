@@ -62,6 +62,10 @@ final class Init extends ModuleBase
      * like: install/database checks, session/event handlers initialization
      */
     const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status', 'upgrade', 'error'];
+    /**
+     * List of controllers that don't need to update the user's session activity
+     */
+    const NO_SESSION_ACTIVITY = ['items'];
 
     /**
      * @var SessionContext
@@ -195,16 +199,23 @@ final class Init extends ModuleBase
             // Initialize event handlers
             $this->initEventHandlers();
 
-            // Initialize user session context
-            $this->initUserSession();
+            if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
+                // Initialize user session context
+                $this->initUserSession();
+            }
 
             // Load plugins
             $this->pluginManager->loadPlugins();
 
-            if ($this->context->isLoggedIn() && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
+            if ($this->context->isLoggedIn()
+                && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED
+            ) {
                 logger('Reload user profile');
                 // Recargar los permisos del perfil de usuario
-                $this->context->setUserProfile($this->container->get(UserProfileService::class)->getById($this->context->getUserData()->getUserProfileId())->getProfile());
+                $this->context->setUserProfile(
+                    $this->container->get(UserProfileService::class)
+                        ->getById($this->context->getUserData()
+                            ->getUserProfileId())->getProfile());
             }
 
             return;

@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
@@ -32,6 +33,7 @@ use SP\Http\JsonResponse;
  * Trait JsonTrait
  *
  * @package SP\Modules\Web\Controllers\Traits
+ * @property SessionContext $session
  */
 trait JsonTrait
 {
@@ -49,6 +51,10 @@ trait JsonTrait
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($description);
+
+        if (property_exists($this, 'session')) {
+            $jsonResponse->setCsrf($this->session->getSecurityKey());
+        }
 
         if (null !== $messages) {
             $jsonResponse->setMessages($messages);
@@ -72,6 +78,10 @@ trait JsonTrait
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
+
+        if (property_exists($this, 'session')) {
+            $jsonResponse->setCsrf($this->session->getSecurityKey());
+        }
 
         if (null !== $description) {
             $jsonResponse->setDescription($description);

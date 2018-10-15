@@ -55,7 +55,8 @@ sysPass.Config = function () {
         AUTH: {
             LOGGEDIN: false,
             AUTHBASIC_AUTOLOGIN: false
-        }
+        },
+        SESSION_TIMEOUT: 0
     };
 
     return {
@@ -64,6 +65,9 @@ sysPass.Config = function () {
         },
         setLang: function (lang) {
             config.LANG = lang;
+        },
+        setSessionTimeout: function (timeout) {
+            config.SESSION_TIMEOUT = parseInt(timeout);
         },
         setPkiKey: function (key) {
             if (key.length > 0) {

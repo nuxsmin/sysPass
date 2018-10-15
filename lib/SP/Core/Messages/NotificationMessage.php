@@ -38,13 +38,23 @@ final class NotificationMessage extends MessageBase
      */
     public function composeHtml()
     {
-        $message[] = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
-        $message[] = '<h3>' . $this->title . '</h3>';
-        $message[] = '<div class="notice-description">' . implode('<br>', $this->description) . '</div>';
-        $message[] = '<footer>' . implode('<br>', $this->footer) . '</footer>';
-        $message[] = '</div>';
+        $message = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
 
-        return implode('', $message);
+        if ($this->title) {
+            $message .= '<h3>' . $this->title . '</h3>';
+        }
+
+        if (!empty($this->description)) {
+            $message .= '<div class="notice-description">' . implode('<br>', $this->description) . '</div>';
+        }
+
+        if (!empty($this->footer)) {
+            $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
+        }
+
+        $message .= '</div>';
+
+        return $message;
     }
 
     /**
@@ -56,6 +66,20 @@ final class NotificationMessage extends MessageBase
      */
     public function composeText($delimiter = PHP_EOL)
     {
-        return $this->title . $delimiter . implode($delimiter, $this->description) . $delimiter . implode($delimiter, $this->footer);
+        $parts = [];
+
+        if ($this->title) {
+            $parts[] = $this->title;
+        }
+
+        if (!empty($this->description)) {
+            $parts[] = implode($delimiter, $this->description);
+        }
+
+        if (!empty($this->footer)) {
+            $parts[] = implode($delimiter, $this->footer);
+        }
+
+        return implode($delimiter, $parts);
     }
 }

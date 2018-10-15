@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-15 02:52+0200\n"
-"PO-Revision-Date: 2018-10-15 02:55+0200\n"
+"POT-Creation-Date: 2018-10-16 01:09+0200\n"
+"PO-Revision-Date: 2018-10-16 01:09+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_GB\n"
@@ -192,14 +192,14 @@ msgstr "Action not found"
 #: ../../../modules/web/Controllers/ItemPresetController.php:256
 #: ../../../modules/web/Controllers/ItemPresetController.php:295
 #: ../../../modules/web/Controllers/ItemPresetController.php:334
-#: ../../../modules/web/Controllers/NotificationController.php:100
-#: ../../../modules/web/Controllers/NotificationController.php:160
-#: ../../../modules/web/Controllers/NotificationController.php:175
-#: ../../../modules/web/Controllers/NotificationController.php:206
-#: ../../../modules/web/Controllers/NotificationController.php:237
-#: ../../../modules/web/Controllers/NotificationController.php:288
-#: ../../../modules/web/Controllers/NotificationController.php:315
-#: ../../../modules/web/Controllers/NotificationController.php:348
+#: ../../../modules/web/Controllers/NotificationController.php:102
+#: ../../../modules/web/Controllers/NotificationController.php:164
+#: ../../../modules/web/Controllers/NotificationController.php:179
+#: ../../../modules/web/Controllers/NotificationController.php:210
+#: ../../../modules/web/Controllers/NotificationController.php:241
+#: ../../../modules/web/Controllers/NotificationController.php:292
+#: ../../../modules/web/Controllers/NotificationController.php:319
+#: ../../../modules/web/Controllers/NotificationController.php:352
 #: ../../../modules/web/Controllers/PluginController.php:103
 #: ../../../modules/web/Controllers/PluginController.php:122
 #: ../../../modules/web/Controllers/PublicLinkController.php:71
@@ -320,12 +320,12 @@ msgstr "Invalid icons class"
 
 #: ../../../../lib/SP/DataModel/PublicLinkListData.php:88
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapConnection.php:190
-#: ../../../modules/web/Controllers/AccountController.php:226
+#: ../../../modules/web/Controllers/AccountController.php:228
 msgid "ON"
 msgstr "ON"
 
 #: ../../../../lib/SP/DataModel/PublicLinkListData.php:88
-#: ../../../modules/web/Controllers/AccountController.php:226
+#: ../../../modules/web/Controllers/AccountController.php:228
 msgid "OFF"
 msgstr "OFF"
 
@@ -356,7 +356,8 @@ msgstr "Invalid XML-RPC response"
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session not started or timed out"
 
-#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:124
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:119
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:128
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
@@ -532,7 +533,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:118
 #: ../../../modules/web/Controllers/UserGroupController.php:231
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:137
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:127
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:269
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:272
@@ -622,7 +623,7 @@ msgid "No es posible inicializar"
 msgstr "Unable to initialize"
 
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:124
-#: ../../../modules/web/Controllers/AccountController.php:925
+#: ../../../modules/web/Controllers/AccountController.php:927
 msgid "Solicitud"
 msgstr "Request"
 
@@ -640,8 +641,8 @@ msgid "Cuentas"
 msgstr "Accounts"
 
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:155
-#: ../../../modules/web/Controllers/NotificationController.php:267
-#: ../../../modules/web/Controllers/NotificationController.php:298
+#: ../../../modules/web/Controllers/NotificationController.php:271
+#: ../../../modules/web/Controllers/NotificationController.php:302
 msgid "Notificación"
 msgstr "Notification"
 
@@ -1534,13 +1535,13 @@ msgstr "Account imported"
 #: ../../../modules/api/Controllers/AccountController.php:190
 #: ../../../modules/api/Controllers/AccountController.php:241
 #: ../../../modules/api/Controllers/AccountController.php:316
-#: ../../../modules/web/Controllers/AccountController.php:224
-#: ../../../modules/web/Controllers/AccountController.php:719
-#: ../../../modules/web/Controllers/AccountController.php:764
-#: ../../../modules/web/Controllers/AccountController.php:805
-#: ../../../modules/web/Controllers/AccountController.php:844
-#: ../../../modules/web/Controllers/AccountController.php:894
-#: ../../../modules/web/Controllers/AccountController.php:928
+#: ../../../modules/web/Controllers/AccountController.php:226
+#: ../../../modules/web/Controllers/AccountController.php:721
+#: ../../../modules/web/Controllers/AccountController.php:766
+#: ../../../modules/web/Controllers/AccountController.php:807
+#: ../../../modules/web/Controllers/AccountController.php:846
+#: ../../../modules/web/Controllers/AccountController.php:896
+#: ../../../modules/web/Controllers/AccountController.php:930
 #: ../../../modules/web/Controllers/AccountFileController.php:234
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:112
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:147
@@ -2332,15 +2333,15 @@ msgid "Cuenta visualizada"
 msgstr "Account displayed"
 
 #: ../../../modules/api/Controllers/AccountController.php:102
-#: ../../../modules/web/Controllers/AccountController.php:553
-#: ../../../modules/web/Controllers/AccountController.php:609
+#: ../../../modules/web/Controllers/AccountController.php:555
+#: ../../../modules/web/Controllers/AccountController.php:611
 msgid "Clave visualizada"
 msgstr "Password viewed"
 
 #: ../../../modules/api/Controllers/AccountController.php:138
 #: ../../../modules/api/Controllers/AccountController.php:144
-#: ../../../modules/web/Controllers/AccountController.php:803
-#: ../../../modules/web/Controllers/AccountController.php:814
+#: ../../../modules/web/Controllers/AccountController.php:805
+#: ../../../modules/web/Controllers/AccountController.php:816
 #: ../../../modules/web/Controllers/UserController.php:411
 #: ../../../modules/web/Controllers/UserController.php:415
 #: ../../../modules/web/Controllers/UserPassResetController.php:189
@@ -2350,22 +2351,22 @@ msgstr "Password updated"
 
 #: ../../../modules/api/Controllers/AccountController.php:188
 #: ../../../modules/api/Controllers/AccountController.php:194
-#: ../../../modules/web/Controllers/AccountController.php:717
-#: ../../../modules/web/Controllers/AccountController.php:728
+#: ../../../modules/web/Controllers/AccountController.php:719
+#: ../../../modules/web/Controllers/AccountController.php:730
 msgid "Cuenta creada"
 msgstr "Account added"
 
 #: ../../../modules/api/Controllers/AccountController.php:239
 #: ../../../modules/api/Controllers/AccountController.php:245
-#: ../../../modules/web/Controllers/AccountController.php:762
-#: ../../../modules/web/Controllers/AccountController.php:773
+#: ../../../modules/web/Controllers/AccountController.php:764
+#: ../../../modules/web/Controllers/AccountController.php:775
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
 #: ../../../modules/api/Controllers/AccountController.php:314
 #: ../../../modules/api/Controllers/AccountController.php:320
-#: ../../../modules/web/Controllers/AccountController.php:892
-#: ../../../modules/web/Controllers/AccountController.php:897
+#: ../../../modules/web/Controllers/AccountController.php:894
+#: ../../../modules/web/Controllers/AccountController.php:899
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:110
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:115
 #: ../../../modules/web/Controllers/AccountManagerController.php:145
@@ -2737,9 +2738,9 @@ msgstr "Group deleted"
 msgid "Es necesario actualizar"
 msgstr "Updating needed"
 
-#: ../../../modules/web/Controllers/AccountController.php:148
-#: ../../../modules/web/Controllers/AccountController.php:203
-#: ../../../modules/web/Controllers/AccountController.php:473
+#: ../../../modules/web/Controllers/AccountController.php:150
+#: ../../../modules/web/Controllers/AccountController.php:205
+#: ../../../modules/web/Controllers/AccountController.php:475
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:159
@@ -2749,21 +2750,21 @@ msgstr "Updating needed"
 msgid "Detalles de Cuenta"
 msgstr "Account Details"
 
-#: ../../../modules/web/Controllers/AccountController.php:222
+#: ../../../modules/web/Controllers/AccountController.php:224
 msgid "Enlace visualizado"
 msgstr "Link viewed"
 
-#: ../../../modules/web/Controllers/AccountController.php:223
-#: ../../../modules/web/Controllers/AccountController.php:554
-#: ../../../modules/web/Controllers/AccountController.php:610
-#: ../../../modules/web/Controllers/AccountController.php:649
-#: ../../../modules/web/Controllers/AccountController.php:683
-#: ../../../modules/web/Controllers/AccountController.php:718
-#: ../../../modules/web/Controllers/AccountController.php:763
-#: ../../../modules/web/Controllers/AccountController.php:804
-#: ../../../modules/web/Controllers/AccountController.php:843
-#: ../../../modules/web/Controllers/AccountController.php:893
-#: ../../../modules/web/Controllers/AccountController.php:927
+#: ../../../modules/web/Controllers/AccountController.php:225
+#: ../../../modules/web/Controllers/AccountController.php:556
+#: ../../../modules/web/Controllers/AccountController.php:612
+#: ../../../modules/web/Controllers/AccountController.php:651
+#: ../../../modules/web/Controllers/AccountController.php:685
+#: ../../../modules/web/Controllers/AccountController.php:720
+#: ../../../modules/web/Controllers/AccountController.php:765
+#: ../../../modules/web/Controllers/AccountController.php:806
+#: ../../../modules/web/Controllers/AccountController.php:845
+#: ../../../modules/web/Controllers/AccountController.php:895
+#: ../../../modules/web/Controllers/AccountController.php:929
 #: ../../../modules/web/Controllers/AccountFileController.php:233
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:111
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:146
@@ -2777,24 +2778,24 @@ msgstr "Link viewed"
 msgid "Cuenta"
 msgstr "Account"
 
-#: ../../../modules/web/Controllers/AccountController.php:225
+#: ../../../modules/web/Controllers/AccountController.php:227
 msgid "Agente"
 msgstr "Agent"
 
-#: ../../../modules/web/Controllers/AccountController.php:226
+#: ../../../modules/web/Controllers/AccountController.php:228
 msgid "HTTPS"
 msgstr "HTTPS"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:255
-#: ../../../modules/web/Controllers/AccountController.php:299
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:280
+#: ../../../modules/web/Controllers/AccountController.php:257
+#: ../../../modules/web/Controllers/AccountController.php:301
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:279
 #: ../../../config/actions.xml:157
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:343
+#: ../../../modules/web/Controllers/AccountController.php:345
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:18
@@ -2803,7 +2804,7 @@ msgid "Editar Cuenta"
 msgstr "Edit Account"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/AccountController.php:388
+#: ../../../modules/web/Controllers/AccountController.php:390
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:176
@@ -2815,26 +2816,26 @@ msgstr "Edit Account"
 msgid "Eliminar Cuenta"
 msgstr "Remove Account"
 
-#: ../../../modules/web/Controllers/AccountController.php:431
+#: ../../../modules/web/Controllers/AccountController.php:433
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 msgid "Modificar Clave de Cuenta"
 msgstr "Edit Account Password"
 
-#: ../../../modules/web/Controllers/AccountController.php:648
-#: ../../../modules/web/Controllers/AccountController.php:682
+#: ../../../modules/web/Controllers/AccountController.php:650
+#: ../../../modules/web/Controllers/AccountController.php:684
 msgid "Clave copiada"
 msgstr "Password copied"
 
-#: ../../../modules/web/Controllers/AccountController.php:842
-#: ../../../modules/web/Controllers/AccountController.php:853
+#: ../../../modules/web/Controllers/AccountController.php:844
+#: ../../../modules/web/Controllers/AccountController.php:855
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:145
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:150
 msgid "Cuenta restaurada"
 msgstr "Account restored"
 
-#: ../../../modules/web/Controllers/AccountController.php:878
-#: ../../../modules/web/Controllers/AccountController.php:881
+#: ../../../modules/web/Controllers/AccountController.php:880
+#: ../../../modules/web/Controllers/AccountController.php:883
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:99
 #: ../../../modules/web/Controllers/AccountHistoryManagerController.php:102
 #: ../../../modules/web/Controllers/AccountManagerController.php:131
@@ -2842,16 +2843,16 @@ msgstr "Account restored"
 msgid "Cuentas eliminadas"
 msgstr "Accounts removed"
 
-#: ../../../modules/web/Controllers/AccountController.php:918
-#: ../../../modules/web/Forms/NotificationForm.php:100
+#: ../../../modules/web/Controllers/AccountController.php:920
+#: ../../../modules/web/Forms/NotificationForm.php:106
 msgid "Es necesaria una descripción"
 msgstr "A description is needed"
 
-#: ../../../modules/web/Controllers/AccountController.php:926
+#: ../../../modules/web/Controllers/AccountController.php:928
 msgid "Solicitante"
 msgstr "Requester"
 
-#: ../../../modules/web/Controllers/AccountController.php:929
+#: ../../../modules/web/Controllers/AccountController.php:931
 #: ../../../modules/web/Controllers/Helpers/Grid/CategoryGrid.php:106
 #: ../../../modules/web/Controllers/Helpers/Grid/ClientGrid.php:105
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -2865,7 +2866,7 @@ msgstr "Requester"
 msgid "Descripción"
 msgstr "Description"
 
-#: ../../../modules/web/Controllers/AccountController.php:942
+#: ../../../modules/web/Controllers/AccountController.php:944
 msgid "Solicitud realizada"
 msgstr "Request done"
 
@@ -3453,7 +3454,7 @@ msgstr "View Current"
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:437
 #: ../../../modules/web/themes/material-blue/views/config/mail.inc:206
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:291
-#: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:167
+#: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:184
 msgid "Atrás"
 msgstr "Back"
 
@@ -3914,7 +3915,7 @@ msgstr "Delete Value"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:108
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:65
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:105
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:100
 #: ../../../modules/web/themes/material-blue/views/notification/index.inc:1
 #: ../../../config/actions.xml:679
 msgid "Notificaciones"
@@ -3944,14 +3945,14 @@ msgstr "Search for Notification"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:178
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:179
-#: ../../../modules/web/Controllers/NotificationController.php:179
+#: ../../../modules/web/Controllers/NotificationController.php:183
 msgid "Nueva Notificación"
 msgstr "New Notification"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:196
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:197
-#: ../../../modules/web/Controllers/NotificationController.php:103
+#: ../../../modules/web/Controllers/NotificationController.php:105
 #: ../../../config/actions.xml:811
 msgid "Ver Notificación"
 msgstr "View Notification"
@@ -3966,7 +3967,7 @@ msgstr "Checkout Notification"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:244
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:245
-#: ../../../modules/web/Controllers/NotificationController.php:210
+#: ../../../modules/web/Controllers/NotificationController.php:214
 #: ../../../config/actions.xml:823
 msgid "Editar Notificación"
 msgstr "Edit Notification"
@@ -3979,7 +3980,7 @@ msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/PluginGrid.php:89
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:336
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:335
 #: ../../../modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
@@ -4166,9 +4167,9 @@ msgstr "View User Details"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:257
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:258
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:62
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:120
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:126
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:57
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:110
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:116
 msgid "Cambiar Clave de Usuario"
 msgstr "Change User's Password"
 
@@ -4248,13 +4249,13 @@ msgstr "Edit Profile"
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:267
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:266
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Buscar"
 msgstr "Search"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:350
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:349
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:61
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_profile.inc:22
@@ -4306,6 +4307,15 @@ msgstr "Value created"
 msgid "Valor actualizado"
 msgstr "Value updated"
 
+#: ../../../modules/web/Controllers/ItemsController.php:130
+msgid "No hay no hay notificaciones pendientes"
+msgstr "There aren't any pending notifications"
+
+#: ../../../modules/web/Controllers/ItemsController.php:131
+#, php-format
+msgid "Hay notificaciones pendientes: %d"
+msgstr "There are pending notifications: %d"
+
 #: ../../../modules/web/Controllers/LoginController.php:119
 msgid "Finalizar sesión"
 msgstr "Logout session"
@@ -4318,28 +4328,28 @@ msgstr "Inactive time"
 msgid "Tiempo total"
 msgstr "Total time"
 
-#: ../../../modules/web/Controllers/NotificationController.php:251
-#: ../../../modules/web/Controllers/NotificationController.php:254
+#: ../../../modules/web/Controllers/NotificationController.php:255
+#: ../../../modules/web/Controllers/NotificationController.php:258
 msgid "Notificaciones eliminadas"
 msgstr "Notifications deleted"
 
-#: ../../../modules/web/Controllers/NotificationController.php:266
 #: ../../../modules/web/Controllers/NotificationController.php:270
+#: ../../../modules/web/Controllers/NotificationController.php:274
 msgid "Notificación eliminada"
 msgstr "Notification deleted"
 
-#: ../../../modules/web/Controllers/NotificationController.php:297
 #: ../../../modules/web/Controllers/NotificationController.php:301
+#: ../../../modules/web/Controllers/NotificationController.php:305
 msgid "Notificación leída"
 msgstr "Notification read"
 
-#: ../../../modules/web/Controllers/NotificationController.php:327
-#: ../../../modules/web/Controllers/NotificationController.php:330
+#: ../../../modules/web/Controllers/NotificationController.php:331
+#: ../../../modules/web/Controllers/NotificationController.php:334
 msgid "Notificación creada"
 msgstr "Notification created"
 
-#: ../../../modules/web/Controllers/NotificationController.php:360
-#: ../../../modules/web/Controllers/NotificationController.php:363
+#: ../../../modules/web/Controllers/NotificationController.php:364
+#: ../../../modules/web/Controllers/NotificationController.php:367
 msgid "Notificación actualizada"
 msgstr "Notification updated"
 
@@ -4516,11 +4526,11 @@ msgstr "Profile updated"
 msgid "Ver Perfil"
 msgstr "View Profile"
 
-#: ../../../modules/web/Controllers/UserSettingsGeneralController.php:70
+#: ../../../modules/web/Controllers/UserSettingsGeneralController.php:71
 msgid "Preferencias actualizadas"
 msgstr "Preferences updated"
 
-#: ../../../modules/web/Controllers/UserSettingsManagerController.php:92
+#: ../../../modules/web/Controllers/UserSettingsManagerController.php:93
 msgid "Preferencias"
 msgstr "Preferences"
 
@@ -4581,15 +4591,15 @@ msgstr "Invalid regular expression"
 msgid "Es necesario asignar un elemento del tipo usuario, grupo o perfil"
 msgstr "An element of type user, group or profile need to be set"
 
-#: ../../../modules/web/Forms/NotificationForm.php:92
+#: ../../../modules/web/Forms/NotificationForm.php:98
 msgid "Es necesario un componente"
 msgstr "A component is needed"
 
-#: ../../../modules/web/Forms/NotificationForm.php:96
+#: ../../../modules/web/Forms/NotificationForm.php:102
 msgid "Es necesario un tipo"
 msgstr "A type is needed"
 
-#: ../../../modules/web/Forms/NotificationForm.php:106
+#: ../../../modules/web/Forms/NotificationForm.php:112
 msgid "Es necesario un destinatario"
 msgstr "A target  is needed"
 
@@ -5068,30 +5078,19 @@ msgstr "Clear tracks out?"
 msgid "Javascript es necesario para el correcto funcionamiento"
 msgstr "Javascript is needed in order to run correctly"
 
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:40
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:110
-#, php-format
-msgid "Hay %d notificaciones pendientes"
-msgstr "There are %d unread notifications"
-
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:42
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:112
-msgid "No hay no hay notificaciones pendientes"
-msgstr "There aren't any pending notifications"
-
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:69
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:131
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:64
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:121
 msgid "Preferencias de usuario"
 msgstr "User preferences"
 
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:73
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:76
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:149
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:152
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:68
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:71
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:139
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:142
 msgid "Salir"
 msgstr "Sign Out"
 
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:165
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:155
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:43
 msgid "Demo"
 msgstr "Demo"
@@ -7171,6 +7170,14 @@ msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
 msgstr "Always show the hidden actions on the accounts search page."
 
+#: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:165
+msgid "Notificaciones In-App"
+msgstr "In-App Notifications"
+
+#: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:167
+msgid "Habilita la consulta de notificaciones activas In-App."
+msgstr "Enables the active In-App notifications polling"
+
 #. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:2
 #: ../../../config/actions.xml:277
@@ -7551,6 +7558,9 @@ msgstr "Text"
 #: ../../../config/strings.xml:9
 msgid "Link"
 msgstr "Link"
+
+#~ msgid "Hay %d notificaciones pendientes"
+#~ msgstr "There are %d unread notifications"
 
 #~ msgid "Id de grupo de usuario"
 #~ msgstr "User group Id"

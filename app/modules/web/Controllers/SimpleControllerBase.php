@@ -69,12 +69,16 @@ abstract class SimpleControllerBase
      */
     protected function checks()
     {
-        $this->checkLoggedInSession($this->session, $this->request, function ($redirect) {
-            $this->router->response()
-                ->redirect($redirect)
-                ->send(true);
-        });
-        $this->checkSecurityToken($this->session, $this->request);
+        $this->checkLoggedInSession(
+            $this->session,
+            $this->request,
+            function ($redirect) {
+                $this->router->response()
+                    ->redirect($redirect)
+                    ->send(true);
+            }
+        );
+//        $this->checkSecurityToken($this->session, $this->request);
     }
 
     /**

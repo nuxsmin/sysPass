@@ -87,6 +87,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
         $template->assign('chkTopNavbar', $userPreferences->isTopNavbar() ? 'checked="checked"' : '');
         $template->assign('chkOptionalActions', $userPreferences->isOptionalActions() ? 'checked="checked"' : '');
         $template->assign('chkResultsAsCards', $userPreferences->isResultsAsCards() ? 'checked="checked"' : '');
+        $template->assign('chkNotifications', $userPreferences->isCheckNotifications() ? 'checked="checked"' : '');
         $template->assign('route', 'userSettingsGeneral/save');
 
         return new DataTab(__('Preferencias'), $template);

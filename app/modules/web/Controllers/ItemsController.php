@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\DataModel\DataModelInterface;
+use SP\DataModel\NotificationData;
+use SP\Html\Html;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -81,7 +83,10 @@ final class ItemsController extends SimpleControllerBase
     public function clientsAction()
     {
         Json::factory($this->router->response())
-            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getJsonItemsFromModel());
+            ->returnRawJson(
+                SelectItemAdapter::factory(
+                    $this->dic->get(ClientService::class)
+                        ->getAllForUser())->getJsonItemsFromModel());
     }
 
     /**
@@ -94,7 +99,10 @@ final class ItemsController extends SimpleControllerBase
     public function categoriesAction()
     {
         Json::factory($this->router->response())
-            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getJsonItemsFromModel());
+            ->returnRawJson(
+                SelectItemAdapter::factory(
+                    $this->dic->get(CategoryService::class)
+                        ->getAllBasic())->getJsonItemsFromModel());
     }
 
     /**
@@ -106,8 +114,29 @@ final class ItemsController extends SimpleControllerBase
      */
     public function notificationsAction()
     {
+        $notifications = array_map(
+            function ($notification) {
+                /** @@var $notification NotificationData */
+                return sprintf('(%s) - %s', $notification->getComponent(), Html::truncate($notification->getDescription(), 30));
+            }, $this->dic
+            ->get(NotificationService::class)
+            ->getAllActiveForUserId($this->session->getUserData()->getId()));
+
+        $count = count($notifications);
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus(0);
+        $jsonResponse->setData([
+            'message' => __('No hay no hay notificaciones pendientes'),
+            'message_has' => sprintf(__('Hay notificaciones pendientes: %d'), $count),
+            'count' => $count,
+            'notifications' => $notifications,
+            'hash' => sha1(implode('', $notifications))
+        ]);
+        $jsonResponse->setCsrf($this->session->getSecurityKey());
+
         Json::factory($this->router->response())
-            ->returnRawJson(Json::getJson($this->dic->get(NotificationService::class)->getAllActiveForUserId($this->session->getUserData()->getId())));
+            ->returnJson($jsonResponse);
     }
 
     /**
@@ -120,7 +149,10 @@ final class ItemsController extends SimpleControllerBase
     public function tagsAction()
     {
         Json::factory($this->router->response())
-            ->returnRawJson(SelectItemAdapter::factory($this->dic->get(TagService::class)->getAllBasic())->getJsonItemsFromModel());
+            ->returnRawJson(
+                SelectItemAdapter::factory(
+                    $this->dic->get(TagService::class)
+                        ->getAllBasic())->getJsonItemsFromModel());
     }
 
     /**

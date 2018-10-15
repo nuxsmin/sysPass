@@ -36,12 +36,6 @@ class UserPreferencesData
      */
     public $user_id = 0;
     /**
-     * Usar autentificación en 2 pasos
-     *
-     * @var bool
-     */
-    public $use2Fa = false;
-    /**
      * Lenguaje del usuario
      *
      * @var string
@@ -77,22 +71,10 @@ class UserPreferencesData
      * @var bool
      */
     public $resultsAsCards = false;
-
     /**
-     * @return boolean
+     * @var bool
      */
-    public function isUse2Fa()
-    {
-        return $this->use2Fa;
-    }
-
-    /**
-     * @param boolean $use2Fa
-     */
-    public function setUse2Fa($use2Fa)
-    {
-        $this->use2Fa = $use2Fa;
-    }
+    public $checkNotifications = true;
 
     /**
      * @return string
@@ -259,5 +241,21 @@ class UserPreferencesData
     public function setResultsAsCards($resultsAsCards)
     {
         $this->resultsAsCards = $resultsAsCards;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCheckNotifications(): bool
+    {
+        return $this->checkNotifications;
+    }
+
+    /**
+     * @param bool $checkNotifications
+     */
+    public function setCheckNotifications(bool $checkNotifications)
+    {
+        $this->checkNotifications = $checkNotifications;
     }
 }

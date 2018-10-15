@@ -435,10 +435,12 @@ sysPass.Main = function () {
         return oPublic.requests.getActionCall(opts, function (json) {
             if (json.data !== undefined) {
                 configHandler.setLang(json.data.lang);
+                configHandler.setSessionTimeout(json.data.session_timeout);
                 configHandler.setPkiKey(json.data.pki_key);
                 configHandler.setPkiSize(json.data.pki_max_size);
                 configHandler.setCheckUpdates(json.data.check_updates);
                 configHandler.setCheckNotices(json.data.check_notices);
+                configHandler.setCheckNotifications(json.data.check_notifications);
                 configHandler.setTimezone(json.data.timezone);
                 configHandler.setLocale(json.data.locale);
                 configHandler.setDebugEnabled(json.data.debug);

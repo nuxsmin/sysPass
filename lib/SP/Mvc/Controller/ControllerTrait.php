@@ -105,14 +105,18 @@ trait ControllerTrait
     /**
      * @param ContextInterface $context
      * @param Request          $request
+     *
+     * @throws SPException
      */
     protected function checkSecurityToken(ContextInterface $context, Request $request)
     {
         $sk = $request->analyzeString('sk');
         $sessionKey = $context->getSecurityKey();
 
-        if (!$sk || (null !== $sessionKey && $sessionKey !== $sk)) {
-            $this->invalidAction();
+        if (!$sk
+            || (null !== $sessionKey && $sessionKey !== $sk)
+        ) {
+            throw new SPException(__u('Acción Inválida'));
         }
     }
 

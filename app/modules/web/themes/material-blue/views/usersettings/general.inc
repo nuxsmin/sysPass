@@ -151,6 +151,23 @@
                             </span>
                         </span>
                     </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="check_notifications">
+                                <input type="checkbox" id="check_notifications"
+                                       class="mdl-switch__input"
+                                       name="check_notifications" <?php echo $chkNotifications ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Notificaciones In-App'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita la consulta de notificaciones activas In-App.'); ?>
+                            </span>
+                        </span>
+                    </li>
                 </ul>
             </td>
         </tr>

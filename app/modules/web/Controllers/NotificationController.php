@@ -75,6 +75,8 @@ final class NotificationController extends ControllerBase implements CrudControl
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -151,6 +153,8 @@ final class NotificationController extends ControllerBase implements CrudControl
 
     /**
      * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -369,6 +373,8 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()

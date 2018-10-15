@@ -102,8 +102,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function searchAction()
     {
         try {
-            $AccountSearchHelper = $this->dic->get(AccountSearchHelper::class);
-            $AccountSearchHelper->getAccountSearch();
+            $this->checkSecurityToken($this->session, $this->request);
+
+            $accountSearchHelper = $this->dic->get(AccountSearchHelper::class);
+            $accountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
 

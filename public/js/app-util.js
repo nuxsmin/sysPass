@@ -454,6 +454,8 @@ sysPass.Util = function (log) {
     };
 
     /**
+     * Generates an unique id
+     *
      * @see https://stackoverflow.com/questions/3231459/create-unique-id-with-javascript
      * @returns {string}
      */
@@ -473,6 +475,54 @@ sysPass.Util = function (log) {
         return idstr.toLowerCase();
     };
 
+    /**
+     * Sends a browser notification
+     */
+    const notifications = {
+        state: {
+            lastHash : ''
+        },
+        send: function (title, message, id) {
+            log.info("sendNotification");
+
+            if (!("Notification" in window)) {
+                log.info("Notifications not supported");
+                return;
+            }
+
+            if (id === notifications.state.lastHash) {
+                return;
+            }
+
+            const fireMessage = function () {
+                log.info("sendNotification:fireMessage");
+
+                notifications.state.lastHash = id;
+
+                const options = {};
+
+                if (message !== undefined) {
+                    options.body = message;
+                }
+
+                const notification = new Notification(title, options);
+            };
+
+
+            if (Notification.permission === "granted") {
+                fireMessage();
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (result) {
+                    if (result === "granted") {
+                        fireMessage();
+                    } else {
+                        log.info("Notifications disabled");
+                    }
+                });
+            }
+        }
+    };
+
     return {
         decodeEntities: decodeEntities,
         resizeImage: resizeImage,
@@ -481,6 +531,7 @@ sysPass.Util = function (log) {
         setContentSize: setContentSize,
         redirect: redirect,
         uniqueId: uniqueId,
+        sendNotification: notifications.send,
         password: password,
         hash: hash
     };

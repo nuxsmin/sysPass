@@ -241,9 +241,13 @@ sysPass.Triggers = function (log) {
                 sysPassApp.actions.doAction({r: $this.data("route")}, $this.data("view"));
             });
 
-            // setInterval(function () {
-            //     sysPassApp.actions.notification.getActive();
-            // }, 60000);
+            if (sysPassApp.config.STATUS.CHECK_NOTIFICATIONS) {
+                sysPassApp.actions.notification.getActive();
+
+                setInterval(function () {
+                    sysPassApp.actions.notification.getActive();
+                }, 120000);
+            }
 
             if ($obj.data("upgraded") === 0) {
                 sysPassApp.actions.doAction({r: "account/index"}, "search");

@@ -159,15 +159,17 @@ sysPass.Requests = function (sysPassApp) {
                     let txt;
 
                     if (sysPassApp.config.LANG[1] !== undefined) {
-                        txt = sysPassApp.config.LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                        txt = sysPassApp.config.LANG[1];
                     } else {
-                        txt = "An error occurred<p>" + errorThrown + " (" + textStatus + ")</p>";
+                        txt = "An error occurred";
                     }
+
+                    txt += `<p>${errorThrown}</p><p>${jqXHR.responseText}</p>`;
 
                     log.error(txt);
 
                     if (opts.type === "html") {
-                        $("#content").html(sysPassApp.msg.html.error(errorThrown));
+                        $("#content").html(sysPassApp.msg.html.error(txt));
                     }
 
                     sysPassApp.msg.error(txt);

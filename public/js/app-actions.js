@@ -86,7 +86,7 @@ sysPass.Actions = function (log) {
         opts.addHistory = true;
         opts.data = data;
 
-        sysPassApp.requests.getActionCall(opts, function (response) {
+        return sysPassApp.requests.getActionCall(opts, function (response) {
             const $content = $("#content");
 
             $content.empty().html(response);
@@ -722,27 +722,26 @@ sysPass.Actions = function (log) {
                 if (json.status === 0) {
                     if (json.data.length > 0) {
                         $updates.html(
-                            '<a id="link-updates" href="' + json.data.url + '" target="_blank">' + json.data.title +
-                            '<div id="help-hasupdates" class="icon material-icons mdl-color-text--indigo-200">cloud_download</div>' +
-                            '</a><span for="link-updates" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + json.data.description + '</span>');
+                            `<a id="link-updates" href="${json.data.url}" target="_blank">${json.data.title}
+                            <div id="help-hasupdates" class="icon material-icons mdl-color-text--indigo-200">cloud_download</div>
+                            </a>
+                            <span for="link-updates" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${json.data.description}</span>`);
                     } else {
                         $updates.html(
-                            '<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>' +
-                            '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[68] + '</span>');
+                            `<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>
+                            <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[68]}</span>`);
                     }
                 } else {
                     $updates.html(
-                        '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
-                        '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[69] + '</span>');
+                        `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
+                        <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
                 }
 
-                if (componentHandler !== undefined) {
-                    componentHandler.upgradeDom();
-                }
+                sysPassApp.theme.update();
             }, function () {
                 $updates.html(
-                    '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
-                    '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + sysPassApp.config.LANG[69] + '</span>');
+                    `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
+                    <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
             });
         },
         getNotices: function () {
@@ -761,19 +760,18 @@ sysPass.Actions = function (log) {
                 if (json.status === 0) {
                     if (json.data.length > 0) {
                         $notices.html(
-                            '<a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">' +
-                            '<div id="notices-info" class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200" ' +
-                            'data-badge="' + json.data.length + '">feedback</div></a>' +
-                            '<span for="notices-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' +
-                            '<div class="notices-title">' + sysPassApp.config.LANG[70] + '</div>' +
-                            json.data.map(x => x.title).join('<br>') +
-                            '</span>');
+                            `<a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">
+                            <div id="notices-info" 
+                            class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200" 
+                            data-badge="${json.data.length}">feedback</div>
+                            </a>
+                            <span for="notices-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">
+                            <div class="notices-title">${sysPassApp.config.LANG[70]}</div>${json.data.map(x => x.title).join('<br>')}
+                            </span>`);
                     }
                 }
 
-                if (componentHandler !== undefined) {
-                    componentHandler.upgradeDom();
-                }
+                sysPassApp.theme.update();
             });
         }
     };
@@ -1451,13 +1449,13 @@ sysPass.Actions = function (log) {
             };
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
-
                 if (json.status === 0) {
                     getContent({r: $obj.data("action-next")});
                 }
 
                 sysPassApp.sk.set(json.csrf);
+
+                notification.getActive();
             });
         },
         search: function ($obj) {
@@ -1481,9 +1479,11 @@ sysPass.Actions = function (log) {
                 sysPassApp.msg.out(json);
 
                 if (json.status === 0) {
-                    getContent({r: $obj.data("action-next")});
-
                     $.magnificPopup.close();
+
+                    getContent({r: $obj.data("action-next")}).then(function () {
+                        notification.getActive();
+                    });
                 }
             });
         },
@@ -1521,7 +1521,29 @@ sysPass.Actions = function (log) {
             };
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                return json;
+                const $badge = $(".notifications-badge");
+                const $tooltip = $(".notifications-tooltip");
+
+                $badge.each(function () {
+                    const $this = $(this);
+                    $this.attr("data-badge", json.data.count);
+
+                    if (json.data.count === 0) {
+                        $this.removeClass($this.data("color-class"));
+                        $tooltip.empty().html(json.data.message);
+                    } else {
+                        $this.addClass($this.data("color-class"));
+                        $tooltip.empty().html(json.data.message_has);
+                    }
+                });
+
+                if (json.data.count > 0) {
+                    sysPassApp.util.sendNotification(
+                        json.data.message_has,
+                        json.data.notifications.join('\n'),
+                        json.data.hash
+                    );
+                }
             });
         },
         nav: function ($obj) {

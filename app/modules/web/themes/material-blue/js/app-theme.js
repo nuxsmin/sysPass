@@ -33,8 +33,7 @@ sysPass.Theme = function (log) {
         complete: function () {
             log.info("ajax:complete");
 
-            // Actualizar componentes de MDL cargados con AJAX
-            componentHandler.upgradeDom();
+            update();
         }
     };
 
@@ -500,7 +499,17 @@ sysPass.Theme = function (log) {
     };
 
     /**
-     * Inicialización
+     * Triggers an update of the theme components
+     */
+    const update = function () {
+        log.info("theme:update");
+
+        // Actualizar componentes de MDL cargados con AJAX
+        componentHandler.upgradeDom();
+    };
+
+    /**
+     * Initialization
      */
     const init = function () {
     };
@@ -510,6 +519,7 @@ sysPass.Theme = function (log) {
     return {
         passwordDetect: passwordDetect,
         password: randomPassword,
+        update: update,
         viewsTriggers: viewsTriggers,
         loading: loading,
         ajax: ajax,

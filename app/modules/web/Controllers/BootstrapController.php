@@ -60,6 +60,7 @@ final class BootstrapController extends SimpleControllerBase
             'max_file_size' => $this->configData->getFilesAllowedSize(),
             'check_updates' => $checkStatus && $this->configData->isCheckUpdates(),
             'check_notices' => $checkStatus && $this->configData->isChecknotices(),
+            'check_notifications' => $this->getNotificationsEnabled(),
             'timezone' => date_default_timezone_get(),
             'debug' => DEBUG || $this->configData->isDebug(),
             'cookies_enabled' => $this->getCookiesEnabled(),
@@ -69,7 +70,8 @@ final class BootstrapController extends SimpleControllerBase
             'pki_key' => $this->getPublicKey(),
             'pki_max_size' => CryptPKI::getMaxDataSize(),
             'import_allowed_exts' => ImportService::ALLOWED_EXTS,
-            'files_allowed_exts' => $this->configData->getFilesAllowedExts()
+            'files_allowed_exts' => $this->configData->getFilesAllowedExts(),
+            'session_timeout' => $this->configData->getSessionTimeout()
         ];
 
         return $this->returnJsonResponseData($data);
@@ -81,6 +83,18 @@ final class BootstrapController extends SimpleControllerBase
     private function getJsLang()
     {
         return require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
+    }
+
+    /**
+     * @return bool
+     */
+    private function getNotificationsEnabled()
+    {
+        if ($this->session->isLoggedIn()) {
+            return $this->session->getUserData()->getPreferences()->isCheckNotifications();
+        }
+
+        return false;
     }
 
     /**
