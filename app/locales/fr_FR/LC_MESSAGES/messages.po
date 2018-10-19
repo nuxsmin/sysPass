@@ -57,7 +57,7 @@ msgstr "IP invalide"
 #: ../../../../lib/SP/Mvc/Controller/Validators/PasswordValidator.php:71
 #, php-format
 msgid "Es necesaria una clave con al menos %d caracteres"
-msgstr "Password needs to be %d characters long"
+msgstr "Le mot de passe doit avoir une longueur de %d charactères"
 
 #: ../../../../lib/SP/Mvc/View/Template.php:274
 #: ../../../../lib/SP/Mvc/View/Template.php:276
@@ -139,7 +139,7 @@ msgstr "Impossible de créer le répertoire de sauvegarde (\"%s\")"
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:9
 #, php-format
 msgid "La extensión '%s' no está disponible"
-msgstr "The '%s' extension is unavailable"
+msgstr "L'extension '%s' n'est pas disponible"
 
 #: ../../../../lib/SP/Services/Config/ConfigService.php:68
 #: ../../../../lib/SP/Services/Config/ConfigService.php:153
@@ -290,7 +290,7 @@ msgstr "Tentatives dépassées (%d/%d)"
 
 #: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:152
 msgid "El archivo de actualización no contiene datos"
-msgstr "The update file does not contain data"
+msgstr "Le fichier de mise à jour ne contient pas de donnée"
 
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:65
 #: ../../../modules/web/Controllers/UserController.php:224
@@ -360,7 +360,7 @@ msgstr "Impossible d'ouvrir le fichier (%s)"
 #: ../../../../lib/SP/Storage/File/FileHandler.php:115
 #, php-format
 msgid "No es posible leer desde el archivo (%s)"
-msgstr "Unable to read from file (%s)"
+msgstr "Impossible de lire le fichier (%s)"
 
 #: ../../../../lib/SP/Storage/File/FileHandler.php:170
 #, php-format
@@ -370,12 +370,12 @@ msgstr "Impossible de fermer le fichier (%s)"
 #: ../../../../lib/SP/Storage/File/FileHandler.php:185
 #, php-format
 msgid "No es posible escribir el archivo (%s)"
-msgstr "Unable to write in file (%s)"
+msgstr "Impossible d'écrire dans le fichier (%s)"
 
 #: ../../../../lib/SP/Storage/File/FileHandler.php:200
 #, php-format
 msgid "Archivo no encontrado (%s)"
-msgstr "File not found (%s)"
+msgstr "Fichier non trouvé (%s)"
 
 #: ../../../../lib/SP/Storage/File/FileHandler.php:225
 #: ../../../../lib/SP/Storage/File/FileHandler.php:280
@@ -386,7 +386,7 @@ msgstr "Impossible de lire/écrire le fichier (%s)"
 #: ../../../../lib/SP/Storage/File/FileHandler.php:252
 #, php-format
 msgid "No es posible eliminar el archivo (%s)"
-msgstr "Unable to delete file (%s)"
+msgstr "Impossible de supprimer le fichier (%s)"
 
 #: ../../../../lib/SP/Util/ErrorUtil.php:128
 msgid "Opción no disponible"
@@ -579,7 +579,7 @@ msgstr "ID du client"
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:99
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:143
 msgid "Usuario de acceso"
-msgstr "Login de connexion"
+msgstr "Identifiant de connexion"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:87
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:110
@@ -622,7 +622,7 @@ msgstr "Compte Lié"
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:93
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:116
 msgid "Array con Ids de etiquetas"
-msgstr "Array with tags id"
+msgstr "Tableau avec les id de tags"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:94
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:117
@@ -630,7 +630,7 @@ msgstr "Array with tags id"
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:67
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:93
 msgid "Id de grupo"
-msgstr "Group Id"
+msgstr "Id du Groupe"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:128
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:79
@@ -660,11 +660,11 @@ msgstr "ID du client à filtrer"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:132
 msgid "Array con Ids de etiquetas a filtrar"
-msgstr "Array with tags id for filtering"
+msgstr "Tableau avec les id des tags à filtrer"
 
 #: ../../../modules/api/Controllers/Help/AccountHelp.php:133
 msgid "Operador de filtrado"
-msgstr "Filtering operator"
+msgstr "Opération de filtrage"
 
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:54
 #: ../../../modules/api/Controllers/Help/CategoryHelp.php:67
@@ -733,7 +733,7 @@ msgstr "Description du groupe"
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:56
 #: ../../../modules/api/Controllers/Help/UserGroupHelp.php:70
 msgid "Array con Ids de usuarios"
-msgstr "Array with users Id"
+msgstr "Tableau avec les Id des utilisateurs"
 
 #: ../../../modules/api/Controllers/TagController.php:94
 msgid "Etiqueta creada"
@@ -818,7 +818,7 @@ msgstr "Gestion des fichiers désactivée"
 
 #: ../../../modules/web/Controllers/AccountFileController.php:387
 msgid "No hay archivos asociados a la cuenta"
-msgstr "There are no linked files for the account"
+msgstr "Il n'y a pas de fichier lié à ce compte"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountManagerController.php:207
@@ -826,7 +826,7 @@ msgstr "There are no linked files for the account"
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:194
 #: ../../../config/actions.xml:493
 msgid "Actualización Masiva"
-msgstr "Bulk Update"
+msgstr "Mise à jour en masse"
 
 #: ../../../modules/web/Controllers/AuthTokenController.php:109
 #: ../../../modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:154
@@ -1058,14 +1058,14 @@ msgstr "Mettre à jour le lien publique"
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:378
 #: ../../../config/actions.xml:433
 msgid "Eliminar Enlace Público"
-msgstr "Delete Public Link"
+msgstr "Supprimer le lien publique"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:397
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:398
 #: ../../../config/actions.xml:421
 msgid "Crear Enlace Público"
-msgstr "Créer un Lien Publique"
+msgstr "Créer un lien publique"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:418
@@ -1273,7 +1273,7 @@ msgstr "Supprimer Sélection"
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:37
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:39
 msgid "Propietario"
-msgstr "Owner"
+msgstr "Propriétaire"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/AccountGrid.php:112
 #: ../../../modules/web/themes/material-blue/views/account/account-permissions.inc:173
@@ -1478,7 +1478,7 @@ msgstr "Evènement"
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:44
 #: ../../../modules/web/themes/material-blue/views/itemshow/user_pass.inc:26
 msgid "Login"
-msgstr "Login"
+msgstr "Identifiant"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
@@ -1556,7 +1556,7 @@ msgstr "Supprimer Fichier"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:94
 msgid "Valores Predeterminados"
-msgstr "Preset Values"
+msgstr "Valeurs prédéterminées"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:108
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:118
@@ -1587,54 +1587,54 @@ msgstr "Profil"
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:78
 msgid "Prioridad"
-msgstr "Priority"
+msgstr "Priorité"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:115
 msgid "Forzado"
-msgstr "Forced"
+msgstr "Forcé"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:145
 #: ../../../config/actions.xml:853
 msgid "Buscar Valor"
-msgstr "Search for Value"
+msgstr "Chercher une valeur"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:160
 #: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:66
 msgid "Valor de Permiso"
-msgstr "Permission Preset"
+msgstr "Préréglage de permission"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:161
 msgid "Nuevo Valor de Permiso"
-msgstr "New Permission Preset"
+msgstr "Nouveau préréglage de permission"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:184
 #: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:86
 msgid "Valor de Cuenta Privada"
-msgstr "Private Account Preset"
+msgstr "Préréglage de compte privé"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:185
 msgid "Nuevo Valor de Cuenta Privada"
-msgstr "New Private Account Preset"
+msgstr "Nouveau préréglage de compte privé"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:208
 #: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:102
 msgid "Valor de Timeout de Sesión"
-msgstr "Session Timeout Preset"
+msgstr "Préréglage d'expiration de session"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:209
 msgid "Nuevo Valor de Timeout de Sesión"
-msgstr "New Session Timeout Preset"
+msgstr "Nouveau préréglage d'expiration de session"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:232
 #: ../../../modules/web/Controllers/Helpers/ItemPresetHelper.php:117
 msgid "Valor de Clave de Cuentas"
-msgstr "Account Password Preset"
+msgstr "Préréglage de mot de passe de compte"
 
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:233
 msgid "Nuevo Valor de Clave de Cuentas"
-msgstr "New Account Password Preset"
+msgstr "Nouveau préréglage de mot de passe de compte"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:256
@@ -1642,14 +1642,14 @@ msgstr "New Account Password Preset"
 #: ../../../modules/web/Controllers/ItemPresetController.php:229
 #: ../../../config/actions.xml:871
 msgid "Editar Valor"
-msgstr "Edit Value"
+msgstr "Editer la valeur"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:273
 #: ../../../modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:274
 #: ../../../config/actions.xml:877
 msgid "Eliminar Valor"
-msgstr "Delete Value"
+msgstr "Supprimer la valeur"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/NotificationGrid.php:108
@@ -1873,7 +1873,7 @@ msgstr "Origine"
 #: ../../../modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
 #: ../../../config/actions.xml:889
 msgid "Buscar Track"
-msgstr "Search for track"
+msgstr "Rechercher une piste"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Grid/UserGrid.php:155
@@ -2023,13 +2023,13 @@ msgstr "Sans ce module, l'application ne peut pas fonctionner correctement."
 #: ../../../modules/web/Controllers/ItemPresetController.php:70
 #: ../../../config/actions.xml:859
 msgid "Ver Valor"
-msgstr "Display Value"
+msgstr "Valeur affichée"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ItemPresetController.php:199
 #: ../../../config/actions.xml:865
 msgid "Nuevo Valor"
-msgstr "New Value"
+msgstr "Nouvelle valeur"
 
 #: ../../../modules/web/Controllers/PublicLinkController.php:109
 msgid "Nuevo Enlace Público"
@@ -2385,7 +2385,7 @@ msgstr "Notifications de sysPass"
 
 #: ../../../config/strings.js.inc:96
 msgid "Vaciar los tracks?"
-msgstr "Clear tracks out?"
+msgstr "Effacer les traces?"
 
 #: ../../../modules/web/themes/material-blue/views/_layouts/main.inc:16
 #, fuzzy
@@ -2460,8 +2460,7 @@ msgstr "Special parameters"
 msgid ""
 "Es posible utilizar uno o varios parámetros especiales separados por espacios"
 msgstr ""
-"You could use either one or several special parameters separated by blank "
-"spaces"
+"Vous pouvez utiliser un ou plusieurs paramètres spéciaux séparés par un espace"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/help_account_search.inc:16
 msgid "Buscar cuentas a las que 'login' tenga acceso"
@@ -2508,7 +2507,7 @@ msgstr "Rechercher les comptes privés pour l'utilisateur courant."
 
 #: ../../../modules/web/themes/material-blue/views/_partials/help_account_search.inc:26
 msgid "Operador para los parámetros especiales"
-msgstr "Operator for special parameters"
+msgstr "Opérateur pour paramètres spéciaux"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/no_records_found.inc:4
 #: ../../../modules/web/themes/material-blue/views/account/search-index.inc:11
@@ -2793,24 +2792,24 @@ msgstr "Résultats par page"
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:67
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:20
 msgid "Caducidad clave cuentas"
-msgstr "Accounts password expiry"
+msgstr "Expiration du mot de passe du compte"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:68
 msgid "Habilita la caducidad de la clave de cuentas."
-msgstr "Enables the accounts password expiry date."
+msgstr "Active la date d'expiration du mot de passe du compte."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:76
 msgid "Tiempo caducidad clave"
-msgstr "Password expiry time"
+msgstr "Temps d'expiration du mot de passe"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:81
 msgid "Número de días para la caducidad de la clave de cuenta."
-msgstr "Number of days for the account expiry date."
+msgstr "Nombre de jours pour la date d'expiration du compte."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:91
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:28
 msgid "Tiempo caducidad (días)"
-msgstr "Expire time (days)"
+msgstr "Temps d'expiration (jours)"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:109
 #: ../../../modules/web/themes/material-blue/views/usersettings/general.inc:80
@@ -2980,7 +2979,7 @@ msgstr "Taille maximale de fichier en kilobytes"
 msgid ""
 "Esta extensión es necesaria para generar los archivos de copia de seguridad "
 "de la aplicación"
-msgstr "This extension is needed to build the application's backup files"
+msgstr "Cette extension est nécessaire pour construire les fichiers de sauvegarde de l'application"
 
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:23
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:26
@@ -3241,15 +3240,15 @@ msgstr "Utiliser Auth Basic"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:29
 msgid "Usar Auth Basic para autorizar los accesos a la aplicación."
-msgstr "Use Auth Basic for authorizing the accesses to the application"
+msgstr "Utiliser Auth Basic pour autoriser l'accès à l'application"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:43
 msgid "Usar Auth Basic SSO"
-msgstr "Use Auth Basic SSO"
+msgstr "Utiliser l'Auth Basic SSO"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:44
 msgid "Usar auto-login con Auth Basic."
-msgstr "Use auto-login through Auth Basic"
+msgstr "Utiliser l'identification automatique au travers de Auth Basic"
 
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:52
 msgid "Dominio"
@@ -3647,7 +3646,7 @@ msgstr "Extensions"
 
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:46
 msgid "Extensiones no disponibles"
-msgstr "Unavailable extensions"
+msgstr "Extension non disponible"
 
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:50
 msgid "Memoria Usada"
@@ -3655,7 +3654,7 @@ msgstr "Mémoire Utilisée"
 
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:55
 msgid "OP Cache"
-msgstr "OP Cache"
+msgstr "Cache OPCode"
 
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:74
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:77
@@ -3700,7 +3699,7 @@ msgstr "Plugins Chargés"
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:13
 msgid "Esta extensión es necesaria conectar con el servidor de LDAP"
-msgstr "This extension is needed to connect to the LDAP server"
+msgstr "Cette extension est nécessaire pour se connecter à un serveur LDAP"
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:43
 msgid "Habilitar LDAP"
@@ -3724,7 +3723,7 @@ msgstr "Permet le mode de connexion actif avec l'annuaire LDAP."
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:81
 msgid "Habilita la conexión mediante TLS."
-msgstr "Enables the connection over TLS"
+msgstr "Activer la connexion avec TLS"
 
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:96
 msgid "Nombre o dirección IP del servidor de LDAP."
@@ -4162,28 +4161,27 @@ msgstr "IP Address"
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:27
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Temps dépassé"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:84
 msgid ""
 "Prioridad de asignación en caso de coincidir con otros valores asignados por "
 "usuario, grupo o perfil."
 msgstr ""
-"Assignment priority if values match with others assigned by user, group or "
-"profile."
+"Priorité d'affectation si les valeurs correspondent à d'autres valeurs affectées par utilisateur, groupe ou profil."
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:95
 msgid "Prioridad de asignación"
-msgstr "Assignment Priority"
+msgstr "Priorité d'affectation"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:117
 msgid ""
 "Indica si los valores serán forzados al crear o modificar los elementos."
-msgstr "Enforces the values to be set either on creating or updating an item."
+msgstr "Application des valeurs à définir lors de la création ou de la mise à jour d'un élément"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/item_preset.inc:119
 msgid "Los valores serán añadidos a los existentes."
-msgstr "Values will be merged with the existing ones."
+msgstr "Les valeurs seront fusionnées avec celles existantes."
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:76
 #: ../../../modules/web/themes/material-blue/views/itemshow/public_link.inc:78
@@ -4773,87 +4771,87 @@ msgstr "Envoyer Fichier"
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:229
 msgid "Buscar Archivos"
-msgstr "Search for Files"
+msgstr "Chercher des fichiers"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:235
 msgid "Listar Archivos"
-msgstr "List Files"
+msgstr "Lister les fichiers"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:241
 msgid "Ver Favoritos"
-msgstr "Show Favorites"
+msgstr "Afficher les favoris"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:247
 msgid "Añadir Favorito"
-msgstr "Mark as Favorite"
+msgstr "Marqué comme favoris"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:283
 msgid "Añadir Wiki"
-msgstr "Add Wiki"
+msgstr "Ajouter un Wiki"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:289
 msgid "Editar Wiki"
-msgstr "Edit Wiki"
+msgstr "Editer le Wiki"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:295
 msgid "Eliminar Wiki"
-msgstr "Delete Wiki"
+msgstr "Supprimer le Wiki"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:361
 msgid "Nuevo Token API"
-msgstr "New API Token"
+msgstr "Nouvel jeton d'accès API"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:367
 msgid "Ver Token API"
-msgstr "View API Token"
+msgstr "Voir le jeton API"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:373
 msgid "Editar Token API"
-msgstr "Edit API Token"
+msgstr "Editer le jeton API"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:379
 msgid "Eliminar Token API"
-msgstr "Delete API Token"
+msgstr "Supprimer le jeton API"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:385
 msgid "Buscar Token API"
-msgstr "Search for API Token"
+msgstr "Rechercher un jeton API"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:391
 msgid "Nuevo Campo Personalizado"
-msgstr "New Custom Field"
+msgstr "Nouveau champs personnalisé"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:397
 msgid "Ver Campo Personalizado"
-msgstr "Show Custom Field"
+msgstr "Voir le champs personnalisé"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:403
 msgid "Editar Campo Personalizado"
-msgstr "Edit Custom Field"
+msgstr "Editer le champs personnaliser"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:409
 msgid "Eliminar Campo Personalizado"
-msgstr "Delete Custom Field"
+msgstr "Supprimer le champs personnalisé"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:415
 msgid "Buscar Campo Personalizado"
-msgstr "Search for Custom Field"
+msgstr "Rechercher un champs personnalisé"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:427
@@ -4864,107 +4862,107 @@ msgstr "Voir Lien Public"
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:445
 msgid "Buscar Enlace Público"
-msgstr "Search for Public Link"
+msgstr "Rechercher un lien publique"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:535
 msgid "Nuevo Plugin"
-msgstr "Nouveau plugin"
+msgstr "Nouveau module"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:553
 msgid "Habilitar Plugin"
-msgstr "Enable Plugin"
+msgstr "Activer module"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:559
 msgid "Deshabilitar Plugin"
-msgstr "Disable Plugin"
+msgstr "Désactiver module"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:565
 msgid "Restablecer Plugin"
-msgstr "Reset Plugin"
+msgstr "Réinitialisation du module"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:595
 msgid "Editar Clave Usuario"
-msgstr "Edit User Password"
+msgstr "Editer le mot de passe utilisateur"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:667
 msgid "Configuración Usuario"
-msgstr "User Configuration"
+msgstr "Configuration utilisateur"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:673
 msgid "Preferencias General"
-msgstr "General Preferences"
+msgstr "Préférences générales"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:697
 msgid "Configuración Cuentas"
-msgstr "Accounts Configuration"
+msgstr "Configuration des comptes"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:703
 msgid "Configuración Wiki"
-msgstr "Wiki Configuration"
+msgstr "Configuration Wiki"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:709
 msgid "Configuración Encriptación"
-msgstr "Encryption Configuration"
+msgstr "Chiffrement de la configuration"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:715
 msgid "Actualizar Hash"
-msgstr "Update Hash"
+msgstr "Mise à jour du hachage"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:721
 msgid "Clave Maestra Temporal"
-msgstr "Temporary Master Password"
+msgstr "Mot de passe maitre temporaire"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:727
 msgid "Configuración Copia de Seguridad"
-msgstr "Backup Configuration"
+msgstr "Sauvegarde Configuration"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:739
 msgid "Configuración Importación"
-msgstr "Import Configuration"
+msgstr "Importer Configuration"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:745
 msgid "Importar CSV"
-msgstr "CSV Import"
+msgstr "Importer CSV"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:751
 msgid "Importar XML"
-msgstr "XML Import"
+msgstr "Importer XML"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:757
 msgid "Configuración Exportación"
-msgstr "Export Configuration"
+msgstr "Exporter Configuration"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:763
 msgid "Exportación"
-msgstr "Export"
+msgstr "Exporter"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:769
 msgid "Configuración Email"
-msgstr "Email Configuration"
+msgstr "Configuration Email"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:775
 msgid "Configuración LDAP"
-msgstr "LDAP Configuration"
+msgstr "Configuration LDAP"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:781
@@ -4974,32 +4972,32 @@ msgstr "Synchronisation LDAP"
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:787
 msgid "Gestión de Cuenta (H)"
-msgstr "Account Management (H)"
+msgstr "Gestion des comptes (H)"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:817
 msgid "Crear Notificación"
-msgstr "Create Notification"
+msgstr "Notification Création"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:847
 msgid "Gestión Valores Predeterminados"
-msgstr "Preset Values Management"
+msgstr "Gestion des valeurs de Préréglage"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:883
 msgid "Gestión de Tracks"
-msgstr "Tracks Management"
+msgstr "Gestion Traces"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:895
 msgid "Desbloquear track"
-msgstr "Unlock track"
+msgstr "Débloquer traces"
 
 #. (itstool) path: action/text
 #: ../../../config/actions.xml:901
 msgid "Vaciar tracks"
-msgstr "Clear tracks out"
+msgstr "Vider les traces"
 
 #. (itstool) path: strings/text
 #: ../../../config/strings.xml:4
