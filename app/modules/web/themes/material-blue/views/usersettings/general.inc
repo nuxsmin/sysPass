@@ -1,4 +1,14 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\DataModel\UserPreferencesData $userPreferences
+ * @var \SP\Core\UI\ThemeIcons            $icons
+ * @var \SP\Config\ConfigData             $configData
+ * @var callable                          $_getvar
+ * @var \SP\Mvc\View\Template             $this
+ */
+
+$userPreferences = $_getvar('userPreferences');
+?>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">home</i>
@@ -7,7 +17,7 @@
 
 <form method="post" name="frmPreferences" id="frmPreferences" class="form-action"
       data-onsubmit="user/saveSettings"
-      data-action-route="<?php echo $route; ?>"
+      data-action-route="<?php echo $_getvar('route'); ?>"
       data-reload="1"
       data-hash="">
 
@@ -18,8 +28,8 @@
                 <div class="lowres-title"><?php echo __('Idioma'); ?></div>
 
                 <select name="userlang" id="sel-userlang" size="1" class="select-box sel-chosen-ns">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $langs */
-                    foreach ($langs as $langName => $lang): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                    foreach ($_getvar('langs') as $langName => $lang): ?>
                         <option
                                 value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ""; ?>><?php echo $lang->getName(); ?></option>
                     <?php endforeach; ?>
@@ -33,8 +43,8 @@
 
                 <select name="usertheme" id="sel-usertheme" size="1"
                         class="select-box sel-chosen-ns">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $themes */
-                    foreach ($themes as $theme): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $theme */
+                    foreach ($_getvar('themes') as $theme): ?>
                         <option
                                 value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>
                     <?php endforeach; ?>
@@ -57,7 +67,7 @@
                     <input id="resultsperpage" name="resultsperpage" type="number" step="6"
                            pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $resultsPerPage; ?>" required/>
+                           value="<?php echo $userPreferences->getResultsPerPage(); ?>" required/>
                     <label class="mdl-textfield__label"
                            for="resultsperpage"><?php echo __('Número de resultados por página'); ?></label>
                 </div>
@@ -72,7 +82,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
                                 <input type="checkbox" id="account_link"
                                        class="mdl-switch__input"
-                                       name="account_link" <?php echo $chkAccountLink ? 'checked' : ''; ?>/>
+                                       name="account_link" <?php echo $userPreferences->isAccountLink() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -89,7 +99,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
                                 <input type="checkbox" id="sort_views"
                                        class="mdl-switch__input"
-                                       name="sort_views" <?php echo $chkSortViews ? 'checked' : ''; ?>/>
+                                       name="sort_views" <?php echo $userPreferences->isSortViews() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -106,7 +116,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="top_navbar">
                                 <input type="checkbox" id="top_navbar"
                                        class="mdl-switch__input"
-                                       name="top_navbar" <?php echo $chkTopNavbar ? 'checked' : ''; ?>/>
+                                       name="top_navbar" <?php echo $userPreferences->isTopNavbar() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -123,7 +133,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="optional_actions">
                                 <input type="checkbox" id="optional_actions"
                                        class="mdl-switch__input"
-                                       name="optional_actions" <?php echo $chkOptionalActions ? 'checked' : ''; ?>/>
+                                       name="optional_actions" <?php echo $userPreferences->isOptionalActions() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -140,7 +150,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
                                 <input type="checkbox" id="resultsascards"
                                        class="mdl-switch__input"
-                                       name="resultsascards" <?php echo $chkResultsAsCards ? 'checked' : ''; ?>/>
+                                       name="resultsascards" <?php echo $userPreferences->isResultsAsCards() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -157,7 +167,7 @@
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="check_notifications">
                                 <input type="checkbox" id="check_notifications"
                                        class="mdl-switch__input"
-                                       name="check_notifications" <?php echo $chkNotifications ? 'checked' : ''; ?>/>
+                                       name="check_notifications" <?php echo $userPreferences->isCheckNotifications() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
@@ -174,7 +184,7 @@
     </table>
 
     <input type="hidden" name="isAjax" value="1"/>
-    <input type="hidden" name="sk" value="">
+    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 </form>
 <div class="tab-actions">
     <ul>

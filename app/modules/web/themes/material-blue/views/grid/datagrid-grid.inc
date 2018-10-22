@@ -1,12 +1,19 @@
 <?php
 /**
- * @var $icons   SP\Core\UI\ThemeIcons
- * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $this    \SP\Mvc\View\Template
- * @var $action  \SP\Html\DataGrid\Action\DataGridAction|\SP\Html\DataGrid\Action\DataGridActionSearch
+ * @var \SP\Html\DataGrid\Action\DataGridAction|\SP\Html\DataGrid\Action\DataGridActionSearch $action
+ * @var SP\Html\DataGrid\DataGridTab                                                          $data
+ * @var \SP\Core\UI\ThemeIcons                                                                $icons
+ * @var \SP\Config\ConfigData                                                                 $configData
+ * @var callable                                                                              $_getvar
+ * @var \SP\Mvc\View\Template                                                                 $this
  */
 
-if (!isset($index)): $index = 0; endif; ?>
+if (!isset($data)) {
+    $data = $_getvar('data');
+}
+
+$index = isset($index) ? $index : 0;
+?>
 
 <div class="tab-actions">
     <ul>
@@ -61,7 +68,7 @@ if (!isset($index)): $index = 0; endif; ?>
                         <span for="btn-reset-<?php echo $index; ?>"
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
 
-                        <input type="hidden" name="sk" value="">
+                        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                         <input type="hidden" name="activetab" value="<?php echo $index; ?>">
                         <input type="hidden" name="start" value="0">
                         <input type="hidden" name="count"
@@ -99,7 +106,9 @@ if (!isset($index)): $index = 0; endif; ?>
                     <?php foreach ($data->getDataActionsMenu() as $action): ?>
                         <li class="btn-action mdl-menu__item"
                             title="<?php echo $action->getTitle(); ?>"
-                            data-selection="#data-table-<?php echo $data->getId(); ?>"
+                            <?php if ($action->isSelection()): ?>
+                                data-selection="#data-table-<?php echo $data->getId(); ?>"
+                            <?php endif; ?>
                             data-onclick="<?php echo $action->getOnClick(); ?>"
                             <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>

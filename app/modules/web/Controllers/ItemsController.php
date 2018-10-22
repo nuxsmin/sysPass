@@ -133,7 +133,6 @@ final class ItemsController extends SimpleControllerBase
             'notifications' => $notifications,
             'hash' => sha1(implode('', $notifications))
         ]);
-        $jsonResponse->setCsrf($this->session->getSecurityKey());
 
         Json::factory($this->router->response())
             ->returnJson($jsonResponse);

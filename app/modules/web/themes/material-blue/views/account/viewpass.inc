@@ -1,10 +1,15 @@
 <?php
-/** @var  \SP\DataModel\CategoryData $category */
-/** @var  \SP\Core\UI\ThemeIcons $icons */
+/**
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
+ */
 ?>
 <div id="box-popup" class="box-password-view">
-    <h2 class="center"><?php echo $header; ?>&nbsp;
-        <?php if ($isLinked): ?>
+    <h2 class="center"><?php echo $_getvar('header'); ?>&nbsp;
+        <?php if ($_getvar('isLinked')): ?>
             <i title="<?php echo __('Cuenta Vinculada'); ?>"
                class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
         <?php endif; ?>
@@ -12,8 +17,8 @@
     <table>
         <tbody>
         <tr>
-            <?php if (!$isImage): ?>
-                <td class="dialog-text dialog-user-text"><?php echo wordwrap($login, 50, PHP_EOL, true); ?></td>
+            <?php if (!$_getvar('isImage')): ?>
+                <td class="dialog-text dialog-user-text"><?php echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php echo __('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
@@ -23,14 +28,14 @@
                 </td>
             <?php else: ?>
                 <td class="dialog-user-text">
-                    <img src="data:image/png;base64,<?php echo $login; ?>"/>
+                    <img src="data:image/png;base64,<?php echo $_getvar('login'); ?>"/>
                 </td>
                 <td>&nbsp;</td>
             <?php endif; ?>
         </tr>
         <tr>
-            <?php if (!$isImage): ?>
-                <td class="dialog-text dialog-pass-text"><?php echo wordwrap($pass, 50, PHP_EOL, true); ?></td>
+            <?php if (!$_getvar('isImage')): ?>
+                <td class="dialog-text dialog-pass-text"><?php echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php echo __('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
@@ -40,7 +45,7 @@
                 </td>
             <?php else: ?>
                 <td class="dialog-pass-text">
-                    <img src="data:image/png;base64,<?php echo $pass; ?>"/>
+                    <img src="data:image/png;base64,<?php echo $_getvar('pass'); ?>"/>
                 </td>
                 <td>&nbsp;</td>
             <?php endif; ?>
@@ -48,6 +53,3 @@
         </tbody>
     </table>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

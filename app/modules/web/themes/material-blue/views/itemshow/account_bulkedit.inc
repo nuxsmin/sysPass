@@ -1,16 +1,19 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons               $icons
- * @var \SP\Mvc\View\Components\SelectItem[] $clients
- * @var \SP\Mvc\View\Components\SelectItem[] $categories
- * @var \SP\Mvc\View\Components\SelectItem[] $users
- * @var \SP\Mvc\View\Components\SelectItem[] $userGroups
- * @var \SP\Mvc\View\Components\SelectItem[] $tags
+ * @var \SP\Core\UI\ThemeIcons             $icons
+ * @var \SP\Config\ConfigData              $configData
+ * @var callable                           $_getvar
+ * @var \SP\Mvc\View\Template              $this
+ * @var \SP\Mvc\View\Components\SelectItem $client
+ * @var \SP\Mvc\View\Components\SelectItem $category
+ * @var \SP\Mvc\View\Components\SelectItem $user
+ * @var \SP\Mvc\View\Components\SelectItem $userGroup
+ * @var \SP\Mvc\View\Components\SelectItem $tag
  */
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
@@ -21,8 +24,7 @@
 
         <form method="post" name="frmAccountBulkEdit" id="frmAccountBulkEdit" class="form-action"
               data-onsubmit="appMgmt/save"
-              data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-              data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+              data-action-route="<?php echo $_getvar('route', ''); ?>"
               data-hash="">
 
             <div class="mdl-tabs__panel is-active" id="general-panel">
@@ -35,7 +37,7 @@
 
                             <select id="client_id" name="client_id" class="select-box">
                                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
-                                <?php foreach ($clients as $client): ?>
+                                <?php foreach ($_getvar('clients') as $client): ?>
                                     <option
                                             value="<?php echo $client->getId(); ?>"><?php echo $client->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -50,7 +52,7 @@
 
                             <select id="category_id" name="category_id" class="select-box">
                                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
-                                <?php foreach ($categories as $category): ?>
+                                <?php foreach ($_getvar('categories') as $category): ?>
                                     <option
                                             value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -65,7 +67,7 @@
 
                             <select id="owner_id" name="owner_id" class="select-box">
                                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                                <?php foreach ($users as $user): ?>
+                                <?php foreach ($_getvar('users') as $user): ?>
                                     <option
                                             value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -80,7 +82,7 @@
 
                             <select id="main_usergroup_id" name="main_usergroup_id" class="select-box">
                                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                                <?php foreach ($userGroups as $group): ?>
+                                <?php foreach ($_getvar('userGroups') as $group): ?>
                                     <option
                                             value="<?php echo $group->getId(); ?>"><?php echo $group->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -94,7 +96,7 @@
                             <select id="tags" name="tags[]" multiple="multiple"
                                     class="select-box-tags">
                                 <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
-                                <?php foreach ($tags as $tag): ?>
+                                <?php foreach ($_getvar('tags') as $tag): ?>
                                     <option value="<?php echo $tag->getId(); ?>"><?php echo $tag->getName(); ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -115,7 +117,7 @@
                                     <select id="other_users_view" name="other_users_view[]"
                                             multiple="multiple" class="select-box-tags">
                                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                        <?php foreach ($users as $user): ?>
+                                        <?php foreach ($_getvar('users') as $user): ?>
                                             <option
                                                     value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
                                         <?php endforeach; ?>
@@ -136,7 +138,7 @@
                                     <select id="other_users_edit" name="other_users_edit[]"
                                             multiple="multiple" class="select-box-tags">
                                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                        <?php foreach ($users as $user): ?>
+                                        <?php foreach ($_getvar('users') as $user): ?>
                                             <option
                                                     value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
                                         <?php endforeach; ?>
@@ -164,7 +166,7 @@
                                     <select id="other_usergroups_view" name="other_usergroups_view[]"
                                             multiple="multiple" class="select-box-tags">
                                         <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                        <?php foreach ($userGroups as $userGroup): ?>
+                                        <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
                                                     value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
                                         <?php endforeach; ?>
@@ -176,7 +178,8 @@
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
                                        for="clear_permission_usergroups_view">
-                                    <input type="checkbox" id="clear_permission_usergroups_view" class="mdl-checkbox__input"
+                                    <input type="checkbox" id="clear_permission_usergroups_view"
+                                           class="mdl-checkbox__input"
                                            name="clear_permission_usergroups_view">
                                     <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
                                 </label>
@@ -185,7 +188,7 @@
                                     <select id="other_usergroups_edit" name="other_usergroups_edit[]"
                                             multiple="multiple" class="select-box-tags">
                                         <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                        <?php foreach ($userGroups as $userGroup): ?>
+                                        <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
                                                     value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
                                         <?php endforeach; ?>
@@ -197,7 +200,8 @@
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
                                        for="clear_permission_usergroups_edit">
-                                    <input type="checkbox" id="clear_permission_usergroups_edit" class="mdl-checkbox__input"
+                                    <input type="checkbox" id="clear_permission_usergroups_edit"
+                                           class="mdl-checkbox__input"
                                            name="clear_permission_usergroups_edit">
                                     <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
                                 </label>
@@ -255,7 +259,7 @@
                 </table>
             </div>
 
-            <input type="hidden" name="itemsId" value="<?php echo implode(',', $itemsId); ?>">
+            <input type="hidden" name="itemsId" value="<?php echo implode(',', $_getvar('itemsId')); ?>">
             <input type="hidden" name="isAjax" value="1">
         </form>
     </div>
@@ -268,6 +272,3 @@
         </button>
     </div>
 </div>
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

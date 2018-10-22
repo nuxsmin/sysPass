@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Mvc\View\Template $this
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 <div id="actions" align="center">

@@ -1,13 +1,24 @@
 <?php
 /**
- * @var $data              \SP\Html\DataGrid\DataGridTab
- * @var $accountSearchItem \SP\Services\Account\AccountSearchItem
- * @var $this              \SP\Mvc\View\Template
- * @var $action            \SP\Html\DataGrid\Action\DataGridActionBase
- * @var $actionMenu        \SP\Html\DataGrid\Action\DataGridActionBase
- * @var $icons             \SP\Core\UI\ThemeIcons
+ * @var \SP\Core\UI\ThemeIcons                      $icons
+ * @var callable                                    $_getvar
+ * @var \SP\Config\ConfigData                       $configData
+ * @var \SP\Services\Account\AccountSearchItem      $account
+ * @var \SP\Html\DataGrid\DataGridTab               $data
+ * @var \SP\Html\DataGrid\Action\DataGridActionBase $actionMenu
+ * @var \SP\Html\DataGrid\Action\DataGridActionBase $action
+ * @var \SP\Services\Account\AccountSearchItem      $accountSearchItem
  */
+
+if (!isset($data)) {
+    $data = $_getvar('data');
+}
+
+$wikiFilter = $_getvar('wikiFilter');
+$favoriteRouteOn = $_getvar('favoriteRouteOn');
+$favoriteRouteOff = $_getvar('favoriteRouteOff');
 ?>
+
 <div id="data-search">
     <?php foreach ($data->getData()->getData() as $index => $accountSearchItem):
         if ($index === 'count'): continue; endif;
@@ -43,7 +54,7 @@
                         <div class="field-name"><?php echo __('Nombre'); ?></div>
                         <?php if ($accountSearchItem->isShow() && $accountSearchItem->getLink()): ?>
                             <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
-                               data-action-route="<?php echo $viewAccountRoute; ?>"
+                               data-action-route="<?php echo $_getvar('viewAccountRoute'); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-onclick="account/view"><?php echo $accountSearchData->getName(); ?></a>
                         <?php else: ?>
@@ -187,33 +198,33 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if (isset($wikiFilter)): ?>
-                            <?php if (preg_match('/^(' . $wikiFilter . ').*/i', $accountSearchData->getName())): ?>
-                                <?php if (\SP\Services\Account\AccountSearchItem::$dokuWikiEnabled): ?>
-                                    <a href="<?php echo $wikiPageUrl, $accountSearchData->getName(); ?>"
-                                       target="_blank">
-                                        <i class="material-icons"
-                                           title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
-                                    </a>
-                                    <i class="btn-action material-icons fg-green100"
-                                       title="<?php echo __('Ver en Wiki'); ?>"
-                                       data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::WIKI_VIEW; ?>"
-                                       data-pagename="<?php echo $accountSearchData->getName(); ?>"
-                                       data-onclick="wiki/show">library_books</i>
-                                <?php else: ?>
-                                    <a href="<?php echo $wikiPageUrl, $accountSearchData->getName(); ?>"
-                                       target="_blank">
-                                        <i class="material-icons"
-                                           title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
-                                    </a>
-                                <?php endif; ?>
+                        <?php if ($wikiFilter
+                            && $accountSearchItem->isWikiMatch($wikiFilter)): ?>
+                            <?php if (\SP\Services\Account\AccountSearchItem::$dokuWikiEnabled): ?>
+                                <a href="<?php echo $_getvar('wikiPageUrl'), $accountSearchData->getName(); ?>"
+                                   target="_blank">
+                                    <i class="material-icons"
+                                       title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
+                                </a>
+                                <i class="btn-action material-icons fg-green100"
+                                   title="<?php echo __('Ver en Wiki'); ?>"
+                                   data-action-route="<?php echo \SP\Core\Acl\ActionsInterface::WIKI_VIEW; ?>"
+                                   data-pagename="<?php echo $accountSearchData->getName(); ?>"
+                                   data-onclick="wiki/show">library_books</i>
+                            <?php else: ?>
+                                <a href="<?php echo $_getvar('wikiPageUrl'), $accountSearchData->getName(); ?>"
+                                   target="_blank">
+                                    <i class="material-icons"
+                                       title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
+                                </a>
                             <?php endif; ?>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
 
 
-                <?php if ($accountSearchItem->isShow() || $accountSearchItem->isShowRequest()): ?>
+                <?php if ($accountSearchItem->isShow()
+                    || $accountSearchItem->isShowRequest()): ?>
                     <div class="account-actions">
                         <?php foreach ($data->getDataActionsFiltered($accountSearchItem) as $action):
                             $actionUid = uniqid('btn-action-', true);

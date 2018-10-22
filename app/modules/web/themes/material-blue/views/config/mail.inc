@@ -2,6 +2,8 @@
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
  * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 
@@ -134,7 +136,7 @@
 
                 <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box select-box-deselect">
                     <option value=""><?php echo __('Deshabilitada'); ?></option>
-                    <?php foreach ($mailSecurity as $security): ?>
+                    <?php foreach ($_getvar('mailSecurity') as $security): ?>
                         <option
                                 value="<?php echo $security; ?>" <?php echo ($configData->getMailSecurity() === $security) ? 'selected' : ''; ?>><?php echo $security; ?></option>
                     <?php endforeach; ?>
@@ -174,8 +176,8 @@
                 <div class="lowres-title"><?php echo __('Eventos'); ?></div>
 
                 <select id="mail_events" name="mail_events[]" multiple="multiple" class="select-box" data-create="true">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $mailEvents */
-                    foreach ($mailEvents as $mailEvent): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $mailEvent */
+                    foreach ($_getvar('mailEvents') as $mailEvent): ?>
                         <option
                                 value="<?php echo $mailEvent->getName(); ?>"
                             <?php echo $mailEvent->isSelected() ? 'selected' : '' ?>><?php echo $mailEvent->getName(); ?></option>
@@ -184,8 +186,6 @@
             </td>
         </tr>
     </table>
-
-    <input type="hidden" name="sk" value="">
 </form>
 
 <div class="tab-actions">

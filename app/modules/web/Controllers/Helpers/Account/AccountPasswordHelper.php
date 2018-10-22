@@ -53,10 +53,12 @@ final class AccountPasswordHelper extends HelperBase
      *
      * @return array
      * @throws HelperException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getPasswordView(AccountPassData $accountData, bool $useImage)
     {
@@ -78,8 +80,6 @@ final class AccountPasswordHelper extends HelperBase
             $this->view->assign('login', $accountData->getLogin());
             $this->view->assign('pass', htmlentities($pass));
         }
-
-        $this->view->assign('sk', $this->context->generateSecurityKey());
 
         return [
             'useimage' => $useImage,
@@ -104,6 +104,8 @@ final class AccountPasswordHelper extends HelperBase
      *
      * @return string
      * @throws HelperException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
@@ -119,6 +121,10 @@ final class AccountPasswordHelper extends HelperBase
         return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
     }
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     protected function initialize()
     {
         $this->acl = $this->dic->get(Acl::class);

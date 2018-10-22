@@ -69,11 +69,16 @@ final class AccountGrid extends GridBase
         $grid->addDataAction($this->getViewAction());
         $grid->addDataAction($this->getDeleteAction());
 
-        $grid->addDataAction($this->getBulkEditAction(), true);
+        $grid->addDataAction(
+            $this->getBulkEditAction()
+                ->setIsSelection(true),
+            true);
+
         $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados')),
+                ->setTitle(__('Eliminar Seleccionados'))
+                ->setIsSelection(true),
             true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));

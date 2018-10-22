@@ -152,6 +152,13 @@ sysPass.Requests = function (sysPassApp) {
                     history.add(opts);
                 }
 
+                if (opts.type === "json"
+                    && response['csrf'] !== undefined
+                    && response.csrf !== ""
+                ) {
+                    sysPassApp.sk.set(response.csrf);
+                }
+
                 callbackOk(response);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -180,14 +187,6 @@ sysPass.Requests = function (sysPassApp) {
             complete: function (response) {
                 if (opts.useLoading === true) {
                     sysPassApp.theme.loading.hide();
-                }
-
-                if (opts.type === "json"
-                    && response.responseJSON !== undefined
-                    && response.responseJSON.csrf !== undefined
-                    && response.responseJSON.csrf !== ""
-                ) {
-                    sysPassApp.sk.set(response.responseJSON.csrf);
                 }
 
                 if (sysPassApp.theme !== undefined) {

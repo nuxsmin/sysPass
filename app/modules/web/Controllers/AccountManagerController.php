@@ -73,6 +73,8 @@ final class AccountManagerController extends ControllerBase
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -122,6 +124,8 @@ final class AccountManagerController extends ControllerBase
     public function deleteAction($id = null)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -163,6 +167,8 @@ final class AccountManagerController extends ControllerBase
     public function saveBulkEditAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $form = new AccountForm($this->dic);
             $form->validate(Acl::ACCOUNTMGR_BULK_EDIT);
 
@@ -200,16 +206,18 @@ final class AccountManagerController extends ControllerBase
      */
     public function bulkEditAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Actualización Masiva'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'accountManager/saveBulkEdit');
-        $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Actualización Masiva'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'accountManager/saveBulkEdit');
+            $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.account.bulkEdit', new Event($this));
@@ -229,7 +237,6 @@ final class AccountManagerController extends ControllerBase
     {
         $this->view->addTemplate('account_bulkedit', 'itemshow');
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         $clients = SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModel();
@@ -250,8 +257,8 @@ final class AccountManagerController extends ControllerBase
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 

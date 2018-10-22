@@ -1,17 +1,22 @@
 <?php
+/**
+ * @var \SP\DataModel\UserToUserGroupData $groupUsers
+ * @var \SP\DataModel\UserGroupData       $group
+ * @var \SP\Core\UI\ThemeIcons            $icons
+ * @var \SP\Config\ConfigData             $configData
+ * @var callable                          $_getvar
+ * @var \SP\Mvc\View\Template             $this
+ */
 
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $group \SP\DataModel\UserGroupData */
-/** @var $groupUsers \SP\DataModel\UserToUserGroupData */
+$group = $_getvar('group');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -46,12 +51,12 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Usuarios'); ?></div>
 
-                    <?php if (!$isView): ?>
+                    <?php if (!$_getvar('isView')): ?>
                         <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
-                                title="<?php echo __('Usuarios'); ?>" <?php echo $disabled; ?>>
+                                title="<?php echo __('Usuarios'); ?>" <?php echo $_getvar('disabled'); ?>>
                             <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
-                            foreach ($users as $user): ?>
+                            <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                            foreach ($_getvar('users') as $user): ?>
                                 <option
                                         value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
                             <?php endforeach; ?>
@@ -60,8 +65,8 @@
                         <div class="tag-list-box">
                             <div class="tag-list-body">
                                 <div class="tags-list-items">
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
-                                    foreach ($users as $user): ?>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                                    foreach ($_getvar('users') as $user): ?>
                                         <?php if ($user->isSelected()): ?>
                                             <span class="tag"><?php echo $user->getName(); ?></span>
                                         <?php endif; ?>
@@ -73,18 +78,19 @@
                 </td>
             </tr>
 
-            <?php if ($customFields): ?>
+            <?php if ($_getvar('customFields')): ?>
                 <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
             <?php endif; ?>
 
-            <?php if (isset($usedBy)): ?>
+            <?php if ($_getvar('usedBy')): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usado por'); ?></td>
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Usado por'); ?></div>
                         <div class="list-wrap">
                             <ul class="mdl-list">
-                                <?php foreach ($usedBy as $user): ?>
+                                <?php /** @var stdClass $user */
+                                foreach ($_getvar('usedBy') as $user): ?>
                                     <li class="mdl-list__item mdl-list__item">
                                         <span class="mdl-list__item-primary-content">
                                             <i class="material-icons mdl-list__item-icon"
@@ -107,10 +113,9 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
-    <?php if (!$isView): ?>
+    <?php if (!$_getvar('isView')): ?>
         <div class="action-in-box">
             <button
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
@@ -120,6 +125,3 @@
         </div>
     <?php endif; ?>
 </div>
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

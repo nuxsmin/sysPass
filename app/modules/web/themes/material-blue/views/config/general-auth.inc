@@ -1,7 +1,9 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 
@@ -85,8 +87,8 @@
             <select id="sso_defaultgroup" name="sso_defaultgroup"
                     class="select-box sel-chosen-usergroup">
                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
-                foreach ($userGroups as $userGroup): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
                             value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
                 <?php endforeach; ?>
@@ -110,8 +112,8 @@
             <select id="sso_defaultprofile" name="sso_defaultprofile"
                     class="select-box sel-chosen-profile">
                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userProfiles */
-                foreach ($userProfiles as $userProfile): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $userProfile */
+                foreach ($_getvar('userProfiles') as $userProfile): ?>
                     <option
                             value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
                 <?php endforeach; ?>

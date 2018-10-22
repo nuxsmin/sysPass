@@ -1,9 +1,15 @@
 <?php
 /**
- * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account \SP\Services\Account\AccountSearchItem
- * @var $this    \SP\Mvc\View\Template
+ * @var \SP\Core\UI\ThemeIcons                 $icons
+ * @var callable                               $_getvar
+ * @var \SP\Config\ConfigData                  $configData
+ * @var \SP\Services\Account\AccountSearchItem $account
+ * @var \SP\Html\DataGrid\DataGrid             $data
  */
+
+if (!isset($data)) {
+    $data = $_getvar('data');
+}
 ?>
 
 <div id="res-content">

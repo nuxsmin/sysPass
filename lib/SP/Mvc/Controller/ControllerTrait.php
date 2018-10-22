@@ -24,7 +24,6 @@
 
 namespace SP\Mvc\Controller;
 
-use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
@@ -103,19 +102,16 @@ trait ControllerTrait
     }
 
     /**
-     * @param ContextInterface $context
-     * @param Request          $request
+     * @param string  $previousToken
+     * @param Request $request
      *
      * @throws SPException
      */
-    protected function checkSecurityToken(ContextInterface $context, Request $request)
+    protected function checkSecurityToken($previousToken, Request $request)
     {
         $sk = $request->analyzeString('sk');
-        $sessionKey = $context->getSecurityKey();
 
-        if (!$sk
-            || (null !== $sessionKey && $sessionKey !== $sk)
-        ) {
+        if (!$sk || $previousToken !== $sk) {
             throw new SPException(__u('Acción Inválida'));
         }
     }

@@ -42,9 +42,13 @@ final class ConfigWikiController extends SimpleControllerBase
 
     /**
      * saveAction
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function saveAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
 

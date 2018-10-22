@@ -66,6 +66,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function viewAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if (null === ($fileData = $this->accountFileService->getById($id))) {
                 throw new SPException(__u('El archivo no existe'), SPException::INFO);
             }
@@ -118,6 +120,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function downloadAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if (null === ($fileData = $this->accountFileService->getById($id))) {
                 throw new SPException(__u('El archivo no existe'), SPException::INFO);
             }
@@ -155,6 +159,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function uploadAction($accountId)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $file = $this->router->request()->files()->get('inFile');
 
             if ($accountId === 0 || null === $file) {
@@ -252,11 +258,17 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Search action
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -272,6 +284,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -312,6 +326,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function deleteAction($id = null)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if ($id === null) {
                 $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -372,6 +388,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
         }
 
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->view->addTemplate('files-list', 'account');
 
             $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));

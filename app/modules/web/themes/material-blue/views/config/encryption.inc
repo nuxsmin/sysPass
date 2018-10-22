@@ -1,8 +1,11 @@
 <?php
 /**
- * @var $icons      \SP\Core\UI\ThemeIcons
- * @var $configData \SP\Config\ConfigData
- */ ?>
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
 
 <form method="post" name="frmCrypt" id="frmCrypt" class="form-action"
       data-onsubmit="config/save"
@@ -15,7 +18,7 @@
     </div>
 
     <table class="data tblConfig round">
-        <?php if ($lastUpdateMPass > 0): ?>
+        <?php if ($_getvar('lastUpdateMPass') > 0): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Último cambio'); ?>
@@ -23,7 +26,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
 
-                    <?php echo date('r', $lastUpdateMPass); ?>
+                    <?php echo date('r', $_getvar('lastUpdateMPass')); ?>
                 </td>
             </tr>
         <?php endif; ?>
@@ -86,7 +89,7 @@
                 <br>
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $numAccounts); ?></strong>
+                <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $_getvar('numAccounts')); ?></strong>
             </td>
         </tr>
         <tr>
@@ -132,8 +135,8 @@
         </tr>
     </table>
 
-    <?php if (isset($taskId)): ?>
-        <input type="hidden" name="taskId" value="<?php echo $taskId; ?>">
+    <?php if ($_getvar('taskId')): ?>
+        <input type="hidden" name="taskId" value="<?php echo $_getvar('taskId'); ?>">
         <input type="hidden" name="lock" value="masterpass">
     <?php endif; ?>
 </form>
@@ -157,7 +160,7 @@
                 </div>
             </div>
         </li>
-        <?php if ($ctx_userIsAdminApp): ?>
+        <?php if ($_getvar('ctx_userIsAdminApp')): ?>
             <li>
                 <button type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
@@ -169,7 +172,7 @@
             </li>
         <?php endif; ?>
 
-        <?php if ($numAccounts > 0): ?>
+        <?php if ($_getvar('numAccounts') > 0): ?>
             <li>
                 <button form="frmCrypt"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
@@ -197,7 +200,7 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
 
-                <?php echo ($tempMasterPassTime > 0) ? date('r', $tempMasterPassTime) : __('No generada'); ?>
+                <?php echo ($_getvar('tempMasterPassTime') > 0) ? date('r', $_getvar('tempMasterPassTime')) : __('No generada'); ?>
             </td>
         </tr>
         <tr>
@@ -207,7 +210,9 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Válido hasta'); ?></div>
 
-                <?php if (time() > $tempMasterMaxTime): ?>
+                <?php
+                $tempMasterMaxTime = $_getvar('tempMasterMaxTime');
+                if (time() > $tempMasterMaxTime): ?>
                     <span style="color: red"><?php echo date('r', $tempMasterMaxTime); ?></span>
                 <?php elseif ($tempMasterMaxTime > 0): echo date('r', $tempMasterMaxTime); ?>
                 <?php else: echo __('No generada'); ?>
@@ -221,7 +226,7 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Intentos'); ?></div>
 
-                <?php echo $tempMasterAttempts; ?>
+                <?php echo $_getvar('tempMasterAttempts'); ?>
             </td>
         </tr>
         <tr>
@@ -274,15 +279,15 @@
                 <select id="temporary_masterpass_group" name="temporary_masterpass_group"
                         class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
                     <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
-                    foreach ($userGroups as $userGroup): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                    foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
                                 value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
                     <?php endforeach; ?>
                 </select>
             </td>
         </tr>
-        <?php if (!empty($tempMasterPass)): ?>
+        <?php if (!empty($_getvar('tempMasterPass'))): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Clave'); ?>
@@ -290,7 +295,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Clave'); ?></div>
 
-                    <?php echo $tempMasterPass; ?>
+                    <?php echo $_getvar('tempMasterPass'); ?>
                 </td>
             </tr>
         <?php endif; ?>

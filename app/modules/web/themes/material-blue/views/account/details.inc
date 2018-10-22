@@ -1,6 +1,11 @@
 <?php
-/** @var \SP\Services\Account\AccountAcl $AccountAcl */
-/** @var \SP\DataModel\AccountExtData $accountData */
+/**
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var callable                        $_getvar
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
+ */
 ?>
 
 <div id="data-details">
@@ -22,7 +27,7 @@
             </td>
         </tr>
 
-        <?php if ($isModified && $accountData->getUserEditName()): ?>
+        <?php if ($_getvar('isModified') && $accountData->getUserEditName()): ?>
             <tr>
                 <td class="descField"><?php echo __('Última Modificación'); ?></td>
                 <td class="valField">
@@ -74,17 +79,17 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Fecha de Clave'); ?></div>
 
-                <?php echo $accountPassDate; ?>
+                <?php echo $_getvar('accountPassDate'); ?>
             </td>
         </tr>
 
-        <?php if (isset($accountPassDateChange) && $accountPassDateChange > 0): ?>
+        <?php if ($_getvar('accountPassDateChange', 0) > 0): ?>
             <tr>
                 <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
 
-                    <?php echo $accountPassDateChange; ?>
+                    <?php echo $_getvar('accountPassDateChange'); ?>
                 </td>
             </tr>
         <?php endif; ?>

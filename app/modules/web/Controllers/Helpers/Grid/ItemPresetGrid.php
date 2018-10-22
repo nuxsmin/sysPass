@@ -70,9 +70,12 @@ final class ItemPresetGrid extends GridBase
         $grid->addDataAction($this->getCreateAccountPasswordAction(), true);
         $grid->addDataAction($this->getEditAction());
         $grid->addDataAction($this->getDeleteAction());
-        $grid->addDataAction($this->getDeleteAction()
-            ->setTitle(__('Eliminar Seleccionados'))
-            ->setName(__('Eliminar Seleccionados')), true);
+        $grid->addDataAction(
+            $this->getDeleteAction()
+                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Eliminar Seleccionados'))
+                ->setIsSelection(true),
+            true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

@@ -1,11 +1,16 @@
 <?php
 /**
- * @var $data  SP\Html\DataGrid\DataGridTab
- * @var $this  \SP\Mvc\View\Template
+ * @var SP\Html\DataGrid\DataGridTab $data
+ * @var \SP\Core\UI\ThemeIcons       $icons
+ * @var \SP\Config\ConfigData        $configData
+ * @var callable                     $_getvar
+ * @var \SP\Mvc\View\Template        $this
  */
+
+$data = $_getvar('data');
 ?>
 
-<!-- Rows -->
+    <!-- Rows -->
 <?php if ($data->getData()->getDataCount() > 0):
     foreach ($data->getData()->getData() as $dataIndex => $dataItem):
         if ($dataIndex === 'count'): continue; endif; ?>

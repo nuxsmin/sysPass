@@ -1,7 +1,9 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 
@@ -99,8 +101,8 @@
             <div class="lowres-title"><?php echo __('Eventos'); ?></div>
 
             <select id="log_events" name="log_events[]" multiple="multiple" class="select-box" data-create="true">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $logEvents */
-                foreach ($logEvents as $logEvent): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $logEvent */
+                foreach ($_getvar('logEvents') as $logEvent): ?>
                     <option
                             value="<?php echo $logEvent->getName(); ?>"
                         <?php echo $logEvent->isSelected() ? 'selected' : '' ?>><?php echo $logEvent->getName(); ?></option>

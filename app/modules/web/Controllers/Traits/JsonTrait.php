@@ -112,6 +112,10 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
+        if (property_exists($this, 'session')) {
+            $jsonResponse->setCsrf($this->session->getSecurityKey());
+        }
+
         return Json::fromDic()->returnJson($jsonResponse);
     }
 }

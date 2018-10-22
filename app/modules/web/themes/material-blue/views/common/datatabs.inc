@@ -1,10 +1,14 @@
 <?php
 /**
- * @var $icons   SP\Core\UI\ThemeIcons
- * @var $this    \SP\Mvc\View\Template
- * @var $tabs    \SP\Mvc\View\Components\DataTab[]
+ * @var \SP\Mvc\View\Components\DataTab[] $tabs
+ * @var \SP\Core\UI\ThemeIcons            $icons
+ * @var callable                          $_getvar
+ * @var \SP\Mvc\View\Template             $this
  */
+
+$tabs = $_getvar('tabs');
 ?>
+
 <!-- Start Tabs-->
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
     <div id="tabsHeader" class="mdl-tabs__tab-bar"></div>
@@ -12,7 +16,7 @@
     <?php foreach ($tabs as $index => $tab): ?>
         <div id="tabs-<?php echo $index; ?>"
              class="mdl-tabs__panel"
-             data-tab-route="<?php echo $tabsRoute; ?>"
+             data-tab-route="<?php echo $_getvar('tabsRoute'); ?>"
              data-tab-index="<?php echo $index; ?>">
             <div class="tab-data">
                 <?php echo $tab->render(); ?>
@@ -20,12 +24,8 @@
         </div>
 
         <script type="text/javascript">
-            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $tab->getTitle(); ?>", <?php echo $index === $activeTab ? 1 : 0; ?>);
+            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $tab->getTitle(); ?>", <?php echo $index === $_getvar('activeTab') ? 1 : 0; ?>);
         </script>
     <?php endforeach; ?>
 </div>
 <!-- End Tabs-->
-
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

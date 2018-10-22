@@ -73,9 +73,13 @@ abstract class ControllerBase
      */
     protected $dic;
     /**
-     * @var
+     * @var bool
      */
     protected $isAjax = false;
+    /**
+     * @var string
+     */
+    protected $previousSk;
 
     /**
      * Constructor
@@ -98,6 +102,7 @@ abstract class ControllerBase
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->isAjax = $this->request->isAjax();
+        $this->previousSk = $this->session->getSecurityKey();
 
         if ($this->session->isLoggedIn()) {
             $this->userData = clone $this->session->getUserData();
@@ -116,7 +121,7 @@ abstract class ControllerBase
      */
     private function setViewVars()
     {
-        $this->view->assign('timeStart', $this->router->request()->server()->get('REQUEST_TIME_FLOAT'));
+        $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('ctx_userId', $this->userData->getId());
         $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
@@ -126,9 +131,10 @@ abstract class ControllerBase
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
         $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('configData', $this->configData);
+        $this->view->assign('sk', $this->session->isLoggedIn() ? $this->session->generateSecurityKey() : '');
 
         // Pass the action name to the template as a variable
-        $this->view->assign($this->actionName);
+        $this->view->assign($this->actionName, true);
     }
 
     /**

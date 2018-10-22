@@ -1,4 +1,14 @@
-<?php /** @var $password \SP\DataModel\ItemPreset\Password */ ?>
+<?php
+/**
+ * @var \SP\DataModel\ItemPreset\Password $password
+ * @var \SP\Core\UI\ThemeIcons            $icons
+ * @var \SP\Config\ConfigData             $configData
+ * @var callable                          $_getvar
+ * @var \SP\Mvc\View\Template             $this
+ */
+
+$password = $_getvar('password');
+?>
 
 <table class="popup-data">
     <tbody>
@@ -23,7 +33,7 @@
                 <input id="expire_time" name="expire_time" type="number"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        min="0"
-                       value="<?php echo $password->getExpireTime() ? $password->getExpireTime() / $expireTimeMultiplier : 1; ?>"/>
+                       value="<?php echo $password->getExpireTime() ? $password->getExpireTime() / $_getvar('expireTimeMultiplier') : 1; ?>"/>
                 <label class="mdl-textfield__label"
                        for="expire_time"><?php echo __('Tiempo caducidad (días)'); ?></label>
             </div>

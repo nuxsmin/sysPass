@@ -67,9 +67,12 @@ final class UserGroupController extends ControllerBase implements CrudController
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::GROUP_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -104,16 +107,17 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Grupo'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'userGroup/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nuevo Grupo'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'userGroup/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.userGroup.create', new Event($this));
@@ -151,15 +155,14 @@ final class UserGroupController extends ControllerBase implements CrudController
                 ->getItemsFromModelSelected($users));
         $this->view->assign('usedBy', $this->userGroupService->getUsageByUsers($userGroupId));
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
@@ -175,15 +178,17 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Editar Grupo'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'userGroup/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Grupo'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'userGroup/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userGroup.edit', new Event($this));
@@ -205,11 +210,13 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -245,11 +252,13 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new UserGroupForm($this->dic);
             $form->validate(Acl::GROUP_CREATE);
 
@@ -284,11 +293,13 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new UserGroupForm($this->dic, $id);
             $form->validate(Acl::GROUP_EDIT);
 
@@ -323,14 +334,16 @@ final class UserGroupController extends ControllerBase implements CrudController
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::GROUP_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Grupo'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::GROUP_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Grupo'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userGroup', new Event($this));

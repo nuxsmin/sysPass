@@ -1,16 +1,21 @@
-<?php /** @var \SP\Mvc\View\Template $this */ ?>
+<?php
+/**
+ * @var callable              $_getvar
+ * @var \SP\Mvc\View\Template $this
+ */
+?>
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="<?php echo $_getvar('lang'); ?>">
 <head>
-    <title><?php printf('%s :: %s', $app_name, $app_desc); ?></title>
+    <title><?php printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="<?php echo $logoIcon; ?>">
-    <?php foreach ($cssLinks as $cssLink): ?>
+    <link rel="icon" type="image/png" href="<?php echo $_getvar('logoIcon'); ?>">
+    <?php foreach ($_getvar('cssLinks') as $cssLink): ?>
         <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
     <?php endforeach; ?>
 </head>
-<body class="<?php echo $page; ?>">
+<body class="<?php echo $_getvar('page'); ?>">
 <div id="wrap">
     <noscript>
         <div id="nojs"><?php echo __('Javascript es necesario para el correcto funcionamiento'); ?></div>
@@ -21,10 +26,10 @@
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>"
+    <div id="container" class="<?php echo $_getvar('page'); ?>" data-page="<?php echo $_getvar('page'); ?>"
          data-upgraded="<?php echo (int)$this->isUpgraded(); ?>">
         <?php
-        if (isset($useFixedHeader)):
+        if ($_getvar('useFixedHeader')):
             include $this->includePartial('fixed-header');
         elseif ($this->hashContentTemplates()):
             foreach ($this->getContentTemplates() as $template):
@@ -37,7 +42,7 @@
     <?php include $this->includePartial('footer'); ?>
 </div> <!-- Close wrap -->
 
-<?php foreach ($jsLinks as $jsLink): ?>
+<?php foreach ($_getvar('jsLinks') as $jsLink): ?>
     <script type="text/javascript" src="<?php echo $jsLink; ?>"></script>
 <?php endforeach; ?>
 
@@ -47,7 +52,7 @@
 
         sysPassApp.log.info("ready");
 
-        sysPassApp.sk.set("<?php echo $sk; ?>");
+        sysPassApp.sk.set("<?php echo $_getvar('sk'); ?>");
     });
 </script>
 

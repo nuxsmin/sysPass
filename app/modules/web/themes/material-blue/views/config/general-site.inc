@@ -1,11 +1,13 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 
-<?php if (!$curlIsAvailable): ?>
+<?php if (!$_getvar('curlIsAvailable')): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('La extensión \'%s\' no está disponible'), 'curl'); ?>
         <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
@@ -42,8 +44,8 @@
             <div class="lowres-title"><?php echo __('Idioma'); ?></div>
 
             <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $langs */
-                foreach ($langs as $lang): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                foreach ($_getvar('langs') as $lang): ?>
                     <option
                             value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
                 <?php endforeach; ?>
@@ -66,8 +68,8 @@
 
             <select name="sitetheme" id="sel-sitetheme" size="1"
                     class="select-box sel-chosen-ns">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $themes */
-                foreach ($themes as $theme): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $theme */
+                foreach ($_getvar('themes') as $theme): ?>
                     <option
                             value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>
                 <?php endforeach; ?>

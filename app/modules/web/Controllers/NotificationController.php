@@ -55,11 +55,16 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * indexAction
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::NOTIFICATION)) {
             return;
         }
@@ -98,14 +103,16 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Notificación'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Notificación'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.notification', new Event($this));
@@ -139,15 +146,14 @@ final class NotificationController extends ControllerBase implements CrudControl
             $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$notification->userId]));
         }
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::NOTIFICATION));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 
@@ -157,9 +163,12 @@ final class NotificationController extends ControllerBase implements CrudControl
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -175,16 +184,17 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nueva Notificación'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'notification/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nueva Notificación'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'notification/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.notification.create', new Event($this));
@@ -206,16 +216,17 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Editar Notificación'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'notification/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Notificación'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'notification/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.notification.edit', new Event($this));
@@ -237,11 +248,13 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 if ($this->userData->getIsAdminApp()) {
                     $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
@@ -288,11 +301,13 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function checkAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $this->notificationService->setCheckedById($id);
 
             $this->eventDispatcher->notifyEvent('check.notification',
@@ -315,11 +330,13 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new NotificationForm($this->dic);
             $form->validate(Acl::NOTIFICATION_CREATE);
 
@@ -348,11 +365,13 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new NotificationForm($this->dic, $id);
             $form->validate(Acl::NOTIFICATION_EDIT);
 

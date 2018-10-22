@@ -1,14 +1,20 @@
 <?php
-/** @var  \SP\DataModel\CategoryData $category */
-/** @var  \SP\Core\UI\ThemeIcons $icons */
+/**
+ * @var  \SP\DataModel\CategoryData $category
+ * @var \SP\Core\UI\ThemeIcons      $icons
+ * @var \SP\Config\ConfigData       $configData
+ * @var callable                    $_getvar
+ * @var \SP\Mvc\View\Template       $this
+ */
+
+$category = $_getvar('category');
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmCategories" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -36,23 +42,19 @@
                     </div>
                 </td>
             </tr>
-            <?php if ($customFields): ?>
+            <?php if ($_getvar('customFields')): ?>
                 <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
             <?php endif; ?>
             </tbody>
         </table>
 
-        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div class="action-in-box">
         <button
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-            form="frmCategories" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmCategories" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
             <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

@@ -1,22 +1,28 @@
+<?php
+/**
+ * @var callable              $_getvar
+ * @var \SP\Mvc\View\Template $this
+ */
+?>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
     <header class="mdl-layout__header mdl-color--indigo-400">
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-icon">
-                <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
+                <img class="logo btn-menu" src="<?php echo $_getvar('logonobg'); ?>"
                      alt="logo"
-                     data-route="<?php echo $homeRoute; ?>"
+                     data-route="<?php echo $_getvar('homeRoute'); ?>"
                      data-view="account"
                      data-historyReset="1"/>
             </span>
 
-            <?php if (isset($useMenu) && $loggedIn): ?>
+            <?php if ($_getvar('useMenu') && $_getvar('loggedIn')): ?>
                 <!-- Add spacer, to align navigation to the right -->
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation -->
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
                     <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
-                    foreach ($actions as $action): ?>
+                    foreach ($_getvar('actions') as $action): ?>
                         <a id="btn-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                             <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                                 <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
@@ -47,12 +53,12 @@
 
                     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                         for="users-menu-lower-right">
-                        <?php if ($showPassIcon): ?>
+                        <?php if ($_getvar('showPassIcon')): ?>
                             <li id="btnUserPass" class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
-                                data-item-id="<?php echo $ctx_userId; ?>"
-                                data-sk="<?php echo $sk; ?>">
+                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
+                                data-sk="<?php echo $_getvar('sk'); ?>">
                                 <i class="material-icons">lock</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
                             </li>
@@ -76,12 +82,12 @@
         </div>
     </header>
 
-    <?php if (isset($useMenu) && $loggedIn): ?>
+    <?php if ($_getvar('useMenu') && $_getvar('loggedIn')): ?>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title"><?php echo $app_name; ?></span>
+            <span class="mdl-layout-title"><?php echo $_getvar('app_name'); ?></span>
             <nav class="mdl-navigation">
                 <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
-                foreach ($actions as $action): ?>
+                foreach ($_getvar('actions') as $action): ?>
                     <a id="btn-drawer-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
@@ -105,13 +111,13 @@
 
                 <span class="mdl-menu__item--full-bleed-divider"></span>
 
-                <?php if ($showPassIcon): ?>
+                <?php if ($_getvar('showPassIcon')): ?>
                     <a class="btn-action mdl-navigation__link"
                        title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
-                       data-item-id="<?php echo $ctx_userId; ?>"
-                       data-sk="<?php echo $sk; ?>">
+                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
+                       data-sk="<?php echo $_getvar('sk'); ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Cambiar Clave de Usuario'); ?>
                     </a>
@@ -122,11 +128,14 @@
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
-                    <span id="user-name"><?php echo $ctx_userName; ?></span>
+                    <span id="user-name"><?php echo $_getvar('ctx_userName'); ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $ctx_userGroup); ?></span>
-                    <?php /** @var \SP\Html\Assets\IconInterface $userType */
-                    if ($ctx_userType !== null): ?>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $_getvar('ctx_userGroup')); ?></span>
+                    <?php
+                    /** @var \SP\Html\Assets\IconInterface $ctx_userType */
+                    $ctx_userType = $_getvar('ctx_userType');
+
+                    if ($ctx_userType): ?>
                         <i id="user-type" class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
                         <span for="user-type"
                               class="mdl-tooltip mdl-tooltip--top"><?php echo $ctx_userType->getTitle(); ?></span>
@@ -145,26 +154,25 @@
                 <span class="mdl-menu__item--full-bleed-divider"></span>
 
                 <a class="mdl-navigation__link" href="#">
-                    <?php if ($httpsEnabled): ?>
+                    <?php if ($_getvar('httpsEnabled')): ?>
                         <i class="material-icons mdl-color-text--teal-500">lock</i>
                     <?php else: ?>
                         <i class="material-icons mdl-color-text--red-900">lock_open</i>
                     <?php endif; ?>
 
-                    <?php if ($isDemoMode): ?>
+                    <?php if ($_getvar('isDemo')): ?>
                         <span class="status-info"><?php echo __('Demo'); ?></span>
                     <?php endif; ?>
 
-                    <?php echo $app_name, ' ', $app_version; ?>
+                    <?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?>
                 </a>
             </nav>
         </div>
     <?php endif; ?>
 
     <main class="mdl-layout__content">
-        <div id="content" data-page="<?php echo isset($contentPage) ? $contentPage : '' ?>">
-            <?php /** @var \SP\Mvc\View\Template $this */
-            if ($this->hashContentTemplates()):
+        <div id="content" data-page="<?php echo $_getvar('contentPage', ''); ?>">
+            <?php if ($this->hashContentTemplates()):
                 foreach ($this->getContentTemplates() as $template):
                     include $template;
                 endforeach;

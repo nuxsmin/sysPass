@@ -1,6 +1,13 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
 
-<?php if (!$pharIsAvailable): ?>
+<?php if ($_getvar('pharIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('La extensión \'%s\' no está disponible'), 'phar'); ?>
         <i id="help-phar" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
@@ -25,10 +32,13 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Resultado'); ?></div>
 
-            <?php echo $lastBackupTime; ?>
+            <?php echo $_getvar('lastBackupTime'); ?>
         </td>
     </tr>
-    <?php if ($ctx_userIsAdminApp): ?>
+    <?php if ($_getvar('ctx_userIsAdminApp')):
+        $backupFile = $_getvar('backupFile');
+        $backupDbFile = $_getvar('backupDbFile');
+        ?>
         <tr>
             <td class="descField">
                 <?php echo __('Descargar Actual'); ?>
@@ -103,10 +113,12 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Resultado'); ?></div>
 
-                <?php echo $lastExportTime; ?>
+                <?php echo $_getvar('lastExportTime'); ?>
             </td>
         </tr>
-        <?php if ($ctx_userIsAdminApp): ?>
+        <?php if ($_getvar('ctx_userIsAdminApp')):
+            $exportFile = $_getvar('exportFile');
+            ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Descargar Actual'); ?>
@@ -119,7 +131,7 @@
                            download="<?php echo $exportFile['filename']; ?>"
                            class="download">
                             <button type="button" class="mdl-button mdl-js-button">
-                                XML <?php echo $siteName; ?>
+                                XML <?php echo $_getvar('siteName'); ?>
                             </button>
                         </a>
                     <?php else: echo __('No hay archivos XML para descargar'); ?>

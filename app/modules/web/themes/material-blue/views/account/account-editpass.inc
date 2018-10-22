@@ -1,21 +1,29 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons     $icons
- * @var \SP\DataModel\AccountVData $accountData
- * @var \SP\Config\ConfigData      $configData
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
+
+/** @var \SP\DataModel\AccountExtData $accountData */
+$accountData = $_getvar('accountData');
+
+/** @var \SP\Services\Account\AccountAcl $accountAcl */
+$accountAcl = $_getvar('accountAcl');
 ?>
 
 <div class="data-container">
     <div id="title" class="titleNormal">
-        <i class="material-icons"><?php echo $title['icon']; ?></i>
-        <?php echo $title['name']; ?>
+        <i class="material-icons"><?php echo $_getvar('title')['icon']; ?></i>
+        <?php echo $_getvar('title')['name']; ?>
     </div>
 
     <form method="post" name="editpass" id="frmEditPass" class="form-action"
           data-onsubmit="account/save"
-          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
-          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+          data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
+          data-item-id="<?php echo $_getvar('accountId', ''); ?>"
           data-hash="">
         <table class="data">
             <tr>
@@ -91,7 +99,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="password_date_expire" name="password_date_expire" type="date"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                                   value="<?php echo $accountPassDateChange; ?>"
+                                   value="<?php echo $_getvar('accountPassDateChange'); ?>"
                                    data-dst-unix="password_date_expire_unix">
                             <input type='hidden' name='password_date_expire_unix' value=""/>
                             <label class="mdl-textfield__label"
@@ -103,7 +111,8 @@
                 </tr>
             <?php endif; ?>
         </table>
-        <input type="hidden" name="sk" value="">
+
+        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
 
         <div class="item-actions">
@@ -128,6 +137,5 @@
 </div>
 
 <script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
     $('input:password:visible:first').focus();
 </script>

@@ -1,4 +1,14 @@
-<?php /** @var $sessionTimeout \SP\DataModel\ItemPreset\SessionTimeout */ ?>
+<?php
+/**
+ * @var \SP\DataModel\ItemPreset\SessionTimeout $sessionTimeout
+ * @var \SP\Core\UI\ThemeIcons                  $icons
+ * @var \SP\Config\ConfigData                   $configData
+ * @var callable                                $_getvar
+ * @var \SP\Mvc\View\Template                   $this
+ */
+
+$sessionTimeout = $_getvar('sessionTimeout');
+?>
 
 <table class="popup-data">
     <tbody>

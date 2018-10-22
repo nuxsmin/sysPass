@@ -416,4 +416,14 @@ final class AccountSearchItem
     {
         $this->tags = $tags;
     }
+
+    /**
+     * @param $wikiFilter
+     *
+     * @return bool
+     */
+    public function isWikiMatch($wikiFilter)
+    {
+        return preg_match('/^(' . $wikiFilter . ').*/i', $this->accountSearchVData->getName()) !== false;
+    }
 }

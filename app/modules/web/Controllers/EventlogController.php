@@ -54,9 +54,12 @@ final class EventlogController extends ControllerBase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG)) {
             return;
         }
@@ -94,9 +97,12 @@ final class EventlogController extends ControllerBase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -113,6 +119,8 @@ final class EventlogController extends ControllerBase
     public function clearAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->eventLogService->clear();
 
             $this->eventDispatcher->notifyEvent('clear.eventlog',

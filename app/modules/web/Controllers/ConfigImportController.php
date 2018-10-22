@@ -49,9 +49,12 @@ final class ConfigImportController extends SimpleControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function importAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
         }
@@ -64,7 +67,6 @@ final class ConfigImportController extends SimpleControllerBase
         $importParams->setCsvDelimiter($this->request->analyzeString('csvDelimiter'));
 
         try {
-
             $this->eventDispatcher->notifyEvent('run.import.start', new Event($this));
 
             SessionContext::close();

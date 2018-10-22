@@ -1,13 +1,23 @@
 <?php
+/**
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
+ */
+
+/** @var \SP\DataModel\AccountExtData $accountData */
+$accountData = $_getvar('accountData');
+
 /** @var \SP\Services\Account\AccountAcl $accountAcl */
-/** @var \SP\DataModel\AccountHistoryData $accountData */
-/** @var \SP\Mvc\View\Template $this */
+$accountAcl = $_getvar('accountAcl');
 ?>
 
 <div class="data-container">
     <div id="title" class="titleNormal">
-        <i class="material-icons" title="<?php echo __('Histórico'); ?>"><?php echo $title['icon']; ?></i>
-        <?php echo $title['name']; ?>
+        <i class="material-icons" title="<?php echo __('Histórico'); ?>"><?php echo $_getvar('title')['icon']; ?></i>
+        <?php echo $_getvar('title')['name']; ?>
     </div>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -22,10 +32,10 @@
         <div class="mdl-tabs__panel is-active" id="account-panel">
             <form method="post" name="frmaccount" id="frmAccount" class="form-action"
                   data-onsubmit="account/save"
-                  data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
-                  data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+                  data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
+                  data-item-id="<?php echo $_getvar('accountId', ''); ?>"
                   data-hash="">
-                <input type="hidden" name="sk" value="">
+                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
 
                 <table class="data">
@@ -50,8 +60,8 @@
 
                             <select id="client_id" name="client_id" class="select-box sel-chosen-client"
                                     tabindex="2" required disabled>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
-                                foreach ($clients as $client): ?>
+                                <?php /** @var \SP\Mvc\View\Components\SelectItem $client */
+                                foreach ($_getvar('clients') as $client): ?>
                                     <option
                                             value="<?php echo $client->getId(); ?>" <?php echo $client->isSelected() ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -66,8 +76,8 @@
                             <select id="category_id" name="category_id" class="select-box"
                                     tabindex="3" required disabled>
                                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
-                                foreach ($categories as $category): ?>
+                                <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
+                                foreach ($_getvar('categories') as $category): ?>
                                     <option
                                             value="<?php echo $category->getId(); ?>" <?php echo $category->isSelected() ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -107,7 +117,7 @@
                                 <input id="password_date_expire" name="password_date_expire" type="date"
                                        class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                        tabindex="8"
-                                       value="<?php echo $accountPassDateChange; ?>" readonly>
+                                       value="<?php echo $_getvar('accountPassDateChange'); ?>" readonly>
                                 <label class="mdl-textfield__label"
                                        for="password_date_expire"><?php echo __('Fecha'); ?></label>
                             </div>
@@ -124,7 +134,8 @@
                                        for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                             </div>
                     </tr>
-                    <?php if ($accountAcl->isShowHistory() && count($historyData) > 0): ?>
+                    <?php if ($accountAcl->isShowHistory()
+                        && count($_getvar('historyData', [])) > 0): ?>
                         <tr>
                             <td class="descField"><?php echo __('Historial'); ?></td>
                             <td class="valField">
@@ -134,9 +145,11 @@
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Seleccionar fecha'); ?></option>
-                                    <?php foreach ($historyData as $historyId => $historyData): ?>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $history */
+                                    foreach ($_getvar('historyData') as $history): ?>
                                         <option
-                                                value="<?php echo $historyId; ?>" <?php echo ($accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
+                                                value="<?php echo $history->getId(); ?>"
+                                            <?php echo $history->isSelected() ? 'selected' : ''; ?>><?php echo $history->getName(); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </td>
@@ -160,8 +173,3 @@
 
     <?php include $this->includeTemplate('actions'); ?>
 </div>
-<script>
-    (function () {
-        sysPassApp.sk.set("<?php echo $sk; ?>");
-    })();
-</script>

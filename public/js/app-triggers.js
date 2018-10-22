@@ -178,6 +178,8 @@ sysPass.Triggers = function (log) {
 
                 const lastHistory = sysPassApp.requests.history.del();
 
+                lastHistory.data.sk = sysPassApp.sk.get();
+
                 sysPassApp.requests.getActionCall(lastHistory, lastHistory.callback);
             }
         }).on("submit", ".form-action", function (e) {
@@ -238,19 +240,20 @@ sysPass.Triggers = function (log) {
                     sysPassApp.requests.history.reset();
                 }
 
-                sysPassApp.actions.doAction({r: $this.data("route")}, $this.data("view"));
+                sysPassApp.actions.getContent({r: $this.data("route")}, $this.data("view"));
             });
 
-            if (sysPassApp.config.STATUS.CHECK_NOTIFICATIONS) {
-                sysPassApp.actions.notification.getActive();
 
+            sysPassApp.actions.notification.getActive();
+
+            if (sysPassApp.config.STATUS.CHECK_NOTIFICATIONS) {
                 setInterval(function () {
                     sysPassApp.actions.notification.getActive();
                 }, 120000);
             }
 
             if ($obj.data("upgraded") === 0) {
-                sysPassApp.actions.doAction({r: "account/index"}, "search");
+                sysPassApp.actions.getContent({r: "account/index"}, "search");
             } else {
                 const $content = $("#content");
                 const page = $content.data('page');
@@ -349,17 +352,17 @@ sysPass.Triggers = function (log) {
 
             selectDetect($container);
 
-            const $sk = $container.find(":input [name='sk']");
+            const $sk = $container.find(":input[name='sk']");
 
-            if ($sk.length > 0) {
-                sysPassApp.sk.set($sk.val());
+            if ($sk.length > 0 && $sk[0].value !== "") {
+                sysPassApp.sk.set($sk[0].value);
             }
 
             if (typeof sysPassApp.theme.viewsTriggers.common === "function") {
                 sysPassApp.theme.viewsTriggers.common($container);
             }
 
-            initializeTags();
+            initializeTags($container);
 
             sysPassApp.triggers.updateFormHash($container);
         },
@@ -455,10 +458,11 @@ sysPass.Triggers = function (log) {
         }
     };
 
-    const initializeTags = function () {
+    const initializeTags = function ($container) {
         log.info("initializeTags");
 
-        $(".select-box-tags").selectize({
+        $container
+            .find(".select-box-tags").selectize({
             persist: false,
             valueField: 'id',
             labelField: 'name',
@@ -467,8 +471,11 @@ sysPass.Triggers = function (log) {
             onInitialize: function () {
                 const $wrapper = $(this.$wrapper[0]);
                 const $input = $(this.$input[0]);
+                const value = this.getValue();
 
-                $input.attr("data-hash", sysPassApp.util.hash.md5(this.getValue().join()));
+                if (value !== "") {
+                    $input.attr("data-hash", sysPassApp.util.hash.md5(value.join()));
+                }
 
                 const currentItemId = $input.data("currentItemId");
 

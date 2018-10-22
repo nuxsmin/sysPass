@@ -1,14 +1,21 @@
 <?php
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $user \SP\DataModel\UserData */
+/**
+ * @var \SP\DataModel\UserData $user
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+
+$user = $_getvar('user');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo $route; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tr>
@@ -61,7 +68,6 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 
     <div class="action-in-box">
@@ -72,7 +78,3 @@
         </button>
     </div>
 </div>
-
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

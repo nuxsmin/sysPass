@@ -102,19 +102,16 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function searchAction()
     {
         try {
-            $this->checkSecurityToken($this->session, $this->request);
+            $this->checkSecurityToken($this->previousSk, $this->request);
 
             $accountSearchHelper = $this->dic->get(AccountSearchHelper::class);
             $accountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
 
-            $data = [
-                'sk' => $this->session->generateSecurityKey(),
+            return $this->returnJsonResponseData([
                 'html' => $this->render()
-            ];
-
-            return $this->returnJsonResponseData($data);
+            ]);
         } catch (\Exception $e) {
             processException($e);
 
@@ -133,6 +130,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function viewAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -178,10 +177,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      */
     public function viewLinkAction($hash)
     {
-        $layoutHelper = $this->dic->get(LayoutHelper::class);
-        $layoutHelper->getPublicLayout('account-link', 'account');
-
         try {
+            $layoutHelper = $this->dic->get(LayoutHelper::class);
+            $layoutHelper->getPublicLayout('account-link', 'account');
+
             $publicLinkService = $this->dic->get(PublicLinkService::class);
             $publicLinkData = $publicLinkService->getByHash($hash);
 
@@ -247,6 +246,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function createAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForBlank(Acl::ACCOUNT_CREATE);
 
@@ -285,6 +286,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function copyAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -329,6 +332,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function editAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -375,6 +380,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function deleteAction($id = null)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -418,6 +425,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function editPassAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -461,6 +470,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function viewHistoryAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountHistoryService = $this->dic->get(AccountHistoryService::class);
             $accountHistoryData = $accountHistoryService->getById($id);
 
@@ -504,6 +515,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function requestAccessAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
             $accountHelper->setViewForRequest($this->accountService->getById($id), Acl::ACCOUNT_REQUEST);
@@ -536,6 +549,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function viewPassAction($id, $parentId = 0)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
             $account = $this->accountService->getPasswordForId($id);
@@ -594,6 +609,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function viewPassHistoryAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
             $account = $this->accountService->getPasswordHistoryForId($id);
@@ -634,9 +651,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function copyPassAction($id)
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
         $account = $this->accountService->getPasswordForId($id);
@@ -668,9 +688,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function copyPassHistoryAction($id)
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
         $account = $this->accountService->getPasswordHistoryForId($id);
@@ -702,6 +725,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveCreateAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $form = new AccountForm($this->dic);
             $form->validate(Acl::ACCOUNT_CREATE);
 
@@ -748,6 +773,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveEditAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $form = new AccountForm($this->dic, $id);
             $form->validate(Acl::ACCOUNT_EDIT);
 
@@ -793,6 +820,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveEditPassAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $form = new AccountForm($this->dic, $id);
             $form->validate(Acl::ACCOUNT_EDIT_PASS);
 
@@ -835,6 +864,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveEditRestoreAction($historyId, $id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->accountService->editRestore($historyId, $id);
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
@@ -871,6 +902,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveDeleteAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -914,6 +947,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function saveRequestAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $description = $this->request->analyzeString('description');
 
             if (empty($description)) {

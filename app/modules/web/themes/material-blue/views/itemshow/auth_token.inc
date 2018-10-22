@@ -1,14 +1,20 @@
 <?php
-/** @var  \SP\DataModel\AuthTokenData $authToken */
-/** @var  \SP\Core\UI\ThemeIcons $icons */
+/**
+ * @var  \SP\DataModel\AuthTokenData $authToken
+ * @var \SP\Core\UI\ThemeIcons       $icons
+ * @var \SP\Config\ConfigData        $configData
+ * @var callable                     $_getvar
+ * @var \SP\Mvc\View\Template        $this
+ */
+
+$authToken = $_getvar('authToken');
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -17,10 +23,10 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Usuario'); ?></div>
 
-                    <select id="selUsers" name="users" class="select-box" required <?php echo $disabled; ?>>
+                    <select id="selUsers" name="users" class="select-box" required <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
-                        foreach ($users as $user): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        foreach ($_getvar('users') as $user): ?>
                             <option value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $user->getName(), $user->getItemProperty('login')); ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -32,16 +38,16 @@
                     <div class="lowres-title"><?php echo __('Acción'); ?></div>
 
                     <select id="selActions" name="actions"
-                            class="select-box" required <?php echo $disabled; ?>>
+                            class="select-box" required <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Seleccionar Acción'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $actions */
-                        foreach ($actions as $action): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $action */
+                        foreach ($_getvar('actions') as $action): ?>
                             <option value="<?php echo $action->getId(); ?>" <?php echo $action->isSelected() ? 'selected' : ''; ?>><?php echo $action->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
             </tr>
-            <?php if (!$isView): ?>
+            <?php if (!$_getvar('isView')): ?>
                 <tr>
                     <td class="descField"><?php echo __('Clave'); ?></td>
                     <td class="valField">
@@ -79,7 +85,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div class="action-in-box">
@@ -90,6 +95,3 @@
         </button>
     </div>
 </div>
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

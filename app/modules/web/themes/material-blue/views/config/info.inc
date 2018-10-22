@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
+
 <div id="title" class="titleNormal">
     <i class="material-icons">info</i>
     <?php use SP\Util\Version;
@@ -23,11 +32,11 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Base de Datos'); ?></div>
 
-            <?php foreach ($dbInfo as $infoattr => $infoval): ?>
+            <?php foreach ($_getvar('dbInfo') as $infoattr => $infoval): ?>
                 <?php printf('%s : %s', \SP\Html\Html::strongText($infoattr), $infoval); ?>
                 <br>
             <?php endforeach; ?>
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Nombre')), (!$isDemo) ? $dbName : '***'); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Nombre')), (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'); ?>
         </td>
     </tr>
     <tr>
@@ -42,14 +51,14 @@
             <?php printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones')), implode(', ', get_loaded_extensions())); ?>
             <br>
             <?php
-                if (!empty($missingExtensions)) {
-                    printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones no disponibles')), implode(', ', $missingExtensions));
-                    echo '<br>';
-                }
+            if (!empty($_getvar('missingExtensions'))) {
+                printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones no disponibles')), implode(', ', $_getvar('missingExtensions')));
+                echo '<br>';
+            }
             ?>
             <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
             <br>
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$isDemo) ? get_current_user() : '***'); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
             <?php if (function_exists('opcache_get_status') && version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
                 <br>
                 <?php echo \SP\Html\Html::strongText(__('OP Cache')); ?>
@@ -66,7 +75,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Servidor'); ?></div>
 
-            <?php echo (!$isDemo) ? \SP\Html\Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
+            <?php echo (!$_getvar('isDemo')) ? \SP\Html\Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
         </td>
     </tr>
     <tr>
@@ -76,7 +85,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Copia de Configuración'); ?></div>
 
-            <?php echo $configBackupDate; ?>
+            <?php echo $_getvar('configBackupDate'); ?>
         </td>
     </tr>
     <tr>
@@ -97,7 +106,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Idioma'); ?></div>
 
-            <?php echo $locale; ?>
+            <?php echo $_getvar('locale'); ?>
         </td>
     </tr>
     <tr>
@@ -114,7 +123,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Sesión Encriptada'); ?></div>
 
-            <?php echo $securedSession ? __('Sí') : __('No'); ?>
+            <?php echo $_getvar('securedSession') ? __('Sí') : __('No'); ?>
         </td>
     </tr>
     <tr>
@@ -125,8 +134,8 @@
             <div class="lowres-title"><?php echo __('Plugins Cargados'); ?></div>
 
             <ul class="mdl-list">
-                <?php /** @var \SP\Plugin\PluginInterface[] $plugins */
-                foreach ($plugins as $name => $plugin): ?>
+                <?php /** @var \SP\Plugin\PluginInterface $plugin */
+                foreach ($_getvar('plugins') as $name => $plugin): ?>
                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">extension</i>

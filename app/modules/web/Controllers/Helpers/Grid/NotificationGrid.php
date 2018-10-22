@@ -84,7 +84,8 @@ final class NotificationGrid extends GridBase
             $this->setNonAdminFilter(
                 $this->getDeleteAction()
                     ->setTitle(__('Eliminar Seleccionados'))
-                    ->setName(__('Eliminar Seleccionados'))),
+                    ->setName(__('Eliminar Seleccionados'))
+                    ->setIsSelection(true)),
             true);
 
 

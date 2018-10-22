@@ -2,9 +2,12 @@
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
  * @var \SP\Config\ConfigData  $configData
- */ ?>
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
 
-<?php if (!$ldapIsAvailable): ?>
+<?php if (!$_getvar('ldapIsAvailable')): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('La extensión \'%s\' no está disponible'), 'ldap'); ?>
         <i id="help-ldap" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
@@ -248,8 +251,8 @@
                 <select id="ldap_defaultgroup" name="ldap_defaultgroup"
                         class="select-box sel-chosen-usergroup" required>
                     <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
-                    foreach ($userGroups as $userGroup): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                    foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
                                 value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
                     <?php endforeach; ?>
@@ -273,8 +276,8 @@
                 <select id="ldap_defaultprofile" name="ldap_defaultprofile"
                         class="select-box sel-chosen-profile" required>
                     <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userProfiles */
-                    foreach ($userProfiles as $userProfile): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $userProfile */
+                    foreach ($_getvar('userProfiles') as $userProfile): ?>
                         <option
                                 value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
                     <?php endforeach; ?>

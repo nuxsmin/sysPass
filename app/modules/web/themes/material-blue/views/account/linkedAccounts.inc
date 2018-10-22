@@ -1,13 +1,15 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
+ * @var callable               $_getvar
+ * @var \SP\Config\ConfigData  $configData
  */
 ?>
 
 <div id="data-linkedAccounts">
     <div class="data">
         <ul class="mdl-list">
-            <?php foreach ($linkedAccounts as $account): ?>
+            <?php foreach ($_getvar('linkedAccounts') as $account): ?>
                 <li class="mdl-list__item">
                     <span class="btn-action mdl-list__item-primary-content">
                         <i class="material-icons mdl-list__item-icon">layers</i>
@@ -19,7 +21,7 @@
                            data-action-route="account/edit"
                            data-item-id="<?php echo $account->id; ?>"
                            data-onclick="account/edit"
-                           data-action-sk="<?php echo $sk; ?>">
+                           data-action-sk="<?php echo $_getvar('sk'); ?>">
                             <?php echo $icons->getIconEdit()->getIcon(); ?></i>
 
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
@@ -27,7 +29,7 @@
                            data-action-route="account/view"
                            data-item-id="<?php echo $account->id; ?>"
                            data-onclick="account/view"
-                           data-action-sk="<?php echo $sk; ?>">
+                           data-action-sk="<?php echo $_getvar('sk'); ?>">
                         <?php echo $icons->getIconView()->getIcon(); ?></i>
                     </span>
                 </li>

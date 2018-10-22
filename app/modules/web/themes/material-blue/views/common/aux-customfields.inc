@@ -2,7 +2,11 @@
 /**
  * @var \SP\Core\UI\ThemeIcons                     $icons
  * @var \SP\Services\CustomField\CustomFieldItem[] $customFields
+ * @var callable                                   $_getvar
+ * @var \SP\Mvc\View\Template                      $this
  */
+
+$customFields = $_getvar('customFields');
 
 foreach ($customFields as $index => $field):?>
     <tr>
@@ -37,7 +41,7 @@ foreach ($customFields as $index => $field):?>
             <?php endif; ?>
         </td>
         <td class="valField">
-            <?php if ($field->typeName === 'color' && $isView): ?>
+            <?php if ($field->typeName === 'color' && $_getvar('isView')): ?>
                 <span class="round custom-input-color"
                       style="background-color: <?php echo $field->value; ?>;"></span>
             <?php elseif ($field->typeName === 'password'): ?>
@@ -45,10 +49,10 @@ foreach ($customFields as $index => $field):?>
                     <input id="<?php echo $field->formId; ?>"
                            name="customfield[<?php echo $field->definitionId; ?>]"
                            type="password"
-                           class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__no-pki <?php echo $isView ? 'passwordfield__input-show' : 'passwordfield__input'; ?>"
+                           class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__no-pki <?php echo $_getvar('isView') ? 'passwordfield__input-show' : 'passwordfield__input'; ?>"
                            data-clipboard="1"
                            maxlength="500"
-                           value="<?php echo !$showViewCustomPass && !empty($field->value) ? '***' : htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $readonly; ?>>
+                           value="<?php echo !$_getvar('showViewCustomPass') && !empty($field->value) ? '***' : htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $_getvar('readonly'); ?>>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>
@@ -56,7 +60,7 @@ foreach ($customFields as $index => $field):?>
                 <div class="mdl-textfield mdl-js-textfield">
                     <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
                               name="customfield[<?php echo $field->definitionId; ?>]"
-                              id="<?php echo $field->formId; ?>" <?php echo $readonly; ?>><?php echo SP\Html\Html::sanitize($field->value); ?></textarea>
+                              id="<?php echo $field->formId; ?>" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($field->value, ENT_QUOTES); ?></textarea>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>
@@ -67,7 +71,7 @@ foreach ($customFields as $index => $field):?>
                            type="<?php echo $field->typeName; ?>"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="500"
-                           value="<?php echo SP\Html\Html::sanitize($field->value); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $readonly; ?>>
+                           value="<?php echo htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $_getvar('readonly'); ?>>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>

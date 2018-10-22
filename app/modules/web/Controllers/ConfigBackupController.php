@@ -46,9 +46,12 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function fileBackupAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
         }

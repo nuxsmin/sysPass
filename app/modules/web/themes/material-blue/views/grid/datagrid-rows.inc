@@ -1,11 +1,15 @@
 <?php
 /**
- * @var $data  SP\Html\DataGrid\DataGridTab
- * @var $this  \SP\Mvc\View\Template
+ * @var SP\Html\DataGrid\DataGridTab $data
+ * @var \SP\Mvc\View\Template        $this
+ * @var callable                     $_getvar
  */
 
 use SP\Html\Html;
 
+if (!isset($data)) {
+    $data = $_getvar('data');
+}
 ?>
 
     <!-- Rows -->

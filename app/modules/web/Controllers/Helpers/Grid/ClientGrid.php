@@ -69,7 +69,8 @@ final class ClientGrid extends GridBase
         $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados')),
+                ->setTitle(__('Eliminar Seleccionados'))
+                ->setIsSelection(true),
             true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));

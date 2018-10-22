@@ -1,13 +1,17 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                             $icons
- * @var \SP\Html\DataGrid\Action\DataGridActionInterface[] $accountActions
- * @var \SP\Html\DataGrid\Action\DataGridActionInterface[] $accountActionsMenu
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var callable                        $_getvar
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
 ?>
+
 <div class="item-actions">
     <ul>
-        <?php foreach ($accountActions as $action): ?>
+        <?php /** @var \SP\Html\DataGrid\Action\DataGridActionInterface $action */
+        foreach ($_getvar('accountActions') as $action): ?>
             <li>
                 <button id="<?php echo $action->getId(); ?>"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $action->getClassesAsString(), ' ', $action->getIcon()->getClassButton(); ?>"
@@ -19,7 +23,9 @@
             </li>
         <?php endforeach; ?>
     </ul>
-    <?php if (isset($accountActionsMenu) && count($accountActionsMenu) > 0): ?>
+    <?php
+    $accountActionsMenu = $_getvar('accountActionsMenu');
+    if ($accountActionsMenu && count($accountActionsMenu) > 0): ?>
         <div>
             <button id="actions-menu-account"
                     class="mdl-button mdl-js-button mdl-button--icon">

@@ -1,4 +1,14 @@
-<?php /** @var $private \SP\DataModel\ItemPreset\AccountPrivate */ ?>
+<?php
+/**
+ * @var \SP\DataModel\ItemPreset\AccountPrivate $private
+ * @var \SP\Core\UI\ThemeIcons                  $icons
+ * @var \SP\Config\ConfigData                   $configData
+ * @var callable                                $_getvar
+ * @var \SP\Mvc\View\Template                   $this
+ */
+
+$private = $_getvar('private');
+?>
 
 <table class="popup-data">
     <tbody>

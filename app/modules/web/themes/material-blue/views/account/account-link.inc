@@ -1,14 +1,21 @@
 <?php
 /**
- * @var \SP\DataModel\AccountExtData $accountData
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
+
+/** @var \SP\DataModel\AccountExtData $accountData */
+$accountData = $_getvar('accountData');
 ?>
 
 <div id="actions" class="public-link" align="center">
     <div id="content" class="public-link">
         <div id="title" class="titleNormal">
-            <i class="material-icons"><?php echo $title['icon']; ?></i>
-            <?php echo $title['name']; ?>
+            <i class="material-icons"><?php echo $_getvar('title')['icon']; ?></i>
+            <?php echo $_getvar('title')['name']; ?>
         </div>
         <table class="data">
             <tr>
@@ -81,10 +88,11 @@
             <tr>
                 <td class="descField"><?php echo __('Clave'); ?></td>
                 <td class="valField">
-                    <?php if ($useImage): ?>
+                    <?php if ($_getvar('useImage')): ?>
                         <div class="lowres-title"><?php echo __('Clave'); ?></div>
 
-                        <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPassImage; ?>"/>
+                        <img class="account-pass-image"
+                             src="data:image/png;base64,<?php echo $_getvar('accountPassImage'); ?>"/>
                     <?php else: ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="password" name="password" type="text"
@@ -98,13 +106,13 @@
 
         <div class="item-actions">
             <ul>
-                <?php if (!$useImage): ?>
+                <?php if (!$_getvar('useImage')): ?>
                     <li>
                         <button id="btnClipPass"
                                 class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#password"
                                 data-item-id="<?php echo $accountData->getId(); ?>"
-                                data-sk="<?php echo $sk; ?>"
+                                data-sk="<?php echo $_getvar('sk'); ?>"
                                 data-history="0"
                                 data-onclick="account/copypass">
                             <i class="material-icons">content_paste</i>

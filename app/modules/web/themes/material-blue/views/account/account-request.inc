@@ -1,8 +1,14 @@
 <?php
 /**
- * @var $icons \SP\Core\UI\ThemeIcons
- * @var $accountData \SP\DataModel\AccountVData
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
+
+/** @var \SP\DataModel\AccountExtData $accountData */
+$accountData = $_getvar('accountData');
 ?>
 
 <div class="data-container">
@@ -10,8 +16,8 @@
 
     <form method="post" name="requestmodify" id="frmRequestModify" class="form-action"
           data-onsubmit="account/request"
-          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
-          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+          data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
+          data-item-id="<?php echo $_getvar('accountId', ''); ?>"
           data-hash="">
         <table class="data">
             <tr>
@@ -48,7 +54,8 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="sk" value="">
+
+        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
 
@@ -71,6 +78,3 @@
         </ul>
     </div>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

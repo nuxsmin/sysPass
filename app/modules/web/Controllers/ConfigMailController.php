@@ -45,9 +45,13 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * saveAction
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function saveAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
 
@@ -109,9 +113,13 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * checkAction
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $mailParams = new MailParams();
         $mailParams->server = $this->request->analyzeString('mail_server');
         $mailParams->port = $this->request->analyzeInt('mail_port', 25);

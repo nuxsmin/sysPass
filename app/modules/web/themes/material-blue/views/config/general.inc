@@ -1,6 +1,10 @@
 <?php
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $this \SP\Mvc\View\Template */
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
 ?>
 <form method="post" name="frmConfig" id="frmConfig" class="form-action"
       data-onsubmit="config/save"
@@ -12,6 +16,8 @@
     <?php include $this->includeTemplate('general-events'); ?>
     <?php include $this->includeTemplate('general-proxy'); ?>
     <?php include $this->includeTemplate('general-auth'); ?>
+
+    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 </form>
 
 <div class="tab-actions">

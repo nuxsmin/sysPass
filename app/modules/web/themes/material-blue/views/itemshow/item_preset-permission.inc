@@ -1,6 +1,9 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                  $icons
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 <table class="popup-data">
@@ -13,8 +16,8 @@
                     <select id="users_view" name="users_view[]" multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $usersView */
-                        foreach ($usersView as $user): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        foreach ($_getvar('usersView') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
@@ -30,8 +33,8 @@
                     <select id="users_edit" name="users_edit[]" multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $usersEdit */
-                        foreach ($usersEdit as $user): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        foreach ($_getvar('usersEdit') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
@@ -54,8 +57,8 @@
                     <select id="user_groups_view" name="user_groups_view[]" multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroupsView */
-                        foreach ($userGroupsView as $userGroup): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                        foreach ($_getvar('userGroupsView') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"
@@ -71,8 +74,8 @@
                     <select id="user_groups_edit" name="user_groups_edit[]" multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroupsEdit */
-                        foreach ($userGroupsEdit as $userGroup): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                        foreach ($_getvar('userGroupsEdit') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"

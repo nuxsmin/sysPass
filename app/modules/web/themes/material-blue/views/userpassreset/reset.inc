@@ -1,4 +1,11 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
 
 <div id="box-pub-noheader">
     <div class="box-spacer"></div>
@@ -31,9 +38,8 @@
                                for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
                     </div>
                 </div>
-                <input type="hidden" name="hash" value="<?php echo $hash; ?>">
+                <input type="hidden" name="hash" value="<?php echo $_getvar('hash'); ?>">
                 <input type="hidden" name="isAjax" value="1">
-                <input type="hidden" name="sk" value="">
             </fieldset>
 
             <div id="box-buttons">

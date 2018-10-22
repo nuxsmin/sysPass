@@ -50,11 +50,16 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
      */
     public function saveAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $mastePassService = $this->dic->get(MasterPassService::class);
 
         $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');
@@ -147,11 +152,13 @@ final class ConfigEncryptionController extends SimpleControllerBase
      */
     public function refreshAction()
     {
-        if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if ($this->config->getConfigData()->isDemoEnabled()) {
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            }
+
             $masterPassService = $this->dic->get(MasterPassService::class);
             $masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
@@ -175,6 +182,8 @@ final class ConfigEncryptionController extends SimpleControllerBase
     public function saveTempAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
             $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
 

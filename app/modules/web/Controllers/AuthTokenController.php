@@ -61,9 +61,12 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -101,16 +104,17 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nueva Autorización'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'authToken/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nueva Autorización'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'authToken/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.authToken.create', new Event($this));
@@ -143,15 +147,14 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$authToken->getUserId()]));
         $this->view->assign('actions', SelectItemAdapter::factory(AuthTokenService::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
 
         $this->view->assign('customFields', $this->getCustomFieldsForItem(Acl::AUTHTOKEN, $authTokenId));
@@ -166,15 +169,18 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Editar Autorización'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'authToken/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Autorización'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'authToken/saveEdit/' . $id);
+
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.authToken.edit', new Event($this));
@@ -196,11 +202,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -239,11 +247,14 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+
             $form = new AuthTokenForm($this->dic);
             $form->validate(Acl::AUTHTOKEN_CREATE);
 
@@ -274,11 +285,14 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+
             $form = new AuthTokenForm($this->dic, $id);
             $form->validate(Acl::AUTHTOKEN_EDIT);
 
@@ -323,14 +337,17 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Autorización'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Autorización'));
+            $this->view->assign('isView', true);
+
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.authToken',

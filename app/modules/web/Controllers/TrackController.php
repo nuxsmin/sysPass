@@ -56,9 +56,12 @@ final class TrackController extends ControllerBase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws UnauthorizedActionException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::TRACK_SEARCH)) {
             throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
         }
@@ -98,11 +101,13 @@ final class TrackController extends ControllerBase
      */
     public function unlockAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
-            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
+                throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+            }
+
             $this->trackService->unlock($id);
 
             $this->eventDispatcher->notifyEvent('unlock.track', new Event($this));
@@ -123,11 +128,13 @@ final class TrackController extends ControllerBase
      */
     public function clearAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {
-            throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {
+                throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
+            }
+
             $this->trackService->clear();
 
             $this->eventDispatcher->notifyEvent('clear.track', new Event($this));

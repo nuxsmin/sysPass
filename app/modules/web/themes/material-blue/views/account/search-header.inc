@@ -1,10 +1,17 @@
 <?php
 /**
- * @var $data    SP\Html\DataGrid\DataGridTab
- * @var $account \SP\Services\Account\AccountSearchItem
- * @var $this    \SP\Mvc\View\Template
+ * @var \SP\Core\UI\ThemeIcons                 $icons
+ * @var callable                               $_getvar
+ * @var \SP\Config\ConfigData                  $configData
+ * @var \SP\Services\Account\AccountSearchItem $account
+ * @var \SP\Html\DataGrid\DataGridTab          $data
  */
+
+if (!isset($data)) {
+    $data = $_getvar('data');
+}
 ?>
+
 <div id="data-search-header" class="data-header data-header-minimal">
     <ul>
         <?php foreach ($data->getHeader()->getSortFields() as $field): ?>
@@ -16,8 +23,10 @@
                 <span for="btn-order-<?php echo $field->getSortKey(); ?>"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo $field->getTitle(); ?></span>
                 <?php
-                $classDown = ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
-                $classUp = ($data->getPager()->getSortKey() == $field->getSortKey() && $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                $classDown = ($data->getPager()->getSortKey() == $field->getSortKey()
+                    && $data->getPager()->getSortOrder() === 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                $classUp = ($data->getPager()->getSortKey() == $field->getSortKey()
+                    && $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
                 ?>
                 <div
                         class="icon material-icons sort-down cursor-pointer <?php echo $classDown; ?>"

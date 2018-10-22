@@ -1,11 +1,12 @@
 <?php
 /**
- * @var $icons \SP\Core\UI\ThemeIcons
+ * @var callable              $_getvar
+ * @var \SP\Mvc\View\Template $this
  */
 ?>
-<?php if (count($errors) > 0): ?>
+<?php if (count($_getvar('errors')) > 0): ?>
     <ul class="errors round">
-        <?php foreach ($errors as $err): ?>
+        <?php foreach ($_getvar('errors') as $err): ?>
             <?php if (is_array($err)): ?>
                 <?php if ($err['type'] === \SP\Core\Exceptions\SPException::CRITICAL): ?>
                     <li class="msg-critical">

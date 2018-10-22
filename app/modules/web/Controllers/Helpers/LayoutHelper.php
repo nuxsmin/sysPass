@@ -66,7 +66,7 @@ final class LayoutHelper extends HelperBase
     public function getFullLayout($page, Acl $acl = null)
     {
         $this->view->addTemplate('main', '_layouts');
-        $this->view->assign('useFixedHeader');
+        $this->view->assign('useFixedHeader', true);
 
         $this->setPage($page);
         $this->initBody();
@@ -97,17 +97,12 @@ final class LayoutHelper extends HelperBase
      */
     public function initBody()
     {
-        $this->view->assign('startTime', microtime());
-
         $this->view->assign('isInstalled', $this->configData->isInstalled());
-        $this->view->assign('sk', $this->loggedIn ? $this->context->generateSecurityKey() : '');
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
         $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', Installer::VERSION_TEXT);
-        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
-        $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');
         $this->view->assign('logoNoText', Bootstrap::$WEBURI . '/public/images/logo_icon.svg');
         $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');
@@ -117,6 +112,7 @@ final class LayoutHelper extends HelperBase
 
         $this->loggedIn = $this->context->isLoggedIn();
 
+        $this->view->assign('sk', $this->view->get('sk') ?: $this->context->generateSecurityKey());
         $this->view->assign('loggedIn', $this->loggedIn);
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
@@ -193,7 +189,7 @@ final class LayoutHelper extends HelperBase
         foreach ($this->dic->get(PluginManager::class)->getLoadedPlugins() as $plugin) {
             $base = str_replace(APP_ROOT, '', $plugin->getBase());
             $base .= DIRECTORY_SEPARATOR . 'public';
-            
+
             $jsResources = $plugin->getJsResources();
             $cssResources = $plugin->getCssResources();
 
@@ -373,7 +369,7 @@ final class LayoutHelper extends HelperBase
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
-        $this->view->assign('useFixedHeader');
+        $this->view->assign('useFixedHeader', true);
 
         $this->setPage($page);
         $this->initBody();

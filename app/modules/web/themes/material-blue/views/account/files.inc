@@ -1,27 +1,30 @@
 <?php
 /**
- * @var \SP\Services\Account\AccountAcl $accountAcl
  * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var callable                        $_getvar
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
 ?>
 
 <div id="data-files">
     <div class="data">
         <div id="list-account-files"
-             data-action-route="<?php echo $fileListRoute; ?>"
-             data-item-id="<?php echo $accountId; ?>"
-             data-history="<?php $accountIsHistory; ?>"
+             data-action-route="<?php echo $_getvar('fileListRoute'); ?>"
+             data-item-id="<?php echo $_getvar('accountId'); ?>"
+             data-history="<?php echo $_getvar('accountIsHistory', false); ?>"
              data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>"
-             data-sk="<?php echo $sk; ?>">
+             data-sk="<?php echo $_getvar('sk'); ?>">
         </div>
 
-        <?php if (isset($editAction)): ?>
+        <?php if ($_getvar('editAction')): ?>
             <div id="box-upload-files">
                 <div id="drop-account-files" class="round active-tooltip dropzone"
-                     data-files-ext="<?php echo $filesAllowedExts; ?>"
-                     data-item-id="<?php echo $accountId; ?>"
-                     data-sk="<?php echo $sk; ?>"
-                     data-action-route="<?php echo $fileUploadRoute; ?>"
+                     data-files-ext="<?php echo $_getvar('filesAllowedExts'); ?>"
+                     data-item-id="<?php echo $_getvar('accountId'); ?>"
+                     data-sk="<?php echo $_getvar('sk'); ?>"
+                     data-action-route="<?php echo $_getvar('fileUploadRoute'); ?>"
                      data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
                     <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                 </div>
@@ -30,7 +33,11 @@
                     <input type="file" id="inFile" multiple name="inFile"/>
                 </form>
                 <div class="mdl-tooltip" for="drop-account-files">
-                    <?php printf(__('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . __('Tamaño máximo de archivo: %d MB'), $maxFileSize); ?>
+                    <?php printf(
+                        __('Soltar archivos aquí (max. 5) o click para seleccionar')
+                        . '<br><br>'
+                        . __('Tamaño máximo de archivo: %d MB'),
+                        $_getvar('maxFileSize')); ?>
                 </div>
             </div>
         <?php endif; ?>

@@ -47,22 +47,24 @@ final class UserSettingsGeneralController extends SimpleControllerBase
      */
     public function saveAction()
     {
-        $userData = $this->session->getUserData();
-
-        $userPreferencesData = clone $userData->getPreferences();
-
-        $userPreferencesData->setUserId($userData->getId());
-        $userPreferencesData->setLang($this->request->analyzeString('userlang'));
-        $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
-        $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
-        $userPreferencesData->setAccountLink($this->request->analyzeBool('account_link', false));
-        $userPreferencesData->setSortViews($this->request->analyzeBool('sort_views', false));
-        $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
-        $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
-        $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
-        $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            $userData = $this->session->getUserData();
+
+            $userPreferencesData = clone $userData->getPreferences();
+
+            $userPreferencesData->setUserId($userData->getId());
+            $userPreferencesData->setLang($this->request->analyzeString('userlang'));
+            $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
+            $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
+            $userPreferencesData->setAccountLink($this->request->analyzeBool('account_link', false));
+            $userPreferencesData->setSortViews($this->request->analyzeBool('sort_views', false));
+            $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
+            $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
+            $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
+            $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
+
             $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);
 
             // Guardar las preferencias en la sesión

@@ -1,11 +1,14 @@
 <?php
 /**
- * @var \SP\Mvc\View\Template $this
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 <div id="actions" class="installer" align="center">
     <div id="page-title">
-        <h1><?php printf(__('Instalación  %s'), $app_version); ?></h1>
+        <h1><?php printf(__('Instalación  %s'), $_getvar('app_version')); ?></h1>
     </div>
 
     <?php include $this->includePartial('error-list'); ?>
@@ -134,8 +137,8 @@
                 <label for="sel-sitelang"><?php echo __('Idioma'); ?></label>
                 <select name="sitelang" id="sel-sitelang" size="1" class="select-box"
                         title="<?php echo __('Idioma'); ?>">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $langs */
-                    foreach ($langs as $lang): ?>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                    foreach ($_getvar('langs') as $lang): ?>
                         <option value="<?php echo $lang->getId(); ?>" <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
                     <?php endforeach; ?>
                 </select>

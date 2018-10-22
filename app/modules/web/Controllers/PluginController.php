@@ -54,11 +54,16 @@ final class PluginController extends ControllerBase
     /**
      * indexAction
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::PLUGIN)) {
             return;
         }
@@ -96,9 +101,12 @@ final class PluginController extends ControllerBase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -118,14 +126,16 @@ final class PluginController extends ControllerBase
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Plugin'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Plugin'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.plugin', new Event($this));
@@ -159,15 +169,14 @@ final class PluginController extends ControllerBase
         $this->view->assign('plugin', $pluginData);
         $this->view->assign('pluginInfo', $pluginInfo);
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 
@@ -181,6 +190,8 @@ final class PluginController extends ControllerBase
     public function enableAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->pluginService->toggleEnabled($id, 1);
 
             $this->eventDispatcher->notifyEvent('edit.plugin.enable',
@@ -206,6 +217,8 @@ final class PluginController extends ControllerBase
     public function disableAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->pluginService->toggleEnabled($id, 0);
 
             $this->eventDispatcher->notifyEvent('edit.plugin.disable',
@@ -231,6 +244,8 @@ final class PluginController extends ControllerBase
     public function resetAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->pluginService->resetById($id);
 
             $this->eventDispatcher->notifyEvent('edit.plugin.reset',

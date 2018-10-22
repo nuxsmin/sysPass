@@ -1,14 +1,19 @@
 <?php
 /**
- * @var $publicLink SP\DataModel\PublicLinkListData
+ * @var \SP\DataModel\PublicLinkListData $publicLink
+ * @var \SP\Core\UI\ThemeIcons           $icons
+ * @var \SP\Config\ConfigData            $configData
+ * @var callable                         $_getvar
+ * @var \SP\Mvc\View\Template            $this
  */
+
+$publicLink = $_getvar('publicLink');
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
     <form method="post" name="frmPublickLink" id="frmPublickLink" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -17,10 +22,10 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Cuenta'); ?></div>
 
-                    <select id="accountId" name="accountId" class="select-box" <?php echo $disabled; ?>>
+                    <select id="accountId" name="accountId" class="select-box" <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accounts */
-                        foreach ($accounts as $account): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $account */
+                        foreach ($_getvar('accounts') as $account): ?>
                             <option
                                     value="<?php echo $account->getId(); ?>" <?php echo $account->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->getName(), $account->getItemProperty('clientName')); ?></option>
                         <?php endforeach; ?>
@@ -34,12 +39,12 @@
                            title="<?php echo __('Notificar'); ?>">
                         <input type="checkbox" id="notify"
                                class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="notify" <?php echo $isView && $publicLink->isNotify() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
+                               name="notify" <?php echo $_getvar('isView') && $publicLink->isNotify() ? 'CHECKED' : ''; ?> <?php echo $_getvar('disabled'); ?>/>
                         <span class="mdl-switch__label"><?php echo __('Notificar'); ?></span>
                     </label>
                 </td>
             </tr>
-            <?php if ($isView): ?>
+            <?php if ($_getvar('isView')): ?>
                 <tr>
                     <td class="descField"><?php echo __('Fecha Creación'); ?></td>
                     <td class="valField">
@@ -85,10 +90,11 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('URL'); ?></div>
 
-                        <a href="<?php echo $publicLinkURL; ?>" target="_blank"><?php echo $publicLinkURL; ?></a>
+                        <a href="<?php echo $_getvar('publicLinkURL'); ?>"
+                           target="_blank"><?php echo $_getvar('publicLinkURL'); ?></a>
                     </td>
                 </tr>
-                <?php if (is_array($usageInfo)): ?>
+                <?php if (is_array($_getvar('usageInfo'))): ?>
                     <tr>
                         <td class="descField"><?php echo __('Uso'); ?></td>
                         <td class="valField">
@@ -96,12 +102,11 @@
 
                             <div class="list-wrap">
                                 <ul class="mdl-list">
-                                    <?php /** @var array $usageInfo */
-                                    foreach ($usageInfo as $useInfo): ?>
+                                    <?php foreach ($_getvar('usageInfo') as $useInfo): ?>
                                         <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">access_time</i>
-                                    <?php printf('%s - %s', $isDemo ? '*.*.*.*' : $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
+                                    <?php printf('%s - %s', $_getvar('isDemo') ? '*.*.*.*' : $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
                                 </span>
                                         </li>
                                     <?php endforeach; ?>
@@ -113,13 +118,11 @@
             <?php endif; ?>
             </tbody>
         </table>
-        <?php if (!$isView): ?>
-            <input type="hidden" name="sk" value="">
-            <input type="hidden" name="isAjax" value="1">
-        <?php endif; ?>
+
+        <input type="hidden" name="isAjax" value="1">
     </form>
 
-    <?php if (!$isView): ?>
+    <?php if (!$_getvar('isView')): ?>
         <div class="action-in-box">
             <button form="frmPublickLink"
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
@@ -129,6 +132,3 @@
         </div>
     <?php endif; ?>
 </div>
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

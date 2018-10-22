@@ -1,7 +1,9 @@
 <?php
 /**
- * @var  $icons \SP\Core\UI\ThemeIcons
- * @var  $this  \SP\Mvc\View\Template
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 
@@ -28,8 +30,8 @@
             <select id="import_defaultuser" name="import_defaultuser"
                     class="select-box sel-chosen-user" required>
                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
-                foreach ($users as $user): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                foreach ($_getvar('users') as $user): ?>
                     <option
                             value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>>
                         <?php echo $user->getName(); ?>
@@ -55,8 +57,8 @@
             <select id="import_defaultgroup" name="import_defaultgroup"
                     class="select-box sel-chosen-usergroup" required>
                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
-                foreach ($userGroups as $userGroup): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
                             value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>>
                         <?php echo $userGroup->getName(); ?>

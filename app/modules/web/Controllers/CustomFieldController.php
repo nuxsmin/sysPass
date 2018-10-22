@@ -56,11 +56,17 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Search action
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -76,6 +82,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -93,16 +101,17 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Campo'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'customField/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nuevo Campo'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'customField/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
@@ -134,15 +143,14 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         $this->view->assign('types', SelectItemAdapter::factory(CustomFieldTypeService::getItemsBasic())->getItemsFromModelSelected([$customField->getTypeId()]));
         $this->view->assign('modules', SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())->getItemsFromArraySelected([$customField->getModuleId()]));
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 
@@ -155,15 +163,17 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Editar Campo'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'customField/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Campo'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'customField/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
@@ -185,11 +195,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->customFieldService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -217,11 +229,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new CustomFieldDefForm($this->dic);
             $form->validate(Acl::CUSTOMFIELD_CREATE);
 
@@ -254,11 +268,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new CustomFieldDefForm($this->dic, $id);
             $form->validate(Acl::CUSTOMFIELD_EDIT);
 
@@ -291,14 +307,16 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Campo'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Campo'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.customField', new Event($this));

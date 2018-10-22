@@ -2,12 +2,18 @@
 /**
  * @var  \SP\DataModel\PluginData   $plugin
  * @var  \SP\Plugin\PluginInterface $pluginInfo
- * @var  \SP\Core\UI\ThemeIcons     $icons
+ * @var \SP\Core\UI\ThemeIcons      $icons
+ * @var \SP\Config\ConfigData       $configData
+ * @var callable                    $_getvar
+ * @var \SP\Mvc\View\Template       $this
  */
+
+$plugin = $_getvar('plugin');
+$pluginInfo = $_getvar('pluginInfo');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmPlugins">
         <table class="popup-data">
@@ -18,7 +24,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $plugin->getName(); ?>" <?php echo $readonly; ?>>
+                               value="<?php echo $plugin->getName(); ?>" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del plugin'); ?></label>
                     </div>
@@ -30,7 +36,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo implode('.', $pluginInfo->getVersion()); ?>" <?php echo $readonly; ?>>
+                               value="<?php echo implode('.', $pluginInfo->getVersion()); ?>" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="version"><?php echo __('Versión del plugin'); ?></label>
                     </div>
@@ -42,7 +48,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="compatible_version" name="compatible_version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $readonly; ?>>
+                               value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="compatible_version"><?php echo __('Versión de sysPass compatible'); ?></label>
                     </div>
@@ -54,7 +60,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="author" name="author" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $pluginInfo->getAuthor(); ?>" <?php echo $readonly; ?>>
+                               value="<?php echo $pluginInfo->getAuthor(); ?>" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="author"><?php echo __('Autor del plugin'); ?></label>
                     </div>
@@ -82,6 +88,3 @@
         </table>
     </form>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

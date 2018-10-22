@@ -50,11 +50,16 @@ final class AccountHistoryManagerController extends ControllerBase
 
     /**
      * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_HISTORY_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -70,6 +75,8 @@ final class AccountHistoryManagerController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -92,6 +99,8 @@ final class AccountHistoryManagerController extends ControllerBase
     public function deleteAction($id = null)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if ($id === null) {
                 $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -130,6 +139,8 @@ final class AccountHistoryManagerController extends ControllerBase
     public function restoreAction($id)
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $accountDetails = $this->accountHistoryService->getById($id);
 
             $accountService = $this->dic->get(AccountService::class);
@@ -158,6 +169,8 @@ final class AccountHistoryManagerController extends ControllerBase
     /**
      * Initialize class
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()

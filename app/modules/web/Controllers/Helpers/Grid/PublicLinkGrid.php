@@ -71,7 +71,8 @@ final class PublicLinkGrid extends GridBase
         $grid->addDataAction(
             $this->getDeleteAction()
                 ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados')),
+                ->setTitle(__('Eliminar Seleccionados'))
+                ->setIsSelection(true),
             true);
 
 

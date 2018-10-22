@@ -81,13 +81,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
 
         $template->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([$userPreferences->getLang() ?: $this->configData->getSiteLang()]));
         $template->assign('themes', SelectItemAdapter::factory($this->theme->getThemesAvailable())->getItemsFromArraySelected([$userPreferences->getTheme() ?: $this->configData->getSiteTheme()]));
-        $template->assign('chkAccountLink', $userPreferences->isAccountLink() ? 'checked="checked"' : '');
-        $template->assign('resultsPerPage', $userPreferences->getResultsPerPage() ?: $this->configData->getAccountCount());
-        $template->assign('chkSortViews', $userPreferences->isSortViews() ? 'checked="checked"' : '');
-        $template->assign('chkTopNavbar', $userPreferences->isTopNavbar() ? 'checked="checked"' : '');
-        $template->assign('chkOptionalActions', $userPreferences->isOptionalActions() ? 'checked="checked"' : '');
-        $template->assign('chkResultsAsCards', $userPreferences->isResultsAsCards() ? 'checked="checked"' : '');
-        $template->assign('chkNotifications', $userPreferences->isCheckNotifications() ? 'checked="checked"' : '');
+        $template->assign('userPreferences', $userPreferences);
         $template->assign('route', 'userSettingsGeneral/save');
 
         return new DataTab(__('Preferencias'), $template);

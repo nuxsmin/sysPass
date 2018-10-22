@@ -60,11 +60,17 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Search action
      *
+     * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::USER_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -80,6 +86,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * getSearchGrid
      *
      * @return $this
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -97,16 +105,17 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Usuario'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'user/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nuevo Usuario'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'user/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.user.create', new Event($this));
@@ -137,7 +146,6 @@ final class UserController extends ControllerBase implements CrudControllerInter
         $this->view->assign('groups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $this->view->assign('profiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
@@ -165,8 +173,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
                 return $value;
             }, $this->userService->getUsageForUser($userId)));
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
 
         $this->view->assign('showViewCustomPass', $this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW_PASS));
@@ -182,16 +190,17 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Editar Usuario'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'user/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Usuario'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'user/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.user.edit', new Event($this));
@@ -213,20 +222,20 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function editPassAction($id)
     {
-        // Comprobar si el usuario a modificar es distinto al de la sesión
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->addTemplate('user_pass', 'itemshow');
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Cambio de Clave'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'user/saveEditPass/' . $id);
-        $this->view->assign('sk', $this->session->generateSecurityKey());
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            // Comprobar si el usuario a modificar es distinto al de la sesión
+            if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->addTemplate('user_pass', 'itemshow');
+
+            $this->view->assign('header', __('Cambio de Clave'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'user/saveEditPass/' . $id);
+
             $user = $id ? $this->userService->getById($id) : new UserData();
 
             $this->view->assign('user', $user);
@@ -250,13 +259,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -292,11 +301,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new UserForm($this->dic);
             $form->validate(Acl::USER_CREATE);
 
@@ -328,6 +339,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * @param int      $userId
      * @param UserData $userData
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -353,11 +366,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new UserForm($this->dic, $id);
             $form->validate(Acl::USER_EDIT);
 
@@ -394,11 +409,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function saveEditPassAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new UserForm($this->dic, $id);
             $form->validate(Acl::USER_EDIT_PASS);
 
@@ -431,15 +448,16 @@ final class UserController extends ControllerBase implements CrudControllerInter
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::USER_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Ver Usuario'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::USER_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Usuario'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.user', new Event($this));

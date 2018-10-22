@@ -64,9 +64,12 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -101,16 +104,17 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Enlace Público'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'publicLink/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Nuevo Enlace Público'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'publicLink/saveCreate');
+
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
@@ -141,7 +145,6 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo()));
         $this->view->assign('accounts', SelectItemAdapter::factory($this->dic->get(AccountService::class)->getForUser())->getItemsFromModelSelected([$publicLink->getItemId()]));
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -149,8 +152,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 
@@ -163,11 +166,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function refreshAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $this->publicLinkService->refresh($id);
 
             $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', new Event($this));
@@ -189,15 +194,17 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Editar Enlace Público'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'publicLink/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Enlace Público'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'publicLink/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.publicLink.edit', new Event($this));
@@ -219,11 +226,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -260,11 +269,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new PublicLinkForm($this->dic);
             $form->validate(Acl::PUBLICLINK_CREATE);
 
@@ -292,11 +303,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function saveCreateFromAccountAction($accountId, $notify)
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $publicLinkData = new PublicLinkData();
             $publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
             $publicLinkData->setItemId($accountId);
@@ -334,14 +347,16 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Enlace'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Enlace'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.publicLink', new Event($this));

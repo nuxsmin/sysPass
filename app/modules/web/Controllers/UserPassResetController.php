@@ -79,6 +79,8 @@ final class UserPassResetController extends ControllerBase
     public function saveRequestAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->checkTracking();
 
             $login = $this->request->analyzeString('login');
@@ -142,9 +144,12 @@ final class UserPassResetController extends ControllerBase
      *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
+     * @throws SPException
      */
     public function resetAction($hash = null)
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('reset', strtolower($this->controllerName));
 
@@ -163,6 +168,8 @@ final class UserPassResetController extends ControllerBase
     public function saveResetAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $this->checkTracking();
 
             $pass = $this->request->analyzeEncrypted('password');
@@ -201,6 +208,8 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function initialize()

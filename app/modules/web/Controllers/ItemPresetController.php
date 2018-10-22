@@ -63,14 +63,16 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Ver Valor'));
-        $this->view->assign('isView', true);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Ver Valor'));
+            $this->view->assign('isView', true);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.itemPreset', new Event($this));
@@ -126,15 +128,14 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
         }
 
         $this->view->assign('preset', $itemPresetData);
-        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
-            $this->view->assign('disabled');
-            $this->view->assign('readonly');
+            $this->view->assign('disabled', false);
+            $this->view->assign('readonly', false);
         }
     }
 
@@ -142,11 +143,16 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * Search action
      *
      * @return bool
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function searchAction()
     {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
         if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
         }
@@ -184,23 +190,24 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $args = func_get_args();
-        $type = null;
-
-        if (count($args) > 0) {
-            $type = Filter::getString($args[0]);
-        }
-
-        $this->view->assign(__FUNCTION__, 1);
-        $this->view->assign('header', __('Nuevo Valor'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'itemPreset/saveCreate');
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $args = func_get_args();
+            $type = null;
+
+            if (count($args) > 0) {
+                $type = Filter::getString($args[0]);
+            }
+
+            $this->view->assign('header', __('Nuevo Valor'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'itemPreset/saveCreate');
+
             $this->setViewData(null, $type);
 
             $this->eventDispatcher->notifyEvent('show.itemPreset.create', new Event($this));
@@ -222,15 +229,17 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
-        $this->view->assign('header', __('Editar Valor'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'itemPreset/saveEdit/' . $id);
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            $this->view->assign('header', __('Editar Valor'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'itemPreset/saveEdit/' . $id);
+
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.itemPreset.edit', new Event($this));
@@ -252,11 +261,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             if ($id === null) {
                 $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -291,11 +302,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new ItemsPresetForm($this->dic);
             $form->validate(Acl::ITEMPRESET_CREATE);
 
@@ -330,11 +343,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
-        }
-
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
             $form = new ItemsPresetForm($this->dic, $id);
             $form->validate(Acl::ITEMPRESET_EDIT);
 

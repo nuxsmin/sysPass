@@ -79,6 +79,8 @@ final class AccountHistoryHelper extends HelperBase
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
@@ -99,23 +101,36 @@ final class AccountHistoryHelper extends HelperBase
         $this->view->assign('accountAcl', $this->accountAcl);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('accountId', $this->accountId);
-        $this->view->assign('accountHistoryId', $this->accountHistoryId);
-        $this->view->assign('historyData', $this->accountHistoryService->getHistoryForAccount($this->accountId));
+
+        $this->view->assign('historyData',
+            SelectItemAdapter::factory($this->accountHistoryService->getHistoryForAccount($this->accountId))
+                ->getItemsFromArraySelected([$this->accountHistoryId]));
+
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
         $this->view->assign('accountPassDateChange', date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0));
-        $this->view->assign('categories', SelectItemAdapter::factory(CategoryService::getItemsBasic())->getItemsFromModelSelected([$accountHistoryData->getCategoryId()]));
-        $this->view->assign('clients', SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModelSelected([$accountHistoryData->getClientId()]));
+        $this->view->assign('categories',
+            SelectItemAdapter::factory(CategoryService::getItemsBasic())
+                ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()]));
+        $this->view->assign('clients',
+            SelectItemAdapter::factory(ClientService::getItemsBasic())
+                ->getItemsFromModelSelected([$accountHistoryData->getClientId()]));
         $this->view->assign('isModified', strtotime($accountHistoryData->getDateEdit()) !== false);
 
         $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
 
-        $this->view->assign('accountActions', $accountActionsHelper->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId, 0)));
-        $this->view->assign('accountActionsMenu', $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId, 0)));
+        $accountActionsDto = new AccountActionsDto($this->accountId, $this->accountHistoryId, 0);
+
+        $this->view->assign('accountActions',
+            $accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto));
+        $this->view->assign('accountActionsMenu',
+            $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto));
     }
 
     /**
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
      */
@@ -125,7 +140,9 @@ final class AccountHistoryHelper extends HelperBase
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+        if (!$this->dic->get(MasterPassService::class)
+            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
+        ) {
             throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
@@ -136,6 +153,8 @@ final class AccountHistoryHelper extends HelperBase
      * @param AccountHistoryData $accountHistoryData
      *
      * @throws AccountPermissionException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -147,9 +166,12 @@ final class AccountHistoryHelper extends HelperBase
             $this->accountHistoryService->getUserGroupsByAccountId($this->accountId)
         );
 
-        $this->accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, $acccountAclDto, true);
+        $this->accountAcl = $this->dic->get(AccountAclService::class)
+            ->getAcl($this->actionId, $acccountAclDto, true);
 
-        if ($this->accountAcl === null || $this->accountAcl->checkAccountAccess($this->actionId) === false) {
+        if ($this->accountAcl === null
+            || $this->accountAcl->checkAccountAccess($this->actionId) === false
+        ) {
             throw new AccountPermissionException(SPException::INFO);
         }
     }
@@ -164,7 +186,5 @@ final class AccountHistoryHelper extends HelperBase
     {
         $this->acl = $this->dic->get(Acl::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
-
-        $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 }

@@ -523,7 +523,7 @@ final class AccountActionsHelper extends HelperBase
      */
     protected function initialize()
     {
-        $this->sk = $this->context->generateSecurityKey();
+        $this->sk = $this->view->get('sk');
         $this->icons = $this->view->getTheme()->getIcons();
     }
 }

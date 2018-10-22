@@ -1,7 +1,9 @@
 <?php
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
  */
 ?>
 

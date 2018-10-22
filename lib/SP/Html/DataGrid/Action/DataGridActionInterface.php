@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -111,15 +111,13 @@ interface DataGridActionInterface
     public function isHelper();
 
     /**
-     * @param       $rowSource string
-     * @param mixed $value     Valor a filtrar
-     *
-     * @return
+     * @param string $rowSource
+     * @param mixed  $value Valor a filtrar
      */
     public function setFilterRowSource($rowSource, $value = 1);
 
     /**
-     * @return string
+     * @return array
      */
     public function getFilterRowSource();
 
@@ -197,7 +195,7 @@ interface DataGridActionInterface
     /**
      * Returns classes as a string
      *
-     * @return array
+     * @return string
      */
     public function getClassesAsString();
 
@@ -223,4 +221,11 @@ interface DataGridActionInterface
      * @return $this
      */
     public function addClass($value);
+
+    /**
+     * Returns if the action is used for selecting multiple items
+     *
+     * @return bool
+     */
+    public function isSelection(): bool;
 }

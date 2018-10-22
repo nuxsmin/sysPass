@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \SP\Mvc\View\Template $this
+ * @var \SP\Mvc\View\Template  $this
  * @var \SP\Core\UI\ThemeIcons $icons
  */
 ?>

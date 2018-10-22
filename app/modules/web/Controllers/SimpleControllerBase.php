@@ -42,6 +42,10 @@ abstract class SimpleControllerBase
      * @var ContainerInterface
      */
     protected $dic;
+    /**
+     * @var string
+     */
+    protected $previousSk;
 
     /**
      * SimpleControllerBase constructor.
@@ -58,6 +62,8 @@ abstract class SimpleControllerBase
         $this->actionName = $actionName;
 
         $this->setUp($container);
+
+        $this->previousSk = $this->session->getSecurityKey();
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -90,7 +96,9 @@ abstract class SimpleControllerBase
      */
     protected function checkAccess($action)
     {
-        if (!$this->session->getUserData()->getIsAdminApp() && !$this->acl->checkUserAccess($action)) {
+        if (!$this->session->getUserData()->getIsAdminApp()
+            && !$this->acl->checkUserAccess($action)
+        ) {
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
     }

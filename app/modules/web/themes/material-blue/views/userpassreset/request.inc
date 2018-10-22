@@ -30,7 +30,6 @@
                     </div>
                 </div>
                 <input type="hidden" name="isAjax" value="1">
-                <input type="hidden" name="sk" value="">
             </fieldset>
 
             <div id="box-buttons">

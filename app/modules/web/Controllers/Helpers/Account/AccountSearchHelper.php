@@ -148,16 +148,16 @@ final class AccountSearchHelper extends HelperBase
 
         $accountSearchService = $this->dic->get(AccountSearchService::class);
 
-        $Grid = $this->getGrid();
-        $Grid->getData()->setData($accountSearchService->processSearchResults($this->accountSearchFilter));
-        $Grid->updatePager();
-        $Grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
+        $dataGrid = $this->getGrid();
+        $dataGrid->getData()->setData($accountSearchService->processSearchResults($this->accountSearchFilter));
+        $dataGrid->updatePager();
+        $dataGrid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
 
         // Establecer el filtro de búsqueda en la sesión como un objeto
         $this->context->setSearchFilters($this->accountSearchFilter);
 
-        $this->view->assign('data', $Grid);
+        $this->view->assign('data', $dataGrid);
     }
 
     /**
@@ -200,23 +200,23 @@ final class AccountSearchHelper extends HelperBase
 
         $actions = $this->dic->get(AccountActionsHelper::class);
 
-        $grid = new DataGrid($this->view->getTheme());
-        $grid->setId('gridSearch');
-        $grid->setDataHeaderTemplate('search-header', $this->view->getBase());
-        $grid->setDataRowTemplate('search-rows', $this->view->getBase());
-        $grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
-        $grid->setHeader($this->getHeaderSort());
-        $grid->addDataAction($actions->getViewAction());
-        $grid->addDataAction($actions->getViewPassAction());
-        $grid->addDataAction($actions->getCopyPassAction());
-        $grid->addDataAction($actions->getEditAction(), !$showOptionalActions);
-        $grid->addDataAction($actions->getCopyAction(), !$showOptionalActions);
-        $grid->addDataAction($actions->getDeleteAction(), !$showOptionalActions);
-        $grid->addDataAction($actions->getRequestAction());
-        $grid->setPager($gridPager);
-        $grid->setData(new DataGridData());
+        $dataGrid = new DataGrid($this->view->getTheme());
+        $dataGrid->setId('gridSearch');
+        $dataGrid->setDataHeaderTemplate('search-header', $this->view->getBase());
+        $dataGrid->setDataRowTemplate('search-rows', $this->view->getBase());
+        $dataGrid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $dataGrid->setHeader($this->getHeaderSort());
+        $dataGrid->addDataAction($actions->getViewAction());
+        $dataGrid->addDataAction($actions->getViewPassAction());
+        $dataGrid->addDataAction($actions->getCopyPassAction());
+        $dataGrid->addDataAction($actions->getEditAction(), !$showOptionalActions);
+        $dataGrid->addDataAction($actions->getCopyAction(), !$showOptionalActions);
+        $dataGrid->addDataAction($actions->getDeleteAction(), !$showOptionalActions);
+        $dataGrid->addDataAction($actions->getRequestAction());
+        $dataGrid->setPager($gridPager);
+        $dataGrid->setData(new DataGridData());
 
-        return $grid;
+        return $dataGrid;
     }
 
     /**
@@ -275,14 +275,11 @@ final class AccountSearchHelper extends HelperBase
 
     /**
      * Initialize
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     protected function initialize()
     {
         $this->queryTimeStart = microtime(true);
-        $this->sk = $this->context->generateSecurityKey();
-        $this->view->assign('sk', $this->sk);
+        $this->sk = $this->view->get('sk');
         $this->setVars();
     }
 

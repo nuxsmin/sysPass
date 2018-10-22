@@ -27,7 +27,6 @@ namespace SP\Mvc\View;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 
@@ -51,15 +50,15 @@ final class Template
      */
     protected $theme;
     /**
-     * @var array Variable con los archivos de plantilla a cargar
+     * @var array List of templates to load into the view
      */
     private $templates = [];
     /**
-     * @var array Variable con las variables a incluir en la plantilla
+     * @var TemplateVarCollection Template's variables collection
      */
-    private $vars = [];
+    private $vars;
     /**
-     * @var string Directorio base para los archivos de plantillas
+     * @var string Base path for imcluding templates
      */
     private $base;
     /**
@@ -77,6 +76,7 @@ final class Template
     public function __construct(Theme $theme)
     {
         $this->theme = $theme;
+        $this->vars = new TemplateVarCollection();
     }
 
     /**
@@ -270,17 +270,10 @@ final class Template
      * @param string $name Nombre del atributo
      *
      * @return null
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function __get($name)
     {
-        if (!array_key_exists($name, $this->vars)) {
-            logger(sprintf(__('No es posible obtener la variable "%s"'), $name));
-
-            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
-        }
-
-        return $this->vars[$name];
+        return $this->get($name);
     }
 
     /**
@@ -289,13 +282,29 @@ final class Template
      *
      * @param string $name  Nombre del atributo
      * @param string $value Valor del atributo
-     *
-     * @return null
      */
     public function __set($name, $value)
     {
-        $this->vars[$name] = $value;
-        return null;
+        $this->vars->set($name, $value);
+    }
+
+    /**
+     * Returns a variable value
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function get($name)
+    {
+        if (!$this->vars->exists($name)) {
+            logger(sprintf(__('No es posible obtener la variable "%s"'), $name), 'ERROR');
+
+            return null;
+//            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
+        }
+
+        return $this->vars->get($name);
     }
 
     /**
@@ -308,7 +317,7 @@ final class Template
      */
     public function __isset($name)
     {
-        return array_key_exists($name, $this->vars);
+        return $this->vars->exists($name);
     }
 
     /**
@@ -318,17 +327,18 @@ final class Template
      * @param string $name Nombre del atributo
      *
      * @return $this
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function __unset($name)
     {
-        if (!array_key_exists($name, $this->vars)) {
+        if (!$this->vars->exists($name)) {
             logger(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
+//            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
+            return $this;
         }
 
-        unset($this->vars[$name]);
+        $this->vars->remove($name);
+
         return $this;
     }
 
@@ -345,7 +355,18 @@ final class Template
             throw new FileNotFoundException(__('La plantilla no contiene archivos'));
         }
 
-        extract($this->vars, EXTR_SKIP);
+        $icons = $this->vars->get('icons');
+        $configData = $this->vars->get('configData');
+        $sk = $this->vars->get('sk');
+
+        // An anonymous proxy function for handling views variables
+        $_getvar = function ($key, $default = null) {
+            if (DEBUG && !$this->vars->exists($key)) {
+                logger(sprintf(__('No es posible obtener la variable "%s"'), $key), 'WARN');
+            }
+
+            return $this->vars->get($key, $default);
+        };
 
         ob_start();
 
@@ -371,11 +392,15 @@ final class Template
             $name = $scope . '_' . $name;
         }
 
-        if (null !== $index) {
-            $this->vars[$name][$index] = $value;
+        $var = $this->vars->get($name, []);
+
+        if (null === $index) {
+            $var[] = $value;
         } else {
-            $this->vars[$name][] = $value;
+            $var[$index] = $value;
         }
+
+        $this->vars->set($name, $var);
     }
 
     /**
@@ -493,7 +518,7 @@ final class Template
             $name = $scope . '_' . $name;
         }
 
-        $this->vars[$name] = $value;
+        $this->vars->set($name, $value);
     }
 
     /**
@@ -502,17 +527,5 @@ final class Template
     public function isUpgraded()
     {
         return $this->upgraded;
-    }
-
-    /**
-     * Establecer los atributos de la clase a partir de un array.
-     *
-     * @param array $vars Con los atributos de la clase
-     */
-    private function setVars(&$vars)
-    {
-        foreach ($vars as $name => $value) {
-            $this->{$name} = $value;
-        }
     }
 }

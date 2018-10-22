@@ -156,9 +156,12 @@ final class AccountHelper extends HelperBase
         $this->view->assign('users', $selectUsers->getItemsFromModelSelected([$accountData->getUserId()]));
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected([$accountData->getUserGroupId()]));
 
-        $this->view->assign('tags', $selectTags->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())));
+        $this->view->assign('tags',
+            $selectTags->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())));
 
-        $this->view->assign('historyData', $this->accountHistoryService->getHistoryForAccount($this->accountId));
+        $this->view->assign('historyData', SelectItemAdapter::factory(
+            $this->accountHistoryService->getHistoryForAccount($this->accountId))
+            ->getItemsFromArray());
 
         $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);
         $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
@@ -185,11 +188,19 @@ final class AccountHelper extends HelperBase
         $userData = $this->context->getUserData();
         $userProfileData = $this->context->getUserProfile();
 
-        $this->view->assign('allowPrivate', ($userProfileData->isAccPrivate() && $accountData->getUserId() === $userData->getId()) || $userData->getIsAdminApp());
-        $this->view->assign('allowPrivateGroup', ($userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId()) || $userData->getIsAdminApp());
+        $this->view->assign('allowPrivate',
+            ($userProfileData->isAccPrivate()
+                && $accountData->getUserId() === $userData->getId())
+            || $userData->getIsAdminApp());
+
+        $this->view->assign('allowPrivateGroup',
+            ($userProfileData->isAccPrivateGroup()
+                && $accountData->getUserGroupId() === $userData->getUserGroupId())
+            || $userData->getIsAdminApp());
 
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
-        $this->view->assign('accountPassDateChange', $accountData->getPassDateChange() > 0 ? gmdate('Y-m-d', $accountData->getPassDateChange()) : 0);
+        $this->view->assign('accountPassDateChange',
+            $accountData->getPassDateChange() > 0 ? gmdate('Y-m-d', $accountData->getPassDateChange()) : 0);
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
 
         $this->view->assign('accountId', $accountData->getId());
@@ -239,7 +250,8 @@ final class AccountHelper extends HelperBase
      */
     protected function checkAccess(AccountDetailsResponse $accountDetailsResponse)
     {
-        $accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, AccountAclDto::makeFromAccount($accountDetailsResponse));
+        $accountAcl = $this->dic->get(AccountAclService::class)
+            ->getAcl($this->actionId, AccountAclDto::makeFromAccount($accountDetailsResponse));
 
         if ($accountAcl === null || $accountAcl->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(AccountPermissionException::INFO);
@@ -259,27 +271,36 @@ final class AccountHelper extends HelperBase
      */
     protected function setViewCommon()
     {
-        $this->view->assign('actionId', $this->actionId);
         $this->view->assign('isView', $this->isView);
 
         $this->view->assign('accountIsHistory', false);
 
         $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
-        $this->view->assign('categories', SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getItemsFromModel());
-        $this->view->assign('clients', SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getItemsFromModel());
+
+        $this->view->assign('categories',
+            SelectItemAdapter::factory($this->dic->get(CategoryService::class)
+                ->getAllBasic())->getItemsFromModel());
+
+        $this->view->assign('clients',
+            SelectItemAdapter::factory($this->dic->get(ClientService::class)
+                ->getAllForUser())->getItemsFromModel());
 
         $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
         $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
 
         $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
 
-        $this->view->assign('addClientEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT));
+        $this->view->assign('addClientEnabled',
+            !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT));
         $this->view->assign('addClientRoute', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
 
-        $this->view->assign('addCategoryEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
+        $this->view->assign('addCategoryEnabled',
+            !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
+
         $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
 
-        $this->view->assign('addTagEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::TAG));
+        $this->view->assign('addTagEnabled',
+            !$this->isView && $this->acl->checkUserAccess(ActionsInterface::TAG));
         $this->view->assign('addTagRoute', Acl::getActionRoute(ActionsInterface::TAG_CREATE));
 
         $this->view->assign('fileListRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_LIST));
@@ -367,7 +388,9 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
-        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
+        $this->view->assign('accountActions',
+            $this->dic->get(AccountActionsHelper::class)
+                ->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
 
         $this->setViewCommon();
     }
@@ -399,7 +422,9 @@ final class AccountHelper extends HelperBase
         $this->view->assign('accountId', $accountData->getId());
         $this->view->assign('accountData', $accountDetailsResponse->getAccountVData());
 
-        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('accountActions',
+            $this->dic->get(AccountActionsHelper::class)
+                ->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
 
         return true;
     }
@@ -424,9 +449,8 @@ final class AccountHelper extends HelperBase
         $this->publicLinkService = $this->dic->get(PublicLinkService::class);
         $this->itemPresetService = $this->dic->get(ItemPresetService::class);
 
-        $this->view->assign('changesHash');
-        $this->view->assign('chkUserEdit');
-        $this->view->assign('chkGroupEdit');
-        $this->view->assign('sk', $this->context->generateSecurityKey());
+        $this->view->assign('changesHash', '');
+        $this->view->assign('chkUserEdit', false);
+        $this->view->assign('chkGroupEdit', false);
     }
 }

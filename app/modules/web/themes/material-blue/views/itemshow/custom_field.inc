@@ -1,17 +1,21 @@
 <?php
+/**
+ * @var \SP\DataModel\CustomFieldDefinitionData $field
+ * @var \SP\Core\UI\ThemeIcons                  $icons
+ * @var \SP\Config\ConfigData                   $configData
+ * @var callable                                $_getvar
+ * @var \SP\Mvc\View\Template                   $this
+ */
 
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var \SP\DataModel\CustomFieldDefinitionData $field */
-
+$field = $_getvar('field');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -33,8 +37,8 @@
                     <div class="lowres-title"><?php echo __('Tipo'); ?></div>
 
                     <select name="type" id="sel-type" size="1" class="select-box">
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $types */
-                        foreach ($types as $type): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $type */
+                        foreach ($_getvar('types') as $type): ?>
                             <option
                                     value='<?php echo $type->getId(); ?>' <?php echo ($type->getId() === $field->getTypeId()) ? 'selected' : ''; ?>><?php echo __($type->getItemProperty('text')); ?></option>
                         <?php endforeach; ?>
@@ -47,8 +51,8 @@
                     <div class="lowres-title"><?php echo __('Módulo'); ?></div>
 
                     <select name="module" id="sel-module" size="1" class="select-box">
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $modules */
-                        foreach ($modules as $module): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem $module */
+                        foreach ($_getvar('modules') as $module): ?>
                             <option
                                     value='<?php echo $module->getId(); ?>' <?php echo $module->isSelected() ? 'selected' : ''; ?>><?php echo $module->getName(); ?></option>
                         <?php endforeach; ?>
@@ -90,7 +94,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div class="action-in-box">
@@ -101,6 +104,3 @@
         </button>
     </div>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

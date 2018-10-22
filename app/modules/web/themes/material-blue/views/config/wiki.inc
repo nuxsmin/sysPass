@@ -2,9 +2,12 @@
 /**
  * @var \SP\Core\UI\ThemeIcons $icons
  * @var \SP\Config\ConfigData  $configData
- */ ?>
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
 
-<?php if (!$curlIsAvailable): ?>
+<?php if (!$_getvar('curlIsAvailable')): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('La extensión \'%s\' no está disponible'), 'curl'); ?>
         <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>

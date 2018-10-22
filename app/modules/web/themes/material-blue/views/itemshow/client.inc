@@ -1,17 +1,21 @@
 <?php
+/**
+ * @var \SP\DataModel\ClientData $client
+ * @var \SP\Core\UI\ThemeIcons   $icons
+ * @var \SP\Config\ConfigData    $configData
+ * @var callable                 $_getvar
+ * @var \SP\Mvc\View\Template    $this
+ */
 
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $client \SP\DataModel\ClientData */
-
+$client = $_getvar('client');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmClients" id="frmClients" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
-          data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
+          data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -64,13 +68,12 @@
                 </td>
             </tr>
 
-            <?php if ($customFields): ?>
+            <?php if ($_getvar('customFields')): ?>
                 <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
             <?php endif; ?>
             </tbody>
         </table>
 
-        <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
     <div class="action-in-box">
@@ -81,6 +84,3 @@
         </button>
     </div>
 </div>
-<script>
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

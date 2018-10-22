@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ * @var callable               $_getvar
+ * @var \SP\Mvc\View\Template  $this
+ */
+?>
+
 <div id="box-pub-noheader">
     <div class="box-spacer"></div>
     <div id="box-login" class="box-form round">
@@ -49,13 +58,14 @@
                     </div>
                 </div>
 
-                <?php if (isset($from, $from_hash)): ?>
-                    <input type="hidden" name="from" value="<?php echo $from; ?>"/>
-                    <input type="hidden" name="h" value="<?php echo $from_hash; ?>"/>
+                <?php if ($_getvar('from') && $_getvar('from_hash')): ?>
+                    <input type="hidden" name="from" value="<?php echo $_getvar('from'); ?>"/>
+                    <input type="hidden" name="h" value="<?php echo $_getvar('from_hash'); ?>"/>
                 <?php endif; ?>
 
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
+                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             </fieldset>
             <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
@@ -67,18 +77,18 @@
         </form>
 
         <!-- Close boxData -->
-        <?php if ($mailEnabled): ?>
+        <?php if ($_getvar('mailEnabled')): ?>
             <div id="box-actions">
                 <a href="index.php?r=userPassReset"><?php echo __('¿Olvidó su clave?'); ?></a>
             </div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 
-    <?php if (isset($updated)): ?>
+    <?php if ($_getvar('updated')): ?>
         <div id="box-updated" class="round5"><?php echo __('Aplicación actualizada correctamente'); ?></div>
     <?php endif; ?>
 
-    <?php if ($isDemoMode): ?>
+    <?php if ($_getvar('isDemo')): ?>
         <div id="demo-info">
             <ul>
                 <li title="<?php echo __('Usuario'); ?>">

@@ -54,6 +54,8 @@ final class ConfigLdapController extends SimpleControllerBase
     public function saveAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $eventMessage = EventMessage::factory();
             $configData = $this->config->getConfigData();
 
@@ -98,7 +100,7 @@ final class ConfigLdapController extends SimpleControllerBase
             return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
                 $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
             });
-        } catch (ValidationException $e) {
+        } catch (\Exception $e) {
             return $this->returnJsonResponseException($e);
         }
     }
@@ -132,6 +134,8 @@ final class ConfigLdapController extends SimpleControllerBase
     public function checkAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $ldapParams = $this->getLdapParamsFromRequest();
 
             // Valores para la configuración de LDAP
@@ -168,6 +172,8 @@ final class ConfigLdapController extends SimpleControllerBase
     public function checkImportAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             $ldapParams = $this->getLdapParamsFromRequest();
 
             // Valores para la configuración de LDAP
@@ -214,6 +220,8 @@ final class ConfigLdapController extends SimpleControllerBase
     public function importAction()
     {
         try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
             if ($this->configData->isDemoEnabled()) {
                 return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
             }
