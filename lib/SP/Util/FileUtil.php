@@ -37,10 +37,7 @@ use SP\DataModel\FileData;
  */
 final class FileUtil
 {
-    /**
-     * @var array
-     */
-    public static $imageExtensions = ['JPG', 'PNG', 'GIF'];
+    const IMAGE_EXTENSIONS = ['JPG', 'PNG', 'GIF'];
 
     /**
      * Removes a directory in a recursive way
@@ -74,6 +71,6 @@ final class FileUtil
      */
     public static function isImage(FileData $fileData)
     {
-        return in_array(mb_strtoupper($fileData->getExtension()), self::$imageExtensions, true);
+        return in_array(mb_strtoupper($fileData->getExtension()), self::IMAGE_EXTENSIONS, true);
     }
 }

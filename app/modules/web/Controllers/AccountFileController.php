@@ -49,6 +49,8 @@ use SP\Util\Util;
  */
 final class AccountFileController extends ControllerBase implements CrudControllerInterface
 {
+    const EXTENSIONS_VIEW = ['TXT'];
+
     use JsonTrait, ItemTrait;
 
     /**
@@ -89,7 +91,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 return $this->returnJsonResponseData(['html' => $this->render()]);
             }
 
-            if (mb_strtoupper($fileData->getExtension()) === 'TXT') {
+            $extension = mb_strtoupper($fileData->getExtension());
+
+            if (in_array($extension, self::EXTENSIONS_VIEW)) {
+                $this->view->assign('extension', $extension);
                 $this->view->assign('data', htmlentities($fileData->getContent()));
 
                 $this->eventDispatcher->notifyEvent('show.accountFile',
@@ -122,18 +127,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
 
+            // Set the security toke to its previous value because we can't tell
+            // the browser which will be the new security token (not so good...)
+            $this->session->setSecurityKey($this->previousSk);
+
             if (null === ($fileData = $this->accountFileService->getById($id))) {
                 throw new SPException(__u('El archivo no existe'), SPException::INFO);
             }
-
-            // Enviamos el archivo al navegador
-            header('Set-Cookie: fileDownload=true; path=/');
-            header('Cache-Control: max-age=60, must-revalidate');
-            header('Content-length: ' . $fileData->getSize());
-            header('Content-type: ' . $fileData->getType());
-            header('Content-Disposition: attachment; filename="' . $fileData->getName() . '"');
-            header('Content-Description: PHP Generated Data');
-            header('Content-transfer-encoding: binary');
 
             $this->eventDispatcher->notifyEvent('download.accountFile',
                 new Event($this, EventMessage::factory()
@@ -141,7 +141,24 @@ final class AccountFileController extends ControllerBase implements CrudControll
                     ->addDetail(__u('Archivo'), $fileData->getName()))
             );
 
-            return $fileData->getContent();
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', $fileData->getSize());
+            $response->header('Content-type', $fileData->getType());
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'binary');
+
+            $extension = mb_strtoupper($fileData->getExtension());
+
+            if ($extension === 'PDF') {
+                $response->header('Content-Disposition', 'inline; filename="' . $fileData->getName() . '"');
+            } else {
+                $response->header('Set-Cookie', 'fileDownload=true; path=/');
+                $response->header('Content-Disposition', 'attachment; filename="' . $fileData->getName() . '"');
+            }
+
+            $response->body($fileData->getContent());
+            $response->send(true);
         } catch (\Exception $e) {
             processException($e);
         }
@@ -413,7 +430,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION, true, 'files-list');
         }
 
         $this->view();

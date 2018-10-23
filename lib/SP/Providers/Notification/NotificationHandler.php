@@ -150,7 +150,7 @@ final class NotificationHandler extends Provider implements EventReceiver
         $eventMessage = $event->getEventMessage();
         $data = $eventMessage->getData();
 
-        if ($data['notify'] === true) {
+        if ($data['notify'][0] === true) {
             $notificationData = new NotificationData();
             $notificationData->setType(__('Notificación'));
             $notificationData->setComponent(__('Cuentas'));

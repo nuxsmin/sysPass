@@ -247,6 +247,10 @@ final class NotificationService extends Service
      */
     public function getAllActiveForUserId($id)
     {
+        if ($this->context->getUserData()->getIsAdminApp()) {
+            return $this->notificationRepository->getAllActiveForAdmin($id)->getDataAsArray();
+        }
+
         return $this->notificationRepository->getAllActiveForUserId($id)->getDataAsArray();
     }
 
@@ -264,7 +268,7 @@ final class NotificationService extends Service
         $userData = $this->context->getUserData();
 
         if ($userData->getIsAdminApp()) {
-            return $this->notificationRepository->search($itemSearchData);
+            return $this->notificationRepository->searchForAdmin($itemSearchData, $userData->getId());
         }
 
         return $this->notificationRepository->searchForUserId($itemSearchData, $userData->getId());

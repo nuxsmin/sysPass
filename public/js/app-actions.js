@@ -45,11 +45,10 @@ sysPass.Actions = function (log) {
         data.sk = sysPassApp.sk.get();
 
         const opts = sysPassApp.requests.getRequestOpts();
-        opts.url = ajaxUrl.entrypoint;
         opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
-        opts.data = data;
+        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, data);
 
         return sysPassApp.requests.getActionCall(opts, function (response) {
             const $content = $("#content");
@@ -168,17 +167,17 @@ sysPass.Actions = function (log) {
         view: function ($obj) {
             log.info("account:show");
 
-            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent({r: [$obj.data("action-route"), $obj.data("item-id")]}, "account");
         },
         viewHistory: function ($obj) {
             log.info("account:showHistory");
 
-            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.val()), "account");
+            getContent({r: [$obj.data("action-route"), $obj.val()]}, "account");
         },
         edit: function ($obj) {
             log.info("account:edit");
 
-            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent({r: [$obj.data("action-route"), $obj.data("item-id")]}, "account");
         },
         delete: function ($obj) {
             log.info("account:delete");
@@ -224,13 +223,13 @@ sysPass.Actions = function (log) {
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + id + "/" + parentId,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), id, parentId],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
@@ -270,14 +269,14 @@ sysPass.Actions = function (log) {
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.async = false;
-            opts.data = {
-                r: $obj.data("action-route") + "/" + id,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), id],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             return sysPassApp.requests.getActionCall(opts);
         },
@@ -289,7 +288,7 @@ sysPass.Actions = function (log) {
         copy: function ($obj) {
             log.info("account:copy");
 
-            getContent(sysPassApp.requests.getRouteForQuery($obj.data("action-route"), $obj.data("item-id")), "account");
+            getContent({r: [$obj.data("action-route"), $obj.data("item-id")]}, "account");
         },
         saveFavorite: function ($obj, callback) {
             log.info("account:saveFavorite");
@@ -332,7 +331,7 @@ sysPass.Actions = function (log) {
                 ) {
                     sysPassApp.sk.set(json.csrf);
 
-                    getContent({r: json.data.nextAction['nextAction']}, "account");
+                    getContent({r: json.data.nextAction}, "account");
                 }
             });
         },
@@ -360,9 +359,7 @@ sysPass.Actions = function (log) {
             const parentId = $obj.data("parent-id");
             const itemId = parentId === undefined ? $obj.data("item-id") : parentId;
 
-            const route = sysPassApp.requests.getRouteForQuery($obj.data("action-route"), itemId);
-
-            getContent(route, "account");
+            getContent({r: [$obj.data("action-route"), itemId]}, "account");
         },
         saveEditRestore: function ($obj) {
             log.info("account:restore");
@@ -380,9 +377,7 @@ sysPass.Actions = function (log) {
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
                 ) {
-                    const route = sysPassApp.requests.getRouteForQuery(json.data.nextAction, json.data.itemId);
-
-                    getContent(route, "account");
+                    getContent({r: [json.data.nextAction, json.data.itemId]}, "account");
                 }
             });
         },
@@ -392,12 +387,12 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
             opts.type = "html";
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                del: $obj.data("delete"),
-                sk: sysPassApp.sk.get()
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    del: $obj.data("delete"),
+                    sk: sysPassApp.sk.get()
+                });
 
             sysPassApp.requests.getActionCall(opts, function (response) {
                 $obj.html(response);
@@ -417,8 +412,8 @@ sysPass.Actions = function (log) {
             }
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $frmSearch.data("action-route");
             opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("action-route")});
             opts.data = $frmSearch.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
@@ -447,9 +442,7 @@ sysPass.Actions = function (log) {
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
                 ) {
-                    const route = sysPassApp.requests.getRouteForQuery(json.data.nextAction, json.data.itemId);
-
-                    getContent(route, "account");
+                    getContent({r: [json.data.nextAction, json.data.itemId]}, "account");
                 }
             });
         }
@@ -468,12 +461,12 @@ sysPass.Actions = function (log) {
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = sysPassApp.requests.getRequestOpts();
-                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
-                opts.data = {
-                    r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                    sk: $obj.data("sk")
-                };
+                opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                    {
+                        r: [$obj.data("action-route"), $obj.data("item-id")],
+                        sk: sysPassApp.sk.get()
+                    });
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     callback(json.data);
@@ -494,12 +487,12 @@ sysPass.Actions = function (log) {
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = sysPassApp.requests.getRequestOpts();
-                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
-                opts.data = {
-                    r: $obj.data("item-route"),
-                    sk: sysPassApp.sk.get()
-                };
+                opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                    {
+                        r: $obj.data("action-route"),
+                        sk: sysPassApp.sk.get()
+                    });
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     callback(json);
@@ -529,12 +522,12 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.type = "html";
             opts.method = "get";
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (response) {
                 if (response.length === 0) {
@@ -576,7 +569,7 @@ sysPass.Actions = function (log) {
             log.info("main:login");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("route")});
             opts.method = "get";
             opts.data = $obj.serialize();
 
@@ -664,7 +657,7 @@ sysPass.Actions = function (log) {
                         }
 
                         const opts = sysPassApp.requests.getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data('action-route');
+                        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
                         opts.method = "get";
                         opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
@@ -692,11 +685,10 @@ sysPass.Actions = function (log) {
             log.info("main:getUpdates");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=status/checkRelease";
             opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: "status/checkRelease", isAjax: 1});
             opts.timeout = 10000;
             opts.useLoading = false;
-            opts.data = {isAjax: 1};
 
             const $updates = $("#updates");
 
@@ -730,8 +722,12 @@ sysPass.Actions = function (log) {
             log.info("main:getNotices");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=status/checkNotices";
             opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: "status/checkNotices",
+                    isAjax: 1
+                });
             opts.timeout = 10000;
             opts.useLoading = false;
             opts.data = {isAjax: 1};
@@ -879,11 +875,13 @@ sysPass.Actions = function (log) {
             log.info("config:import");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.data = {
-                sk: $obj.data("sk"),
-                isAjax: 1
-            };
+            opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: $obj.data("action-route"),
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
@@ -911,12 +909,12 @@ sysPass.Actions = function (log) {
             log.info("file:view");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: sysPassApp.sk.get()
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get()
+                });
 
             sysPassApp.requests.getActionCall(opts, function (response) {
                 if (response.status !== 0) {
@@ -929,12 +927,26 @@ sysPass.Actions = function (log) {
         download: function ($obj) {
             log.info("file:download");
 
-            const data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: sysPassApp.sk.get()
-            };
+            const fileType = $obj.data("item-type");
+            const url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get()
+                });
 
-            $.fileDownload(ajaxUrl.entrypoint, {"httpMethod": "GET", "data": data});
+            if (fileType === 'PDF') {
+                window.open(url, '_blank');
+                return;
+            }
+
+            $.fileDownload(url,
+                {
+                    httpMethod: "GET",
+                    successCallback: function (url) {
+                        sysPassApp.msg.ok(sysPassApp.config.LANG[72]);
+                    }
+                }
+            );
         },
         delete: function ($obj) {
             log.info("file:delete");
@@ -955,12 +967,12 @@ sysPass.Actions = function (log) {
                     title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
                         const opts = sysPassApp.requests.getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
-                        opts.data = {
-                            r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                            sk: sysPassApp.sk.get()
-                        };
+                        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                            {
+                                r: [$obj.data("action-route"), $obj.data("item-id")],
+                                sk: sysPassApp.sk.get(),
+                            });
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
@@ -986,19 +998,31 @@ sysPass.Actions = function (log) {
                 const accountId = $obj.data("account-id");
 
                 const opts = sysPassApp.requests.getRequestOpts();
+                opts.method = "get";
 
                 if (accountId) {
-                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + accountId + "/" + notify;
+                    opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                        {
+                            r: [$obj.data("action-route"), accountId, notify],
+                            sk: sysPassApp.sk.get(),
+                            isAjax: 1
+                        });
                 } else {
-                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-                    opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
+                    opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                        {
+                            r: $obj.data("action-route"),
+                            sk: sysPassApp.sk.get(),
+                            isAjax: 1
+                        });
+
+                    opts.data = $obj.serialize();
                 }
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     sysPassApp.msg.out(json);
 
                     if (json.status === 0) {
-                        getContent({r: $obj.data("action-next") + "/" + accountId});
+                        getContent({r: [$obj.data("action-next"), accountId]});
                     }
                 });
             };
@@ -1045,16 +1069,20 @@ sysPass.Actions = function (log) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        const itemId = $obj.data("item-id");
                         const opts = sysPassApp.requests.getRequestOpts();
-
-                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + itemId;
+                        opts.method = "get";
+                        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                            {
+                                r: [$obj.data("action-route"), $obj.data("item-id")],
+                                sk: sysPassApp.sk.get(),
+                                isAjax: 1
+                            });
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
 
                             if (json.status === 0) {
-                                getContent({r: $obj.data("action-next") + "/" + $obj.data("account-id")});
+                                getContent({r: [$obj.data("action-next"), $obj.data("account-id")]});
                             }
                         });
                     }
@@ -1066,16 +1094,14 @@ sysPass.Actions = function (log) {
 
             tabs.state.update($obj);
 
-            const itemId = $obj.data("item-id");
-
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + itemId,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
@@ -1084,9 +1110,7 @@ sysPass.Actions = function (log) {
                     const actionNext = $obj.data("action-next");
 
                     if (actionNext) {
-                        getContent({
-                            r: actionNext + "/" + $obj.data("account-id")
-                        });
+                        getContent({r: [actionNext, $obj.data("account-id")]});
                     } else {
                         getContent({
                             r: tabs.state.tab.route,
@@ -1182,7 +1206,6 @@ sysPass.Actions = function (log) {
             tabs.state.update($obj);
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
 
             const items = grid.getSelection($obj);
@@ -1191,12 +1214,13 @@ sysPass.Actions = function (log) {
                 return;
             }
 
-            opts.data = {
-                r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
-                items: items,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), (items.length === 0 ? $obj.data("item-id") : null)],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
+            opts.data = {items: items};
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
@@ -1226,14 +1250,14 @@ sysPass.Actions = function (log) {
 
             grid.delete($obj, function (items) {
                 const opts = sysPassApp.requests.getRequestOpts();
-                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
-                opts.data = {
-                    r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
-                    items: items,
-                    sk: sysPassApp.sk.get(),
-                    isAjax: 1
-                };
+                opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                    {
+                        r: [$obj.data("action-route"), (items.length === 0 ? $obj.data("item-id") : null)],
+                        sk: sysPassApp.sk.get(),
+                        isAjax: 1
+                    });
+                opts.data = {items: items};
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     sysPassApp.msg.out(json);
@@ -1305,14 +1329,15 @@ sysPass.Actions = function (log) {
             log.info("wiki:show");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                pageName: $obj.data("pagename"),
-                actionId: $obj.data("action-id"),
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: $obj.data("action-route"),
+                    pageName: $obj.data("pagename"),
+                    actionId: $obj.data("action-id"),
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status !== 0) {
@@ -1333,16 +1358,14 @@ sysPass.Actions = function (log) {
 
             tabs.state.update($obj);
 
-            const itemId = $obj.data("item-id");
-
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + itemId,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
@@ -1422,13 +1445,13 @@ sysPass.Actions = function (log) {
             log.info("notification:check");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json.status === 0) {
@@ -1472,19 +1495,21 @@ sysPass.Actions = function (log) {
 
             grid.delete($obj, function (items) {
                 const opts = sysPassApp.requests.getRequestOpts();
-                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
-                opts.data = {
-                    r: $obj.data("action-route") + (items.length === 0 ? "/" + $obj.data("item-id") : ''),
-                    items: items,
-                    sk: sysPassApp.sk.get(),
-                    isAjax: 1
-                };
+                opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                    {
+                        r: [$obj.data("action-route"), (items.length === 0 ? $obj.data("item-id") : null)],
+                        sk: sysPassApp.sk.get(),
+                        isAjax: 1
+                    });
+                opts.data = {items: items};
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     sysPassApp.msg.out(json);
 
-                    getContent({r: $obj.data("action-next")});
+                    getContent({r: $obj.data("action-next")}).then(function () {
+                        notification.getActive();
+                    });
                 });
             });
         },
@@ -1492,13 +1517,13 @@ sysPass.Actions = function (log) {
             log.info("notification:getActive");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: "items/notifications",
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: "items/notifications",
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 const $badge = $(".notifications-badge");
@@ -1544,8 +1569,8 @@ sysPass.Actions = function (log) {
 
             const $target = $($obj.data("target"));
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("action-route"),});
             opts.data = $obj.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
@@ -1691,13 +1716,13 @@ sysPass.Actions = function (log) {
             const itemId = $obj.data("item-id");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + itemId,
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
@@ -1706,9 +1731,7 @@ sysPass.Actions = function (log) {
                     const actionNext = $obj.data("action-next");
 
                     if (actionNext) {
-                        getContent({
-                            r: actionNext + "/" + itemId
-                        });
+                        getContent({r: [actionNext, itemId]});
                     } else {
                         getContent({
                             r: tabs.state.tab.route,
@@ -1727,7 +1750,7 @@ sysPass.Actions = function (log) {
 
         const opts = sysPassApp.requests.getRequestOpts();
         opts.method = "get";
-        opts.url = ajaxUrl.entrypoint + "?r=task/runTask/" + taskId;
+        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: ["task/runTask", taskId],});
 
         return sysPassApp.requests.getActionEvent(opts, function (result) {
             let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
@@ -1742,13 +1765,13 @@ sysPass.Actions = function (log) {
             log.info("track:unlock");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
-            opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                sk: sysPassApp.sk.get(),
-                isAjax: 1
-            };
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+                {
+                    r: [$obj.data("action-route"), $obj.data("item-id")],
+                    sk: sysPassApp.sk.get(),
+                    isAjax: 1
+                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);

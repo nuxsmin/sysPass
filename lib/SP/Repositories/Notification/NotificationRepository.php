@@ -28,6 +28,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
+use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -386,19 +387,67 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
 
-        $filterUser = '(userId = ? OR (userId = NULL AND onlyAdmin = 0) OR sticky = 1)';
+        $queryCondition = new QueryCondition();
+        $queryCondition->addFilter('userId = ?', [$userId]);
+        $queryCondition->addFilter('(userId IS NULL AND onlyAdmin = 0)');
+        $queryCondition->addFilter('sticky = 1');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('(type LIKE ? OR component LIKE ? OR description LIKE ?) AND ' . $filterUser);
+            $queryData->setWhere(
+                '(type LIKE ? OR component LIKE ? OR description LIKE ?) AND '
+                . $queryCondition->getFilters(QueryCondition::CONDITION_OR)
+            );
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($userId);
+            $queryData->setParams(array_merge([$search, $search, $search], $queryCondition->getParams()));
         } else {
-            $queryData->setWhere($filterUser);
-            $queryData->addParam($userId);
+            $queryData->setWhere($queryCondition->getFilters(QueryCondition::CONDITION_OR));
+            $queryData->setParams($queryCondition->getParams());
+        }
+
+        $queryData->setLimit(
+            '?,?',
+            [$itemSearchData->getLimitStart(), $itemSearchData->getLimitCount()]
+        );
+
+        return $this->db->doSelect($queryData, true);
+    }
+
+    /**
+     * Searches for items by a given filter
+     *
+     * @param ItemSearchData $itemSearchData
+     * @param int            $userId
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function searchForAdmin(ItemSearchData $itemSearchData, $userId)
+    {
+        $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setSelect('id, type, component, description, `date`, checked, userId, sticky, onlyAdmin');
+        $queryData->setFrom('Notification');
+        $queryData->setOrder('`date` DESC');
+
+        $queryCondition = new QueryCondition();
+        $queryCondition->addFilter('userId = ?', [$userId]);
+        $queryCondition->addFilter('onlyAdmin = 1');
+        $queryCondition->addFilter('sticky = 1');
+
+        if ($itemSearchData->getSeachString() !== '') {
+            $queryData->setWhere(
+                '(type LIKE ? OR component LIKE ? OR description LIKE ?) AND '
+                . $queryCondition->getFilters(QueryCondition::CONDITION_OR)
+            );
+
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+
+            $queryData->setParams(array_merge([$search, $search, $search], $queryCondition->getParams()));
+        } else {
+            $queryData->setWhere($queryCondition->getFilters(QueryCondition::CONDITION_OR));
+            $queryData->setParams($queryCondition->getParams());
         }
 
         $queryData->setLimit(
@@ -523,6 +572,39 @@ final class NotificationRepository extends Repository implements RepositoryItemI
             FROM Notification 
             WHERE (userId = ? OR sticky = 1) 
             AND onlyAdmin = 0 
+            AND checked = 0
+            ORDER BY `date` DESC ';
+
+        $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+
+        return $this->db->doSelect($queryData);
+    }
+
+    /**
+     * @param $id
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAllActiveForAdmin($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT id,
+            type,
+            component,
+            description,
+            `date`,
+            userId,
+            checked,
+            sticky,
+            onlyAdmin 
+            FROM Notification 
+            WHERE (userId = ? OR sticky = 1 OR userId IS NULL) 
             AND checked = 0
             ORDER BY `date` DESC ';
 

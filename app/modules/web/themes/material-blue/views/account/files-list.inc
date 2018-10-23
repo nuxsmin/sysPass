@@ -9,7 +9,9 @@
 
 <div id="files-wrap">
     <ul id="files-list " class="mdl-list">
-        <?php foreach ($_getvar('files') as $file): ?>
+        <?php foreach ($_getvar('files') as $file):
+            $extension = mb_strtoupper($file->getExtension());
+            ?>
             <li class="mdl-list__item">
                 <span class="mdl-list__item-primary-content" title="<?php echo $file->getName(); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
@@ -40,15 +42,18 @@
                        title="<?php echo __('Descargar Archivo'); ?>"
                        data-item-id="<?php echo $file->getId(); ?>"
                        data-action-route="<?php echo $_getvar('fileDownloadRoute'); ?>"
+                       data-item-type="<?php echo $extension; ?>"
                        data-onclick="file/download">
                         <?php echo $icons->getIconDownload()->getIcon(); ?></i>
 
-                    <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
-                       title="<?php echo __('Ver Archivo'); ?>"
-                       data-item-id="<?php echo $file->getId(); ?>"
-                       data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
-                       data-onclick="file/view">
+                    <?php if ($extension !== 'PDF'): ?>
+                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
+                           title="<?php echo __('Ver Archivo'); ?>"
+                           data-item-id="<?php echo $file->getId(); ?>"
+                           data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
+                           data-onclick="file/view">
                         <?php echo $icons->getIconView()->getIcon(); ?></i>
+                    <?php endif; ?>
                 </span>
             </li>
         <?php endforeach; ?>

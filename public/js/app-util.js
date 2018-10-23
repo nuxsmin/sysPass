@@ -480,7 +480,7 @@ sysPass.Util = function (log) {
      */
     const notifications = {
         state: {
-            lastHash : ''
+            lastHash: ''
         },
         send: function (title, message, id) {
             log.info("sendNotification");
@@ -523,6 +523,22 @@ sysPass.Util = function (log) {
         }
     };
 
+    /**
+     * Returns a serialized URL for a GET request
+     * @param base
+     * @param parts
+     * @returns {string}
+     */
+    const getUrl = function (base, parts) {
+        return base + "?" + Object.keys(parts).map(function (key) {
+            if (Array.isArray(parts[key])) {
+                return key + "=" + parts[key].join("/");
+            }
+
+            return key + "=" + parts[key];
+        }).join("&");
+    };
+
     return {
         decodeEntities: decodeEntities,
         resizeImage: resizeImage,
@@ -531,6 +547,7 @@ sysPass.Util = function (log) {
         setContentSize: setContentSize,
         redirect: redirect,
         uniqueId: uniqueId,
+        getUrl: getUrl,
         sendNotification: notifications.send,
         password: password,
         hash: hash

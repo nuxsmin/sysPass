@@ -61,37 +61,18 @@ final class ErrorUtil
                                                $replace = null,
                                                $render = true)
     {
-        if ($replace === null) {
-            $view->resetTemplates();
-
-            if ($view->hashContentTemplates()) {
-                $view->resetContentTemplates();
-                $view->addContentTemplate('error', Template::PARTIALS_DIR);
-            } else {
-                $view->addTemplate('error', Template::PARTIALS_DIR);
-            }
-        } else {
-            if ($view->hashContentTemplates()) {
-                $view->removeContentTemplate($replace);
-                $view->addContentTemplate('error', Template::PARTIALS_DIR);
-            } else {
-                $view->removeTemplate($replace);
-                $view->addTemplate('error', Template::PARTIALS_DIR);
-            }
-        }
-
         switch (get_class($e)) {
             case UpdatedMasterPassException::class:
-                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render);
+                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render, $replace);
                 break;
             case UnauthorizedPageException::class:
-                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $render);
+                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $render, $replace);
                 break;
             case AccountPermissionException::class:
-                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $render);
+                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $render, $replace);
                 break;
             default;
-                self::showErrorInView($view, self::ERR_EXCEPTION, $render);
+                self::showErrorInView($view, self::ERR_EXCEPTION, $render, $replace);
         }
     }
 
@@ -101,9 +82,12 @@ final class ErrorUtil
      * @param \SP\Mvc\View\Template $view
      * @param int                   $type int con el tipo de error
      * @param bool                  $render
+     * @param null                  $replace
      */
-    public static function showErrorInView(Template $view, $type, $render = true)
+    public static function showErrorInView(Template $view, $type, $render = true, $replace = null)
     {
+        self::addErrorTemplate($view, $replace);
+
         $error = self::getErrorTypes($type);
 
         $view->append('errors',
@@ -120,6 +104,32 @@ final class ErrorUtil
                 processException($e);
 
                 echo $e->getMessage();
+            }
+        }
+    }
+
+    /**
+     * @param Template    $view
+     * @param string|null $replace
+     */
+    private static function addErrorTemplate(Template $view, string $replace = null)
+    {
+        if ($replace === null) {
+            $view->resetTemplates();
+
+            if ($view->hashContentTemplates()) {
+                $view->resetContentTemplates();
+                $view->addContentTemplate('error', Template::PARTIALS_DIR);
+            } else {
+                $view->addTemplate('error', Template::PARTIALS_DIR);
+            }
+        } else {
+            if ($view->hashContentTemplates()) {
+                $view->removeContentTemplate($replace);
+                $view->addContentTemplate('error', Template::PARTIALS_DIR);
+            } else {
+                $view->removeTemplate($replace);
+                $view->addTemplate('error', Template::PARTIALS_DIR);
             }
         }
     }

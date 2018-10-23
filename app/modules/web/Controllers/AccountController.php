@@ -218,6 +218,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
                 $this->view->assign('accountData', $accountData);
 
+                $clientAddress = $this->configData->isDemoEnabled() ? '***' : $this->request->getClientAddress(true);
+
                 $this->eventDispatcher->notifyEvent('show.account.link',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Enlace visualizado'))
@@ -225,11 +227,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                         ->addDetail(__u('Cliente'), $accountData->getClientName())
                         ->addDetail(__u('Agente'), $this->router->request()->headers()->get('User-Agent'))
                         ->addDetail(__u('HTTPS'), $this->router->request()->isSecure() ? __u('ON') : __u('OFF'))
+                        ->addDetail(__u('IP'), $clientAddress)
                         ->addData('userId', $publicLinkData->getUserId())
                         ->addData('notify', $publicLinkData->isNotify()))
                 );
             } else {
-                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
+                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, true, 'account-link');
             }
 
             $this->view();

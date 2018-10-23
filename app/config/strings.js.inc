@@ -93,5 +93,6 @@ return [
     68 => __('Actualizado'),
     69 => __('Error al comprobar actualizaciones'),
     70 => __('Avisos de sysPass'),
-    71 => __('Vaciar los tracks?')
+    71 => __('Vaciar los tracks?'),
+    72 => __('Archivo descargado')
 ];

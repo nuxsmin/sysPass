@@ -67,7 +67,7 @@ final class UserPassResetController extends ControllerBase
             ->getCustomLayout('request', strtolower($this->controllerName));
 
         if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, 'request');
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
         }
 
         $this->view();
@@ -156,7 +156,7 @@ final class UserPassResetController extends ControllerBase
         if ($hash && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);
         } else {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, 'reset');
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'reset');
         }
 
         $this->view();
