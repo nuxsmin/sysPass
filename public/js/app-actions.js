@@ -413,7 +413,7 @@ sysPass.Actions = function (log) {
 
             const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("action-route")});
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $frmSearch.data("action-route")});
             opts.data = $frmSearch.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
@@ -490,7 +490,7 @@ sysPass.Actions = function (log) {
                 opts.method = "get";
                 opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
                     {
-                        r: $obj.data("action-route"),
+                        r: $obj.data("item-route"),
                         sk: sysPassApp.sk.get()
                     });
 
@@ -1570,7 +1570,7 @@ sysPass.Actions = function (log) {
             const $target = $($obj.data("target"));
             const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("action-route"),});
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("action-route")});
             opts.data = $obj.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
