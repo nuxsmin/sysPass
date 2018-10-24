@@ -178,7 +178,11 @@ sysPass.Triggers = function (log) {
 
                 const lastHistory = sysPassApp.requests.history.del();
 
-                lastHistory.data.sk = sysPassApp.sk.get();
+                if (!lastHistory.hasOwnProperty('data')) {
+                    lastHistory.data = {sk: sysPassApp.sk.get()};
+                } else {
+                    lastHistory.data.sk = sysPassApp.sk.get();
+                }
 
                 sysPassApp.requests.getActionCall(lastHistory, lastHistory.callback);
             }
