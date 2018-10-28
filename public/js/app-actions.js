@@ -1236,7 +1236,7 @@ sysPass.Actions = function (log) {
                         },
                         close: function () {
                             if ($itemDst) {
-                                items.update($obj);
+                                sysPassApp.actions.items.update($obj);
                             }
                         }
                     });
