@@ -78,7 +78,11 @@ final class NotificationGrid extends GridBase
 
         $grid->addDataAction($this->getViewAction());
         $grid->addDataAction($this->setNonAdminFilter($this->getCheckAction()));
-        $grid->addDataAction($this->setNonAdminFilter($this->getEditAction()));
+
+        if ($this->isAdminApp) {
+            $grid->addDataAction($this->setNonAdminFilter($this->getEditAction()));
+        }
+
         $grid->addDataAction($this->setNonAdminFilter($this->getDeleteAction()));
         $grid->addDataAction(
             $this->setNonAdminFilter(
@@ -263,6 +267,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setTitle(__('Eliminar Notificación'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('notification/delete');
+        $gridAction->setFilterRowSource('checked', 0);
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_DELETE));
         $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
 
