@@ -443,4 +443,104 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $this->assertEquals(0, self::$repository->getAllActiveForUserId(2)->getNumRows());
         $this->assertEquals(0, self::$repository->getAllActiveForUserId(3)->getNumRows());
     }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGetAllActiveForAdmin()
+    {
+        $result = self::$repository->getAllActiveForAdmin(1);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+
+        $result = self::$repository->getAllActiveForAdmin(2);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertCount(3, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+        $this->assertEquals(1, $data[2]->getId());
+
+        $result = self::$repository->getAllActiveForAdmin(3);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testSearchForAdmin()
+    {
+        $itemSearchData = new ItemSearchData();
+        $itemSearchData->setLimitCount(10);
+        $itemSearchData->setSeachString('Test');
+
+        $result = self::$repository->searchForAdmin($itemSearchData, 1);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+
+        $itemSearchData->setSeachString('Accounts');
+
+        $result = self::$repository->searchForAdmin($itemSearchData, 2);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertCount(3, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+        $this->assertEquals(1, $data[2]->getId());
+
+        $itemSearchData->setSeachString('Admins');
+
+        $result = self::$repository->searchForAdmin($itemSearchData, 2);
+
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertEquals(3, $data[0]->getId());
+
+        $itemSearchData->setSeachString('Global');
+
+        $result = self::$repository->searchForAdmin($itemSearchData, 2);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertEquals(2, $data[0]->getId());
+
+        $itemSearchData->setSeachString('');
+
+        $result = self::$repository->searchForAdmin($itemSearchData, 2);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertCount(3, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+        $this->assertEquals(1, $data[2]->getId());
+    }
 }

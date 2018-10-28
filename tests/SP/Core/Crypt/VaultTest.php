@@ -26,7 +26,7 @@ namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Vault;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class VaultTest
@@ -48,7 +48,7 @@ class VaultTest extends TestCase
      */
     protected function setUp()
     {
-        $this->key = Util::generateRandomBytes();
+        $this->key = PasswordUtil::generateRandomBytes();
     }
 
     /**
@@ -60,7 +60,7 @@ class VaultTest extends TestCase
         $vault->saveData('prueba', $this->key);
         $this->assertEquals('prueba', $vault->getData($this->key));
 
-        $randomData = Util::generateRandomBytes();
+        $randomData = PasswordUtil::generateRandomBytes();
 
         $vault = new Vault();
         $vault->saveData($randomData, $this->key);

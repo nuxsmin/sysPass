@@ -35,6 +35,7 @@ use SP\Repositories\AuthToken\AuthTokenRepository;
 use SP\Repositories\DuplicatedItemException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use SP\Util\PasswordUtil;
 use SP\Util\Util;
 use function SP\Tests\setupContext;
 
@@ -173,7 +174,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testRefreshTokenByUserId()
     {
-        $token = Util::generateRandomBytes();
+        $token = PasswordUtil::generateRandomBytes();
 
         // Comprobar actualización con usuario que existe
         $this->assertEquals(2, self::$repository->refreshTokenByUserId(1, $token));
@@ -193,7 +194,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $token = Util::generateRandomBytes();
+        $token = PasswordUtil::generateRandomBytes();
         $hash = Hash::hashKey('prueba123');
         $vault = Vault::getInstance()->saveData('prueba', 'prueba123');
 
@@ -305,7 +306,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $token = Util::generateRandomBytes();
+        $token = PasswordUtil::generateRandomBytes();
         $hash = Hash::hashKey('prueba123');
         $vault = Vault::getInstance()->saveData('prueba', 'prueba123');
 

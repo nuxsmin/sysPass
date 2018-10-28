@@ -33,7 +33,8 @@
     "ext-dom": "*",
     "ext-gd": "*",
     "ext-json": "*",
-    "ext-gettext": "*"
+    "ext-gettext": "*",
+    "ext-fileinfo": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^6",

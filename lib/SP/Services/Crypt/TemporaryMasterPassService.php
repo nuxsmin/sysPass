@@ -37,7 +37,7 @@ use SP\Services\Mail\MailService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\User\UserService;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class TemporaryMasterPassService
@@ -82,7 +82,7 @@ final class TemporaryMasterPassService extends Service
             $this->maxTime = time() + $maxTime;
 
             // Encriptar la clave maestra con hash aleatorio generado
-            $randomKey = Util::generateRandomBytes(32);
+            $randomKey = PasswordUtil::generateRandomBytes(32);
             $secureKey = Crypt::makeSecuredKey($randomKey);
 
             $configRequest = new ConfigRequest();

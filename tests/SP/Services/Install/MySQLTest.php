@@ -30,7 +30,7 @@ use SP\Services\Install\InstallData;
 use SP\Services\Install\MySQL;
 use SP\Storage\Database\MySQLHandler;
 use SP\Tests\DatabaseUtil;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class MySQLTest
@@ -161,7 +161,7 @@ class MySQLTest extends TestCase
     public function testCreateDBUser()
     {
         $mysql = new MySQL($this->getParams(), new ConfigData());
-        $mysql->createDBUser('test', Util::randomPassword());
+        $mysql->createDBUser('test', PasswordUtil::randomPassword());
 
         $num = (int)$mysql->getDbHandler()
             ->getConnectionSimple()

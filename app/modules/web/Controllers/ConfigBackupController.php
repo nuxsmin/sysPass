@@ -34,6 +34,7 @@ use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class ConfigBackupController
@@ -127,6 +128,9 @@ final class ConfigBackupController extends SimpleControllerBase
                 )
             );
 
+            // Create the XML archive after verifying the export integrity
+            $export->createArchive();
+
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));
         } catch (\Exception $e) {
             processException($e);
@@ -139,6 +143,132 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function downloadExportAction()
+    {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
+        try {
+            SessionContext::close();
+
+            $filePath = XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash(), true);
+
+            $file = new FileHandler($filePath);
+            $file->checkFileExists();
+
+            $this->eventDispatcher->notifyEvent('download.exportFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo descargado'))
+                    ->addDetail(__u('Archivo'), $file->getFile()))
+            );
+
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', $file->getFileSize());
+            $response->header('Content-type', $file->getFileType());
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'chunked');
+            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+            $response->send();
+
+            $file->readChunked();
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        }
+
+        return '';
+    }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function downloadBackupAppAction()
+    {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
+        try {
+            SessionContext::close();
+
+            $filePath = FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true);
+
+            $file = new FileHandler($filePath);
+            $file->checkFileExists();
+
+            $this->eventDispatcher->notifyEvent('download.backupAppFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo descargado'))
+                    ->addDetail(__u('Archivo'), $file->getFile()))
+            );
+
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', $file->getFileSize());
+            $response->header('Content-type', $file->getFileType());
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'chunked');
+            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+            $response->send();
+
+            $file->readChunked();
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        }
+
+        return '';
+    }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function downloadBackupDbAction()
+    {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
+        try {
+            SessionContext::close();
+
+            $filePath = FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true);
+
+            $file = new FileHandler($filePath);
+            $file->checkFileExists();
+
+            $this->eventDispatcher->notifyEvent('download.backupDbFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo descargado'))
+                    ->addDetail(__u('Archivo'), $file->getFile()))
+            );
+
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', $file->getFileSize());
+            $response->header('Content-type', $file->getFileType());
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'chunked');
+            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+            $response->send();
+
+            $file->readChunked();
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        }
+
+        return '';
+    }
+
+    /**
+     * initialize
      */
     protected function initialize()
     {
@@ -148,7 +278,7 @@ final class ConfigBackupController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            $this->returnJsonResponseException($e);
         }
     }
 }

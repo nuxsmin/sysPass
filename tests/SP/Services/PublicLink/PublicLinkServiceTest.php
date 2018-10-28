@@ -37,6 +37,7 @@ use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use SP\Util\PasswordUtil;
 use SP\Util\Util;
 use function SP\Tests\setupContext;
 
@@ -218,7 +219,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
         $data = new PublicLinkData();
         $data->setItemId(1);
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setUserId(1);
         $data->setTypeId(1);
         $data->setNotify(1);
@@ -277,7 +278,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     {
         $data = new PublicLinkData();
         $data->setItemId(2);
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setData('data');
         $data->setUserId(1);
         $data->setTypeId(1);
@@ -393,7 +394,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
         $data = new PublicLinkData();
         $data->setId(3);
         $data->setItemId(2);
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setData('data');
         $data->setUserId(2);
         $data->setTypeId(1);

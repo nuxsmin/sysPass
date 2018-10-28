@@ -24,6 +24,7 @@
 
 namespace SP\Tests\Services\Notification;
 
+use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
@@ -31,6 +32,7 @@ use SP\DataModel\NotificationData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Notification\NotificationService;
 use SP\Services\ServiceException;
+use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -42,6 +44,10 @@ use function SP\Tests\setupContext;
  */
 class NotificationServiceTest extends DatabaseTestCase
 {
+    /**
+     * @var ContextInterface
+     */
+    private static $context;
     /**
      * @var NotificationService
      */
@@ -60,6 +66,8 @@ class NotificationServiceTest extends DatabaseTestCase
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+
+        self::$context = $dic->get(ContextInterface::class);
 
         // Inicializar el servicio
         self::$service = $dic->get(NotificationService::class);
@@ -141,8 +149,14 @@ class NotificationServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\QueryException
      * @throws NoSuchItemException
      */
-    public function testGetAllActiveForUserId()
+    public function testGetAllActiveForNonAdmin()
     {
+        $userData = new UserLoginResponse();
+        $userData->setId(2);
+        $userData->setIsAdminApp(false);
+
+        self::$context->setUserData($userData);
+
         $data = self::$service->getAllActiveForUserId(2);
 
         $this->assertCount(2, $data);
@@ -165,6 +179,43 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->assertCount(0, self::$service->getAllActiveForUserId(2));
         $this->assertCount(0, self::$service->getAllActiveForUserId(3));
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws NoSuchItemException
+     */
+    public function testGetAllActiveForAdmin()
+    {
+        $userData = new UserLoginResponse();
+        $userData->setId(1);
+        $userData->setIsAdminApp(true);
+
+        self::$context->setUserData($userData);
+
+        $data = self::$service->getAllActiveForUserId(1);
+
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+
+        $data = self::$service->getAllActiveForUserId(3);
+
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(2, $data[1]->getId());
+
+        self::$service->setCheckedById(2);
+
+        $data = self::$service->getAllActiveForUserId(1);
+
+        $this->assertCount(1, $data);
+        $this->assertEquals(3, $data[0]->getId());
+
+        self::$service->setCheckedById(3);
+
+        $this->assertCount(0, self::$service->getAllActiveForUserId(1));
     }
 
     /**
@@ -262,8 +313,76 @@ class NotificationServiceTest extends DatabaseTestCase
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function testSearch()
+    public function testSearchNonAdmin()
     {
+        $userData = new UserLoginResponse();
+        $userData->setId(2);
+        $userData->setIsAdminApp(false);
+
+        self::$context->setUserData($userData);
+
+        $itemSearchData = new ItemSearchData();
+        $itemSearchData->setLimitCount(10);
+        $itemSearchData->setSeachString('Test');
+
+        $result = self::$service->search($itemSearchData);
+
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(NotificationData::class, $data[0]);
+        $this->assertEquals(2, $data[0]->getId());
+        $this->assertEquals('test', $data[0]->getDescription());
+
+        $itemSearchData->setSeachString('Global');
+
+        $result = self::$service->search($itemSearchData);
+
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(NotificationData::class, $data[0]);
+        $this->assertEquals(2, $data[0]->getId());
+        $this->assertEquals('Global', $data[0]->getType());
+
+        $itemSearchData->setSeachString('');
+
+        $result = self::$service->search($itemSearchData);
+
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $result->getDataAsArray());
+
+        $itemSearchData->setSeachString('Accounts');
+
+        $result = self::$service->search($itemSearchData);
+        /** @var NotificationData[] $data */
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $data);
+        $this->assertEquals(2, $data[0]->getId());
+        $this->assertEquals('Accounts', $data[0]->getComponent());
+        $this->assertEquals(1, $data[1]->getId());
+        $this->assertEquals('Accounts', $data[1]->getComponent());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function testSearchAdmin()
+    {
+        $userData = new UserLoginResponse();
+        $userData->setId(1);
+        $userData->setIsAdminApp(true);
+
+        self::$context->setUserData($userData);
+
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('Test');
@@ -288,8 +407,8 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $result = self::$service->search($itemSearchData);
 
-        $this->assertEquals(3, $result->getNumRows());
-        $this->assertCount(3, $result->getDataAsArray());
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $result->getDataAsArray());
 
         $itemSearchData->setSeachString('Accounts');
 
@@ -297,14 +416,12 @@ class NotificationServiceTest extends DatabaseTestCase
         /** @var NotificationData[] $data */
         $data = $result->getDataAsArray();
 
-        $this->assertEquals(3, $result->getNumRows());
-        $this->assertCount(3, $data);
-        $this->assertEquals(1529145313, $data[0]->getDate());
+        $this->assertEquals(2, $result->getNumRows());
+        $this->assertCount(2, $data);
+        $this->assertEquals(3, $data[0]->getId());
         $this->assertEquals('Accounts', $data[0]->getComponent());
-        $this->assertEquals(1529145296, $data[1]->getDate());
+        $this->assertEquals(2, $data[1]->getId());
         $this->assertEquals('Accounts', $data[1]->getComponent());
-        $this->assertEquals(1529145158, $data[2]->getDate());
-        $this->assertEquals('Accounts', $data[2]->getComponent());
     }
 
     /**

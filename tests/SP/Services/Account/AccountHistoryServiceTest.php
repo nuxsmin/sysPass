@@ -33,7 +33,7 @@ use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -89,13 +89,13 @@ class AccountHistoryServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $result = self::$service->create(new AccountHistoryCreateDto(2, true, false, Util::generateRandomBytes()));
+        $result = self::$service->create(new AccountHistoryCreateDto(2, true, false, PasswordUtil::generateRandomBytes()));
         $this->assertEquals(8, $result);
 
-        $result = self::$service->create(new AccountHistoryCreateDto(2, true, true, Util::generateRandomBytes()));
+        $result = self::$service->create(new AccountHistoryCreateDto(2, true, true, PasswordUtil::generateRandomBytes()));
         $this->assertEquals(9, $result);
 
-        $result = self::$service->create(new AccountHistoryCreateDto(10, true, false, Util::generateRandomBytes()));
+        $result = self::$service->create(new AccountHistoryCreateDto(10, true, false, PasswordUtil::generateRandomBytes()));
         $this->assertEquals(0, $result);
 
         $this->assertEquals(7, $this->conn->getRowCount('AccountHistory'));
@@ -205,9 +205,9 @@ class AccountHistoryServiceTest extends DatabaseTestCase
     {
         $request = new AccountPasswordRequest();
         $request->id = 3;
-        $request->pass = Util::generateRandomBytes();
-        $request->key = Util::generateRandomBytes();
-        $request->hash = Util::generateRandomBytes();
+        $request->pass = PasswordUtil::generateRandomBytes();
+        $request->key = PasswordUtil::generateRandomBytes();
+        $request->hash = PasswordUtil::generateRandomBytes();
 
         self::$service->updatePasswordMasterPass($request);
 

@@ -27,7 +27,7 @@ namespace SP\Tests\SP\Core\Crypt;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Hash;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class HashTest
@@ -42,7 +42,7 @@ class HashTest extends TestCase
     public function testHashKey()
     {
         for ($i = 2; $i <= 128; $i *= 2) {
-            $key = Util::generateRandomBytes($i);
+            $key = PasswordUtil::generateRandomBytes($i);
             $hash = Hash::hashKey($key);
 
             $this->assertNotEmpty($hash);
@@ -60,7 +60,7 @@ class HashTest extends TestCase
         for ($i = 2; $i <= 128; $i *= 2) {
             $text = $faker->text;
 
-            $key = Util::generateRandomBytes($i);
+            $key = PasswordUtil::generateRandomBytes($i);
             $hash = Hash::signMessage($text, $key);
 
             $this->assertNotEmpty($hash);

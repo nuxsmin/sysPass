@@ -161,6 +161,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $response->send(true);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
         }
 
         return '';

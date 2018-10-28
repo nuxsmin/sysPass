@@ -28,7 +28,7 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
-use SP\Util\Version;
+use SP\Util\VersionUtil;
 
 /**
  * Class UpgradeService
@@ -53,7 +53,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return Version::checkVersion(Version::checkVersion($version, Version::getVersionArrayNormalized()), self::UPGRADES);
+        return VersionUtil::checkVersion(VersionUtil::checkVersion($version, VersionUtil::getVersionArrayNormalized()), self::UPGRADES);
     }
 
     /**
@@ -203,7 +203,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
 
         foreach (self::UPGRADES as $upgradeVersion) {
-            if (Version::checkVersion($version, $upgradeVersion)) {
+            if (VersionUtil::checkVersion($version, $upgradeVersion)) {
                 $this->applyUpgrade($upgradeVersion);
             }
         }

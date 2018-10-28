@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -37,14 +36,19 @@ use SP\Plugin\PluginManager;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
+use SP\Services\Backup\FileBackupService;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\TemporaryMasterPassService;
+use SP\Services\Export\XmlExportService;
 use SP\Services\Task\Task;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
+use SP\Util\Util;
 
 /**
  * Class ConfigManagerController
@@ -233,6 +237,8 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Repositories\NoSuchItemException
@@ -280,44 +286,31 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('pharIsAvailable', $this->extensionChecker->checkPharAvailable());
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);
-        $template->assign('backupDir', BACKUP_PATH);
-        $template->assign('backupPath', Bootstrap::$WEBROOT . '/backup');
 
-        $backupHash = $this->configData->getBackupHash();
-        $exportHash = $this->configData->getExportHash();
+        $backupAppFile = new FileHandler(FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true));
+        $backupDbFile = new FileHandler(FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true));
+        $exportFile = new FileHandler(XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash(), true));
 
-        $backupFile = $template->siteName . '-' . $backupHash . '.tar.gz';
+        try {
+            $backupAppFile->checkFileExists();
+            $backupDbFile->checkFileExists();
 
-        $template->assign('backupFile', [
-            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $backupFile,
-            'relative' => $template->backupPath . '/' . $backupFile,
-            'filename' => $backupFile
-        ]);
+            $template->assign('hasBackup', true);
+            $template->assign('lastBackupTime', date('r', $backupAppFile->getFileTime()));
+        } catch (FileException $e) {
+            $template->assign('hasBackup', false);
+            $template->assign('lastBackupTime', __('No se encontraron backups'));
+        }
 
-        $backupDbFile = $template->siteName . '_db-' . $backupHash . '.sql';
+        try {
+            $exportFile->checkFileExists();
 
-        $template->assign('backupDbFile', [
-            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $backupDbFile,
-            'relative' => $template->backupPath . '/' . $backupDbFile,
-            'filename' => $backupDbFile
-        ]);
-
-        clearstatcache(true, $template->backupFile['absolute']);
-        clearstatcache(true, $template->backupDbFile['absolute']);
-
-        $template->assign('lastBackupTime', file_exists($template->backupFile['absolute']) ? __('Último backup') . ': ' . date('r', filemtime($template->backupFile['absolute'])) : __('No se encontraron backups'));
-
-        $exportFile = $template->siteName . '-' . $exportHash . '.xml';
-
-        $template->assign('exportFile', [
-            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $exportFile,
-            'relative' => $template->backupPath . '/' . $exportFile,
-            'filename' => $exportFile
-        ]);
-
-        clearstatcache(true, $template->exportFile['absolute']);
-
-        $template->assign('lastExportTime', file_exists($template->exportFile['absolute']) ? __('Última exportación') . ': ' . date('r', filemtime($template->exportFile['absolute'])) : __('No se encontró archivo de exportación'));
+            $template->assign('hasExport', true);
+            $template->assign('lastExportTime', date('r', $exportFile->getFileTime()));
+        } catch (FileException $e) {
+            $template->assign('hasExport', false);
+            $template->assign('lastExportTime', __('No se encontró archivo de exportación'));
+        }
 
         return new DataTab(__('Copia de Seguridad'), $template);
     }
@@ -341,6 +334,8 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
      */
@@ -357,6 +352,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('No instalado')));
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
         $template->assign('missingExtensions', $this->extensionChecker->getMissing());
+        $template->assign('downloadRate', round(Util::getMaxDownloadChunk() / 1024 / 1024));
 
         return new DataTab(__('Información'), $template);
     }

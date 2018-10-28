@@ -24,8 +24,7 @@
 
 namespace SP\Util;
 
-use Defuse\Crypto\Core;
-use Defuse\Crypto\Encoding;
+use SP\Storage\File\FileHandler;
 
 defined('APP_ROOT') || die();
 
@@ -34,92 +33,6 @@ defined('APP_ROOT') || die();
  */
 final class Util
 {
-    /**
-     * Generar una clave aleatoria
-     *
-     * @param int  $length     Longitud de la clave
-     * @param bool $useNumbers Usar números
-     * @param bool $useSpecial Usar carácteres especiales
-     * @param bool $checKStrength
-     *
-     * @return string
-     */
-    public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true, $checKStrength = true)
-    {
-        $charsLower = 'abcdefghijklmnopqrstuwxyz';
-        $charsUpper = 'ABCDEFGHIJKLMNOPQRSTUWXYZ';
-
-        $alphabet = $charsLower . $charsUpper;
-
-        if ($useSpecial === true) {
-            $charsSpecial = '@$%&/()!_:.;{}^';
-            $alphabet .= $charsSpecial;
-        }
-
-        if ($useNumbers === true) {
-            $charsNumbers = '0123456789';
-            $alphabet .= $charsNumbers;
-        }
-
-        /**
-         * @return array
-         */
-        $passGen = function () use ($alphabet, $length) {
-            $pass = [];
-            $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-
-            for ($i = 0; $i < $length; $i++) {
-                $n = mt_rand(0, $alphaLength);
-                $pass[] = $alphabet[$n];
-            }
-
-            return $pass;
-        };
-
-        if ($checKStrength === true) {
-            do {
-                $pass = $passGen();
-                $strength = ['lower' => 0, 'upper' => 0, 'special' => 0, 'number' => 0];
-
-                foreach ($pass as $char) {
-                    if (strpos($charsLower, $char) !== false) {
-                        $strength['lower']++;
-                    } elseif (strpos($charsUpper, $char) !== false) {
-                        $strength['upper']++;
-                    } elseif ($useSpecial === true && strpos($charsSpecial, $char) !== false) {
-                        $strength['special']++;
-                    } elseif ($useNumbers === true && strpos($charsNumbers, $char) !== false) {
-                        $strength['number']++;
-                    }
-                }
-
-                if ($useSpecial === false) {
-                    unset($strength['special']);
-                }
-
-                if ($useNumbers === false) {
-                    unset($strength['number']);
-                }
-            } while (in_array(0, $strength, true));
-
-            return implode($pass);
-        }
-
-        return implode($passGen());
-    }
-
-    /**
-     * Generar una cadena aleatoria usuando criptografía.
-     *
-     * @param int $length opcional, con la longitud de la cadena
-     *
-     * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public static function generateRandomBytes($length = 30)
-    {
-        return Encoding::binToHex(Core::secureRandom($length));
-    }
 
     /**
      * Comprueba y devuelve un directorio temporal válido
@@ -166,13 +79,32 @@ final class Util
     /**
      * Obtener el tamaño máximo de subida de PHP.
      */
-    public static function getMaxUpload()
+    public static function getMaxUpload(): int
     {
-        $max_upload = (int)ini_get('upload_max_filesize');
-        $max_post = (int)ini_get('post_max_size');
-        $memory_limit = (int)ini_get('memory_limit');
+        return min(self::convertShortUnit(ini_get('upload_max_filesize')),
+            self::convertShortUnit(ini_get('post_max_size')),
+            self::convertShortUnit(ini_get('memory_limit')));
+    }
 
-        return min($max_upload, $max_post, $memory_limit);
+    /**
+     * @param $value
+     *
+     * @return int
+     */
+    public static function convertShortUnit($value): int
+    {
+        if (preg_match('/(\d+)(\w+)/', $value, $match)) {
+            switch (strtoupper($match[2])) {
+                case 'K':
+                    return (int)$match[1] * 1024;
+                case 'M':
+                    return (int)$match[1] * pow(1024, 2);
+                case 'G':
+                    return (int)$match[1] * pow(1024, 3);
+            }
+        }
+
+        return (int)$value;
     }
 
     /**
@@ -193,11 +125,15 @@ final class Util
         $in = is_string($in) ? strtolower($in) : $in;
 
         // if not strict, we only have to check if something is false
-        if (in_array($in, ['false', 'no', 'n', '0', 'off', false, 0], true) || !$in) {
+        if (in_array($in, ['false', 'no', 'n', '0', 'off', false, 0], true)
+            || !$in
+        ) {
             return false;
         }
 
-        if ($strict && in_array($in, ['true', 'yes', 'y', '1', 'on', true, 1], true)) {
+        if ($strict
+            && in_array($in, ['true', 'yes', 'y', '1', 'on', true, 1], true)
+        ) {
             return true;
         }
 
@@ -347,5 +283,13 @@ final class Util
         return array_map(function ($value) {
             return intval($value);
         }, explode($delimiter, $itemsId));
+    }
+
+    /**
+     * @return int
+     */
+    public static function getMaxDownloadChunk(): int
+    {
+        return self::convertShortUnit(ini_get('memory_limit')) / FileHandler::CHUNK_FACTOR;
     }
 }

@@ -124,29 +124,28 @@ final class EventlogGrid extends GridBase
         $gridData->addDataRowSource('login');
         $gridData->addDataRowSource('ipAddress', false,
             function ($value) use ($isDemoMode) {
-                return $isDemoMode ? preg_replace('#\d+#', '*', $value) : $value;
+                return $isDemoMode ? '*.*.*.*' : $value;
             });
         $gridData->addDataRowSource('description', false,
             function ($value) use ($isDemoMode) {
                 if ($isDemoMode) {
-                    $value = preg_replace('/\\d+\\.\\d+\\.\\d+\\.\\d+/', "*.*.*.*", $value);
+                    $value = preg_replace('/\d+\.\d+\.\d+\.\d+/', '*.*.*.*', $value);
                 }
 
-                $text = str_replace(';;', PHP_EOL, $value);
-
-                if (preg_match('/^SQL.*/m', $text)) {
-                    $text = preg_replace([
+                if (preg_match('/^SQL.*/m', $value)) {
+                    $value = preg_replace([
                         '/([a-zA-Z_]+),/m',
                         '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'],
                         ['\\1,<br>', '<br>\\1'],
-                        $text);
+                        $value);
                 }
 
-//                if (strlen($text) >= 100) {
-//                    $text = wordwrap($text, 100, PHP_EOL, true);
-//                }
-
-                return str_replace(PHP_EOL, '<br>', $text);
+                return wordwrap(
+                    str_replace([';;', PHP_EOL], '<br>', $value),
+                    100,
+                    '<br>',
+                    true
+                );
             }, false);
         $gridData->setData($this->queryResult);
 

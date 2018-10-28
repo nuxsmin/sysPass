@@ -28,7 +28,7 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
-use SP\Util\Version;
+use SP\Util\VersionUtil;
 
 /**
  * Class UpgradeAppService
@@ -46,7 +46,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return Version::checkVersion($version, self::UPGRADES);
+        return VersionUtil::checkVersion($version, self::UPGRADES);
     }
 
     /**
@@ -64,7 +64,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
         );
 
         foreach (self::UPGRADES as $appVersion) {
-            if (Version::checkVersion($version, $appVersion)) {
+            if (VersionUtil::checkVersion($version, $appVersion)) {
                 if ($this->applyUpgrade($appVersion) === false) {
                     throw new UpgradeException(
                         __u('Error al aplicar la actualización de la aplicación'),

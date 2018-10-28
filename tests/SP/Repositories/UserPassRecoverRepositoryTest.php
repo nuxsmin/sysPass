@@ -29,7 +29,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Repositories\User\UserPassRecoverRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -69,11 +69,11 @@ class UserPassRecoverRepositoryTest extends DatabaseTestCase
      */
     public function testAdd()
     {
-        $this->assertEquals(3, self::$repository->add(2, Util::generateRandomBytes()));
+        $this->assertEquals(3, self::$repository->add(2, PasswordUtil::generateRandomBytes()));
 
         $this->expectException(ConstraintException::class);
 
-        self::$repository->add(10, Util::generateRandomBytes());
+        self::$repository->add(10, PasswordUtil::generateRandomBytes());
     }
 
     /**
@@ -101,7 +101,7 @@ class UserPassRecoverRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $result->getNumRows());
         $this->assertEquals(2, $result->getData()->userId);
 
-        $result = self::$repository->getUserIdForHash(Util::generateRandomBytes(), 1529275206);
+        $result = self::$repository->getUserIdForHash(PasswordUtil::generateRandomBytes(), 1529275206);
 
         $this->assertEquals(0, $result->getNumRows());
     }

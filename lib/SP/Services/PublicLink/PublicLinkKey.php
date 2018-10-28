@@ -24,7 +24,7 @@
 
 namespace SP\Services\PublicLink;
 
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class PublicLinkKey
@@ -55,7 +55,7 @@ final class PublicLinkKey
         $this->salt = $salt;
 
         if ($hash === null) {
-            $this->hash = Util::generateRandomBytes();
+            $this->hash = PasswordUtil::generateRandomBytes();
         } else {
             $this->hash = $hash;
         }

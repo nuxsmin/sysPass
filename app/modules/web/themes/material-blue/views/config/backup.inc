@@ -35,10 +35,7 @@
             <?php echo $_getvar('lastBackupTime'); ?>
         </td>
     </tr>
-    <?php if ($_getvar('ctx_userIsAdminApp')):
-        $backupFile = $_getvar('backupFile');
-        $backupDbFile = $_getvar('backupDbFile');
-        ?>
+    <?php if ($_getvar('ctx_userIsAdminApp')): ?>
         <tr>
             <td class="descField">
                 <?php echo __('Descargar Actual'); ?>
@@ -46,21 +43,22 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
 
-                <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
-                    <a href="<?php echo $backupDbFile['relative']; ?>"
-                       download="<?php echo $backupDbFile['filename']; ?>" class="download">
+                <?php if ($_getvar('hasBackup')): ?>
+                    <a href="<?php echo $_getRoute('configBackup/downloadBackupDb'); ?>"
+                       class="download" target="_blank">
+
                         <button type="button" class="mdl-button mdl-js-button">
                             <?php echo __('Copia BBDD'); ?>
                         </button>
                     </a>
 
-                    <a href="<?php echo $backupFile['relative']; ?>"
-                       download="<?php echo $backupFile['filename']; ?>" class="download">
+                    <a href="<?php echo $_getRoute('configBackup/downloadBackupApp'); ?>"
+                       class="download" target="_blank">
                         <button type="button" class="mdl-button mdl-js-button">
                             <?php echo __('Copia sysPass'); ?>
                         </button>
                     </a>
-                <?php else: echo __('No hay backups para descargar'); ?>
+                <?php else: echo __('No se encontraron backups'); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -116,9 +114,7 @@
                 <?php echo $_getvar('lastExportTime'); ?>
             </td>
         </tr>
-        <?php if ($_getvar('ctx_userIsAdminApp')):
-            $exportFile = $_getvar('exportFile');
-            ?>
+        <?php if ($_getvar('ctx_userIsAdminApp')): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Descargar Actual'); ?>
@@ -126,15 +122,14 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
 
-                    <?php if (file_exists($exportFile['absolute'])): ?>
-                        <a href="<?php echo $exportFile['relative']; ?>"
-                           download="<?php echo $exportFile['filename']; ?>"
-                           class="download">
+                    <?php if ($_getvar('hasExport')): ?>
+                        <a href="<?php echo $_getRoute('configBackup/downloadExport'); ?>"
+                           class="download" target="_blank">
                             <button type="button" class="mdl-button mdl-js-button">
                                 XML <?php echo $_getvar('siteName'); ?>
                             </button>
                         </a>
-                    <?php else: echo __('No hay archivos XML para descargar'); ?>
+                    <?php else: echo __('No se encontró archivo de exportación'); ?>
                     <?php endif; ?>
                 </td>
             </tr>

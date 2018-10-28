@@ -33,7 +33,7 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -162,7 +162,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
         $data = new PublicLinkData();
         $data->setItemId(1);
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setData('data');
         $data->setUserId(1);
         $data->setTypeId(1);
@@ -314,7 +314,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     public function testRefresh()
     {
         $data = new PublicLinkData();
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setDateExpire(time() + 3600);
         $data->setMaxCountViews(6);
         $data->setData('data_new');
@@ -439,7 +439,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $data = new PublicLinkData();
         $data->setId(1);
         $data->setItemId(2);
-        $data->setHash(Util::generateRandomBytes());
+        $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setData('data');
         $data->setUserId(2);
         $data->setTypeId(1);

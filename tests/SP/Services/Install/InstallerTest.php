@@ -33,7 +33,7 @@ use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Tests\DatabaseUtil;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\getResource;
 use function SP\Tests\saveResource;
 use function SP\Tests\setupContext;
@@ -258,7 +258,7 @@ class InstallerTest extends TestCase
      */
     public function testHostingMode()
     {
-        $pass = Util::randomPassword();
+        $pass = PasswordUtil::randomPassword();
         $host = getenv('DB_SERVER');
 
         DatabaseUtil::dropDatabase(self::DB_NAME);

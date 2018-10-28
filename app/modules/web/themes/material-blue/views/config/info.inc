@@ -9,7 +9,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">info</i>
-    <?php use SP\Util\Version;
+    <?php use SP\Util\VersionUtil;
 
     echo __('Información de la Aplicación'); ?>
 </div>
@@ -22,7 +22,7 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Versión sysPass'); ?></div>
 
-            <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(Version::getVersionStringNormalized())); ?>
+            <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(VersionUtil::getVersionStringNormalized())); ?>
         </td>
     </tr>
     <tr>
@@ -59,6 +59,8 @@
             <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
             <br>
             <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
+            <br>
+            <?php printf('%s: %d MB/s', \SP\Html\Html::strongText(__('Tasa de descarga')), $_getvar('downloadRate')); ?>
             <?php if (function_exists('opcache_get_status') && version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
                 <br>
                 <?php echo \SP\Html\Html::strongText(__('OP Cache')); ?>

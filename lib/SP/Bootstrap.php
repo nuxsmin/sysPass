@@ -47,7 +47,7 @@ use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
 use SP\Util\Filter;
-use SP\Util\Version;
+use SP\Util\VersionUtil;
 use Symfony\Component\Debug\Debug;
 
 defined('APP_ROOT') || die();
@@ -408,7 +408,7 @@ final class Bootstrap
     {
         if (file_exists(OLD_CONFIG_FILE)) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgradeOldConfigFile(Version::getVersionStringNormalized());
+            $upgradeConfigService->upgradeOldConfigFile(VersionUtil::getVersionStringNormalized());
         }
 
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());

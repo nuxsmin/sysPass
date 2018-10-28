@@ -29,7 +29,7 @@ use SP\Services\ServiceException;
 use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -76,7 +76,7 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
 
         $this->expectException(ServiceException::class);
 
-        self::$service->toggleUsedByHash(Util::generateRandomBytes());
+        self::$service->toggleUsedByHash(PasswordUtil::generateRandomBytes());
     }
 
     /**
@@ -97,11 +97,11 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
      */
     public function testAdd()
     {
-        $this->assertEquals(3, self::$service->add(2, Util::generateRandomBytes()));
+        $this->assertEquals(3, self::$service->add(2, PasswordUtil::generateRandomBytes()));
 
         $this->expectException(ConstraintException::class);
 
-        self::$service->add(10, Util::generateRandomBytes());
+        self::$service->add(10, PasswordUtil::generateRandomBytes());
     }
 
     /**
@@ -156,6 +156,6 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
 
         $this->expectException(ServiceException::class);
 
-        self::$service->getUserIdForHash(Util::generateRandomBytes());
+        self::$service->getUserIdForHash(PasswordUtil::generateRandomBytes());
     }
 }

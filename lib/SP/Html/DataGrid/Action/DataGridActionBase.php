@@ -36,88 +36,98 @@ defined('APP_ROOT') || die();
 abstract class DataGridActionBase implements DataGridActionInterface
 {
     /**
-     * El objeto reflexivo que determina si se muestra la acción
+     * The runtime function that determines if the action should be displayed
      *
      * @var callable
      */
     protected $runtimeFilter;
     /**
-     * El nombre de la acción
+     * The runtime function to pass in the row dato to the action
+     *
+     * @var callable
+     */
+    protected $runtimeData;
+    /**
+     * Action's name
      *
      * @var string
      */
     protected $name = '';
     /**
-     * El título de la acción
+     * Action's title
      *
      * @var string
      */
     protected $title = '';
     /**
-     * El id de la acción
+     * Action's title ID
      *
      * @var int
      */
     protected $id = 0;
     /**
-     * La función javascript del evento OnClick
+     * The JavaScript function to be triggered on OnClick event
      *
      * @var string
      */
     protected $onClickFunction = '';
     /**
-     * Los argumentos de la función OnClick
+     * The OnClick event arguments
      *
      * @var array
      */
     protected $onClickArgs;
     /**
-     * El icono de la acción
+     * Action's icon
      *
      * @var IconInterface
      */
     protected $icon;
     /**
-     * Si se debe de omitir para los elementos del listado
+     * Sets whether this action should be skipped from listing in rows
      *
      * @var bool
      */
     protected $isSkip = false;
     /**
-     * La columna de origen de datos que condiciona esta acción
+     * The row name which determines whether the action is displayed
      *
      * @var array
      */
     protected $filterRowSource;
     /**
-     * Si es una acción de ayuda
+     * Sets as a help action
      *
      * @var bool
      */
     protected $isHelper;
     /**
-     * El tipo de acción
+     * Action's type
      *
      * @var int
      */
     protected $type = 0;
     /**
-     * Atributos de datos adicionales
+     * Data attributes (ie. data-*)
      *
      * @var array
      */
     protected $data;
     /**
-     * Atributos adicionales
+     * Additional attributes (ie. name=*)
      *
      * @var array
      */
     protected $attributes;
     /**
+     * CSS classes
+     *
      * @var array
      */
     protected $classes;
     /**
+     * Sets as a selection action, that is, to be displayed on a selection menu
+     *
      * @var bool
      */
     protected $isSelection = false;
@@ -528,6 +538,28 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function setIsSelection(bool $isSelection)
     {
         $this->isSelection = $isSelection;
+
+        return $this;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getRuntimeData()
+    {
+        return $this->runtimeData;
+    }
+
+    /**
+     * Sets the runtime data function
+     *
+     * @param callable $function
+     *
+     * @return $this
+     */
+    public function setRuntimeData(callable $function)
+    {
+        $this->runtimeData = $function;
 
         return $this;
     }

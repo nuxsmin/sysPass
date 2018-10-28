@@ -228,4 +228,11 @@ interface DataGridActionInterface
      * @return bool
      */
     public function isSelection(): bool;
+
+    /**
+     * Returns the runtime function to pass in the row dato to the action
+     *
+     * @return callable
+     */
+    public function getRuntimeData();
 }

@@ -26,6 +26,7 @@ namespace SP\Mvc\View;
 
 defined('APP_ROOT') || die();
 
+use SP\Bootstrap;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
@@ -366,6 +367,10 @@ final class Template
             }
 
             return $this->vars->get($key, $default);
+        };
+
+        $_getRoute = function ($path) use ($sk) {
+            return Bootstrap::$WEBURI . '/index.php?r=' . $path . '&sk=' . $sk;
         };
 
         ob_start();

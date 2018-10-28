@@ -24,6 +24,8 @@
 
 namespace SP\Storage\File;
 
+use SP\Util\Util;
+
 /**
  * Class FileHandler
  *
@@ -32,6 +34,7 @@ namespace SP\Storage\File;
 final class FileHandler
 {
     const CHUNK_LENGTH = 8192;
+    const CHUNK_FACTOR = 3;
     /**
      * @var string
      */
@@ -171,6 +174,37 @@ final class FileHandler
         }
 
         return $this;
+    }
+
+    /**
+     * @param callable $chunker
+     * @param float    $rate
+     *
+     * @throws FileException
+     */
+    public function readChunked(callable $chunker = null, float $rate = null)
+    {
+        $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
+
+        if ($rate === null || $rate > $maxRate) {
+            $rate = $maxRate;
+        }
+
+        if (!is_resource($this->handle)) {
+            $this->open('rb');
+        }
+
+        while (!feof($this->handle)) {
+            if ($chunker !== null) {
+                $chunker(fread($this->handle, round($rate)));
+            } else {
+                print fread($this->handle, round($rate));
+                ob_flush();
+                flush();
+            }
+        }
+
+        $this->close();
     }
 
     /**

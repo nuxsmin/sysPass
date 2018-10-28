@@ -32,7 +32,7 @@ use SP\Core\Exceptions\ConfigException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\File\FileException;
 use SP\Storage\File\XmlFileStorageInterface;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 defined('APP_ROOT') || die();
 
@@ -244,7 +244,7 @@ final class Config
         if (empty($this->configData->getUpgradeKey())) {
             logger('Generating upgrade key');
 
-            return $this->saveConfig($this->configData->setUpgradeKey(Util::generateRandomBytes(16)), false);
+            return $this->saveConfig($this->configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
         }
 
         return $this;

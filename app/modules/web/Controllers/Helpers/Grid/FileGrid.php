@@ -162,6 +162,7 @@ final class FileGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('file/view');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
+        $gridAction->setFilterRowSource('type', 'application/pdf');
 
         return $gridAction;
     }
@@ -179,6 +180,9 @@ final class FileGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconDownload());
         $gridAction->setOnClickFunction('file/download');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
+        $gridAction->setRuntimeData(function ($dataItem) use ($gridAction) {
+            return ['item-type' => $dataItem->type];
+        });
 
         return $gridAction;
     }

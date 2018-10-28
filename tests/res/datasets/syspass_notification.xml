@@ -6,9 +6,7 @@
             <field name="id">1</field>
             <field name="type">Prueba</field>
             <field name="component">Accounts</field>
-            <field name="description">
-                Notificación de prueba
-            </field>
+            <field name="description">Notificación de prueba</field>
             <field name="date">1529145158</field>
             <field name="checked">0</field>
             <field name="userId">2</field>
@@ -19,9 +17,7 @@
             <field name="id">2</field>
             <field name="type">Global</field>
             <field name="component">Accounts</field>
-            <field name="description">
-                test
-            </field>
+            <field name="description">test</field>
             <field name="date">1529145296</field>
             <field name="checked">0</field>
             <field name="userId" xsi:nil="true" />
@@ -32,9 +28,7 @@
             <field name="id">3</field>
             <field name="type">Admins</field>
             <field name="component">Accounts</field>
-            <field name="description">
-                test
-            </field>
+            <field name="description">test</field>
             <field name="date">1529145313</field>
             <field name="checked">0</field>
             <field name="userId" xsi:nil="true" />

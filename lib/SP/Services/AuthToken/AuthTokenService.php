@@ -37,7 +37,7 @@ use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Storage\Database\QueryResult;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class AuthTokenService
@@ -216,7 +216,7 @@ final class AuthTokenService extends Service
      */
     private function generateToken()
     {
-        return Util::generateRandomBytes(32);
+        return PasswordUtil::generateRandomBytes(32);
     }
 
     /**

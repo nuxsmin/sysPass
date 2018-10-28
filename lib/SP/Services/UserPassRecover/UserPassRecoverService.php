@@ -29,7 +29,7 @@ use SP\Core\Messages\MailMessage;
 use SP\Html\Html;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class UserPassRecoverService
@@ -103,7 +103,7 @@ final class UserPassRecoverService extends Service
             throw new ServiceException(__u('Intentos excedidos'), ServiceException::WARNING);
         }
 
-        $hash = Util::generateRandomBytes(16);
+        $hash = PasswordUtil::generateRandomBytes(16);
 
         $this->add($id, $hash);
 

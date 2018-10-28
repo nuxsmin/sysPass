@@ -37,7 +37,7 @@ use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\Uri;
 use SP\Plugin\PluginManager;
 use SP\Services\Install\Installer;
-use SP\Util\Version;
+use SP\Util\VersionUtil;
 
 /**
  * Class LayoutHelper
@@ -134,7 +134,7 @@ final class LayoutHelper extends HelperBase
      */
     protected function getResourcesLinks()
     {
-        $version = Version::getVersionStringNormalized();
+        $version = VersionUtil::getVersionStringNormalized();
 
         $jsUri = new Uri(Bootstrap::$WEBURI . '/index.php');
         $jsUri->addParam('_r', 'resource/js');

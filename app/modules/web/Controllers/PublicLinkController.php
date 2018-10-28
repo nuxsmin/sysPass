@@ -40,7 +40,7 @@ use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
 use SP\Services\PublicLink\PublicLinkService;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class PublicLinkController
@@ -314,7 +314,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
             $publicLinkData->setItemId($accountId);
             $publicLinkData->setNotify((bool)$notify);
-            $publicLinkData->setHash(Util::generateRandomBytes());
+            $publicLinkData->setHash(PasswordUtil::generateRandomBytes());
 
             $this->publicLinkService->create($publicLinkData);
 

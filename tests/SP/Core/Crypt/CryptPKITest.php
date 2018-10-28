@@ -27,7 +27,7 @@ namespace SP\Tests\SP\Core\Crypt;
 use phpseclib\Crypt\RSA;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\CryptPKI;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class CryptPKITest
@@ -49,7 +49,7 @@ class CryptPKITest extends TestCase
     {
         $length = (CryptPKI::KEY_SIZE / 8) - 11;
 
-        $random = Util::generateRandomBytes($length);
+        $random = PasswordUtil::generateRandomBytes($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -67,7 +67,7 @@ class CryptPKITest extends TestCase
     {
         $length = (CryptPKI::KEY_SIZE / 8) - 11;
 
-        $random = Util::randomPassword($length);
+        $random = PasswordUtil::randomPassword($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -84,7 +84,7 @@ class CryptPKITest extends TestCase
     {
         $length = ((CryptPKI::KEY_SIZE / 8) - 11) + 1;
 
-        $random = Util::generateRandomBytes($length);
+        $random = PasswordUtil::generateRandomBytes($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -123,7 +123,7 @@ class CryptPKITest extends TestCase
     {
         $length = (CryptPKI::KEY_SIZE / 8) - 11;
 
-        $random = Util::generateRandomBytes($length);
+        $random = PasswordUtil::generateRandomBytes($length);
 
         $data = $this->cryptPki->encryptRSA($random);
 
@@ -132,7 +132,7 @@ class CryptPKITest extends TestCase
         $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
 
         // Encrypt a long message
-        $random = Util::generateRandomBytes(128);
+        $random = PasswordUtil::generateRandomBytes(128);
 
         $data = $this->cryptPki->encryptRSA($random);
 

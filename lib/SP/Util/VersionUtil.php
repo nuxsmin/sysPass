@@ -27,11 +27,11 @@ namespace SP\Util;
 use SP\Services\Install\Installer;
 
 /**
- * Class Version
+ * Class VersionUtil
  *
  * @package SP\Util
  */
-final class Version
+final class VersionUtil
 {
     /**
      * Devolver versión normalizada en cadena

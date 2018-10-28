@@ -30,7 +30,7 @@ use SP\Services\Export\XmlVerifyService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -129,7 +129,7 @@ class XmlExportServiceTest extends DatabaseTestCase
         $dic = setupContext();
         $service = $dic->get(XmlExportService::class);
 
-        $password = Util::randomPassword();
+        $password = PasswordUtil::randomPassword();
 
         $service->doExport(TMP_DIR, $password);
 

@@ -34,7 +34,7 @@ use SP\Storage\Database\MySQLFileParser;
 use SP\Storage\Database\MySQLHandler;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class MySQL
@@ -111,7 +111,7 @@ final class MySQL implements DatabaseSetupInterface
     public function setupDbUser()
     {
         $user = substr(uniqid('sp_'), 0, 16);
-        $pass = Util::randomPassword();
+        $pass = PasswordUtil::randomPassword();
 
         try {
             // Comprobar si el usuario proporcionado existe

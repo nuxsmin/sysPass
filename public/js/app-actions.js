@@ -934,7 +934,7 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 });
 
-            if (fileType === 'PDF') {
+            if (fileType === 'PDF' || fileType === 'application/pdf') {
                 window.open(url, '_blank');
                 return;
             }

@@ -170,7 +170,7 @@ class AccountAclServiceTest extends DatabaseTestCase
         $this->checkAllowAll($this->setUpAccountEnvironment(1, 1, 1, 1));
         $this->checkAllowAll($this->setUpAccountEnvironment(2, 1, 1, 1));
 
-        $accountAcl = new \SP\Services\Account\AccountAcl(0);
+        $accountAcl = new AccountAcl(0);
         $accountAcl->setCompiledAccountAccess(true);
         $accountAcl->setCompiledShowAccess(true);
         $accountAcl->setResultView(true);
@@ -258,7 +258,7 @@ class AccountAclServiceTest extends DatabaseTestCase
 
             $accountAcl = $service->getAcl($action, $accountAclDto);
 
-            $this->assertInstanceOf(\SP\Services\Account\AccountAcl::class, $accountAcl);
+            $this->assertInstanceOf(AccountAcl::class, $accountAcl);
             $this->assertTrue($accountAcl->isCompiledAccountAccess());
             $this->assertTrue($accountAcl->isCompiledShowAccess());
 
@@ -750,7 +750,7 @@ class AccountAclServiceTest extends DatabaseTestCase
             ->reset()
             ->setAccFiles($profile);
 
-        $accountAcl = (new \SP\Services\Account\AccountAcl(0))
+        $accountAcl = (new AccountAcl(0))
             ->setCompiledAccountAccess(true)
             ->setCompiledShowAccess(true)
             ->setResultView($should['view'])

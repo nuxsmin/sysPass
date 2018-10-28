@@ -33,6 +33,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\PhpExtensionChecker;
 use SP\DataModel\CategoryData;
 use SP\Services\Account\AccountService;
 use SP\Services\Account\AccountToTagService;
@@ -41,7 +42,9 @@ use SP\Services\Client\ClientService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\Tag\TagService;
-use SP\Util\Version;
+use SP\Storage\File\ArchiveHandler;
+use SP\Storage\File\FileHandler;
+use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
 
@@ -55,7 +58,11 @@ final class XmlExportService extends Service
     /**
      * @var ConfigData
      */
-    protected $configData;
+    private $configData;
+    /**
+     * @var
+     */
+    private $extensionChecker;
     /**
      * @var \DOMDocument
      */
@@ -110,7 +117,9 @@ final class XmlExportService extends Service
      */
     private function setExportPath(string $exportPath)
     {
-        if (!is_dir($exportPath) && @mkdir($exportPath, 0700, true) === false) {
+        if (!is_dir($exportPath)
+            && @mkdir($exportPath, 0700, true) === false
+        ) {
             throw new ServiceException(sprintf(__('No es posible crear el directorio (%s)'), $exportPath));
         }
 
@@ -125,11 +134,29 @@ final class XmlExportService extends Service
     private function generateExportFilename(): string
     {
         // Generar hash unico para evitar descargas no permitidas
-        $exportUniqueHash = sha1(uniqid('sysPassExport', true));
-        $this->configData->setExportHash($exportUniqueHash);
+        $hash = sha1(uniqid('sysPassExport', true));
+        $this->configData->setExportHash($hash);
         $this->config->saveConfig($this->configData);
 
-        return $this->exportPath . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '-' . $exportUniqueHash . '.xml';
+        return self::getExportFilename($this->exportPath, $hash);
+    }
+
+    /**
+     * @param string $path
+     * @param string $hash
+     * @param bool   $compressed
+     *
+     * @return string
+     */
+    public static function getExportFilename(string $path, string $hash, bool $compressed = false)
+    {
+        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_export-' . $hash;
+
+        if ($compressed) {
+            return $file . ArchiveHandler::COMPRESS_EXTENSION;
+        }
+
+        return $file . '.xml';
     }
 
     /**
@@ -137,7 +164,11 @@ final class XmlExportService extends Service
      */
     private function deleteOldExports()
     {
-        array_map('unlink', glob($this->exportPath . DIRECTORY_SEPARATOR . '*.xml'));
+        $path = $this->exportPath . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME;
+
+        array_map(function ($file) {
+            return @unlink($file);
+        }, array_merge(glob($path . '_export-*'), glob($path . '*.xml')));
     }
 
     /**
@@ -198,7 +229,7 @@ final class XmlExportService extends Service
 
             $nodeMeta = $this->xml->createElement('Meta');
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
-            $metaVersion = $this->xml->createElement('Version', Version::getVersionStringNormalized());
+            $metaVersion = $this->xml->createElement('Version', VersionUtil::getVersionStringNormalized());
             $metaTime = $this->xml->createElement('Time', time());
             $metaUser = $this->xml->createElement('User', $userData->getLogin());
             $metaUser->setAttribute('id', $userData->getId());
@@ -550,6 +581,19 @@ final class XmlExportService extends Service
     }
 
     /**
+     * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Storage\File\FileException
+     */
+    public function createArchive()
+    {
+        $archive = new ArchiveHandler($this->exportFile, $this->extensionChecker);
+        $archive->compressFile($this->exportFile);
+
+        $file = new FileHandler($this->exportFile);
+        $file->delete();
+    }
+
+    /**
      * @return string
      */
     public function getExportFile(): string
@@ -571,6 +615,7 @@ final class XmlExportService extends Service
      */
     protected function initialize()
     {
+        $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
         $this->configData = $this->config->getConfigData();
         $this->xml = new \DOMDocument('1.0', 'UTF-8');
     }

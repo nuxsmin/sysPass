@@ -35,6 +35,7 @@ use SP\Services\ServiceException;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\QueryData;
+use SP\Storage\File\ArchiveHandler;
 use SP\Storage\File\FileHandler;
 use SP\Util\Checks;
 
@@ -65,7 +66,10 @@ final class FileBackupService extends Service
      * @var PhpExtensionChecker
      */
     private $extensionChecker;
-
+    /**
+     * @var string
+     */
+    private $hash;
 
     /**
      * Realizar backup de la BBDD y aplicación.
@@ -81,10 +85,10 @@ final class FileBackupService extends Service
         $this->checkBackupDir();
 
         // Generar hash unico para evitar descargas no permitidas
-        $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
+        $this->hash = sha1(uniqid('sysPassBackup', true));
 
-        $this->backupFileApp = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '-' . $backupUniqueHash . '.tar';
-        $this->backupFileDb = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $backupUniqueHash . '.sql';
+        $this->backupFileApp = self::getAppBackupFilename($path, $this->hash);
+        $this->backupFileDb = self::getDbBackupFilename($path, $this->hash);
 
         try {
             $this->deleteOldBackups();
@@ -93,15 +97,15 @@ final class FileBackupService extends Service
                 new Event($this,
                     EventMessage::factory()->addDescription(__u('Realizar Backup'))));
 
-            $this->backupTables('*', new FileHandler($this->backupFileDb));
+            $this->backupTables(new FileHandler($this->backupFileDb), '*');
 
-            if (!$this->backupApp($this->backupFileApp)
-                && !$this->backupAppLegacyLinux($this->backupFileApp)
+            if (!$this->backupApp()
+                && !$this->backupAppLegacyLinux()
             ) {
                 throw new ServiceException(__u('Error al realizar backup en modo compatibilidad'));
             }
 
-            $this->configData->setBackupHash($backupUniqueHash);
+            $this->configData->setBackupHash($this->hash);
             $this->config->saveConfig($this->configData);
         } catch (ServiceException $e) {
             throw $e;
@@ -142,11 +146,47 @@ final class FileBackupService extends Service
     }
 
     /**
+     * @param string $path
+     * @param string $hash
+     * @param bool   $compressed
+     *
+     * @return string
+     */
+    public static function getAppBackupFilename(string $path, string $hash, bool $compressed = false)
+    {
+        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_app-' . $hash;
+
+        if ($compressed) {
+            return $file . ArchiveHandler::COMPRESS_EXTENSION;
+        }
+
+        return $file;
+    }
+
+    /**
+     * @param string $path
+     * @param string $hash
+     * @param bool   $compressed
+     *
+     * @return string
+     */
+    public static function getDbBackupFilename(string $path, string $hash, bool $compressed = false)
+    {
+        $file = $path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME . '_db-' . $hash;
+
+        if ($compressed) {
+            return $file . ArchiveHandler::COMPRESS_EXTENSION;
+        }
+
+        return $file . '.sql';
+    }
+
+    /**
      * Eliminar las copias de seguridad anteriores
      */
     private function deleteOldBackups()
     {
-        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.tar.gz'));
+        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*' . ArchiveHandler::COMPRESS_EXTENSION));
         array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.sql'));
     }
 
@@ -154,13 +194,15 @@ final class FileBackupService extends Service
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param string|array                 $tables
      * @param \SP\Storage\File\FileHandler $fileHandler
+     * @param string|array                 $tables
      *
-     * @throws \Exception
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Storage\File\FileException
+     * @throws \SP\Core\Exceptions\CheckException
      */
-    private function backupTables($tables = '*', FileHandler $fileHandler)
+    private function backupTables(FileHandler $fileHandler, $tables = '*')
     {
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this,
@@ -277,56 +319,40 @@ final class FileBackupService extends Service
 
         $fileHandler->write($sqlOut);
         $fileHandler->close();
+
+        $archive = new ArchiveHandler($fileHandler->getFile(), $this->extensionChecker);
+        $archive->compressFile($fileHandler->getFile());
+
+        $fileHandler->delete();
     }
 
     /**
      * Realizar un backup de la aplicación y comprimirlo.
      *
-     * @param string $backupFile nombre del archivo de backup
-     *
      * @return bool
      * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Storage\File\FileException
      */
-    private function backupApp($backupFile)
+    private function backupApp()
     {
-        if (!$this->extensionChecker->checkPharAvailable()) {
-            $this->eventDispatcher->notifyEvent('error',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(sprintf(__('La extensión \'%s\' no está disponible'), 'phar')))
-            );
-
-            return false;
-        }
-
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Copiando aplicación')))
         );
 
-        $compressedFile = $backupFile . '.gz';
+        $archive = new ArchiveHandler($this->backupFileApp, $this->extensionChecker);
+        $archive->compressDirectory(APP_ROOT, '#^(?!(.*backup))(.*)$#i');
 
-        if (file_exists($compressedFile)) {
-            unlink($compressedFile);
-        }
-
-        $archive = new \PharData($backupFile);
-        $archive->buildFromDirectory(APP_ROOT, '/^(?!backup).*$/i');
-        $archive->compress(\Phar::GZ);
-
-        unlink($backupFile);
-
-        return file_exists($compressedFile);
+        return true;
     }
 
     /**
      * Realizar un backup de la aplicación y comprimirlo usando aplicaciones del SO Linux.
      *
-     * @param string $backupFile nombre del archivo de backup
-     *
      * @return int Con el código de salida del comando ejecutado
      * @throws ServiceException
      */
-    private function backupAppLegacyLinux($backupFile)
+    private function backupAppLegacyLinux()
     {
         if (Checks::checkIsWindows()) {
             throw new ServiceException(
@@ -338,9 +364,7 @@ final class FileBackupService extends Service
                 ->addDescription(__u('Copiando aplicación')))
         );
 
-        $compressedFile = $backupFile . '.gz';
-
-        $command = 'tar czf ' . $compressedFile . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';
+        $command = 'tar czf ' . $this->backupFileApp . ArchiveHandler::COMPRESS_EXTENSION . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';
         exec($command, $resOut, $resBakApp);
 
         return $resBakApp;
@@ -349,17 +373,9 @@ final class FileBackupService extends Service
     /**
      * @return string
      */
-    public function getBackupFileApp(): string
+    public function getHash(): string
     {
-        return $this->backupFileApp;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBackupFileDb(): string
-    {
-        return $this->backupFileDb;
+        return $this->hash;
     }
 
     /**

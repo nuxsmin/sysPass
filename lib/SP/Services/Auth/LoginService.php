@@ -51,7 +51,7 @@ use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 
 /**
  * Class LoginService
@@ -238,7 +238,7 @@ final class LoginService extends Service
                             ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
                 );
 
-                $hash = Util::generateRandomBytes(16);
+                $hash = PasswordUtil::generateRandomBytes(16);
 
                 $this->dic->get(UserPassRecoverService::class)->add($userLoginResponse->getId(), $hash);
 

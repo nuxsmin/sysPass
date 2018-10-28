@@ -40,7 +40,7 @@ use SP\Services\Account\AccountService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
-use SP\Util\Util;
+use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
 
 /**
@@ -285,7 +285,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         $this->assertEquals('123abc', Crypt::decrypt($data['pass'], $data['key'], self::SECURE_KEY_PASSWORD));
 
-        $randomKeyPass = Util::generateRandomBytes();
+        $randomKeyPass = PasswordUtil::generateRandomBytes();
 
         $data = self::$service->getPasswordEncrypted('123abc', $randomKeyPass);
 
