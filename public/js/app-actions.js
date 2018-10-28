@@ -1746,6 +1746,7 @@ sysPass.Actions = function (log) {
     const task = function (taskId) {
         const $taskStatus = $("#taskStatus");
 
+        $taskStatus.css("display", "block");
         $taskStatus.empty().html(sysPassApp.config.LANG[62]);
 
         const opts = sysPassApp.requests.getRequestOpts();

@@ -233,7 +233,7 @@ body.userpassreset {
       top: 50%;
       left: 50%; }
     #wrap-loading.overlay-full #taskStatus {
-      display: block; }
+      display: none; }
   #wrap-loading #taskStatus {
     display: none;
     position: absolute;
