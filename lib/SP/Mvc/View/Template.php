@@ -356,7 +356,11 @@ final class Template
             throw new FileNotFoundException(__('La plantilla no contiene archivos'));
         }
 
-        $icons = $this->vars->get('icons');
+        /**
+         * No more icons var.
+         * $icons = $this->vars->get('icons');
+         */
+        $icons = $this->theme->getIcons();
         $configData = $this->vars->get('configData');
         $sk = $this->vars->get('sk');
 
