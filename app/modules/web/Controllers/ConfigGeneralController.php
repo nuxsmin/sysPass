@@ -27,10 +27,13 @@ namespace SP\Modules\Web\Controllers;
 use SP\Config\ConfigUtil;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Services\Config\ConfigBackupService;
+use SP\Storage\File\FileHandler;
 
 /**
  * Class ConfigGeneral
@@ -166,6 +169,95 @@ final class ConfigGeneralController extends SimpleControllerBase
         return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $eventMessage));
         });
+    }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function downloadLogAction()
+    {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
+        try {
+            SessionContext::close();
+
+            $file = new FileHandler(LOG_FILE);
+            $file->checkFileExists();
+
+            $this->eventDispatcher->notifyEvent('download.logFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo descargado'))
+                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
+            );
+
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', $file->getFileSize());
+            $response->header('Content-type', $file->getFileType());
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'chunked');
+            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+            $response->send();
+
+            $file->readChunked();
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        }
+
+        return '';
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function downloadConfigBackupAction($type)
+    {
+        $this->checkSecurityToken($this->previousSk, $this->request);
+
+        try {
+            $this->eventDispatcher->notifyEvent('download.configBackupFile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Archivo descargado'))
+                    ->addDetail(__u('Archivo'), 'config.json'))
+            );
+
+            $configBackupService = $this->dic->get(ConfigBackupService::class);
+
+            switch ($type) {
+                case 'json':
+                    $data = ConfigBackupService::configToJson($configBackupService->getBackup());
+                    break;
+                default:
+                    throw new \RuntimeException('Not implemented');
+            }
+
+            $response = $this->router->response();
+            $response->header('Cache-Control', 'max-age=60, must-revalidate');
+            $response->header('Content-length', strlen($data));
+            $response->header('Content-type', 'application/json');
+            $response->header('Content-Description', ' sysPass file');
+            $response->header('Content-transfer-encoding', 'chunked');
+            $response->header('Content-Disposition', 'attachment; filename="config.json"');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+            $response->header('Content-transfer-encoding', 'binary');
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
+
+            $response->body($data);
+            $response->send(true);
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+        }
+
+        return '';
     }
 
     /**

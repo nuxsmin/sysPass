@@ -160,7 +160,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $this->eventDispatcher->notifyEvent('download.exportFile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), $file->getFile()))
+                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();
@@ -202,7 +202,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $this->eventDispatcher->notifyEvent('download.backupAppFile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), $file->getFile()))
+                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();
@@ -244,7 +244,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $this->eventDispatcher->notifyEvent('download.backupDbFile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), $file->getFile()))
+                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();

@@ -354,6 +354,11 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('missingExtensions', $this->extensionChecker->getMissing());
         $template->assign('downloadRate', round(Util::getMaxDownloadChunk() / 1024 / 1024));
 
+        $isDemo = $this->configData->isDemoEnabled();
+
+        $template->assign('downloadConfigBackup', !$isDemo && $this->userData->getIsAdminApp());
+        $template->assign('downloadLog', !$isDemo && is_readable(LOG_FILE) && $this->userData->getIsAdminApp());
+
         return new DataTab(__('Información'), $template);
     }
 

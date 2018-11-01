@@ -165,14 +165,15 @@ final class Json
     /**
      * Devuelve una cadena en formato JSON
      *
-     * @param $data
+     * @param mixed $data
+     * @param int   $flags JSON_* flags
      *
      * @return string La cadena en formato JSON
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public static function getJson($data)
+    public static function getJson($data, $flags = 0)
     {
-        $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR);
+        $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR | $flags);
 
         if ($json === false || json_last_error() !== JSON_ERROR_NONE) {
             throw new SPException(

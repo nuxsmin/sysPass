@@ -88,6 +88,18 @@
             <div class="lowres-title"><?php echo __('Copia de Configuración'); ?></div>
 
             <?php echo $_getvar('configBackupDate'); ?>
+
+            <?php if ($_getvar('downloadLog')): ?>
+                <div>
+                    <a href="<?php echo $_getRoute('configGeneral/downloadConfigBackup/json'); ?>"
+                       class="download" target="_blank">
+
+                        <button type="button" class="mdl-button mdl-js-button">
+                            <?php printf(__('Descargar %s'), 'JSON'); ?>
+                        </button>
+                    </a>
+                </div>
+            <?php endif; ?>
         </td>
     </tr>
     <tr>
@@ -152,6 +164,25 @@
             </ul>
         </td>
     </tr>
+
+    <?php if ($_getvar('downloadLog')): ?>
+        <tr>
+            <td class="descField">
+                <?php echo __('Archivo de log'); ?>
+            </td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Archivo de log'); ?></div>
+
+                <a href="<?php echo $_getRoute('configGeneral/downloadLog'); ?>"
+                   class="download" target="_blank">
+
+                    <button type="button" class="mdl-button mdl-js-button">
+                        <?php printf(__('Descargar %s'), basename(LOG_FILE)); ?>
+                    </button>
+                </a>
+            </td>
+        </tr>
+    <?php endif; ?>
 </table>
 
 <div class="tab-actions">

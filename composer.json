@@ -34,7 +34,8 @@
     "ext-gd": "*",
     "ext-json": "*",
     "ext-gettext": "*",
-    "ext-fileinfo": "*"
+    "ext-fileinfo": "*",
+    "ext-zlib": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^6",

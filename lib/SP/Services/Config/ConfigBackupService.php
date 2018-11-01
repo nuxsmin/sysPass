@@ -25,6 +25,7 @@
 namespace SP\Services\Config;
 
 use SP\Config\ConfigData;
+use SP\Http\Json;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -41,6 +42,25 @@ final class ConfigBackupService extends Service
      * @var ConfigService
      */
     protected $configService;
+
+    /**
+     * @param string $configData
+     *
+     * @return string
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function configToJson(string $configData): string
+    {
+        return Json::getJson(Util::unserialize(ConfigData::class, $configData), JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * @param string $configData
+     */
+    public static function configToXml(string $configData)
+    {
+        throw new \RuntimeException('Not implemented');
+    }
 
     /**
      * Backs up the config data into the database
@@ -70,8 +90,23 @@ final class ConfigBackupService extends Service
     /**
      * @return ConfigData
      * @throws ServiceException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function restore()
+    {
+        return $this->config->saveConfig(Util::unserialize(
+            ConfigData::class,
+            $this->getBackup())
+        )->getConfigData();
+    }
+
+    /**
+     * @return ConfigData
+     * @throws ServiceException
+     */
+    public function getBackup(): string
     {
         try {
             $data = $this->configService->getByParam('config_backup');
@@ -80,22 +115,12 @@ final class ConfigBackupService extends Service
                 throw new ServiceException(__u('No es posible restaurar la configuración'));
             }
 
-            return $this->config->saveConfig($this->unpackConfigData($data))->getConfigData();
+            return gzuncompress(hex2bin($data));
         } catch (NoSuchItemException $e) {
             processException($e);
 
             throw new ServiceException(__u('No es posible restaurar la configuración'));
         }
-    }
-
-    /**
-     * @param string $configData
-     *
-     * @return ConfigData
-     */
-    private function unpackConfigData(string $configData)
-    {
-        return Util::unserialize(ConfigData::class, gzuncompress(hex2bin($configData)));
     }
 
     protected function initialize()

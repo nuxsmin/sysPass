@@ -316,18 +316,20 @@ final class Bootstrap
      */
     public function initPHPVars()
     {
-        // Set debug mode if an Xdebug session is active
-        if ($this->router->request()->cookies()->get('XDEBUG_SESSION')
-            && !defined('DEBUG')
-        ) {
-            define('DEBUG', true);
-        }
-
         if (defined('DEBUG') && DEBUG) {
             Debug::enable();
         } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-            ini_set('display_errors', 'Off');
+            // Set debug mode if an Xdebug session is active
+            if (($this->router->request()->cookies()->get('XDEBUG_SESSION')
+                    || $this->configData->isDebug())
+                && !defined('DEBUG')
+            ) {
+                define('DEBUG', true);
+                Debug::enable();
+            } else {
+                error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+                ini_set('display_errors', 0);
+            }
         }
 
         if (!file_exists(LOG_FILE)
