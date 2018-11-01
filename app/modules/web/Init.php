@@ -34,7 +34,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
-use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Http\Address;
 use SP\Plugin\PluginManager;
@@ -72,7 +72,7 @@ final class Init extends ModuleBase
      */
     private $context;
     /**
-     * @var Theme
+     * @var ThemeInterface
      */
     private $theme;
     /**
@@ -106,7 +106,7 @@ final class Init extends ModuleBase
         parent::__construct($container);
 
         $this->context = $container->get(ContextInterface::class);
-        $this->theme = $container->get(Theme::class);
+        $this->theme = $container->get(ThemeInterface::class);
         $this->language = $container->get(Language::class);
         $this->secureSessionService = $container->get(SecureSessionService::class);
         $this->pluginManager = $container->get(PluginManager::class);
@@ -118,10 +118,12 @@ final class Init extends ModuleBase
      *
      * @param string $controller
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \Exception
      */
@@ -143,7 +145,7 @@ final class Init extends ModuleBase
             $this->language->setLanguage();
 
             // Initialize theme
-            $this->theme->initialize();
+            $this->theme->initTheme();
         } else {
             logger('Browser reload');
 
@@ -156,7 +158,7 @@ final class Init extends ModuleBase
             $this->language->setLanguage(true);
 
             // Re-Initialize theme
-            $this->theme->initialize(true);
+            $this->theme->initTheme(true);
         }
 
         // Comprobar si es necesario cambiar a HTTPS

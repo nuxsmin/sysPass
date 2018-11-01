@@ -78,6 +78,9 @@ abstract class HelperBase
      * @param ContextInterface      $context
      * @param EventDispatcher       $eventDispatcher
      * @param Container             $container
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
     {

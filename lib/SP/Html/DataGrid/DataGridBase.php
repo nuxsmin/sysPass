@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
@@ -131,7 +130,7 @@ abstract class DataGridBase implements DataGridInterface
      */
     protected $tableTemplate;
     /**
-     * @var Theme
+     * @var ThemeInterface
      */
     protected $theme;
 

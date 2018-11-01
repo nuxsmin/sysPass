@@ -34,7 +34,7 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeInterface;
 use SP\Http\Request;
 use SP\Mvc\Controller\ControllerTrait;
 
@@ -64,7 +64,7 @@ trait WebControllerTrait
      */
     protected $session;
     /**
-     * @var  Theme
+     * @var  ThemeInterface
      */
     protected $theme;
     /**
@@ -133,7 +133,7 @@ trait WebControllerTrait
         $this->config = $dic->get(Config::class);
         $this->configData = $this->config->getConfigData();
         $this->session = $dic->get(ContextInterface::class);
-        $this->theme = $dic->get(Theme::class);
+        $this->theme = $dic->get(ThemeInterface::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
         $this->router = $dic->get(Klein::class);
         $this->request = $dic->get(Request::class);

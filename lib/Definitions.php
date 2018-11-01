@@ -31,6 +31,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextInterface;
 use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeInterface;
 use SP\Http\Request;
 use SP\Services\Account\AccountAclService;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -65,7 +66,7 @@ return [
     },
     Acl::class => \DI\autowire(Acl::class)
         ->constructorParameter('action', get(Actions::class)),
-    Theme::class => \DI\autowire(Theme::class)
+    ThemeInterface::class => \DI\autowire(Theme::class)
         ->constructorParameter('module', APP_MODULE),
     PHPMailer::class => \DI\create(PHPMailer::class)
         ->constructor(true),

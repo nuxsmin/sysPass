@@ -129,7 +129,6 @@ abstract class ControllerBase
         $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('configData', $this->configData);
         $this->view->assign('sk', $this->session->isLoggedIn() ? $this->session->generateSecurityKey() : '');
 

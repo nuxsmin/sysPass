@@ -32,7 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeInterface;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
@@ -81,7 +81,7 @@ final class LoginService extends Service
      */
     private $configData;
     /**
-     * @var Theme
+     * @var ThemeInterface
      */
     private $theme;
     /**
@@ -429,7 +429,7 @@ final class LoginService extends Service
     protected function initialize()
     {
         $this->configData = $this->config->getConfigData();
-        $this->theme = $this->dic->get(Theme::class);
+        $this->theme = $this->dic->get(ThemeInterface::class);
         $this->userService = $this->dic->get(UserService::class);
         $this->language = $this->dic->get(Language::class);
         $this->trackService = $this->dic->get(TrackService::class);

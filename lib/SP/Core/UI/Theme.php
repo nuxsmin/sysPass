@@ -105,35 +105,27 @@ final class Theme implements ThemeInterface
     }
 
     /**
-     * @param bool $force
-     *
-     * @throws InvalidClassException
-     */
-    public function initialize($force = false)
-    {
-        if (is_dir(VIEW_PATH)) {
-            $this->initTheme($force);
-            $this->initIcons();
-        }
-    }
-
-    /**
      * Inicializar el tema visual a utilizar
      *
      * @param bool $force Forzar la detección del tema para los inicios de sesión
      *
      * @return void
+     * @throws InvalidClassException
      */
     public function initTheme($force = false)
     {
-        if (empty($this->themeName) || $force === true) {
-            $this->themeName = $this->getUserTheme() ?: $this->getGlobalTheme();
-        }
+        if (is_dir(VIEW_PATH)) {
+            if (empty($this->themeName) || $force === true) {
+                $this->themeName = $this->getUserTheme() ?: $this->getGlobalTheme();
+            }
 
-        $this->themeUri = Bootstrap::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
-        $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH) . DIRECTORY_SEPARATOR . $this->themeName;
-        $this->themePathFull = VIEW_PATH . DIRECTORY_SEPARATOR . $this->themeName;
-        $this->viewsPath = $this->themePathFull . DIRECTORY_SEPARATOR . 'views';
+            $this->themeUri = Bootstrap::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
+            $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH) . DIRECTORY_SEPARATOR . $this->themeName;
+            $this->themePathFull = VIEW_PATH . DIRECTORY_SEPARATOR . $this->themeName;
+            $this->viewsPath = $this->themePathFull . DIRECTORY_SEPARATOR . 'views';
+
+            $this->initIcons();
+        }
     }
 
     /**

@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Bootstrap;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 
 /**
@@ -72,9 +71,9 @@ final class Template
     private $upgraded = false;
 
     /**
-     * @param Theme $theme
+     * @param ThemeInterface $theme
      */
-    public function __construct(Theme $theme)
+    public function __construct(ThemeInterface $theme)
     {
         $this->theme = $theme;
         $this->vars = new TemplateVarCollection();
@@ -352,14 +351,10 @@ final class Template
      */
     public function render()
     {
-        if (count($this->templates) === 0) {
+        if (empty($this->templates)) {
             throw new FileNotFoundException(__('La plantilla no contiene archivos'));
         }
 
-        /**
-         * No more icons var.
-         * $icons = $this->vars->get('icons');
-         */
         $icons = $this->theme->getIcons();
         $configData = $this->vars->get('configData');
         $sk = $this->vars->get('sk');
@@ -368,6 +363,8 @@ final class Template
         $_getvar = function ($key, $default = null) {
             if (DEBUG && !$this->vars->exists($key)) {
                 logger(sprintf(__('No es posible obtener la variable "%s"'), $key), 'WARN');
+
+                return $default;
             }
 
             return $this->vars->get($key, $default);

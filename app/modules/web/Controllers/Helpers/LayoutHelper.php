@@ -31,7 +31,6 @@ use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\Uri;
@@ -402,7 +401,7 @@ final class LayoutHelper extends HelperBase
      */
     protected function initialize()
     {
-        $this->theme = $this->dic->get(Theme::class);
+        $this->theme = $this->dic->get(ThemeInterface::class);
 
         $this->loggedIn = $this->context->isLoggedIn();
 
