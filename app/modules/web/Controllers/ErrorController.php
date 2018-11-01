@@ -126,4 +126,20 @@ final class ErrorController
 
         $this->view();
     }
+
+    /**
+     * databaseErrorAction
+     */
+    public function databaseConnectionAction()
+    {
+        $this->layoutHelper->getPublicLayout('error-database');
+
+        $this->view->append('errors', [
+            'type' => SPException::CRITICAL,
+            'description' => __('No es posible conectar con la BD'),
+            'hint' => __('Consulte con el administrador')
+        ]);
+
+        $this->view();
+    }
 }

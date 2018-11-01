@@ -566,6 +566,12 @@
         <route>plugin/reset</route>
     </action>
     <action multiple="1">
+        <id>1108</id>
+        <name>PLUGIN_DELETE</name>
+        <text>Eliminar Plugin</text>
+        <route>plugin/delete</route>
+    </action>
+    <action multiple="1">
         <id>703</id>
         <name>USER_VIEW</name>
         <text>Ver Usuario</text>

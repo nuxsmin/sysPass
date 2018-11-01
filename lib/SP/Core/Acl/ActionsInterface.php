@@ -127,6 +127,7 @@ interface ActionsInterface
     const PLUGIN_ENABLE = 1105;
     const PLUGIN_DISABLE = 1106;
     const PLUGIN_RESET = 1107;
+    const PLUGIN_DELETE = 1108;
     const WIKI = 1201;
     const WIKI_SEARCH = 1202;
     const WIKI_VIEW = 1203;

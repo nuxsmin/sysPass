@@ -212,6 +212,7 @@ final class FileBackupService extends Service
         $fileHandler->open('w');
 
         $db = $this->dic->get(Database::class);
+        $databaseUtil = $this->dic->get(DatabaseUtil::class);
 
         $queryData = new QueryData();
 
@@ -293,7 +294,7 @@ final class FileBackupService extends Service
                     if (is_numeric($value)) {
                         $fileHandler->write($value);
                     } else {
-                        $fileHandler->write(DatabaseUtil::escape($value, $db->getDbHandler()));
+                        $fileHandler->write($databaseUtil->escape($value));
                     }
 
                     if ($field < $numColumns) {

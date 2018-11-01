@@ -262,6 +262,42 @@ final class PluginController extends ControllerBase
     }
 
     /**
+     * resetAction
+     *
+     * @param $id
+     *
+     * @return bool
+     */
+    public function deleteAction($id)
+    {
+        try {
+            $this->checkSecurityToken($this->previousSk, $this->request);
+
+            if (!$this->acl->checkUserAccess(Acl::PLUGIN_DELETE)) {
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            }
+
+            if ($id === null) {
+                $this->pluginService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+
+                $this->eventDispatcher->notifyEvent('delete.plugin.selection', new Event($this));
+
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugins eliminados'));
+            } else {
+                $this->pluginService->delete($id);
+
+                $this->eventDispatcher->notifyEvent('delete.plugin', new Event($this));
+
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin eliminado'));
+            }
+        } catch (\Exception $e) {
+            processException($e);
+
+            return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws \SP\Services\Auth\AuthException

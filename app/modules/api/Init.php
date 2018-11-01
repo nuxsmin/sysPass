@@ -33,7 +33,6 @@ use SP\Core\ModuleBase;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
-use SP\Storage\Database\Database;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Util\HttpUtil;
 
@@ -92,18 +91,26 @@ final class Init extends ModuleBase
         HttpUtil::checkHttps($this->configData, $this->request);
 
         // Checks if sysPass is installed
-        if (!$this->checkInstalled()) {
-            throw new InitializationException('Not installed');
-        }
+        $this->checkInstalled();
 
         // Checks if maintenance mode is turned on
-        $this->checkMaintenanceMode($this->context);
+        if (!$this->checkMaintenanceMode($this->context)) {
+            throw new InitializationException('Maintenance mode');
+        }
 
         // Checks if upgrade is needed
         $this->checkUpgrade();
 
+        $databaseUtil = $this->container->get(DatabaseUtil::class);
+
         // Checks if the database is set up
-        DatabaseUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+        if (!$databaseUtil->checkDatabaseConnection()) {
+            throw new InitializationException('Database connection error');
+        }
+
+        if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+            throw new InitializationException('Database checking error');
+        }
 
         // Initialize event handlers
         $this->initEventHandlers();
@@ -112,10 +119,14 @@ final class Init extends ModuleBase
     /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     *
+     * @throws InitializationException
      */
     private function checkInstalled()
     {
-        return $this->configData->isInstalled();
+        if (!$this->configData->isInstalled()) {
+            throw new InitializationException('Not installed');
+        }
     }
 
     /**

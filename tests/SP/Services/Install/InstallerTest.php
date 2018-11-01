@@ -279,7 +279,9 @@ class InstallerTest extends TestCase
         $installer = self::$dic->get(Installer::class);
         $installer->run($params);
 
-        $this->assertTrue(\SP\Storage\Database\DatabaseUtil::checkDatabaseExist(self::$dic->get(DBStorageInterface::class), self::DB_NAME));
+        $databaseUtil = new \SP\Storage\Database\DatabaseUtil(self::$dic->get(DBStorageInterface::class));
+
+        $this->assertTrue($databaseUtil->checkDatabaseTables(self::DB_NAME));
 
         $configData = self::$dic->get(Config::class)->getConfigData();
 

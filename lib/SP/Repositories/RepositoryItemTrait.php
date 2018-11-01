@@ -74,7 +74,9 @@ trait RepositoryItemTrait
     {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 
-        return md5(strtolower(str_replace($charsSrc, '', DatabaseUtil::escape($name, $DBStorage))));
+        $databaseUtil = new DatabaseUtil($DBStorage);
+
+        return md5(strtolower(str_replace($charsSrc, '', $databaseUtil->escape($name))));
     }
 
     /**

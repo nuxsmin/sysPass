@@ -68,6 +68,13 @@ final class PluginGrid extends GridBase
         $grid->addDataAction($this->getEnableAction());
         $grid->addDataAction($this->getDisableAction());
         $grid->addDataAction($this->getResetAction());
+        $grid->addDataAction($this->getDeleteAction());
+        $grid->addDataAction(
+            $this->getDeleteAction()
+                ->setName(__('Eliminar Seleccionados'))
+                ->setTitle(__('Eliminar Seleccionados'))
+                ->setIsSelection(true),
+            true);
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
@@ -208,6 +215,26 @@ final class PluginGrid extends GridBase
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
         $gridAction->addData('action-method', 'get');
+        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::PLUGIN));
+
+        return $gridAction;
+    }
+
+    /**
+     * @return \SP\Html\DataGrid\Action\DataGridAction
+     */
+    private function getDeleteAction()
+    {
+        $gridAction = new DataGridAction();
+        $gridAction->setId(ActionsInterface::PLUGIN_DELETE);
+        $gridAction->setType(DataGridActionType::DELETE_ITEM);
+        $gridAction->setName(__('Eliminar Plugin'));
+        $gridAction->setTitle(__('Eliminar Plugin'));
+        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setFilterRowSource('available', 1);
+        $gridAction->setOnClickFunction('plugin/delete');
+        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DELETE));
+        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::PLUGIN));
 
         return $gridAction;
     }

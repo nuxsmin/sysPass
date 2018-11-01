@@ -354,7 +354,9 @@ final class MySQL implements DatabaseSetupInterface
      */
     public function checkConnection()
     {
-        if (!DatabaseUtil::checkDatabaseExist($this->mysqlHandler, $this->installData->getDbName())) {
+        $databaseUtil = new DatabaseUtil($this->mysqlHandler);
+
+        if (!$databaseUtil->checkDatabaseTables($this->installData->getDbName())) {
             $this->rollback();
 
             throw new SPException(

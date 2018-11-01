@@ -45,7 +45,6 @@ use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\Database;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Util\HttpUtil;
 
@@ -165,15 +164,30 @@ final class Init extends ModuleBase
         HttpUtil::checkHttps($this->configData, $this->request);
 
         if (in_array($controller, self::PARTIAL_INIT, true) === false) {
+            $databaseUtil = $this->container->get(DatabaseUtil::class);
+
             // Checks if sysPass is installed
-            if ($this->checkInstalled() === false) {
+            if (!$this->checkInstalled()) {
+                logger('Not installed', 'ERROR');
+
                 $this->router->response()
                     ->redirect('index.php?r=install/index')
                     ->send();
             }
 
+            // Checks if the database is set up
+            if (!$databaseUtil->checkDatabaseConnection()) {
+                logger('Database connection error', 'ERROR');
+
+                $this->router->response()
+                    ->redirect('index.php?r=error/databaseConnection')
+                    ->send();
+            }
+
             // Checks if maintenance mode is turned on
             if ($this->checkMaintenanceMode($this->context)) {
+                logger('Maintenance mode', 'INFO');
+
                 $this->router->response()
                     ->redirect('index.php?r=error/maintenanceError')
                     ->send();
@@ -181,6 +195,8 @@ final class Init extends ModuleBase
 
             // Checks if upgrade is needed
             if ($this->checkUpgrade()) {
+                logger('Upgrade needed', 'ERROR');
+
                 $this->config->generateUpgradeKey();
 
                 $this->router->response()
@@ -189,10 +205,9 @@ final class Init extends ModuleBase
             }
 
             // Checks if the database is set up
-            if (!DatabaseUtil::checkDatabaseExist(
-                $this->container->get(Database::class)->getDbHandler(),
-                $this->configData->getDbName())
-            ) {
+            if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+                logger('Database checking error', 'ERROR');
+
                 $this->router->response()
                     ->redirect('index.php?r=error/databaseError')
                     ->send();

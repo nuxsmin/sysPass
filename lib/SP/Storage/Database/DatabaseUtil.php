@@ -24,8 +24,6 @@
 
 namespace SP\Storage\Database;
 
-use SP\Core\Exceptions\SPException;
-
 /**
  * Class DBUtil con utilidades de la BD
  *
@@ -64,39 +62,79 @@ final class DatabaseUtil
         'account_data_v',
         'account_search_v'
     ];
+    /**
+     * @var DBStorageInterface
+     */
+    private $DBStorage;
 
     /**
-     * Escapar una cadena de texto con funciones de mysqli.
+     * DatabaseUtil constructor.
      *
-     * @param string             $str string con la cadena a escapar
      * @param DBStorageInterface $DBStorage
-     *
-     * @return string con la cadena escapada
      */
-    public static function escape($str, DBStorageInterface $DBStorage)
+    public function __construct(DBStorageInterface $DBStorage)
+    {
+
+        $this->DBStorage = $DBStorage;
+    }
+
+    /**
+     * Comprobar que la base de datos existe.
+     *
+     * @param string $dbName
+     *
+     * @return bool
+     */
+    public function checkDatabaseTables($dbName)
     {
         try {
-            return $DBStorage->getConnection()->quote(trim($str));
-        } catch (SPException $e) {
+            $tables = implode(',', array_map(function ($value) {
+                return '\'' . $value . '\'';
+            }, self::$tables));
+
+            $query = /** @lang SQL */
+                'SELECT COUNT(*) 
+                FROM information_schema.tables
+                WHERE table_schema = \'' . $dbName . '\'
+                AND `table_name` IN (' . $tables . ')';
+
+            $numTables = (int)$this->DBStorage->getConnection()->query($query)->fetchColumn();
+
+            return $numTables === count(self::$tables);
+        } catch (\Exception $e) {
             processException($e);
         }
 
-        return $str;
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkDatabaseConnection()
+    {
+        try {
+            $this->DBStorage->getConnection();
+
+            return true;
+        } catch (\Exception $e) {
+            processException($e);
+
+            return false;
+        }
     }
 
     /**
      * Obtener la información del servidor de base de datos
      *
-     * @param DBStorageInterface $DBStorage
-     *
      * @return array
      */
-    public static function getDBinfo(DBStorageInterface $DBStorage)
+    public function getDBinfo()
     {
         $dbinfo = [];
 
         try {
-            $db = $DBStorage->getConnection();
+            $db = $this->DBStorage->getConnection();
 
             $attributes = [
                 'SERVER_VERSION',
@@ -118,33 +156,20 @@ final class DatabaseUtil
     }
 
     /**
-     * Comprobar que la base de datos existe.
+     * Escapar una cadena de texto con funciones de mysqli.
      *
-     * @param DBStorageInterface $DBStorage
-     * @param string             $dbName
+     * @param string $str string con la cadena a escapar
      *
-     * @return bool
+     * @return string con la cadena escapada
      */
-    public static function checkDatabaseExist(DBStorageInterface $DBStorage, $dbName)
+    public function escape($str)
     {
         try {
-            $tables = implode(',', array_map(function ($value) {
-                return '\'' . $value . '\'';
-            }, self::$tables));
-
-            $query = /** @lang SQL */
-                'SELECT COUNT(*) 
-                FROM information_schema.tables
-                WHERE table_schema = \'' . $dbName . '\'
-                AND `table_name` IN (' . $tables . ')';
-
-            $numTables = (int)$DBStorage->getConnection()->query($query)->fetchColumn();
-
-            return $numTables === count(self::$tables);
+            return $this->DBStorage->getConnection()->quote(trim($str));
         } catch (\Exception $e) {
             processException($e);
         }
 
-        return false;
+        return $str;
     }
 }

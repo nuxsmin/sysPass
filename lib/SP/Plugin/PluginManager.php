@@ -102,7 +102,7 @@ final class PluginManager
         if ($dir) {
             while (false !== ($entry = $dir->read())) {
                 $pluginDir = PLUGINS_PATH . DIRECTORY_SEPARATOR . $entry;
-                $pluginFile = $pluginDir . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Plugin.php';
+                $pluginFile = $pluginDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Plugin.php';
 
                 if (strpos($entry, '.') === false
                     && is_dir($pluginDir)
