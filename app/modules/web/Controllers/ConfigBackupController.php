@@ -191,6 +191,10 @@ final class ConfigBackupController extends SimpleControllerBase
     {
         $this->checkSecurityToken($this->previousSk, $this->request);
 
+        if ($this->configData->isDemoEnabled()) {
+            return __('Ey, esto es una DEMO!!');
+        }
+
         try {
             SessionContext::close();
 
@@ -232,6 +236,10 @@ final class ConfigBackupController extends SimpleControllerBase
     public function downloadBackupDbAction()
     {
         $this->checkSecurityToken($this->previousSk, $this->request);
+
+        if ($this->configData->isDemoEnabled()) {
+            return __('Ey, esto es una DEMO!!');
+        }
 
         try {
             SessionContext::close();
