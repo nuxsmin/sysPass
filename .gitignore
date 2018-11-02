@@ -49,6 +49,7 @@ app/cache/*
 app/backup/*
 app/config/*
 app/temp/*
+app/plugins/*
 app/modules/**/plugins/*
 !app/config/actions.xml
 !app/config/*.inc

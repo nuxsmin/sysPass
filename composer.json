@@ -42,7 +42,9 @@
     "phpunit/dbunit": "^3",
     "symfony/debug" : "~v3.4",
     "fzaninotto/faker": "~v1.8",
-    "fabpot/goutte": "~v3.2"
+    "fabpot/goutte": "~v3.2",
+    "syspass/extension-installer-plugin": "dev-master",
+    "syspass/plugin-authenticator": "dev-master"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^2.0"

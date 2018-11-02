@@ -186,6 +186,10 @@ final class Util
 
                 return self::castToClass($serialized, $dstClass);
             }
+
+            if (preg_match('/a:\d+:{/', $serialized)) {
+                return unserialize($serialized);
+            }
         }
 
         return $serialized;
