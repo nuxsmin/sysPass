@@ -99,6 +99,8 @@ final class XmlExportService extends Service
      */
     public function doExport(string $exportPath, string $pass = null)
     {
+        set_time_limit(0);
+
         if (!empty($pass)) {
             $this->exportPass = $pass;
             $this->encrypted = true;
@@ -129,6 +131,9 @@ final class XmlExportService extends Service
     /**
      * Genera el nombre del archivo usado para la exportación.
      *
+     * @return string
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     private function generateExportFilename(): string

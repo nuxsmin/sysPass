@@ -80,6 +80,8 @@ final class FileBackupService extends Service
      */
     public function doBackup(string $path)
     {
+        set_time_limit(0);
+
         $this->path = $path;
 
         $this->checkBackupDir();
