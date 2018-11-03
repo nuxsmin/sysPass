@@ -395,7 +395,9 @@ sysPass.Theme = function (log) {
                 }
             });
 
-            if ($tagsSelect.selectedIndex !== -1) {
+            if ($tagsSelect.selectedIndex !== -1
+                || $showFilter.data('show') === 1
+            ) {
                 $showFilter.trigger("click");
             }
         },

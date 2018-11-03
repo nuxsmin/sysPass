@@ -196,17 +196,17 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 try {
                     $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'), [__u('Email enviado')]);
+                    return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave temporal generada'), [__u('Email enviado')]);
                 } catch (\Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Clave Temporal Generada'), [__u('Error al enviar email')]);
+                    return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Clave temporal generada'), [__u('Error al enviar email')]);
                 }
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave temporal generada'));
         } catch (\Exception $e) {
             processException($e);
 

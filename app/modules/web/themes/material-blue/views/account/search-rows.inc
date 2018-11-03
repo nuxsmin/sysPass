@@ -52,7 +52,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
 
                     <div class="field-account field-text label-field">
                         <div class="field-name"><?php echo __('Nombre'); ?></div>
-                        <?php if ($accountSearchItem->isShow() && $accountSearchItem->getLink()): ?>
+                        <?php if ($accountSearchItem->isShow()
+                            && $accountSearchItem::$accountLink
+                            && $accountSearchItem->getLink()): ?>
                             <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
                                data-action-route="<?php echo $_getvar('viewAccountRoute'); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
@@ -240,8 +242,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                     class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                         <?php endforeach; ?>
 
-                        <?php
-                        if ($data->getDataActionsMenuCount()):
+                        <?php if ($data->getDataActionsMenuCount()):
                             $actionsMenu = $data->getDataActionsMenuFiltered($accountSearchItem);
                             if (count($actionsMenu) > 0):
                                 $actionMenuUid = uniqid('actions-menu-lower-right-', true);

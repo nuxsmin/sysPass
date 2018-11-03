@@ -100,7 +100,7 @@ final class TemporaryMasterPassService extends Service
 
             $this->eventDispatcher->notifyEvent('create.tempMasterPassword',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Generar Clave Temporal')))
+                    ->addDescription(__u('Generar clave temporal')))
             );
 
             return $randomKey;

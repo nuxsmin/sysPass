@@ -54,6 +54,10 @@ final class AccountSearchItem
     /**
      * @var bool
      */
+    public static $showTags = false;
+    /**
+     * @var bool
+     */
     public static $requestEnabled = true;
     /**
      * @var bool
@@ -181,7 +185,7 @@ final class AccountSearchItem
      */
     public function isShowOptional()
     {
-        return (!self::$optionalActions && $this->accountAcl->isShow());
+        return ($this->accountAcl->isShow() && !self::$optionalActions);
     }
 
     /**

@@ -464,7 +464,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Ver Clave'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
-        $action->setRuntimeFilter(\SP\Services\Account\AccountSearchItem::class, 'isShowViewPass');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
         $action->addData('action-sk', $this->sk);

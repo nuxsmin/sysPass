@@ -3,9 +3,11 @@
  * @var \SP\Core\UI\ThemeIcons                 $icons
  * @var callable                               $_getvar
  * @var \SP\Config\ConfigData                  $configData
- * @var \SP\Services\Account\AccountSearchItem $account
+ * @var AccountSearchItem $account
  * @var \SP\Html\DataGrid\DataGrid             $data
  */
+
+use SP\Services\Account\AccountSearchItem;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -97,7 +99,9 @@ $pager = $data->getPager();
                 <span for="rpp"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Cuentas por página'); ?></span>
             </div>
-            <i id="btn-filters" class="material-icons show-filter" data-state="0"
+            <i id="btn-filters" class="material-icons show-filter"
+               data-state="0"
+               data-show="<?php echo AccountSearchItem::$showTags; ?>"
                data-icon-down="<?php echo $icons->getIconAdd()->getIcon(); ?>"
                data-icon-up="<?php echo $icons->getIconRemove()->getIcon(); ?>"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
             <span for="btn-filters"

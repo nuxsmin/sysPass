@@ -75,6 +75,10 @@ class UserPreferencesData
      * @var bool
      */
     public $checkNotifications = true;
+    /**
+     * @var bool
+     */
+    public $showAccountSearchFilters = false;
 
     /**
      * @return string
@@ -257,5 +261,21 @@ class UserPreferencesData
     public function setCheckNotifications(bool $checkNotifications)
     {
         $this->checkNotifications = $checkNotifications;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowAccountSearchFilters(): bool
+    {
+        return $this->showAccountSearchFilters;
+    }
+
+    /**
+     * @param bool $showAccountSearchFilters
+     */
+    public function setShowAccountSearchFilters(bool $showAccountSearchFilters)
+    {
+        $this->showAccountSearchFilters = $showAccountSearchFilters;
     }
 }

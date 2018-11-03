@@ -178,6 +178,23 @@ $userPreferences = $_getvar('userPreferences');
                             </span>
                         </span>
                     </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show_account_search_filters">
+                                <input type="checkbox" id="show_account_search_filters"
+                                       class="mdl-switch__input"
+                                       name="show_account_search_filters" <?php echo $userPreferences->isShowAccountSearchFilters() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Mostrar Filtros'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Muestra la selección los filtros adicionales en la búsqueda de cuentas.'); ?>
+                            </span>
+                        </span>
+                    </li>
                 </ul>
             </td>
         </tr>

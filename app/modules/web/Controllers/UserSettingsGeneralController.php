@@ -64,6 +64,7 @@ final class UserSettingsGeneralController extends SimpleControllerBase
             $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
             $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
             $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
+            $userPreferencesData->setShowAccountSearchFilters($this->request->analyzeBool('show_account_search_filters', false));
 
             $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);
 

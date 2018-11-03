@@ -3,9 +3,11 @@
  * @var \SP\Core\UI\ThemeIcons                 $icons
  * @var callable                               $_getvar
  * @var \SP\Config\ConfigData                  $configData
- * @var \SP\Services\Account\AccountSearchItem $account
+ * @var AccountSearchItem $account
  * @var \SP\Html\DataGrid\DataGrid             $data
  */
+
+use SP\Services\Account\AccountSearchItem;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -21,7 +23,7 @@ if (!isset($data)) {
             <?php include $data->getDataHeaderTemplate(); ?>
         </div>
 
-        <?php if (\SP\Services\Account\AccountSearchItem::$topNavbar): ?>
+        <?php if (AccountSearchItem::$topNavbar): ?>
             <!-- Data Pager -->
             <div id="search-pager-top">
                 <?php include $data->getDataPagerTemplate(); ?>

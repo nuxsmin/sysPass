@@ -136,6 +136,7 @@ final class AccountSearchHelper extends HelperBase
         AccountSearchItem::$dokuWikiEnabled = $this->configData->isDokuwikiEnabled();
         AccountSearchItem::$publicLinkEnabled = $this->configData->isPublinksEnabled();
         AccountSearchItem::$isDemoMode = $this->configData->isDemoEnabled();
+        AccountSearchItem::$showTags = $userPreferences->isShowAccountSearchFilters();
 
         if (AccountSearchItem::$wikiEnabled) {
             $wikiFilter = array_map(function ($value) {
