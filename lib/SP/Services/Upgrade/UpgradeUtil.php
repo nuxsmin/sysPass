@@ -26,7 +26,6 @@ namespace SP\Services\Upgrade;
 
 use SP\Config\Config;
 use SP\Util\PasswordUtil;
-use SP\Util\VersionUtil;
 
 /**
  * Class UpgradeUtil
@@ -56,34 +55,14 @@ final class UpgradeUtil
     }
 
     /**
-     * Comrpueba y actualiza la versión de la BBDD.
-     *
-     * @return void
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public function checkDbVersion()
-    {
-        $appVersion = VersionUtil::getVersionStringNormalized();
-        $databaseVersion = UserUpgrade::fixVersionNumber(ConfigDB::getValue('version'));
-
-        if (VersionUtil::checkVersion($databaseVersion, $appVersion)
-            && Request::analyze('nodbupgrade', 0) === 0
-            && VersionUtil::checkVersion($databaseVersion, self::$dbUpgrade)
-            && !$this->configData->isMaintenance()
-        ) {
-            $this->setUpgradeKey('db');
-
-            // FIXME: send link for upgrading
-            throw new \RuntimeException('Needs upgrade');
-        }
-    }
-
-    /**
      * Establecer la key de actualización
      *
      * @param Config $config
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
      */
     public static function setUpgradeKey(Config $config)
     {
@@ -96,27 +75,5 @@ final class UpgradeUtil
 
         $configData->setMaintenance(true);
         $config->saveConfig($configData, false);
-
-//        Init::initError(
-//            __('La aplicación necesita actualizarse'),
-//            sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
-    }
-
-    /**
-     * Comrpueba y actualiza la versión de la aplicación.
-     *
-     * @return void
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public function checkAppVersion()
-    {
-        $appVersion = UserUpgrade::fixVersionNumber($this->configData->getConfigVersion());
-
-        if (VersionUtil::checkVersion($appVersion, self::$appUpgrade) && !$this->configData->isMaintenance()) {
-            $this->setUpgradeKey('app');
-
-            // FIXME: send link for upgrading
-            throw new \RuntimeException('Needs upgrade');
-        }
     }
 }
