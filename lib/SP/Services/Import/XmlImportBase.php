@@ -104,7 +104,7 @@ abstract class XmlImportBase
 
         if ($nodeList->length > 0) {
             if (!is_callable($callback)) {
-                throw new ImportException(__u('Método inválido'), ImportException::WARNING);
+                throw new ImportException(__u('Invalid Method'), ImportException::WARNING);
             }
 
             /** @var \DOMElement $nodes */
@@ -116,9 +116,9 @@ abstract class XmlImportBase
             }
         } elseif ($required === true) {
             throw new ImportException(
-                __u('Formato de XML inválido'),
+                __u('Invalid XML format'),
                 ImportException::WARNING,
-                sprintf(__('El nodo "%s" no existe'), $nodeName)
+                sprintf(__('"%s" node doesn\'t exist'), $nodeName)
             );
         }
     }

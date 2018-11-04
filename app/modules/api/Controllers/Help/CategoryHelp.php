@@ -40,7 +40,7 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de categoría'), true)
+                self::getItem('id', __('Category Id'), true)
             ];
     }
 
@@ -51,8 +51,8 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('name', __('Nombre de la categoría'), true),
-                self::getItem('description', __('Descripción de la categoría'))
+                self::getItem('name', __('Category name'), true),
+                self::getItem('description', __('Category description'))
             ];
     }
 
@@ -63,9 +63,9 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de categoría'), true),
-                self::getItem('name', __('Nombre de la categoría'), true),
-                self::getItem('description', __('Descripción de la categoría'))
+                self::getItem('id', __('Category Id'), true),
+                self::getItem('name', __('Category name'), true),
+                self::getItem('description', __('Category description'))
             ];
     }
 
@@ -76,8 +76,8 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('text', __('Texto a buscar')),
-                self::getItem('count', __('Número de resultados a mostrar'))
+                self::getItem('text', __('Text to search for')),
+                self::getItem('count', __('Number of results to display'))
             ];
     }
 
@@ -88,7 +88,7 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de categoría'), true)
+                self::getItem('id', __('Category Id'), true)
             ];
     }
 }

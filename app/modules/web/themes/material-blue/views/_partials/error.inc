@@ -11,8 +11,8 @@
         <div class="buttons">
             <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <i class="material-icons"
-                   title="<?php echo __('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                <?php echo __('Volver'); ?>
+                   title="<?php echo __('Back'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                <?php echo __('Back'); ?>
             </button>
         </div>
     <?php endif; ?>

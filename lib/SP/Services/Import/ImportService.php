@@ -86,9 +86,9 @@ final class ImportService extends Service
         }
 
         throw new ImportException(
-            sprintf(__('Tipo mime no soportado ("%s")'), $fileType),
+            sprintf(__('Mime type not supported ("%s")'), $fileType),
             ImportException::ERROR,
-            __u('Compruebe el formato del archivo')
+            __u('Please, check the file format')
         );
     }
 

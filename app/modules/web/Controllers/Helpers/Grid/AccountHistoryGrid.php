@@ -67,8 +67,8 @@ final class AccountHistoryGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -89,7 +89,7 @@ final class AccountHistoryGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Cuentas (H)'));
+        $gridTab->setTitle(__('Accounts (H)'));
 
         return $gridTab;
     }
@@ -101,11 +101,11 @@ final class AccountHistoryGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Cliente'));
-        $gridHeader->addHeader(__('Categoría'));
-        $gridHeader->addHeader(__('Fecha'));
-        $gridHeader->addHeader(__('Estado'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Client'));
+        $gridHeader->addHeader(__('Category'));
+        $gridHeader->addHeader(__('Date'));
+        $gridHeader->addHeader(__('Status'));
 
         return $gridHeader;
     }
@@ -126,8 +126,8 @@ final class AccountHistoryGrid extends GridBase
         $gridData->addDataRowSource('clientName');
         $gridData->addDataRowSource('categoryName');
         $gridData->addDataRowSource('date');
-        $gridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
-        $gridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
+        $gridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modified'))->setClass('opacity50'));
+        $gridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Removed'))->setClass('opacity50'));
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -142,7 +142,7 @@ final class AccountHistoryGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchAccountHistory');
-        $gridActionSearch->setTitle(__('Buscar Cuenta'));
+        $gridActionSearch->setTitle(__('Search for Account'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH));
 
@@ -157,8 +157,8 @@ final class AccountHistoryGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Restaurar Cuenta'));
-        $gridAction->setTitle(__('Restaurar Cuenta'));
+        $gridAction->setName(__('Account Restore'));
+        $gridAction->setTitle(__('Account Restore'));
         $gridAction->setIcon($this->icons->getIconRestore());
         $gridAction->setOnClickFunction('accountManager/restore');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE));
@@ -174,8 +174,8 @@ final class AccountHistoryGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Cuenta'));
-        $gridAction->setTitle(__('Eliminar Cuenta'));
+        $gridAction->setName(__('Remove Account'));
+        $gridAction->setTitle(__('Remove Account'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE));

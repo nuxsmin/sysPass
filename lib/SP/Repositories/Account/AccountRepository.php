@@ -197,7 +197,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
             $itemData->passDateChange,
             $itemData->parentId
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while creating the account'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -232,7 +232,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
             $accountRequest->passDateChange,
             $accountRequest->id
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
+        $queryData->setOnErrorMessage(__u('Error while updating the password'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -257,7 +257,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$request->pass, $request->key, $request->id]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
+        $queryData->setOnErrorMessage(__u('Error while updating the password'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
@@ -298,7 +298,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$historyId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al restaurar cuenta'));
+        $queryData->setOnErrorMessage(__u('Error on restoring the account'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
@@ -318,7 +318,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
 
         $queryData->setQuery('DELETE FROM Account WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -379,7 +379,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData->setQuery($query);
         $queryData->setParams($queryAssignment->getValues());
         $queryData->addParam($itemData->id);
-        $queryData->setOnErrorMessage(__u('Error al modificar la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while updating the account'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -428,7 +428,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData->setQuery($query);
         $queryData->setParams($queryAssignment->getValues());
         $queryData->addParam($itemData->id);
-        $queryData->setOnErrorMessage(__u('Error al modificar la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while updating the account'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -448,7 +448,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData->setQuery('SELECT * FROM account_data_v WHERE id = ? LIMIT 1');
         $queryData->setMapClassName(AccountVData::class);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->doSelect($queryData);
     }
@@ -498,7 +498,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
 
         $queryData->setQuery('DELETE FROM Account WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -620,7 +620,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $queryData->setQuery($query);
         $queryData->setMapClassName(AccountExtData::class);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->doSelect($queryData);
     }

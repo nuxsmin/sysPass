@@ -229,7 +229,7 @@ final class UserPassService extends Service
 
         if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
             throw new SPException(
-                __u('Error interno'),
+                __u('Internal error'),
                 SPException::ERROR,
                 '',
                 Service::STATUS_INTERNAL_ERROR);
@@ -253,7 +253,7 @@ final class UserPassService extends Service
     public function migrateUserPassById($id, $userPass)
     {
         if ($this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass))) === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
+            throw new NoSuchItemException(__u('User does not exist'));
         }
     }
 

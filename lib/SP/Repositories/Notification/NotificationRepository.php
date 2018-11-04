@@ -76,7 +76,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
             $itemData->isSticky(),
             $itemData->isOnlyAdmin()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while adding the notification'));
 
         return $this->db->doQuery($queryData);
     }
@@ -116,7 +116,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
             $itemData->isOnlyAdmin(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al modificar la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while updating the notification'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -135,7 +135,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id = ? AND sticky = 0 LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the notification'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -154,7 +154,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the notification'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -177,7 +177,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the notifications'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -210,7 +210,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving notification'));
 
         return $this->db->doSelect($queryData);
     }
@@ -240,7 +240,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
         return $this->db->doSelect($queryData);
     }
@@ -300,7 +300,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Notification WHERE id IN (' . $this->getParamsFromArray($ids) . ') AND sticky = 0');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the notifications'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -475,7 +475,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al modificar la notificación'));
+        $queryData->setOnErrorMessage(__u('Error while updating the notification'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -512,7 +512,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->setParams([$component, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
         return $this->db->doSelect($queryData);
     }
@@ -545,7 +545,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
         return $this->db->doSelect($queryData);
     }
@@ -579,7 +579,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
         return $this->db->doSelect($queryData);
     }
@@ -612,7 +612,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the notifications'));
 
         return $this->db->doSelect($queryData);
     }

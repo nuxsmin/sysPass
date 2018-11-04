@@ -73,6 +73,8 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -126,6 +128,8 @@ final class ItemManagerController extends ControllerBase
      * Returns categories' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -140,6 +144,8 @@ final class ItemManagerController extends ControllerBase
      * Returns tags' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -154,6 +160,8 @@ final class ItemManagerController extends ControllerBase
      * Returns clients' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -168,6 +176,8 @@ final class ItemManagerController extends ControllerBase
      * Returns custom fields' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -182,6 +192,8 @@ final class ItemManagerController extends ControllerBase
      * Returns account files' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -196,6 +208,8 @@ final class ItemManagerController extends ControllerBase
      * Returns accounts' data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -210,6 +224,8 @@ final class ItemManagerController extends ControllerBase
      * Returns accounts' history data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -224,6 +240,8 @@ final class ItemManagerController extends ControllerBase
      * Returns API tokens data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

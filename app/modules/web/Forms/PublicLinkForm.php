@@ -82,7 +82,7 @@ final class PublicLinkForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->publicLinkData->getItemId()) {
-            throw new ValidationException(__u('Es necesario una cuenta'));
+            throw new ValidationException(__u('An account is needed'));
         }
     }
 

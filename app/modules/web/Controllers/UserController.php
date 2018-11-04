@@ -72,7 +72,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::USER_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -109,10 +109,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nuevo Usuario'));
+            $this->view->assign('header', __('New User'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'user/saveCreate');
 
@@ -194,10 +194,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Usuario'));
+            $this->view->assign('header', __('Edit User'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'user/saveEdit/' . $id);
 
@@ -227,12 +227,12 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             // Comprobar si el usuario a modificar es distinto al de la sesión
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $this->view->addTemplate('user_pass', 'itemshow');
 
-            $this->view->assign('header', __('Cambio de Clave'));
+            $this->view->assign('header', __('Password Change'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'user/saveEditPass/' . $id);
 
@@ -263,7 +263,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -272,10 +272,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
                 $this->deleteCustomFieldsForItem(Acl::USER, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.user.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Usuarios eliminados')))
+                    new Event($this, EventMessage::factory()->addDescription(__u('Users deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuarios eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Users deleted'));
             } else {
                 $this->userService->delete($id);
 
@@ -283,11 +283,11 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
                 $this->eventDispatcher->notifyEvent('delete.user',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Usuario eliminado'))
-                        ->addDetail(__u('Usuario'), $id))
+                        ->addDescription(__u('User deleted'))
+                        ->addDetail(__u('User'), $id))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario eliminado'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User deleted'));
             }
         } catch (\Exception $e) {
             processException($e);
@@ -305,7 +305,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new UserForm($this->dic);
@@ -319,13 +319,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             $this->eventDispatcher->notifyEvent('create.user',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Usuario creado'))
-                    ->addDetail(__u('Usuario'), $itemData->getName()))
+                    ->addDescription(__u('User added'))
+                    ->addDetail(__u('User'), $itemData->getName()))
             );
 
             $this->checkChangeUserPass($id, $itemData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -353,7 +353,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
                 ->requestForUserId($userId);
 
             $this->dic->get(MailService::class)
-                ->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
+                ->send(__('Password Change'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
         }
     }
 
@@ -370,7 +370,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new UserForm($this->dic, $id);
@@ -384,13 +384,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             $this->eventDispatcher->notifyEvent('edit.user',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Usuario actualizado'))
-                    ->addDetail(__u('Usuario'), $itemData->getName()))
+                    ->addDescription(__u('User updated'))
+                    ->addDetail(__u('User'), $itemData->getName()))
             );
 
             $this->checkChangeUserPass($id, $itemData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -413,7 +413,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new UserForm($this->dic, $id);
@@ -425,11 +425,11 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
             $this->eventDispatcher->notifyEvent('edit.user.pass',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Clave actualizada'))
-                    ->addDetail(__u('Usuario'), $id))
+                    ->addDescription(__u('Password updated'))
+                    ->addDetail(__u('User'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Password updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -452,10 +452,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::USER_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Usuario'));
+            $this->view->assign('header', __('View User'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);

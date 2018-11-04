@@ -70,7 +70,7 @@ abstract class ContextBase implements ContextInterface
             && $this->trasient->exists($key)
             && $this->trasient->get($key) !== $value
         ) {
-            throw new ContextException(__u('No es posible cambiar el valor de la clave'));
+            throw new ContextException(__u('Unable to change password value'));
         }
 
         $this->trasient->set($key, $value);
@@ -100,13 +100,13 @@ abstract class ContextBase implements ContextInterface
     final protected function setContextReference(&$context)
     {
         if ($this->context !== null) {
-            throw new ContextException(__u('Contexto ya inicializado'));
+            throw new ContextException(__u('Context already initialized'));
         }
 
         if (isset($context['context'])
             && ($context['context'] instanceof ContextCollection) === false
         ) {
-            throw new ContextException(__u('Contexto inválido'));
+            throw new ContextException(__u('Invalid context'));
         } elseif (!isset($context['context'])) {
             $context['context'] = $this->context = new ContextCollection();
             return;
@@ -123,7 +123,7 @@ abstract class ContextBase implements ContextInterface
     final protected function setContext(ContextCollection $contextCollection)
     {
         if ($this->context !== null) {
-            throw new ContextException(__u('Contexto ya inicializado'));
+            throw new ContextException(__u('Context already initialized'));
         }
 
         $this->context = $contextCollection;
@@ -151,7 +151,7 @@ abstract class ContextBase implements ContextInterface
     private function checkContext()
     {
         if ($this->context === null) {
-            throw new ContextException(__u('Contexto no inicializado'));
+            throw new ContextException(__u('Context not initialized'));
         }
     }
 

@@ -193,7 +193,7 @@ abstract class DokuWikiApiBase
 
         if (count($error) > 0) {
             throw new SPException(
-                __('Error al realizar la consulta', false), SPException::WARNING, $error['faultString']
+                __u('Error while doing the query'), SPException::WARNING, $error['faultString']
             );
         }
     }
@@ -225,7 +225,7 @@ abstract class DokuWikiApiBase
         $this->apiPassword = empty($pass) ? $this->ConfigData->getDokuwikiPass() : $pass;
 
         if (empty($this->apiUrl)) {
-            throw new SPException(__('URL de conexión no establecida', false), SPException::WARNING);
+            throw new SPException(__u('Connection URL not set'), SPException::WARNING);
         }
     }
 }

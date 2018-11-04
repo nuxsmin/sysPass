@@ -145,35 +145,35 @@ final class ErrorUtil
     {
         $errorTypes = [
             self::ERR_UNAVAILABLE => [
-                'txt' => __('Opción no disponible'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('Option unavailable'),
+                'hint' => __('Please contact to the administrator')
             ],
             self::ERR_ACCOUNT_NO_PERMISSION => [
-                'txt' => __('No tiene permisos para acceder a esta cuenta'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('You don\'t have permission to access this account'),
+                'hint' => __('Please contact to the administrator')
             ],
             self::ERR_PAGE_NO_PERMISSION => [
-                'txt' => __('No tiene permisos para acceder a esta página'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('You don\'t have permission to access this page'),
+                'hint' => __('Please contact to the administrator')
             ],
             self::ERR_OPERATION_NO_PERMISSION => [
-                'txt' => __('No tiene permisos para realizar esta operación'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('You don\'t have permission to do this operation'),
+                'hint' => __('Please contact to the administrator')
             ],
             self::ERR_UPDATE_MPASS => [
-                'txt' => __('Clave maestra actualizada'),
-                'hint' => __('Reinicie la sesión para cambiarla')
+                'txt' => __('Master password updated'),
+                'hint' => __('Please, restart the session for update it')
             ],
             self::ERR_EXCEPTION => [
-                'txt' => __('Se ha producido una excepción'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('An exception occured'),
+                'hint' => __('Please contact to the administrator')
             ]
         ];
 
         if (!isset($errorTypes[$type])) {
             return [
-                'txt' => __('Se ha producido una excepción'),
-                'hint' => __('Consulte con el administrador')
+                'txt' => __('An exception occured'),
+                'hint' => __('Please contact to the administrator')
             ];
         }
 

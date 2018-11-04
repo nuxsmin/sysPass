@@ -81,7 +81,7 @@ final class ItemPresetService extends Service
     public function delete($id)
     {
         if ($this->itemPresetRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Valor no encontrada'));
+            throw new NoSuchItemException(__u('Value not found'));
         }
 
         return $this;
@@ -102,7 +102,7 @@ final class ItemPresetService extends Service
         $result = $this->itemPresetRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Valor no encontrada'));
+            throw new NoSuchItemException(__u('Value not found'));
         }
 
         return $result->getData();
@@ -185,7 +185,7 @@ final class ItemPresetService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->itemPresetRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los valores'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting the values'), ServiceException::WARNING);
         }
 
         return $count;

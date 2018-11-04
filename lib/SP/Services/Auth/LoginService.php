@@ -135,7 +135,7 @@ final class LoginService extends Service
             $this->addTracking();
 
             throw new AuthException(
-                __u('Intentos excedidos'),
+                __u('Attempts exceeded'),
                 AuthException::INFO,
                 null,
                 self::STATUS_MAX_ATTEMPTS_EXCEEDED
@@ -157,7 +157,7 @@ final class LoginService extends Service
             $this->addTracking();
 
             throw new AuthException(
-                __u('Login incorrecto'),
+                __u('Wrong login'),
                 AuthException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
@@ -187,7 +187,7 @@ final class LoginService extends Service
             $this->trackService->add($this->trackRequest);
         } catch (\Exception $e) {
             throw new AuthException(
-                __u('Error interno'),
+                __u('Internal error'),
                 AuthException::ERROR,
                 null,
                 Service::STATUS_INTERNAL_ERROR
@@ -216,14 +216,14 @@ final class LoginService extends Service
                 $this->eventDispatcher->notifyEvent('login.checkUser.disabled',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Usuario deshabilitado'))
-                            ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+                            ->addDescription(__u('User disabled'))
+                            ->addDetail(__u('User'), $userLoginResponse->getLogin()))
                 );
 
                 $this->addTracking();
 
                 throw new AuthException(
-                    __u('Usuario deshabilitado'),
+                    __u('User disabled'),
                     AuthException::INFO,
                     null,
                     self::STATUS_USER_DISABLED
@@ -235,7 +235,7 @@ final class LoginService extends Service
                 $this->eventDispatcher->notifyEvent('login.checkUser.changePass',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+                            ->addDetail(__u('User'), $userLoginResponse->getLogin()))
                 );
 
                 $hash = PasswordUtil::generateRandomBytes(16);
@@ -270,7 +270,7 @@ final class LoginService extends Service
                 if ($temporaryMasterPass->checkTempMasterPass($masterPass)) {
                     $this->eventDispatcher->notifyEvent('login.masterPass.temporary',
                         new Event($this,
-                            EventMessage::factory()->addDescription(__u('Usando clave temporal')))
+                            EventMessage::factory()->addDescription(__u('Using temporary password')))
                     );
 
                     $masterPass = $temporaryMasterPass->getUsingKey($masterPass);
@@ -282,13 +282,13 @@ final class LoginService extends Service
                 ) {
                     $this->eventDispatcher->notifyEvent('login.masterPass',
                         new Event($this,
-                            EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
+                            EventMessage::factory()->addDescription(__u('Wrong master password')))
                     );
 
                     $this->addTracking();
 
                     throw new AuthException(
-                        __u('Clave maestra incorrecta'),
+                        __u('Wrong master password'),
                         AuthException::INFO,
                         null,
                         self::STATUS_INVALID_MASTER_PASS
@@ -297,7 +297,7 @@ final class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
                     new Event($this,
-                        EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
+                        EventMessage::factory()->addDescription(__u('Master password updated')))
                 );
             } else if ($oldPass) {
                 if ($userPassService->updateMasterPassFromOldPass(
@@ -306,13 +306,13 @@ final class LoginService extends Service
                 ) {
                     $this->eventDispatcher->notifyEvent('login.masterPass',
                         new Event($this,
-                            EventMessage::factory()->addDescription(__u('Clave maestra incorrecta')))
+                            EventMessage::factory()->addDescription(__u('Wrong master password')))
                     );
 
                     $this->addTracking();
 
                     throw new AuthException(
-                        __u('Clave maestra incorrecta'),
+                        __u('Wrong master password'),
                         AuthException::INFO,
                         null,
                         self::STATUS_INVALID_MASTER_PASS
@@ -321,13 +321,13 @@ final class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
                     new Event($this,
-                        EventMessage::factory()->addDescription(__u('Clave maestra actualizada')))
+                        EventMessage::factory()->addDescription(__u('Master password updated')))
                 );
             } else {
                 switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {
                     case UserPassService::MPASS_CHECKOLD:
                         throw new AuthException(
-                            __u('Es necesaria su clave anterior'),
+                            __u('Your previous password is needed'),
                             AuthException::INFO,
                             null,
                             self::STATUS_NEED_OLD_PASS
@@ -339,7 +339,7 @@ final class LoginService extends Service
                         $this->addTracking();
 
                         throw new AuthException(
-                            __u('La clave maestra no ha sido guardada o es incorrecta'),
+                            __u('The Master Password either is not saved or is wrong'),
                             AuthException::INFO,
                             null,
                             self::STATUS_INVALID_MASTER_PASS
@@ -351,7 +351,7 @@ final class LoginService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new AuthException(
-                __u('Error interno'),
+                __u('Internal error'),
                 AuthException::ERROR,
                 $e->getMessage(),
                 Service::STATUS_INTERNAL_ERROR,
@@ -387,7 +387,7 @@ final class LoginService extends Service
 
         $this->eventDispatcher->notifyEvent('login.session.load',
             new Event($this, EventMessage::factory()
-                ->addDetail(__u('Usuario'), $userLoginResponse->getLogin()))
+                ->addDetail(__u('User'), $userLoginResponse->getLogin()))
         );
     }
 
@@ -452,19 +452,19 @@ final class LoginService extends Service
     {
         if ($authData->getStatusCode() > LdapCode::SUCCESS) {
             $eventMessage = EventMessage::factory()
-                ->addDetail(__u('Tipo'), __FUNCTION__)
-                ->addDetail(__u('Servidor LDAP'), $authData->getServer())
-                ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser());
+                ->addDetail(__u('Type'), __FUNCTION__)
+                ->addDetail(__u('LDAP Server'), $authData->getServer())
+                ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
 
             if ($authData->getStatusCode() === LdapCode::INVALID_CREDENTIALS) {
-                $eventMessage->addDescription(__u('Login incorrecto'));
+                $eventMessage->addDescription(__u('Wrong login'));
 
                 $this->addTracking();
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
-                    __u('Login incorrecto'),
+                    __u('Wrong login'),
                     AuthException::INFO,
                     __FUNCTION__,
                     self::STATUS_INVALID_LOGIN
@@ -472,12 +472,12 @@ final class LoginService extends Service
             }
 
             if ($authData->getStatusCode() === LdapAuth::ACCOUNT_EXPIRED) {
-                $eventMessage->addDescription(__u('Cuenta expirada'));
+                $eventMessage->addDescription(__u('Account expired'));
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
-                    __u('Cuenta expirada'),
+                    __u('Account expired'),
                     AuthException::INFO,
                     __FUNCTION__,
                     self::STATUS_USER_DISABLED
@@ -485,12 +485,12 @@ final class LoginService extends Service
             }
 
             if ($authData->getStatusCode() === LdapAuth::ACCOUNT_NO_GROUPS) {
-                $eventMessage->addDescription(__u('El usuario no tiene grupos asociados'));
+                $eventMessage->addDescription(__u('User has no associated groups'));
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
                 throw new AuthException(
-                    __u('El usuario no tiene grupos asociados'),
+                    __u('User has no associated groups'),
                     AuthException::INFO,
                     __FUNCTION__,
                     self::STATUS_USER_DISABLED
@@ -501,12 +501,12 @@ final class LoginService extends Service
                 return false;
             }
 
-            $eventMessage->addDescription(__u('Error interno'));
+            $eventMessage->addDescription(__u('Internal error'));
 
             $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
             throw new AuthException(
-                __u('Error interno'),
+                __u('Internal error'),
                 AuthException::INFO,
                 __FUNCTION__,
                 Service::STATUS_INTERNAL_ERROR
@@ -515,8 +515,8 @@ final class LoginService extends Service
 
         $this->eventDispatcher->notifyEvent('login.auth.ldap',
             new Event($this, EventMessage::factory()
-                ->addDetail(__u('Tipo'), __FUNCTION__)
-                ->addDetail(__u('Servidor LDAP'), $authData->getServer())
+                ->addDetail(__u('Type'), __FUNCTION__)
+                ->addDetail(__u('LDAP Server'), $authData->getServer())
             )
         );
 
@@ -538,7 +538,7 @@ final class LoginService extends Service
             }
         } catch (\Exception $e) {
             throw new AuthException(
-                __u('Error interno'),
+                __u('Internal error'),
                 AuthException::ERROR,
                 __FUNCTION__,
                 Service::STATUS_INTERNAL_ERROR,
@@ -561,8 +561,8 @@ final class LoginService extends Service
     private function authDatabase(DatabaseAuthData $authData)
     {
         $eventMessage = EventMessage::factory()
-            ->addDetail(__u('Tipo'), __FUNCTION__)
-            ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser());
+            ->addDetail(__u('Type'), __FUNCTION__)
+            ->addDetail(__u('User'), $this->userLoginData->getLoginUser());
 
         // Autentificamos con la BBDD
         if ($authData->getAuthenticated() === false) {
@@ -572,12 +572,12 @@ final class LoginService extends Service
 
             $this->addTracking();
 
-            $eventMessage->addDescription(__u('Login incorrecto'));
+            $eventMessage->addDescription(__u('Wrong login'));
 
             $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
 
             throw new AuthException(
-                __u('Login incorrecto'),
+                __u('Wrong login'),
                 AuthException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
@@ -601,12 +601,12 @@ final class LoginService extends Service
      */
     private function authBrowser(BrowserAuthData $authData)
     {
-        $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/D');
+        $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/A');
 
         $eventMessage = EventMessage::factory()
-            ->addDetail(__u('Tipo'), __FUNCTION__)
-            ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser())
-            ->addDetail(__u('Autentificación'), sprintf('%s (%s)', $authType, $authData->getName()));
+            ->addDetail(__u('Type'), __FUNCTION__)
+            ->addDetail(__u('User'), $this->userLoginData->getLoginUser())
+            ->addDetail(__u('Authentication'), sprintf('%s (%s)', $authType, $authData->getName()));
 
         // Comprobar si concide el login con la autentificación del servidor web
         if ($authData->getAuthenticated() === false) {
@@ -616,12 +616,12 @@ final class LoginService extends Service
 
             $this->addTracking();
 
-            $eventMessage->addDescription(__u('Login incorrecto'));
+            $eventMessage->addDescription(__u('Wrong login'));
 
             $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
 
             throw new AuthException(
-                __u('Login incorrecto'),
+                __u('Wrong login'),
                 AuthException::INFO,
                 __FUNCTION__,
                 self::STATUS_INVALID_LOGIN
@@ -645,7 +645,7 @@ final class LoginService extends Service
                 return true;
             } catch (\Exception $e) {
                 throw new AuthException(
-                    __u('Error interno'),
+                    __u('Internal error'),
                     AuthException::ERROR,
                     __FUNCTION__,
                     Service::STATUS_INTERNAL_ERROR,

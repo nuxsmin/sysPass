@@ -54,22 +54,24 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      * @param ConfigData $configData
      *
      * @throws UpgradeException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function upgrade($version, ConfigData $configData)
     {
         $this->eventDispatcher->notifyEvent('upgrade.app.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar Aplicación')))
+                ->addDescription(__u('Update Application')))
         );
 
         foreach (self::UPGRADES as $appVersion) {
             if (VersionUtil::checkVersion($version, $appVersion)) {
                 if ($this->applyUpgrade($appVersion) === false) {
                     throw new UpgradeException(
-                        __u('Error al aplicar la actualización de la aplicación'),
+                        __u('Error while applying the application update'),
                         UpgradeException::CRITICAL,
-                        __u('Compruebe el registro de eventos para más detalles')
+                        __u('Please, check the event log for more details')
                     );
                 }
 
@@ -83,7 +85,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
 
         $this->eventDispatcher->notifyEvent('upgrade.app.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar Aplicación')))
+                ->addDescription(__u('Update Application')))
         );
     }
 

@@ -71,8 +71,8 @@ final class PluginGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -106,7 +106,7 @@ final class PluginGrid extends GridBase
         // Grid Header
         $gridHeader = new DataGridHeader();
         $gridHeader->addHeader(__('Plugin'));
-        $gridHeader->addHeader(__('Estado'));
+        $gridHeader->addHeader(__('Status'));
 
         return $gridHeader;
     }
@@ -122,7 +122,7 @@ final class PluginGrid extends GridBase
         $gridData->addDataRowSource('name');
         $gridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconEnabled());
         $gridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconDisabled(), 0);
-        $gridData->addDataRowSourceWithIcon('available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
+        $gridData->addDataRowSourceWithIcon('available', $this->icons->getIconDelete()->setTitle(__('Unavailable')), 0);
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -138,7 +138,7 @@ final class PluginGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::PLUGIN_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchPlugin');
-        $gridActionSearch->setTitle(__('Buscar Plugin'));
+        $gridActionSearch->setTitle(__('Search for Plugin'));
         $gridActionSearch->setOnSubmitFunction('plugin/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_SEARCH));
 
@@ -153,8 +153,8 @@ final class PluginGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Plugin'));
-        $gridAction->setTitle(__('Ver Plugin'));
+        $gridAction->setName(__('View Plugin'));
+        $gridAction->setTitle(__('View Plugin'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('plugin/show');
         $gridAction->setFilterRowSource('available', 0);
@@ -170,8 +170,8 @@ final class PluginGrid extends GridBase
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_ENABLE);
-        $gridAction->setName(__('Habilitar'));
-        $gridAction->setTitle(__('Habilitar'));
+        $gridAction->setName(__('Enable'));
+        $gridAction->setTitle(__('Enable'));
         $gridAction->setIcon($this->icons->getIconEnabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled');
@@ -189,8 +189,8 @@ final class PluginGrid extends GridBase
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_DISABLE);
-        $gridAction->setName(__('Deshabilitar'));
-        $gridAction->setTitle(__('Deshabilitar'));
+        $gridAction->setName(__('Disable'));
+        $gridAction->setTitle(__('Disable'));
         $gridAction->setIcon($this->icons->getIconDisabled());
         $gridAction->setOnClickFunction('plugin/toggle');
         $gridAction->setFilterRowSource('enabled', 0);
@@ -208,8 +208,8 @@ final class PluginGrid extends GridBase
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_RESET);
-        $gridAction->setName(__('Restablecer Datos'));
-        $gridAction->setTitle(__('Restablecer Datos'));
+        $gridAction->setName(__('Reset Data'));
+        $gridAction->setTitle(__('Reset Data'));
         $gridAction->setIcon($this->icons->getIconRefresh());
         $gridAction->setOnClickFunction('plugin/reset');
         $gridAction->setFilterRowSource('available', 0);
@@ -228,8 +228,8 @@ final class PluginGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Plugin'));
-        $gridAction->setTitle(__('Eliminar Plugin'));
+        $gridAction->setName(__('Delete Plugin'));
+        $gridAction->setTitle(__('Delete Plugin'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setFilterRowSource('available', 1);
         $gridAction->setOnClickFunction('plugin/delete');

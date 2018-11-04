@@ -69,8 +69,8 @@ final class CustomFieldGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -92,7 +92,7 @@ final class CustomFieldGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Campos Personalizados'));
+        $gridTab->setTitle(__('Custom Fields'));
 
         return $gridTab;
     }
@@ -104,10 +104,10 @@ final class CustomFieldGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Módulo'));
-        $gridHeader->addHeader(__('Tipo'));
-        $gridHeader->addHeader(__('Propiedades'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Module'));
+        $gridHeader->addHeader(__('Type'));
+        $gridHeader->addHeader(__('Properties'));
 
         return $gridHeader;
     }
@@ -125,7 +125,7 @@ final class CustomFieldGrid extends GridBase
             return CustomFieldDefService::getFieldModuleById($value);
         });
         $gridData->addDataRowSource('typeName');
-        $gridData->addDataRowSourceWithIcon('isEncrypted', $this->icons->getIconEditPass()->setTitle(__('Encriptado')));
+        $gridData->addDataRowSourceWithIcon('isEncrypted', $this->icons->getIconEditPass()->setTitle(__('Encrypted')));
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -141,7 +141,7 @@ final class CustomFieldGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::CUSTOMFIELD_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchCustomField');
-        $gridActionSearch->setTitle(__('Buscar Campo'));
+        $gridActionSearch->setTitle(__('Search for Field'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_SEARCH));
 
@@ -156,8 +156,8 @@ final class CustomFieldGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CUSTOMFIELD_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Campo'));
-        $gridAction->setTitle(__('Nuevo Campo'));
+        $gridAction->setName(__('New Field'));
+        $gridAction->setTitle(__('New Field'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -174,8 +174,8 @@ final class CustomFieldGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CUSTOMFIELD_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Campo'));
-        $gridAction->setTitle(__('Editar Campo'));
+        $gridAction->setName(__('Edit Field'));
+        $gridAction->setTitle(__('Edit Field'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_EDIT));
@@ -191,8 +191,8 @@ final class CustomFieldGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CUSTOMFIELD_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Campo'));
-        $gridAction->setTitle(__('Eliminar Campo'));
+        $gridAction->setName(__('Delete Field'));
+        $gridAction->setTitle(__('Delete Field'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_DELETE));

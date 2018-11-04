@@ -93,7 +93,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
         if ($remoteSyslogEnabled) {
             if (!$syslogServer || !$syslogPort) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de syslog remoto'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing remote syslog parameters'));
             }
 
             $configData->setSyslogRemoteEnabled(true);
@@ -101,12 +101,12 @@ final class ConfigGeneralController extends SimpleControllerBase
             $configData->setSyslogPort($syslogPort);
 
             if ($configData->isSyslogRemoteEnabled() === false) {
-                $eventMessage->addDescription(__u('Syslog remoto habilitado'));
+                $eventMessage->addDescription(__u('Remote syslog enabled'));
             }
         } elseif ($remoteSyslogEnabled === false && $configData->isSyslogEnabled()) {
             $configData->setSyslogRemoteEnabled(false);
 
-            $eventMessage->addDescription(__u('Syslog remoto deshabilitado'));
+            $eventMessage->addDescription(__u('Remote syslog disabled'));
         }
 
         // Proxy
@@ -119,7 +119,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
         // Valores para Proxy
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Proxy'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Proxy parameters '));
         }
 
         if ($proxyEnabled) {
@@ -133,12 +133,12 @@ final class ConfigGeneralController extends SimpleControllerBase
             }
 
             if ($configData->isProxyEnabled() === false) {
-                $eventMessage->addDescription(__u('Proxy habiltado'));
+                $eventMessage->addDescription(__u('Proxy enabled'));
             }
         } elseif ($proxyEnabled === false && $configData->isProxyEnabled()) {
             $configData->setProxyEnabled(false);
 
-            $eventMessage->addDescription(__u('Proxy deshabilitado'));
+            $eventMessage->addDescription(__u('Proxy disabled'));
         }
 
         // Autentificación
@@ -157,13 +157,13 @@ final class ConfigGeneralController extends SimpleControllerBase
             $configData->setSsoDefaultProfile($authSsoDefaultProfile);
 
             if ($configData->isAuthBasicEnabled() === false) {
-                $eventMessage->addDescription(__u('Auth Basic habilitada'));
+                $eventMessage->addDescription(__u('Auth Basic enabled'));
             }
         } elseif ($authBasicEnabled === false && $configData->isAuthBasicEnabled()) {
             $configData->setAuthBasicEnabled(false);
             $configData->setAuthBasicAutoLoginEnabled(false);
 
-            $eventMessage->addDescription(__u('Auth Basic deshabiltada'));
+            $eventMessage->addDescription(__u('Auth Basic disabled'));
         }
 
         return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
@@ -180,7 +180,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->configData->isDemoEnabled()) {
-            return __('Ey, esto es una DEMO!!');
+            return __('Ey, this is a DEMO!!');
         }
 
         try {
@@ -191,8 +191,8 @@ final class ConfigGeneralController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('download.logFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();
@@ -226,14 +226,14 @@ final class ConfigGeneralController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->configData->isDemoEnabled()) {
-            return __('Ey, esto es una DEMO!!');
+            return __('Ey, this is a DEMO!!');
         }
 
         try {
             $this->eventDispatcher->notifyEvent('download.configBackupFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), 'config.json'))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), 'config.json'))
             );
 
             $configBackupService = $this->dic->get(ConfigBackupService::class);
@@ -281,5 +281,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

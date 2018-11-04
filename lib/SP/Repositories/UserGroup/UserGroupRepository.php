@@ -59,7 +59,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el grupo'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the group'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -303,7 +303,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Nombre de grupo duplicado'));
+            throw new DuplicatedItemException(__u('Duplicated group name'));
         }
 
         $query = /** @lang SQL */
@@ -312,7 +312,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$itemData->getName(), $itemData->getDescription()]);
-        $queryData->setOnErrorMessage(__u('Error al crear el grupo'));
+        $queryData->setOnErrorMessage(__u('Error while creating the group'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -348,7 +348,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Nombre de grupo duplicado'));
+            throw new DuplicatedItemException(__u('Duplicated group name'));
         }
 
         $queryData = new QueryData();
@@ -358,7 +358,7 @@ final class UserGroupRepository extends Repository implements RepositoryItemInte
             $itemData->getDescription(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el grupo'));
+        $queryData->setOnErrorMessage(__u('Error while updating the group'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

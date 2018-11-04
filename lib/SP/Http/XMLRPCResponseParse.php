@@ -66,7 +66,7 @@ abstract class XMLRPCResponseParse
             $dom->loadXML($xml);
 
             if ($dom->getElementsByTagName('methodResponse')->length === 0) {
-                throw new \DOMException(__u('Respuesta XML-RPC inválida'));
+                throw new \DOMException(__u('Invalid XML-RPC response'));
             }
 
             $this->root = $dom->documentElement;
@@ -117,6 +117,8 @@ abstract class XMLRPCResponseParse
                 }
             }
         }
+
+        return [];
     }
 
     /**

@@ -58,7 +58,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO CustomFieldType SET `name` = ?, `text` = ?');
         $queryData->setParams([$itemData->getName(), $itemData->getText()]);
-        $queryData->setOnErrorMessage(__u('Error al crear el tipo de campo'));
+        $queryData->setOnErrorMessage(__u('Error while creating the field type'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -94,7 +94,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
             $itemData->getText(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el tipo de campo'));
+        $queryData->setOnErrorMessage(__u('Error while updating the field type'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -176,7 +176,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldType WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the field type'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -195,7 +195,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldType WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the field type'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

@@ -88,7 +88,7 @@ final class MailProvider extends Provider
             processException($e);
 
             throw new MailProviderException(
-                __u('No es posible inicializar'),
+                __u('Unable to initialize'),
                 MailProviderException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),

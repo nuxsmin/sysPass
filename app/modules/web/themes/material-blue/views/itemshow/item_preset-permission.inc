@@ -9,13 +9,13 @@
 <table class="popup-data">
     <tbody>
     <tr>
-        <td class="descField"><?php echo __('Usuarios'); ?></td>
+        <td class="descField"><?php echo __('Users'); ?></td>
         <td class="valField">
             <div class="account-permissions">
                 <div class="tag-list-box">
                     <select id="users_view" name="users_view[]" multiple="multiple"
                             class="select-box-tags">
-                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                        <option value=""><?php echo __('Select Users'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                         foreach ($_getvar('usersView') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
@@ -26,13 +26,13 @@
                     </select>
 
                     <i class="material-icons select-icon"
-                       title="<?php echo __('Ver'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
+                       title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                 </div>
 
                 <div class="tag-list-box">
                     <select id="users_edit" name="users_edit[]" multiple="multiple"
                             class="select-box-tags">
-                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                        <option value=""><?php echo __('Select Users'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                         foreach ($_getvar('usersEdit') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
@@ -43,20 +43,20 @@
                     </select>
 
                     <i class="material-icons select-icon"
-                       title="<?php echo __('Editar'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
+                       title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                 </div>
             </div>
         </td>
     </tr>
 
     <tr>
-        <td class="descField"><?php echo __('Grupos'); ?></td>
+        <td class="descField"><?php echo __('Groups'); ?></td>
         <td class="valField">
             <div class="account-permissions">
                 <div class="tag-list-box">
                     <select id="user_groups_view" name="user_groups_view[]" multiple="multiple"
                             class="select-box-tags">
-                        <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                        <option value=""><?php echo __('Select Groups'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
                         foreach ($_getvar('userGroupsView') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
@@ -67,13 +67,13 @@
                     </select>
 
                     <i class="material-icons select-icon"
-                       title="<?php echo __('Ver'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
+                       title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                 </div>
 
                 <div class="tag-list-box">
                     <select id="user_groups_edit" name="user_groups_edit[]" multiple="multiple"
                             class="select-box-tags">
-                        <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                        <option value=""><?php echo __('Select Groups'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
                         foreach ($_getvar('userGroupsEdit') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
@@ -84,7 +84,7 @@
                     </select>
 
                     <i class="material-icons select-icon"
-                       title="<?php echo __('Editar'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
+                       title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                 </div>
             </div>
         </td>

@@ -17,7 +17,7 @@
                     </span>
                     <span class="list-actions">
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconEdit()->getClass(); ?>"
-                           title="<?php echo __('Editar Cuenta'); ?>"
+                           title="<?php echo __('Edit Account'); ?>"
                            data-action-route="account/edit"
                            data-item-id="<?php echo $account->id; ?>"
                            data-onclick="account/edit"
@@ -25,7 +25,7 @@
                             <?php echo $icons->getIconEdit()->getIcon(); ?></i>
 
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
-                           title="<?php echo __('Detalles de Cuenta'); ?>"
+                           title="<?php echo __('Account Details'); ?>"
                            data-action-route="account/view"
                            data-item-id="<?php echo $account->id; ?>"
                            data-onclick="account/view"

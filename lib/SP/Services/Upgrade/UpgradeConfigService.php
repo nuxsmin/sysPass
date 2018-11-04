@@ -67,7 +67,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     {
         $configData = $this->config->getConfigData();
 
-        $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
+        $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
 
         $this->eventDispatcher->notifyEvent('upgrade.config.old.start', new Event($this, $message));
 
@@ -79,7 +79,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         if (isset($CONFIG) && is_array($CONFIG)) {
             $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message, $configData) {
                 if (isset($CONFIG[$mapFrom])) {
-                    $message->addDetail(__u('Parámetro'), $mapFrom);
+                    $message->addDetail(__u('Parameter'), $mapFrom);
                     $configData->{$mapTo}($CONFIG[$mapFrom]);
                 }
             };
@@ -110,7 +110,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
             rename(OLD_CONFIG_FILE, $oldFile);
 
-            $message->addDetail(__u('Versión'), $version);
+            $message->addDetail(__u('Version'), $version);
 
             $this->eventDispatcher->notifyEvent('upgrade.config.old.end', new Event($this, $message));
         } catch (\Exception $e) {
@@ -118,11 +118,11 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
             $this->eventDispatcher->notifyEvent('exception',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al actualizar la configuración'))
-                    ->addDetail(__u('Archivo'), $oldFile))
+                    ->addDescription(__u('Error while updating the configuration'))
+                    ->addDetail(__u('File'), $oldFile))
             );
 
-            throw new UpgradeException(__u('Error al actualizar la configuración'));
+            throw new UpgradeException(__u('Error while updating the configuration'));
         }
     }
 
@@ -194,12 +194,16 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
      *
      * @param            $version
      * @param ConfigData $configData
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     public function upgrade($version, ConfigData $configData)
     {
         $this->configData = $configData;
 
-        $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
+        $message = EventMessage::factory()->addDescription(__u('Update Configuration'));
         $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
 
         foreach (self::UPGRADES as $upgradeVersion) {
@@ -213,6 +217,10 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
     /**
      * @param $version
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\File\FileException
      */
     private function applyUpgrade($version)
     {
@@ -225,8 +233,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
 
                 $this->eventDispatcher->notifyEvent('upgrade.config.process',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Actualizar Configuración'))
-                        ->addDetail(__u('Versión'), $version))
+                        ->addDescription(__u('Update Configuration'))
+                        ->addDetail(__u('Version'), $version))
                 );
                 break;
         }

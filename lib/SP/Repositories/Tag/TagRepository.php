@@ -57,7 +57,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Etiqueta duplicada'));
+            throw new DuplicatedItemException(__u('Duplicated tag'));
         }
 
         $queryData = new QueryData();
@@ -66,7 +66,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
             $itemData->getName(),
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler())
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear etiqueta'));
+        $queryData->setOnErrorMessage(__u('Error while creating the tag'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -105,7 +105,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Etiqueta duplicada'));
+            throw new DuplicatedItemException(__u('Duplicated tag'));
         }
 
         $queryData = new QueryData();
@@ -115,7 +115,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar etiqueta'));
+        $queryData->setOnErrorMessage(__u('Error while updating the tag'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -240,7 +240,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Tag WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar etiquetas'));
+        $queryData->setOnErrorMessage(__u('Error while removing the tags'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -259,7 +259,7 @@ final class TagRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Tag WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar etiqueta'));
+        $queryData->setOnErrorMessage(__u('Error while removing the tag'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

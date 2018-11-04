@@ -73,7 +73,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
             $itemData->getData(),
             $itemData->getHash()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear permiso'));
+        $queryData->setOnErrorMessage(__u('Error while creating the permission'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -112,7 +112,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
             $itemData->getHash(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar permiso'));
+        $queryData->setOnErrorMessage(__u('Error while updating the permission'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -131,7 +131,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM ItemPreset WHERE id = ? LIMIT 1');
         $queryData->setParams([$id]);
-        $queryData->setOnErrorMessage(__u('Error al eliminar permiso'));
+        $queryData->setOnErrorMessage(__u('Error while removing the permission'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -246,7 +246,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM ItemPreset WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los permisos'));
+        $queryData->setOnErrorMessage(__u('Error while removing the permissions'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

@@ -108,9 +108,9 @@ final class LdapMsAds extends Ldap
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.group',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Usuario verificado en grupo'))
-                    ->addDetail(__u('Usuario'), $userDn)
-                    ->addDetail(__u('Grupo'), $this->getGroupDn())));
+                    ->addDescription(__u('User in group verified'))
+                    ->addDetail(__u('User'), $userDn)
+                    ->addDetail(__u('Group'), $this->getGroupDn())));
 
             return true;
         }
@@ -141,9 +141,9 @@ final class LdapMsAds extends Ldap
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.group',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Usuario no pertenece al grupo'))
-                    ->addDetail(__u('Usuario'), $userDn)
-                    ->addDetail(__u('Grupo'), $groupDn)
+                    ->addDescription(__u('User does not belong to the group'))
+                    ->addDetail(__u('User'), $userDn)
+                    ->addDetail(__u('Group'), $groupDn)
                     ->addDetail('LDAP FILTER', $filter)));
 
             return false;
@@ -151,9 +151,9 @@ final class LdapMsAds extends Ldap
 
         $this->eventDispatcher->notifyEvent('ldap.check.group',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Usuario verificado en grupo'))
-                ->addDetail(__u('Usuario'), $userDn)
-                ->addDetail(__u('Grupo'), $groupDn)));
+                ->addDescription(__u('User in group verified'))
+                ->addDetail(__u('User'), $userDn)
+                ->addDetail(__u('Group'), $groupDn)));
 
         return true;
     }

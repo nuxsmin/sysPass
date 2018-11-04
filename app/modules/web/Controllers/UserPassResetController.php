@@ -89,24 +89,24 @@ final class UserPassResetController extends ControllerBase
             $userData = $this->dic->get(UserService::class)->getByLogin($login);
 
             if ($userData->getEmail() !== $email) {
-                throw new SPException(__u('Datos incorrectos'), SPException::WARNING);
+                throw new SPException(__u('Wrong data'), SPException::WARNING);
             }
 
             if ($userData->isDisabled() || $userData->isLdap()) {
-                throw new SPException(__u('No es posible recuperar la clave'), SPException::WARNING, __u('Consulte con el administrador'));
+                throw new SPException(__u('Unable to reset the password'), SPException::WARNING, __u('Please contact to the administrator'));
             }
 
             $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
 
             $this->eventDispatcher->notifyEvent('request.user.passReset',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Recuperación de Clave'))
-                    ->addDetail(__u('Solicitado para'), sprintf('%s (%s)', $login, $email)))
+                    ->addDescription(__u('Password Recovery'))
+                    ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email)))
             );
 
-            $this->dic->get(MailService::class)->send(__('Cambio de Clave'), $email, UserPassRecoverService::getMailMessage($hash));
+            $this->dic->get(MailService::class)->send(__('Password Change'), $email, UserPassRecoverService::getMailMessage($hash));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Solicitud enviada'), [__u('En breve recibirá un correo para completar la solicitud.')]);
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Request sent'), [__u('You will receive an email to complete the request shortly.')]);
         } catch (\Exception $e) {
             processException($e);
 
@@ -123,7 +123,7 @@ final class UserPassResetController extends ControllerBase
     protected function checkTracking()
     {
         if ($this->trackService->checkTracking($this->trackRequest)) {
-            throw new SPException(__u('Intentos excedidos'), SPException::INFO);
+            throw new SPException(__u('Attempts exceeded'), SPException::INFO);
         }
     }
 
@@ -176,11 +176,11 @@ final class UserPassResetController extends ControllerBase
             $passR = $this->request->analyzeEncrypted('password_repeat');
 
             if (!$pass || !$passR) {
-                throw new ValidationException(__u('La clave no puede estar en blanco'));
+                throw new ValidationException(__u('Password cannot be blank'));
             }
 
             if ($pass !== $passR) {
-                throw new ValidationException(__u('Las claves no coinciden'));
+                throw new ValidationException(__u('Passwords do not match'));
             }
 
             $hash = $this->request->analyzeString('hash');
@@ -193,11 +193,11 @@ final class UserPassResetController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.user.password',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Clave actualizada'))
-                    ->addDetail(__u('Usuario'), $userId))
+                    ->addDescription(__u('Password updated'))
+                    ->addDetail(__u('User'), $userId))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Password updated'));
         } catch (\Exception $e) {
             processException($e);
 

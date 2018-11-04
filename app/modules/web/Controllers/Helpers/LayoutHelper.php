@@ -258,7 +258,7 @@ final class LayoutHelper extends HelperBase
 
         $actionSearch = new DataGridAction();
         $actionSearch->setId(ActionsInterface::ACCOUNT);
-        $actionSearch->setTitle(__('Buscar'));
+        $actionSearch->setTitle(__('Search'));
         $actionSearch->setIcon($icons->getIconSearch());
         $actionSearch->setData([
             'historyReset' => 1,
@@ -271,7 +271,7 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
             $actionNewAccount = new DataGridAction();
             $actionNewAccount->setId(ActionsInterface::ACCOUNT_CREATE);
-            $actionNewAccount->setTitle(__('Nueva Cuenta'));
+            $actionNewAccount->setTitle(__('New Account'));
             $actionNewAccount->setIcon($icons->getIconAdd());
             $actionNewAccount->setData([
                 'historyReset' => 0,
@@ -341,7 +341,7 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
             $actionConfigManager = new DataGridAction();
             $actionConfigManager->setId('config');
-            $actionConfigManager->setTitle(__('Configuración'));
+            $actionConfigManager->setTitle(__('Configuration'));
             $actionConfigManager->setIcon($icons->getIconSettings());
             $actionConfigManager->setData([
                 'historyReset' => 1,

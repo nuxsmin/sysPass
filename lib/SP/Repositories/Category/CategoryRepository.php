@@ -55,7 +55,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Categoría duplicada'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated category'), DuplicatedItemException::WARNING);
         }
 
         $queryData = new QueryData();
@@ -65,7 +65,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
             $itemData->getDescription(),
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler())
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear la categoría'));
+        $queryData->setOnErrorMessage(__u('Error while creating the category'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -104,7 +104,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Nombre de categoría duplicado'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated category name'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -122,7 +122,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar la categoría'));
+        $queryData->setOnErrorMessage(__u('Error while updating the category'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -250,7 +250,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la categorías'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the categories'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -272,7 +272,7 @@ final class CategoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la categoría'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the category'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

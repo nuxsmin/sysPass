@@ -65,7 +65,7 @@ final class TrackRepository extends Repository
             $trackRequest->getIpv4(),
             $trackRequest->getIpv6()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear track'));
+        $queryData->setOnErrorMessage(__u('Error while creating track'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -82,7 +82,7 @@ final class TrackRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Track WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar track'));
+        $queryData->setOnErrorMessage(__u('Error while removing the track'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -99,7 +99,7 @@ final class TrackRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Track SET timeUnlock = UNIX_TIMESTAMP() WHERE id = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al actualizar track'));
+        $queryData->setOnErrorMessage(__u('Error while updating the track'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -115,7 +115,7 @@ final class TrackRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('TRUNCATE TABLE Track');
-        $queryData->setOnErrorMessage(__u('Error al vaciar tracks'));
+        $queryData->setOnErrorMessage(__u('Error while clearing tracks out'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
     }
@@ -143,7 +143,7 @@ final class TrackRepository extends Repository
         $queryData->setMapClassName(TrackData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener track'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the track'));
 
         return $this->db->doSelect($queryData);
     }
@@ -166,7 +166,7 @@ final class TrackRepository extends Repository
         $queryData = new QueryData();
         $queryData->setMapClassName(TrackData::class);
         $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the tracks'));
 
         return $this->db->doSelect($queryData);
     }
@@ -199,7 +199,7 @@ final class TrackRepository extends Repository
             $trackRequest->getIpv6(),
             $trackRequest->source
         ]);
-        $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the tracks'));
 
         return $this->db->doSelect($queryData);
     }

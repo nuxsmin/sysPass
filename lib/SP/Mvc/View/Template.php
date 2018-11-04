@@ -123,7 +123,7 @@ final class Template
         }
 
         if (!is_readable($templateFile)) {
-            $msg = sprintf(__('No es posible obtener la plantilla "%s" : %s'), $templateFile, $template);
+            $msg = sprintf(__('Unable to retrieve "%s" template: %s'), $templateFile, $template);
 
             logger($msg);
 
@@ -298,10 +298,10 @@ final class Template
     public function get($name)
     {
         if (!$this->vars->exists($name)) {
-            logger(sprintf(__('No es posible obtener la variable "%s"'), $name), 'ERROR');
+            logger(sprintf(__('Unable to retrieve "%s" variable'), $name), 'ERROR');
 
             return null;
-//            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
+//            throw new InvalidArgumentException(sprintf(__('Unable to retrieve "%s" variable'), $name));
         }
 
         return $this->vars->get($name);
@@ -331,9 +331,9 @@ final class Template
     public function __unset($name)
     {
         if (!$this->vars->exists($name)) {
-            logger(sprintf(__('No es posible destruir la variable "%s"'), $name));
+            logger(sprintf(__('Unable to unset "%s" variable'), $name));
 
-//            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
+//            throw new InvalidArgumentException(sprintf(__('Unable to unset "%s" variable'), $name));
             return $this;
         }
 
@@ -352,7 +352,7 @@ final class Template
     public function render()
     {
         if (empty($this->templates)) {
-            throw new FileNotFoundException(__('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(__('Template does not contain files'));
         }
 
         $icons = $this->theme->getIcons();
@@ -362,7 +362,7 @@ final class Template
         // An anonymous proxy function for handling views variables
         $_getvar = function ($key, $default = null) {
             if (DEBUG && !$this->vars->exists($key)) {
-                logger(sprintf(__('No es posible obtener la variable "%s"'), $key), 'WARN');
+                logger(sprintf(__('Unable to retrieve "%s" variable'), $key), 'WARN');
 
                 return $default;
             }

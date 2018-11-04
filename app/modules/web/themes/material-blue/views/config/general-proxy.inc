@@ -27,8 +27,8 @@
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Usar Proxy'); ?></span>
-                        <span class="mdl-list__item-sub-title"><?php echo __('Usar proxy para comprobación de actualizaciones y notificaciones.'); ?></span>
+                        <span><?php echo __('Use Proxy'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php echo __('Use a proxy server for checking out for updates and notifications.'); ?></span>
                     </span>
                 </li>
             </ul>
@@ -36,7 +36,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Servidor'); ?>
+            <?php echo __('Server'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -44,13 +44,13 @@
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128" value="<?php echo $configData->getProxyServer(); ?>">
                 <label class="mdl-textfield__label"
-                       for="proxy_server"><?php echo __('Servidor proxy'); ?></label>
+                       for="proxy_server"><?php echo __('Proxy server'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Puerto'); ?>
+            <?php echo __('Port'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -58,13 +58,13 @@
                        class="mdl-textfield__input mdl-color-text--indigo-400" pattern="[0-9]{1,5}"
                        maxlength="128" value="<?php echo $configData->getProxyPort(); ?>">
                 <label class="mdl-textfield__label"
-                       for="proxy_port"><?php echo __('Puerto del servidor proxy'); ?></label>
+                       for="proxy_port"><?php echo __('Proxy server port'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Usuario'); ?>
+            <?php echo __('User'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -72,13 +72,13 @@
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128" value="<?php echo $configData->getProxyUser(); ?>">
                 <label class="mdl-textfield__label"
-                       for="proxy_user"><?php echo __('Usuario del servidor proxy'); ?></label>
+                       for="proxy_user"><?php echo __('Proxy server user'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Clave'); ?>
+            <?php echo __('Password'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -86,7 +86,7 @@
                        class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                        maxlength="128" value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
                 <label class="mdl-textfield__label"
-                       for="proxy_pass"><?php echo __('Clave del servidor proxy'); ?></label>
+                       for="proxy_pass"><?php echo __('Proxy server password'); ?></label>
             </div>
         </td>
     </tr>

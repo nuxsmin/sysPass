@@ -100,6 +100,8 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
      *
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function updateEvent($eventType, Event $event)
     {

@@ -14,17 +14,17 @@ foreach ($customFields as $index => $field):?>
             <?php echo $field->definitionName; ?>
             <?php if ($field->isEncrypted && $field->isValueEncrypted === true): ?>
                 <i class="icon material-icons mdl-color-text--teal-500"
-                   title="<?php echo __('Encriptado'); ?>">
+                   title="<?php echo __('Encrypted'); ?>">
                     lock_outline
                 </i>
             <?php elseif ($field->isEncrypted && $field->isValueEncrypted === false): ?>
                 <i class="icon material-icons mdl-color-text--amber-500"
-                   title="<?php echo __('Los datos serán encriptados al guardar'); ?>">
+                   title="<?php echo __('Data will be encrypted after saving'); ?>">
                     lock_outline
                 </i>
             <?php elseif ($field->isEncrypted === 0 && $field->isValueEncrypted === true): ?>
                 <i class="icon material-icons mdl-color-text--red-500"
-                   title="<?php echo __('Los datos serán desencriptados al guardar'); ?>">
+                   title="<?php echo __('Data will be unencrypted after saving'); ?>">
                     lock_open
                 </i>
             <?php endif; ?>

@@ -10,7 +10,7 @@
 <div id="box-popup" class="box-password-view">
     <h2 class="center"><?php echo $_getvar('header'); ?>&nbsp;
         <?php if ($_getvar('isLinked')): ?>
-            <i title="<?php echo __('Cuenta Vinculada'); ?>"
+            <i title="<?php echo __('Linked Account'); ?>"
                class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
         <?php endif; ?>
     </h2>
@@ -21,8 +21,8 @@
                 <td class="dialog-text dialog-user-text"><?php echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
-                        <?php echo __('Usuario'); ?>
+                            title="<?php echo __('Copy Username'); ?>" data-clipboard-target=".dialog-user-text">
+                        <?php echo __('User'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
                 </td>
@@ -38,8 +38,8 @@
                 <td class="dialog-text dialog-pass-text"><?php echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
-                        <?php echo __('Clave'); ?>
+                            title="<?php echo __('Copy Password'); ?>" data-clipboard-target=".dialog-pass-text">
+                        <?php echo __('Password'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
                 </td>

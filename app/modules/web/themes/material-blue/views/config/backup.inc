@@ -9,11 +9,11 @@
 
 <?php if ($_getvar('pharIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
-        <?php printf(__('La extensión \'%s\' no está disponible'), 'phar'); ?>
+        <?php printf(__('The \'%s\' extension is unavailable'), 'phar'); ?>
         <i id="help-phar" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-phar">
             <p>
-                <?php echo __('Esta extensión es necesaria para generar los archivos de copia de seguridad de la aplicación'); ?>
+                <?php echo __('This extension is needed to build the application\'s backup files'); ?>
             </p>
         </div>
     </div>
@@ -21,16 +21,16 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">backup</i>
-    <?php echo __('Copia de Seguridad'); ?>
+    <?php echo __('Backup'); ?>
 </div>
 
 <table class="data">
     <tr>
         <td class="descField">
-            <?php echo __('Resultado'); ?>
+            <?php echo __('Result'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+            <div class="lowres-title"><?php echo __('Result'); ?></div>
 
             <?php echo $_getvar('lastBackupTime'); ?>
         </td>
@@ -38,27 +38,27 @@
     <?php if ($_getvar('ctx_userIsAdminApp')): ?>
         <tr>
             <td class="descField">
-                <?php echo __('Descargar Actual'); ?>
+                <?php echo __('Download Current'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+                <div class="lowres-title"><?php echo __('Download Current'); ?></div>
 
                 <?php if ($_getvar('hasBackup')): ?>
                     <a href="<?php echo $_getRoute('configBackup/downloadBackupDb'); ?>"
                        class="download" target="_blank">
 
                         <button type="button" class="mdl-button mdl-js-button">
-                            <?php echo __('Copia BBDD'); ?>
+                            <?php echo __('DB Backup'); ?>
                         </button>
                     </a>
 
                     <a href="<?php echo $_getRoute('configBackup/downloadBackupApp'); ?>"
                        class="download" target="_blank">
                         <button type="button" class="mdl-button mdl-js-button">
-                            <?php echo __('Copia sysPass'); ?>
+                            <?php echo __('sysPass Backup'); ?>
                         </button>
                     </a>
-                <?php else: echo __('No se encontraron backups'); ?>
+                <?php else: echo __('There aren\'t any backups available'); ?>
                 <?php endif; ?>
             </td>
         </tr>
@@ -75,11 +75,11 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-backup" class="help-box" title="<?php echo __('Copia de Seguridad') ?>">
+            <div for="help-backup" class="help-box" title="<?php echo __('Backup') ?>">
                 <div class="help-container">
-                    <p class="help-text"><?php echo __('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+                    <p class="help-text"><?php echo __('The backup allows you to save and download sysPass database and application files including its configuration.'); ?></p>
 
-                    <p class="help-text"><?php echo __('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+                    <p class="help-text"><?php echo __('With this method it\'s possible to either save all sysPass data in another place or use it to make the application portable.'); ?></p>
                 </div>
             </div>
         </li>
@@ -98,7 +98,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">import_export</i>
-    <?php echo __('Exportar Cuentas'); ?>
+    <?php echo __('Export Accounts'); ?>
 </div>
 
 <form method="post" name="frmExport" id="frmExport" class="form-action" data-onsubmit="config/export"
@@ -106,10 +106,10 @@
     <table class="data">
         <tr>
             <td class="descField">
-                <?php echo __('Resultado'); ?>
+                <?php echo __('Result'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+                <div class="lowres-title"><?php echo __('Result'); ?></div>
 
                 <?php echo $_getvar('lastExportTime'); ?>
             </td>
@@ -117,10 +117,10 @@
         <?php if ($_getvar('ctx_userIsAdminApp')): ?>
             <tr>
                 <td class="descField">
-                    <?php echo __('Descargar Actual'); ?>
+                    <?php echo __('Download Current'); ?>
                 </td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+                    <div class="lowres-title"><?php echo __('Download Current'); ?></div>
 
                     <?php if ($_getvar('hasExport')): ?>
                         <a href="<?php echo $_getRoute('configBackup/downloadExport'); ?>"
@@ -129,14 +129,14 @@
                                 XML <?php echo $_getvar('siteName'); ?>
                             </button>
                         </a>
-                    <?php else: echo __('No se encontró archivo de exportación'); ?>
+                    <?php else: echo __('No export file found'); ?>
                     <?php endif; ?>
                 </td>
             </tr>
         <?php endif; ?>
         <tr>
             <td class="descField">
-                <?php echo __('Clave de Exportación'); ?>
+                <?php echo __('Export Password'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -144,13 +144,13 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255"/>
                     <label class="mdl-textfield__label"
-                           for="exportPwd"><?php echo __('Clave de Exportación'); ?></label>
+                           for="exportPwd"><?php echo __('Export Password'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Clave de Exportación (repetir)'); ?>
+                <?php echo __('Export Password (repeat)'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -158,7 +158,7 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"/>
                     <label class="mdl-textfield__label"
-                           for="exportPwdR"><?php echo __('Clave de Exportación (repetir)'); ?></label>
+                           for="exportPwdR"><?php echo __('Export Password (repeat)'); ?></label>
                 </div>
             </td>
         </tr>
@@ -170,7 +170,7 @@
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>
@@ -182,15 +182,15 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-export" class="help-box" title="<?php echo __('Exportar Cuentas'); ?>">
+            <div for="help-export" class="help-box" title="<?php echo __('Export Accounts'); ?>">
                 <div class="help-container">
-                    <p class="help-text"><?php echo __('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
+                    <p class="help-text"><?php echo __('The accounts export allows you to save the accounts and their data in XML format to be imported in another sysPass instance.'); ?></p>
 
-                    <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes, categorías y etiquetas.'); ?></p>
+                    <p class="help-text"><?php echo __('Exported items are accounts, clients, categories and tags.'); ?></p>
 
-                    <p class="help-text"><?php echo __('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
+                    <p class="help-text"><?php echo __('Accounts\' password are exported in an encrypted way for better security.'); ?></p>
 
-                    <p class="help-text"><?php echo __('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
+                    <p class="help-text"><?php echo __('It\'s possible to set an export password to save all the encrypted data in the XML file.'); ?></p>
                 </div>
             </div>
         </li>

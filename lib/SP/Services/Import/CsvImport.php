@@ -47,7 +47,7 @@ final class CsvImport extends CsvImportBase implements ImportInterface
     {
         $this->eventDispatcher->notifyEvent('run.import.csv',
             new Event($this, EventMessage::factory()
-                ->addDescription(sprintf(__('Formato detectado: %s'), 'CSV')))
+                ->addDescription(sprintf(__('Detected format: %s'), 'CSV')))
         );
 
         $this->processAccounts();

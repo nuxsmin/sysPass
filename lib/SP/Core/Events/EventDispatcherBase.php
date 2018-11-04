@@ -82,7 +82,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
         $observerClass = get_class($observer);
 
         if (!array_key_exists($observerClass, $this->observers)) {
-            throw new InvalidClassException(__u('Observador no inicializado'), SPException::ERROR);
+            throw new InvalidClassException(__u('Observer not initialized'), SPException::ERROR);
         }
 
         unset($this->observers[$observerClass]);

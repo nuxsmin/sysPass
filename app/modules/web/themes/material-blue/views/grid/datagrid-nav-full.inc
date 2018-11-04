@@ -15,7 +15,7 @@ $pager = $data->getPager();
     <div class="pager-left">
         <?php echo $data->getData()->getDataCount(); ?> @ <?php echo $data->getTime(); ?>s
         <?php if ($pager->getFilterOn()): ?>
-            <span class="filter-on round"><?php echo __('Filtro ON'); ?></span>
+            <span class="filter-on round"><?php echo __('Filter ON'); ?></span>
         <?php endif; ?>
     </div>
     <div class="pager-right">

@@ -70,8 +70,8 @@ final class UserProfileGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -92,7 +92,7 @@ final class UserProfileGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Perfiles'));
+        $gridTab->setTitle(__('Profiles'));
 
         return $gridTab;
     }
@@ -104,7 +104,7 @@ final class UserProfileGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
+        $gridHeader->addHeader(__('Name'));
 
         return $gridHeader;
     }
@@ -133,7 +133,7 @@ final class UserProfileGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::PROFILE_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchProfile');
-        $gridActionSearch->setTitle(__('Buscar Perfil'));
+        $gridActionSearch->setTitle(__('Search for Profile'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_SEARCH));
 
@@ -148,8 +148,8 @@ final class UserProfileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PROFILE_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Perfil'));
-        $gridAction->setTitle(__('Nuevo Perfil'));
+        $gridAction->setName(__('New Profile'));
+        $gridAction->setTitle(__('New Profile'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -166,8 +166,8 @@ final class UserProfileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PROFILE_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Detalles de Perfil'));
-        $gridAction->setTitle(__('Ver Detalles de Perfil'));
+        $gridAction->setName(__('View Profile Details'));
+        $gridAction->setTitle(__('View Profile Details'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_VIEW));
@@ -183,8 +183,8 @@ final class UserProfileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PROFILE_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Perfil'));
-        $gridAction->setTitle(__('Editar Perfil'));
+        $gridAction->setName(__('Edit Profile'));
+        $gridAction->setTitle(__('Edit Profile'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_EDIT));
@@ -200,8 +200,8 @@ final class UserProfileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PROFILE_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Perfil'));
-        $gridAction->setTitle(__('Eliminar Perfil'));
+        $gridAction->setName(__('Delete Profile'));
+        $gridAction->setTitle(__('Delete Profile'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_DELETE));

@@ -93,7 +93,7 @@ final class ApiService extends Service
             $this->addTracking();
 
             throw new ServiceException(
-                __u('Intentos excedidos'),
+                __u('Attempts exceeded'),
                 ServiceException::ERROR,
                 null,
                 JsonRpcResponse::INTERNAL_ERROR
@@ -126,7 +126,7 @@ final class ApiService extends Service
             $this->trackService->add($this->trackRequest);
         } catch (\Exception $e) {
             throw new ServiceException(
-                __u('Error interno'),
+                __u('Internal error'),
                 ServiceException::ERROR,
                 null,
                 JsonRpcResponse::INTERNAL_ERROR
@@ -149,7 +149,7 @@ final class ApiService extends Service
         if ($this->apiRequest === null
             || ($required && !$this->apiRequest->exists($param))) {
             throw new ServiceException(
-                __u('Parámetros incorrectos'),
+                __u('Wrong parameters'),
                 ServiceException::ERROR,
                 $this->getHelp($this->apiRequest->getMethod()),
                 JsonRpcResponse::INVALID_PARAMS
@@ -183,7 +183,7 @@ final class ApiService extends Service
         $this->addTracking();
 
         throw new ServiceException(
-            __u('Acceso no permitido'),
+            __u('Unauthorized access'),
             ServiceException::ERROR,
             null,
             JsonRpcResponse::INTERNAL_ERROR
@@ -226,15 +226,15 @@ final class ApiService extends Service
                 return $pass;
             } else {
                 throw new ServiceException(
-                    __u('Error interno'),
+                    __u('Internal error'),
                     ServiceException::ERROR,
-                    __u('Datos inválidos'),
+                    __u('Invalid data'),
                     JsonRpcResponse::INTERNAL_ERROR
                 );
             }
         } catch (CryptoException $e) {
             throw new ServiceException(
-                __u('Error interno'),
+                __u('Internal error'),
                 ServiceException::ERROR,
                 $e->getMessage(),
                 JsonRpcResponse::INTERNAL_ERROR

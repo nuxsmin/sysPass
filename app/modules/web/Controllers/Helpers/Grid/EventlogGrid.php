@@ -84,7 +84,7 @@ final class EventlogGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Registro de Eventos'));
+        $gridTab->setTitle(__('Event Log'));
 
         return $gridTab;
     }
@@ -97,12 +97,12 @@ final class EventlogGrid extends GridBase
         // Grid Header
         $gridHeader = new DataGridHeader();
         $gridHeader->addHeader(__('ID'));
-        $gridHeader->addHeader(__('Fecha / Hora'));
-        $gridHeader->addHeader(__('Nivel'));
-        $gridHeader->addHeader(__('Evento'));
+        $gridHeader->addHeader(__('Date / Time'));
+        $gridHeader->addHeader(__('Level'));
+        $gridHeader->addHeader(__('Event'));
         $gridHeader->addHeader(__('Login'));
         $gridHeader->addHeader(__('IP'));
-        $gridHeader->addHeader(__('Descripción'));
+        $gridHeader->addHeader(__('Description'));
 
         return $gridHeader;
     }
@@ -162,7 +162,7 @@ final class EventlogGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::EVENTLOG_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchEvent');
-        $gridActionSearch->setTitle(__('Buscar Evento'));
+        $gridActionSearch->setTitle(__('Search for Events'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
 
@@ -178,8 +178,8 @@ final class EventlogGrid extends GridBase
         $gridAction->setId(ActionsInterface::EVENTLOG_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(__('Refrescar'));
-        $gridAction->setTitle(__('Refrescar'));
+        $gridAction->setName(__('Refresh'));
+        $gridAction->setTitle(__('Refresh'));
         $gridAction->setIcon($this->icons->getIconRefresh());
         $gridAction->setOnClickFunction('appMgmt/search');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
@@ -196,8 +196,8 @@ final class EventlogGrid extends GridBase
         $gridAction->setId(ActionsInterface::EVENTLOG_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(__('Vaciar registro de eventos'));
-        $gridAction->setTitle(__('Vaciar registro de eventos'));
+        $gridAction->setName(__('Clear the event log out'));
+        $gridAction->setTitle(__('Clear the event log out'));
         $gridAction->setIcon($this->icons->getIconClear());
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));

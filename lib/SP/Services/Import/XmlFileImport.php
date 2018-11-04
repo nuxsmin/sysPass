@@ -76,9 +76,9 @@ final class XmlFileImport
             }
 
             throw new ImportException(
-                __u('Error interno'),
+                __u('Internal error'),
                 ImportException::ERROR,
-                __u('No es posible procesar el archivo XML')
+                __u('Unable to process the XML file')
             );
         }
     }
@@ -102,9 +102,9 @@ final class XmlFileImport
         }
 
         throw new ImportException(
-            __u('Archivo XML no soportado'),
+            __u('XML file not supported'),
             ImportException::ERROR,
-            __u('No es posible detectar la aplicación que exportó los datos')
+            __u('Unable to guess the application which data was exported from')
         );
     }
 

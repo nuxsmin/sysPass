@@ -21,40 +21,40 @@ $group = $_getvar('group');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $group->getName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Nombre del grupo'); ?></label>
+                               for="name"><?php echo __('Group name'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Description'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $group->getDescription(); ?>">
                         <label class="mdl-textfield__label"
-                               for="description"><?php echo __('Descripción del grupo'); ?></label>
+                               for="description"><?php echo __('Group description'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Usuarios'); ?></td>
+                <td class="descField"><?php echo __('Users'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Usuarios'); ?></div>
+                    <div class="lowres-title"><?php echo __('Users'); ?></div>
 
                     <?php if (!$_getvar('isView')): ?>
                         <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
-                                title="<?php echo __('Usuarios'); ?>" <?php echo $_getvar('disabled'); ?>>
-                            <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                                title="<?php echo __('Users'); ?>" <?php echo $_getvar('disabled'); ?>>
+                            <option value=""><?php echo __('Select Users'); ?></option>
                             <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                             foreach ($_getvar('users') as $user): ?>
                                 <option
@@ -84,9 +84,9 @@ $group = $_getvar('group');
 
             <?php if ($_getvar('usedBy')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Usado por'); ?></td>
+                    <td class="descField"><?php echo __('Used by'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Usado por'); ?></div>
+                        <div class="lowres-title"><?php echo __('Used by'); ?></div>
                         <div class="list-wrap">
                             <ul class="mdl-list">
                                 <?php /** @var stdClass $user */
@@ -94,7 +94,7 @@ $group = $_getvar('group');
                                     <li class="mdl-list__item mdl-list__item">
                                         <span class="mdl-list__item-primary-content">
                                             <i class="material-icons mdl-list__item-icon"
-                                               title="<?php echo __('Usuario'); ?>">person</i>
+                                               title="<?php echo __('User'); ?>">person</i>
                                             <?php if ($user->ref === 'UserGroup'): ?>
                                                 <?php printf('%s (%s)*', $user->name, $user->login); ?>
                                             <?php else: ?>
@@ -105,7 +105,7 @@ $group = $_getvar('group');
                                 <?php endforeach; ?>
                             </ul>
                         </div>
-                        <div><?php echo __('(*) Incluido en grupo'); ?></div>
+                        <div><?php echo __('(*) Listed in group'); ?></div>
                     </td>
                 </tr>
             <?php endif; ?>

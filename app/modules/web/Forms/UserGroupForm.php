@@ -81,7 +81,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->groupData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de grupo'));
+            throw new ValidationException(__u('A group name is needed'));
         }
     }
 

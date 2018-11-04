@@ -105,7 +105,7 @@ final class UserToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios del grupo'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the group users'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -137,7 +137,7 @@ final class UserToUserGroupRepository extends Repository
             $queryData->addParam($groupId);
         }
 
-        $queryData->setOnErrorMessage(__u('Error al asignar los usuarios al grupo'));
+        $queryData->setOnErrorMessage(__u('Error while setting users in the group'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

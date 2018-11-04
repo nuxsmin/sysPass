@@ -11,17 +11,17 @@
 <div id="data-details">
     <table class="data">
         <tr>
-            <td class="descField"><?php echo __('Visitas'); ?></td>
+            <td class="descField"><?php echo __('Visits'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Visitas'); ?></div>
+                <div class="lowres-title"><?php echo __('Visits'); ?></div>
 
                 <?php echo $accountData->getCountView() . '(' . $accountData->getCountDecrypt() . ')'; ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><?php echo __('Fecha Alta'); ?></td>
+            <td class="descField"><?php echo __('Date Added'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Fecha Alta'); ?></div>
+                <div class="lowres-title"><?php echo __('Date Added'); ?></div>
 
                 <?php echo $accountData->getDateAdd() ?>
             </td>
@@ -29,9 +29,9 @@
 
         <?php if ($_getvar('isModified') && $accountData->getUserEditName()): ?>
             <tr>
-                <td class="descField"><?php echo __('Última Modificación'); ?></td>
+                <td class="descField"><?php echo __('Last Modification'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
+                    <div class="lowres-title"><?php echo __('Last Modification'); ?></div>
 
                     <?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?>
                 </td>
@@ -39,17 +39,17 @@
         <?php endif; ?>
 
         <tr>
-            <td class="descField"><?php echo __('Propietario'); ?></td>
+            <td class="descField"><?php echo __('Owner'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Propietario'); ?></div>
+                <div class="lowres-title"><?php echo __('Owner'); ?></div>
 
                 <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"><?php echo __('Grupo Principal'); ?></td>
+            <td class="descField"><?php echo __('Main Group'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
+                <div class="lowres-title"><?php echo __('Main Group'); ?></div>
 
                 <?php echo $accountData->getUserGroupName(); ?>
             </td>
@@ -57,9 +57,9 @@
 
         <?php if ($accountAcl->isModified()): ?>
             <tr>
-                <td class="descField"><?php echo __('Fecha Edición'); ?></td>
+                <td class="descField"><?php echo __('Date Modified'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Fecha Edición'); ?></div>
+                    <div class="lowres-title"><?php echo __('Date Modified'); ?></div>
 
                     <?php echo $accountData->getDateEdit(); ?>
                 </td>
@@ -75,9 +75,9 @@
         <?php endif; ?>
 
         <tr>
-            <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
+            <td class="descField"><?php echo __('Password Date'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Fecha de Clave'); ?></div>
+                <div class="lowres-title"><?php echo __('Password Date'); ?></div>
 
                 <?php echo $_getvar('accountPassDate'); ?>
             </td>
@@ -85,9 +85,9 @@
 
         <?php if ($_getvar('accountPassDateChange', 0) > 0): ?>
             <tr>
-                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                <td class="descField"><?php echo __('Password Expiry Date'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
+                    <div class="lowres-title"><?php echo __('Password Expiry Date'); ?></div>
 
                     <?php echo $_getvar('accountPassDateChange'); ?>
                 </td>

@@ -14,17 +14,17 @@
 
     <div id="title" class="titleNormal">
         <i class="material-icons">enhanced_encryption</i>
-        <?php echo __('Clave Maestra'); ?>
+        <?php echo __('Master Password'); ?>
     </div>
 
     <table class="data tblConfig round">
         <?php if ($_getvar('lastUpdateMPass') > 0): ?>
             <tr>
                 <td class="descField">
-                    <?php echo __('Último cambio'); ?>
+                    <?php echo __('Last change'); ?>
                 </td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
+                    <div class="lowres-title"><?php echo __('Last change'); ?></div>
 
                     <?php echo date('r', $_getvar('lastUpdateMPass')); ?>
                 </td>
@@ -32,7 +32,7 @@
         <?php endif; ?>
         <tr>
             <td class="descField">
-                <?php echo __('Clave Maestra actual'); ?>
+                <?php echo __('Current Master Password'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -40,13 +40,13 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="current_masterpass"><?php echo __('Clave Maestra actual'); ?></label>
+                           for="current_masterpass"><?php echo __('Current Master Password'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Nueva Clave Maestra'); ?>
+                <?php echo __('New Master Password'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -54,13 +54,13 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="new_masterpass"><?php echo __('Nueva Clave Maestra'); ?></label>
+                           for="new_masterpass"><?php echo __('New Master Password'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Nueva Clave Maestra (repetir)'); ?>
+                <?php echo __('New Master Password (repeat)'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -68,7 +68,7 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="new_masterpass_repeat"><?php echo __('Nueva Clave Maestra (repetir)'); ?></label>
+                           for="new_masterpass_repeat"><?php echo __('New Master Password (repeat)'); ?></label>
                 </div>
             </td>
         </tr>
@@ -77,19 +77,19 @@
             <td class="valField">
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                <?php echo __('Guarde la nueva clave en un lugar seguro.'); ?>
+                <?php echo __('You should save the new password on a secure place'); ?>
                 <br>
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                <?php echo __('Se volverán a encriptar las claves de todas las cuentas.'); ?>
+                <?php echo __('All accounts passwords will be encrypted again.'); ?>
                 <br>
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                <?php echo __('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
+                <?php echo __('Users will need to enter the new Master Password.'); ?>
                 <br>
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
-                <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $_getvar('numAccounts')); ?></strong>
+                <strong><?php printf(__('It will be updated %s accounts. This process could take some time long.'), $_getvar('numAccounts')); ?></strong>
             </td>
         </tr>
         <tr>
@@ -106,9 +106,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('No modificar cuentas'); ?></span>
+                            <span><?php echo __('Do not modify accounts'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
+                                <?php echo __('Sets a new Master Password without re-encrypting the accounts.'); ?>
                             </span>
                         </span>
                     </li>
@@ -124,9 +124,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Confirmar cambio'); ?></span>
+                            <span><?php echo __('Confirm change'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Confirmar el cambio de clave maestra después de haber leído las advertencias anteriores.'); ?>
+                                <?php echo __('Confirm the master password change after you have been read all the above warnings.'); ?>
                             </span>
                         </span>
                     </li>
@@ -150,13 +150,13 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-mpass" class="help-box" title="<?php echo __('Clave Maestra'); ?>">
+            <div for="help-mpass" class="help-box" title="<?php echo __('Master Password'); ?>">
                 <div class="help-container">
-                    <p class="help-text"><?php echo __('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
+                    <p class="help-text"><?php echo __('The Master Password is used to encrypt sysPass accounts passwords and keep them safe.'); ?></p>
 
-                    <p class="help-text"><?php echo __('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
+                    <p class="help-text"><?php echo __('It\'s advisable to change it from time to time and use a complex password that includes numbers, letters and symbols.'); ?></p>
 
-                    <p class="help-text"><?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?></p>
+                    <p class="help-text"><?php printf(__('You could get more info on: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?></p>
                 </div>
             </div>
         </li>
@@ -166,7 +166,7 @@
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                         data-onclick="config/refreshMpass"
                         data-action-route="configEncryption/refresh"
-                        title="<?php echo __('Actualizar hash de clave maestra'); ?>">
+                        title="<?php echo __('Update master password hash'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
                 </button>
             </li>
@@ -186,7 +186,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">enhanced_encryption</i>
-    <?php echo __('Clave Temporal'); ?>
+    <?php echo __('Temporary Password'); ?>
 </div>
 
 <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" class="form-action"
@@ -195,43 +195,43 @@
     <table class="data tblConfig">
         <tr>
             <td class="descField">
-                <?php echo __('Último cambio'); ?>
+                <?php echo __('Last change'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
+                <div class="lowres-title"><?php echo __('Last change'); ?></div>
 
-                <?php echo ($_getvar('tempMasterPassTime') > 0) ? date('r', $_getvar('tempMasterPassTime')) : __('No generada'); ?>
+                <?php echo ($_getvar('tempMasterPassTime') > 0) ? date('r', $_getvar('tempMasterPassTime')) : __('Not generated'); ?>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Válido hasta'); ?>
+                <?php echo __('Valid until'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Válido hasta'); ?></div>
+                <div class="lowres-title"><?php echo __('Valid until'); ?></div>
 
                 <?php
                 $tempMasterMaxTime = $_getvar('tempMasterMaxTime');
                 if (time() > $tempMasterMaxTime): ?>
                     <span style="color: red"><?php echo date('r', $tempMasterMaxTime); ?></span>
                 <?php elseif ($tempMasterMaxTime > 0): echo date('r', $tempMasterMaxTime); ?>
-                <?php else: echo __('No generada'); ?>
+                <?php else: echo __('Not generated'); ?>
                 <?php endif; ?>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Intentos'); ?>
+                <?php echo __('Attempts'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Intentos'); ?></div>
+                <div class="lowres-title"><?php echo __('Attempts'); ?></div>
 
                 <?php echo $_getvar('tempMasterAttempts'); ?>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Validez (s)'); ?>
+                <?php echo __('Life (s)'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -241,7 +241,7 @@
                            value="3600"
                            required/>
                     <label class="mdl-textfield__label"
-                           for="temporary_masterpass_maxtime"><?php echo __('Validez (s)'); ?></label>
+                           for="temporary_masterpass_maxtime"><?php echo __('Life (s)'); ?></label>
                 </div>
             </td>
         </tr>
@@ -260,9 +260,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Enviar correo'); ?></span>
+                            <span><?php echo __('Send email'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Envía un correo a todos los usuarios o sólo a los del grupo seleccionado.'); ?>
+                                <?php echo __('Sends an email to all users or only to those whose group is selected.'); ?>
                             </span>
                         </span>
                     </li>
@@ -271,14 +271,14 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Grupo'); ?>
+                <?php echo __('Group'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Grupo'); ?></div>
+                <div class="lowres-title"><?php echo __('Group'); ?></div>
 
                 <select id="temporary_masterpass_group" name="temporary_masterpass_group"
                         class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
-                    <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                    <option value=""><?php echo __('Select Group'); ?></option>
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
                     foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
@@ -290,10 +290,10 @@
         <?php if (!empty($_getvar('tempMasterPass'))): ?>
             <tr>
                 <td class="descField">
-                    <?php echo __('Clave'); ?>
+                    <?php echo __('Password'); ?>
                 </td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Clave'); ?></div>
+                    <div class="lowres-title"><?php echo __('Password'); ?></div>
 
                     <?php echo $_getvar('tempMasterPass'); ?>
                 </td>
@@ -307,7 +307,7 @@
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>
@@ -320,16 +320,16 @@
             </button>
 
 
-            <div for="help-tmpass" class="help-box" title="<?php echo __('Clave Temporal'); ?>">
+            <div for="help-tmpass" class="help-box" title="<?php echo __('Temporary Password'); ?>">
                 <div class="help-container">
-                    <p class="help-text"><?php echo __('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
+                    <p class="help-text"><?php echo __('The temporary password is used as a Master Password for the users that need to enter it during login. By this way there is no need to tell them the real Master Password.'); ?></p>
                 </div>
             </div>
         </li>
         <li>
             <button form="frmTempMasterPass"
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
-                    title="<?php echo __('Generar'); ?>">
+                    title="<?php echo __('Generate'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
             </button>
         </li>

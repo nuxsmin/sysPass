@@ -13,7 +13,7 @@ $sessionTimeout = $_getvar('sessionTimeout');
 <table class="popup-data">
     <tbody>
     <tr>
-        <td class="descField"><?php echo __('Dirección IP'); ?></td>
+        <td class="descField"><?php echo __('IP Address'); ?></td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="ip_address" name="ip_address" type="text" required
@@ -21,7 +21,7 @@ $sessionTimeout = $_getvar('sessionTimeout');
                        maxlength="33"
                        value="<?php printf('%s/%s', $sessionTimeout->getAddress(), $sessionTimeout->getMask()); ?>">
                 <label class="mdl-textfield__label"
-                       for="ip_address"><?php echo __('Dirección IP'); ?></label>
+                       for="ip_address"><?php echo __('IP Address'); ?></label>
             </div>
         </td>
     </tr>

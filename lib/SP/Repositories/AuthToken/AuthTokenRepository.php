@@ -56,7 +56,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AuthToken WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -151,7 +151,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AuthToken WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -218,7 +218,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('La autorización ya existe'));
+            throw new DuplicatedItemException(__u('The authorization already exist'));
         }
 
         $query = /** @lang SQL */
@@ -241,7 +241,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
             $itemData->getVault(),
             $itemData->getHash()
         ]);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -306,7 +306,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('La autorización ya existe'));
+            throw new DuplicatedItemException(__u('The authorization already exist'));
         }
 
         $query = /** @lang SQL */
@@ -331,7 +331,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
             $itemData->getHash(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -386,7 +386,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$token, $id]);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -414,7 +414,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$vault, $hash, $id]);
-        $queryData->setOnErrorMessage(__u('Error interno'));
+        $queryData->setOnErrorMessage(__u('Internal error'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

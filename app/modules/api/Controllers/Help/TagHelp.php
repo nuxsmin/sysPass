@@ -40,7 +40,7 @@ final class TagHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de etiqueta'), true)
+                self::getItem('id', __('Tag Id'), true)
             ];
     }
 
@@ -51,7 +51,7 @@ final class TagHelp implements HelpInterface
     {
         return
             [
-                self::getItem('name', __('Nombre de la etiqueta'), true)
+                self::getItem('name', __('Tag name'), true)
             ];
     }
 
@@ -62,8 +62,8 @@ final class TagHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de etiqueta'), true),
-                self::getItem('name', __('Nombre de la etiqueta'), true)
+                self::getItem('id', __('Tag Id'), true),
+                self::getItem('name', __('Tag name'), true)
             ];
     }
 
@@ -74,8 +74,8 @@ final class TagHelp implements HelpInterface
     {
         return
             [
-                self::getItem('text', __('Texto a buscar')),
-                self::getItem('count', __('Número de resultados a mostrar'))
+                self::getItem('text', __('Text to search for')),
+                self::getItem('count', __('Number of results to display'))
             ];
     }
 
@@ -86,7 +86,7 @@ final class TagHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de etiqueta'), true)
+                self::getItem('id', __('Tag Id'), true)
             ];
     }
 }

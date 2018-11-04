@@ -56,7 +56,7 @@ final class ConfigImportController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
 
         $importParams = new ImportParams();
@@ -75,14 +75,14 @@ final class ConfigImportController extends SimpleControllerBase
                 ->doImport($importParams, FileImport::fromRequest('inFile', $this->request));
 
             $this->eventDispatcher->notifyEvent('run.import.end',
-                new Event($this, EventMessage::factory()->addDetail(__u('Cuentas importadas'), $counter))
+                new Event($this, EventMessage::factory()->addDetail(__u('Accounts imported'), $counter))
             );
 
             if ($counter > 0) {
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Import finished'), [__u('Please check out the event log for more details')]);
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No se importaron cuentas'), [__u('Revise el registro de eventos para más detalles')]);
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No accounts were imported'), [__u('Please check out the event log for more details')]);
         } catch (\Exception $e) {
             processException($e);
 
@@ -108,5 +108,7 @@ final class ConfigImportController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

@@ -60,7 +60,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM PublicLink WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar enlace'));
+        $queryData->setOnErrorMessage(__u('Error while removing the link'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -252,7 +252,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Enlace ya creado'));
+            throw new DuplicatedItemException(__u('Link already created'));
         }
 
         $query = /** @lang SQL */
@@ -279,7 +279,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
             $itemData->getDateExpire(),
             $itemData->getMaxCountViews()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear enlace'));
+        $queryData->setOnErrorMessage(__u('Error while creating the link'));
 
         return $this->db->doQuery($queryData);
     }
@@ -338,7 +338,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
             $publicLinkData->getUseInfo(),
             $publicLinkData->getHash()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
+        $queryData->setOnErrorMessage(__u('Error while updating the link'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -386,7 +386,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
             $itemData->getTypeId(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
+        $queryData->setOnErrorMessage(__u('Error while updating the link'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -421,7 +421,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
             $publicLinkData->getMaxCountViews(),
             $publicLinkData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al renovar enlace'));
+        $queryData->setOnErrorMessage(__u('Error while renewing link'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -463,7 +463,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
         $queryData->setMapClassName(PublicLinkListData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener enlace'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
 
         return $this->db->doSelect($queryData);
     }
@@ -504,7 +504,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
         $queryData->setMapClassName(PublicLinkData::class);
         $queryData->setQuery($query);
         $queryData->addParam($hash);
-        $queryData->setOnErrorMessage(__u('Error al obtener enlace'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
 
         return $this->db->doSelect($queryData);
     }
@@ -525,7 +525,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
         $queryData->setMapClassName(PublicLinkData::class);
         $queryData->setQuery('SELECT id, `hash`, userId FROM PublicLink WHERE itemId = ? LIMIT 1');
         $queryData->addParam($itemId);
-        $queryData->setOnErrorMessage(__u('Error al obtener enlace'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the link'));
 
         return $this->db->doSelect($queryData);
     }

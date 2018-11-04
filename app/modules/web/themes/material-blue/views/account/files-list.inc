@@ -31,7 +31,7 @@
 
                     <?php if ($_getvar('deleteEnabled') === 1): ?>
                         <i class="material-icons btn-action <?php echo $icons->getIconDelete()->getClass(); ?>"
-                           title="<?php echo __('Eliminar Archivo'); ?>"
+                           title="<?php echo __('Delete File'); ?>"
                            data-item-id="<?php echo $file->getId(); ?>"
                            data-action-route="<?php echo $_getvar('fileDeleteRoute'); ?>"
                            data-onclick="file/delete">
@@ -39,7 +39,7 @@
                     <?php endif; ?>
 
                     <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconDownload()->getClass(); ?>"
-                       title="<?php echo __('Descargar Archivo'); ?>"
+                       title="<?php echo __('Download File'); ?>"
                        data-item-id="<?php echo $file->getId(); ?>"
                        data-action-route="<?php echo $_getvar('fileDownloadRoute'); ?>"
                        data-item-type="<?php echo $extension; ?>"
@@ -48,7 +48,7 @@
 
                     <?php if ($extension !== 'PDF'): ?>
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
-                           title="<?php echo __('Ver Archivo'); ?>"
+                           title="<?php echo __('View File'); ?>"
                            data-item-id="<?php echo $file->getId(); ?>"
                            data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
                            data-onclick="file/view">

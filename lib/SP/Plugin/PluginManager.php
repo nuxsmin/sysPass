@@ -167,7 +167,7 @@ final class PluginManager
             if (self::checkCompatibility($plugin) === false) {
                 $this->eventDispatcher->notifyEvent('plugin.load.error',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(sprintf(__('Versión de plugin no compatible (%s)'), implode('.', $plugin->getVersion()))))
+                        ->addDescription(sprintf(__('Plugin version not compatible (%s)'), implode('.', $plugin->getVersion()))))
                 );
 
                 $this->disabledPlugins[] = $name;
@@ -189,7 +189,7 @@ final class PluginManager
 
             $this->eventDispatcher->notifyEvent('exception',
                 new Event($e, EventMessage::factory()
-                    ->addDescription(sprintf(__('No es posible cargar el plugin "%s"'), $name))
+                    ->addDescription(sprintf(__('Unable to load the "%s" plugin'), $name))
                     ->addDescription($e->getMessage())
                     ->addDetail(__u('Plugin'), $name))
             );
@@ -216,7 +216,7 @@ final class PluginManager
 
             $this->eventDispatcher->notifyEvent('edit.plugin.disable',
                 new Event($this, EventMessage::factory()
-                    ->addDetail(__u('Plugin deshabilitado'), $plugin->getName()))
+                    ->addDetail(__u('Plugin disabled'), $plugin->getName()))
             );
 
             return false;
@@ -251,7 +251,7 @@ final class PluginManager
 
                     $this->eventDispatcher->notifyEvent('edit.plugin.available',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__u('Plugin disponible'), $plugin->getName()))
+                            ->addDetail(__u('Plugin available'), $plugin->getName()))
                     );
 
                     $this->load($plugin->getName());
@@ -261,7 +261,7 @@ final class PluginManager
 
                 $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Plugin no disponible'), $plugin->getName()))
+                        ->addDetail(__u('Plugin unavailable'), $plugin->getName()))
                 );
             }
 
@@ -291,7 +291,7 @@ final class PluginManager
 
             $this->eventDispatcher->notifyEvent('plugin.load',
                 new Event($this, EventMessage::factory()
-                    ->addDetail(__u('Plugin cargado'), $pluginName))
+                    ->addDetail(__u('Plugin loaded'), $pluginName))
             );
 
             $this->loadedPlugins[$pluginName] = $plugin;
@@ -316,8 +316,8 @@ final class PluginManager
 
         $this->eventDispatcher->notifyEvent('create.plugin',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Nuevo Plugin'))
-                ->addDetail(__u('Nombre'), $name)
+                ->addDescription(__u('New Plugin'))
+                ->addDetail(__u('Name'), $name)
             ));
 
         $this->disabledPlugins[] = $name;
@@ -336,7 +336,7 @@ final class PluginManager
 
                 $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Plugin deshabilitado'), $plugin->getName()))
+                        ->addDetail(__u('Plugin disabled'), $plugin->getName()))
                 );
             }
         }

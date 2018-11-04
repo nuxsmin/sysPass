@@ -62,14 +62,14 @@ final class UserPassRecoverService extends Service
     public static function getMailMessage($hash)
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(__('Cambio de Clave'));
-        $mailMessage->addDescription(__('Se ha solicitado el cambio de su clave de usuario.'));
+        $mailMessage->setTitle(__('Password Change'));
+        $mailMessage->addDescription(__('A request for changing your user password has been done.'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+        $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(Html::anchorText(Bootstrap::$WEBURI . '/index.php?r=userPassReset/reset/' . $hash));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
+        $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
 
         return $mailMessage;
     }
@@ -84,7 +84,7 @@ final class UserPassRecoverService extends Service
     public function toggleUsedByHash($hash)
     {
         if ($this->userPassRecoverRepository->toggleUsedByHash($hash, time() - self::MAX_PASS_RECOVER_TIME) === 0) {
-            throw new ServiceException(__u('Hash inválido o expirado'), ServiceException::INFO);
+            throw new ServiceException(__u('Wrong hash or expired'), ServiceException::INFO);
         }
     }
 
@@ -100,7 +100,7 @@ final class UserPassRecoverService extends Service
     public function requestForUserId($id)
     {
         if ($this->checkAttemptsByUserId($id)) {
-            throw new ServiceException(__u('Intentos excedidos'), ServiceException::WARNING);
+            throw new ServiceException(__u('Attempts exceeded'), ServiceException::WARNING);
         }
 
         $hash = PasswordUtil::generateRandomBytes(16);
@@ -152,7 +152,7 @@ final class UserPassRecoverService extends Service
         $result = $this->userPassRecoverRepository->getUserIdForHash($hash, time() - self::MAX_PASS_RECOVER_TIME);
 
         if ($result->getNumRows() === 0) {
-            throw new ServiceException(__u('Hash inválido o expirado'), ServiceException::INFO);
+            throw new ServiceException(__u('Wrong hash or expired'), ServiceException::INFO);
         }
 
         return (int)$result->getData()->userId;

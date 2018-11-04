@@ -96,7 +96,7 @@ final class MySQL implements DatabaseSetupInterface
             processException($e);
 
             throw new SPException(
-                __u('No es posible conectar con la BD'),
+                __u('Unable to connect to DB'),
                 SPException::ERROR,
                 $e->getHint(),
                 $e->getCode(),
@@ -132,9 +132,9 @@ final class MySQL implements DatabaseSetupInterface
             processException($e);
 
             throw new SPException(
-                sprintf(__('No es posible comprobar el usuario de sysPass (%s)'), $user),
+                sprintf(__('Unable to check the sysPass user (%s)'), $user),
                 SPException::CRITICAL,
-                __u('Compruebe los permisos del usuario de conexión a la BD'),
+                __u('Please, check the DB connection user rights'),
                 $e->getCode(),
                 $e
             );
@@ -178,7 +178,7 @@ final class MySQL implements DatabaseSetupInterface
             processException($e);
 
             throw new SPException(
-                sprintf(__u('Error al crear el usuario de conexión a MySQL \'%s\''), $user),
+                sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user),
                 SPException::CRITICAL,
                 $e->getMessage(),
                 $e->getCode(),
@@ -198,9 +198,9 @@ final class MySQL implements DatabaseSetupInterface
 
             if ($this->checkDatabaseExist()) {
                 throw new SPException(
-                    __u('La BBDD ya existe'),
+                    __u('The database already exists'),
                     SPException::ERROR,
-                    __u('Indique una nueva Base de Datos o elimine la existente')
+                    __u('Please, enter a new database or delete the existing one')
                 );
             }
 
@@ -210,9 +210,9 @@ final class MySQL implements DatabaseSetupInterface
                 $dbc->exec('CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci');
             } catch (PDOException $e) {
                 throw new SPException(
-                    sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                    sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
-                    __u('Verifique los permisos del usuario de la Base de Datos'),
+                    __u('Please check the database user permissions'),
                     $e->getCode(),
                     $e
                 );
@@ -234,9 +234,9 @@ final class MySQL implements DatabaseSetupInterface
                 $this->rollback();
 
                 throw new SPException(
-                    sprintf(__('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
+                    sprintf(__('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
-                    __u('Verifique los permisos del usuario de la Base de Datos'),
+                    __u('Please check the database user permissions'),
                     $e->getCode(),
                     $e
                 );
@@ -248,9 +248,9 @@ final class MySQL implements DatabaseSetupInterface
                     ->exec('USE `' . $this->installData->getDbName() . '`');
             } catch (PDOException $e) {
                 throw new SPException(
-                    __u('La BBDD no existe'),
+                    __u('The database does not exist'),
                     SPException::ERROR,
-                    __u('Es necesario crearla y asignar los permisos necesarios'),
+                    __u('You need to create it and assign the needed permissions'),
                     $e->getCode(),
                     $e
                 );
@@ -306,9 +306,9 @@ final class MySQL implements DatabaseSetupInterface
             $dbc->exec('USE `' . $this->installData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(
-                sprintf(__('Error al seleccionar la BBDD \'%s\' (%s)'), $this->installData->getDbName(), $e->getMessage()),
+                sprintf(__('Error while selecting \'%s\' database (%s)'), $this->installData->getDbName(), $e->getMessage()),
                 SPException::CRITICAL,
-                __u('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'),
+                __u('Unable to use the database to create the structure. Please check the permissions and it does not exist.'),
                 $e->getCode(),
                 $e
             );
@@ -326,9 +326,9 @@ final class MySQL implements DatabaseSetupInterface
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::CRITICAL,
-                __u('Error al crear la estructura de la Base de Datos.'),
+                __u('Error while creating database structure.'),
                 $e->getCode(),
                 $e
             );
@@ -338,7 +338,7 @@ final class MySQL implements DatabaseSetupInterface
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
@@ -360,9 +360,9 @@ final class MySQL implements DatabaseSetupInterface
             $this->rollback();
 
             throw new SPException(
-                __u('Error al comprobar la base de datos'),
+                __u('Error while checking the database'),
                 SPException::CRITICAL,
-                __u('Intente de nuevo la instalación')
+                __u('Please, try the installation again')
             );
         }
     }

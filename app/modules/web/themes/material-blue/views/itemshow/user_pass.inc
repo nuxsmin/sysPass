@@ -19,7 +19,7 @@ $user = $_getvar('user');
           data-hash="">
         <table class="popup-data">
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
@@ -42,28 +42,28 @@ $user = $_getvar('user');
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Clave'); ?></td>
+                <td class="descField"><?php echo __('Password'); ?></td>
                 <td class="valField">
                     <div class="form-control">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="password" name="password" type="password" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                    maxlength="50">
-                            <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
+                            <label class="mdl-textfield__label" for="password"><?php echo __('Password'); ?></label>
                         </div>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
+                <td class="descField"><?php echo __('Password (repeat)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="password_repeat" name="password_repeat" type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
-                               for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
+                               for="password_repeat"><?php echo __('Password (repeat)'); ?></label>
                     </div>
                 </td>
             </tr>

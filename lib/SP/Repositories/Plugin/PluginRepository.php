@@ -67,7 +67,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             $itemData->getEnabled(),
             $itemData->getAvailable()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while adding the plugin'));
 
         return $this->db->doQuery($queryData);
     }
@@ -101,7 +101,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             $itemData->getName(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -209,7 +209,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Plugin WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los plugins'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the plugins'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -229,7 +229,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Plugin WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -345,7 +345,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE id = ? LIMIT 1');
         $queryData->setParams([(int)$enabled, $id]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -365,7 +365,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE name = ? LIMIT 1');
         $queryData->setParams([(int)$enabled, $name]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -385,7 +385,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE id = ? LIMIT 1');
         $queryData->setParams([(int)$available, $id]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -405,7 +405,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET available = ?, enabled = 0 WHERE `name` = ? LIMIT 1');
         $queryData->setParams([(int)$available, $name]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -424,7 +424,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Plugin SET `data` = NULL WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData->setOnErrorMessage(__u('Error while updating the plugin'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

@@ -195,9 +195,9 @@ class CategoryServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
+     * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Services\ServiceException
      */
     public function testUpdate()
     {

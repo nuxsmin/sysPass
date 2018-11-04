@@ -19,12 +19,12 @@ $authToken = $_getvar('authToken');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Usuario'); ?></td>
+                <td class="descField"><?php echo __('User'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+                    <div class="lowres-title"><?php echo __('User'); ?></div>
 
                     <select id="selUsers" name="users" class="select-box" required <?php echo $_getvar('disabled'); ?>>
-                        <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                        <option value=""><?php echo __('Select User'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                         foreach ($_getvar('users') as $user): ?>
                             <option value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $user->getName(), $user->getItemProperty('login')); ?></option>
@@ -33,13 +33,13 @@ $authToken = $_getvar('authToken');
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Acción'); ?></td>
+                <td class="descField"><?php echo __('Action'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Acción'); ?></div>
+                    <div class="lowres-title"><?php echo __('Action'); ?></div>
 
                     <select id="selActions" name="actions"
                             class="select-box" required <?php echo $_getvar('disabled'); ?>>
-                        <option value=""><?php echo __('Seleccionar Acción'); ?></option>
+                        <option value=""><?php echo __('Select Action'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $action */
                         foreach ($_getvar('actions') as $action): ?>
                             <option value="<?php echo $action->getId(); ?>" <?php echo $action->isSelected() ? 'selected' : ''; ?>><?php echo $action->getName(); ?></option>
@@ -49,26 +49,26 @@ $authToken = $_getvar('authToken');
             </tr>
             <?php if (!$_getvar('isView')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Clave'); ?></td>
+                    <td class="descField"><?php echo __('Password'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="pass" name="pass" type="password"
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
-                                   for="pass"><?php echo __('Clave'); ?></label>
+                                   for="pass"><?php echo __('Password'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo __('Opciones'); ?></td>
+                    <td class="descField"><?php echo __('Options'); ?></td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="refreshtoken"
-                               title="<?php echo __('Regenerar Autorización'); ?>">
+                               title="<?php echo __('Refresh Authorization'); ?>">
                             <input type="checkbox" id="refreshtoken"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="refreshtoken"/>
-                            <span class="mdl-switch__label"><?php echo __('Regenerar Autorización'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Refresh Authorization'); ?></span>
                         </label>
                     </td>
                 </tr>

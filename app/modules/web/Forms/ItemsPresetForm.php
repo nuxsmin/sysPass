@@ -113,7 +113,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
                 $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
                 break;
             default:
-                throw new ValidationException(__u('Tipo de valor no definido o incorrecto'));
+                throw new ValidationException(__u('Value type not set or incorrect'));
         }
     }
 
@@ -130,7 +130,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
 
         if (!$accountPermission->hasItems()) {
-            throw new ValidationException(__u('No hay permisos definidos'));
+            throw new ValidationException(__u('There aren\'t any defined permissions'));
         }
 
         return $accountPermission;
@@ -179,7 +179,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
 
         if (!empty($regex)) {
             if (Validator::isRegex($regex) === false) {
-                throw new ValidationException(__u('Expresión regular inválida'));
+                throw new ValidationException(__u('Invalid regular expression'));
             }
         }
 
@@ -205,7 +205,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
             && !$itemPresetData->getUserGroupId()
             && !$itemPresetData->getUserProfileId()
         ) {
-            throw new ValidationException(__u('Es necesario asignar un elemento del tipo usuario, grupo o perfil'));
+            throw new ValidationException(__u('An element of type user, group or profile need to be set'));
         }
     }
 

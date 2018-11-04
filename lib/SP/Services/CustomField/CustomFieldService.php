@@ -200,7 +200,7 @@ final class CustomFieldService extends Service
         $securedKey = Crypt::makeSecuredKey($key);
 
         if (strlen($securedKey) > 1000) {
-            throw new ServiceException(__u('Error interno'), SPException::ERROR);
+            throw new ServiceException(__u('Internal error'), SPException::ERROR);
         }
 
         $customFieldData->setData(Crypt::encrypt($customFieldData->getData(), $securedKey, $key));

@@ -128,7 +128,7 @@ final class Database implements DatabaseInterface
     public function doSelect(QueryData $queryData, $fullCount = false)
     {
         if ($queryData->getQuery() === '') {
-            throw new QueryException($queryData->getOnErrorMessage(), QueryException::ERROR, __u('Consulta en blanco'));
+            throw new QueryException($queryData->getOnErrorMessage(), QueryException::ERROR, __u('Blank query'));
         }
 
         try {
@@ -256,7 +256,7 @@ final class Database implements DatabaseInterface
             switch ((int)$e->getCode()) {
                 case 23000:
                     throw new ConstraintException(
-                        __u('Restricción de integridad'),
+                        __u('Integrity constraint'),
                         ConstraintException::ERROR,
                         $e->getMessage(),
                         $e->getCode(),

@@ -60,21 +60,21 @@
                                 data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
                                 data-sk="<?php echo $_getvar('sk'); ?>">
                                 <i class="material-icons">lock</i>
-                                <?php echo __('Cambiar Clave de Usuario'); ?>
+                                <?php echo __('Change User\'s Password'); ?>
                             </li>
                         <?php endif; ?>
                         <li id="btnPrefs" class="btn-action mdl-menu__item"
                             data-onclick="user/showSettings"
                             data-action-route="userSettingsManager/index">
                             <i class="material-icons">account_circle</i>
-                            <?php echo __('Preferencias de usuario'); ?>
+                            <?php echo __('User preferences'); ?>
                         </li>
                         <li class="mdl-menu__item--full-bleed-divider"></li>
                         <li class="btn-action mdl-menu__item"
-                            title="<?php echo __('Salir'); ?>"
+                            title="<?php echo __('Sign Out'); ?>"
                             data-onclick="main/logout">
                             <i class="material-icons">exit_to_app</i>
-                            <?php echo __('Salir'); ?>
+                            <?php echo __('Sign Out'); ?>
                         </li>
                     </ul>
                 </nav>
@@ -103,7 +103,7 @@
                    data-view="notifications">
                     <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
                        data-badge="0" data-color-class="mdl-color-text--amber-200">notifications</i>
-                    <?php echo __('Notificaciones'); ?>
+                    <?php echo __('Notifications'); ?>
                 </a>
 
                 <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
@@ -113,24 +113,24 @@
 
                 <?php if ($_getvar('showPassIcon')): ?>
                     <a class="btn-action mdl-navigation__link"
-                       title="<?php echo __('Cambiar Clave de Usuario'); ?>"
+                       title="<?php echo __('Change User\'s Password'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
                        data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
                        data-sk="<?php echo $_getvar('sk'); ?>">
                         <i class="btn-action material-icons">security</i>
-                        <?php echo __('Cambiar Clave de Usuario'); ?>
+                        <?php echo __('Change User\'s Password'); ?>
                     </a>
                 <?php endif; ?>
 
                 <a class="btn-action mdl-navigation__link"
-                   title="<?php echo __('Preferencias de usuario'); ?>"
+                   title="<?php echo __('User preferences'); ?>"
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
                     <span id="user-name"><?php echo $_getvar('ctx_userName'); ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $_getvar('ctx_userGroup')); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
                     <?php
                     /** @var \SP\Html\Assets\IconInterface $ctx_userType */
                     $ctx_userType = $_getvar('ctx_userType');
@@ -145,10 +145,10 @@
                 <span class="mdl-menu__item--full-bleed-divider"></span>
 
                 <a class="btn-action mdl-navigation__link"
-                   title="<?php echo __('Salir'); ?>"
+                   title="<?php echo __('Sign Out'); ?>"
                    data-onclick="main/logout">
                     <i class="material-icons">exit_to_app</i>
-                    <?php echo __('Salir'); ?>
+                    <?php echo __('Sign Out'); ?>
                 </a>
 
                 <span class="mdl-menu__item--full-bleed-divider"></span>

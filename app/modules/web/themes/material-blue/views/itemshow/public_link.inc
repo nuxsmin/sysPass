@@ -18,12 +18,12 @@ $publicLink = $_getvar('publicLink');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Cuenta'); ?></td>
+                <td class="descField"><?php echo __('Account'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Cuenta'); ?></div>
+                    <div class="lowres-title"><?php echo __('Account'); ?></div>
 
                     <select id="accountId" name="accountId" class="select-box" <?php echo $_getvar('disabled'); ?>>
-                        <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
+                        <option value=""><?php echo __('Select Account'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $account */
                         foreach ($_getvar('accounts') as $account): ?>
                             <option
@@ -33,46 +33,46 @@ $publicLink = $_getvar('publicLink');
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Notificar'); ?></td>
+                <td class="descField"><?php echo __('Notify'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notify"
-                           title="<?php echo __('Notificar'); ?>">
+                           title="<?php echo __('Notify'); ?>">
                         <input type="checkbox" id="notify"
                                class="mdl-switch__input mdl-color-text--indigo-400"
                                name="notify" <?php echo $_getvar('isView') && $publicLink->isNotify() ? 'CHECKED' : ''; ?> <?php echo $_getvar('disabled'); ?>/>
-                        <span class="mdl-switch__label"><?php echo __('Notificar'); ?></span>
+                        <span class="mdl-switch__label"><?php echo __('Notify'); ?></span>
                     </label>
                 </td>
             </tr>
             <?php if ($_getvar('isView')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Fecha Creación'); ?></td>
+                    <td class="descField"><?php echo __('Creation Date'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Fecha Creación'); ?></div>
+                        <div class="lowres-title"><?php echo __('Creation Date'); ?></div>
 
                         <?php echo $publicLink->getDateAddFormat(); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo __('Fecha Caducidad'); ?></td>
+                    <td class="descField"><?php echo __('Expiry Date '); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Fecha Caducidad'); ?></div>
+                        <div class="lowres-title"><?php echo __('Expiry Date '); ?></div>
 
                         <?php echo $publicLink->getDateExpireFormat(); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo __('Usuario'); ?></td>
+                    <td class="descField"><?php echo __('User'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+                        <div class="lowres-title"><?php echo __('User'); ?></div>
 
                         <?php echo $publicLink->getUserLogin(); ?>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo __('Visitas'); ?></td>
+                    <td class="descField"><?php echo __('Visits'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Visitas'); ?></div>
+                        <div class="lowres-title"><?php echo __('Visits'); ?></div>
 
                         <?php echo $publicLink->getCountViewsString(); ?>
                     </td>
@@ -96,9 +96,9 @@ $publicLink = $_getvar('publicLink');
                 </tr>
                 <?php if (is_array($_getvar('usageInfo'))): ?>
                     <tr>
-                        <td class="descField"><?php echo __('Uso'); ?></td>
+                        <td class="descField"><?php echo __('Use'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Uso'); ?></div>
+                            <div class="lowres-title"><?php echo __('Use'); ?></div>
 
                             <div class="list-wrap">
                                 <ul class="mdl-list">

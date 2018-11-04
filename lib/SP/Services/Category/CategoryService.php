@@ -74,7 +74,7 @@ final class CategoryService extends Service
         $result = $this->categoryRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -95,7 +95,7 @@ final class CategoryService extends Service
         $result = $this->categoryRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -112,7 +112,7 @@ final class CategoryService extends Service
     public function delete($id)
     {
         if ($this->categoryRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Categoría no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Category not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -131,7 +131,7 @@ final class CategoryService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->categoryRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar las categorías'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting categories'), ServiceException::WARNING);
         }
 
         return $count;

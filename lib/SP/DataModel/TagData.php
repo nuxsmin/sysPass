@@ -97,8 +97,6 @@ class TagData extends DataModelBase implements DataModelInterface
 
     /**
      * Formatear el nombre de la etiqueta y devolver un hash
-     *
-     * @return string
      */
     protected function createTagHash()
     {

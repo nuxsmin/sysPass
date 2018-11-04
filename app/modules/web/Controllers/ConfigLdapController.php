@@ -68,7 +68,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
             // Valores para la configuración de LDAP
             if ($ldapEnabled && !($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de LDAP'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
             }
 
             if ($ldapEnabled) {
@@ -87,14 +87,14 @@ final class ConfigLdapController extends SimpleControllerBase
                 }
 
                 if ($configData->isLdapEnabled() === false) {
-                    $eventMessage->addDescription(__u('LDAP habiltado'));
+                    $eventMessage->addDescription(__u('LDAP enabled'));
                 }
             } elseif ($ldapEnabled === false && $configData->isLdapEnabled()) {
                 $configData->setLdapEnabled(false);
 
-                $eventMessage->addDescription(__u('LDAP deshabilitado'));
+                $eventMessage->addDescription(__u('LDAP disabled'));
             } else {
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Sin cambios'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
             }
 
             return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
@@ -114,7 +114,7 @@ final class ConfigLdapController extends SimpleControllerBase
         $data = LdapParams::getServerAndPort($this->request->analyzeString('ldap_server'));
 
         if ($data === false) {
-            throw new ValidationException(__u('Parámetros de LDAP incorrectos'));
+            throw new ValidationException(__u('Wrong LDAP parameters'));
         }
 
         return (new LdapParams())
@@ -140,7 +140,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
             // Valores para la configuración de LDAP
             if (!($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de LDAP'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
             }
 
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
@@ -150,13 +150,13 @@ final class ConfigLdapController extends SimpleControllerBase
 
             $template = $this->dic->get(Template::class);
             $template->addTemplate('results', 'itemshow');
-            $template->assign('header', __('Resultados'));
+            $template->assign('header', __('Results'));
 
             return $this->returnJsonResponseData(
                 ['template' => $template->render(), 'items' => $data['results']],
                 JsonResponse::JSON_SUCCESS,
-                __u('Conexión a LDAP correcta'),
-                [sprintf(__('Objetos encontrados: %d'), $data['count'])]
+                __u('LDAP connection OK'),
+                [sprintf(__('Objects found: %d'), $data['count'])]
             );
         } catch (\Exception $e) {
             processException($e);
@@ -178,7 +178,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
             // Valores para la configuración de LDAP
             if (!($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de LDAP'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
             }
 
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
@@ -194,14 +194,14 @@ final class ConfigLdapController extends SimpleControllerBase
 
             $template = $this->dic->get(Template::class);
             $template->addTemplate('results', 'itemshow');
-            $template->assign('header', __('Resultados'));
+            $template->assign('header', __('Results'));
             $template->assign('results', $data);
 
             return $this->returnJsonResponseData(
                 ['template' => $template->render(), 'items' => $data['results']],
                 JsonResponse::JSON_SUCCESS,
-                __u('Conexión a LDAP correcta'),
-                [sprintf(__('Objetos encontrados: %d'), $data['count'])]
+                __u('LDAP connection OK'),
+                [sprintf(__('Objects found: %d'), $data['count'])]
             );
         } catch (\Exception $e) {
             processException($e);
@@ -223,7 +223,7 @@ final class ConfigLdapController extends SimpleControllerBase
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if ($this->configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $ldapImportParams = new LdapImportParams();
@@ -243,14 +243,14 @@ final class ConfigLdapController extends SimpleControllerBase
                     || empty($ldapImportParams->defaultUserProfile))
                 && ($checkImportGroups === true && empty($ldapImportParams->userGroupNameAttribute))
             ) {
-                throw new ValidationException(__u('Parámetros de LDAP incorrectos'));
+                throw new ValidationException(__u('Wrong LDAP parameters'));
             }
 
             $ldapParams = $this->getLdapParamsFromRequest();
 
             $this->eventDispatcher->notifyEvent('import.ldap.start',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Importación LDAP')))
+                    ->addDescription(__u('LDAP Import')))
             );
 
             $userLdapService = $this->dic->get(LdapImportService::class);
@@ -265,19 +265,19 @@ final class ConfigLdapController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('import.ldap.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Importación finalizada')))
+                    ->addDescription(__u('Import finished')))
             );
 
             if ($userLdapService->getTotalObjects() === 0) {
-                throw new SPException(__u('No se encontraron objetos para sincronizar'));
+                throw new SPException(__u('There aren\'t any objects to synchronize'));
             }
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,
-                __u('Importación de usuarios de LDAP realizada'),
+                __u('LDAP users import finished'),
                 [
-                    sprintf(__('Usuarios importados: %d / %d'), $userLdapService->getSyncedObjects(), $userLdapService->getTotalObjects()),
-                    sprintf(__('Errores: %d'), $userLdapService->getErrorObjects())
+                    sprintf(__('Imported users: %d / %d'), $userLdapService->getSyncedObjects(), $userLdapService->getTotalObjects()),
+                    sprintf(__('Errors: %d'), $userLdapService->getErrorObjects())
 
                 ]
             );
@@ -307,5 +307,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

@@ -42,7 +42,7 @@ final class UnauthorizedPageException extends SPException
      */
     public function __construct($type, $code = 0, \Exception $previous = null)
     {
-        parent::__construct(__u('No tiene permisos para acceder a esta página'), $type, __u('Consulte con el administrador'), $code, $previous);
+        parent::__construct(__u('You don\'t have permission to access this page'), $type, __u('Please contact to the administrator'), $code, $previous);
     }
 
 }

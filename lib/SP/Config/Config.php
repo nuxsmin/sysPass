@@ -239,6 +239,10 @@ final class Config
     }
 
     /**
+     * @return Config
+     * @throws FileException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function generateUpgradeKey()

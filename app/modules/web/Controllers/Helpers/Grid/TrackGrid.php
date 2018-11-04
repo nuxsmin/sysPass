@@ -97,12 +97,12 @@ final class TrackGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Fecha'));
-        $gridHeader->addHeader(__('Fecha Desbloqueo'));
-        $gridHeader->addHeader(__('Origen'));
+        $gridHeader->addHeader(__('Date'));
+        $gridHeader->addHeader(__('Date Unlocked'));
+        $gridHeader->addHeader(__('Source'));
         $gridHeader->addHeader('IPv4');
         $gridHeader->addHeader('IPv6');
-        $gridHeader->addHeader(__('Usuario'));
+        $gridHeader->addHeader(__('User'));
 
         return $gridHeader;
     }
@@ -159,7 +159,7 @@ final class TrackGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::TRACK_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchTrack');
-        $gridActionSearch->setTitle(__('Buscar Track'));
+        $gridActionSearch->setTitle(__('Search for track'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
 
@@ -175,8 +175,8 @@ final class TrackGrid extends GridBase
         $gridAction->setId(ActionsInterface::TRACK_SEARCH);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(__('Refrescar'));
-        $gridAction->setTitle(__('Refrescar'));
+        $gridAction->setName(__('Refresh'));
+        $gridAction->setTitle(__('Refresh'));
         $gridAction->setIcon($this->icons->getIconRefresh());
         $gridAction->setOnClickFunction('appMgmt/search');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));

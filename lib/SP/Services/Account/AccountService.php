@@ -160,7 +160,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $result = $this->accountRepository->getPasswordForId($id, $queryFilter);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Cuenta no encontrada'));
+            throw new NoSuchItemException(__u('Account not found'));
         }
 
         return $result->getData();
@@ -217,19 +217,19 @@ final class AccountService extends Service implements AccountServiceInterface
             }
 
             if (empty($masterPass)) {
-                throw new ServiceException(__u('Clave maestra no establecida'));
+                throw new ServiceException(__u('Master password not set'));
             }
 
             $out['key'] = Crypt::makeSecuredKey($masterPass);
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
 
             if (strlen($out['pass']) > 1000 || strlen($out['key']) > 1000) {
-                throw new ServiceException(__u('Error interno'));
+                throw new ServiceException(__u('Internal error'));
             }
 
             return $out;
         } catch (CryptoException $e) {
-            throw new ServiceException(__u('Error interno'));
+            throw new ServiceException(__u('Internal error'));
         }
     }
 
@@ -280,7 +280,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $result = $this->accountRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
+            throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
         return new AccountDetailsResponse($id, $result->getData());
@@ -579,7 +579,7 @@ final class AccountService extends Service implements AccountServiceInterface
             $this->addHistory($accountId);
 
             if (!$this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId())) {
-                throw new ServiceException(__u('Error al restaurar cuenta'));
+                throw new ServiceException(__u('Error on restoring the account'));
             }
         });
     }
@@ -596,7 +596,7 @@ final class AccountService extends Service implements AccountServiceInterface
             $this->addHistory($id, 1);
 
             if ($this->accountRepository->delete($id) === 0) {
-                throw new NoSuchItemException(__u('Cuenta no encontrada'));
+                throw new NoSuchItemException(__u('Account not found'));
             }
         });
 
@@ -613,7 +613,7 @@ final class AccountService extends Service implements AccountServiceInterface
     public function deleteByIdBatch(array $ids)
     {
         if ($this->accountRepository->deleteByIdBatch($ids) === 0) {
-            throw new ServiceException(__u('Error al eliminar las cuentas'));
+            throw new ServiceException(__u('Error while deleting the accounts'));
         }
 
         return $this;
@@ -669,7 +669,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $result = $this->accountRepository->getPasswordHistoryForId($queryFilter);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
+            throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
         return $result->getData();
@@ -724,7 +724,7 @@ final class AccountService extends Service implements AccountServiceInterface
         $result = $this->accountRepository->getDataForLink($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('La cuenta no existe'));
+            throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
         return $result->getData();

@@ -8,12 +8,12 @@
     <ul class="errors round">
         <li class="msg-warning">
             <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
-            <strong><?php echo __('La aplicación necesita actualizarse'); ?></strong>
+            <strong><?php echo __('The application needs to be updated'); ?></strong>
             <p class="hint">
-                <?php echo __('Consulte con el administrador'); ?>
+                <?php echo __('Please contact to the administrator'); ?>
             </p>
             <p class="hint">
-                <?php echo __('Para iniciar la actualización introduzca el código de seguridad'); ?>
+                <?php echo __('Please enter the security code to start the upgrade'); ?>
             </p>
         </li>
     </ul>
@@ -25,12 +25,12 @@
                 <input id="key" name="key" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                        autocomplete="off" autofocus>
                 <label class="mdl-textfield__label"
-                       for="key"><?php echo __('Código de Seguridad'); ?></label>
+                       for="key"><?php echo __('Security Code'); ?></label>
             </div>
 
             <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
                 <input type="checkbox" id="chkConfirm" class="mdl-checkbox__input" name="chkConfirm" required>
-                <span class="mdl-checkbox__label"><?php echo __('He realizado una copia de seguridad completa de sysPass'); ?></span>
+                <span class="mdl-checkbox__label"><?php echo __('I\'ve done a full sysPass backup'); ?></span>
             </label>
         </fieldset>
 
@@ -38,7 +38,7 @@
             <ul class="errors">
                 <li class="msg-warning">
                     <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
-                    <?php echo __('Por favor espere mientras el proceso se ejecuta'); ?>
+                    <?php echo __('Please, wait while the process is running'); ?>
                 </li>
             </ul>
         </div>
@@ -46,9 +46,9 @@
         <div class="buttons">
             <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                     type="submit">
-                <?php echo __('Actualizar'); ?>
+                <?php echo __('Update'); ?>
                 <i class="material-icons"
-                   title="<?php echo __('Iniciar Actualización'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                   title="<?php echo __('Start Update'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
             </button>
         </div>
     </form>

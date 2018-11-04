@@ -3,7 +3,7 @@
 <div id="box-pub-noheader">
     <div class="box-spacer"></div>
     <div class="box-header">
-        <?php echo __('Solicitud de Cambio de Clave'); ?>
+        <?php echo __('Request Password Change'); ?>
     </div>
     <div id="box-passreset" class="box-form round">
         <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset"
@@ -16,7 +16,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off" autofocus>
                         <label class="mdl-textfield__label"
-                               for="login"><?php echo __('Usuario'); ?></label>
+                               for="login"><?php echo __('User'); ?></label>
                     </div>
                 </div>
                 <div>
@@ -26,7 +26,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="email"><?php echo __('Email del Usuario'); ?></label>
+                               for="email"><?php echo __('User\'s Email'); ?></label>
                     </div>
                 </div>
                 <input type="hidden" name="isAjax" value="1">
@@ -36,14 +36,14 @@
                 <button id="btnBack" type="button"
                         class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                     <i class="material-icons"
-                       title="<?php echo __('Volver a iniciar sesión'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                    <?php echo __('Volver'); ?>
+                       title="<?php echo __('Go back to login'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    <?php echo __('Back'); ?>
                 </button>
 
                 <button id="btnRequest" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
-                    <?php echo __('Solicitar'); ?>
+                    <?php echo __('Request'); ?>
                     <i class="material-icons"
-                       title="<?php echo __('Solicitar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                       title="<?php echo __('Request'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
                 </button>
             </div>
         </form>

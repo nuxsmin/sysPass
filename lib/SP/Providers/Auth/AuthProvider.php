@@ -205,11 +205,11 @@ final class AuthProvider extends Provider
     protected function registerAuth($auth)
     {
         if (!method_exists($this, $auth)) {
-            throw new AuthException(__u('Método no disponible'), AuthException::ERROR, __FUNCTION__);
+            throw new AuthException(__u('Method unavailable'), AuthException::ERROR, __FUNCTION__);
         }
 
         if (array_key_exists($auth, $this->auths)) {
-            throw new AuthException(__u('Método ya inicializado'), AuthException::ERROR, __FUNCTION__);
+            throw new AuthException(__u('Method already initialized'), AuthException::ERROR, __FUNCTION__);
         }
 
         $this->auths[$auth] = $auth;

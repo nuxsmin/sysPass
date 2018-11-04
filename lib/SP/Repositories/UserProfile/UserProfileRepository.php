@@ -76,7 +76,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar perfil'));
+        $queryData->setOnErrorMessage(__u('Error while removing the profile'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -178,7 +178,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los perfiles'));
+        $queryData->setOnErrorMessage(__u('Error while removing the profiles'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -227,7 +227,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Nombre de perfil duplicado'));
+            throw new DuplicatedItemException(__u('Duplicated profile name'));
         }
 
         $queryData = new QueryData();
@@ -236,7 +236,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
             $itemData->getName(),
             serialize($itemData->getProfile())
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear perfil'));
+        $queryData->setOnErrorMessage(__u('Error while creating the profile'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -272,7 +272,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Nombre de perfil duplicado'));
+            throw new DuplicatedItemException(__u('Duplicated profile name'));
         }
 
         $query = /** @lang SQL */
@@ -285,7 +285,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
             serialize($itemData->getProfile()),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al modificar perfil'));
+        $queryData->setOnErrorMessage(__u('Error while updating the profile'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

@@ -69,8 +69,8 @@ final class TagGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -91,7 +91,7 @@ final class TagGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Etiquetas'));
+        $gridTab->setTitle(__('Tags'));
 
         return $gridTab;
     }
@@ -103,7 +103,7 @@ final class TagGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
+        $gridHeader->addHeader(__('Name'));
 
         return $gridHeader;
     }
@@ -132,7 +132,7 @@ final class TagGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::TAG_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchTag');
-        $gridActionSearch->setTitle(__('Buscar Etiqueta'));
+        $gridActionSearch->setTitle(__('Search for Tag'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_SEARCH));
 
@@ -147,8 +147,8 @@ final class TagGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TAG_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nueva Etiqueta'));
-        $gridAction->setTitle(__('Nueva Etiqueta'));
+        $gridAction->setName(__('New Tag'));
+        $gridAction->setTitle(__('New Tag'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -165,8 +165,8 @@ final class TagGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TAG_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Etiqueta'));
-        $gridAction->setTitle(__('Editar Etiqueta'));
+        $gridAction->setName(__('Edit Tag'));
+        $gridAction->setTitle(__('Edit Tag'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_EDIT));
@@ -182,8 +182,8 @@ final class TagGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TAG_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Etiqueta'));
-        $gridAction->setTitle(__('Eliminar Etiqueta'));
+        $gridAction->setName(__('Delete Tag'));
+        $gridAction->setTitle(__('Delete Tag'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_DELETE));

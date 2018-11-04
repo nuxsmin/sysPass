@@ -52,7 +52,7 @@ final class AccountFavoriteController extends SimpleControllerBase
         try {
             $this->accountFavoriteService->add($accountId, $this->session->getUserData()->getId());
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito añadido'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorite added'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -70,7 +70,7 @@ final class AccountFavoriteController extends SimpleControllerBase
         try {
             $this->accountFavoriteService->delete($accountId, $this->session->getUserData()->getId());
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorito eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorite deleted'));
         } catch (\Exception $e) {
             processException($e);
 

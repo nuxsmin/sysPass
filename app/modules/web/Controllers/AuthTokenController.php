@@ -68,7 +68,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -108,10 +108,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nueva Autorización'));
+            $this->view->assign('header', __('New Authorization'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'authToken/saveCreate');
 
@@ -173,10 +173,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Autorización'));
+            $this->view->assign('header', __('Edit Authorization'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'authToken/saveEdit/' . $id);
 
@@ -206,7 +206,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -217,10 +217,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
                 $this->eventDispatcher->notifyEvent('delete.authToken.selection',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Autorizaciones eliminadas')))
+                            ->addDescription(__u('Authorizations deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorizaciones eliminadas'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorizations deleted'));
             }
 
             $this->authTokenService->delete($id);
@@ -230,11 +230,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->eventDispatcher->notifyEvent('delete.authToken',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Autorización eliminada'))
-                        ->addDetail(__u('Autorización'), $id))
+                        ->addDescription(__u('Authorization deleted'))
+                        ->addDetail(__u('Authorization'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización eliminada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -251,7 +251,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
 
@@ -266,7 +266,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
 
             $this->eventDispatcher->notifyEvent('create.authToken', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización creada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (\Exception $e) {
@@ -289,7 +289,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
 
@@ -302,8 +302,8 @@ final class AuthTokenController extends ControllerBase implements CrudController
                 $this->eventDispatcher->notifyEvent('refresh.authToken',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Autorización actualizada'))
-                            ->addDetail(__u('Autorización'), $id))
+                            ->addDescription(__u('Authorization updated'))
+                            ->addDetail(__u('Authorization'), $id))
                 );
             } else {
                 $this->authTokenService->update($form->getItemData());
@@ -311,14 +311,14 @@ final class AuthTokenController extends ControllerBase implements CrudController
                 $this->eventDispatcher->notifyEvent('edit.authToken',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Autorización actualizada'))
-                            ->addDetail(__u('Autorización'), $id))
+                            ->addDescription(__u('Authorization updated'))
+                            ->addDetail(__u('Authorization'), $id))
                 );
             }
 
             $this->updateCustomFieldsForItem(Acl::AUTHTOKEN, $id, $this->request);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (\Exception $e) {
@@ -341,10 +341,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Autorización'));
+            $this->view->assign('header', __('View Authorization'));
             $this->view->assign('isView', true);
 
 
@@ -352,8 +352,8 @@ final class AuthTokenController extends ControllerBase implements CrudController
 
             $this->eventDispatcher->notifyEvent('show.authToken',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Autorización visualizada'))
-                    ->addDetail(__u('Autorización'), $id))
+                    ->addDescription(__u('Authorization viewed'))
+                    ->addDetail(__u('Authorization'), $id))
             );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);

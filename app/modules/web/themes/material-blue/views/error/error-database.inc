@@ -10,13 +10,13 @@
     <div class="buttons">
         <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             <i class="material-icons"
-               title="<?php echo __('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-            <?php echo __('Volver'); ?>
+               title="<?php echo __('Back'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+            <?php echo __('Back'); ?>
         </button>
         <a class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" href="index.php?r=install">
-            <?php echo __('Instalar'); ?>
+            <?php echo __('Install'); ?>
             <i class="material-icons"
-               title="<?php echo __('Instalar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+               title="<?php echo __('Install'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
         </a>
     </div>
 </div>

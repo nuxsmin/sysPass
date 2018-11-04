@@ -9,7 +9,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">mail</i>
-    <?php echo __('Correo'); ?>
+    <?php echo __('Mail'); ?>
 </div>
 
 <form method="post" name="frmMail" id="frmMail" class="form-action" data-onsubmit="config/save"
@@ -30,8 +30,8 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Habilitar notificaciones de correo'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Habilitar notificaciones de correo'); ?></span>
+                            <span><?php echo __('Enable email notifications'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Enable email notifications'); ?></span>
                         </span>
                     </li>
 
@@ -45,9 +45,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Habilitar peticiones por correo'); ?></span>
+                            <span><?php echo __('Enable requests by email'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
+                                <?php echo __('Allows users to request for either modifications to existing accounts or access to accounts which they have no rights on.'); ?>
                             </span>
                         </span>
                     </li>
@@ -56,27 +56,27 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Servidor'); ?>
+                <?php echo __('Server'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="mail_server" name="mail_server" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getMailServer(); ?>"/>
-                    <label class="mdl-textfield__label" for="mail_server"><?php echo __('Servidor'); ?></label>
+                    <label class="mdl-textfield__label" for="mail_server"><?php echo __('Server'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Puerto'); ?>
+                <?php echo __('Port'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="mail_port" name="mail_port" type="number" pattern="[0-9]{1,5}"
                            class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
                            value="<?php echo $configData->getMailPort(); ?>"/>
-                    <label class="mdl-textfield__label" for="mail_port"><?php echo __('Puerto'); ?></label>
+                    <label class="mdl-textfield__label" for="mail_port"><?php echo __('Port'); ?></label>
                 </div>
             </td>
         </tr>
@@ -94,7 +94,7 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Habilitar Autentificación'); ?></span>
+                            <span><?php echo __('Enable Authentication'); ?></span>
                             <span class="mdl-list__item-sub-title"></span>
                         </span>
                     </li>
@@ -103,39 +103,39 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Usuario'); ?>
+                <?php echo __('User'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="mail_user" name="mail_user" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="50" value="<?php echo $configData->getMailUser(); ?>"/>
-                    <label class="mdl-textfield__label" for="mail_user"><?php echo __('Usuario'); ?></label>
+                    <label class="mdl-textfield__label" for="mail_user"><?php echo __('User'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Clave'); ?>
+                <?php echo __('Password'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="mail_pass" name="mail_pass" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="128" value="<?php echo $configData->getMailPass() ? '***' : ''; ?>"/>
-                    <label class="mdl-textfield__label" for="mail_pass"><?php echo __('Clave'); ?></label>
+                    <label class="mdl-textfield__label" for="mail_pass"><?php echo __('Password'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Seguridad'); ?>
+                <?php echo __('Security'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Seguridad'); ?></div>
+                <div class="lowres-title"><?php echo __('Security'); ?></div>
 
                 <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box select-box-deselect">
-                    <option value=""><?php echo __('Deshabilitada'); ?></option>
+                    <option value=""><?php echo __('Disabled'); ?></option>
                     <?php foreach ($_getvar('mailSecurity') as $security): ?>
                         <option
                                 value="<?php echo $security; ?>" <?php echo ($configData->getMailSecurity() === $security) ? 'selected' : ''; ?>><?php echo $security; ?></option>
@@ -145,7 +145,7 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Dirección de correo de envío'); ?>
+                <?php echo __('Recipient email address'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -153,16 +153,16 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getMailFrom(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="mail_from"><?php echo __('Dirección de correo de envío'); ?></label>
+                           for="mail_from"><?php echo __('Recipient email address'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Destinatarios'); ?>
+                <?php echo __('Recipients'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Destinatarios'); ?></div>
+                <div class="lowres-title"><?php echo __('Recipients'); ?></div>
 
                 <input type="text" name="mail_recipients" id="mail_recipients" class="select-items-tag"
                        value="<?php echo implode(',', $configData->getMailRecipients()); ?>"/>
@@ -170,10 +170,10 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Eventos'); ?>
+                <?php echo __('Events'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Eventos'); ?></div>
+                <div class="lowres-title"><?php echo __('Events'); ?></div>
 
                 <select id="mail_events" name="mail_events[]" multiple="multiple" class="select-box" data-create="true">
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $mailEvent */
@@ -203,7 +203,7 @@
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>

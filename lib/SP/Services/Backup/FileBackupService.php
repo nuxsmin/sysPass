@@ -97,14 +97,14 @@ final class FileBackupService extends Service
 
             $this->eventDispatcher->notifyEvent('run.backup.start',
                 new Event($this,
-                    EventMessage::factory()->addDescription(__u('Realizar Backup'))));
+                    EventMessage::factory()->addDescription(__u('Make Backup'))));
 
             $this->backupTables(new FileHandler($this->backupFileDb), '*');
 
             if (!$this->backupApp()
                 && !$this->backupAppLegacyLinux()
             ) {
-                throw new ServiceException(__u('Error al realizar backup en modo compatibilidad'));
+                throw new ServiceException(__u('Error while doing the backup in compatibility mode'));
             }
 
             $this->configData->setBackupHash($this->hash);
@@ -115,9 +115,9 @@ final class FileBackupService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
-                __u('Error al realizar el backup'),
+                __u('Error while doing the backup'),
                 SPException::ERROR,
-                __u('Revise el registro de eventos para más detalles'),
+                __u('Please check out the event log for more details'),
                 $e->getCode(),
                 $e
             );
@@ -136,12 +136,12 @@ final class FileBackupService extends Service
             && @mkdir($this->path, 0750) === false
         ) {
             throw new ServiceException(
-                sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->path));
+                sprintf(__('Unable to create the backups directory ("%s")'), $this->path));
         }
 
         if (!is_writable($this->path)) {
             throw new ServiceException(
-                __u('Compruebe los permisos del directorio de backups'));
+                __u('Please, check the backup directory permissions'));
         }
 
         return true;
@@ -208,7 +208,7 @@ final class FileBackupService extends Service
     {
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this,
-                EventMessage::factory()->addDescription(__u('Copiando base de datos')))
+                EventMessage::factory()->addDescription(__u('Copying database')))
         );
 
         $fileHandler->open('w');
@@ -340,7 +340,7 @@ final class FileBackupService extends Service
     {
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Copiando aplicación')))
+                ->addDescription(__u('Copying application')))
         );
 
         $archive = new ArchiveHandler($this->backupFileApp, $this->extensionChecker);
@@ -359,12 +359,12 @@ final class FileBackupService extends Service
     {
         if (Checks::checkIsWindows()) {
             throw new ServiceException(
-                __u('Esta operación sólo es posible en entornos Linux'), ServiceException::INFO);
+                __u('This operation is only available on Linux environments'), ServiceException::INFO);
         }
 
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Copiando aplicación')))
+                ->addDescription(__u('Copying application')))
         );
 
         $command = 'tar czf ' . $this->backupFileApp . ArchiveHandler::COMPRESS_EXTENSION . ' ' . BASE_PATH . ' --exclude "' . $this->path . '" 2>&1';

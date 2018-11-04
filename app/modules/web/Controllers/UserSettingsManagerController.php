@@ -84,7 +84,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
         $template->assign('userPreferences', $userPreferences);
         $template->assign('route', 'userSettingsGeneral/save');
 
-        return new DataTab(__('Preferencias'), $template);
+        return new DataTab(__('Preferences'), $template);
     }
 
     /**

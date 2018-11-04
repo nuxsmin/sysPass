@@ -34,9 +34,9 @@
                 </form>
                 <div class="mdl-tooltip" for="drop-account-files">
                     <?php printf(
-                        __('Soltar archivos aquí (max. 5) o click para seleccionar')
+                        __('Drop files here (max. 5) or click to select')
                         . '<br><br>'
-                        . __('Tamaño máximo de archivo: %d MB'),
+                        . __('Maximum file size: %d MB'),
                         $_getvar('maxFileSize')); ?>
                 </div>
             </div>

@@ -20,27 +20,27 @@ $client = $_getvar('client');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $client->getName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Nombre del cliente'); ?></label>
+                               for="name"><?php echo __('Client name'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo __('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Description'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $client->getDescription(); ?>">
                         <label class="mdl-textfield__label"
-                               for="description"><?php echo __('Descripción del cliente'); ?></label>
+                               for="description"><?php echo __('Client description'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -51,10 +51,10 @@ $client = $_getvar('client');
                          class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                     <div class="mdl-tooltip mdl-tooltip--large" for="help-isglobal">
                         <p>
-                            <?php echo __('Indica si el cliente es visible para todos los usuarios.'); ?>
+                            <?php echo __('Sets whether the client is visible by all users'); ?>
                         </p>
                         <p>
-                            <?php echo __('Por defecto los clientes asignados a cuentas sólo son visibles para los usuarios con acceso a las cuentas.'); ?>
+                            <?php echo __('By default, clients assigned to accounts only will be visible by users who are granted to access to the accounts.'); ?>
                         </p>
                     </div>
                 </td>

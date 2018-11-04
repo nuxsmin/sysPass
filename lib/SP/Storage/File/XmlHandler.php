@@ -86,7 +86,7 @@ final class XmlHandler implements XmlFileStorageInterface
         $nodes = $this->Dom->getElementsByTagName($node);
 
         if ($nodes->length === 0) {
-            throw new RuntimeException(__u('El nodo XML no existe'));
+            throw new RuntimeException(__u('XML node does not exist'));
         }
 
         $this->items = $this->readChildNodes($nodes->item(0)->childNodes);
@@ -164,7 +164,7 @@ final class XmlHandler implements XmlFileStorageInterface
         $this->fileHandler->checkIsWritable();
 
         if (null === $data) {
-            throw new RuntimeException(__u('No hay elementos para guardar'));
+            throw new RuntimeException(__u('There aren\'t any items to save'));
         }
 
         $this->setDOM();
@@ -306,7 +306,7 @@ final class XmlHandler implements XmlFileStorageInterface
         $query = (new \DOMXPath($dom))->query($path);
 
         if ($query->length === 0) {
-            throw new RuntimeException(__u('El nodo XML no existe'));
+            throw new RuntimeException(__u('XML node does not exist'));
         }
 
         return $query->item(0)->nodeValue;

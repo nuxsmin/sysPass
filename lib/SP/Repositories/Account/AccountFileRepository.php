@@ -74,7 +74,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
             $itemData->getExtension(),
             $itemData->getThumb()
         ]);
-        $queryData->setOnErrorMessage(__u('No se pudo guardar el archivo'));
+        $queryData->setOnErrorMessage(__u('Error while saving file'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -276,7 +276,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el archivo'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the file'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -299,7 +299,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountFile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los archivos'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the files'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

@@ -91,7 +91,7 @@ final class AccountToTagRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while removing the account\'s tags'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -112,7 +112,7 @@ final class AccountToTagRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al añadir las etiquetas de la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while adding the account\'s tags'));
 
         foreach ($accountRequest->tags as $tag) {
             $queryData->addParam($accountRequest->id);

@@ -106,7 +106,7 @@ final class LdapImportService extends Service
 
         $this->eventDispatcher->notifyEvent('import.ldap.groups',
             new Event($this, EventMessage::factory()
-                ->addDetail(__u('Objetos encontrados'), $numObjects))
+                ->addDetail(__u('Objects found'), $numObjects))
         );
 
         $this->totalObjects += $numObjects;
@@ -131,13 +131,13 @@ final class LdapImportService extends Service
 
                     if (!empty($userGroupData->getName())) {
                         try {
-                            $userGroupData->setDescription(__('Importado desde LDAP'));
+                            $userGroupData->setDescription(__('Imported from LDAP'));
 
                             $userGroupService->create($userGroupData);
 
                             $this->eventDispatcher->notifyEvent('import.ldap.progress.groups',
                                 new Event($this, EventMessage::factory()
-                                    ->addDetail(__u('Grupo'), sprintf('%s', $userGroupData->getName())))
+                                    ->addDetail(__u('Group'), sprintf('%s', $userGroupData->getName())))
                             );
 
                             $this->syncedObjects++;
@@ -193,7 +193,7 @@ final class LdapImportService extends Service
 
         $this->eventDispatcher->notifyEvent('import.ldap.users',
             new Event($this, EventMessage::factory()
-                ->addDetail(__u('Objetos encontrados'), $numObjects))
+                ->addDetail(__u('Objects found'), $numObjects))
         );
 
         $this->totalObjects += $numObjects;
@@ -226,7 +226,7 @@ final class LdapImportService extends Service
                         && !empty($userData->getLogin())
                     ) {
                         try {
-                            $userData->setNotes(__('Importado desde LDAP'));
+                            $userData->setNotes(__('Imported from LDAP'));
                             $userData->setUserGroupId($ldapImportParams->defaultUserGroup);
                             $userData->setUserProfileId($ldapImportParams->defaultUserProfile);
                             $userData->setIsLdap(true);
@@ -235,7 +235,7 @@ final class LdapImportService extends Service
 
                             $this->eventDispatcher->notifyEvent('import.ldap.progress.users',
                                 new Event($this, EventMessage::factory()
-                                    ->addDetail(__u('Usuario'), sprintf('%s (%s)', $userData->getName(), $userData->getLogin())))
+                                    ->addDetail(__u('User'), sprintf('%s (%s)', $userData->getName(), $userData->getLogin())))
                             );
 
                             $this->syncedObjects++;

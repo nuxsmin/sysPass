@@ -70,8 +70,8 @@ final class AuthTokenGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -92,7 +92,7 @@ final class AuthTokenGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Autorizaciones API'));
+        $gridTab->setTitle(__('API Authorizations'));
 
         return $gridTab;
     }
@@ -104,8 +104,8 @@ final class AuthTokenGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Usuario'));
-        $gridHeader->addHeader(__('Acción'));
+        $gridHeader->addHeader(__('User'));
+        $gridHeader->addHeader(__('Action'));
 
         return $gridHeader;
     }
@@ -137,7 +137,7 @@ final class AuthTokenGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::AUTHTOKEN_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchToken');
-        $gridActionSearch->setTitle(__('Buscar Token'));
+        $gridActionSearch->setTitle(__('Search for Token'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_SEARCH));
 
@@ -152,8 +152,8 @@ final class AuthTokenGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nueva Autorización'));
-        $gridAction->setTitle(__('Nueva Autorización'));
+        $gridAction->setName(__('New Authorization'));
+        $gridAction->setTitle(__('New Authorization'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -170,8 +170,8 @@ final class AuthTokenGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver token de Autorización'));
-        $gridAction->setTitle(__('Ver token de Autorización'));
+        $gridAction->setName(__('View Authorization token'));
+        $gridAction->setTitle(__('View Authorization token'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_VIEW));
@@ -187,8 +187,8 @@ final class AuthTokenGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Autorización'));
-        $gridAction->setTitle(__('Editar Autorización'));
+        $gridAction->setName(__('Edit Authorization'));
+        $gridAction->setTitle(__('Edit Authorization'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_EDIT));
@@ -204,8 +204,8 @@ final class AuthTokenGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Autorización'));
-        $gridAction->setTitle(__('Eliminar Autorización'));
+        $gridAction->setName(__('Delete Authorization'));
+        $gridAction->setTitle(__('Delete Authorization'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_DELETE));

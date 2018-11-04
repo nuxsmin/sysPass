@@ -89,7 +89,7 @@ final class PluginService extends Service
         $result = $this->pluginRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -134,7 +134,7 @@ final class PluginService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if ($this->pluginRepository->deleteByIdBatch($ids) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los plugins'));
+            throw new ServiceException(__u('Error while deleting the plugins'));
         }
     }
 
@@ -150,7 +150,7 @@ final class PluginService extends Service
     public function delete($id)
     {
         if ($this->pluginRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
     }
 
@@ -183,7 +183,7 @@ final class PluginService extends Service
         $result = $this->pluginRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -203,7 +203,7 @@ final class PluginService extends Service
     public function toggleEnabled($id, $enabled)
     {
         if ($this->pluginRepository->toggleEnabled($id, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
     }
 
@@ -221,7 +221,7 @@ final class PluginService extends Service
     public function toggleEnabledByName($name, $enabled)
     {
         if ($this->pluginRepository->toggleEnabledByName($name, $enabled) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
     }
 
@@ -238,7 +238,7 @@ final class PluginService extends Service
     public function toggleAvailable($id, $available)
     {
         if ($this->pluginRepository->toggleAvailable($id, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
     }
 
@@ -255,7 +255,7 @@ final class PluginService extends Service
     public function toggleAvailableByName($name, $available)
     {
         if ($this->pluginRepository->toggleAvailableByName($name, $available) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
     }
 
@@ -272,7 +272,7 @@ final class PluginService extends Service
     public function resetById($id)
     {
         if (($count = $this->pluginRepository->resetById($id)) === 0) {
-            throw new NoSuchItemException(__u('Plugin no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Plugin not found'), NoSuchItemException::INFO);
         }
 
         return $count;

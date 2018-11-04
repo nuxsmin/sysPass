@@ -81,7 +81,7 @@ final class ClientForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->clientData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de cliente'));
+            throw new ValidationException(__u('A client name needed'));
         }
     }
 

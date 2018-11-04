@@ -71,11 +71,11 @@ final class CustomFieldDefService extends Service
     public static function getFieldModules()
     {
         $modules = [
-            ActionsInterface::ACCOUNT => __('Cuentas'),
-            ActionsInterface::CATEGORY => __('Categorías'),
-            ActionsInterface::CLIENT => __('Clientes'),
-            ActionsInterface::USER => __('Usuarios'),
-            ActionsInterface::GROUP => __('Grupos')
+            ActionsInterface::ACCOUNT => __('Accounts'),
+            ActionsInterface::CATEGORY => __('Categories'),
+            ActionsInterface::CLIENT => __('Clients'),
+            ActionsInterface::USER => __('Users'),
+            ActionsInterface::GROUP => __('Groups')
         ];
 
         return $modules;
@@ -106,7 +106,7 @@ final class CustomFieldDefService extends Service
                 ->deleteCustomFieldDefinitionData($id);
 
             if ($this->customFieldDefRepository->delete($id) === 0) {
-                throw new NoSuchItemException(__u('Campo no encontrado'), NoSuchItemException::INFO);
+                throw new NoSuchItemException(__u('Field not found'), NoSuchItemException::INFO);
             }
         });
 
@@ -127,7 +127,7 @@ final class CustomFieldDefService extends Service
                 ->deleteCustomFieldDefinitionDataBatch($ids);
 
             if ($this->customFieldDefRepository->deleteByIdBatch($ids) !== count($ids)) {
-                throw new ServiceException(__u('Error al eliminar los campos'), ServiceException::WARNING);
+                throw new ServiceException(__u('Error while deleting the fields'), ServiceException::WARNING);
             }
         });
     }
@@ -162,7 +162,7 @@ final class CustomFieldDefService extends Service
             }
 
             if ($this->customFieldDefRepository->update($itemData) !== 1) {
-                throw new ServiceException(__u('Error al actualizar el campo personalizado'));
+                throw new ServiceException(__u('Error while updating the custom field'));
             }
         });
     }
@@ -190,7 +190,7 @@ final class CustomFieldDefService extends Service
     public function updateRaw(CustomFieldDefinitionData $itemData)
     {
         if ($this->customFieldDefRepository->update($itemData) !== 1) {
-            throw new ServiceException(__u('Error al actualizar el campo personalizado'));
+            throw new ServiceException(__u('Error while updating the custom field'));
         }
     }
 

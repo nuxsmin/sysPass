@@ -20,65 +20,65 @@ $notification = $_getvar('notification');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Tipo'); ?></td>
+                <td class="descField"><?php echo __('Type'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="notification_type" name="notification_type" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $notification->getType(); ?>" <?php echo $_getvar('disabled'); ?>>
                         <label class="mdl-textfield__label"
-                               for="notification_type"><?php echo __('Tipo'); ?></label>
+                               for="notification_type"><?php echo __('Type'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Componente'); ?></td>
+                <td class="descField"><?php echo __('Component'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="notification_component" name="notification_component" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $notification->getComponent(); ?>" <?php echo $_getvar('disabled'); ?>>
                         <label class="mdl-textfield__label"
-                               for="notification_component"><?php echo __('Componente'); ?></label>
+                               for="notification_component"><?php echo __('Component'); ?></label>
                     </div>
                 </td>
             </tr>
             <?php if ($_getvar('isView')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Fecha'); ?></td>
+                    <td class="descField"><?php echo __('Date'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="notification_date" name="notification_date" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo \SP\Util\DateUtil::getDateFromUnix($notification->getDate()); ?>" <?php echo $_getvar('disabled'); ?>>
                             <label class="mdl-textfield__label"
-                                   for="notification_date"><?php echo __('Fecha'); ?></label>
+                                   for="notification_date"><?php echo __('Date'); ?></label>
                         </div>
                     </td>
                 </tr>
             <?php endif; ?>
             <tr>
-                <td class="descField"><?php echo __('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Description'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
                                   id="notification_description"
                                   name="notification_description" <?php echo $_getvar('readonly'); ?>><?php echo $notification->getDescription(); ?></textarea>
                         <label class="mdl-textfield__label"
-                               for="notification_description"><?php echo __('Descripción'); ?></label>
+                               for="notification_description"><?php echo __('Description'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <?php if (!$_getvar('isView') && $_getvar('ctx_userIsAdminApp')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Usuario'); ?></td>
+                    <td class="descField"><?php echo __('User'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+                        <div class="lowres-title"><?php echo __('User'); ?></div>
 
                         <select id="notification_user" name="notification_user"
                                 class="select-box select-box-deselect" <?php echo $_getvar('disabled'); ?>>
-                            <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                            <option value=""><?php echo __('Select User'); ?></option>
                             <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                             foreach ($_getvar('users') as $user): ?>
                                 <option
@@ -89,10 +89,10 @@ $notification = $_getvar('notification');
                 </tr>
 
                 <tr>
-                    <td class="descField"><?php echo __('Opciones'); ?></td>
+                    <td class="descField"><?php echo __('Options'); ?></td>
                     <td class="valField checkbox">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notification_sticky"
-                               title="<?php echo __('Notificación global'); ?>">
+                               title="<?php echo __('Global notification'); ?>">
                             <input type="checkbox" id="notification_sticky"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="notification_sticky" <?php echo $notification->isSticky() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
@@ -100,19 +100,19 @@ $notification = $_getvar('notification');
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notification_onlyadmin"
-                               title="<?php echo __('Sólo para administradores de la aplicación'); ?>">
+                               title="<?php echo __('Only for application administrators'); ?>">
                             <input type="checkbox" id="notification_onlyadmin"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="notification_onlyadmin" <?php echo $notification->isOnlyAdmin() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
-                            <span class="mdl-switch__label"><?php echo __('Solo Admins'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Only Admins'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notification_checkout"
-                               title="<?php echo __('Leída'); ?>">
+                               title="<?php echo __('Read'); ?>">
                             <input type="checkbox" id="notification_checkout"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="notification_checkout" <?php echo $notification->isChecked() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
-                            <span class="mdl-switch__label"><?php echo __('Leída'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Read'); ?></span>
                         </label>
                     </td>
                 </tr>

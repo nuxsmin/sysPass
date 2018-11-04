@@ -65,7 +65,7 @@ final class ConfigService extends Service
         if ($result->getNumRows() === 0) {
             if ($default === null) {
                 throw new NoSuchItemException(
-                    sprintf(__('Parámetro no encontrado (%s)'), $param)
+                    sprintf(__('Parameter not found (%s)'), $param)
                 );
             }
 
@@ -150,7 +150,7 @@ final class ConfigService extends Service
     public function deleteByParam($param)
     {
         if ($this->configRepository->deleteByParam($param) === 0) {
-            throw new NoSuchItemException(sprintf(__('Parámetro no encontrado (%s)'), $param));
+            throw new NoSuchItemException(sprintf(__('Parameter not found (%s)'), $param));
         }
     }
 

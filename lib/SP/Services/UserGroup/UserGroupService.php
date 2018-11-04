@@ -77,7 +77,7 @@ final class UserGroupService extends Service
         $result = $this->userGroupRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
         }
 
         $data = $result->getData(UserGroupData::class);
@@ -95,7 +95,7 @@ final class UserGroupService extends Service
     public function delete($id)
     {
         if ($this->userGroupRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -112,7 +112,7 @@ final class UserGroupService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->userGroupRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los grupos'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting the groups'), ServiceException::WARNING);
         }
 
         return $count;
@@ -184,7 +184,7 @@ final class UserGroupService extends Service
         $result = $this->userGroupRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();

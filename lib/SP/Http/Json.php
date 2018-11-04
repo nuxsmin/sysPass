@@ -177,7 +177,7 @@ final class Json
 
         if ($json === false || json_last_error() !== JSON_ERROR_NONE) {
             throw new SPException(
-                __u('Error de codificación'),
+                __u('Encoding error'),
                 SPException::CRITICAL,
                 json_last_error_msg()
             );

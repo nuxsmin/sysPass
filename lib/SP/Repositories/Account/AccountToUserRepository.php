@@ -73,7 +73,7 @@ final class AccountToUserRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = ?');
         $queryData->setParams([$id, (int)$isEdit]);
-        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account users'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -100,7 +100,7 @@ final class AccountToUserRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while updating the account users'));
 
         $params = [];
 
@@ -129,7 +129,7 @@ final class AccountToUserRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account users'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

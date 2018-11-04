@@ -92,7 +92,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
 
         foreach ($this->items as $item) {
             if (!$item instanceof DataModelInterface) {
-                throw new RuntimeException(__u('Tipo de objeto incorrecto'));
+                throw new RuntimeException(__u('Wrong object type'));
             }
 
             $out[] = ['id' => $item->getId(), 'name' => $item->getName()];
@@ -154,7 +154,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
 
         foreach ($this->items as $item) {
             if (!$item instanceof DataModelInterface) {
-                throw new RuntimeException(__u('Tipo de objeto incorrecto'));
+                throw new RuntimeException(__u('Wrong object type'));
             }
 
             $out[] = new SelectItem($item->getId(), $item->getName(), $item);

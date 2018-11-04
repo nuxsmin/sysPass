@@ -68,35 +68,35 @@ final class PasswordValidator implements ValidatorInterface
     public function validate(string $string): bool
     {
         if (mb_strlen($string) < $this->password->getLength()) {
-            throw new ValidationException(sprintf(__('Es necesaria una clave con al menos %d caracteres'), $this->password->getLength()));
+            throw new ValidationException(sprintf(__('Password needs to be %d characters long'), $this->password->getLength()));
         }
 
         $regex = $this->password->getRegex();
 
         if (!empty($this->password->getRegex()) && !Validator::matchRegex($string, $regex)) {
-            throw new ValidationException(__u('La clave no cumple los carácteres requeridos'), ValidationException::ERROR, $regex);
+            throw new ValidationException(__u('Password does not contain the required characters'), ValidationException::ERROR, $regex);
         }
 
         if ($this->password->isUseLetters()) {
             if (!Validator::hasLetters($string)) {
-                throw new ValidationException(__u('Es necesario que la clave contenga letras'));
+                throw new ValidationException(__u('Password needs to contain letters'));
             }
 
             if ($this->password->isUseLower() && !Validator::hasLower($string)) {
-                throw new ValidationException(__u('Es necesario que la clave contenga minúsculas'));
+                throw new ValidationException(__u('Password needs to contain lower case letters'));
             }
 
             if ($this->password->isUseUpper() && !Validator::hasUpper($string)) {
-                throw new ValidationException(__u('Es necesario que la clave contenga mayúsculas'));
+                throw new ValidationException(__u('Password needs to contain upper case letters'));
             }
         }
 
         if ($this->password->isUseNumbers() && !Validator::hasNumbers($string)) {
-            throw new ValidationException(__u('Es necesario que la clave contenga números'));
+            throw new ValidationException(__u('Password needs to contain numbers'));
         }
 
         if ($this->password->isUseSymbols() && !Validator::hasSymbols($string)) {
-            throw new ValidationException(__u('Es necesario que la clave contenga símbolos'));
+            throw new ValidationException(__u('Password needs to contain symbols'));
         }
 
         return true;

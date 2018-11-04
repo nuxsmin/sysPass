@@ -143,7 +143,7 @@ abstract class ControllerBase
     {
         try {
             if ($this->isAuthenticated === false) {
-                throw new SPException(__u('Acceso no permitido'));
+                throw new SPException(__u('Unauthorized access'));
             }
 
             $this->sendJsonResponse(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));

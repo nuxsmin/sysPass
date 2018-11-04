@@ -18,8 +18,8 @@
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
             <a href="#general-panel" class="mdl-tabs__tab is-active"><?php echo __('General'); ?></a>
-            <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permisos'); ?></a>
-            <a href="#other-panel" class="mdl-tabs__tab"><?php echo __('Otros'); ?></a>
+            <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permissions'); ?></a>
+            <a href="#other-panel" class="mdl-tabs__tab"><?php echo __('Others'); ?></a>
         </div>
 
         <form method="post" name="frmAccountBulkEdit" id="frmAccountBulkEdit" class="form-action"
@@ -31,12 +31,12 @@
                 <table class="popup-data">
                     <tbody>
                     <tr>
-                        <td class="descField"><?php echo __('Cliente'); ?></td>
+                        <td class="descField"><?php echo __('Client'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Cliente'); ?></div>
+                            <div class="lowres-title"><?php echo __('Client'); ?></div>
 
                             <select id="client_id" name="client_id" class="select-box">
-                                <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
+                                <option value=""><?php echo __('Select Client'); ?></option>
                                 <?php foreach ($_getvar('clients') as $client): ?>
                                     <option
                                             value="<?php echo $client->getId(); ?>"><?php echo $client->getName(); ?></option>
@@ -46,12 +46,12 @@
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Categoría'); ?></td>
+                        <td class="descField"><?php echo __('Category'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Categoría'); ?></div>
+                            <div class="lowres-title"><?php echo __('Category'); ?></div>
 
                             <select id="category_id" name="category_id" class="select-box">
-                                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
+                                <option value=""><?php echo __('Select Category'); ?></option>
                                 <?php foreach ($_getvar('categories') as $category): ?>
                                     <option
                                             value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
@@ -61,12 +61,12 @@
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Creador'); ?></td>
+                        <td class="descField"><?php echo __('Creator'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Creador'); ?></div>
+                            <div class="lowres-title"><?php echo __('Creator'); ?></div>
 
                             <select id="owner_id" name="owner_id" class="select-box">
-                                <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                                <option value=""><?php echo __('Select User'); ?></option>
                                 <?php foreach ($_getvar('users') as $user): ?>
                                     <option
                                             value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
@@ -76,12 +76,12 @@
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Grupo Principal'); ?></td>
+                        <td class="descField"><?php echo __('Main Group'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
+                            <div class="lowres-title"><?php echo __('Main Group'); ?></div>
 
                             <select id="main_usergroup_id" name="main_usergroup_id" class="select-box">
-                                <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                                <option value=""><?php echo __('Select Group'); ?></option>
                                 <?php foreach ($_getvar('userGroups') as $group): ?>
                                     <option
                                             value="<?php echo $group->getId(); ?>"><?php echo $group->getName(); ?></option>
@@ -91,11 +91,11 @@
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Etiquetas'); ?></td>
+                        <td class="descField"><?php echo __('Tags'); ?></td>
                         <td class="valField">
                             <select id="tags" name="tags[]" multiple="multiple"
                                     class="select-box-tags">
-                                <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
+                                <option value=""><?php echo __('Select Tags'); ?></option>
                                 <?php foreach ($_getvar('tags') as $tag): ?>
                                     <option value="<?php echo $tag->getId(); ?>"><?php echo $tag->getName(); ?></option>
                                 <?php endforeach; ?>
@@ -110,13 +110,13 @@
                 <table class="popup-data">
                     <tbody>
                     <tr>
-                        <td class="descField"><?php echo __('Usuarios'); ?></td>
+                        <td class="descField"><?php echo __('Users'); ?></td>
                         <td class="valField">
                             <div class="account-permissions">
                                 <div class="tag-list-box">
                                     <select id="other_users_view" name="other_users_view[]"
                                             multiple="multiple" class="select-box-tags">
-                                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                                        <option value=""><?php echo __('Select Users'); ?></option>
                                         <?php foreach ($_getvar('users') as $user): ?>
                                             <option
                                                     value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
@@ -124,20 +124,20 @@
                                     </select>
 
                                     <i class="material-icons select-icon"
-                                       title="<?php echo __('Ver'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
+                                       title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                                 </div>
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
                                        for="clear_permission_users_view">
                                     <input type="checkbox" id="clear_permission_users_view" class="mdl-checkbox__input"
                                            name="clear_permission_users_view">
-                                    <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
+                                    <span class="mdl-checkbox__label"><?php echo __('Delete'); ?></span>
                                 </label>
 
                                 <div class="tag-list-box">
                                     <select id="other_users_edit" name="other_users_edit[]"
                                             multiple="multiple" class="select-box-tags">
-                                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                                        <option value=""><?php echo __('Select Users'); ?></option>
                                         <?php foreach ($_getvar('users') as $user): ?>
                                             <option
                                                     value="<?php echo $user->getId(); ?>"><?php echo $user->getName(); ?></option>
@@ -145,27 +145,27 @@
                                     </select>
 
                                     <i class="material-icons select-icon"
-                                       title="<?php echo __('Editar'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
+                                       title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                                 </div>
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
                                        for="clear_permission_users_edit">
                                     <input type="checkbox" id="clear_permission_users_edit" class="mdl-checkbox__input"
                                            name="clear_permission_users_edit">
-                                    <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
+                                    <span class="mdl-checkbox__label"><?php echo __('Delete'); ?></span>
                                 </label>
                             </div>
                         </td>
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Grupos'); ?></td>
+                        <td class="descField"><?php echo __('Groups'); ?></td>
                         <td class="valField">
                             <div class="account-permissions">
                                 <div class="tag-list-box">
                                     <select id="other_usergroups_view" name="other_usergroups_view[]"
                                             multiple="multiple" class="select-box-tags">
-                                        <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                                        <option value=""><?php echo __('Select Groups'); ?></option>
                                         <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
                                                     value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
@@ -173,7 +173,7 @@
                                     </select>
 
                                     <i class="material-icons select-icon"
-                                       title="<?php echo __('Ver'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
+                                       title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                                 </div>
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
@@ -181,13 +181,13 @@
                                     <input type="checkbox" id="clear_permission_usergroups_view"
                                            class="mdl-checkbox__input"
                                            name="clear_permission_usergroups_view">
-                                    <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
+                                    <span class="mdl-checkbox__label"><?php echo __('Delete'); ?></span>
                                 </label>
 
                                 <div class="tag-list-box">
                                     <select id="other_usergroups_edit" name="other_usergroups_edit[]"
                                             multiple="multiple" class="select-box-tags">
-                                        <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
+                                        <option value=""><?php echo __('Select Groups'); ?></option>
                                         <?php foreach ($_getvar('userGroups') as $userGroup): ?>
                                             <option
                                                     value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>
@@ -195,7 +195,7 @@
                                     </select>
 
                                     <i class="material-icons select-icon"
-                                       title="<?php echo __('Editar'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
+                                       title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                                 </div>
 
                                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
@@ -203,7 +203,7 @@
                                     <input type="checkbox" id="clear_permission_usergroups_edit"
                                            class="mdl-checkbox__input"
                                            name="clear_permission_usergroups_edit">
-                                    <span class="mdl-checkbox__label"><?php echo __('Eliminar'); ?></span>
+                                    <span class="mdl-checkbox__label"><?php echo __('Delete'); ?></span>
                                 </label>
                             </div>
                         </td>
@@ -229,9 +229,9 @@
                                     </div>
 
                                     <span class="mdl-list__item-primary-content">
-                                        <span><?php echo __('Eliminar Historial'); ?></span>
+                                        <span><?php echo __('Delete History'); ?></span>
                                         <span class="mdl-list__item-sub-title">
-                                            <?php echo __('Eliminar Historial'); ?>
+                                            <?php echo __('Delete History'); ?>
                                         </span>
                                     </span>
                                 </li>
@@ -240,7 +240,7 @@
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                        <td class="descField"><?php echo __('Password Expiry Date'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="password_date_expire" name="password_date_expire" type="date"
@@ -248,10 +248,10 @@
                                        data-dst-unix="password_date_expire_unix">
                                 <input type='hidden' name='password_date_expire_unix' value=""/>
                                 <label class="mdl-textfield__label"
-                                       for="password_date_expire"><?php echo __('Fecha'); ?></label>
+                                       for="password_date_expire"><?php echo __('Date'); ?></label>
                             </div>
                             <i class="material-icons btn-action"
-                               title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
+                               title="<?php echo __('Select date'); ?>">date_range</i>
                         </td>
                     </tr>
 

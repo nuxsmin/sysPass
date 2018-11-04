@@ -142,7 +142,7 @@ final class AccountFileService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->accountFileRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar archivos'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting the files'), ServiceException::WARNING);
         }
 
         return $count;
@@ -161,7 +161,7 @@ final class AccountFileService extends Service
     public function delete($id)
     {
         if ($this->accountFileRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Archivo no encontrado'));
+            throw new NoSuchItemException(__u('File not found'));
         }
 
         return $this;

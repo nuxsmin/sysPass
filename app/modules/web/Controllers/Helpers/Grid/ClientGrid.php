@@ -68,8 +68,8 @@ final class ClientGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -90,7 +90,7 @@ final class ClientGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Clientes'));
+        $gridTab->setTitle(__('Clients'));
 
         return $gridTab;
     }
@@ -102,8 +102,8 @@ final class ClientGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Descripción'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Description'));
         $gridHeader->addHeader(__('Global'));
 
         return $gridHeader;
@@ -120,7 +120,7 @@ final class ClientGrid extends GridBase
         $gridData->addDataRowSource('name');
         $gridData->addDataRowSource('description');
         $gridData->addDataRowSource('isGlobal', false, function ($value) {
-            return $value ? __('SI') : __('NO');
+            return $value ? __('YES') : __('NO');
         });
         $gridData->setData($this->queryResult);
 
@@ -137,7 +137,7 @@ final class ClientGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::CLIENT_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchClient');
-        $gridActionSearch->setTitle(__('Buscar Cliente'));
+        $gridActionSearch->setTitle(__('Search for Client'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_SEARCH));
 
@@ -152,8 +152,8 @@ final class ClientGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CLIENT_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Cliente'));
-        $gridAction->setTitle(__('Nuevo Cliente'));
+        $gridAction->setName(__('New Client'));
+        $gridAction->setTitle(__('New Client'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -170,8 +170,8 @@ final class ClientGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CLIENT_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Cliente'));
-        $gridAction->setTitle(__('Editar Cliente'));
+        $gridAction->setName(__('Edit Client'));
+        $gridAction->setTitle(__('Edit Client'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_EDIT));
@@ -187,8 +187,8 @@ final class ClientGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CLIENT_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Cliente'));
-        $gridAction->setTitle(__('Eliminar Cliente'));
+        $gridAction->setName(__('Delete Client'));
+        $gridAction->setTitle(__('Delete Client'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_DELETE));

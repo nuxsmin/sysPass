@@ -61,7 +61,7 @@ final class AccountHistoryManagerController extends ControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_HISTORY_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -105,10 +105,10 @@ final class AccountHistoryManagerController extends ControllerBase
                 $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
                 $this->eventDispatcher->notifyEvent('delete.accountHistory.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
+                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
             }
             $accountDetails = $this->accountHistoryService->getById($id);
 
@@ -116,12 +116,12 @@ final class AccountHistoryManagerController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('delete.accountHistory',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta eliminada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account removed'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -153,12 +153,12 @@ final class AccountHistoryManagerController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('restore.accountHistory',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta restaurada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account restored'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta restaurada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account restored'));
         } catch (\Exception $e) {
             processException($e);
 

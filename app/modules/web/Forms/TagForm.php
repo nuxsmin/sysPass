@@ -79,7 +79,7 @@ final class TagForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->tagData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de etiqueta'));
+            throw new ValidationException(__u('A tag name is needed'));
         }
     }
 

@@ -9,11 +9,11 @@
 
 <?php if (!$_getvar('ldapIsAvailable')): ?>
     <div class="msg-option-unvailable">
-        <?php printf(__('La extensión \'%s\' no está disponible'), 'ldap'); ?>
+        <?php printf(__('The \'%s\' extension is unavailable'), 'ldap'); ?>
         <i id="help-ldap" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap">
             <p>
-                <?php echo __('Esta extensión es necesaria conectar con el servidor de LDAP'); ?>
+                <?php echo __('This extension is needed to connect to the LDAP server'); ?>
             </p>
         </div>
     </div>
@@ -21,7 +21,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">business</i>
-    <?php echo __('Configuración'); ?>
+    <?php echo __('Configuration'); ?>
 </div>
 
 <form method="post" name="frmLdap" id="frmLdap" class="form-action"
@@ -43,11 +43,11 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Habilitar LDAP'); ?></span>
+                                <span><?php echo __('Enable LDAP'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Habilita de autentificación mediante servidor LDAP.'); ?>
+                                    <?php echo __('Enables authentication against an LDAP server.'); ?>
                                     <br>
-                                    <?php echo __('Este método utilizará MySQL en caso de fallo.'); ?>
+                                    <?php echo __('This method will use MySQL as fallback.'); ?>
                                 </span>
                             </span>
                     </li>
@@ -64,7 +64,7 @@
                         <span class="mdl-list__item-primary-content">
                                 <span><?php echo __('Active Directory'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
+                                    <?php echo __('Enables Active Directory LDAP connection mode.'); ?>
                                 </span>
                             </span>
                     </li>
@@ -81,7 +81,7 @@
                         <span class="mdl-list__item-primary-content">
                                 <span>TLS</span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Habilita la conexión mediante TLS.'); ?>
+                                    <?php echo __('Enables the connection over TLS'); ?>
                                 </span>
                             </span>
                     </li>
@@ -91,16 +91,16 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Servidor'); ?>
+                <?php echo __('Server'); ?>
                 <div id="help-ldap_server"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_server">
                     <p>
-                        <?php echo __('Nombre o dirección IP del servidor de LDAP.'); ?>
+                        <?php echo __('Hostname or IP address of LDAP server.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Ejemplos:'); ?>
+                        <?php echo __('Examples:'); ?>
                     </p>
 
                     <ul>
@@ -116,22 +116,22 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getLdapServer(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="ldap_server"><?php echo __('Servidor'); ?></label>
+                           for="ldap_server"><?php echo __('Server'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Usuario de conexión'); ?>
+                <?php echo __('Bind User'); ?>
                 <div id="help-ldap_binduser"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_binduser">
                     <p>
-                        <?php echo __('Usuario para conectar con el servicio de LDAP.'); ?>
+                        <?php echo __('User to connect to LDAP service.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Ejemplos:'); ?>
+                        <?php echo __('Examples:'); ?>
                     </p>
 
                     <ul>
@@ -146,18 +146,18 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getLdapBindUser(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="ldap_binduser"><?php echo __('Usuario'); ?></label>
+                           for="ldap_binduser"><?php echo __('User'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Clave de conexión'); ?>
+                <?php echo __('Bind Password'); ?>
                 <div id="help-ldap_bindpass"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_bindpass">
                     <p>
-                        <?php echo __('Clave del usuario de conexión a LDAP.'); ?>
+                        <?php echo __('LDAP connection user\'s password'); ?>
                     </p>
                 </div>
             </td>
@@ -167,22 +167,22 @@
                            class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getLdapBindPass() ? '***' : ''; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="ldap_bindpass"><?php echo __('Clave'); ?></label>
+                           for="ldap_bindpass"><?php echo __('Password'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Base de búsqueda'); ?>
+                <?php echo __('Search base'); ?>
                 <div id="help-ldap_base"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_base">
                     <p>
-                        <?php echo __('Base en la que realizar la búsqueda de usuarios de LDAP.'); ?>
+                        <?php echo __('LDAP base to perform the LDAP users search.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Ejemplos:'); ?>
+                        <?php echo __('Examples:'); ?>
                     </p>
 
                     <ul>
@@ -197,26 +197,26 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getLdapBase(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="ldap_base"><?php echo __('Base de búsqueda'); ?></label>
+                           for="ldap_base"><?php echo __('Search base'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Grupo'); ?>
+                <?php echo __('Group'); ?>
                 <div id="help-ldap_group"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_group">
                     <p>
-                        <?php echo __('Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso.'); ?>
+                        <?php echo __('LDAP group which user must belong to for granting to log in.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Este grupo debe de estar ubicado en la base de búsquedas de LDAP.'); ?>
+                        <?php echo __('This group needs to be placed in the LDAP search base.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Ejemplos:'); ?>
+                        <?php echo __('Examples:'); ?>
                     </p>
 
                     <ul>
@@ -230,27 +230,27 @@
                     <input id="ldap_group" name="ldap_group" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getLdapGroup(); ?>"/>
-                    <label class="mdl-textfield__label" for="ldap_group"><?php echo __('Grupo'); ?></label>
+                    <label class="mdl-textfield__label" for="ldap_group"><?php echo __('Group'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Grupo por Defecto'); ?>
+                <?php echo __('Default Group'); ?>
                 <div id="help-ldap_defaultgroup"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultgroup">
                     <p>
-                        <?php echo __('Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
+                        <?php echo __('Sets the default users group for newly created LDAP users'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Grupo por Defecto'); ?></div>
+                <div class="lowres-title"><?php echo __('Default Group'); ?></div>
 
                 <select id="ldap_defaultgroup" name="ldap_defaultgroup"
                         class="select-box sel-chosen-usergroup" required>
-                    <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                    <option value=""><?php echo __('Select Group'); ?></option>
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
                     foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
@@ -261,21 +261,21 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Perfil por Defecto'); ?>
+                <?php echo __('Default Profile'); ?>
                 <div id="help-ldap_defaultprofile"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_defaultprofile">
                     <p>
-                        <?php echo __('Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP.'); ?>
+                        <?php echo __('Sets the default profile for the newly created LDAP users.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Perfil por Defecto'); ?></div>
+                <div class="lowres-title"><?php echo __('Default Profile'); ?></div>
 
                 <select id="ldap_defaultprofile" name="ldap_defaultprofile"
                         class="select-box sel-chosen-profile" required>
-                    <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                    <option value=""><?php echo __('Select User'); ?></option>
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $userProfile */
                     foreach ($_getvar('userProfiles') as $userProfile): ?>
                         <option
@@ -292,7 +292,7 @@
             <li>
                 <button id="btnBack" type="button"
                         class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Atrás'); ?>">
+                        title="<?php echo __('Back'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 </button>
             </li>
@@ -318,23 +318,23 @@
 
     <div id="title" class="titleNormal">
         <i class="material-icons">import_export</i>
-        <?php echo __('Importación'); ?>
+        <?php echo __('Import'); ?>
     </div>
 
     <table id="tblLdap" class="data tblConfig">
         <tr>
             <td class="descField">
-                <?php echo __('Atributo Login'); ?>
+                <?php echo __('Login Attribute'); ?>
                 <div id="help-ldap_login_attribute"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_login_attribute">
                     <p>
-                        <?php echo __('Define el atributo a utilizar para el login del usuario en la importación.'); ?>
+                        <?php echo __('Defines the attribute for the user\'s login when importing.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Atributo Login'); ?></div>
+                <div class="lowres-title"><?php echo __('Login Attribute'); ?></div>
 
                 <select id="ldap_login_attribute" name="ldap_login_attribute"
                         class="select-box" required>
@@ -347,17 +347,17 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Atributo Nombre'); ?>
+                <?php echo __('Name Attribute'); ?>
                 <div id="help-ldap_username_attribute"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_username_attribute">
                     <p>
-                        <?php echo __('Define el atributo a utilizar para el nombre del usuario en la importación.'); ?>
+                        <?php echo __('Defines the attribute for the user\'s name when importing.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Atributo Nombre'); ?></div>
+                <div class="lowres-title"><?php echo __('Name Attribute'); ?></div>
 
                 <select id="ldap_username_attribute" name="ldap_username_attribute"
                         class="select-box" required>
@@ -382,7 +382,7 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Importar Grupos'); ?></span>
+                                <span><?php echo __('Import Groups'); ?></span>
                                 <span class="mdl-list__item-sub-title"></span>
                             </span>
                     </li>
@@ -391,17 +391,17 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Atributo Nombre Grupo'); ?>
+                <?php echo __('Group Name Attribute'); ?>
                 <div id="help-ldap_groupname_attribute"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_groupname_attribute">
                     <p>
-                        <?php echo __('Define el atributo a utilizar para el nombre del grupo en la importación.'); ?>
+                        <?php echo __('Defines the attribute for the user group name when importing.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Atributo Nombre Grupo'); ?></div>
+                <div class="lowres-title"><?php echo __('Group Name Attribute'); ?></div>
 
                 <select id="ldap_groupname_attribute" name="ldap_groupname_attribute"
                         class="select-box" required>
@@ -412,12 +412,12 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Filtro'); ?>
+                <?php echo __('Filter'); ?>
                 <div id="help-ldap_import_filter"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_import_filter">
                     <p>
-                        <?php echo __('Filtro para importar usuarios o grupos de LDAP.'); ?>
+                        <?php echo __('Filter for importing LDAP users or groups.'); ?>
                     </p>
                 </div>
             </td>
@@ -426,7 +426,7 @@
                     <input id="ldap_import_filter" name="ldap_import_filter" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"/>
                     <label class="mdl-textfield__label"
-                           for="ldap_import_filter"><?php echo __('Filtro'); ?></label>
+                           for="ldap_import_filter"><?php echo __('Filter'); ?></label>
                 </div>
             </td>
         </tr>
@@ -437,7 +437,7 @@
             <li>
                 <button id="btnBack" type="button"
                         class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Atrás'); ?>">
+                        title="<?php echo __('Back'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 </button>
             </li>
@@ -457,7 +457,7 @@
                         data-onclick="ldap/import"
                         data-action-route="configLdap/import"
                         data-src="#frmLdap"
-                        title="<?php echo __('Importar usuarios de LDAP'); ?>">
+                        title="<?php echo __('Import users from LDAP'); ?>">
                     <i class="material-icons">get_app</i>
                 </button>
             </li>

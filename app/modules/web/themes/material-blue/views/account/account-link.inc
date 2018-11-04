@@ -19,36 +19,36 @@ $accountData = $_getvar('accountData');
         </div>
         <table class="data">
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php echo $accountData->getName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
+                        <label class="mdl-textfield__label" for="name"><?php echo __('Account name'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Cliente'); ?></td>
+                <td class="descField"><?php echo __('Client'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getClientName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="client"><?php echo __('Cliente'); ?></label>
+                        <label class="mdl-textfield__label" for="client"><?php echo __('Client'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Categoría'); ?></td>
+                <td class="descField"><?php echo __('Category'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getCategoryName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="category"><?php echo __('Categoría'); ?></label>
+                        <label class="mdl-textfield__label" for="category"><?php echo __('Category'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -64,32 +64,32 @@ $accountData = $_getvar('accountData');
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Usuario'); ?></td>
+                <td class="descField"><?php echo __('User'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getLogin(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="login"><?php echo __('Usuario'); ?></label>
+                        <label class="mdl-textfield__label" for="login"><?php echo __('User'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Notas'); ?></td>
+                <td class="descField"><?php echo __('Notes'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes"
                                   maxlength="1000" readonly><?php echo $accountData->getNotes(); ?></textarea>
                         <label class="mdl-textfield__label"
-                               for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
+                               for="notes"><?php echo __('Notes about the account'); ?></label>
                     </div>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Clave'); ?></td>
+                <td class="descField"><?php echo __('Password'); ?></td>
                 <td class="valField">
                     <?php if ($_getvar('useImage')): ?>
-                        <div class="lowres-title"><?php echo __('Clave'); ?></div>
+                        <div class="lowres-title"><?php echo __('Password'); ?></div>
 
                         <img class="account-pass-image"
                              src="data:image/png;base64,<?php echo $_getvar('accountPassImage'); ?>"/>
@@ -98,7 +98,7 @@ $accountData = $_getvar('accountData');
                             <input id="password" name="password" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $accountData->getPass(); ?>" readonly>
-                            <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
+                            <label class="mdl-textfield__label" for="password"><?php echo __('Password'); ?></label>
                         </div>
                     <?php endif; ?>
             </tr>

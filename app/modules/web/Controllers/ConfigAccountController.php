@@ -71,7 +71,7 @@ final class ConfigAccountController extends SimpleControllerBase
             $filesAllowedSize = $this->request->analyzeInt('files_allowed_size', 1024);
 
             if ($filesAllowedSize >= 16384) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('El tamaño máximo por archivo es de 16MB'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Maximum size per file is 16MB'));
             }
 
             $configData->setFilesEnabled(true);
@@ -79,12 +79,12 @@ final class ConfigAccountController extends SimpleControllerBase
             $configData->setFilesAllowedSize($filesAllowedSize);
 
             if ($configData->isFilesEnabled() === false) {
-                $eventMessage->addDescription(__u('Archivos habilitados'));
+                $eventMessage->addDescription(__u('Files enabled'));
             }
         } elseif ($filesEnabled === false && $configData->isFilesEnabled()) {
             $configData->setFilesEnabled(false);
 
-            $eventMessage->addDescription(__u('Archivos deshabilitados'));
+            $eventMessage->addDescription(__u('Files disabled'));
         }
 
         // Public Links
@@ -97,16 +97,16 @@ final class ConfigAccountController extends SimpleControllerBase
             $configData->setPublinksMaxViews($this->request->analyzeInt('publiclinks_maxviews', 3));
 
             if ($configData->isPublinksEnabled() === false) {
-                $eventMessage->addDescription(__u('Enlaces públicos habilitados'));
+                $eventMessage->addDescription(__u('Public links enabled'));
             }
         } elseif ($pubLinksEnabled === false && $configData->isPublinksEnabled()) {
             $configData->setPublinksEnabled(false);
 
-            $eventMessage->addDescription(__u('Enlaces públicos deshabilitados'));
+            $eventMessage->addDescription(__u('Public links disabled'));
         }
 
 
-        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.account', new Event($this, $eventMessage));
         });
     }
@@ -124,5 +124,7 @@ final class ConfigAccountController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

@@ -59,8 +59,8 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('show.category',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Categoría visualizada'))
-                    ->addDetail(__u('Nombre'), $categoryData->getName())
+                    ->addDescription(__u('Category displayed'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $id))
             );
 
@@ -88,12 +88,12 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Categoría creada'))
-                    ->addDetail(__u('Nombre'), $categoryData->getName())
+                    ->addDescription(__u('Category added'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Categoría creada')));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category added')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -118,12 +118,12 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Categoría actualizada'))
-                    ->addDetail(__u('Nombre'), $categoryData->getName())
+                    ->addDescription(__u('Category updated'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $categoryData->getId()))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Categoría actualizada')));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -147,12 +147,12 @@ final class CategoryController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('delete.category',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Categoría eliminada'))
-                    ->addDetail(__u('Nombre'), $categoryData->getName())
+                    ->addDescription(__u('Category deleted'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $categoryData->getId()))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Categoría eliminada')));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category deleted')));
         } catch (\Exception $e) {
             processException($e);
 

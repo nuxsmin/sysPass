@@ -69,8 +69,7 @@ final class Language
     private static $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
-        'en_US' => 'English (US)',
-        'en_GB' => 'English (GB)',
+        'en_US' => 'English',
         'de_DE' => 'Deutsch',
         'hu_HU' => 'Magyar',
         'fr_FR' => 'Français',
@@ -97,8 +96,8 @@ final class Language
      * Language constructor.
      *
      * @param ContextInterface $session
-     * @param Config $config
-     * @param Request $request
+     * @param Config           $config
+     * @param Request          $request
      */
     public function __construct(ContextInterface $session, Config $config, Request $request)
     {
@@ -158,18 +157,7 @@ final class Language
      */
     private function getGlobalLang()
     {
-        $browserLang = $this->getBrowserLang();
-        $configLang = $this->configData->getSiteLang();
-
-        // Establecer a en si no existe la traducción o no es español
-        if (empty($configLang)
-            && !$this->checkLangFile($browserLang)
-            && strpos($browserLang, 'es_') === false
-        ) {
-            return 'en_US';
-        } else {
-            return $configLang ?: $browserLang;
-        }
+        return $this->configData->getSiteLang() ?: $this->getBrowserLang();
     }
 
     /**
@@ -185,18 +173,6 @@ final class Language
     }
 
     /**
-     * Comprobar si el archivo de lenguaje existe
-     *
-     * @param string $lang El lenguaje a comprobar
-     *
-     * @return bool
-     */
-    private function checkLangFile($lang)
-    {
-        return file_exists(LOCALES_PATH . DIRECTORY_SEPARATOR . $lang);
-    }
-
-    /**
      * Establecer las locales de gettext
      *
      * @param string $lang El lenguaje a utilizar
@@ -204,14 +180,13 @@ final class Language
     public static function setLocales($lang)
     {
         $lang .= '.utf8';
-        $locales = [$lang, 'en_US.utf8', 'en_GB.utf8'];
 
-        self::$localeStatus = setlocale(LC_MESSAGES, $locales);
+        self::$localeStatus = setlocale(LC_MESSAGES, $lang);
 
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
 
-        $locale = setlocale(LC_ALL, $locales);
+        $locale = setlocale(LC_ALL, $lang);
 
         if ($locale === false) {
             logger('Could not set locale', 'ERROR');
@@ -247,5 +222,17 @@ final class Language
 
             self::$appSet = false;
         }
+    }
+
+    /**
+     * Comprobar si el archivo de lenguaje existe
+     *
+     * @param string $lang El lenguaje a comprobar
+     *
+     * @return bool
+     */
+    private function checkLangFile($lang)
+    {
+        return file_exists(LOCALES_PATH . DIRECTORY_SEPARATOR . $lang);
     }
 }

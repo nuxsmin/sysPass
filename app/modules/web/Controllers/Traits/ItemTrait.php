@@ -119,7 +119,7 @@ trait ItemTrait
                     $customFieldService->create($customFieldData);
                 }
             } catch (CryptoException $e) {
-                throw new SPException(__u('Error interno'), SPException::ERROR);
+                throw new SPException(__u('Internal error'), SPException::ERROR);
             }
         }
     }
@@ -170,11 +170,11 @@ trait ItemTrait
                     $customFieldData->setData($value);
 
                     if ($customFieldService->updateOrCreateData($customFieldData) === false) {
-                        throw new SPException(__u('Error al actualizar los datos del campo personalizado'));
+                        throw new SPException(__u('Error while updating custom field\'s data'));
                     }
                 }
             } catch (CryptoException $e) {
-                throw new SPException(__u('Error interno'), SPException::ERROR);
+                throw new SPException(__u('Internal error'), SPException::ERROR);
             }
         }
     }

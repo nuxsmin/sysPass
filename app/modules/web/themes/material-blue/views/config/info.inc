@@ -11,32 +11,32 @@
     <i class="material-icons">info</i>
     <?php use SP\Util\VersionUtil;
 
-    echo __('Información de la Aplicación'); ?>
+    echo __('Application Information'); ?>
 </div>
 
 <table class="data">
     <tr>
         <td class="descField">
-            <?php echo __('Versión sysPass'); ?>
+            <?php echo __('sysPass version'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Versión sysPass'); ?></div>
+            <div class="lowres-title"><?php echo __('sysPass version'); ?></div>
 
             <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(VersionUtil::getVersionStringNormalized())); ?>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Base de Datos'); ?>
+            <?php echo __('Database'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Base de Datos'); ?></div>
+            <div class="lowres-title"><?php echo __('Database'); ?></div>
 
             <?php foreach ($_getvar('dbInfo') as $infoattr => $infoval): ?>
                 <?php printf('%s : %s', \SP\Html\Html::strongText($infoattr), $infoval); ?>
                 <br>
             <?php endforeach; ?>
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Nombre')), (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Name')), (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'); ?>
         </td>
     </tr>
     <tr>
@@ -46,21 +46,21 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('PHP'); ?></div>
 
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Versión')), phpversion()); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Version')), phpversion()); ?>
             <br>
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones')), implode(', ', get_loaded_extensions())); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Extensions')), implode(', ', get_loaded_extensions())); ?>
             <br>
             <?php
             if (!empty($_getvar('missingExtensions'))) {
-                printf('%s: %s', \SP\Html\Html::strongText(__('Extensiones no disponibles')), implode(', ', $_getvar('missingExtensions')));
+                printf('%s: %s', \SP\Html\Html::strongText(__('Unavailable extensions')), implode(', ', $_getvar('missingExtensions')));
                 echo '<br>';
             }
             ?>
-            <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
+            <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Used Memory')), (memory_get_usage(true) / 1024)); ?>
             <br>
-            <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
+            <?php printf('%s: %s', \SP\Html\Html::strongText(__('User')), (!$_getvar('isDemo')) ? get_current_user() : '***'); ?>
             <br>
-            <?php printf('%s: %d MB/s', \SP\Html\Html::strongText(__('Tasa de descarga')), $_getvar('downloadRate')); ?>
+            <?php printf('%s: %d MB/s', \SP\Html\Html::strongText(__('Download rate')), $_getvar('downloadRate')); ?>
             <?php if (function_exists('opcache_get_status') && version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
                 <br>
                 <?php echo \SP\Html\Html::strongText(__('OP Cache')); ?>
@@ -72,20 +72,20 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Servidor'); ?>
+            <?php echo __('Server'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Servidor'); ?></div>
+            <div class="lowres-title"><?php echo __('Server'); ?></div>
 
             <?php echo (!$_getvar('isDemo')) ? \SP\Html\Html::strongText($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Copia de Configuración'); ?>
+            <?php echo __('Configuration Backup'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Copia de Configuración'); ?></div>
+            <div class="lowres-title"><?php echo __('Configuration Backup'); ?></div>
 
             <?php echo $_getvar('configBackupDate'); ?>
 
@@ -95,7 +95,7 @@
                        class="download" target="_blank">
 
                         <button type="button" class="mdl-button mdl-js-button">
-                            <?php printf(__('Descargar %s'), 'JSON'); ?>
+                            <?php printf(__('Download %s'), 'JSON'); ?>
                         </button>
                     </a>
                 </div>
@@ -104,48 +104,48 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Idioma'); ?>
+            <?php echo __('Language'); ?>
             <div id="help-infolang"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-infolang">
                 <p>
-                    <?php echo __('Indica si el idioma se encuentra disponible'); ?>
+                    <?php echo __('Tells whether the language is available or not.'); ?>
                 </p>
 
                 <p>
-                    <?php echo __('Si no está instalado, es necesario instalar las locales en el sistema operativo. Más información en Wiki.'); ?>
+                    <?php echo __('If it is not installed, you would need install the right operating system locales. More info at Wiki.'); ?>
                 </p>
             </div>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Idioma'); ?></div>
+            <div class="lowres-title"><?php echo __('Language'); ?></div>
 
             <?php echo $_getvar('locale'); ?>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Sesión Encriptada'); ?>
+            <?php echo __('Encrypted Session'); ?>
             <div id="help-infosession"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-infosession">
                 <p>
-                    <?php echo __('Indica si los datos de la sesión están encriptados en el servidor'); ?>
+                    <?php echo __('Tells whether the session data are encrypted in the server side or not'); ?>
                 </p>
             </div>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Sesión Encriptada'); ?></div>
+            <div class="lowres-title"><?php echo __('Encrypted Session'); ?></div>
 
-            <?php echo $_getvar('securedSession') ? __('Sí') : __('No'); ?>
+            <?php echo $_getvar('securedSession') ? __('Yes') : __('No'); ?>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Plugins Cargados'); ?>
+            <?php echo __('Loaded Plugins'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Plugins Cargados'); ?></div>
+            <div class="lowres-title"><?php echo __('Loaded Plugins'); ?></div>
 
             <ul class="mdl-list">
                 <?php /** @var \SP\Plugin\PluginInterface $plugin */
@@ -168,16 +168,16 @@
     <?php if ($_getvar('downloadLog')): ?>
         <tr>
             <td class="descField">
-                <?php echo __('Archivo de log'); ?>
+                <?php echo __('Log file'); ?>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Archivo de log'); ?></div>
+                <div class="lowres-title"><?php echo __('Log file'); ?></div>
 
                 <a href="<?php echo $_getRoute('configGeneral/downloadLog'); ?>"
                    class="download" target="_blank">
 
                     <button type="button" class="mdl-button mdl-js-button">
-                        <?php printf(__('Descargar %s'), basename(LOG_FILE)); ?>
+                        <?php printf(__('Download %s'), basename(LOG_FILE)); ?>
                     </button>
                 </a>
             </td>
@@ -190,7 +190,7 @@
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>

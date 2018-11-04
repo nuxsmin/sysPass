@@ -182,7 +182,7 @@ final class Theme implements ThemeInterface
 
         if (file_exists($iconsClass)) {
             if (!($this->icons = require $iconsClass) instanceof ThemeIcons) {
-                throw new InvalidClassException(__u('Clase no válida para iconos'));
+                throw new InvalidClassException(__u('Invalid icons class'));
             }
 
             try {

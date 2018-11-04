@@ -115,7 +115,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            return $this->returnJsonResponseException($e);
         }
     }
 
@@ -146,7 +146,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleNormal',
-                    'name' => __('Detalles de Cuenta'),
+                    'name' => __('Account Details'),
                     'icon' => $this->icons->getIconView()->getIcon()
                 ]
             );
@@ -201,7 +201,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->view->assign('title',
                     [
                         'class' => 'titleNormal',
-                        'name' => __('Detalles de Cuenta'),
+                        'name' => __('Account Details'),
                         'icon' => $this->icons->getIconView()->getIcon()
                     ]
                 );
@@ -222,10 +222,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
                 $this->eventDispatcher->notifyEvent('show.account.link',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Enlace visualizado'))
-                        ->addDetail(__u('Cuenta'), $accountData->getName())
-                        ->addDetail(__u('Cliente'), $accountData->getClientName())
-                        ->addDetail(__u('Agente'), $this->router->request()->headers()->get('User-Agent'))
+                        ->addDescription(__u('Link viewed'))
+                        ->addDetail(__u('Account'), $accountData->getName())
+                        ->addDetail(__u('Client'), $accountData->getClientName())
+                        ->addDetail(__u('Agent'), $this->router->request()->headers()->get('User-Agent'))
                         ->addDetail(__u('HTTPS'), $this->router->request()->isSecure() ? __u('ON') : __u('OFF'))
                         ->addDetail(__u('IP'), $clientAddress)
                         ->addData('userId', $publicLinkData->getUserId())
@@ -258,7 +258,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleGreen',
-                    'name' => __('Nueva Cuenta'),
+                    'name' => __('New Account'),
                     'icon' => $this->icons->getIconAdd()->getIcon()
                 ]
             );
@@ -304,7 +304,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleGreen',
-                    'name' => __('Nueva Cuenta'),
+                    'name' => __('New Account'),
                     'icon' => $this->icons->getIconAdd()->getIcon()
                 ]
             );
@@ -350,7 +350,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleOrange',
-                    'name' => __('Editar Cuenta'),
+                    'name' => __('Edit Account'),
                     'icon' => $this->icons->getIconEdit()->getIcon()
                 ]
             );
@@ -397,7 +397,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleRed',
-                    'name' => __('Eliminar Cuenta'),
+                    'name' => __('Remove Account'),
                     'icon' => $this->icons->getIconDelete()->getIcon()
                 ]
             );
@@ -442,7 +442,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleOrange',
-                    'name' => __('Modificar Clave de Cuenta'),
+                    'name' => __('Edit Account Password'),
                     'icon' => $this->icons->getIconEditPass()->getIcon()
                 ]
             );
@@ -486,7 +486,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view->assign('title',
                 [
                     'class' => 'titleNormal',
-                    'name' => __('Detalles de Cuenta'),
+                    'name' => __('Account Details'),
                     'icon' => 'access_time'
                 ]
             );
@@ -570,8 +570,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('show.account.pass',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Clave visualizada'))
-                    ->addDetail(__u('Cuenta'), $account->getName()))
+                    ->addDescription(__u('Password viewed'))
+                    ->addDetail(__u('Account'), $account->getName()))
             );
 
             return $this->returnJsonResponseData($data);
@@ -628,8 +628,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('show.account.pass.history',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Clave visualizada'))
-                    ->addDetail(__u('Cuenta'), $account->getName()))
+                    ->addDescription(__u('Password viewed'))
+                    ->addDetail(__u('Account'), $account->getName()))
             );
 
             return $this->returnJsonResponseData($data);
@@ -670,8 +670,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
         $this->eventDispatcher->notifyEvent('copy.account.pass',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Clave copiada'))
-                ->addDetail(__u('Cuenta'), $account->getName()))
+                ->addDescription(__u('Password copied'))
+                ->addDetail(__u('Account'), $account->getName()))
         );
 
         return $this->returnJsonResponseData($data);
@@ -707,8 +707,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
         $this->eventDispatcher->notifyEvent('copy.account.pass.history',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Clave copiada'))
-                ->addDetail(__u('Cuenta'), $account->getName()))
+                ->addDescription(__u('Password copied'))
+                ->addDetail(__u('Account'), $account->getName()))
         );
 
         return $this->returnJsonResponseData($data);
@@ -744,9 +744,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('create.account',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta creada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account created'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
             return $this->returnJsonResponseData(
@@ -755,7 +755,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_EDIT)
                 ],
                 JsonResponse::JSON_SUCCESS,
-                __u('Cuenta creada')
+                __u('Account created')
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
@@ -791,9 +791,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('edit.account',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta actualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account updated'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
             return $this->returnJsonResponseData(
@@ -802,7 +802,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
-                __u('Cuenta actualizada')
+                __u('Account updated')
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
@@ -834,9 +834,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('edit.account.pass',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Clave actualizada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Password updated'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
             return $this->returnJsonResponseData(
@@ -845,7 +845,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
-                __u('Clave actualizada')
+                __u('Password updated')
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
@@ -875,9 +875,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('edit.account.restore',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta restaurada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account restored'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
             return $this->returnJsonResponseData(
@@ -886,7 +886,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT_VIEW)
                 ],
                 JsonResponse::JSON_SUCCESS,
-                __u('Cuenta restaurada')
+                __u('Account restored')
             );
         } catch (\Exception $e) {
             processException($e);
@@ -913,10 +913,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
+                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
             }
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
@@ -927,12 +927,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('delete.account',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cuenta eliminada'))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    ->addDescription(__u('Account removed'))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -955,18 +955,18 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $description = $this->request->analyzeString('description');
 
             if (empty($description)) {
-                throw new ValidationException(__u('Es necesaria una descripción'));
+                throw new ValidationException(__u('A description is needed'));
             }
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('request.account',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Solicitud'))
-                    ->addDetail(__u('Solicitante'), sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin()))
-                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                    ->addDetail(__u('Descripción'), $description)
+                    ->addDescription(__u('Request'))
+                    ->addDetail(__u('Requester'), sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin()))
+                    ->addDetail(__u('Account'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail(__u('Description'), $description)
                     ->addData('accountId', $id)
                     ->addData('whoId', $this->userData->getId())
                     ->addData('userId', $accountDetails->userId)
@@ -979,7 +979,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     'nextAction' => Acl::getActionRoute(Acl::ACCOUNT)
                 ],
                 JsonResponse::JSON_SUCCESS,
-                __u('Solicitud realizada')
+                __u('Request done')
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);

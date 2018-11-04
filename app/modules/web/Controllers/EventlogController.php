@@ -104,7 +104,7 @@ final class EventlogController extends ControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table-simple', 'grid');
@@ -124,10 +124,10 @@ final class EventlogController extends ControllerBase
             $this->eventLogService->clear();
 
             $this->eventDispatcher->notifyEvent('clear.eventlog',
-                new Event($this, EventMessage::factory()->addDescription(__u('Registro de eventos vaciado')))
+                new Event($this, EventMessage::factory()->addDescription(__u('Event log cleared')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Registro de eventos vaciado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Event log cleared'));
         } catch (\Exception $e) {
             processException($e);
 

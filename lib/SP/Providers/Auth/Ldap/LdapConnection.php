@@ -92,7 +92,7 @@ final class LdapConnection implements LdapConnectionInterface
 
             $this->eventDispatcher->notifyEvent('ldap.check.connection',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Conexión a LDAP correcta')))
+                    ->addDescription(__u('LDAP connection OK')))
             );
         } catch (LdapException $e) {
             throw $e;
@@ -138,11 +138,11 @@ final class LdapConnection implements LdapConnectionInterface
         if (!is_resource($this->ldapHandler)) {
             $this->eventDispatcher->notifyEvent('ldap.connect',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
-                    ->addDetail(__u('Servidor'), $this->ldapParams->getServer()))
+                    ->addDescription(__u('Unable to connect to LDAP server'))
+                    ->addDetail(__u('Server'), $this->ldapParams->getServer()))
             );
 
-            throw new LdapException(__u('No es posible conectar con el servidor de LDAP'));
+            throw new LdapException(__u('Unable to connect to LDAP server'));
         }
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, self::TIMEOUT);
@@ -166,9 +166,9 @@ final class LdapConnection implements LdapConnectionInterface
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.params',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Los parámetros de LDAP no están configurados'))));
+                    ->addDescription(__u('LDAP parameters are not set'))));
 
-            throw new LdapException(__u('Los parámetros de LDAP no están configurados'));
+            throw new LdapException(__u('LDAP parameters are not set'));
         }
     }
 
@@ -185,12 +185,12 @@ final class LdapConnection implements LdapConnectionInterface
             if ($result === false) {
                 $this->eventDispatcher->notifyEvent('ldap.connect.tls',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('No es posible conectar con el servidor de LDAP'))
-                        ->addDetail(__u('Servidor'), $this->ldapParams->getServer())
+                        ->addDescription(__u('Unable to connect to LDAP server'))
+                        ->addDetail(__u('Server'), $this->ldapParams->getServer())
                         ->addDetail('TLS', __u('ON'))
                         ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))));
 
-                throw new LdapException(__u('No es posible conectar con el servidor de LDAP'));
+                throw new LdapException(__u('Unable to connect to LDAP server'));
             }
 
             return true;
@@ -228,13 +228,13 @@ final class LdapConnection implements LdapConnectionInterface
         if (@ldap_bind($this->ldapHandler, $dn, $pass) === false) {
             $this->eventDispatcher->notifyEvent('ldap.bind',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al conectar (BIND)'))
+                    ->addDescription(__u('Connection error (BIND)'))
                     ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))
                     ->addDetail('LDAP DN', $dn))
             );
 
             throw new LdapException(
-                __u('Error al conectar (BIND)'),
+                __u('Connection error (BIND)'),
                 LdapException::ERROR,
                 self::getLdapErrorMessage($this->ldapHandler),
                 $this->getErrorCode()
@@ -298,7 +298,7 @@ final class LdapConnection implements LdapConnectionInterface
         ) {
             $this->eventDispatcher->notifyEvent('ldap.unbind',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al desconectar del servidor de LDAP'))
+                    ->addDescription(__u('Error while disconnecting from LDAP server'))
                     ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler)))
             );
 

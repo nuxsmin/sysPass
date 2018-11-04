@@ -275,9 +275,9 @@ final class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__('Versión de PHP requerida >= %s <= %s'), '7.0', '7.2'),
+                sprintf(__('Required PHP version >= %s <= %s'), '7.0', '7.2'),
                 InitializationException::ERROR,
-                __u('Actualice la versión de PHP para que la aplicación funcione correctamente')
+                __u('Please update the PHP version to run sysPass')
             );
         }
 

@@ -127,8 +127,8 @@ final class ItemsController extends SimpleControllerBase
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus(0);
         $jsonResponse->setData([
-            'message' => __('No hay no hay notificaciones pendientes'),
-            'message_has' => sprintf(__('Hay notificaciones pendientes: %d'), $count),
+            'message' => __('There aren\'t any pending notifications'),
+            'message_has' => sprintf(__('There are pending notifications: %d'), $count),
             'count' => $count,
             'notifications' => $notifications,
             'hash' => sha1(implode('', $notifications))

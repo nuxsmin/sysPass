@@ -94,9 +94,9 @@ final class MySQLHandler implements DBStorageInterface
                 || (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket())
             ) {
                 throw new DatabaseException(
-                    __u('No es posible conectar con la BD'),
+                    __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,
-                    __u('Compruebe los datos de conexión'));
+                    __u('Please, check the connection parameters'));
             }
 
             try {
@@ -114,7 +114,7 @@ final class MySQLHandler implements DBStorageInterface
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
                 throw new DatabaseException(
-                    __u('No es posible conectar con la BD'),
+                    __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),
@@ -161,9 +161,9 @@ final class MySQLHandler implements DBStorageInterface
         if (!$this->db) {
             if (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket()) {
                 throw new DatabaseException(
-                    __u('No es posible conectar con la BD'),
+                    __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,
-                    __u('Compruebe los datos de conexión'));
+                    __u('Please, check the connection parameters'));
             }
 
             try {
@@ -173,7 +173,7 @@ final class MySQLHandler implements DBStorageInterface
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
                 throw new DatabaseException(
-                    __u('No es posible conectar con la BD'),
+                    __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),

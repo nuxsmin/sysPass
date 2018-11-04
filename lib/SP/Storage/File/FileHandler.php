@@ -69,7 +69,7 @@ final class FileHandler
         }
 
         if (@fwrite($this->handle, $data) === false) {
-            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 
         return $this;
@@ -86,7 +86,7 @@ final class FileHandler
     public function open($mode = 'r')
     {
         if (($this->handle = @fopen($this->file, $mode)) === false) {
-            throw new FileException(sprintf(__('No es posible abrir el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to open the file (%s)'), $this->file));
         }
 
         return $this->handle;
@@ -101,7 +101,7 @@ final class FileHandler
     public function readToString(): string
     {
         if (($data = file_get_contents($this->file)) === false) {
-            throw new FileException(sprintf(__('No es posible leer desde el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
         }
 
         return $data;
@@ -115,7 +115,7 @@ final class FileHandler
     public function readToArray(): array
     {
         if (($data = @file($this->file, FILE_SKIP_EMPTY_LINES)) === false) {
-            throw new FileException(sprintf(__('No es posible leer desde el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read from file (%s)'), $this->file));
         }
 
         return $data;
@@ -132,7 +132,7 @@ final class FileHandler
     public function save($data)
     {
         if (file_put_contents($this->file, $data, LOCK_EX) === false) {
-            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 
         return $this;
@@ -170,7 +170,7 @@ final class FileHandler
     public function close()
     {
         if (!is_resource($this->handle) || @fclose($this->handle) === false) {
-            throw new FileException(sprintf(__('No es posible cerrar el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to close the file (%s)'), $this->file));
         }
 
         return $this;
@@ -216,7 +216,7 @@ final class FileHandler
     public function checkIsWritable()
     {
         if (!is_writable($this->file) && @touch($this->file) === false) {
-            throw new FileException(sprintf(__('No es posible escribir el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to write in file (%s)'), $this->file));
         }
 
         return $this;
@@ -231,7 +231,7 @@ final class FileHandler
     public function checkFileExists()
     {
         if (!file_exists($this->file)) {
-            throw new FileException(sprintf(__('Archivo no encontrado (%s)'), $this->file));
+            throw new FileException(sprintf(__('File not found (%s)'), $this->file));
         }
 
         return $this;
@@ -256,7 +256,7 @@ final class FileHandler
         $size = filesize($this->file);
 
         if ($size === false || ($isExceptionOnZero === true && $size === 0)) {
-            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
         }
 
         return $size;
@@ -283,7 +283,7 @@ final class FileHandler
     public function delete()
     {
         if (@unlink($this->file) === false) {
-            throw new FileException(sprintf(__('No es posible eliminar el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to delete file (%s)'), $this->file));
         }
 
         return $this;
@@ -311,7 +311,7 @@ final class FileHandler
     public function checkIsReadable()
     {
         if (!is_readable($this->file)) {
-            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));
         }
 
         return $this;

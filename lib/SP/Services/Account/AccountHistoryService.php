@@ -72,7 +72,7 @@ final class AccountHistoryService extends Service
         $results = $this->accountHistoryRepository->getById($id);
 
         if ($results->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('No se pudieron obtener los datos de la cuenta'));
+            throw new NoSuchItemException(__u('Error while retrieving account\'s data'));
         }
 
         return $results->getData();
@@ -189,7 +189,7 @@ final class AccountHistoryService extends Service
     public function delete($id)
     {
         if ($this->accountHistoryRepository->delete($id) === 0) {
-            throw new ServiceException(__u('Error al eliminar la cuenta'));
+            throw new ServiceException(__u('Error while deleting the account'));
         }
     }
 
@@ -230,7 +230,7 @@ final class AccountHistoryService extends Service
     public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
     {
         if ($this->accountHistoryRepository->updatePassword($accountRequest) !== 1) {
-            throw new ServiceException(__u('Error al actualizar la clave'));
+            throw new ServiceException(__u('Error while updating the password'));
         }
     }
 

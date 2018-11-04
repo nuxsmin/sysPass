@@ -84,15 +84,15 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->customFieldDefData->getName()) {
-            throw new ValidationException(__u('Nombre del campo no indicado'));
+            throw new ValidationException(__u('Field name not set'));
         }
 
         if (0 === $this->customFieldDefData->getTypeId()) {
-            throw new ValidationException(__u('Tipo del campo no indicado'));
+            throw new ValidationException(__u('Field type not set'));
         }
 
         if (0 === $this->customFieldDefData->getModuleId()) {
-            throw new ValidationException(__u('Módulo del campo no indicado'));
+            throw new ValidationException(__u('Field module not set'));
         }
     }
 

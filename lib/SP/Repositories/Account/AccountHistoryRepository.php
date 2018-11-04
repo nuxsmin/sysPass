@@ -140,7 +140,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         $queryData->addParam((int)$dto->isDelete());
         $queryData->addParam($dto->getMasterPassHash());
         $queryData->addParam($dto->getAccountId());
-        $queryData->setOnErrorMessage(__u('Error al actualizar el historial'));
+        $queryData->setOnErrorMessage(__u('Error while updating history'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -159,7 +159,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountHistory WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -289,7 +289,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -312,7 +312,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountHistory WHERE accountId IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the accounts'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -433,7 +433,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
             $request->hash,
             $request->id
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
+        $queryData->setOnErrorMessage(__u('Error while updating the password'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

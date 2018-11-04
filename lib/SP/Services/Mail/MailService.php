@@ -63,8 +63,8 @@ final class MailService extends Service
             $mailer = $this->dic->get(MailProvider::class)->getMailer($mailParams);
 
             $mailMessage = new MailMessage();
-            $mailMessage->setTitle(__u('Prueba de correo'));
-            $mailMessage->addDescription(__u('Esto es una prueba de correo para verificar el correcto funcionamiento de la configuración.'));
+            $mailMessage->setTitle(__u('Mail test'));
+            $mailMessage->addDescription(__u('This is a test email in order to verify that the configuration is working right.'));
             $mailMessage->setFooter($this->getEmailFooter());
 
             $mailer->isHTML();
@@ -78,7 +78,7 @@ final class MailService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
-                __u('Error al enviar correo'),
+                __u('Error while sending the email'),
                 ServiceException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
@@ -138,8 +138,8 @@ final class MailService extends Service
 
             $this->eventDispatcher->notifyEvent('send.mail',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Correo enviado'))
-                    ->addDetail(__u('Destinatario'), implode(',', array_map(function ($value) {
+                    ->addDescription(__u('Email sent'))
+                    ->addDetail(__u('Recipient'), implode(',', array_map(function ($value) {
                         return $value[0];
                     }, $this->mailer->getToAddresses()))))
             );
@@ -148,7 +148,7 @@ final class MailService extends Service
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            throw new ServiceException(__u('Error al enviar correo'));
+            throw new ServiceException(__u('Error while sending the email'));
         }
     }
 
@@ -183,7 +183,7 @@ final class MailService extends Service
             $this->mailer = $this->dic->get(MailProvider::class)
                 ->getMailer($this->getParamsFromConfig());
         } else {
-            throw new ServiceException(__u('Servicio de correo no disponible'));
+            throw new ServiceException(__u('Mail service unavailable'));
         }
     }
 

@@ -128,11 +128,11 @@ final class AccountForm extends FormBase implements FormInterface
         }
 
         if (!$this->accountRequest->pass) {
-            throw new ValidationException(__u('Es necesaria una clave'));
+            throw new ValidationException(__u('A key is needed'));
         }
 
         if ($this->request->analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
-            throw new ValidationException(__u('Las claves no coinciden'));
+            throw new ValidationException(__u('Passwords do not match'));
         }
     }
 
@@ -168,15 +168,15 @@ final class AccountForm extends FormBase implements FormInterface
     private function checkCommon()
     {
         if (!$this->accountRequest->name) {
-            throw new ValidationException(__u('Es necesario un nombre de cuenta'));
+            throw new ValidationException(__u('An account name needed'));
         }
 
         if (!$this->accountRequest->clientId) {
-            throw new ValidationException(__u('Es necesario un nombre de cliente'));
+            throw new ValidationException(__u('A client name needed'));
         }
 
         if (!$this->accountRequest->categoryId) {
-            throw new ValidationException(__u('Es necesario una categoría'));
+            throw new ValidationException(__u('A category is needed'));
         }
     }
 

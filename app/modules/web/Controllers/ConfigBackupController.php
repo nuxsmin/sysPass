@@ -54,7 +54,7 @@ final class ConfigBackupController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
 
         try {
@@ -65,10 +65,10 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente')))
+                    ->addDescription(__u('Application and database backup completed successfully')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de backup finalizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Backup process finished'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -87,13 +87,13 @@ final class ConfigBackupController extends SimpleControllerBase
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves no coinciden'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Passwords do not match'));
         }
 
         try {
             $this->eventDispatcher->notifyEvent('run.export.start',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportación de sysPass en XML')))
+                    ->addDescription(__u('sysPass XML export')))
             );
 
             SessionContext::close();
@@ -103,7 +103,7 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Proceso de exportación finalizado')))
+                    ->addDescription(__u('Export process finished')))
             );
 
             $verify = $this->dic->get(XmlVerifyService::class);
@@ -118,20 +118,20 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('run.export.verify',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Verificación de datos exportados finalizada'))
-                    ->addDetail(__u('Versión'), $verifyResult->getVersion())
-                    ->addDetail(__u('Encriptado'), $verifyResult->isEncrypted() ? __u('Sí') : __u('No'))
-                    ->addDetail(__u('Cuentas'), $nodes['Account'])
-                    ->addDetail(__u('Clientes'), $nodes['Client'])
-                    ->addDetail(__u('Categorías'), $nodes['Category'])
-                    ->addDetail(__u('Etiquetas'), $nodes['Tag'])
+                    ->addDescription(__u('Verification of exported data finished'))
+                    ->addDetail(__u('Version'), $verifyResult->getVersion())
+                    ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))
+                    ->addDetail(__u('Accounts'), $nodes['Account'])
+                    ->addDetail(__u('Clients'), $nodes['Client'])
+                    ->addDetail(__u('Categories'), $nodes['Category'])
+                    ->addDetail(__u('Tags'), $nodes['Tag'])
                 )
             );
 
             // Create the XML archive after verifying the export integrity
             $export->createArchive();
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Export process finished'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -159,8 +159,8 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('download.exportFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();
@@ -192,7 +192,7 @@ final class ConfigBackupController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->configData->isDemoEnabled()) {
-            return __('Ey, esto es una DEMO!!');
+            return __('Ey, this is a DEMO!!');
         }
 
         try {
@@ -205,8 +205,8 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('download.backupAppFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();
@@ -238,7 +238,7 @@ final class ConfigBackupController extends SimpleControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if ($this->configData->isDemoEnabled()) {
-            return __('Ey, esto es una DEMO!!');
+            return __('Ey, this is a DEMO!!');
         }
 
         try {
@@ -251,8 +251,8 @@ final class ConfigBackupController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('download.backupDbFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), str_replace(APP_ROOT, '', $file->getFile())))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile())))
             );
 
             $response = $this->router->response();

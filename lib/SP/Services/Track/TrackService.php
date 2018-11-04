@@ -84,7 +84,7 @@ final class TrackService extends Service
     public function delete($id)
     {
         if ($this->trackRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Track no encontrado'));
+            throw new NoSuchItemException(__u('Track not found'));
         }
     }
 
@@ -98,7 +98,7 @@ final class TrackService extends Service
     public function unlock($id)
     {
         if ($this->trackRepository->unlock($id) === 0) {
-            throw new NoSuchItemException(__u('Track no encontrado'));
+            throw new NoSuchItemException(__u('Track not found'));
         }
     }
 
@@ -125,7 +125,7 @@ final class TrackService extends Service
         $result = $this->trackRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Track no encontrado'));
+            throw new NoSuchItemException(__u('Track not found'));
         }
 
         return $result->getData();
@@ -159,8 +159,8 @@ final class TrackService extends Service
 
                 $this->eventDispatcher->notifyEvent('track.delay',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
-                        ->addDetail(__u('Segundos'), $delaySeconds))
+                        ->addDescription(sprintf(__('Attempts exceeded (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
+                        ->addDetail(__u('Seconds'), $delaySeconds))
                 );
 
                 logger('Tracking delay: ' . $delaySeconds . 's');
@@ -205,7 +205,7 @@ final class TrackService extends Service
         if ($trackRequest->getIpv4() === null
             && $trackRequest->getIpv6() === null
         ) {
-            throw new ServiceException(__u('Dirección IP no establecida'));
+            throw new ServiceException(__u('IP address not set'));
         }
 
         $result = $this->trackRepository->add($trackRequest);

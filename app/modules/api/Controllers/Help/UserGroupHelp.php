@@ -40,7 +40,7 @@ final class UserGroupHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de grupo'), true)
+                self::getItem('id', __('Group Id'), true)
             ];
     }
 
@@ -51,9 +51,9 @@ final class UserGroupHelp implements HelpInterface
     {
         return
             [
-                self::getItem('name', __('Nombre del grupo'), true),
-                self::getItem('description', __('Descripción del grupo')),
-                self::getItem('usersId', __('Array con Ids de usuarios'))
+                self::getItem('name', __('Group name'), true),
+                self::getItem('description', __('Group description')),
+                self::getItem('usersId', __('Array with users Id'))
             ];
     }
 
@@ -64,10 +64,10 @@ final class UserGroupHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de grupo'), true),
-                self::getItem('name', __('Nombre del grupo'), true),
-                self::getItem('description', __('Descripción del grupo')),
-                self::getItem('usersId', __('Array con Ids de usuarios'))
+                self::getItem('id', __('Group Id'), true),
+                self::getItem('name', __('Group name'), true),
+                self::getItem('description', __('Group description')),
+                self::getItem('usersId', __('Array with users Id'))
             ];
     }
 
@@ -78,8 +78,8 @@ final class UserGroupHelp implements HelpInterface
     {
         return
             [
-                self::getItem('text', __('Texto a buscar')),
-                self::getItem('count', __('Número de resultados a mostrar'))
+                self::getItem('text', __('Text to search for')),
+                self::getItem('count', __('Number of results to display'))
             ];
     }
 
@@ -90,7 +90,7 @@ final class UserGroupHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de grupo'), true)
+                self::getItem('id', __('Group Id'), true)
             ];
     }
 }

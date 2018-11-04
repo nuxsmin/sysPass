@@ -108,7 +108,7 @@ final class PluginController extends ControllerBase
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -130,10 +130,10 @@ final class PluginController extends ControllerBase
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Plugin'));
+            $this->view->assign('header', __('View Plugin'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);
@@ -196,10 +196,10 @@ final class PluginController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.plugin.enable',
                 new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin habilitado')))
+                    EventMessage::factory()->addDescription(__u('Plugin enabled')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin habilitado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin enabled'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -223,10 +223,10 @@ final class PluginController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.plugin.disable',
                 new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin deshabilitado')))
+                    EventMessage::factory()->addDescription(__u('Plugin disabled')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deshabilitado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin disabled'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -250,10 +250,10 @@ final class PluginController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.plugin.reset',
                 new Event($this,
-                    EventMessage::factory()->addDescription(__u('Plugin restablecido')))
+                    EventMessage::factory()->addDescription(__u('Plugin reset')))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin restablecido'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin reset'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -274,7 +274,7 @@ final class PluginController extends ControllerBase
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -282,13 +282,13 @@ final class PluginController extends ControllerBase
 
                 $this->eventDispatcher->notifyEvent('delete.plugin.selection', new Event($this));
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugins eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugins deleted'));
             } else {
                 $this->pluginService->delete($id);
 
                 $this->eventDispatcher->notifyEvent('delete.plugin', new Event($this));
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin eliminado'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deleted'));
             }
         } catch (\Exception $e) {
             processException($e);

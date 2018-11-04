@@ -120,7 +120,7 @@ final class UserService extends Service
         $result = $this->userRepository->updateLastLoginById($id);
 
         if ($this->userRepository->updateLastLoginById($id) === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
+            throw new NoSuchItemException(__u('User does not exist'));
         }
 
         return $result;
@@ -151,7 +151,7 @@ final class UserService extends Service
         $result = $this->userRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
+            throw new NoSuchItemException(__u('User does not exist'));
         }
 
         return $result->getData();
@@ -170,7 +170,7 @@ final class UserService extends Service
         $result = $this->userRepository->getByLogin($login);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El usuario no existe'));
+            throw new NoSuchItemException(__u('User does not exist'));
         }
 
         return $result->getData();
@@ -189,7 +189,7 @@ final class UserService extends Service
     public function delete($id)
     {
         if ($this->userRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Usuario no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('User not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -206,7 +206,7 @@ final class UserService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->userRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los usuarios'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting the users'), ServiceException::WARNING);
         }
 
         return $count;
@@ -307,7 +307,7 @@ final class UserService extends Service
     public function update($itemData)
     {
         if ($this->userRepository->update($itemData) === 0) {
-            throw new ServiceException(__u('Error al actualizar el usuario'));
+            throw new ServiceException(__u('Error while updating the user'));
         }
     }
 
@@ -328,7 +328,7 @@ final class UserService extends Service
         $passRequest->setIsChangedPass(1);
 
         if ($this->userRepository->updatePassById($userId, $passRequest) === 0) {
-            throw new ServiceException(__u('Error al modificar la clave'));
+            throw new ServiceException(__u('Error while updating the password'));
         }
     }
 

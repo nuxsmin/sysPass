@@ -73,7 +73,7 @@ final class ClientService extends Service
     public function getById($id)
     {
         if (($result = $this->clientRepository->getById($id))->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -92,7 +92,7 @@ final class ClientService extends Service
     public function getByName($name)
     {
         if (($result = $this->clientRepository->getByName($name))->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -107,7 +107,7 @@ final class ClientService extends Service
     public function delete($id)
     {
         if ($this->clientRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Cliente no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Client not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -124,7 +124,7 @@ final class ClientService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->clientRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los clientes'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while deleting the clients'), ServiceException::WARNING);
         }
 
         return $count;

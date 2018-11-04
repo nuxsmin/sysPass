@@ -173,7 +173,9 @@ final class OldCrypt
         // Comprobar el módulo de encriptación
         if (!OldCrypt::checkCryptModule()) {
             throw new SPException(
-                __('Error interno', false), SPException::CRITICAL, __('No se puede usar el módulo de encriptación', false)
+                __u('Internal error'),
+                SPException::CRITICAL,
+                __u('Crypto module cannot be loaded')
             );
         }
 
@@ -183,7 +185,9 @@ final class OldCrypt
 
         if (!empty($data) && ($encData['data'] === false || null === $encData['data'])) {
             throw new SPException(
-                __('Error interno', false), SPException::CRITICAL, __('Error al generar datos cifrados', false)
+                __u('Internal error'),
+                SPException::CRITICAL,
+                __u('Error while creating the encrypted data')
             );
         }
 

@@ -22,7 +22,7 @@
                     <?php endif; ?>
                     <span id="user-name-footer"><?php echo $_getvar('ctx_userName'); ?></span>
                     <span for="user-name-footer"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $_getvar('ctx_userGroup')); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
                 </span>
             </div>
         <?php endif; ?>
@@ -41,7 +41,7 @@
                     <i class="material-icons mdl-color-text--red-900">http</i>
                 </span>
                 <span for="secure-info"
-                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Indica si la conexión utiliza HTTPS.') . '<br><br>' . __('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Tells whether the connection uses HTTPS or not.') . '<br><br>' . __('Passwords sent from forms are encrypted using PKI, the remain data don\'t.'); ?></span>
             <?php endif; ?>
 
             <?php if (DEBUG): ?>
@@ -63,11 +63,11 @@
                 <?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?>
             </a>
             <span for="app-info"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Ayuda :: FAQ :: Changelog'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Help :: FAQ :: Changelog'); ?></span>
             &nbsp;::&nbsp;
             <a id="app-project" href="<?php echo $_getvar('app_blog_url'); ?>" target="_blank">cygnux.org</a>
             <span for="app-project"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Un proyecto de cygnux.org'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('A cygnux.org project'); ?></span>
         </div>
         <!-- Close Project -->
     </div>

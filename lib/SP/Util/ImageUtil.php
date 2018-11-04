@@ -62,7 +62,7 @@ final class ImageUtil
         $im = @imagecreatefromstring($image);
 
         if ($im === false) {
-            throw new InvalidImageException(__u('Imagen no válida'));
+            throw new InvalidImageException(__u('Invalid image'));
         }
 
         $width = imagesx($im);

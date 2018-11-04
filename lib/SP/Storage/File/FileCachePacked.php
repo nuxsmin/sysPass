@@ -54,11 +54,11 @@ final class FileCachePacked implements FileStorageInterface
         $file = new FileHandler($path);
 
         if (!($data = gzuncompress($file->checkIsReadable()->readToString()))) {
-            throw new FileException(sprintf(__('Error al descomprimir datos del archivo (%s)'), $path));
+            throw new FileException(sprintf(__('Error while decompressing the file data (%s)'), $path));
         }
 
         if (($this->data = unserialize($data)) === false) {
-            throw new FileException(__('Error al obtener los datos'));
+            throw new FileException(__('Error while retrieving the data'));
         }
 
         $this->loaded = true;
@@ -96,7 +96,7 @@ final class FileCachePacked implements FileStorageInterface
         $this->createPath(dirname($path));
 
         if (!($data = gzcompress(serialize($data)))) {
-            throw new FileException(sprintf(__('Error al comprimir datos del archivo (%s)'), $path));
+            throw new FileException(sprintf(__('Error while compressing the file data (%s)'), $path));
         }
 
         $file = new FileHandler($path);
@@ -113,7 +113,7 @@ final class FileCachePacked implements FileStorageInterface
     public function createPath($path)
     {
         if (!is_dir($path) && mkdir($path, 0700, true) === false) {
-            throw new FileException(sprintf(__('No es posible crear el directorio (%s)'), $path));
+            throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
         }
     }
 
@@ -141,7 +141,7 @@ final class FileCachePacked implements FileStorageInterface
     public function get($key)
     {
         if (!$this->loaded) {
-            throw new RuntimeException((__('Datos no cargados')));
+            throw new RuntimeException((__('Data not loaded')));
         }
 
         return isset($this->data[$key]) ? $this->data[$key] : null;

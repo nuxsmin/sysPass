@@ -127,9 +127,9 @@ abstract class CsvImportBase
             // Comprobar el número de campos de la línea
             if ($numfields !== $this->numFields) {
                 throw new ImportException(
-                    sprintf(__('El número de campos es incorrecto (%d)'), $numfields),
+                    sprintf(__('Wrong number of fields (%d)'), $numfields),
                     ImportException::ERROR,
-                    sprintf(__('Compruebe el formato del archivo CSV en línea %s'), $line)
+                    sprintf(__('Please, check the CSV file format in line %s'), $line)
                 );
             }
 
@@ -155,16 +155,16 @@ abstract class CsvImportBase
 
                 $this->eventDispatcher->notifyEvent('run.import.csv.process.account',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Cuenta importada'), $accountName)
-                        ->addDetail(__u('Cliente'), $clientName))
+                        ->addDetail(__u('Account imported'), $accountName)
+                        ->addDetail(__u('Client'), $clientName))
                 );
             } catch (\Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception',
                     new Event($e, EventMessage::factory()
-                        ->addDetail(__u('Error importando cuenta'), $accountName)
-                        ->addDetail(__u('Error procesando línea'), $line))
+                        ->addDetail(__u('Error while importing the account'), $accountName)
+                        ->addDetail(__u('Error while processing line'), $line))
                 );
             }
         }
@@ -173,9 +173,9 @@ abstract class CsvImportBase
 
         if ($line === 0) {
             throw new ImportException(
-                sprintf(__('El número de campos es incorrecto (%d)'), 0),
+                sprintf(__('Wrong number of fields (%d)'), 0),
                 ImportException::ERROR,
-                sprintf(__('Compruebe el formato del archivo CSV en línea %s'), 0)
+                sprintf(__('Please, check the CSV file format in line %s'), 0)
             );
         }
     }

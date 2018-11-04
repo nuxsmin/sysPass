@@ -64,9 +64,9 @@ final class FileImport
     {
         if (($file = $request->getFile($filename)) === null) {
             throw new FileException(
-                __u('Archivo no subido correctamente'),
+                __u('File successfully uploaded'),
                 FileException::ERROR,
-                __u('Verifique los permisos del usuario del servidor web')
+                __u('Please check the web server user permissions')
             );
         }
 
@@ -85,9 +85,9 @@ final class FileImport
     {
         if (!is_array($fileData)) {
             throw new FileException(
-                __u('Archivo no subido correctamente'),
+                __u('File successfully uploaded'),
                 FileException::ERROR,
-                __u('Verifique los permisos del usuario del servidor web')
+                __u('Please check the web server user permissions')
             );
         }
 
@@ -97,9 +97,9 @@ final class FileImport
 
             if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
                 throw new FileException(
-                    __u('Tipo de archivo no soportado'),
+                    __u('File type not allowed'),
                     FileException::ERROR,
-                    __u('Compruebe la extensión del archivo')
+                    __u('Please, check the file extension')
                 );
             }
         }
@@ -113,9 +113,9 @@ final class FileImport
             logger('Max. upload size: ' . Util::getMaxUpload());
 
             throw new FileException(
-                __u('Error interno al leer el archivo'),
+                __u('Internal error while reading the file'),
                 FileException::ERROR,
-                __u('Compruebe la configuración de PHP para subir archivos')
+                __u('Please, check PHP configuration for upload files')
             );
         }
 

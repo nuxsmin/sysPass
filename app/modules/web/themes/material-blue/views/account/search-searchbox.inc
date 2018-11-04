@@ -23,7 +23,7 @@ $pager = $data->getPager();
             <div class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="search"
                        name="search" value="<?php echo $_getvar('searchTxt'); ?>" tabindex="1"/>
-                <label class="mdl-textfield__label" for="search"><?php echo __('Texto a buscar'); ?></label>
+                <label class="mdl-textfield__label" for="search"><?php echo __('Text to search for'); ?></label>
             </div>
 
             <?php include $this->includePartial('help_account_search'); ?>
@@ -31,7 +31,7 @@ $pager = $data->getPager();
 
         <div class="search-filters">
             <select id="client" name="client" class="select-box select-box-deselect" tabindex="3">
-                <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
+                <option value=""><?php echo __('Select Client'); ?></option>
                 <?php /** @var \SP\Mvc\View\Components\SelectItem $client */
                 foreach ($_getvar('clients') as $client): ?>
                     <option
@@ -40,7 +40,7 @@ $pager = $data->getPager();
             </select>
 
             <select id="category" name="category" class="select-box select-box-deselect" tabindex="4">
-                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
+                <option value=""><?php echo __('Select Category'); ?></option>
                 <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
                 foreach ($_getvar('categories') as $category): ?>
                     <option
@@ -56,11 +56,11 @@ $pager = $data->getPager();
                     && !$_getvar('isAdmin')):
                     ?>
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="globalSearch"
-                           title="<?php echo __('Búsqueda global'); ?>">
+                           title="<?php echo __('Global search'); ?>">
                         <input type="checkbox" id="globalSearch" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="chkgsearch" tabindex="2"
                             <?php echo $_getvar('searchGlobal') ? 'checked="checked"' : ''; ?>/>
-                        <span class="mdl-switch__label" title="<?php echo __('Búsqueda global'); ?>"></span>
+                        <span class="mdl-switch__label" title="<?php echo __('Global search'); ?>"></span>
                     </label>
                     <input type="hidden" name="gsearch" value="<?php echo $_getvar('searchGlobal'); ?>">
                 <?php endif; ?>
@@ -71,18 +71,18 @@ $pager = $data->getPager();
                     <button type="button" id="btn-favorite"
                             class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                         <i class="material-icons mdl-color-text--amber-A200"
-                           title="<?php echo __('Mostrar Todos'); ?>">star</i>
+                           title="<?php echo __('Display All'); ?>">star</i>
                     </button>
                 <?php else: ?>
                     <button type="button" id="btn-favorite"
                             class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                         <i class="material-icons"
-                           title="<?php echo __('Mostrar Favoritos'); ?>">star</i>
+                           title="<?php echo __('Show Favorites'); ?>">star</i>
                     </button>
                 <?php endif; ?>
 
                 <span for="btn-favorite"
-                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Filtrar Favoritos'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Favorites Filtering'); ?></span>
 
                 <button type="reset" id="btn-reset"
                         class="btn-clear mdl-button mdl-js-button mdl-button--icon" tabindex="6">
@@ -97,7 +97,7 @@ $pager = $data->getPager();
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"
                        min="3" step="3" value="<?php echo $pager->getLimitCount(); ?>" tabindex="7"/>
                 <span for="rpp"
-                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Cuentas por página'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Accounts per page'); ?></span>
             </div>
             <i id="btn-filters" class="material-icons show-filter"
                data-state="0"
@@ -105,12 +105,12 @@ $pager = $data->getPager();
                data-icon-down="<?php echo $icons->getIconAdd()->getIcon(); ?>"
                data-icon-up="<?php echo $icons->getIconRemove()->getIcon(); ?>"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
             <span for="btn-filters"
-                  class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Más Filtros'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('More Filters'); ?></span>
         </div>
 
         <div class="search-filters-tags">
             <select id="tags" name="tags[]" class="select-box" multiple tabindex="8">
-                <option value=""><?php echo __('Seleccionar Etiqueta'); ?></option>
+                <option value=""><?php echo __('Select Tag'); ?></option>
                 <?php /** @var \SP\Mvc\View\Components\SelectItem $tag */
                 foreach ($_getvar('tags') as $tag): ?>
                     <option

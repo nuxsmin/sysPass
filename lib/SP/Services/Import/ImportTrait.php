@@ -98,16 +98,17 @@ trait ImportTrait
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      */
     protected function addAccount(AccountRequest $accountRequest)
     {
         if (empty($accountRequest->categoryId)) {
-            throw new ImportException(__u('Id de categoría no definido. No es posible importar cuenta.'));
+            throw new ImportException(__u('Category Id not set. Unable to import account.'));
         }
 
         if (empty($accountRequest->clientId)) {
-            throw new ImportException(__u('Id de cliente no definido. No es posible importar cuenta.'));
+            throw new ImportException(__u('Client Id not set. Unable to import account.'));
         }
 
         $accountRequest->userId = $this->importParams->getDefaultUser();

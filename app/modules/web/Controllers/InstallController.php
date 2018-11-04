@@ -56,8 +56,8 @@ final class InstallController extends ControllerBase
         foreach ($this->dic->get(PhpExtensionChecker::class)->getMissing() as $module) {
             $error[] = [
                 'type' => SPException::WARNING,
-                'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
-                'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
+                'description' => sprintf('%s (%s)', __('Module unavailable'), $module),
+                'hint' => __('Without this module the application could not run correctly')
             ];
         }
 
@@ -86,7 +86,7 @@ final class InstallController extends ControllerBase
         try {
             $this->dic->get(Installer::class)->run($installData);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Instalación finalizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
         } catch (\Exception $e) {
             processException($e);
 

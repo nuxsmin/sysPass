@@ -72,7 +72,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
             $itemData->getTypeId(),
             $itemData->getisEncrypted()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear el campo personalizado'));
+        $queryData->setOnErrorMessage(__u('Error while creating the custom field'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -115,7 +115,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
             $itemData->getisEncrypted(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el campo personalizado'));
+        $queryData->setOnErrorMessage(__u('Error while updating the custom field'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -156,7 +156,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
         $result = $this->db->doSelect($queryData);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('El campo personalizado no existe'));
+            throw new NoSuchItemException(__u('Custom field not found'));
         }
 
         $this->customFieldDefCollection->set($id, $result->getData());
@@ -236,7 +236,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los campos personalizados'));
+        $queryData->setOnErrorMessage(__u('Error while removing the custom fields'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -256,7 +256,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldDefinition WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el campo personalizado'));
+        $queryData->setOnErrorMessage(__u('Error while removing the custom field'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

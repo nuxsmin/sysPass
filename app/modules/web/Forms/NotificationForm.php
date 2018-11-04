@@ -95,21 +95,21 @@ final class NotificationForm extends FormBase implements FormInterface
     private function checkCommon()
     {
         if (!$this->notificationData->getComponent()) {
-            throw new ValidationException(__u('Es necesario un componente'));
+            throw new ValidationException(__u('A component is needed'));
         }
 
         if (!$this->notificationData->getType()) {
-            throw new ValidationException(__u('Es necesario un tipo'));
+            throw new ValidationException(__u('A type is needed'));
         }
 
         if (!$this->notificationData->getDescription()) {
-            throw new ValidationException(__u('Es necesaria una descripción'));
+            throw new ValidationException(__u('A description is needed'));
         }
 
         if (!$this->notificationData->getUserId()
             && !$this->notificationData->isOnlyAdmin()
             && !$this->notificationData->isSticky()) {
-            throw new ValidationException(__u('Es necesario un destinatario'));
+            throw new ValidationException(__u('A target  is needed'));
         }
     }
 

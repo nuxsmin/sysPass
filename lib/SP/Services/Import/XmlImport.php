@@ -67,10 +67,9 @@ final class XmlImport implements ImportInterface
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws ImportException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @return ImportInterface
+     * @throws ImportException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doImport()
     {
@@ -96,7 +95,7 @@ final class XmlImport implements ImportInterface
                 return new KeepassImport($this->dic, $this->xmlFileImport, $this->importParams);
         }
 
-        throw new ImportException(__u('Formato no detectado'));
+        throw new ImportException(__u('Format not detected'));
     }
 
     /**

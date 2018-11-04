@@ -67,7 +67,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::PROFILE_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -104,10 +104,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nuevo Perfil'));
+            $this->view->assign('header', __('New Profile'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'userProfile/saveCreate');
 
@@ -171,10 +171,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Perfil'));
+            $this->view->assign('header', __('Edit Profile'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'userProfile/saveEdit/' . $id);
 
@@ -203,7 +203,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -212,10 +212,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
                 $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userProfile.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Perfiles eliminados')))
+                    new Event($this, EventMessage::factory()->addDescription(__u('Profiles deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfiles eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profiles deleted'));
             }
 
             $this->userProfileService->delete($id);
@@ -224,11 +224,11 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('delete.userProfile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Perfil eliminado'))
-                    ->addDetail(__u('Perfil'), $id))
+                    ->addDescription(__u('Profile deleted'))
+                    ->addDetail(__u('Profile'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -245,7 +245,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new UserProfileForm($this->dic);
@@ -259,7 +259,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -282,7 +282,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new UserProfileForm($this->dic, $id);
@@ -297,7 +297,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('edit.userProfile', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -320,10 +320,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PROFILE_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Perfil'));
+            $this->view->assign('header', __('View Profile'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);

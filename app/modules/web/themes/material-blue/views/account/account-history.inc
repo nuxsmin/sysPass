@@ -16,16 +16,16 @@ $accountAcl = $_getvar('accountAcl');
 
 <div class="data-container">
     <div id="title" class="titleNormal">
-        <i class="material-icons" title="<?php echo __('Histórico'); ?>"><?php echo $_getvar('title')['icon']; ?></i>
+        <i class="material-icons" title="<?php echo __('History'); ?>"><?php echo $_getvar('title')['icon']; ?></i>
         <?php echo $_getvar('title')['name']; ?>
     </div>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
-            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Cuenta'); ?></a>
+            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Account'); ?></a>
 
             <?php if ($accountAcl->isShowDetails()): ?>
-                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Detalles'); ?></a>
+                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
             <?php endif; ?>
         </div>
 
@@ -40,7 +40,7 @@ $accountAcl = $_getvar('accountAcl');
 
                 <table class="data">
                     <tr>
-                        <td class="descField"><?php echo __('Nombre'); ?></td>
+                        <td class="descField"><?php echo __('Name'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="name" name="name" type="text" required
@@ -49,14 +49,14 @@ $accountAcl = $_getvar('accountAcl');
                                        value="<?php echo $accountData->getName() ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('Nombre de cuenta'); ?></label>
+                                       for="name"><?php echo __('Account name'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Cliente'); ?></td>
+                        <td class="descField"><?php echo __('Client'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Cliente'); ?></div>
+                            <div class="lowres-title"><?php echo __('Client'); ?></div>
 
                             <select id="client_id" name="client_id" class="select-box sel-chosen-client"
                                     tabindex="2" required disabled>
@@ -69,13 +69,13 @@ $accountAcl = $_getvar('accountAcl');
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Categoría'); ?></td>
+                        <td class="descField"><?php echo __('Category'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Categoría'); ?></div>
+                            <div class="lowres-title"><?php echo __('Category'); ?></div>
 
                             <select id="category_id" name="category_id" class="select-box"
                                     tabindex="3" required disabled>
-                                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
+                                <option value=""><?php echo __('Select Category'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
                                 foreach ($_getvar('categories') as $category): ?>
                                     <option
@@ -93,12 +93,12 @@ $accountAcl = $_getvar('accountAcl');
                                        maxlength="255" tabindex="4"
                                        value="<?php echo $accountData->getUrl(); ?>" readonly>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('URL o IP de acceso'); ?></label>
+                                       for="name"><?php echo __('Access URL or IP'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Usuario'); ?></td>
+                        <td class="descField"><?php echo __('User'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="login" name="login" type="text"
@@ -106,12 +106,12 @@ $accountAcl = $_getvar('accountAcl');
                                        maxlength="50" tabindex="5"
                                        value="<?php echo $accountData->getLogin(); ?>" readonly>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('Usuario de acceso'); ?></label>
+                                       for="name"><?php echo __('Access user'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                        <td class="descField"><?php echo __('Password Expiry Date'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="password_date_expire" name="password_date_expire" type="date"
@@ -119,32 +119,32 @@ $accountAcl = $_getvar('accountAcl');
                                        tabindex="8"
                                        value="<?php echo $_getvar('accountPassDateChange'); ?>" readonly>
                                 <label class="mdl-textfield__label"
-                                       for="password_date_expire"><?php echo __('Fecha'); ?></label>
+                                       for="password_date_expire"><?php echo __('Date'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Notas'); ?></td>
+                        <td class="descField"><?php echo __('Notes'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes" tabindex="9"
                                   maxlength="5000" readonly><?php echo $accountData->getNotes(); ?></textarea>
                                 <label class="mdl-textfield__label"
-                                       for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
+                                       for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
                     </tr>
                     <?php if ($accountAcl->isShowHistory()
                         && count($_getvar('historyData', [])) > 0): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Historial'); ?></td>
+                            <td class="descField"><?php echo __('History'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php echo __('Historial'); ?></div>
+                                <div class="lowres-title"><?php echo __('History'); ?></div>
 
                                 <select id="history_id" name="history_id" class="select-box" tabindex="12"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
-                                    <option value=""><?php echo __('Seleccionar fecha'); ?></option>
+                                    <option value=""><?php echo __('Select date'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem $history */
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
@@ -157,7 +157,7 @@ $accountAcl = $_getvar('accountAcl');
                     <?php endif; ?>
 
                     <tr>
-                        <td class="descField"><?php echo __('Última Modificación'); ?></td>
+                        <td class="descField"><?php echo __('Last Modification'); ?></td>
                         <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName() ?: $accountData->getUserEditLogin()); ?></td>
                     </tr>
                 </table>

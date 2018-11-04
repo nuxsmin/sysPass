@@ -64,24 +64,24 @@ final class CustomFieldCryptService extends Service
         if (count($customFields) === 0) {
             $this->eventDispatcher->notifyEvent('update.masterPassword.customFields',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Actualizar Clave Maestra'))
-                    ->addDescription(__u('No hay datos de campos personalizados')))
+                    ->addDescription(__u('Update Master Password'))
+                    ->addDescription(__u('There aren\'t any data from custom fields')))
             );
             return;
         }
 
         $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar Clave Maestra'))
-                ->addDescription(__u('Actualizando datos encriptados')))
+                ->addDescription(__u('Update Master Password'))
+                ->addDescription(__u('Updating encrypted data')))
         );
 
         if ($this->request->useTask()) {
             $taskId = $this->request->getTask()->getTaskId();
 
             TaskFactory::update($taskId,
-                TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
-                    ->setMessage(__('Actualizando datos encriptados')));
+                TaskFactory::createMessage($taskId, __('Update Master Password'))
+                    ->setMessage(__('Updating encrypted data')));
         }
 
         $errors = [];
@@ -105,9 +105,9 @@ final class CustomFieldCryptService extends Service
 
         $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar Clave Maestra'))
-                ->addDetail(__u('Registros actualizados'), implode(',', $success))
-                ->addDetail(__u('Registros no actualizados'), implode(',', $errors)))
+                ->addDescription(__u('Update Master Password'))
+                ->addDetail(__u('Records updated'), implode(',', $success))
+                ->addDetail(__u('Records not updated'), implode(',', $errors)))
         );
     }
 
@@ -133,7 +133,7 @@ final class CustomFieldCryptService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
-                __u('Errores al actualizar datos de campos personalizados'),
+                __u('Error while updating the custom fields data'),
                 ServiceException::ERROR,
                 null,
                 $e->getCode(),

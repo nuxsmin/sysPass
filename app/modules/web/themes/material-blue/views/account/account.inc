@@ -1,14 +1,14 @@
 <?php
 /**
- * @var callable $_getvar
+ * @var callable                        $_getvar
+ * @var \SP\Core\UI\ThemeIcons          $icons
+ * @var \SP\DataModel\AccountExtData    $accountData
+ * @var \SP\Services\Account\AccountAcl $accountAcl
+ * @var \SP\Config\ConfigData           $configData
  */
 
-/** @var \SP\DataModel\AccountExtData $accountData */
 $accountData = $_getvar('accountData');
-
-/** @var \SP\Services\Account\AccountAcl $accountAcl */
 $accountAcl = $_getvar('accountAcl');
-
 $gotData = $_getvar('gotData', false);
 $showLinked = $gotData && count($_getvar('linkedAccounts', [])) > 0;
 $showFiles = $gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles();
@@ -27,26 +27,26 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
-            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Cuenta'); ?></a>
+            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Account'); ?></a>
 
             <?php if ($showCustomFields): ?>
-                <a href="#customfield-panel" class="mdl-tabs__tab"><?php echo __('Campos Personalizados'); ?></a>
+                <a href="#customfield-panel" class="mdl-tabs__tab"><?php echo __('Custom Fields'); ?></a>
             <?php endif; ?>
 
             <?php if ($showPermissions): ?>
-                <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permisos'); ?></a>
+                <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permissions'); ?></a>
             <?php endif; ?>
 
             <?php if ($showFiles): ?>
-                <a href="#file-panel" class="mdl-tabs__tab"><?php echo __('Archivos'); ?></a>
+                <a href="#file-panel" class="mdl-tabs__tab"><?php echo __('Files'); ?></a>
             <?php endif; ?>
 
             <?php if ($showDetails): ?>
-                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Detalles'); ?></a>
+                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
             <?php endif; ?>
 
             <?php if ($showLinked): ?>
-                <a href="#linked-panel" class="mdl-tabs__tab"><?php echo __('Enlaces'); ?></a>
+                <a href="#linked-panel" class="mdl-tabs__tab"><?php echo __('Links'); ?></a>
             <?php endif; ?>
         </div>
 
@@ -62,7 +62,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
             <div class="mdl-tabs__panel is-active" id="account-panel">
                 <table class="data">
                     <tr>
-                        <td class="descField"><?php echo __('Nombre'); ?></td>
+                        <td class="descField"><?php echo __('Name'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="name" name="name" type="text" required
@@ -70,18 +70,18 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="50"
                                        value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>" <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('Nombre de cuenta'); ?></label>
+                                       for="name"><?php echo __('Account name'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Cliente'); ?></td>
+                        <td class="descField"><?php echo __('Client'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Cliente'); ?></div>
+                            <div class="lowres-title"><?php echo __('Client'); ?></div>
 
                             <select id="client_id" name="client_id" class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
-                                <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
+                                <option value=""><?php echo __('Select Client'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $client */
                                 foreach ($_getvar('clients') as $client): ?>
                                     <option
@@ -90,7 +90,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             </select>
                             <?php if ($_getvar('addClientEnabled')): ?>
                                 <i class="material-icons btn-action btn-add-select"
-                                   title="<?php echo __('Nuevo Cliente'); ?>"
+                                   title="<?php echo __('New Client'); ?>"
                                    data-action-route="<?php echo $_getvar('addClientRoute'); ?>"
                                    data-item-route="items/clients"
                                    data-item-dst="client_id"
@@ -100,13 +100,13 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Categoría'); ?></td>
+                        <td class="descField"><?php echo __('Category'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Categoría'); ?></div>
+                            <div class="lowres-title"><?php echo __('Category'); ?></div>
 
                             <select id="category_id" name="category_id" class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
-                                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
+                                <option value=""><?php echo __('Select Category'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
                                 foreach ($_getvar('categories') as $category): ?>
                                     <option
@@ -115,7 +115,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             </select>
                             <?php if ($_getvar('addCategoryEnabled')): ?>
                                 <i class="material-icons btn-action btn-add-select"
-                                   title="<?php echo __('Nueva Categoría'); ?>"
+                                   title="<?php echo __('New Category'); ?>"
                                    data-action-route="<?php echo $_getvar('addCategoryRoute'); ?>"
                                    data-item-route="items/categories"
                                    data-item-dst="category_id"
@@ -133,12 +133,12 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="255"
                                        value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('URL o IP de acceso'); ?></label>
+                                       for="name"><?php echo __('Access URL or IP'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Usuario'); ?></td>
+                        <td class="descField"><?php echo __('User'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="login" name="login" type="text"
@@ -146,13 +146,13 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="50"
                                        value="<?php echo $gotData ? htmlentities($accountData->getLogin()) : ''; ?>" <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php echo __('Usuario de acceso'); ?></label>
+                                       for="name"><?php echo __('Access user'); ?></label>
                             </div>
                         </td>
                     </tr>
                     <?php if ($accountAcl->isShowPass()): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Clave'); ?></td>
+                            <td class="descField"><?php echo __('Password'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="password" name="password" type="password" required
@@ -160,25 +160,25 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                            maxlength="255"
                                            autocomplete="off">
                                     <label class="mdl-textfield__label"
-                                           for="password"><?php echo __('Clave'); ?></label>
+                                           for="password"><?php echo __('Password'); ?></label>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                            <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
+                            <td class="descField"><?php echo __('Password (repeat)'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="password_repeat" name="password_repeat" type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            maxlength="255" autocomplete="off">
                                     <label class="mdl-textfield__label"
-                                           for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
+                                           for="password_repeat"><?php echo __('Password (repeat)'); ?></label>
                                 </div>
                             </td>
                         </tr>
                         <?php if ($configData->isAccountExpireEnabled()): ?>
                             <tr>
-                                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                                <td class="descField"><?php echo __('Password Expiry Date'); ?></td>
                                 <td class="valField">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <input id="password_date_expire" name="password_date_expire" type="date"
@@ -187,35 +187,35 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                                data-dst-unix="password_date_expire_unix" <?php echo $_getvar('readonly'); ?>>
                                         <input type='hidden' name='password_date_expire_unix' value=""/>
                                         <label class="mdl-textfield__label"
-                                               for="password_date_expire"><?php echo __('Fecha'); ?></label>
+                                               for="password_date_expire"><?php echo __('Date'); ?></label>
                                     </div>
 
                                     <i class="material-icons btn-action"
-                                       title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
+                                       title="<?php echo __('Select date'); ?>">date_range</i>
                                 </td>
                             </tr>
                         <?php endif; ?>
                     <?php endif; ?>
                     <tr>
-                        <td class="descField"><?php echo __('Notas'); ?></td>
+                        <td class="descField"><?php echo __('Notes'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes"
                                   maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlentities($accountData->getNotes()) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
-                                       for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
+                                       for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
                     </tr>
                     <tr>
-                        <td class="descField"><?php echo __('Etiquetas'); ?></td>
+                        <td class="descField"><?php echo __('Tags'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
+                            <div class="lowres-title"><?php echo __('Tags'); ?></div>
 
                             <?php if (!$_getvar('isView')): ?>
                                 <select id="tags" name="tags[]" multiple="multiple"
                                         class="select-box-tags">
-                                    <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
+                                    <option value=""><?php echo __('Select Tags'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem $tag */
                                     foreach ($_getvar('tags') as $tag): ?>
                                         <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
@@ -223,7 +223,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 </select>
                                 <?php if ($_getvar('addTagEnabled')): ?>
                                     <i class="material-icons btn-action btn-add-select"
-                                       title="<?php echo __('Nueva Etiqueta'); ?>"
+                                       title="<?php echo __('New Tag'); ?>"
                                        data-action-route="<?php echo $_getvar('addTagRoute'); ?>"
                                        data-item-route="items/tags"
                                        data-item-dst="tags"
@@ -249,9 +249,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
 
                     <?php if (!$showLinked): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
+                            <td class="descField"><?php echo __('Linked Account'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
+                                <div class="lowres-title"><?php echo __('Linked Account'); ?></div>
 
                                 <select id="parent_account_id" name="parent_account_id"
                                         class="select-box select-box-deselect" <?php echo $_getvar('disabled'); ?>
@@ -259,7 +259,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                         data-action-route="items/accountsUser"
                                         data-item-id="<?php echo $gotData ? $_getvar('accountId') : ''; ?>"
                                         data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">
-                                    <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
+                                    <option value=""><?php echo __('Select Account'); ?></option>
                                 </select>
                             </td>
                         </tr>
@@ -268,14 +268,14 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                     <?php if ($accountAcl->isShowHistory()
                         && count($_getvar('historyData', [])) > 0): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Historial'); ?></td>
+                            <td class="descField"><?php echo __('History'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php echo __('Historial'); ?></div>
+                                <div class="lowres-title"><?php echo __('History'); ?></div>
 
                                 <select id="history_id" name="history_id" class="select-box"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
-                                    <option value=""><?php echo __('Seleccionar fecha'); ?></option>
+                                    <option value=""><?php echo __('Select date'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem $history */
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
@@ -290,7 +290,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         && $_getvar('isModified', false)
                         && $accountData->getUserEditName()): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Última Modificación'); ?></td>
+                            <td class="descField"><?php echo __('Last Modification'); ?></td>
                             <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
                         </tr>
                     <?php endif; ?>
@@ -298,12 +298,12 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                     <?php if ($_getvar('publicLinkShow', false) === true
                         && $_getvar('publicLinkUrl') !== null): ?>
                         <tr>
-                            <td class="descField"><?php echo __('Enlace Público'); ?></td>
+                            <td class="descField"><?php echo __('Public Link'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php echo __('Enlace Público'); ?></div>
+                                <div class="lowres-title"><?php echo __('Public Link'); ?></div>
 
                                 <a href="<?php echo $_getvar('publicLinkUrl'); ?>" target="_blank"
-                                   title="<?php echo __('Enlace Público'); ?>">
+                                   title="<?php echo __('Public Link'); ?>">
                                     <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
                                 </a>
                             </td>
@@ -311,12 +311,12 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                     <?php endif; ?>
 
                     <tr>
-                        <td class="descField"><?php echo __('Enlace Directo'); ?></td>
+                        <td class="descField"><?php echo __('Direct Link'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Enlace Directo'); ?></div>
+                            <div class="lowres-title"><?php echo __('Direct Link'); ?></div>
 
                             <a href="<?php echo $_getvar('deepLink'); ?>" target="_blank"
-                               title="<?php echo __('Enlace Directo'); ?>">
+                               title="<?php echo __('Direct Link'); ?>">
                                 <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
                             </a>
                         </td>

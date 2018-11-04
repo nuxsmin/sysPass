@@ -16,7 +16,7 @@ if (!isset($data)) {
 
 <div id="res-content">
     <?php if ($data->getData()->getDataCount() === 0): ?>
-        <div class="noRes round"><?php echo __('No se encontraron registros'); ?></div>
+        <div class="noRes round"><?php echo __('No records found'); ?></div>
     <?php else: ?>
         <!-- Data Header-->
         <div id="search-header">

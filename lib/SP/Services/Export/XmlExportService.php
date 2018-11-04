@@ -95,6 +95,8 @@ final class XmlExportService extends Service
      * @param string $pass string La clave de exportación
      *
      * @throws ServiceException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function doExport(string $exportPath, string $pass = null)
@@ -122,7 +124,7 @@ final class XmlExportService extends Service
         if (!is_dir($exportPath)
             && @mkdir($exportPath, 0700, true) === false
         ) {
-            throw new ServiceException(sprintf(__('No es posible crear el directorio (%s)'), $exportPath));
+            throw new ServiceException(sprintf(__('Unable to create the directory (%s)'), $exportPath));
         }
 
         $this->exportPath = $exportPath;
@@ -198,9 +200,9 @@ final class XmlExportService extends Service
             throw $e;
         } catch (\Exception $e) {
             throw new ServiceException(
-                __u('Error al realizar la exportación'),
+                __u('Error while exporting'),
                 ServiceException::ERROR,
-                __u('Revise el registro de eventos para más detalles'),
+                __u('Please check out the event log for more details'),
                 $e->getCode(),
                 $e
             );
@@ -266,7 +268,7 @@ final class XmlExportService extends Service
         try {
             $this->eventDispatcher->notifyEvent('run.export.process.category',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportando categorías')))
+                    ->addDescription(__u('Exporting categories')))
             );
 
             $categoryService = $this->dic->get(CategoryService::class);
@@ -378,7 +380,7 @@ final class XmlExportService extends Service
         try {
             $this->eventDispatcher->notifyEvent('run.export.process.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportando clientes')))
+                    ->addDescription(__u('Exporting clients')))
             );
 
             $clientService = $this->dic->get(ClientService::class);
@@ -424,7 +426,7 @@ final class XmlExportService extends Service
         try {
             $this->eventDispatcher->notifyEvent('run.export.process.tag',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportando etiquetas')))
+                    ->addDescription(__u('Exporting tags')))
             );
 
             $tagService = $this->dic->get(TagService::class);
@@ -468,7 +470,7 @@ final class XmlExportService extends Service
         try {
             $this->eventDispatcher->notifyEvent('run.export.process.account',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportando cuentas')))
+                    ->addDescription(__u('Exporting accounts')))
             );
 
             $accountService = $this->dic->get(AccountService::class);
@@ -578,7 +580,7 @@ final class XmlExportService extends Service
             $this->xml->preserveWhiteSpace = false;
 
             if (!$this->xml->save($this->exportFile)) {
-                throw new ServiceException(__u('Error al crear el archivo XML'));
+                throw new ServiceException(__u('Error while creating the XML file'));
             }
         } catch (\Exception $e) {
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);

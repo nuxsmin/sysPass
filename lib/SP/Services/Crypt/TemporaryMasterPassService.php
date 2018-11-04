@@ -100,14 +100,14 @@ final class TemporaryMasterPassService extends Service
 
             $this->eventDispatcher->notifyEvent('create.tempMasterPassword',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Generar clave temporal')))
+                    ->addDescription(__u('Generate temporary password')))
             );
 
             return $randomKey;
         } catch (\Exception $e) {
             processException($e);
 
-            throw new ServiceException(__u('Error al generar clave temporal'));
+            throw new ServiceException(__u('Error while generating the temporary password'));
         }
     }
 
@@ -128,7 +128,7 @@ final class TemporaryMasterPassService extends Service
             // Comprobar si el tiempo de validez o los intentos se han superado
             if ($passMaxTime === 0) {
                 $this->eventDispatcher->notifyEvent('check.tempMasterPassword',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Clave temporal caducada')))
+                    new Event($this, EventMessage::factory()->addDescription(__u('Temporary password expired')))
                 );
 
                 return $isValid;
@@ -157,7 +157,7 @@ final class TemporaryMasterPassService extends Service
         } catch (\Exception $e) {
             processException($e);
 
-            throw new ServiceException(__u('Error al comprobar clave temporal'));
+            throw new ServiceException(__u('Error while checking the temporary password'));
         }
     }
 
@@ -178,7 +178,7 @@ final class TemporaryMasterPassService extends Service
 
         $this->eventDispatcher->notifyEvent('expire.tempMasterPassword',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Clave temporal caducada')))
+                ->addDescription(__u('Temporary password expired')))
         );
     }
 
@@ -210,14 +210,14 @@ final class TemporaryMasterPassService extends Service
     private function getMessageForEmail($key)
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), AppInfoInterface::APP_NAME));
-        $mailMessage->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
+        $mailMessage->setTitle(sprintf(__('Master Password %s'), AppInfoInterface::APP_NAME));
+        $mailMessage->addDescription(__('A new sysPass master password has been generated, so next time you log into the application it will be requested.'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(sprintf(__('La nueva clave es: %s'), $key));
+        $mailMessage->addDescription(sprintf(__('The new Master Password is: %s'), $key));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(sprintf(__('Esta clave estará activa hasta: %s'), date('r', $this->getMaxTime())));
+        $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->getMaxTime())));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('No olvide acceder lo antes posible para guardar los cambios.'));
+        $mailMessage->addDescription(__('Please, don\'t forget to log in as soon as possible to save the changes.'));
 
         return $mailMessage;
     }

@@ -66,7 +66,7 @@ final class AccountPasswordHelper extends HelperBase
 
         $this->view->addTemplate('viewpass');
 
-        $this->view->assign('header', __('Clave de Cuenta'));
+        $this->view->assign('header', __('Account Password'));
         $this->view->assign('isImage', (int)$useImage);
 
         $pass = $this->getPasswordClear($accountData);
@@ -93,7 +93,7 @@ final class AccountPasswordHelper extends HelperBase
     private function checkActionAccess()
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)) {
-            throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
+            throw new HelperException(__u('You don\'t have permission to access this account'));
         }
     }
 
@@ -115,7 +115,7 @@ final class AccountPasswordHelper extends HelperBase
         $this->checkActionAccess();
 
         if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
-            throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
+            throw new HelperException(__('Master password updated') . '<br>' . __('Please, restart the session for update it'));
         }
 
         return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));

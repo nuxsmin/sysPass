@@ -78,7 +78,7 @@ final class TaskService extends Service
         $this->dir = Util::getTempDir();
 
         if ($this->dir === false || !$this->getLock()) {
-            throw new ServiceException(__('No es posible crear archivo de bloqueo'));
+            throw new ServiceException(__('Unable to create the lock file'));
         }
 
         $this->taskFile = $this->dir . DIRECTORY_SEPARATOR . $this->taskId . '.task';
@@ -181,7 +181,7 @@ final class TaskService extends Service
         $file = $this->task->getFileOut();
         $interval = $this->task->getInterval();
 
-        $taskMessage = TaskFactory::createMessage($this->task->getTaskId(), __('Esperando actualización de progreso ...'));
+        $taskMessage = TaskFactory::createMessage($this->task->getTaskId(), __('Waiting for progress updating ...'));
 
         while ($failCount <= self::STARTUP_WAIT_COUNT && file_exists($this->taskFile)) {
             $content = file_get_contents($file);

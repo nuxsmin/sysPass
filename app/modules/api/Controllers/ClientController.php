@@ -60,8 +60,8 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('show.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cliente visualizado'))
-                    ->addDetail(__u('Nombre'), $clientData->getName())
+                    ->addDescription(__u('Client displayed'))
+                    ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id))
             );
 
@@ -90,12 +90,12 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('create.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cliente creado'))
-                    ->addDetail(__u('Nombre'), $clientData->getName())
+                    ->addDescription(__u('Client added'))
+                    ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Cliente creado')));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client added')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -121,12 +121,12 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cliente actualizado'))
-                    ->addDetail(__u('Nombre'), $clientData->getName())
+                    ->addDescription(__u('Client updated'))
+                    ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $clientData->getId()))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Cliente actualizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -150,12 +150,12 @@ final class ClientController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('delete.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cliente eliminado'))
-                    ->addDetail(__u('Nombre'), $clientData->getName())
+                    ->addDescription(__u('Client deleted'))
+                    ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Cliente eliminado')));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client deleted')));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 

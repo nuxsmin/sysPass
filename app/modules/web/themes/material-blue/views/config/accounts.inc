@@ -9,11 +9,11 @@
 
 <?php if ($_getvar('gdIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
-        <?php printf(__('La extensión \'%s\' no está disponible'), 'gd'); ?>
+        <?php printf(__('The \'%s\' extension is unavailable'), 'gd'); ?>
         <i id="help-gd" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-gd">
             <p>
-                <?php echo __('Esta extensión es necesaria para mostrar las claves como imágenes'); ?>
+                <?php echo __('This extension is needed to display passwords as images'); ?>
             </p>
         </div>
     </div>
@@ -27,18 +27,18 @@
 
     <div id="title" class="titleNormal">
         <i class="material-icons">search</i>
-        <?php echo __('Búsqueda'); ?>
+        <?php echo __('Searching'); ?>
     </div>
 
     <table id="tblAccounts" class="data tblConfig">
         <tr>
             <td class="descField">
-                <?php echo __('Resultados por página'); ?>
+                <?php echo __('Results per page'); ?>
                 <div id="help-account_count"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
                     <p>
-                        <?php echo __('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
+                        <?php echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
                 </div>
             </td>
@@ -49,7 +49,7 @@
                            maxlength="5"
                            value="<?php echo $configData->getAccountCount(); ?>" required/>
                     <label class="mdl-textfield__label"
-                           for="account_count"><?php echo __('Número de resultados por página'); ?></label>
+                           for="account_count"><?php echo __('Results per page'); ?></label>
                 </div>
             </td>
         </tr>
@@ -67,8 +67,8 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Caducidad clave cuentas'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita la caducidad de la clave de cuentas.'); ?></span>
+                            <span><?php echo __('Accounts password expiry'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Enables the accounts password expiry date.'); ?></span>
                         </span>
                     </li>
                 </ul>
@@ -76,12 +76,12 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Tiempo caducidad clave'); ?>
+                <?php echo __('Password expiry time'); ?>
                 <div id="help-account_expire_time"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire_time">
                     <p>
-                        <?php echo __('Número de días para la caducidad de la clave de cuenta.'); ?>
+                        <?php echo __('Number of days for account\'s password expiry date.'); ?>
                     </p>
                 </div>
             </td>
@@ -91,7 +91,7 @@
                            pattern="[0-9]{1,3}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php echo $configData->getAccountExpireTime() / 24 / 3600; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="account_expire_time"><?php echo __('Tiempo caducidad (días)'); ?></label>
+                           for="account_expire_time"><?php echo __('Expire time (days)'); ?></label>
                 </div>
             </td>
         </tr>
@@ -109,8 +109,8 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Nombre de cuenta como enlace'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?></span>
+                            <span><?php echo __('Account name as link'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Enables to use the account name as a link to account details.'); ?></span>
                         </span>
                     </li>
 
@@ -125,8 +125,8 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Búsquedas globales'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?></span>
+                            <span><?php echo __('Global searches'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Allows the users to do searches that includes all accounts, they won\'t be able to display the account details if they don\'t have permission.'); ?></span>
                         </span>
                     </li>
 
@@ -141,11 +141,11 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Imagen para mostrar clave'); ?></span>
+                            <span><?php echo __('Image to show password'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                                <?php echo __('Generate an image with a text of the account password.'); ?>
                                 <br>
-                                <?php echo __('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                                <?php echo __('Useful for environments where copying a password to clipboard is a security risk.'); ?>
                             </span>
                         </span>
                     </li>
@@ -161,9 +161,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Resultados en Tarjetas'); ?></span>
+                            <span><?php echo __('Results like Cards'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                                <?php echo __('Displays account\'s search results on a card like format.'); ?>
                             </span>
                         </span>
                     </li>
@@ -179,11 +179,11 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Acceso Grupos Secundarios'); ?></span>
+                            <span><?php echo __('Secondary Groups Access'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Habilita el acceso a los usuarios que estén incluidos en los grupos secundarios.'); ?>
+                                <?php echo __('Grants access to users that are included in secondary groups.'); ?>
                                 <br>
-                                <?php echo __('Por defecto el usuario de un grupo secundario es permitido si el grupo secundario está establecido como el primario del usuario.'); ?>
+                                <?php echo __('By default, user in a secondary group is granted if the secondary group is set as user\'s main group.'); ?>
                             </span>
                         </span>
                     </li>
@@ -194,7 +194,7 @@
 
     <div id="title" class="titleNormal">
         <i class="material-icons">link</i>
-        <?php echo __('Enlaces Públicos'); ?>
+        <?php echo __('Public Links'); ?>
     </div>
 
     <table id="tblFiles" class="data tblConfig round">
@@ -212,13 +212,13 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Habilitar Enlaces Públicos'); ?></span>
+                            <span><?php echo __('Enable Public Links'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta.'); ?>
+                                <?php echo __('Enables the ability to create public links to view an account\'s details'); ?>
                                 <br>
-                                <?php echo __('Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace.'); ?>
+                                <?php echo __('Linked accounts will be visible by anyone that have the link.'); ?>
                                 <br>
-                                <?php echo __('Para crear enlaces, los usuarios tienen que tener activada la opción en su perfl.'); ?>
+                                <?php echo __('In order to create links, users must have activated the option on their profiles.'); ?>
                             </span>
                         </span>
                     </li>
@@ -234,9 +234,9 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Usar imagen para clave'); ?></span>
+                            <span><?php echo __('Use an image for password'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('La clave de la cuenta es visualizada como una imagen.'); ?>
+                                <?php echo __('The account password is shown as image.'); ?>
                             </span>
                         </span>
                     </li>
@@ -245,7 +245,7 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Tiempo de caducidad'); ?>
+                <?php echo __('Expire time'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -254,13 +254,13 @@
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxTime() / 60; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publiclinks_maxtime"><?php echo __('Tiempo de caducidad'); ?></label>
+                           for="publiclinks_maxtime"><?php echo __('Expire time'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Número máximo  de visitas'); ?>
+                <?php echo __('Maximum visits'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -269,7 +269,7 @@
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxViews(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publiclinks_maxviews"><?php echo __('Número máximo  de visitas'); ?></label>
+                           for="publiclinks_maxviews"><?php echo __('Maximum visits'); ?></label>
                 </div>
             </td>
         </tr>
@@ -277,7 +277,7 @@
 
     <div id="title" class="titleNormal">
         <i class="material-icons">attachment</i>
-        <?php echo __('Archivos'); ?>
+        <?php echo __('Files'); ?>
     </div>
 
     <table id="tblFiles" class="data tblConfig">
@@ -295,8 +295,8 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Gestión de archivos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita la subida/descarga de archivos para las cuentas.'); ?></span>
+                            <span><?php echo __('Files management'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Enables the uploading and downloading of accounts files.'); ?></span>
                         </span>
                     </li>
                 </ul>
@@ -304,20 +304,20 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Extensiones de archivos permitidas'); ?>
+                <?php echo __('Allowed file extensions'); ?>
                 <div id="help-allowed_exts"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-allowed_exts">
                     <p>
-                        <?php echo __('Extensiones permitidas para la subida de archivos.'); ?>
+                        <?php echo __('Allowed file extensions for uploading.'); ?>
                     </p>
                     <p>
-                        <?php echo __('Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración.'); ?>
+                        <?php echo __('Write the extension and press enter to add. Remember to save the configuration.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Extensiones de archivos permitidas'); ?></div>
+                <div class="lowres-title"><?php echo __('Allowed file extensions'); ?></div>
 
                 <input type="text" name="files_allowed_exts" id="allowed_exts"
                        value="<?php echo implode(',', $configData->getFilesAllowedExts()); ?>"/>
@@ -325,16 +325,16 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Tamaño máximo de archivo'); ?>
+                <?php echo __('Maximum file size'); ?>
                 <div id="help-files_allowed_size"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-files_allowed_size">
                     <p>
-                        <?php echo __('Establece el tamaño máximo para subir archivos.'); ?>
+                        <?php echo __('Sets the maximum file size for uploading.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('El máximo absuluto es de 16MB.'); ?>
+                        <?php echo __('Absolute maximum is 16MB.'); ?>
                     </p>
                 </div>
             </td>
@@ -345,7 +345,7 @@
                            maxlength="5"
                            value="<?php echo $configData->getFilesAllowedSize(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="files_allowed_size"><?php echo __('Tamaño máximo de archivo en kilobytes'); ?></label>
+                           for="files_allowed_size"><?php echo __('Maximum file size in kilobytes'); ?></label>
                 </div>
             </td>
         </tr>
@@ -357,7 +357,7 @@
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>

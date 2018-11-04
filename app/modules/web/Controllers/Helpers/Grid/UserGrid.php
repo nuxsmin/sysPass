@@ -79,8 +79,8 @@ final class UserGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -101,7 +101,7 @@ final class UserGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Usuarios'));
+        $gridTab->setTitle(__('Users'));
 
         return $gridTab;
     }
@@ -113,11 +113,11 @@ final class UserGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
+        $gridHeader->addHeader(__('Name'));
         $gridHeader->addHeader(__('Login'));
-        $gridHeader->addHeader(__('Perfil'));
-        $gridHeader->addHeader(__('Grupo'));
-        $gridHeader->addHeader(__('Propiedades'));
+        $gridHeader->addHeader(__('Profile'));
+        $gridHeader->addHeader(__('Group'));
+        $gridHeader->addHeader(__('Properties'));
 
         return $gridHeader;
     }
@@ -153,7 +153,7 @@ final class UserGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::USER_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchUser');
-        $gridActionSearch->setTitle(__('Buscar Usuario'));
+        $gridActionSearch->setTitle(__('Search for User'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_SEARCH));
 
@@ -168,8 +168,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::USER_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Usuario'));
-        $gridAction->setTitle(__('Nuevo Usuario'));
+        $gridAction->setName(__('New User'));
+        $gridAction->setTitle(__('New User'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -186,8 +186,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::USER_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Usuario'));
-        $gridAction->setTitle(__('Editar Usuario'));
+        $gridAction->setName(__('Edit User'));
+        $gridAction->setTitle(__('Edit User'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_EDIT));
@@ -203,8 +203,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::USER_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Usuario'));
-        $gridAction->setTitle(__('Eliminar Usuario'));
+        $gridAction->setName(__('Delete User'));
+        $gridAction->setTitle(__('Delete User'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_DELETE));
@@ -220,8 +220,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CONFIG_LDAP_SYNC);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Importar usuarios de LDAP'));
-        $gridAction->setTitle(__('Importar usuarios de LDAP'));
+        $gridAction->setName(__('Import users from LDAP'));
+        $gridAction->setTitle(__('Import users from LDAP'));
         $gridAction->setIcon(new FontIcon('get_app'));
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/ldapSync');
@@ -238,8 +238,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::USER_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Detalles de Usuario'));
-        $gridAction->setTitle(__('Ver Detalles de Usuario'));
+        $gridAction->setName(__('View User Details'));
+        $gridAction->setTitle(__('View User Details'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_VIEW));
@@ -255,8 +255,8 @@ final class UserGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::USER_EDIT_PASS);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Cambiar Clave de Usuario'));
-        $gridAction->setTitle(__('Cambiar Clave de Usuario'));
+        $gridAction->setName(__('Change User\'s Password'));
+        $gridAction->setTitle(__('Change User\'s Password'));
         $gridAction->setIcon($this->icons->getIconEditPass());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->setFilterRowSource('isLdap');

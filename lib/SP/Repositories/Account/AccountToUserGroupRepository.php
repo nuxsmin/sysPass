@@ -103,7 +103,7 @@ final class AccountToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -136,7 +136,7 @@ final class AccountToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = ?');
         $queryData->setParams([$id, (int)$isEdit]);
-        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -161,7 +161,7 @@ final class AccountToUserGroupRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
+        $queryData->setOnErrorMessage(__u('Error while updating the secondary groups'));
 
         $params = [];
 
@@ -188,7 +188,7 @@ final class AccountToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ?');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

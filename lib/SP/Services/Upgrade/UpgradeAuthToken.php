@@ -52,7 +52,7 @@ final class UpgradeAuthToken extends Service
     {
         $this->eventDispatcher->notifyEvent('upgrade.authToken.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de autorizaciones API'))
+                ->addDescription(__u('API authorizations update'))
                 ->addDescription(__FUNCTION__))
         );
 
@@ -67,8 +67,8 @@ final class UpgradeAuthToken extends Service
 
                     $this->eventDispatcher->notifyEvent('upgrade.authToken.process',
                         new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Autorización actualizada'))
-                            ->addDetail(__u('Autorización'), $item->getId()))
+                            ->addDescription(__u('Authorization updated'))
+                            ->addDetail(__u('Authorization'), $item->getId()))
                     );
                 }
             });
@@ -82,7 +82,7 @@ final class UpgradeAuthToken extends Service
 
         $this->eventDispatcher->notifyEvent('upgrade.authToken.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de autorizaciones API'))
+                ->addDescription(__u('API authorizations update'))
                 ->addDescription(__FUNCTION__))
         );
     }

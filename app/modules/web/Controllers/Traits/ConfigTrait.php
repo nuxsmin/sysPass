@@ -52,7 +52,7 @@ trait ConfigTrait
     {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $config->saveConfig($configData);
@@ -65,11 +65,11 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuración actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
         } catch (\Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar la configuración'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the configuration'));
         }
     }
 }

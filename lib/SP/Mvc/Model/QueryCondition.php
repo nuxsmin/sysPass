@@ -68,7 +68,7 @@ final class QueryCondition
     public function getFilters($type = self::CONDITION_AND)
     {
         if ($type !== self::CONDITION_AND && $type !== self::CONDITION_OR) {
-            throw new \RuntimeException(__u('Tipo de filtro inválido'));
+            throw new \RuntimeException(__u('Invalid filter type'));
         }
 
         return $this->hasFilters() ? '(' . implode($type, $this->query) . ')' : null;

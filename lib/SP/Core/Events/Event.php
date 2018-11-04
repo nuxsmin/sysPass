@@ -54,7 +54,7 @@ final class Event
     public function __construct($source, EventMessage $eventMessage = null)
     {
         if (!is_object($source)) {
-            throw new InvalidArgumentException(__u('Es necesario un objeto'));
+            throw new InvalidArgumentException(__u('An object is needed'));
         }
 
         $this->source = $source;

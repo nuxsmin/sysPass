@@ -55,7 +55,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     {
         $this->eventDispatcher->notifyEvent('run.import.keepass',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Importación XML KeePass')))
+                ->addDescription(__u('KeePass XML Import')))
         );
 
         $this->process();
@@ -74,7 +74,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
         $this->eventDispatcher->notifyEvent('run.import.keepass.process.client',
             new Event($this, EventMessage::factory()
-                ->addDetail(__u('Cliente creado'), 'KeePass'))
+                ->addDetail(__u('Client added'), 'KeePass'))
         );
 
         $this->getGroups();
@@ -88,7 +88,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
                 $this->eventDispatcher->notifyEvent('run.import.keepass.process.category',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Categoría importada'), $group))
+                        ->addDetail(__u('Category imported'), $group))
                 );
 
                 if (count($entry) > 0) {
@@ -100,8 +100,8 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
                         $this->eventDispatcher->notifyEvent('run.import.keepass.process.account',
                             new Event($this, EventMessage::factory()
-                                ->addDetail(__u('Cuenta importada'), $account->name)
-                                ->addDetail(__u('Categoría'), $group))
+                                ->addDetail(__u('Account imported'), $account->name)
+                                ->addDetail(__u('Category'), $group))
                         );
                     }
                 }

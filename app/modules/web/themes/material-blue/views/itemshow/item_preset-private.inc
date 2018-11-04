@@ -26,11 +26,11 @@ $private = $_getvar('private');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Cuenta Privada'); ?></span>
+                        <span><?php echo __('Private Account'); ?></span>
                         <span class="mdl-list__item-sub-title">
-                            <?php echo __('Las cuentas sólo serán visibles por el usuario.'); ?>
+                            <?php echo __('Accounts will be only visible by the user.'); ?>
                             <br>
-                            <?php echo __('Los administradores no podrán acceder a las cuentas.'); ?>
+                            <?php echo __('Administrators won\'t be able to display the accounts.'); ?>
                         </span>
                     </span>
                 </li>
@@ -45,11 +45,11 @@ $private = $_getvar('private');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Cuenta Privada Grupo'); ?></span>
+                        <span><?php echo __('Private Account for Group'); ?></span>
                         <span class="mdl-list__item-sub-title">
-                            <?php echo __('Las cuentas sólo serán visibles por el usuario y su grupo principal.'); ?>
+                            <?php echo __('Accounts will be only visible by the user and users belonging to the main group.'); ?>
                             <br>
-                            <?php echo __('Los administradores no podrán acceder a las cuentas.'); ?>
+                            <?php echo __('Administrators won\'t be able to display the accounts.'); ?>
                         </span>
                     </span>
                 </li>

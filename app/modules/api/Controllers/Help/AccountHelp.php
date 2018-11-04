@@ -40,7 +40,7 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de la cuenta'), true)
+                self::getItem('id', __('Account Id'), true)
             ];
     }
 
@@ -51,9 +51,9 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de la cuenta'), true),
-                self::getItem('tokenPass', __('Clave del token'), true),
-                self::getItem('details', __('Devolver detalles en la respuesta'))
+                self::getItem('id', __('Account Id'), true),
+                self::getItem('tokenPass', __('Token\'s password'), true),
+                self::getItem('details', __('Send details in the response'))
             ];
     }
 
@@ -64,10 +64,10 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de la cuenta'), true),
-                self::getItem('tokenPass', __('Clave del token'), true),
-                self::getItem('pass', __('Clave'), true),
-                self::getItem('expireDate', __('Fecha Caducidad Clave'))
+                self::getItem('id', __('Account Id'), true),
+                self::getItem('tokenPass', __('Token\'s password'), true),
+                self::getItem('pass', __('Password'), true),
+                self::getItem('expireDate', __('Password Expiry Date'))
             ];
     }
 
@@ -78,20 +78,20 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('tokenPass', __('Clave del token'), true),
-                self::getItem('name', __('Nombre de cuenta'), true),
-                self::getItem('categoryId', __('Id de categoría'), true),
-                self::getItem('clientId', __('Id de cliente'), true),
-                self::getItem('pass', __('Clave'), true),
-                self::getItem('login', __('Usuario de acceso')),
-                self::getItem('url', __('URL o IP de acceso')),
-                self::getItem('notes', __('Notas sobre la cuenta')),
-                self::getItem('private', __('Cuenta Privada')),
-                self::getItem('privateGroup', __('Cuenta Privada Grupo')),
-                self::getItem('expireDate', __('Fecha Caducidad Clave')),
-                self::getItem('parentId', __('Cuenta Vinculada')),
-                self::getItem('tagsId', __('Array con Ids de etiquetas')),
-                self::getItem('userGroupId', __('Id de grupo'))
+                self::getItem('tokenPass', __('Token\'s password'), true),
+                self::getItem('name', __('Account name'), true),
+                self::getItem('categoryId', __('Category Id'), true),
+                self::getItem('clientId', __('Client Id'), true),
+                self::getItem('pass', __('Password'), true),
+                self::getItem('login', __('Access user')),
+                self::getItem('url', __('Access URL or IP')),
+                self::getItem('notes', __('Notes about the account')),
+                self::getItem('private', __('Private Account')),
+                self::getItem('privateGroup', __('Private Account for Group')),
+                self::getItem('expireDate', __('Password Expiry Date')),
+                self::getItem('parentId', __('Linked Account')),
+                self::getItem('tagsId', __('Array with tags id')),
+                self::getItem('userGroupId', __('Group Id'))
             ];
     }
 
@@ -102,19 +102,19 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de la cuenta'), true),
-                self::getItem('name', __('Nombre de cuenta')),
-                self::getItem('categoryId', __('Id de categoría')),
-                self::getItem('clientId', __('Id de cliente')),
-                self::getItem('login', __('Usuario de acceso')),
-                self::getItem('url', __('URL o IP de acceso')),
-                self::getItem('notes', __('Notas sobre la cuenta')),
-                self::getItem('private', __('Cuenta Privada')),
-                self::getItem('privateGroup', __('Cuenta Privada Grupo')),
-                self::getItem('expireDate', __('Fecha Caducidad Clave')),
-                self::getItem('parentId', __('Cuenta Vinculada')),
-                self::getItem('tagsId', __('Array con Ids de etiquetas')),
-                self::getItem('userGroupId', __('Id de grupo'))
+                self::getItem('id', __('Account Id'), true),
+                self::getItem('name', __('Account name')),
+                self::getItem('categoryId', __('Category Id')),
+                self::getItem('clientId', __('Client Id')),
+                self::getItem('login', __('Access user')),
+                self::getItem('url', __('Access URL or IP')),
+                self::getItem('notes', __('Notes about the account')),
+                self::getItem('private', __('Private Account')),
+                self::getItem('privateGroup', __('Private Account for Group')),
+                self::getItem('expireDate', __('Password Expiry Date')),
+                self::getItem('parentId', __('Linked Account')),
+                self::getItem('tagsId', __('Array with tags id')),
+                self::getItem('userGroupId', __('Group Id'))
             ];
     }
 
@@ -125,12 +125,12 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('text', __('Texto a buscar')),
-                self::getItem('count', __('Número de resultados a mostrar')),
-                self::getItem('categoryId', __('Id de categoría a filtrar')),
-                self::getItem('clientId', __('Id de cliente a filtrar')),
-                self::getItem('tagsId', __('Array con Ids de etiquetas a filtrar')),
-                self::getItem('op', __('Operador de filtrado'))
+                self::getItem('text', __('Text to search for')),
+                self::getItem('count', __('Number of results to display')),
+                self::getItem('categoryId', __('Category Id to filter on')),
+                self::getItem('clientId', __('Client Id to filter on')),
+                self::getItem('tagsId', __('Array with tags id for filtering')),
+                self::getItem('op', __('Filtering operator'))
             ];
     }
 
@@ -141,7 +141,7 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de la cuenta'), true)
+                self::getItem('id', __('Account Id'), true)
             ];
     }
 }

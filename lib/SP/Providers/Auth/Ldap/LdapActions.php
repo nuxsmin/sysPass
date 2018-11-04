@@ -116,14 +116,14 @@ final class LdapActions
         if ((int)$searchResults['count'] === 0) {
             $this->eventDispatcher->notifyEvent('ldap.search.group',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al buscar RDN de grupo'))
-                    ->addDetail(__u('Grupo'), $this->getGroupFromParams())
+                    ->addDescription(__u('Error while searching the group RDN'))
+                    ->addDetail(__u('Group'), $this->getGroupFromParams())
                     ->addDetail('LDAP ERROR', LdapConnection::getLdapErrorMessage($this->ldapHandler))
                     ->addDetail('LDAP FILTER', $filter))
             );
 
             throw new LdapException(
-                __u('Error al buscar RDN de grupo'),
+                __u('Error while searching the group RDN'),
                 LdapException::ERROR,
                 null,
                 LdapCode::NO_SUCH_OBJECT
@@ -202,12 +202,12 @@ final class LdapActions
         if ((int)$searchResults['count'] === 0) {
             $this->eventDispatcher->notifyEvent('ldap.getAttributes',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al localizar el usuario en LDAP'))
+                    ->addDescription(__u('Error while searching the user on LDAP'))
                     ->addDetail('LDAP FILTER', $filter))
             );
 
             throw new LdapException(
-                __u('Error al localizar el usuario en LDAP'),
+                __u('Error while searching the user on LDAP'),
                 LdapException::ERROR,
                 null,
                 LdapCode::NO_SUCH_OBJECT
@@ -256,13 +256,13 @@ final class LdapActions
         if ($searchResults === false) {
             $this->eventDispatcher->notifyEvent('ldap.search',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Error al buscar objetos en DN base'))
+                    ->addDescription(__u('Error while searching objects in base DN'))
                     ->addDetail('LDAP ERROR', LdapConnection::getLdapErrorMessage($this->ldapHandler))
                     ->addDetail('LDAP FILTER', $filter))
             );
 
             throw new LdapException(
-                __u('Error al buscar objetos en DN base'),
+                __u('Error while searching objects in base DN'),
                 LdapException::ERROR,
                 null,
                 LdapCode::OPERATIONS_ERROR

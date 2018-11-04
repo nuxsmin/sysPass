@@ -18,7 +18,7 @@
 <body class="<?php echo $_getvar('page'); ?>">
 <div id="wrap">
     <noscript>
-        <div id="nojs"><?php echo __('Javascript es necesario para el correcto funcionamiento'); ?></div>
+        <div id="nojs"><?php echo __('Javascript is needed in order to run correctly'); ?></div>
     </noscript>
 
     <div id="wrap-loading">

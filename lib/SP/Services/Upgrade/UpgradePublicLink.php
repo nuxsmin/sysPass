@@ -53,7 +53,7 @@ final class UpgradePublicLink extends Service
     {
         $this->eventDispatcher->notifyEvent('upgrade.publicLink.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de enlaces públicos'))
+                ->addDescription(__u('Public links update'))
                 ->addDescription(__FUNCTION__))
         );
 
@@ -86,8 +86,8 @@ final class UpgradePublicLink extends Service
 
                     $this->eventDispatcher->notifyEvent('upgrade.publicLink.process',
                         new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Enlace actualizado'))
-                            ->addDetail(__u('Enlace'), $item->id))
+                            ->addDescription(__u('Link updated'))
+                            ->addDetail(__u('Link'), $item->id))
                     );
                 }
             });
@@ -99,7 +99,7 @@ final class UpgradePublicLink extends Service
 
         $this->eventDispatcher->notifyEvent('upgrade.publicLink.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de enlaces públicos'))
+                ->addDescription(__u('Public links update'))
                 ->addDescription(__FUNCTION__))
         );
     }

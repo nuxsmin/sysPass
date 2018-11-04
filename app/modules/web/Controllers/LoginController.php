@@ -118,10 +118,10 @@ final class LoginController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('logout',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Finalizar sesión'))
-                    ->addDetail(__u('Usuario'), $this->session->getUserData()->getLogin())
-                    ->addDetail(__u('Tiempo inactivo'), $inactiveTime . ' min.')
-                    ->addDetail(__u('Tiempo total'), $totalTime . ' min.'))
+                    ->addDescription(__u('Logout session'))
+                    ->addDetail(__u('User'), $this->session->getUserData()->getLogin())
+                    ->addDetail(__u('Inactive time'), $inactiveTime . ' min.')
+                    ->addDetail(__u('Total time'), $totalTime . ' min.'))
             );
 
             SessionUtil::cleanSession();

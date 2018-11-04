@@ -83,7 +83,7 @@ final class UserPassRecoverRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([(int)$userId, $hash]);
-        $queryData->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
+        $queryData->setOnErrorMessage(__u('Error while generating the recovering hash'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -109,7 +109,7 @@ final class UserPassRecoverRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([$hash, (int)$time]);
-        $queryData->setOnErrorMessage(__u('Error en comprobación de hash'));
+        $queryData->setOnErrorMessage(__u('Error while checking hash'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

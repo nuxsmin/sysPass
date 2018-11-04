@@ -544,7 +544,7 @@ final class SessionContext extends ContextBase
     {
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
-            throw new ContextException(__u('La sesión no puede ser inicializada'));
+            throw new ContextException(__u('Session cannot be initialized'));
         }
 
         $this->setContextReference($_SESSION);

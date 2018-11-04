@@ -54,11 +54,11 @@ final class ConfigController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente'))
-                    ->addDetail(__u('Ruta'), $path))
+                    ->addDescription(__u('Application and database backup completed successfully'))
+                    ->addDetail(__u('Path'), $path))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Proceso de backup finalizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Backup process finished')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -79,8 +79,8 @@ final class ConfigController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('run.export.start',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Exportación de sysPass en XML'))
-                    ->addDetail(__u('Ruta'), $path))
+                    ->addDescription(__u('sysPass XML export'))
+                    ->addDetail(__u('Path'), $path))
             );
 
             $this->dic->get(XmlExportService::class)
@@ -88,10 +88,10 @@ final class ConfigController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Proceso de exportación finalizado')))
+                    ->addDescription(__u('Export process finished')))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Proceso de exportación finalizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Export process finished')));
         } catch (\Exception $e) {
             processException($e);
 

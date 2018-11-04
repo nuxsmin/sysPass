@@ -13,7 +13,7 @@ $password = $_getvar('password');
 <table class="popup-data">
     <tbody>
     <tr>
-        <td class="descField"><?php echo __('Longitud'); ?></td>
+        <td class="descField"><?php echo __('Length'); ?></td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="timeout" name="length" type="number"
@@ -21,13 +21,13 @@ $password = $_getvar('password');
                        min="1" max="100"
                        value="<?php echo $password->getLength() ?: 1; ?>"/>
                 <label class="mdl-textfield__label"
-                       for="length"><?php echo __('Longitud'); ?></label>
+                       for="length"><?php echo __('Length'); ?></label>
             </div>
         </td>
     </tr>
 
     <tr>
-        <td class="descField"><?php echo __('Caducidad clave cuentas'); ?></td>
+        <td class="descField"><?php echo __('Accounts password expiry'); ?></td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="expire_time" name="expire_time" type="number"
@@ -35,13 +35,13 @@ $password = $_getvar('password');
                        min="0"
                        value="<?php echo $password->getExpireTime() ? $password->getExpireTime() / $_getvar('expireTimeMultiplier') : 1; ?>"/>
                 <label class="mdl-textfield__label"
-                       for="expire_time"><?php echo __('Tiempo caducidad (días)'); ?></label>
+                       for="expire_time"><?php echo __('Expire time (days)'); ?></label>
             </div>
         </td>
     </tr>
 
     <tr>
-        <td class="descField"><?php echo __('Puntuación'); ?></td>
+        <td class="descField"><?php echo __('Score'); ?></td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="score" name="score" type="number"
@@ -49,20 +49,20 @@ $password = $_getvar('password');
                        min="0" max="5"
                        value="<?php echo $password->getScore(); ?>" disabled="disabled" readonly/>
                 <label class="mdl-textfield__label"
-                       for="score"><?php echo __('Puntuación'); ?></label>
+                       for="score"><?php echo __('Score'); ?></label>
             </div>
         </td>
     </tr>
 
     <tr>
-        <td class="descField"><?php echo __('Expresión Regular'); ?></td>
+        <td class="descField"><?php echo __('Regular Expression'); ?></td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="regex" name="regex" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo htmlentities($password->getRegex()); ?>"/>
                 <label class="mdl-textfield__label"
-                       for="regex"><?php echo __('Expresión Regular'); ?></label>
+                       for="regex"><?php echo __('Regular Expression'); ?></label>
             </div>
         </td>
     </tr>
@@ -81,7 +81,7 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Incluir Números'); ?></span>
+                        <span><?php echo __('Include Numbers'); ?></span>
                     </span>
                 </li>
 
@@ -95,7 +95,7 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Incluir Letras'); ?></span>
+                        <span><?php echo __('Include Letters'); ?></span>
                     </span>
                 </li>
 
@@ -109,7 +109,7 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Incluir Símbolos'); ?></span>
+                        <span><?php echo __('Include Symbols'); ?></span>
                     </span>
                 </li>
 
@@ -123,7 +123,7 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Incluir Mayúsculas'); ?></span>
+                        <span><?php echo __('Include Uppercase'); ?></span>
                     </span>
                 </li>
 
@@ -137,7 +137,7 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Incluir Minúsculas'); ?></span>
+                        <span><?php echo __('Include Lowercase'); ?></span>
                     </span>
                 </li>
 
@@ -151,11 +151,11 @@ $password = $_getvar('password');
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Imagen para mostrar clave'); ?></span>
+                        <span><?php echo __('Image to show password'); ?></span>
                         <span class="mdl-list__item-sub-title">
-                            <?php echo __('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                            <?php echo __('Generate an image with a text of the account password.'); ?>
                             <br>
-                            <?php echo __('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                            <?php echo __('Useful for environments where copying a password to clipboard is a security risk.'); ?>
                         </span>
                     </span>
                 </li>

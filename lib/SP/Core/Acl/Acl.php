@@ -291,14 +291,14 @@ final class Acl implements ActionsInterface
         try {
             $actionName = self::$action->getActionById($action)->getName();
         } catch (ActionNotFoundException $e) {
-            $actionName = __u('N/D');
+            $actionName = __u('N/A');
         }
 
         $this->eventDispatcher->notifyEvent('acl.deny',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Acceso denegado'))
-                ->addDetail(__u('Acción'), $actionName)
-                ->addDetail(__u('Usuario'), $userData->getLogin()))
+                ->addDescription(__u('Access denied'))
+                ->addDetail(__u('Action'), $actionName)
+                ->addDetail(__u('User'), $userData->getLogin()))
         );
 
         return false;

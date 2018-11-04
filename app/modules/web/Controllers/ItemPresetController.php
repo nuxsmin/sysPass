@@ -67,10 +67,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Valor'));
+            $this->view->assign('header', __('Display Value'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);
@@ -154,7 +154,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -194,7 +194,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $args = func_get_args();
@@ -204,7 +204,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
                 $type = Filter::getString($args[0]);
             }
 
-            $this->view->assign('header', __('Nuevo Valor'));
+            $this->view->assign('header', __('New Value'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'itemPreset/saveCreate');
 
@@ -233,10 +233,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Valor'));
+            $this->view->assign('header', __('Edit Value'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'itemPreset/saveEdit/' . $id);
 
@@ -265,7 +265,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -274,10 +274,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
                 $this->eventDispatcher->notifyEvent('delete.itemPreset',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Valores eliminados')))
+                            ->addDescription(__u('Values deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valores eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Values deleted'));
             }
 
             $this->itemPresetService->delete($id);
@@ -285,11 +285,11 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('delete.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Valor eliminado'))
+                        ->addDescription(__u('Value deleted'))
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -306,7 +306,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new ItemsPresetForm($this->dic);
@@ -319,12 +319,12 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('create.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Valor creado'))
-                        ->addDetail(__u('Tipo'), $itemData->getItemPresetData()->getType())
+                        ->addDescription(__u('Value created'))
+                        ->addDetail(__u('Type'), $itemData->getItemPresetData()->getType())
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value created'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -347,7 +347,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new ItemsPresetForm($this->dic, $id);
@@ -360,12 +360,12 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('edit.itemPreset',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Valor actualizado'))
-                        ->addDetail(__u('Tipo'), $itemData->getItemPresetData()->getType())
+                        ->addDescription(__u('Value updated'))
+                        ->addDetail(__u('Type'), $itemData->getItemPresetData()->getType())
                         ->addDetail(__u('ID'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Valor actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {

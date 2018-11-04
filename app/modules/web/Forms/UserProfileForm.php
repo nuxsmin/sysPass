@@ -113,7 +113,7 @@ final class UserProfileForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->userProfileData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de perfil'));
+            throw new ValidationException(__u('A profile name is needed'));
         }
     }
 

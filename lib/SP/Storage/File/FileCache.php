@@ -71,7 +71,7 @@ final class FileCache implements FileStorageInterface
     public function createPath($path)
     {
         if (!is_dir($path) && mkdir($path, 0700, true) === false) {
-            throw new FileException(sprintf(__('No es posible crear el directorio (%s)'), $path));
+            throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
         }
     }
 

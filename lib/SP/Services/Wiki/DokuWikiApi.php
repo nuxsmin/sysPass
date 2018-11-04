@@ -65,7 +65,7 @@ class DokuWikiApi extends DokuWikiApiBase
                 SessionFactory::setDokuWikiSession($resLogin[0]);
 
                 if ($resLogin[0] === false) {
-                    throw new SPException(__('Fallo de autentificación', false), SPException::WARNING);
+                    throw new SPException(__u('Authentication error'), SPException::WARNING);
                 }
             }
 

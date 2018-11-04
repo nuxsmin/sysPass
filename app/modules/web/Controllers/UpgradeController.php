@@ -64,11 +64,11 @@ final class UpgradeController extends ControllerBase
     public function upgradeAction()
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Es necesario confirmar la actualización'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The updating need to be confirmed'));
         }
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Código de seguridad incorrecto'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Wrong security code'));
         }
 
 
@@ -89,7 +89,7 @@ final class UpgradeController extends ControllerBase
             $this->configData->setUpgradeKey(null);
             $this->config->saveConfig($this->configData, false);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Aplicación actualizada correctamente'), [__u('En 5 segundos será redirigido al login')]);
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Application successfully updated'), [__u('You will be redirected to log in within 5 seconds')]);
         } catch (\Exception $e) {
             processException($e);
 

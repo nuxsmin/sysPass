@@ -82,7 +82,6 @@ class ConfigBackupServiceTest extends TestCase
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Core\Exceptions\ConfigException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Storage\File\FileException
      */

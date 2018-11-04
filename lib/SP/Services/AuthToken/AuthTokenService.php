@@ -136,7 +136,7 @@ final class AuthTokenService extends Service
     public function delete($id)
     {
         if ($this->authTokenRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Token no encontrado'));
+            throw new NoSuchItemException(__u('Token not found'));
         }
 
         return $this;
@@ -155,7 +155,7 @@ final class AuthTokenService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->authTokenRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar tokens'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while removing the tokens'), ServiceException::WARNING);
         }
 
         return $count;
@@ -274,7 +274,7 @@ final class AuthTokenService extends Service
     public function update(AuthTokenData $itemData, $token = null)
     {
         if ($this->authTokenRepository->update($this->injectSecureData($itemData, $token)) === 0) {
-            throw new NoSuchItemException(__u('Token no encontrado'));
+            throw new NoSuchItemException(__u('Token not found'));
         }
     }
 
@@ -288,7 +288,7 @@ final class AuthTokenService extends Service
     public function updateRaw(AuthTokenData $itemData)
     {
         if ($this->authTokenRepository->update($itemData) === 0) {
-            throw new NoSuchItemException(__u('Token no encontrado'));
+            throw new NoSuchItemException(__u('Token not found'));
         }
     }
 
@@ -308,7 +308,7 @@ final class AuthTokenService extends Service
         $result = $this->authTokenRepository->getTokenByToken($actionId, $token);
 
         if ($result->getNumRows() === 0) {
-            throw new ServiceException(__u('Error interno'));
+            throw new ServiceException(__u('Internal error'));
         }
 
         return $result->getData();

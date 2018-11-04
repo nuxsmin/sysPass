@@ -71,7 +71,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(__u('El archivo no existe'), SPException::INFO);
+                throw new SPException(__u('File does not exist'), SPException::INFO);
             }
 
             $this->view->addTemplate('file', 'itemshow');
@@ -84,8 +84,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 $this->eventDispatcher->notifyEvent('show.accountFile',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Archivo visualizado'))
-                            ->addDetail(__u('Archivo'), $fileData->getName()))
+                            ->addDescription(__u('File viewed'))
+                            ->addDetail(__u('File'), $fileData->getName()))
                 );
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -100,8 +100,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 $this->eventDispatcher->notifyEvent('show.accountFile',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Archivo visualizado'))
-                            ->addDetail(__u('Archivo'), $fileData->getName()))
+                            ->addDescription(__u('File viewed'))
+                            ->addDetail(__u('File'), $fileData->getName()))
                 );
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
@@ -112,7 +112,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             return $this->returnJsonResponseException($e);
         }
 
-        return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Archivo no soportado para visualizar'));
+        return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('File not supported for preview'));
     }
 
     /**
@@ -132,13 +132,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->session->setSecurityKey($this->previousSk);
 
             if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(__u('El archivo no existe'), SPException::INFO);
+                throw new SPException(__u('File does not exist'), SPException::INFO);
             }
 
             $this->eventDispatcher->notifyEvent('download.accountFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo descargado'))
-                    ->addDetail(__u('Archivo'), $fileData->getName()))
+                    ->addDescription(__u('File downloaded'))
+                    ->addDetail(__u('File'), $fileData->getName()))
             );
 
             $response = $this->router->response();
@@ -183,13 +183,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $file = $this->router->request()->files()->get('inFile');
 
             if ($accountId === 0 || null === $file) {
-                throw new SPException(__u('CONSULTA INVÁLIDA'), SPException::ERROR);
+                throw new SPException(__u('INVALID QUERY'), SPException::ERROR);
             }
 
             $allowedExts = $this->configData->getFilesAllowedExts();
 
             if (empty($allowedExts)) {
-                throw new SPException(__u('No hay extensiones permitidas'), SPException::ERROR);
+                throw new SPException(__u('There aren\'t any allowed extensions'), SPException::ERROR);
             }
 
             $fileHandler = new FileHandler($file['tmp_name']);
@@ -206,24 +206,24 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 if (!in_array($fileData->getExtension(), $allowedExts, true)) {
                     throw new SPException(
-                        __u('Tipo de archivo no soportado'),
+                        __u('File type not allowed'),
                         SPException::ERROR,
-                        sprintf(__('Extensión: %s'), $fileData->getExtension())
+                        sprintf(__('Extension: %s'), $fileData->getExtension())
                     );
                 }
             } else {
                 throw new SPException(
-                    __u('Archivo inválido'),
+                    __u('Invalid file'),
                     SPException::ERROR,
-                    sprintf(__u('Archivo: %s'), $fileData->getName())
+                    sprintf(__u('File: %s'), $fileData->getName())
                 );
             }
 
             if (!file_exists($file['tmp_name'])) {
                 throw new SPException(
-                    __u('Error interno al leer el archivo'),
+                    __u('Internal error while reading the file'),
                     SPException::ERROR,
-                    sprintf(__u('Máximo tamaño: %s'), Util::getMaxUpload())
+                    sprintf(__u('Maximum size: %s'), Util::getMaxUpload())
                 );
             }
 
@@ -231,9 +231,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             if ($fileData->getSize() > ($allowedSize * 1000)) {
                 throw new SPException(
-                    __u('Tamaño de archivo superado'),
+                    __u('File size exceeded'),
                     SPException::ERROR,
-                    sprintf(__u('Máximo tamaño: %d KB'),
+                    sprintf(__u('Maximum size: %d KB'),
                         $fileData->getRoundSize())
                 );
             }
@@ -241,7 +241,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $fileData->setContent($fileHandler->readToString());
 
             if ($fileData->getContent() === false) {
-                throw new SPException(__u('Error interno al leer el archivo'));
+                throw new SPException(__u('Internal error while reading the file'));
             }
 
             $this->accountFileService->create($fileData);
@@ -253,16 +253,16 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('upload.accountFile',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Archivo guardado'))
-                        ->addDetail(__u('Archivo'), $fileData->getName())
-                        ->addDetail(__u('Cuenta'), $account->getName())
-                        ->addDetail(__u('Cliente'), $account->getClientName())
-                        ->addDetail(__u('Tipo'), $fileData->getType())
-                        ->addDetail(__u('Tamaño'), $fileData->getRoundSize() . 'KB')
+                        ->addDescription(__u('File saved'))
+                        ->addDetail(__u('File'), $fileData->getName())
+                        ->addDetail(__u('Account'), $account->getName())
+                        ->addDetail(__u('Client'), $account->getClientName())
+                        ->addDetail(__u('Type'), $fileData->getType())
+                        ->addDetail(__u('Size'), $fileData->getRoundSize() . 'KB')
                 )
             );
 
-            return $this->returnJsonResponse(0, __u('Archivo guardado'));
+            return $this->returnJsonResponse(0, __u('File saved'));
         } catch (SPException $e) {
             processException($e);
 
@@ -289,7 +289,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -352,21 +352,21 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 $this->eventDispatcher->notifyEvent('delete.accountFile.selection',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Archivos eliminados')))
+                        ->addDescription(__u('Files deleted')))
                 );
 
-                return $this->returnJsonResponse(0, __u('Archivos eliminados'));
+                return $this->returnJsonResponse(0, __u('Files deleted'));
             }
 
             $this->eventDispatcher->notifyEvent('delete.accountFile',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo eliminado'))
-                    ->addDetail(__u('Archivo'), $id))
+                    ->addDescription(__u('File deleted'))
+                    ->addDetail(__u('File'), $id))
             );
 
             $this->accountFileService->delete($id);
 
-            return $this->returnJsonResponse(0, __u('Archivo Eliminado'));
+            return $this->returnJsonResponse(0, __u('File Deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -402,7 +402,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function listAction($accountId)
     {
         if (!$this->configData->isFilesEnabled()) {
-            echo __('Gestión de archivos deshabilitada');
+            echo __('Files management disabled');
             return;
         }
 
@@ -421,7 +421,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             if (!is_array($this->view->files) || count($this->view->files) === 0) {
                 $this->view->addTemplate('no_records_found', '_partials');
 
-                $this->view->assign('message', __('No hay archivos asociados a la cuenta'));
+                $this->view->assign('message', __('There are no linked files for the account'));
 
                 $this->view();
 

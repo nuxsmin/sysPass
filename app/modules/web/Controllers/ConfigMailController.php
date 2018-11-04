@@ -69,7 +69,7 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom || count($mailRecipients) === 0)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
         if ($mailEnabled) {
@@ -94,16 +94,16 @@ final class ConfigMailController extends SimpleControllerBase
             }
 
             if ($configData->isMailEnabled() === false) {
-                $eventMessage->addDescription(__u('Correo habiltado'));
+                $eventMessage->addDescription(__u('Mail enabled'));
             }
         } elseif ($mailEnabled === false && $configData->isMailEnabled()) {
             $configData->setMailEnabled(false);
             $configData->setMailRequestsEnabled(false);
             $configData->setMailAuthenabled(false);
 
-            $eventMessage->addDescription(__u('Correo deshabilitado'));
+            $eventMessage->addDescription(__u('Mail disabled'));
         } else {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Sin cambios'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
         }
 
         return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
@@ -130,7 +130,7 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if (!$mailParams->server || empty($mailParams->from) || empty($mailRecipients)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
         if ($mailParams->mailAuthenabled) {
@@ -143,14 +143,14 @@ final class ConfigMailController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('send.mail.check',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Correo enviado'))
-                    ->addDetail(__u('Destinatario'), $mailRecipients[0]))
+                    ->addDescription(__u('Email sent'))
+                    ->addDetail(__u('Recipient'), $mailRecipients[0]))
             );
 
             return $this->returnJsonResponse(
                 JsonResponse::JSON_SUCCESS,
-                __u('Correo enviado'),
-                [__u('Compruebe su buzón de correo')]
+                __u('Email sent'),
+                [__u('Please, check your inbox')]
             );
         } catch (\Exception $e) {
             processException($e);
@@ -174,5 +174,7 @@ final class ConfigMailController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

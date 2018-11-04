@@ -143,7 +143,7 @@ final class Init extends ModuleBase
         ) {
             $this->config->generateUpgradeKey();
 
-            throw new InitializationException(__u('Es necesario actualizar'));
+            throw new InitializationException(__u('Updating needed'));
         }
     }
 }

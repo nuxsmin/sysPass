@@ -28,13 +28,13 @@ $preset = $_getvar('preset');
                 <table class="popup-data">
                     <tbody>
                     <tr>
-                        <td class="descField"><?php echo __('Usuario'); ?></td>
+                        <td class="descField"><?php echo __('User'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+                            <div class="lowres-title"><?php echo __('User'); ?></div>
 
                             <select id="selUser" name="user_id" class="select-box select-box-deselect"
-                                    title="<?php echo __('Usuario'); ?>" <?php echo $_getvar('disabled'); ?>>
-                                <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                                    title="<?php echo __('User'); ?>" <?php echo $_getvar('disabled'); ?>>
+                                <option value=""><?php echo __('Select User'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
                                 foreach ($_getvar('users') as $user): ?>
                                     <option
@@ -45,13 +45,13 @@ $preset = $_getvar('preset');
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Grupo'); ?></td>
+                        <td class="descField"><?php echo __('Group'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Grupo'); ?></div>
+                            <div class="lowres-title"><?php echo __('Group'); ?></div>
 
                             <select id="selUserGroup" name="user_group_id" class="select-box select-box-deselect"
-                                    title="<?php echo __('Grupo'); ?>" <?php echo $_getvar('disabled'); ?>>
-                                <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                                    title="<?php echo __('Group'); ?>" <?php echo $_getvar('disabled'); ?>>
+                                <option value=""><?php echo __('Select Group'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
                                 foreach ($_getvar('userGroups') as $userGroup): ?>
                                     <option
@@ -62,13 +62,13 @@ $preset = $_getvar('preset');
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php echo __('Perfil'); ?></td>
+                        <td class="descField"><?php echo __('Profile'); ?></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php echo __('Perfil'); ?></div>
+                            <div class="lowres-title"><?php echo __('Profile'); ?></div>
 
                             <select id="selUserProfile" name="user_profile_id" class="select-box select-box-deselect"
-                                    title="<?php echo __('Perfil'); ?>" <?php echo $_getvar('disabled'); ?>>
-                                <option value=""><?php echo __('Seleccionar Perfil'); ?></option>
+                                    title="<?php echo __('Profile'); ?>" <?php echo $_getvar('disabled'); ?>>
+                                <option value=""><?php echo __('Select Profile'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $userProfile */
                                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                                     <option
@@ -80,13 +80,13 @@ $preset = $_getvar('preset');
 
                     <tr>
                         <td class="descField">
-                            <?php echo __('Prioridad'); ?>
+                            <?php echo __('Priority'); ?>
 
                             <div id="help-priority"
                                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                             <div class="mdl-tooltip mdl-tooltip--large" for="help-priority">
                                 <p>
-                                    <?php echo __('Prioridad de asignación en caso de coincidir con otros valores asignados por usuario, grupo o perfil.'); ?>
+                                    <?php echo __('Assignment priority if values match with others assigned by user, group or profile.'); ?>
                                 </p>
                             </div>
                         </td>
@@ -97,7 +97,7 @@ $preset = $_getvar('preset');
                                        maxlength="3" min="0" max="128"
                                        value="<?php echo $preset->getPriority(); ?>"/>
                                 <label class="mdl-textfield__label"
-                                       for="priority"><?php echo __('Prioridad de asignación'); ?></label>
+                                       for="priority"><?php echo __('Assignment Priority'); ?></label>
                             </div>
                         </td>
                     </tr>
@@ -117,11 +117,11 @@ $preset = $_getvar('preset');
                                     </div>
 
                                     <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Forzado'); ?></span>
+                                <span><?php echo __('Forced'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Indica si los valores serán forzados al crear o modificar los elementos.'); ?>
+                                    <?php echo __('Enforces the values to be set either on creating or updating an item.'); ?>
                                     <br>
-                                    <?php echo __('Los valores serán añadidos a los existentes.'); ?>
+                                    <?php echo __('Values will be merged with the existing ones.'); ?>
                                 </span>
                             </span>
                                 </li>

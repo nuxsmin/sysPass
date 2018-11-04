@@ -76,7 +76,7 @@ final class ApiRequest
 
         if ($data === null) {
             throw new ApiRequestException(
-                __u('Datos inválidos'),
+                __u('Invalid data'),
                 ApiRequestException::ERROR,
                 json_last_error_msg(),
                 JsonRpcResponse::PARSE_ERROR
@@ -85,7 +85,7 @@ final class ApiRequest
 
         if (!isset($data['jsonrpc'], $data['method'], $data['params'], $data['id'], $data['params']['authToken'])) {
             throw new ApiRequestException(
-                __u('Fomato incorrecto'),
+                __u('Invalid format'),
                 ApiRequestException::ERROR,
                 null,
                 JsonRpcResponse::INVALID_REQUEST
@@ -110,7 +110,7 @@ final class ApiRequest
 
         if ($content === false || empty($content)) {
             throw new ApiRequestException(
-                __u('Datos inválidos'),
+                __u('Invalid data'),
                 ApiRequestException::ERROR,
                 null,
                 JsonRpcResponse::PARSE_ERROR

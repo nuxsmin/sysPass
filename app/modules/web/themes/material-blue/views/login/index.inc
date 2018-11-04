@@ -21,7 +21,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="80" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="user"><?php echo __('Usuario'); ?></label>
+                               for="user"><?php echo __('User'); ?></label>
                     </div>
                 </div>
 
@@ -32,7 +32,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="pass"><?php echo __('Clave'); ?></label>
+                               for="pass"><?php echo __('Password'); ?></label>
                     </div>
                 </div>
 
@@ -43,7 +43,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="oldpass"><?php echo __('Clave Anterior'); ?></label>
+                               for="oldpass"><?php echo __('Previous Password'); ?></label>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="mpass"><?php echo __('Clave Maestra'); ?></label>
+                               for="mpass"><?php echo __('Master Password'); ?></label>
                     </div>
                 </div>
 
@@ -70,7 +70,7 @@
             <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--indigo-400"
-                        title="<?php echo __('Acceder'); ?>">
+                        title="<?php echo __('Sign in'); ?>">
                     <i class="material-icons">play_arrow</i>
                 </button>
             </div>
@@ -79,27 +79,27 @@
         <!-- Close boxData -->
         <?php if ($_getvar('mailEnabled')): ?>
             <div id="box-actions">
-                <a href="index.php?r=userPassReset"><?php echo __('¿Olvidó su clave?'); ?></a>
+                <a href="index.php?r=userPassReset"><?php echo __('Forgot password?'); ?></a>
             </div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 
     <?php if ($_getvar('updated')): ?>
-        <div id="box-updated" class="round5"><?php echo __('Aplicación actualizada correctamente'); ?></div>
+        <div id="box-updated" class="round5"><?php echo __('Application successfully updated'); ?></div>
     <?php endif; ?>
 
     <?php if ($_getvar('isDemo')): ?>
         <div id="demo-info">
             <ul>
-                <li title="<?php echo __('Usuario'); ?>">
+                <li title="<?php echo __('User'); ?>">
                     <i class="material-icons">perm_identity</i>
                     <span>demo</span>
                 </li>
-                <li title="<?php echo __('Clave'); ?>">
+                <li title="<?php echo __('Password'); ?>">
                     <i class="material-icons">vpn_key</i>
                     <span>syspass</span>
                 </li>
-                <li title="<?php echo __('Clave Maestra'); ?>">
+                <li title="<?php echo __('Master Password'); ?>">
                     <i class="material-icons">vpn_key</i>
                     <span>12345678900</span>
                 </li>

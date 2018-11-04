@@ -69,8 +69,8 @@ final class CategoryGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -91,7 +91,7 @@ final class CategoryGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Categorías'));
+        $gridTab->setTitle(__('Categories'));
 
         return $gridTab;
     }
@@ -103,8 +103,8 @@ final class CategoryGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Descripción'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Description'));
 
         return $gridHeader;
     }
@@ -134,7 +134,7 @@ final class CategoryGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::CATEGORY_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchCategory');
-        $gridActionSearch->setTitle(__('Buscar Categoría'));
+        $gridActionSearch->setTitle(__('Search for Category'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH));
 
@@ -149,8 +149,8 @@ final class CategoryGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CATEGORY_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nueva Categoría'));
-        $gridAction->setTitle(__('Nueva Categoría'));
+        $gridAction->setName(__('New Category'));
+        $gridAction->setTitle(__('New Category'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -167,8 +167,8 @@ final class CategoryGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CATEGORY_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Categoría'));
-        $gridAction->setTitle(__('Editar Categoría'));
+        $gridAction->setName(__('Edit Category'));
+        $gridAction->setTitle(__('Edit Category'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT));
@@ -184,8 +184,8 @@ final class CategoryGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::CATEGORY_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Categoría'));
-        $gridAction->setTitle(__('Eliminar Categoría'));
+        $gridAction->setName(__('Delete Category'));
+        $gridAction->setTitle(__('Delete Category'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE));

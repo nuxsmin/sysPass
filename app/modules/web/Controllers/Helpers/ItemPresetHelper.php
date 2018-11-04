@@ -63,7 +63,7 @@ final class ItemPresetHelper extends HelperBase
         $accountPermission = $itemPresetData->hydrate(AccountPermission::class, 'data') ?: new AccountPermission();
 
         $this->view->assign('typeTemplate', 'item_preset-permission');
-        $this->view->assign('presetName', __('Valor de Permiso'));
+        $this->view->assign('presetName', __('Permission Preset'));
 
         $this->view->assign('permission', $accountPermission);
 
@@ -83,7 +83,7 @@ final class ItemPresetHelper extends HelperBase
         $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class, 'data') ?: new AccountPrivate();
 
         $this->view->assign('typeTemplate', 'item_preset-private');
-        $this->view->assign('presetName', __('Valor de Cuenta Privada'));
+        $this->view->assign('presetName', __('Private Account Preset'));
 
         $this->view->assign('private', $accountPrivate);
     }
@@ -99,7 +99,7 @@ final class ItemPresetHelper extends HelperBase
         $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class, 'data') ?: new SessionTimeout($this->request->getClientAddress(), 3600);
 
         $this->view->assign('typeTemplate', 'item_preset-session_timeout');
-        $this->view->assign('presetName', __('Valor de Timeout de Sesión'));
+        $this->view->assign('presetName', __('Session Timeout Preset'));
 
         $this->view->assign('sessionTimeout', $sessionTimeout);
     }
@@ -114,7 +114,7 @@ final class ItemPresetHelper extends HelperBase
         $password = $itemPresetData->hydrate(Password::class, 'data') ?: new Password;
 
         $this->view->assign('typeTemplate', 'item_preset-password');
-        $this->view->assign('presetName', __('Valor de Clave de Cuentas'));
+        $this->view->assign('presetName', __('Account Password Preset'));
 
         $this->view->assign('password', $password);
 

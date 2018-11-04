@@ -40,7 +40,7 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true)
+                self::getItem('id', __('Client Id'), true)
             ];
     }
 
@@ -51,8 +51,8 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('name', __('Nombre del cliente'), true),
-                self::getItem('description', __('Descripción del cliente')),
+                self::getItem('name', __('Client name'), true),
+                self::getItem('description', __('Client description')),
                 self::getItem('global', __('Global'))
             ];
     }
@@ -64,9 +64,9 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true),
-                self::getItem('name', __('Nombre del cliente'), true),
-                self::getItem('description', __('Descripción del cliente')),
+                self::getItem('id', __('Client Id'), true),
+                self::getItem('name', __('Client name'), true),
+                self::getItem('description', __('Client description')),
                 self::getItem('global', __('Global'))
             ];
     }
@@ -78,8 +78,8 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('text', __('Texto a buscar')),
-                self::getItem('count', __('Número de resultados a mostrar'))
+                self::getItem('text', __('Text to search for')),
+                self::getItem('count', __('Number of results to display'))
             ];
     }
 
@@ -90,7 +90,7 @@ final class ClientHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Id de cliente'), true)
+                self::getItem('id', __('Client Id'), true)
             ];
     }
 }

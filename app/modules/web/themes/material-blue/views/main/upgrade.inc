@@ -11,22 +11,22 @@
         <div id="page-title">
             <h1><?php use SP\Util\VersionUtil;
 
-                printf(__('Actualización  %s'), $_getvar('upgradeVersion')); ?></h1>
+                printf(__('Update %s'), $_getvar('upgradeVersion')); ?></h1>
         </div>
 
         <form id="frmUpgrade" method="get" class="form-action" data-onsubmit="main/upgrade">
             <fieldset>
                 <?php if ($_getvar('type') === 'db'): ?>
-                    <legend><?php echo __('Actualización de BBDD'); ?></legend>
+                    <legend><?php echo __('DB Update'); ?></legend>
                 <?php elseif ($_getvar('type') === 'app'): ?>
-                    <legend><?php echo __('Actualización de Aplicación'); ?></legend>
+                    <legend><?php echo __('Application Update'); ?></legend>
                 <?php endif; ?>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="h" name="h" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
                            autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
-                           for="h"><?php echo __('Código de Seguridad'); ?></label>
+                           for="h"><?php echo __('Security Code'); ?></label>
                 </div>
 
                 <div id="help-code"
@@ -34,7 +34,7 @@
                     <?php echo $icons->getIconHelp()->getIcon(); ?>
                 </div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-code">
-                    <?php echo __('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
+                    <?php echo __('This code is set in sysPass config file within the tag name "upgradekey"'); ?>
                 </div>
 
                 <?php if (VersionUtil::checkVersion($_getvar('version'), '130.16011001')
@@ -44,9 +44,9 @@
                         <ul class="errors">
                             <li class="msg-warning">
                                 <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
-                                <?php echo __('Se han encontrado elementos huérfanos. Por favor, modifique estos elementos o indique los IDs por defecto para los elementos huérfanos.'); ?>
+                                <?php echo __('Some orphaned items have been found. Please, modify those items or enter the default IDs for them.'); ?>
                                 <br>
-                                <?php echo __('Si no se indican los IDs, se crearán nuevos elementos.'); ?>
+                                <?php echo __('If items IDs are not set, they will be created.'); ?>
                             </li>
                         </ul>
                     </div>
@@ -71,7 +71,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
-                                   for="userid"><?php echo __('Introducir un ID de usuario válido para cuentas'); ?></label>
+                                   for="userid"><?php echo __('Enter a valid user ID for the accounts'); ?></label>
                         </div>
                     <?php endif; ?>
 
@@ -82,7 +82,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off" min="0" max="1000" value="0">
                         <label class="mdl-textfield__label"
-                               for="categoryid"><?php echo __('Introducir un ID de categoría válido para cuentas'); ?></label>
+                               for="categoryid"><?php echo __('Enter a valid category ID for the accounts'); ?></label>
                     </div>
                 <?php endif; ?>
 
@@ -93,7 +93,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off" min="0" max="1000" value="0">
                         <label class="mdl-textfield__label"
-                               for="customerid"><?php echo __('Introducir un ID de cliente válido para cuentas'); ?></label>
+                               for="customerid"><?php echo __('Enter a valid client ID for the accounts'); ?></label>
                     </div>
                 <?php endif; ?>
 
@@ -105,7 +105,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off" min="0" max="1000" value="0">
                         <label class="mdl-textfield__label"
-                               for="groupid"><?php echo __('Introducir un ID de grupo válido para usuarios'); ?></label>
+                               for="groupid"><?php echo __('Enter a valid group ID for the users'); ?></label>
                     </div>
                 <?php endif; ?>
 
@@ -115,7 +115,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off" min="0" max="1000" value="0">
                         <label class="mdl-textfield__label"
-                               for="profileid"><?php echo __('Introducir un ID de perfil válido para usuarios'); ?></label>
+                               for="profileid"><?php echo __('Enter a valid profile ID for the users'); ?></label>
                     </div>
                 <?php endif; ?>
                 <?php endif; ?>
@@ -125,11 +125,11 @@
                         <ul class="errors">
                             <li class="msg-warning">
                                 <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
-                                <?php echo __('Esta actualización utiliza un nuevo esquema de encriptación, por lo que es necesario reencriptar los datos almacenados'); ?>
+                                <?php echo __('This update uses a new encryption schema, so it will be needed to reencrypt the whole encrypted data.'); ?>
                                 <br>
-                                <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $_getvar('numAccounts')); ?></strong>
+                                <strong><?php printf(__('It will be updated %s accounts. This process could take some time long.'), $_getvar('numAccounts')); ?></strong>
                                 <br>
-                                <?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?>
+                                <?php printf(__('You could get more info on: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?>
                             </li>
                         </ul>
                     </div>
@@ -139,7 +139,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                maxlength="255" required/>
                         <label class="mdl-textfield__label"
-                               for="masterkey"><?php echo __('Clave Maestra actual'); ?></label>
+                               for="masterkey"><?php echo __('Current Master Password'); ?></label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -147,7 +147,7 @@
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="userlogin"><?php echo __('Introducir login de usuario válido'); ?></label>
+                               for="userlogin"><?php echo __('Enter a valid user login'); ?></label>
                     </div>
 
                     <?php if ($_getvar('numAccounts') >= 500): ?>
@@ -159,7 +159,7 @@
 
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
                     <input type="checkbox" id="chkConfirm" class="mdl-checkbox__input" name="chkConfirm">
-                    <span class="mdl-checkbox__label"><?php echo __('He realizado una copia de seguridad completa de sysPass'); ?></span>
+                    <span class="mdl-checkbox__label"><?php echo __('I\'ve done a full sysPass backup'); ?></span>
                 </label>
 
                 <input type="hidden" name="a" value="<?php echo $_getvar('action'); ?>">
@@ -173,7 +173,7 @@
                 <ul class="errors">
                     <li class="msg-warning">
                         <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
-                        <?php echo __('Por favor espere mientras el proceso se ejecuta'); ?>
+                        <?php echo __('Please, wait while the process is running'); ?>
                     </li>
                 </ul>
             </div>
@@ -181,9 +181,9 @@
             <div class="buttons">
                 <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                         type="submit">
-                    <?php echo __('Actualizar'); ?>
+                    <?php echo __('Update'); ?>
                     <i class="material-icons"
-                       title="<?php echo __('Iniciar Actualización'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                       title="<?php echo __('Start Update'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
                 </button>
             </div>
         </form>

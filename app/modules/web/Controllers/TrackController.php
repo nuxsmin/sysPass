@@ -97,7 +97,6 @@ final class TrackController extends ControllerBase
      * @param int $id
      *
      * @return bool
-     * @throws UnauthorizedActionException
      */
     public function unlockAction($id)
     {
@@ -112,7 +111,7 @@ final class TrackController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('unlock.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track desbloqueado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Track unlocked'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -124,7 +123,6 @@ final class TrackController extends ControllerBase
      * Clears tracks
      *
      * @return bool
-     * @throws UnauthorizedActionException
      */
     public function clearAction()
     {
@@ -139,7 +137,7 @@ final class TrackController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('clear.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks limpiados'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks cleared out'));
         } catch (\Exception $e) {
             processException($e);
 

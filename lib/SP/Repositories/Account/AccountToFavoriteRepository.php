@@ -68,7 +68,7 @@ final class AccountToFavoriteRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO AccountToFavorite SET accountId = ?, userId = ?');
         $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al añadir favorito'));
+        $queryData->setOnErrorMessage(__u('Error while adding favorite'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -88,7 +88,7 @@ final class AccountToFavoriteRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?');
         $queryData->setParams([$accountId, $userId]);
-        $queryData->setOnErrorMessage(__u('Error al eliminar favorito'));
+        $queryData->setOnErrorMessage(__u('Error while deleting favorite'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

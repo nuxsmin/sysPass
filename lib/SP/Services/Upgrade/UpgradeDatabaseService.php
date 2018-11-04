@@ -75,35 +75,37 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * Inicia el proceso de actualización de la BBDD.
      *
-     * @param int $version con la versión de la BBDD actual
+     * @param int        $version con la versión de la BBDD actual
      * @param ConfigData $configData
      *
      * @return bool
-     * @throws UpgradeException
      * @throws FileException
+     * @throws UpgradeException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function upgrade($version, ConfigData $configData)
     {
         $this->eventDispatcher->notifyEvent('upgrade.db.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar BBDD')))
+                ->addDescription(__u('Update DB')))
         );
 
         foreach (self::UPGRADES as $upgradeVersion) {
             if (VersionUtil::checkVersion($version, $upgradeVersion)) {
                 if ($this->applyPreUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
-                        __u('Error al aplicar la actualización auxiliar'),
+                        __u('Error while applying an auxiliary update'),
                         UpgradeException::CRITICAL,
-                        __u('Compruebe el registro de eventos para más detalles')
+                        __u('Please, check the event log for more details')
                     );
                 }
 
                 if ($this->applyUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
-                        __u('Error al aplicar la actualización de la Base de Datos'),
+                        __u('Error while updating the database'),
                         UpgradeException::CRITICAL,
-                        __u('Compruebe el registro de eventos para más detalles')
+                        __u('Please, check the event log for more details')
                     );
                 }
 
@@ -117,7 +119,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
 
         $this->eventDispatcher->notifyEvent('upgrade.db.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualizar BBDD')))
+                ->addDescription(__u('Update DB')))
         );
 
         return true;
@@ -149,16 +151,16 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         $queries = $this->getQueriesFromFile($version);
 
         if (count($queries) === 0) {
-            logger(__('El archivo de actualización no contiene datos'), 'ERROR');
+            logger(__('Update file does not contain data'), 'ERROR');
 
-            throw new UpgradeException(__u('El archivo de actualización no contiene datos'), UpgradeException::ERROR, $version);
+            throw new UpgradeException(__u('Update file does not contain data'), UpgradeException::ERROR, $version);
         }
 
         foreach ($queries as $query) {
             try {
                 $this->eventDispatcher->notifyEvent('upgrade.db.process',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Versión'), $version))
+                        ->addDetail(__u('Version'), $version))
                 );
 
                 // Direct PDO handling
@@ -172,17 +174,17 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
 
                 $this->eventDispatcher->notifyEvent('exception',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Error al aplicar la actualización de la Base de Datos'))
+                        ->addDescription(__u('Error while updating the database'))
                         ->addDetail('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode())))
                 );
 
-                throw new UpgradeException(__u('Error al aplicar la actualización de la Base de Datos'));
+                throw new UpgradeException(__u('Error while updating the database'));
             }
         }
 
         $this->eventDispatcher->notifyEvent('upgrade.db.process',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de la Base de Datos realizada correctamente.')))
+                ->addDescription(__u('Database updating was completed successfully.')))
         );
 
         return true;

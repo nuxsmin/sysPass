@@ -60,7 +60,7 @@ final class ConfigWikiController extends SimpleControllerBase
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Wiki'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Wiki parameters'));
         }
 
         if ($wikiEnabled) {
@@ -70,12 +70,12 @@ final class ConfigWikiController extends SimpleControllerBase
             $configData->setWikiFilter(explode(',', $wikiFilter));
 
             if ($configData->isWikiEnabled() === false) {
-                $eventMessage->addDescription(__u('Wiki habiltada'));
+                $eventMessage->addDescription(__u('Wiki enabled'));
             }
         } elseif ($wikiEnabled === false && $configData->isWikiEnabled()) {
             $configData->setWikiEnabled(false);
 
-            $eventMessage->addDescription(__u('Wiki deshabilitada'));
+            $eventMessage->addDescription(__u('Wiki disabled'));
         }
 
         // DokuWiki
@@ -88,7 +88,7 @@ final class ConfigWikiController extends SimpleControllerBase
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de DokuWiki'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing DokuWiki parameters'));
         }
 
         if ($dokuWikiEnabled) {
@@ -100,12 +100,12 @@ final class ConfigWikiController extends SimpleControllerBase
             $configData->setDokuwikiNamespace($dokuWikiNamespace);
 
             if ($configData->isDokuwikiEnabled() === false) {
-                $eventMessage->addDescription(__u('DokuWiki habilitada'));
+                $eventMessage->addDescription(__u('DokuWiki enabled'));
             }
         } elseif ($dokuWikiEnabled === false && $configData->isDokuwikiEnabled()) {
             $configData->setDokuwikiEnabled(false);
 
-            $eventMessage->addDescription(__u('DokuWiki deshabilitada'));
+            $eventMessage->addDescription(__u('DokuWiki disabled'));
         }
 
         return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
@@ -126,5 +126,7 @@ final class ConfigWikiController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

@@ -70,8 +70,8 @@ final class UserGroupGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -92,7 +92,7 @@ final class UserGroupGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Grupos'));
+        $gridTab->setTitle(__('Groups'));
 
         return $gridTab;
     }
@@ -104,8 +104,8 @@ final class UserGroupGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Descripción'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Description'));
 
         return $gridHeader;
     }
@@ -135,7 +135,7 @@ final class UserGroupGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::GROUP_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchGroup');
-        $gridActionSearch->setTitle(__('Buscar Grupo'));
+        $gridActionSearch->setTitle(__('Search for Group'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_SEARCH));
 
@@ -150,8 +150,8 @@ final class UserGroupGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::GROUP_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Grupo'));
-        $gridAction->setTitle(__('Nuevo Grupo'));
+        $gridAction->setName(__('New Group'));
+        $gridAction->setTitle(__('New Group'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -168,8 +168,8 @@ final class UserGroupGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::GROUP_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Grupo'));
-        $gridAction->setTitle(__('Ver Grupo'));
+        $gridAction->setName(__('View Group'));
+        $gridAction->setTitle(__('View Group'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_VIEW));
@@ -185,8 +185,8 @@ final class UserGroupGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::GROUP_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Grupo'));
-        $gridAction->setTitle(__('Editar Grupo'));
+        $gridAction->setName(__('Edit Group'));
+        $gridAction->setTitle(__('Edit Group'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_EDIT));
@@ -202,8 +202,8 @@ final class UserGroupGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::GROUP_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Grupo'));
-        $gridAction->setTitle(__('Eliminar Grupo'));
+        $gridAction->setName(__('Delete Group'));
+        $gridAction->setTitle(__('Delete Group'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_DELETE));

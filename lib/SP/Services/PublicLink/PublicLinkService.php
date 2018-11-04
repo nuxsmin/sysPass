@@ -119,7 +119,7 @@ final class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'));
+            throw new NoSuchItemException(__u('Link not found'));
         }
 
         return $result->getData();
@@ -142,7 +142,7 @@ final class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'));
+            throw new NoSuchItemException(__u('Link not found'));
         }
 
         $key = $this->getPublicLinkKey();
@@ -216,7 +216,7 @@ final class PublicLinkService extends Service
     public function delete($id)
     {
         if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Link not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -235,7 +235,7 @@ final class PublicLinkService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->publicLinkRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los enlaces'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while removing the links'), ServiceException::WARNING);
         }
 
         return $count;
@@ -296,11 +296,11 @@ final class PublicLinkService extends Service
         // FIXME
 //        $Log = new Log();
 //        $LogMessage = $Log->getLogMessage();
-//        $LogMessage->setAction(__u('Ver Enlace Público'));
-//        $LogMessage->addDescription(__u('Enlace visualizado'));
-//        $LogMessage->addDetails(__u('Tipo'), $publicLinkData->getPublicLinkTypeId());
-//        $LogMessage->addDetails(__u('Cuenta'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
-//        $LogMessage->addDetails(__u('Usuario'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
+//        $LogMessage->setAction(__u('Show Public Link'));
+//        $LogMessage->addDescription(__u('Link viewed'));
+//        $LogMessage->addDetails(__u('Type'), $publicLinkData->getPublicLinkTypeId());
+//        $LogMessage->addDetails(__u('Account'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
+//        $LogMessage->addDetails(__u('User'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
 //        $Log->writeLog();
 //
 //        if ($publicLinkData->isPublicLinkNotify()) {
@@ -308,7 +308,7 @@ final class PublicLinkService extends Service
 //        }
 
         if ($this->publicLinkRepository->addLinkView($publicLinkData) === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'));
+            throw new NoSuchItemException(__u('Link not found'));
         }
     }
 
@@ -343,7 +343,7 @@ final class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getByHash($hash);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'));
+            throw new NoSuchItemException(__u('Link not found'));
         }
 
         return $result->getData();
@@ -364,7 +364,7 @@ final class PublicLinkService extends Service
         $result = $this->publicLinkRepository->getHashForItem($itemId);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Enlace no encontrado'));
+            throw new NoSuchItemException(__u('Link not found'));
         }
 
         return $result->getData();

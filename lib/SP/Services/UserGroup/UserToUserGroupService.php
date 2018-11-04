@@ -54,7 +54,7 @@ final class UserToUserGroupService extends Service
         $result = $this->userToUserGroupRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Grupo no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Group not found'), NoSuchItemException::INFO);
         }
 
         return $result->getDataAsArray();

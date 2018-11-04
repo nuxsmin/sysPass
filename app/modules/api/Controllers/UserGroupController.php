@@ -58,8 +58,8 @@ final class UserGroupController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('show.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Grupo visualizado'))
-                    ->addDetail(__u('Nombre'), $userGroupData->getName())
+                    ->addDescription(__u('Group viewed'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
@@ -88,12 +88,12 @@ final class UserGroupController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('create.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Grupo creado'))
-                    ->addDetail(__u('Nombre'), $userGroupData->getName())
+                    ->addDescription(__u('Group added'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Grupo creado')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group added')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -119,12 +119,12 @@ final class UserGroupController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Grupo actualizado'))
-                    ->addDetail(__u('Nombre'), $userGroupData->getName())
+                    ->addDescription(__u('Group updated'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $userGroupData->getId()))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Grupo actualizado')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated')));
         } catch (\Exception $e) {
             processException($e);
 
@@ -148,12 +148,12 @@ final class UserGroupController extends ControllerBase
 
             $this->eventDispatcher->notifyEvent('delete.userGroup',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Grupo eliminado'))
-                    ->addDetail(__u('Nombre'), $userGroupData->getName())
+                    ->addDescription(__u('Group deleted'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Grupo eliminado')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));
         } catch (\Exception $e) {
             processException($e);
 

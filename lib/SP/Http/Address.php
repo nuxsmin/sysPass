@@ -46,9 +46,9 @@ final class Address
         if (!filter_var($address, FILTER_VALIDATE_IP)
             || ($binAddress = @inet_pton($address)) === false
         ) {
-            logger(sprintf('%s : %s', __('IP inválida'), $address));
+            logger(sprintf('%s : %s', __('Invalid IP'), $address));
 
-            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
         }
 
         return $binAddress;
@@ -65,9 +65,9 @@ final class Address
         $stringAddress = @inet_ntop($address);
 
         if ($stringAddress === false) {
-            logger(sprintf('%s : %s', __('IP inválida'), $address));
+            logger(sprintf('%s : %s', __('Invalid IP'), $address));
 
-            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
         }
 
         return $stringAddress;
@@ -87,7 +87,7 @@ final class Address
             return $matches;
         }
 
-        throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
+        throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
     }
 
     /**
@@ -106,7 +106,7 @@ final class Address
             || !filter_var($inAddress, FILTER_VALIDATE_IP)
             || !filter_var($inMask, FILTER_VALIDATE_IP)
         ) {
-            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $address);
+            throw new InvalidArgumentException(__u('Invalid IP'), InvalidArgumentException::ERROR, $address);
         }
 
         // Obtains subnets based on mask ie.: subnet === subnet

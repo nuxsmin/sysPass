@@ -70,31 +70,31 @@ final class ConfigEncryptionController extends SimpleControllerBase
         $taskId = $this->request->analyzeString('taskId');
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Clave maestra actualizada'), [__u('Reinicie la sesión para cambiarla')]);
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Master password updated'), [__u('Please, restart the session for update it')]);
         }
 
         if (empty($newMasterPass) || empty($currentMasterPass)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Clave maestra no indicada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Master password not entered'));
         }
 
         if ($confirmPassChange === false) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Se ha de confirmar el cambio de clave'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The password update must be confirmed'));
         }
 
         if ($newMasterPass === $currentMasterPass) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves son idénticas'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Passwords are the same'));
         }
 
         if ($newMasterPass !== $newMasterPassR) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Las claves maestras no coinciden'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Master passwords do not match'));
         }
 
         if (!$mastePassService->checkMasterPassword($currentMasterPass)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('La clave maestra actual no coincide'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The current master password does not match'));
         }
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
 
         $configService = $this->dic->get(ConfigService::class);
@@ -140,11 +140,11 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar el hash de la clave maestra'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the Master Password\'s hash'));
             }
         }
 
-        return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Clave maestra actualizada'), [__u('Reinicie la sesión para cambiarla')]);
+        return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Master password updated'), [__u('Please, restart the session for update it')]);
     }
 
     /**
@@ -156,23 +156,23 @@ final class ConfigEncryptionController extends SimpleControllerBase
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if ($this->config->getConfigData()->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
 
             $masterPassService = $this->dic->get(MasterPassService::class);
             $masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
             $this->eventDispatcher->notifyEvent('refresh.masterPassword.hash',
-                new Event($this, EventMessage::factory()->addDescription(__u('Hash de clave maestra actualizado'))));
+                new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated'))));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Hash de clave maestra actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Master password hash updated'));
         } catch (\Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al actualizar el hash de la clave maestra'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while updating the master password hash'));
         }
     }
 
@@ -196,17 +196,17 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 try {
                     $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave temporal generada'), [__u('Email enviado')]);
+                    return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'), [__u('Email sent')]);
                 } catch (\Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Clave temporal generada'), [__u('Error al enviar email')]);
+                    return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Temporary password generated'), [__u('Error while sending the email')]);
                 }
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave temporal generada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -229,5 +229,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
             return $this->returnJsonResponseException($e);
         }
+
+        return true;
     }
 }

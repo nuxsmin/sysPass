@@ -40,7 +40,7 @@ final class ConfigHelp implements HelpInterface
     {
         return
             [
-                self::getItem('path', __('Ruta'))
+                self::getItem('path', __('Path'))
             ];
     }
 
@@ -51,8 +51,8 @@ final class ConfigHelp implements HelpInterface
     {
         return
             [
-                self::getItem('path', __('Ruta')),
-                self::getItem('password', __('Clave'))
+                self::getItem('path', __('Path')),
+                self::getItem('password', __('Password'))
             ];
     }
 }

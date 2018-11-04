@@ -81,7 +81,7 @@ final class CustomFieldTypeService extends Service
         $result = $this->customFieldTypeRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Tipo de campo no encontrado'));
+            throw new NoSuchItemException(__u('Field type not found'));
         }
 
         return $result->getData();

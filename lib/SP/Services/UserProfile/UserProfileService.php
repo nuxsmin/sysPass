@@ -62,7 +62,7 @@ final class UserProfileService extends Service
         $result = $this->userProfileRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Perfil no encontrado'));
+            throw new NoSuchItemException(__u('Profile not found'));
         }
 
         $userProfileData = $result->getData();
@@ -94,7 +94,7 @@ final class UserProfileService extends Service
     public function delete($id)
     {
         if ($this->userProfileRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Perfil no encontrado'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Profile not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -111,7 +111,7 @@ final class UserProfileService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if (($count = $this->userProfileRepository->deleteByIdBatch($ids)) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar los perfiles'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while removing the profiles'), ServiceException::WARNING);
         }
 
         return $count;
@@ -138,7 +138,7 @@ final class UserProfileService extends Service
     public function update($itemData)
     {
         if ($this->userProfileRepository->update($itemData) === 0) {
-            throw new ServiceException(__u('Error al modificar perfil'));
+            throw new ServiceException(__u('Error while updating the profile'));
         }
     }
 

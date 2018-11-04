@@ -105,9 +105,9 @@ final class XmlVerifyService extends Service
             }
 
             throw new ServiceException(
-                __u('Error interno'),
+                __u('Internal error'),
                 ServiceException::ERROR,
-                __u('No es posible procesar el archivo XML')
+                __u('Unable to process the XML file')
             );
         }
     }
@@ -174,7 +174,7 @@ final class XmlVerifyService extends Service
         $key = $password !== '' ? $password : $this->config->getConfigData()->getPasswordSalt();
 
         if (!self::checkXmlHash($this->xml, $key)) {
-            throw new ServiceException(__u('Fallo en la verificación del hash de integridad'));
+            throw new ServiceException(__u('Error while checking integrity hash'));
         }
 
         return new VerifyResult($this->getXmlVersion(), $this->detectEncrypted(), $this->countItemNodes($this->processEncrypted()));
@@ -191,7 +191,7 @@ final class XmlVerifyService extends Service
             ->getAttribute('hash');
 
         if (empty($hash) || !Hash::checkHashKey($this->password, $hash)) {
-            throw new ServiceException(__u('Clave de encriptación incorrecta'));
+            throw new ServiceException(__u('Wrong encryption password'));
         }
     }
 
@@ -221,7 +221,7 @@ final class XmlVerifyService extends Service
             $xml = new DOMDocument();
 
             if (!$xml->loadXML(Crypt::decrypt(base64_decode($node->nodeValue), $node->getAttribute('key'), $this->password))) {
-                throw new ServiceException(__u('Clave de encriptación incorrecta'));
+                throw new ServiceException(__u('Wrong encryption password'));
             }
 
             $xmlOut->documentElement->appendChild($xmlOut->importNode($xml->documentElement, true));

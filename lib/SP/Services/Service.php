@@ -112,7 +112,7 @@ abstract class Service
                 throw $e;
             }
         } else {
-            throw new ServiceException(__u('No es posible iniciar una transacción'));
+            throw new ServiceException(__u('Unable to start a transaction'));
         }
     }
 
@@ -130,14 +130,14 @@ abstract class Service
             }
 
             if (empty($key)) {
-                throw new ServiceException(__u('Error al obtener la clave maestra del contexto'));
+                throw new ServiceException(__u('Error while retrieving master password from context'));
             }
 
             return $key;
         } catch (CryptoException $e) {
             logger($e->getMessage());
 
-            throw new ServiceException(__u('Error al obtener la clave maestra del contexto'));
+            throw new ServiceException(__u('Error while retrieving master password from context'));
         }
     }
 
@@ -157,11 +157,11 @@ abstract class Service
         } catch (ContextException $e) {
             logger($e->getMessage());
 
-            throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
+            throw new ServiceException(__u('Error while setting master password in context'));
         } catch (CryptoException $e) {
             logger($e->getMessage());
 
-            throw new ServiceException(__u('Error ol establecer la clave maestra en el contexto'));
+            throw new ServiceException(__u('Error while setting master password in context'));
         }
     }
 }

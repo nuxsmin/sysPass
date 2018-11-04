@@ -66,7 +66,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::CATEGORY_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -103,10 +103,10 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nueva Categoría'));
+            $this->view->assign('header', __('New Category'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'category/saveCreate');
 
@@ -167,10 +167,10 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Categoría'));
+            $this->view->assign('header', __('Edit Category'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'category/saveEdit/' . $id);
 
@@ -200,7 +200,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -211,10 +211,10 @@ final class CategoryController extends ControllerBase implements CrudControllerI
                 $this->eventDispatcher->notifyEvent('delete.category',
                     new Event($this,
                         EventMessage::factory()
-                            ->addDescription(__u('Categorías eliminadas')))
+                            ->addDescription(__u('Categories deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categorías eliminadas'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categories deleted'));
             }
 
             $this->categoryService->delete($id);
@@ -224,11 +224,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->eventDispatcher->notifyEvent('delete.category',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Categoría eliminada'))
-                        ->addDetail(__u('Categoría'), $id))
+                        ->addDescription(__u('Category deleted'))
+                        ->addDetail(__u('Category'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -245,7 +245,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new CategoryForm($this->dic);
@@ -260,11 +260,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Categoría creada'))
-                        ->addDetail(__u('Categoría'), $itemData->getName()))
+                        ->addDescription(__u('Category added'))
+                        ->addDetail(__u('Category'), $itemData->getName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría creada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -287,7 +287,7 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new CategoryForm($this->dic, $id);
@@ -302,11 +302,11 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Categoría actualizada'))
-                        ->addDetail(__u('Categoría'), $itemData->getName()))
+                        ->addDescription(__u('Category updated'))
+                        ->addDetail(__u('Category'), $itemData->getName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría actualizada'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -329,10 +329,10 @@ final class CategoryController extends ControllerBase implements CrudControllerI
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Categoría'));
+            $this->view->assign('header', __('View Category'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);

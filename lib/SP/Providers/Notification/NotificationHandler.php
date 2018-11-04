@@ -121,8 +121,8 @@ final class NotificationHandler extends Provider implements EventReceiver
 
         foreach ($data['userId'] as $userId) {
             $notificationData = new NotificationData();
-            $notificationData->setType(__('Solicitud'));
-            $notificationData->setComponent(__('Cuentas'));
+            $notificationData->setType(__('Request'));
+            $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($userId);
             $notificationData->setDescription($eventMessage);
 
@@ -152,8 +152,8 @@ final class NotificationHandler extends Provider implements EventReceiver
 
         if ($data['notify'][0] === true) {
             $notificationData = new NotificationData();
-            $notificationData->setType(__('Notificación'));
-            $notificationData->setComponent(__('Cuentas'));
+            $notificationData->setType(__('Notification'));
+            $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($data['userId']);
             $notificationData->setDescription($eventMessage);
 

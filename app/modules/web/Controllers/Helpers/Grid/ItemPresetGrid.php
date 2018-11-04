@@ -72,8 +72,8 @@ final class ItemPresetGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setTitle(__('Eliminar Seleccionados'))
-                ->setName(__('Eliminar Seleccionados'))
+                ->setTitle(__('Delete Selected'))
+                ->setName(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -94,7 +94,7 @@ final class ItemPresetGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Valores Predeterminados'));
+        $gridTab->setTitle(__('Preset Values'));
 
         return $gridTab;
     }
@@ -106,12 +106,12 @@ final class ItemPresetGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Tipo'));
-        $gridHeader->addHeader(__('Usuario'));
-        $gridHeader->addHeader(__('Grupo'));
-        $gridHeader->addHeader(__('Perfil'));
-        $gridHeader->addHeader(__('Prioridad'));
-        $gridHeader->addHeader(__('Forzado'));
+        $gridHeader->addHeader(__('Type'));
+        $gridHeader->addHeader(__('User'));
+        $gridHeader->addHeader(__('Group'));
+        $gridHeader->addHeader(__('Profile'));
+        $gridHeader->addHeader(__('Priority'));
+        $gridHeader->addHeader(__('Forced'));
 
         return $gridHeader;
     }
@@ -145,7 +145,7 @@ final class ItemPresetGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::ITEMPRESET_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchItemPreset');
-        $gridActionSearch->setTitle(__('Buscar Valor'));
+        $gridActionSearch->setTitle(__('Search for Value'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_SEARCH));
 
@@ -160,8 +160,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Valor de Permiso'));
-        $gridAction->setTitle(__('Nuevo Valor de Permiso'));
+        $gridAction->setName(__('Permission Preset'));
+        $gridAction->setTitle(__('New Permission Preset'));
 
         $icon = clone $this->icons->getIconAdd();
 
@@ -184,8 +184,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Valor de Cuenta Privada'));
-        $gridAction->setTitle(__('Nuevo Valor de Cuenta Privada'));
+        $gridAction->setName(__('Private Account Preset'));
+        $gridAction->setTitle(__('New Private Account Preset'));
 
         $icon = clone $this->icons->getIconAdd();
 
@@ -208,8 +208,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Valor de Timeout de Sesión'));
-        $gridAction->setTitle(__('Nuevo Valor de Timeout de Sesión'));
+        $gridAction->setName(__('Session Timeout Preset'));
+        $gridAction->setTitle(__('New Session Timeout Preset'));
 
         $icon = clone $this->icons->getIconAdd();
 
@@ -232,8 +232,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Valor de Clave de Cuentas'));
-        $gridAction->setTitle(__('Nuevo Valor de Clave de Cuentas'));
+        $gridAction->setName(__('Account Password Preset'));
+        $gridAction->setTitle(__('New Account Password Preset'));
 
         $icon = clone $this->icons->getIconAdd();
 
@@ -256,8 +256,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Editar Valor'));
-        $gridAction->setTitle(__('Editar Valor'));
+        $gridAction->setName(__('Edit Value'));
+        $gridAction->setTitle(__('Edit Value'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_EDIT));
@@ -273,8 +273,8 @@ final class ItemPresetGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Valor'));
-        $gridAction->setTitle(__('Eliminar Valor'));
+        $gridAction->setName(__('Delete Value'));
+        $gridAction->setTitle(__('Delete Value'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ITEMPRESET_DELETE));

@@ -9,7 +9,7 @@
 
 <div id="title" class="titleNormal">
     <i class="material-icons">view_headline</i>
-    <?php echo __('Eventos'); ?>
+    <?php echo __('Events'); ?>
 </div>
 
 <table id="tblEvents" class="data tblConfig">
@@ -27,8 +27,8 @@
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Habilitar log de eventos'); ?></span>
-                        <span class="mdl-list__item-sub-title"><?php echo __('Guarda las acciones realizadas en la aplicación.'); ?></span>
+                        <span><?php echo __('Enable event log'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php echo __('Saves the actions done by the application.'); ?></span>
                     </span>
                 </li>
 
@@ -42,7 +42,7 @@
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Habilitar Syslog'); ?></span>
+                        <span><?php echo __('Enable Syslog'); ?></span>
                         <span class="mdl-list__item-sub-title"></span>
                     </span>
                 </li>
@@ -57,7 +57,7 @@
                     </div>
 
                     <span class="mdl-list__item-primary-content">
-                        <span><?php echo __('Habilitar Syslog Remoto'); ?></span>
+                        <span><?php echo __('Enable Remote Syslog'); ?></span>
                         <span class="mdl-list__item-sub-title"></span>
                     </span>
                 </li>
@@ -67,7 +67,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Servidor'); ?>
+            <?php echo __('Server'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -75,13 +75,13 @@
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $configData->getSyslogServer(); ?>"/>
                 <label class="mdl-textfield__label"
-                       for="remotesyslog_server"><?php echo __('Nombre o dirección IP'); ?></label>
+                       for="remotesyslog_server"><?php echo __('Hostname or IP address'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Puerto'); ?>
+            <?php echo __('Port'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -89,16 +89,16 @@
                        pattern="[0-9]{1-5}" step="1" max="65535" class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $configData->getSyslogPort(); ?>"/>
                 <label class="mdl-textfield__label"
-                       for="remotesyslog_port"><?php echo __('Puerto'); ?></label>
+                       for="remotesyslog_port"><?php echo __('Port'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Eventos'); ?>
+            <?php echo __('Events'); ?>
         </td>
         <td class="valField">
-            <div class="lowres-title"><?php echo __('Eventos'); ?></div>
+            <div class="lowres-title"><?php echo __('Events'); ?></div>
 
             <select id="log_events" name="log_events[]" multiple="multiple" class="select-box" data-create="true">
                 <?php /** @var \SP\Mvc\View\Components\SelectItem $logEvent */

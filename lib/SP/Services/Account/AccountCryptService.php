@@ -68,13 +68,13 @@ final class AccountCryptService extends Service
 
         try {
             $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra')))
+                new Event($this, EventMessage::factory()->addDescription(__u('Update Master Password')))
             );
 
             if ($this->request->useTask()) {
                 $taskId = $this->request->getTask();
 
-                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra')));
+                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Update Master Password')));
             }
 
             $eventMessage = $this->processAccounts($this->accountService->getAccountsPassData(), function ($request) {
@@ -86,7 +86,7 @@ final class AccountCryptService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
-                __u('Errores al actualizar las claves de las cuentas'),
+                __u('Error while updating the accounts\' passwords'),
                 ServiceException::ERROR,
                 null,
                 $e->getCode(),
@@ -112,7 +112,7 @@ final class AccountCryptService extends Service
         $numAccounts = count($accounts);
 
         if ($numAccounts === 0) {
-            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), ServiceException::ERROR);
+            throw new ServiceException(__u('Error while retrieving the accounts\' passwords'), ServiceException::ERROR);
         }
 
         $configData = $this->config->getConfigData();
@@ -135,8 +135,8 @@ final class AccountCryptService extends Service
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
                 if (isset($taskId)) {
-                    $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
-                        ->setMessage(sprintf(__('Cuentas actualizadas: %d / %d'), $counter, $numAccounts))
+                    $taskMessage = TaskFactory::createMessage($taskId, __('Update Master Password'))
+                        ->setMessage(sprintf(__('Accounts updated: %d / %d'), $counter, $numAccounts))
                         ->setProgress(round(($counter * 100) / $numAccounts, 2))
                         ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
@@ -145,7 +145,7 @@ final class AccountCryptService extends Service
                     logger($taskMessage->composeText());
                 } else {
                     logger(
-                        sprintf(__('Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                        sprintf(__('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
                             $counter,
                             $numAccounts,
                             round(($counter * 100) / $numAccounts, 2),
@@ -155,7 +155,7 @@ final class AccountCryptService extends Service
             }
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
-                $eventMessage->addDescription(__u('La clave maestra del registro no coincide'));
+                $eventMessage->addDescription(__u('The record\'s master password does not match'));
                 $eventMessage->addDetail($account->name, $account->id);
                 continue;
             }
@@ -180,18 +180,18 @@ final class AccountCryptService extends Service
             } catch (SPException $e) {
                 $errorCount++;
 
-                $eventMessage->addDescription(__u('Fallo al actualizar la clave de la cuenta'));
+                $eventMessage->addDescription(__u('Error while updating the account\'s password'));
                 $eventMessage->addDetail($account->name, $account->id);
             } catch (CryptoException $e) {
                 $errorCount++;
 
-                $eventMessage->addDescription(__u('Fallo al actualizar la clave de la cuenta'));
+                $eventMessage->addDescription(__u('Error while updating the account\'s password'));
                 $eventMessage->addDetail($account->name, $account->id);
             }
         }
 
-        $eventMessage->addDetail(__u('Cuentas actualizadas'), implode(',', $accountsOk));
-        $eventMessage->addDetail(__u('Errores'), $errorCount);
+        $eventMessage->addDetail(__u('Accounts updated'), implode(',', $accountsOk));
+        $eventMessage->addDetail(__u('Errors'), $errorCount);
 
         return $eventMessage;
     }
@@ -209,13 +209,13 @@ final class AccountCryptService extends Service
 
         try {
             $this->eventDispatcher->notifyEvent('update.masterPassword.accountsHistory.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra (H)')))
+                new Event($this, EventMessage::factory()->addDescription(__u('Update Master Password (H)')))
             );
 
             $taskId = $this->request->getTask();
 
             if ($this->request->useTask()) {
-                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra (H)')));
+                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Update Master Password (H)')));
             }
 
             $eventMessage = $this->processAccounts($this->accountHistoryService->getAccountsPassData(), function ($request) {
@@ -230,7 +230,7 @@ final class AccountCryptService extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
-                __u('Errores al actualizar las claves de las cuentas del histórico'),
+                __u('Error while updating the accounts\' passwords in history'),
                 ServiceException::ERROR,
                 null,
                 $e->getCode(),

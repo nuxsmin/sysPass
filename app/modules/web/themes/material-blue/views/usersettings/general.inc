@@ -12,7 +12,7 @@ $userPreferences = $_getvar('userPreferences');
 
 <div id="title" class="titleNormal">
     <i class="material-icons">home</i>
-    <?php echo __('Sitio'); ?>
+    <?php echo __('Site'); ?>
 </div>
 
 <form method="post" name="frmPreferences" id="frmPreferences" class="form-action"
@@ -23,9 +23,9 @@ $userPreferences = $_getvar('userPreferences');
 
     <table id="tblSite" class="data tblConfig round">
         <tr>
-            <td class="descField"><?php echo __('Idioma'); ?></td>
+            <td class="descField"><?php echo __('Language'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Idioma'); ?></div>
+                <div class="lowres-title"><?php echo __('Language'); ?></div>
 
                 <select name="userlang" id="sel-userlang" size="1" class="select-box sel-chosen-ns">
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
@@ -37,9 +37,9 @@ $userPreferences = $_getvar('userPreferences');
             </td>
         </tr>
         <tr>
-            <td class="descField"><?php echo __('Tema Visual'); ?></td>
+            <td class="descField"><?php echo __('Visual Theme'); ?></td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Tema Visual'); ?></div>
+                <div class="lowres-title"><?php echo __('Visual Theme'); ?></div>
 
                 <select name="usertheme" id="sel-usertheme" size="1"
                         class="select-box sel-chosen-ns">
@@ -53,12 +53,12 @@ $userPreferences = $_getvar('userPreferences');
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Resultados por página'); ?>
+                <?php echo __('Results per page'); ?>
                 <div id="help-account_count"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
                     <p>
-                        <?php echo __('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
+                        <?php echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
                 </div>
             </td>
@@ -69,7 +69,7 @@ $userPreferences = $_getvar('userPreferences');
                            maxlength="5"
                            value="<?php echo $userPreferences->getResultsPerPage(); ?>" required/>
                     <label class="mdl-textfield__label"
-                           for="resultsperpage"><?php echo __('Número de resultados por página'); ?></label>
+                           for="resultsperpage"><?php echo __('Results per page'); ?></label>
                 </div>
             </td>
         </tr>
@@ -87,9 +87,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Nombre de cuenta como enlace'); ?></span>
+                            <span><?php echo __('Account name as link'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
+                                <?php echo __('Enables to use the account name as a link to account details.'); ?>
                             </span>
                         </span>
                     </li>
@@ -104,9 +104,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Ordenar resultados por visitas'); ?></span>
+                            <span><?php echo __('Sort search results by views'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Ordena los resultados de búsqueda por el número de visitas de las cuentas.'); ?>
+                                <?php echo __('Sorts accounts search results by the number of account\'s views'); ?>
                             </span>
                         </span>
                     </li>
@@ -121,9 +121,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Barra de navegación superior'); ?></span>
+                            <span><?php echo __('Navigation bar on top'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Mostrar una barra de navegación superior en las búsquedas.'); ?>
+                                <?php echo __('Dysplays a navigation bar on top of the search results.'); ?>
                             </span>
                         </span>
                     </li>
@@ -138,9 +138,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Mostrar Acciones Ocultas'); ?></span>
+                            <span><?php echo __('Show Hidden Actions'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas.'); ?>
+                                <?php echo __('Always display hidden actions on the accounts search page.'); ?>
                             </span>
                         </span>
                     </li>
@@ -155,9 +155,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Resultados en Tarjetas'); ?></span>
+                            <span><?php echo __('Results like Cards'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                                <?php echo __('Displays account\'s search results on a card like format.'); ?>
                             </span>
                         </span>
                     </li>
@@ -172,9 +172,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Notificaciones In-App'); ?></span>
+                            <span><?php echo __('In-App Notifications'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Habilita la consulta de notificaciones activas In-App.'); ?>
+                                <?php echo __('Enables the active In-App notifications polling'); ?>
                             </span>
                         </span>
                     </li>
@@ -189,9 +189,9 @@ $userPreferences = $_getvar('userPreferences');
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Mostrar Filtros'); ?></span>
+                            <span><?php echo __('Show Filters'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Muestra la selección los filtros adicionales en la búsqueda de cuentas.'); ?>
+                                <?php echo __('Displays the additional filters selection on the accounts search.'); ?>
                             </span>
                         </span>
                     </li>
@@ -208,7 +208,7 @@ $userPreferences = $_getvar('userPreferences');
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
+                    title="<?php echo __('Back'); ?>">
                 <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             </button>
         </li>

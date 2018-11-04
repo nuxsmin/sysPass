@@ -43,6 +43,6 @@ final class UnauthorizedActionException extends SPException
      */
     public function __construct($type, $code = 0, \Exception $previous = null)
     {
-        parent::__construct(__u('No tiene permisos para realizar esta operación'), $type, __u('Consulte con el administrador'), $code, $previous);
+        parent::__construct(__u('You don\'t have permission to do this operation'), $type, __u('Please contact to the administrator'), $code, $previous);
     }
 }

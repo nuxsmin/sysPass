@@ -59,7 +59,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Cliente duplicado'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated client'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -77,7 +77,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
             $itemData->getIsGlobal(),
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler())
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear el cliente'));
+        $queryData->setOnErrorMessage(__u('Error while creating the client'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -113,7 +113,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Cliente duplicado'), DuplicatedItemException::WARNING);
+            throw new DuplicatedItemException(__u('Duplicated client'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -133,7 +133,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el cliente'));
+        $queryData->setOnErrorMessage(__u('Error while updating the client'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -261,7 +261,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los clientes'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the clients'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -280,7 +280,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM Client WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el cliente'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the client'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -342,7 +342,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
     public function getAllForFilter(QueryCondition $queryFilter)
     {
         if (!$queryFilter->hasFilters()) {
-            throw new QueryException(__u('Filtro incorrecto'));
+            throw new QueryException(__u('Wrong filter'));
         }
 
         $query = /** @lang SQL */

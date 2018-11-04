@@ -171,7 +171,7 @@ final class ConfigManagerController extends ControllerBase
         $template->addTemplate('accounts');
         $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
 
-        return new DataTab(__('Cuentas'), $template);
+        return new DataTab(__('Accounts'), $template);
     }
 
     /**
@@ -231,7 +231,7 @@ final class ConfigManagerController extends ControllerBase
             ->getItemsFromArraySelected($this->configData->getMailEvents(), true)
         );
 
-        return new DataTab(__('Correo'), $template);
+        return new DataTab(__('Mail'), $template);
     }
 
     /**
@@ -270,7 +270,7 @@ final class ConfigManagerController extends ControllerBase
 
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
 
-        return new DataTab(__('Encriptación'), $template);
+        return new DataTab(__('Encryption'), $template);
     }
 
     /**
@@ -298,7 +298,7 @@ final class ConfigManagerController extends ControllerBase
             $template->assign('lastBackupTime', date('r', $backupAppFile->getFileTime()));
         } catch (FileException $e) {
             $template->assign('hasBackup', false);
-            $template->assign('lastBackupTime', __('No se encontraron backups'));
+            $template->assign('lastBackupTime', __('There aren\'t any backups available'));
         }
 
         try {
@@ -308,10 +308,10 @@ final class ConfigManagerController extends ControllerBase
             $template->assign('lastExportTime', date('r', $exportFile->getFileTime()));
         } catch (FileException $e) {
             $template->assign('hasExport', false);
-            $template->assign('lastExportTime', __('No se encontró archivo de exportación'));
+            $template->assign('lastExportTime', __('No export file found'));
         }
 
-        return new DataTab(__('Copia de Seguridad'), $template);
+        return new DataTab(__('Backup'), $template);
     }
 
     /**
@@ -328,7 +328,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModelSelected([$this->userData->getUserGroupId()]));
         $template->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$this->userData->getId()]));
 
-        return new DataTab(__('Importar Cuentas'), $template);
+        return new DataTab(__('Import Accounts'), $template);
     }
 
     /**
@@ -350,7 +350,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0)));
         $template->assign('plugins', $this->dic->get(PluginManager::class)->getLoadedPlugins());
-        $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('No instalado')));
+        $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed')));
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
         $template->assign('missingExtensions', $this->extensionChecker->getMissing());
         $template->assign('downloadRate', round(Util::getMaxDownloadChunk() / 1024 / 1024));
@@ -360,7 +360,7 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('downloadConfigBackup', !$isDemo && $this->userData->getIsAdminApp());
         $template->assign('downloadLog', !$isDemo && is_readable(LOG_FILE) && $this->userData->getIsAdminApp());
 
-        return new DataTab(__('Información'), $template);
+        return new DataTab(__('Information'), $template);
     }
 
     /**

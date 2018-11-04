@@ -71,7 +71,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -108,10 +108,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nuevo Enlace Público'));
+            $this->view->assign('header', __('New Public Link'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'publicLink/saveCreate');
 
@@ -170,14 +170,14 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $this->publicLinkService->refresh($id);
 
             $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link updated'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -198,10 +198,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Enlace Público'));
+            $this->view->assign('header', __('Edit Public Link'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'publicLink/saveEdit/' . $id);
 
@@ -230,7 +230,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -240,10 +240,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
                 $this->eventDispatcher->notifyEvent('delete.publicLink.selection',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Enlaces eliminados')))
+                        ->addDescription(__u('Links deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlaces eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Links deleted'));
             } else {
                 $this->publicLinkService->delete($id);
 
@@ -251,11 +251,11 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
                 $this->eventDispatcher->notifyEvent('delete.publicLink',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Enlace eliminado'))
-                        ->addDetail(__u('Enlace'), $id))
+                        ->addDescription(__u('Link deleted'))
+                        ->addDetail(__u('Link'), $id))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace eliminado'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link deleted'));
             }
         } catch (\Exception $e) {
             processException($e);
@@ -273,7 +273,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new PublicLinkForm($this->dic);
@@ -283,7 +283,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->eventDispatcher->notifyEvent('create.publicLink', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -307,7 +307,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $publicLinkData = new PublicLinkData();
@@ -320,7 +320,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
             $this->eventDispatcher->notifyEvent('create.publicLink.account', new Event($this));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -351,10 +351,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Enlace'));
+            $this->view->assign('header', __('View Link'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);

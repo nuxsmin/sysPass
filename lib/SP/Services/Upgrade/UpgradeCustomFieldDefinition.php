@@ -56,7 +56,7 @@ final class UpgradeCustomFieldDefinition extends Service
     {
         $this->eventDispatcher->notifyEvent('upgrade.customField.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
 
@@ -84,8 +84,8 @@ final class UpgradeCustomFieldDefinition extends Service
 
                     $this->eventDispatcher->notifyEvent('upgrade.customField.process',
                         new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Campo actualizado'))
-                            ->addDetail(__u('Campo'), $data->getName()))
+                            ->addDescription(__u('Field updated'))
+                            ->addDetail(__u('Field'), $data->getName()))
                     );
                 }
             });
@@ -99,7 +99,7 @@ final class UpgradeCustomFieldDefinition extends Service
 
         $this->eventDispatcher->notifyEvent('upgrade.customField.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
     }
@@ -136,7 +136,7 @@ final class UpgradeCustomFieldDefinition extends Service
     {
         $this->eventDispatcher->notifyEvent('upgrade.customField.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
 
@@ -153,8 +153,8 @@ final class UpgradeCustomFieldDefinition extends Service
 
                     $this->eventDispatcher->notifyEvent('upgrade.customField.process',
                         new Event($this, EventMessage::factory()
-                            ->addDescription(__u('Campo actualizado'))
-                            ->addDetail(__u('Campo'), $item->getName()))
+                            ->addDescription(__u('Field updated'))
+                            ->addDetail(__u('Field'), $item->getName()))
                     );
                 }
             });
@@ -168,7 +168,7 @@ final class UpgradeCustomFieldDefinition extends Service
 
         $this->eventDispatcher->notifyEvent('upgrade.customField.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Custom fields update'))
                 ->addDescription(__FUNCTION__))
         );
     }

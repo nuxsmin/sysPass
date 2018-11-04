@@ -54,8 +54,6 @@ class ConfigTest extends TestCase
     protected static $currentConfig;
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \SP\Core\Context\ContextException
      */
     public static function setUpBeforeClass()
@@ -96,6 +94,8 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      *
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function testSaveConfig($config)

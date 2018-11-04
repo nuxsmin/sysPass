@@ -91,13 +91,13 @@ final class ConfigUtil
         if (!is_dir(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('El directorio "/config" no existe'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('"/config" directory does not exist.'), ConfigException::CRITICAL);
         }
 
         if (!is_writable(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('No es posible escribir en el directorio "config"'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('Unable to write into "/config" directory'), ConfigException::CRITICAL);
         }
 
         if (!Checks::checkIsWindows()
@@ -106,9 +106,9 @@ final class ConfigUtil
             clearstatcache();
 
             throw new ConfigException(
-                __u('Los permisos del directorio "/config" son incorrectos'),
+                __u('"/config" directory permissions are wrong'),
                 ConfigException::ERROR,
-                sprintf(__('Actual: %s - Necesario: 750'), $configPerms));
+                sprintf(__('Current: %s - Needed: 750'), $configPerms));
         }
     }
 }

@@ -104,8 +104,8 @@ final class ErrorController
 
         $this->view->append('errors', [
             'type' => SPException::WARNING,
-            'description' => __('Aplicación en mantenimiento'),
-            'hint' => __('En breve estará operativa')
+            'description' => __('Application on maintenance'),
+            'hint' => __('It will be running shortly')
         ]);
 
         $this->view();
@@ -120,8 +120,8 @@ final class ErrorController
 
         $this->view->append('errors', [
             'type' => SPException::CRITICAL,
-            'description' => __('Error en la verificación de la base de datos'),
-            'hint' => __('Consulte con el administrador')
+            'description' => __('Error while checking the database'),
+            'hint' => __('Please contact to the administrator')
         ]);
 
         $this->view();
@@ -136,8 +136,8 @@ final class ErrorController
 
         $this->view->append('errors', [
             'type' => SPException::CRITICAL,
-            'description' => __('No es posible conectar con la BD'),
-            'hint' => __('Consulte con el administrador')
+            'description' => __('Unable to connect to DB'),
+            'hint' => __('Please contact to the administrator')
         ]);
 
         $this->view();

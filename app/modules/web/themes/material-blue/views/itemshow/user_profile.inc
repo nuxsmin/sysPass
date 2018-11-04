@@ -22,10 +22,10 @@ $profileData = $_getvar('profileData');
 
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
-                <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Cuentas'); ?></a>
-                <a href="#management-panel" class="mdl-tabs__tab"><?php echo __('Gestión'); ?></a>
-                <a href="#config-panel" class="mdl-tabs__tab"><?php echo __('Configuración'); ?></a>
-                <a href="#other-panel" class="mdl-tabs__tab"><?php echo __('Otros'); ?></a>
+                <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Accounts'); ?></a>
+                <a href="#management-panel" class="mdl-tabs__tab"><?php echo __('Management'); ?></a>
+                <a href="#config-panel" class="mdl-tabs__tab"><?php echo __('Configuration'); ?></a>
+                <a href="#other-panel" class="mdl-tabs__tab"><?php echo __('Others'); ?></a>
             </div>
 
             <div class="mdl-tabs__panel is-active" id="account-panel">
@@ -33,8 +33,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Crear'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Crear nueva cuenta'); ?></span>
+                            <span><?php echo __('Add'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Create new account'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -50,8 +50,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Ver'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Ver detalles de cuenta'); ?></span>
+                            <span><?php echo __('View'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('View account details'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -66,8 +66,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Ver Clave'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Ver clave de cuenta'); ?></span>
+                            <span><?php echo __('View password'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('View account password'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -83,8 +83,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Ver Historial'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Ver historial de cuenta'); ?></span>
+                            <span><?php echo __('View History'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('View account history'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -99,8 +99,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Editar'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Editar cuenta'); ?></span>
+                            <span><?php echo __('Edit'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Edit account'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -115,8 +115,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Editar Clave'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Editar clave de cuenta'); ?></span>
+                            <span><?php echo __('Edit Password'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Edit account password'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -131,8 +131,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Eliminar'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Eliminar cuenta'); ?></span>
+                            <span><?php echo __('Delete'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Remove account'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -147,8 +147,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Archivos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Ver archivos de cuenta'); ?></span>
+                            <span><?php echo __('Files'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('View account files'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -163,8 +163,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Publicar Enlace'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Publicar enlace a cuenta'); ?></span>
+                            <span><?php echo __('Share Link'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Share link to account'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -179,8 +179,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Privada'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Crear cuenta privada'); ?></span>
+                            <span><?php echo __('Private'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Create private account'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -195,8 +195,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Privada Grupo'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Crear cuenta privada para grupo'); ?></span>
+                            <span><?php echo __('Private for Group'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Create private account for group'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -211,8 +211,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Permisos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Asignar permisos'); ?></span>
+                            <span><?php echo __('Permissions'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Assign permissions'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -227,8 +227,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Búsqueda global'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Búsqueda global'); ?></span>
+                            <span><?php echo __('Global search'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Global search'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -247,8 +247,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Usuarios'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de usuarios'); ?></span>
+                            <span><?php echo __('Users'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Users management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -263,8 +263,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Grupos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de grupos'); ?></span>
+                            <span><?php echo __('Groups'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Groups management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -279,8 +279,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Perfiles'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de perfiles'); ?></span>
+                            <span><?php echo __('Profiles'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Profiles management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -295,8 +295,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Categorías'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de categorías'); ?></span>
+                            <span><?php echo __('Categories'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Categories management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -311,8 +311,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Etiquetas'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de etiquetas'); ?></span>
+                            <span><?php echo __('Tags'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Tags management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -327,8 +327,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Clientes'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de clientes'); ?></span>
+                            <span><?php echo __('Clients'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Customers management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -343,8 +343,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Campos Personalizados'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de campos personalizados'); ?></span>
+                            <span><?php echo __('Custom Fields'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Custom fields management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -359,8 +359,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Autorizaciones API'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de autorizaciones API'); ?></span>
+                            <span><?php echo __('API Authorizations'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('API authorizations management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -375,8 +375,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Enlaces Públicos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de enlaces'); ?></span>
+                            <span><?php echo __('Public Links'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Links management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -391,8 +391,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Cuentas'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de cuentas'); ?></span>
+                            <span><?php echo __('Accounts'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Accounts management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -407,8 +407,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Archivos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de archivos'); ?></span>
+                            <span><?php echo __('Files'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Files management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -423,8 +423,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Valores por Defecto'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Gestión de Valores por Defecto'); ?></span>
+                            <span><?php echo __('Default Values'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Default Values Management'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -444,7 +444,7 @@ $profileData = $_getvar('profileData');
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
                             <span><?php echo __('General'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Configuración General'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('General Configuration'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -459,8 +459,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Encriptación'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Opciones de encriptación'); ?></span>
+                            <span><?php echo __('Encryption'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Encryption options'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -476,7 +476,7 @@ $profileData = $_getvar('profileData');
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
                             <span><?php echo __('Backup'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Realizar copia de seguridad y exportar'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Make a backup and export'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -491,8 +491,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Importar'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Realizar importación de cuentas'); ?></span>
+                            <span><?php echo __('Import'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Make accounts import'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -511,8 +511,8 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
-                            <span><?php echo __('Log de Eventos'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Ver log de eventos'); ?></span>
+                            <span><?php echo __('Event Log'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('View event log'); ?></span>
                         </span>
 
                         <span class="mdl-list__item-secondary-action">
@@ -530,7 +530,7 @@ $profileData = $_getvar('profileData');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="profile_name" name="profile_name" type="text" required
@@ -538,16 +538,16 @@ $profileData = $_getvar('profileData');
                                value="<?php echo $profile->getName(); ?>"
                                maxlength="50" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
-                               for="profile_name"><?php echo __('Nombre del perfil'); ?></label>
+                               for="profile_name"><?php echo __('Profile name'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <?php if ($_getvar('isView')): ?>
                 <tr>
-                    <td class="descField"><?php echo __('Usado por'); ?></td>
+                    <td class="descField"><?php echo __('Used by'); ?></td>
                     <td class="valField">
-                        <div class="lowres-title"><?php echo __('Usado por'); ?></div>
+                        <div class="lowres-title"><?php echo __('Used by'); ?></div>
                         <div class="list-wrap">
                             <ul class="mdl-list">
                                 <?php foreach ($_getvar('usedBy') as $user): ?>

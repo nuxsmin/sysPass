@@ -50,7 +50,7 @@ final class EventlogRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('TRUNCATE TABLE EventLog');
-        $queryData->setOnErrorMessage(__u('Error al vaciar el registro de eventos'));
+        $queryData->setOnErrorMessage(__u('Error while clearing the event log out'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
     }

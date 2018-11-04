@@ -112,14 +112,14 @@ final class ConfigBackupService extends Service
             $data = $this->configService->getByParam('config_backup');
 
             if ($data === null) {
-                throw new ServiceException(__u('No es posible restaurar la configuración'));
+                throw new ServiceException(__u('Unable to restore the configuration'));
             }
 
             return gzuncompress(hex2bin($data));
         } catch (NoSuchItemException $e) {
             processException($e);
 
-            throw new ServiceException(__u('No es posible restaurar la configuración'));
+            throw new ServiceException(__u('Unable to restore the configuration'));
         }
     }
 

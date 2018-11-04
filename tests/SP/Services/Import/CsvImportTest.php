@@ -161,9 +161,7 @@ class CsvImportTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\Import\ImportException
+     * @throws ImportException
      * @throws \SP\Storage\File\FileException
      */
     public function testDoImportInvalidData()

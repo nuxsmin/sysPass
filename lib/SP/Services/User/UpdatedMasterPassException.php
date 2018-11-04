@@ -42,7 +42,7 @@ final class UpdatedMasterPassException extends SPException
      */
     public function __construct($type, $code = 0, \Exception $previous = null)
     {
-        parent::__construct(__u('Clave maestra actualizada'), $type, __u('Reinicie la sesión para cambiarla'), $code, $previous);
+        parent::__construct(__u('Master password updated'), $type, __u('Please, restart the session for update it'), $code, $previous);
     }
 
 }

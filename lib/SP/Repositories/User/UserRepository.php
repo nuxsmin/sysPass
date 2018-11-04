@@ -60,7 +60,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new DuplicatedItemException(__u('Login/email de usuario duplicados'));
+            throw new DuplicatedItemException(__u('Duplicated user login/email'));
         }
 
         $query = /** @lang SQL */
@@ -97,7 +97,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
             $itemData->isLdap(),
             $itemData->getId()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
+        $queryData->setOnErrorMessage(__u('Error while updating the user'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -162,7 +162,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
             $passRequest->getisChangedPass(),
             $id
         ]);
-        $queryData->setOnErrorMessage(__u('Error al modificar la clave'));
+        $queryData->setOnErrorMessage(__u('Error while updating the password'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -181,7 +181,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM User WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el usuario'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the user'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -231,7 +231,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the user\'s data'));
 
         return $this->db->doSelect($queryData);
     }
@@ -350,7 +350,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM User WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios'));
+        $queryData->setOnErrorMessage(__u('Error while deleting the users'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -427,7 +427,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new DuplicatedItemException(__u('Login/email de usuario duplicados'));
+            throw new DuplicatedItemException(__u('Duplicated user login/email'));
         }
 
         $query = /** @lang SQL */
@@ -471,7 +471,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
             $itemData->getPass()
 
         ]);
-        $queryData->setOnErrorMessage(__u('Error al crear el usuario'));
+        $queryData->setOnErrorMessage(__u('Error while creating the user'));
 
         return $this->db->doQuery($queryData)->getLastId();
     }
@@ -548,7 +548,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
         $queryData->setParams([$login, $login]);
-        $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
+        $queryData->setOnErrorMessage(__u('Error while retrieving the user\'s data'));
 
         return $this->db->doSelect($queryData);
     }
@@ -674,7 +674,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
             $itemData->getLogin(),
             $itemData->getLogin()
         ]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
+        $queryData->setOnErrorMessage(__u('Error while updating the user'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
@@ -694,7 +694,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE User SET preferences = ? WHERE id = ? LIMIT 1');
         $queryData->setParams([serialize($userPreferencesData), $id]);
-        $queryData->setOnErrorMessage(__u('Error al actualizar preferencias'));
+        $queryData->setOnErrorMessage(__u('Error while updating the preferences'));
 
         return $this->db->doQuery($queryData)->getAffectedNumRows();
     }

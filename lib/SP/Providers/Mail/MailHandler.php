@@ -121,8 +121,8 @@ final class MailHandler extends Provider implements EventReceiver
 
                 $mailMessage = new MailMessage();
                 $mailMessage->addDescription($eventMessage->composeText());
-                $mailMessage->addDescription(sprintf(__('Realizado por: %s (%s)'), $userData->getName(), $userData->getLogin()));
-                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), $this->request->getClientAddress(true)));
+                $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
+                $mailMessage->addDescription(sprintf(__('IP Address: %s'), $this->request->getClientAddress(true)));
 
                 $this->mailService->send($eventMessage->getDescription(true), $configData->getMailFrom(), $mailMessage);
             } catch (\Exception $e) {

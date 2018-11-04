@@ -174,8 +174,8 @@ final class AccountSearchHelper extends HelperBase
 
         $gridActionOptional = new DataGridAction();
         $gridActionOptional->setId(0);
-        $gridActionOptional->setName(__('Más Acciones'));
-        $gridActionOptional->setTitle(__('Más Acciones'));
+        $gridActionOptional->setName(__('More Actions'));
+        $gridActionOptional->setTitle(__('More Actions'));
         $gridActionOptional->setIcon($icons->getIconOptional());
         $gridActionOptional->setRuntimeFilter(AccountSearchItem::class, 'isShowOptional');
         $gridActionOptional->addData('onclick', 'account/menu');
@@ -230,36 +230,36 @@ final class AccountSearchHelper extends HelperBase
         $icons = $this->view->getTheme()->getIcons();
 
         $gridSortCustomer = new DataGridSort();
-        $gridSortCustomer->setName(__('Cliente'))
-            ->setTitle(__('Ordenar por Cliente'))
+        $gridSortCustomer->setName(__('Client'))
+            ->setTitle(__('Sort by Client'))
             ->setSortKey(AccountSearchFilter::SORT_CLIENT)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortName = new DataGridSort();
-        $gridSortName->setName(__('Nombre'))
-            ->setTitle(__('Ordenar por Nombre'))
+        $gridSortName->setName(__('Name'))
+            ->setTitle(__('Sort by Name'))
             ->setSortKey(AccountSearchFilter::SORT_NAME)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortCategory = new DataGridSort();
-        $gridSortCategory->setName(__('Categoría'))
-            ->setTitle(__('Ordenar por Categoría'))
+        $gridSortCategory->setName(__('Category'))
+            ->setTitle(__('Sort by Category'))
             ->setSortKey(AccountSearchFilter::SORT_CATEGORY)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortLogin = new DataGridSort();
-        $gridSortLogin->setName(__('Usuario'))
-            ->setTitle(__('Ordenar por Usuario'))
+        $gridSortLogin->setName(__('User'))
+            ->setTitle(__('Sort by Username'))
             ->setSortKey(AccountSearchFilter::SORT_LOGIN)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());
 
         $gridSortUrl = new DataGridSort();
         $gridSortUrl->setName(__('URL / IP'))
-            ->setTitle(__('Ordenar por URL / IP'))
+            ->setTitle(__('Sort by URL / IP'))
             ->setSortKey(AccountSearchFilter::SORT_URL)
             ->setIconUp($icons->getIconUp())
             ->setIconDown($icons->getIconDown());

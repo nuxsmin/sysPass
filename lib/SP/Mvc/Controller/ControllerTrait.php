@@ -67,7 +67,7 @@ trait ControllerTrait
             || $context->getAuthCompleted() !== $requireAuthCompleted
         ) {
             if ($request->isJson()) {
-                $jsonResponse = new JsonResponse(__u('La sesión no se ha iniciado o ha caducado'));
+                $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
                 $jsonResponse->setStatus(10);
 
                 Json::fromDic()->returnJson($jsonResponse);
@@ -112,7 +112,7 @@ trait ControllerTrait
         $sk = $request->analyzeString('sk');
 
         if (!$sk || $previousToken !== $sk) {
-            throw new SPException(__u('Acción Inválida'));
+            throw new SPException(__u('Invalid Action'));
         }
     }
 
@@ -121,6 +121,6 @@ trait ControllerTrait
      */
     protected function invalidAction()
     {
-        Json::fromDic()->returnJson(new JsonResponse(__u('Acción Inválida')));
+        Json::fromDic()->returnJson(new JsonResponse(__u('Invalid Action')));
     }
 }

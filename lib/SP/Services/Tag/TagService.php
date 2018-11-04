@@ -72,7 +72,7 @@ final class TagService extends Service
         $result = $this->tagRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -91,7 +91,7 @@ final class TagService extends Service
         $result = $this->tagRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
         }
 
         return $result->getData();
@@ -108,7 +108,7 @@ final class TagService extends Service
     public function delete($id)
     {
         if ($this->tagRepository->delete($id) === 0) {
-            throw new NoSuchItemException(__u('Etiqueta no encontrada'), NoSuchItemException::INFO);
+            throw new NoSuchItemException(__u('Tag not found'), NoSuchItemException::INFO);
         }
 
         return $this;
@@ -123,7 +123,7 @@ final class TagService extends Service
     public function deleteByIdBatch(array $ids)
     {
         if ($this->tagRepository->deleteByIdBatch($ids) !== count($ids)) {
-            throw new ServiceException(__u('Error al eliminar etiquetas'), ServiceException::WARNING);
+            throw new ServiceException(__u('Error while removing the tags'), ServiceException::WARNING);
         }
 
         return $this;

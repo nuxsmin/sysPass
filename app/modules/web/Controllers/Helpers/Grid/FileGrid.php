@@ -68,8 +68,8 @@ final class FileGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -91,7 +91,7 @@ final class FileGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Archivos'));
+        $gridTab->setTitle(__('Files'));
 
         return $gridTab;
     }
@@ -103,11 +103,11 @@ final class FileGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Cuenta'));
-        $gridHeader->addHeader(__('Cliente'));
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Tipo'));
-        $gridHeader->addHeader(__('Tamaño'));
+        $gridHeader->addHeader(__('Account'));
+        $gridHeader->addHeader(__('Client'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Type'));
+        $gridHeader->addHeader(__('Size'));
 
         return $gridHeader;
     }
@@ -142,7 +142,7 @@ final class FileGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::ACCOUNT_FILE_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchFile');
-        $gridActionSearch->setTitle(__('Buscar Archivo'));
+        $gridActionSearch->setTitle(__('Search for File'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_SEARCH));
 
@@ -157,8 +157,8 @@ final class FileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Archivo'));
-        $gridAction->setTitle(__('Ver Archivo'));
+        $gridAction->setName(__('View File'));
+        $gridAction->setTitle(__('View File'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('file/view');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
@@ -175,8 +175,8 @@ final class FileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DOWNLOAD);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Descargar Archivo'));
-        $gridAction->setTitle(__('Descargar Archivo'));
+        $gridAction->setName(__('Download File'));
+        $gridAction->setTitle(__('Download File'));
         $gridAction->setIcon($this->icons->getIconDownload());
         $gridAction->setOnClickFunction('file/download');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
@@ -195,8 +195,8 @@ final class FileGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Archivo'));
-        $gridAction->setTitle(__('Eliminar Archivo'));
+        $gridAction->setName(__('Delete File'));
+        $gridAction->setTitle(__('Delete File'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));

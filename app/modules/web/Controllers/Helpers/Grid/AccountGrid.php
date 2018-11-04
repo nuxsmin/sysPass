@@ -76,8 +76,8 @@ final class AccountGrid extends GridBase
 
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -98,7 +98,7 @@ final class AccountGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Cuentas'));
+        $gridTab->setTitle(__('Accounts'));
 
         return $gridTab;
     }
@@ -110,11 +110,11 @@ final class AccountGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Nombre'));
-        $gridHeader->addHeader(__('Cliente'));
-        $gridHeader->addHeader(__('Categoría'));
-        $gridHeader->addHeader(__('Propietario'));
-        $gridHeader->addHeader(__('Grupo Principal'));
+        $gridHeader->addHeader(__('Name'));
+        $gridHeader->addHeader(__('Client'));
+        $gridHeader->addHeader(__('Category'));
+        $gridHeader->addHeader(__('Owner'));
+        $gridHeader->addHeader(__('Main Group'));
 
         return $gridHeader;
     }
@@ -146,7 +146,7 @@ final class AccountGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchAccount');
-        $gridActionSearch->setTitle(__('Buscar Cuenta'));
+        $gridActionSearch->setTitle(__('Search for Account'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH));
 
@@ -161,8 +161,8 @@ final class AccountGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Detalles de Cuenta'));
-        $gridAction->setTitle(__('Detalles de Cuenta'));
+        $gridAction->setName(__('Account Details'));
+        $gridAction->setTitle(__('Account Details'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction(Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
@@ -178,8 +178,8 @@ final class AccountGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Cuenta'));
-        $gridAction->setTitle(__('Eliminar Cuenta'));
+        $gridAction->setName(__('Remove Account'));
+        $gridAction->setTitle(__('Remove Account'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE));
@@ -195,8 +195,8 @@ final class AccountGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_BULK_EDIT);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(__('Actualización Masiva'));
-        $gridAction->setTitle(__('Actualización Masiva'));
+        $gridAction->setName(__('Bulk Update'));
+        $gridAction->setTitle(__('Bulk Update'));
         $gridAction->setIcon($this->icons->getIconEdit());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_BULK_EDIT));

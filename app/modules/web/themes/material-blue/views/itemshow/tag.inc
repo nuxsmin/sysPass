@@ -19,14 +19,14 @@ $tag = $_getvar('tag');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $tag->getName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Nombre de la etiqueta'); ?></label>
+                               for="name"><?php echo __('Tag name'); ?></label>
                     </div>
                 </td>
             </tr>

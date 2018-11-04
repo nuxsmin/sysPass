@@ -103,65 +103,65 @@ final class Installer extends Service
     {
         if (empty($this->installData->getAdminLogin())) {
             throw new InvalidArgumentException(
-                __u('Indicar nombre de usuario admin'),
+                __u('Please, enter the admin username'),
                 SPException::ERROR,
-                __u('Usuario admin para acceso a la aplicación'));
+                __u('Admin user to log into the application'));
         }
 
         if (empty($this->installData->getAdminPass())) {
             throw new InvalidArgumentException(
-                __u('Indicar la clave de admin'),
+                __u('Please, enter the admin\'s password'),
                 SPException::ERROR,
-                __u('Clave del usuario admin de la aplicación'));
+                __u('Application administrator\'s password'));
         }
 
         if (empty($this->installData->getMasterPassword())) {
             throw new InvalidArgumentException(
-                __u('Indicar la clave maestra'),
+                __u('Please, enter the Master Password'),
                 SPException::ERROR,
-                __u('Clave maestra para encriptar las claves'));
+                __u('Master password to encrypt the passwords'));
         }
 
         if (strlen($this->installData->getMasterPassword()) < 11) {
             throw new InvalidArgumentException(
-                __u('Clave maestra muy corta'),
+                __u('Master password too short'),
                 SPException::CRITICAL,
-                __u('La longitud de la clave maestra ha de ser mayor de 11 caracteres'));
+                __u('The Master Password length need to be at least 11 characters'));
         }
 
         if (empty($this->installData->getDbAdminUser())) {
             throw new InvalidArgumentException(
-                __u('Indicar el usuario de la BBDD'),
+                __u('Please, enter the database user'),
                 SPException::CRITICAL,
-                __u('Usuario con permisos de administrador de la Base de Datos'));
+                __u('An user with database administrative rights'));
         }
 
         if (empty($this->installData->getDbAdminPass()) && APP_MODULE !== 'tests') {
             throw new InvalidArgumentException(
-                __u('Indicar la clave de la BBDD'),
+                __u('Please, enter the database password'),
                 SPException::ERROR,
-                __u('Clave del usuario administrador de la Base de Datos'));
+                __u('Database administrator\'s password'));
         }
 
         if (empty($this->installData->getDbName())) {
             throw new InvalidArgumentException(
-                __u('Indicar el nombre de la BBDD'),
+                __u('Please, enter the database name'),
                 SPException::ERROR,
-                __u('Nombre para la BBDD de la aplicación pej. syspass'));
+                __u('Application database name. eg. syspass'));
         }
 
         if (substr_count($this->installData->getDbName(), '.') >= 1) {
             throw new InvalidArgumentException(
-                __u('El nombre de la BBDD no puede contener "."'),
+                __u('Database name cannot contain "."'),
                 SPException::CRITICAL,
-                __u('Elimine los puntos del nombre de la Base de Datos'));
+                __u('Please, remove dots in database name'));
         }
 
         if (empty($this->installData->getDbHost())) {
             throw new InvalidArgumentException(
-                __u('Indicar el servidor de la BBDD'),
+                __u('Please, enter the database server'),
                 SPException::ERROR,
-                __u('Servidor donde se instalará la Base de Datos'));
+                __u('Server where the database will be installed'));
         }
     }
 
@@ -315,7 +315,7 @@ final class Installer extends Service
             throw new SPException(
                 $e->getMessage(),
                 SPException::CRITICAL,
-                __u('Informe al desarrollador'),
+                __u('Warn to developer'),
                 $e->getCode(),
                 $e
             );
@@ -356,7 +356,7 @@ final class Installer extends Service
             $id = $userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
 
             if ($id === 0) {
-                throw new SPException(__u('Error al crear el usuario \'admin\''));
+                throw new SPException(__u('Error while creating \'admin\' user'));
             }
         } catch (\Exception $e) {
             processException($e);
@@ -366,7 +366,7 @@ final class Installer extends Service
             throw new SPException(
                 $e->getMessage(),
                 SPException::CRITICAL,
-                __u('Informe al desarrollador'),
+                __u('Warn to developer'),
                 $e->getCode(),
                 $e
             );

@@ -67,7 +67,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
         $this->checkSecurityToken($this->previousSk, $this->request);
 
         if (!$this->acl->checkUserAccess(Acl::CLIENT_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -104,10 +104,10 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Nuevo Cliente'));
+            $this->view->assign('header', __('New Client'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'client/saveCreate');
 
@@ -168,10 +168,10 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Editar Cliente'));
+            $this->view->assign('header', __('Edit Client'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'client/saveEdit/' . $id);
 
@@ -200,7 +200,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -210,10 +210,10 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
                 $this->eventDispatcher->notifyEvent('delete.client.selection',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Clientes eliminados')))
+                        ->addDescription(__u('Clients deleted')))
                 );
 
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clientes eliminados'));
+                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clients deleted'));
             }
             $this->clientService->delete($id);
 
@@ -221,11 +221,11 @@ final class ClientController extends ControllerBase implements CrudControllerInt
 
             $this->eventDispatcher->notifyEvent('delete.client',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Cliente eliminado'))
-                    ->addDetail(__u('Cliente'), $id))
+                    ->addDescription(__u('Client deleted'))
+                    ->addDetail(__u('Client'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client deleted'));
         } catch (\Exception $e) {
             processException($e);
 
@@ -242,7 +242,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new ClientForm($this->dic);
@@ -255,11 +255,11 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->eventDispatcher->notifyEvent('create.client',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Cliente creado'))
-                        ->addDetail(__u('Cliente'), $itemData->getName()))
+                        ->addDescription(__u('Client added'))
+                        ->addDetail(__u('Client'), $itemData->getName()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente creado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -282,7 +282,7 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new ClientForm($this->dic, $id);
@@ -293,11 +293,11 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->eventDispatcher->notifyEvent('edit.client',
                 new Event($this,
                     EventMessage::factory()
-                        ->addDescription(__u('Cliente actualizado'))
-                        ->addDetail(__u('Cliente'), $id))
+                        ->addDescription(__u('Client updated'))
+                        ->addDetail(__u('Client'), $id))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente actualizado'));
+            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Client updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
@@ -320,10 +320,10 @@ final class ClientController extends ControllerBase implements CrudControllerInt
             $this->checkSecurityToken($this->previousSk, $this->request);
 
             if (!$this->acl->checkUserAccess(Acl::CLIENT_VIEW)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('No tiene permisos para realizar esta operación'));
+                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
-            $this->view->assign('header', __('Ver Cliente'));
+            $this->view->assign('header', __('View Client'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);

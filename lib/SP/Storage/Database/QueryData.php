@@ -351,7 +351,7 @@ final class QueryData
      */
     public function getOnErrorMessage()
     {
-        return $this->onErrorMessage ?: __u('Error en la consulta');
+        return $this->onErrorMessage ?: __u('Error while querying');
     }
 
     /**

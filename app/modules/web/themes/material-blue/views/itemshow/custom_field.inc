@@ -20,21 +20,21 @@ $field = $_getvar('field');
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $field->getName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Nombre del campo'); ?></label>
+                               for="name"><?php echo __('Field name'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Tipo'); ?></td>
+                <td class="descField"><?php echo __('Type'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Tipo'); ?></div>
+                    <div class="lowres-title"><?php echo __('Type'); ?></div>
 
                     <select name="type" id="sel-type" size="1" class="select-box">
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $type */
@@ -46,9 +46,9 @@ $field = $_getvar('field');
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Módulo'); ?></td>
+                <td class="descField"><?php echo __('Module'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Módulo'); ?></div>
+                    <div class="lowres-title"><?php echo __('Module'); ?></div>
 
                     <select name="module" id="sel-module" size="1" class="select-box">
                         <?php /** @var \SP\Mvc\View\Components\SelectItem $module */
@@ -60,13 +60,13 @@ $field = $_getvar('field');
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Texto Ayuda'); ?></td>
+                <td class="descField"><?php echo __('Help Text'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="help" name="help" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $field->getHelp(); ?>">
                         <label class="mdl-textfield__label"
-                               for="help"><?php echo __('Ayuda del campo'); ?></label>
+                               for="help"><?php echo __('Field\'s help'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -77,7 +77,7 @@ $field = $_getvar('field');
                         <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="required"
                             <?php echo $field->getRequired() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"><?php echo __('Obligatorio'); ?></span>
+                        <span class="mdl-switch__label"><?php echo __('Required'); ?></span>
                     </label>
                 </td>
             </tr>
@@ -87,7 +87,7 @@ $field = $_getvar('field');
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encrypted">
                         <input type="checkbox" id="encrypted" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="encrypted" <?php echo $field->getisEncrypted() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"><?php echo __('Encriptado'); ?></span>
+                        <span class="mdl-switch__label"><?php echo __('Encrypted'); ?></span>
                     </label>
                 </td>
             </tr>

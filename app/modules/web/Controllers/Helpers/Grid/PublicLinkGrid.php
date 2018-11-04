@@ -70,8 +70,8 @@ final class PublicLinkGrid extends GridBase
         $grid->addDataAction($this->getDeleteAction());
         $grid->addDataAction(
             $this->getDeleteAction()
-                ->setName(__('Eliminar Seleccionados'))
-                ->setTitle(__('Eliminar Seleccionados'))
+                ->setName(__('Delete Selected'))
+                ->setTitle(__('Delete Selected'))
                 ->setIsSelection(true),
             true);
 
@@ -93,7 +93,7 @@ final class PublicLinkGrid extends GridBase
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $gridTab->setHeader($this->getHeader());
         $gridTab->setData($this->getData());
-        $gridTab->setTitle(__('Enlaces'));
+        $gridTab->setTitle(__('Links'));
 
         return $gridTab;
     }
@@ -105,13 +105,13 @@ final class PublicLinkGrid extends GridBase
     {
         // Grid Header
         $gridHeader = new DataGridHeader();
-        $gridHeader->addHeader(__('Cuenta'));
-        $gridHeader->addHeader(__('Cliente'));
-        $gridHeader->addHeader(__('Fecha Creación'));
-        $gridHeader->addHeader(__('Fecha Caducidad'));
-        $gridHeader->addHeader(__('Usuario'));
-        $gridHeader->addHeader(__('Notificar'));
-        $gridHeader->addHeader(__('Visitas'));
+        $gridHeader->addHeader(__('Account'));
+        $gridHeader->addHeader(__('Client'));
+        $gridHeader->addHeader(__('Creation Date'));
+        $gridHeader->addHeader(__('Expiry Date '));
+        $gridHeader->addHeader(__('User'));
+        $gridHeader->addHeader(__('Notify'));
+        $gridHeader->addHeader(__('Visits'));
 
         return $gridHeader;
     }
@@ -146,7 +146,7 @@ final class PublicLinkGrid extends GridBase
         $gridActionSearch->setId(ActionsInterface::PUBLICLINK_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchLink');
-        $gridActionSearch->setTitle(__('Buscar Enlace'));
+        $gridActionSearch->setTitle(__('Search for Link'));
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_SEARCH));
 
@@ -161,8 +161,8 @@ final class PublicLinkGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Nuevo Enlace'));
-        $gridAction->setTitle(__('Nuevo Enlace'));
+        $gridAction->setName(__('New Link'));
+        $gridAction->setTitle(__('New Link'));
         $gridAction->setIcon($this->icons->getIconAdd());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
@@ -179,8 +179,8 @@ final class PublicLinkGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
-        $gridAction->setName(__('Ver Enlace'));
-        $gridAction->setTitle(__('Ver Enlace'));
+        $gridAction->setName(__('View Link'));
+        $gridAction->setTitle(__('View Link'));
         $gridAction->setIcon($this->icons->getIconView());
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_VIEW));
@@ -195,8 +195,8 @@ final class PublicLinkGrid extends GridBase
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_REFRESH);
-        $gridAction->setName(__('Renovar Enlace'));
-        $gridAction->setTitle(__('Renovar Enlace'));
+        $gridAction->setName(__('Renew Link'));
+        $gridAction->setTitle(__('Renew Link'));
         $gridAction->setIcon($this->icons->getIconRefresh());
         $gridAction->setOnClickFunction('link/refresh');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
@@ -212,8 +212,8 @@ final class PublicLinkGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
-        $gridAction->setName(__('Eliminar Enlace'));
-        $gridAction->setTitle(__('Eliminar Enlace'));
+        $gridAction->setName(__('Delete Link'));
+        $gridAction->setTitle(__('Delete Link'));
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_DELETE));
