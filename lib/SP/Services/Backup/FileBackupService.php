@@ -188,8 +188,19 @@ final class FileBackupService extends Service
      */
     private function deleteOldBackups()
     {
-        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*' . ArchiveHandler::COMPRESS_EXTENSION));
-        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.sql'));
+//        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '_db-*' . ArchiveHandler::COMPRESS_EXTENSION));
+//        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '_app-*' . ArchiveHandler::COMPRESS_EXTENSION));
+//        array_map('unlink', glob($this->path . DIRECTORY_SEPARATOR . '*.sql'));
+
+        $path = $this->path . DIRECTORY_SEPARATOR . AppInfoInterface::APP_NAME;
+
+        array_map(function ($file) {
+            return @unlink($file);
+        }, array_merge(
+            glob($path . '_db-*'),
+            glob($path . '_app-*'),
+            glob($path . '*.sql')
+        ));
     }
 
     /**
