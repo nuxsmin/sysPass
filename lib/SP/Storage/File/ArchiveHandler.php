@@ -55,15 +55,23 @@ final class ArchiveHandler
     public function __construct(string $archive, PhpExtensionChecker $extensionChecker)
     {
         $this->extensionChecker = $extensionChecker;
-        $this->archive = new FileHandler($archive . self::getArchiveExtension());
+        $this->archive = new FileHandler(self::makeArchiveName($archive));
     }
 
     /**
+     * @param string $archive
+     *
      * @return bool|string
      */
-    private static function getArchiveExtension()
+    private static function makeArchiveName(string $archive)
     {
-        return substr(self::COMPRESS_EXTENSION, 0, strrpos(self::COMPRESS_EXTENSION, '.'));
+        $archiveExtension = substr(self::COMPRESS_EXTENSION, 0, strrpos(self::COMPRESS_EXTENSION, '.'));
+
+        if (is_file($archive)) {
+            return substr($archive, 0, strrpos($archive, '.')) . $archiveExtension;
+        }
+
+        return $archive . $archiveExtension;
     }
 
     /**
