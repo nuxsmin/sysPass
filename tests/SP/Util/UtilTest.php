@@ -34,6 +34,13 @@ use SP\Util\Util;
  */
 class UtilTest extends TestCase
 {
+    /**
+     * This method is called after the last test of this test class is run.
+     */
+    public static function tearDownAfterClass()
+    {
+        ini_set('memory_limit', -1);
+    }
 
     public function testCastToClass()
     {

@@ -172,8 +172,9 @@ final class Database implements DatabaseInterface
      */
     public function doQuery(QueryData $queryData, $getRawData = false)
     {
-        /** @var PDOStatement $stmt */
         $stmt = $this->prepareQueryData($queryData);
+
+        $this->setFetchMode($queryData, $stmt);
 
         $this->eventDispatcher->notifyEvent('database.query',
             new Event($this, EventMessage::factory()
@@ -195,14 +196,15 @@ final class Database implements DatabaseInterface
     /**
      * Asociar los parámetros de la consulta utilizando el tipo adecuado
      *
-     * @param $queryData QueryData Los datos de la consulta
-     * @param $isCount   bool   Indica si es una consulta de contador de registros
+     * @param QueryData $queryData Los datos de la consulta
+     * @param bool      $isCount   Indica si es una consulta de contador de registros
+     * @param array     $options
      *
-     * @return \PDOStatement|false
-     * @throws QueryException
+     * @return \PDOStatement
      * @throws ConstraintException
+     * @throws QueryException
      */
-    private function prepareQueryData(QueryData $queryData, $isCount = false)
+    private function prepareQueryData(QueryData $queryData, $isCount = false, array $options = [])
     {
         $query = $queryData->getQuery();
         $params = $queryData->getParams();
@@ -216,7 +218,7 @@ final class Database implements DatabaseInterface
             $connection = $this->dbHandler->getConnection();
 
             if (!empty($params)) {
-                $stmt = $connection->prepare($query);
+                $stmt = $connection->prepare($query, $options);
 
                 foreach ($params as $param => $value) {
                     // Si la clave es un número utilizamos marcadores de posición "?" en
@@ -235,16 +237,6 @@ final class Database implements DatabaseInterface
                 $stmt->execute();
             } else {
                 $stmt = $connection->query($query);
-            }
-
-            if ($queryData->isUseKeyPair()) {
-                $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
-            } elseif (null !== $queryData->getMapClass()) {
-                $stmt->setFetchMode(PDO::FETCH_INTO, $queryData->getMapClass());
-            } elseif ($queryData->getMapClassName()) {
-                $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
-            } else {
-                $stmt->setFetchMode(PDO::FETCH_OBJ);
             }
 
             $this->lastId = $connection->lastInsertId();
@@ -285,6 +277,23 @@ final class Database implements DatabaseInterface
     }
 
     /**
+     * @param QueryData    $queryData
+     * @param PDOStatement $stmt
+     */
+    private function setFetchMode(QueryData $queryData, PDOStatement $stmt)
+    {
+        if ($queryData->isUseKeyPair()) {
+            $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
+        } elseif (null !== $queryData->getMapClass()) {
+            $stmt->setFetchMode(PDO::FETCH_INTO, $queryData->getMapClass());
+        } elseif ($queryData->getMapClassName()) {
+            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
+        } else {
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+        }
+    }
+
+    /**
      * Obtener el número de filas de una consulta realizada
      *
      * @param $queryData QueryData Los datos de la consulta
@@ -308,15 +317,16 @@ final class Database implements DatabaseInterface
     /**
      * Don't fetch records and return prepared statement
      *
-     * @param QueryData $queryData
+     * @param QueryData  $queryData
+     * @param array|null $options
      *
      * @return \PDOStatement
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function doQueryRaw(QueryData $queryData)
+    public function doQueryRaw(QueryData $queryData, array $options = [])
     {
-        return $this->prepareQueryData($queryData);
+        return $this->prepareQueryData($queryData, $options);
     }
 
     /**

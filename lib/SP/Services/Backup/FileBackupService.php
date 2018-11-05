@@ -284,11 +284,11 @@ final class FileBackupService extends Service
             $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
 
             // Consulta para obtener los registros de la tabla
-            $queryRes = $db->doQueryRaw($queryData);
+            $queryRes = $db->doQueryRaw($queryData, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL]);
 
             $numColumns = $queryRes->columnCount();
 
-            while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
+            while ($row = $queryRes->fetch(\PDO::FETCH_NUM, \PDO::FETCH_ORI_NEXT)) {
                 $fileHandler->write('INSERT INTO `' . $tableName . '` VALUES(');
 
                 $field = 1;
