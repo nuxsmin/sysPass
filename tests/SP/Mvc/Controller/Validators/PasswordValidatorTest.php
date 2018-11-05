@@ -58,7 +58,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoLength()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesaria una clave con al menos 10 caracteres');
+        $this->expectExceptionMessage('Password needs to be 10 characters long');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('12345678');
@@ -70,7 +70,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoLetters()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesario que la clave contenga letras');
+        $this->expectExceptionMessage('Password needs to contain letters');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('1234567890');
@@ -82,7 +82,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoUpper()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesario que la clave contenga mayúsculas');
+        $this->expectExceptionMessage('Password needs to contain upper case letters');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('1234567890abc');
@@ -94,7 +94,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoLower()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesario que la clave contenga minúsculas');
+        $this->expectExceptionMessage('Password needs to contain lower case letters');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('1234567890ABC');
@@ -106,7 +106,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoNumbers()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesario que la clave contenga números');
+        $this->expectExceptionMessage('Password needs to contain numbers');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('ABCabcABCabcABC');
@@ -118,7 +118,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoSymbols()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('Es necesario que la clave contenga símbolos');
+        $this->expectExceptionMessage('Password needs to contain symbols');
 
         $validator = new PasswordValidator($this->password);
         $validator->validate('1234567890ABCabc');
@@ -130,7 +130,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidateNoRegex()
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('La clave no cumple los carácteres requeridos');
+        $this->expectExceptionMessage('Password does not contain the required characters');
 
         $this->password->setRegex(ValidatorTest::VALID_REGEX);
 
