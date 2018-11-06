@@ -19,7 +19,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="user" name="user" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="80" autocomplete="off">
+                               maxlength="80" autocomplete="off" autofocus>
                         <label class="mdl-textfield__label"
                                for="user"><?php echo __('User'); ?></label>
                     </div>

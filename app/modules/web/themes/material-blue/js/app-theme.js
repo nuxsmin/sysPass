@@ -24,6 +24,8 @@
 sysPass.Theme = function (log) {
     "use strict";
 
+    const updateEvent = $.Event("theme:update");
+
     /**
      * Funciones a realizar en peticiones AJAX
      *
@@ -508,6 +510,8 @@ sysPass.Theme = function (log) {
 
         // Actualizar componentes de MDL cargados con AJAX
         componentHandler.upgradeDom();
+
+        $("body").trigger(updateEvent);
     };
 
     /**

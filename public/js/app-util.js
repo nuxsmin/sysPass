@@ -539,6 +539,16 @@ sysPass.Util = function (log) {
         }).join("&");
     };
 
+    /**
+     *
+     * @param $container
+     */
+    const focus = function ($container) {
+        log.debug("focus");
+
+        $container.find("input:not([id*=selectized]):visible:first").focus();
+    };
+
     return {
         decodeEntities: decodeEntities,
         resizeImage: resizeImage,
@@ -548,6 +558,7 @@ sysPass.Util = function (log) {
         redirect: redirect,
         uniqueId: uniqueId,
         getUrl: getUrl,
+        focus: focus,
         sendNotification: notifications.send,
         password: password,
         hash: hash

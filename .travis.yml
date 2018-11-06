@@ -9,7 +9,7 @@ php:
 
 branches:
   only:
-  - devel-3.0
+  - 3.0
 
 addons:
   mariadb: '10.1'
@@ -29,7 +29,7 @@ notifications:
   email:
     recipients:
     - nuxsmin@syspass.org
-    on_success: never # default: change
+    on_success: change # default: change
     on_failure: always # default: always
 
 env:

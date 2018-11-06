@@ -223,6 +223,16 @@ sysPass.Triggers = function (log) {
             $this.submit();
         }).on("click", ".btn-popup-close", function (e) {
             $.magnificPopup.close();
+        }).on("theme:update", function () {
+            log.debug("on:theme:update");
+
+            const $box = $("#box-popup");
+
+            if ($box.length > 0) {
+                sysPassApp.util.focus($box);
+            } else {
+                sysPassApp.util.focus($(this));
+            }
         });
     };
 
@@ -310,8 +320,6 @@ sysPass.Triggers = function (log) {
                 $frmSearch[0].reset();
             });
 
-            $frmSearch.find("input:text:visible:first").focus();
-
             $("#globalSearch").click(function () {
                     const val = $(this).prop("checked") == true ? 1 : 0;
 
@@ -338,8 +346,6 @@ sysPass.Triggers = function (log) {
 
                 sysPassApp.actions.main.login($frmLogin);
             }
-
-            $frmLogin.find("input:visible:first").focus();
         },
         userpassreset: function () {
             log.info("views:userpassreset");
@@ -449,8 +455,6 @@ sysPass.Triggers = function (log) {
 
                 sysPassApp.actions.items.get($selParentAccount);
             }
-
-            $('input:text:visible:first').focus();
         },
         install: function () {
             log.info("views:install");

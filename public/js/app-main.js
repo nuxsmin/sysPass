@@ -57,8 +57,6 @@ sysPass.Main = function () {
             }
         }
 
-        log.info(plugins);
-
         return plugins;
     };
 
@@ -502,8 +500,6 @@ sysPass.Main = function () {
                 setupCallbacks();
 
                 if (oPublic.config.PLUGINS.length > 0) {
-                    log.info(oPublic.config.PLUGINS);
-
                     oPublic.plugins = initPlugins();
 
                     if (oPublic.config.AUTH.LOGGEDIN === true

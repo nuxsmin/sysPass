@@ -22,7 +22,7 @@ $pager = $data->getPager();
         <div class="search-text">
             <div class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="search"
-                       name="search" value="<?php echo $_getvar('searchTxt'); ?>" tabindex="1"/>
+                       name="search" value="<?php echo $_getvar('searchTxt'); ?>" />
                 <label class="mdl-textfield__label" for="search"><?php echo __('Text to search for'); ?></label>
             </div>
 

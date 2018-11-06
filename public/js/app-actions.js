@@ -95,8 +95,6 @@ sysPass.Actions = function (log) {
                     if (callback !== undefined && typeof callback.open === "function") {
                         callback.open();
                     }
-
-                    $boxPopup.find("form input:visible:first").focus();
                 },
                 close: function () {
                     if (callback !== undefined && typeof callback.close === "function") {
@@ -584,7 +582,6 @@ sysPass.Actions = function (log) {
                         sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:visible:first").focus();
 
                         if ($extra.length > 0) {
                             $extra.hide();
@@ -597,7 +594,6 @@ sysPass.Actions = function (log) {
                         sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:visible:first").focus();
 
                         if ($extra.length > 0) {
                             $extra.hide();
@@ -610,7 +606,6 @@ sysPass.Actions = function (log) {
                         sysPassApp.msg.out(json);
 
                         $obj.find("input[type='text'],input[type='password']").val("");
-                        $obj.find("input:visible:first").focus();
                 }
             });
         },

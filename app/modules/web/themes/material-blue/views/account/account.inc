@@ -68,7 +68,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <input id="name" name="name" type="text" required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>" <?php echo $_getvar('readonly'); ?>>
+                                       value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>"
+                                    <?php echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Account name'); ?></label>
                             </div>

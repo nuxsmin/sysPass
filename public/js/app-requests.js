@@ -189,7 +189,12 @@ sysPass.Requests = function (sysPassApp) {
                     sysPassApp.theme.loading.hide();
                 }
 
-                if (sysPassApp.theme !== undefined) {
+                if (sysPassApp.theme !== undefined
+                    && (opts.type === "html"
+                        || (response.responseJSON !== undefined
+                            && response.responseJSON.data !== undefined
+                            && response.responseJSON.data.html !== undefined))
+                ) {
                     sysPassApp.theme.ajax.complete();
                 }
             }
