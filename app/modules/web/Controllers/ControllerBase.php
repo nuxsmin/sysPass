@@ -98,18 +98,19 @@ abstract class ControllerBase
         $this->setUp($container);
 
         $this->view = $this->dic->get(Template::class);
-
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->isAjax = $this->request->isAjax();
         $this->previousSk = $this->session->getSecurityKey();
 
-        if ($this->session->isLoggedIn()) {
+        $loggedIn = $this->session->isLoggedIn();
+
+        if ($loggedIn) {
             $this->userData = clone $this->session->getUserData();
             $this->userProfileData = clone $this->session->getUserProfile();
-
-            $this->setViewVars();
         }
+
+        $this->setViewVars($loggedIn);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -118,19 +119,25 @@ abstract class ControllerBase
 
     /**
      * Set view variables
+     *
+     * @param bool $loggedIn
      */
-    private function setViewVars()
+    private function setViewVars($loggedIn = false)
     {
         $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
-        $this->view->assign('ctx_userId', $this->userData->getId());
-        $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
-        $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
-        $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
-        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
+
+        if ($loggedIn) {
+            $this->view->assign('ctx_userId', $this->userData->getId());
+            $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
+            $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
+            $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
+        }
+
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
+        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('configData', $this->configData);
-        $this->view->assign('sk', $this->session->isLoggedIn() ? $this->session->generateSecurityKey() : '');
+        $this->view->assign('sk', $loggedIn ? $this->session->generateSecurityKey() : '');
 
         // Pass the action name to the template as a variable
         $this->view->assign($this->actionName, true);
