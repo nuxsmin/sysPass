@@ -164,22 +164,6 @@ final class QueryData
     }
 
     /**
-     * @return DataModelBase
-     */
-    public function getMapClass()
-    {
-        return $this->mapClass;
-    }
-
-    /**
-     * @param DataModelBase $mapClass
-     */
-    public function setMapClass(DataModelBase $mapClass)
-    {
-        $this->mapClass = $mapClass;
-    }
-
-    /**
      * @return bool
      */
     public function isUseKeyPair()

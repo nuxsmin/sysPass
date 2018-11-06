@@ -43,7 +43,7 @@ interface DatabaseInterface
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function doQuery(QueryData $queryData);
+    public function doQuery(QueryData $queryData): QueryResult;
 
     /**
      * Don't fetch records and return prepared statement

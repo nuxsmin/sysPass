@@ -164,17 +164,14 @@ final class Database implements DatabaseInterface
      * Realizar una consulta a la BBDD.
      *
      * @param $queryData   QueryData Los datos de la consulta
-     * @param $getRawData  bool    realizar la consulta para obtener registro a registro
      *
      * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function doQuery(QueryData $queryData, $getRawData = false)
+    public function doQuery(QueryData $queryData): QueryResult
     {
         $stmt = $this->prepareQueryData($queryData);
-
-        $this->setFetchMode($queryData, $stmt);
 
         $this->eventDispatcher->notifyEvent('database.query',
             new Event($this, EventMessage::factory()
@@ -185,7 +182,7 @@ final class Database implements DatabaseInterface
         if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {
             $this->numFields = $stmt->columnCount();
 
-            return new QueryResult($stmt->fetchAll());
+            return new QueryResult($this->fetch($queryData, $stmt));
         }
 
         return (new QueryResult())
@@ -279,18 +276,18 @@ final class Database implements DatabaseInterface
     /**
      * @param QueryData    $queryData
      * @param PDOStatement $stmt
+     *
+     * @return array
      */
-    private function setFetchMode(QueryData $queryData, PDOStatement $stmt)
+    private function fetch(QueryData $queryData, PDOStatement $stmt): array
     {
         if ($queryData->isUseKeyPair()) {
-            $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
-        } elseif (null !== $queryData->getMapClass()) {
-            $stmt->setFetchMode(PDO::FETCH_INTO, $queryData->getMapClass());
+            return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         } elseif ($queryData->getMapClassName()) {
-            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
-        } else {
-            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $queryData->getMapClassName());
         }
+
+        return $stmt->fetchAll();
     }
 
     /**
@@ -317,15 +314,24 @@ final class Database implements DatabaseInterface
     /**
      * Don't fetch records and return prepared statement
      *
-     * @param QueryData  $queryData
-     * @param array|null $options
+     * @param QueryData $queryData
+     * @param array     $options
+     * @param bool      $buffered Set buffered behavior (useful for big datasets)
      *
      * @return \PDOStatement
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function doQueryRaw(QueryData $queryData, array $options = [])
+    public function doQueryRaw(QueryData $queryData, array $options = [], bool $buffered = null)
     {
+        if ($buffered === false
+            && $this->dbHandler instanceof MySQLHandler
+        ) {
+            $this->dbHandler
+                ->getConnection()
+                ->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        }
+
         return $this->prepareQueryData($queryData, $options);
     }
 

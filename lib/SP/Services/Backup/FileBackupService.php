@@ -291,7 +291,7 @@ final class FileBackupService extends Service
             $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
 
             // Consulta para obtener los registros de la tabla
-            $queryRes = $db->doQueryRaw($queryData, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL]);
+            $queryRes = $db->doQueryRaw($queryData, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL], false);
 
             $numColumns = $queryRes->columnCount();
 
