@@ -214,7 +214,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 $fileHandler->checkFileExists();
 
-                $this->checkAllowedMimeType($fileData, $fileHandler);
+                $fileData->setType($this->checkAllowedMimeType($fileData, $fileHandler));
 
                 $allowedSize = $this->configData->getFilesAllowedSize();
 
@@ -270,20 +270,24 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @param FileHandler $fileHandler
      *
+     * @return string
      * @throws SPException
      * @throws \SP\Storage\File\FileException
      */
     private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler)
     {
-        if (!in_array($fileData->getType(), $this->configData->getFilesAllowedMime())
-            && !in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime())
-        ) {
-            throw new SPException(
-                __u('File type not allowed'),
-                SPException::ERROR,
-                sprintf(__('MIME type: %s'), $fileData->getType())
-            );
+        if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime())) {
+            return $fileData->getType();
+        } elseif (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime())) {
+            return $fileHandler->getFileType();
+
         }
+
+        throw new SPException(
+            __u('File type not allowed'),
+            SPException::ERROR,
+            sprintf(__('MIME type: %s'), $fileData->getType())
+        );
     }
 
     /**
