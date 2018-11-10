@@ -929,7 +929,7 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 });
 
-            if (fileType === 'PDF' || fileType === 'application/pdf') {
+            if (fileType === 'application/pdf') {
                 window.open(url, '_blank');
                 return;
             }
@@ -1551,6 +1551,7 @@ sysPass.Actions = function (log) {
 
             const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
+            opts.useLoading = false;
             opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
                 {
                     r: "items/notifications",

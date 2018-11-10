@@ -176,9 +176,9 @@ final class SelectItemAdapter implements ItemAdapterInterface
         $items = $this->getItemsFromArray();
 
         foreach ($items as $item) {
-            if (($useValueAsKey === false && in_array($item->getId(), $selected, false))
-                || ($useValueAsKey === true && in_array($item->getName(), $selected, false))
-            ) {
+            $value = $useValueAsKey ? $item->getName() : $item->getId();
+
+            if (in_array($value, $selected, false)) {
                 $item->setSelected(true);
             }
         }

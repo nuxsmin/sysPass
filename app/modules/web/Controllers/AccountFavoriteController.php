@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Account\AccountToFavoriteService;
@@ -56,6 +57,8 @@ final class AccountFavoriteController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -73,6 +76,8 @@ final class AccountFavoriteController extends SimpleControllerBase
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Favorite deleted'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

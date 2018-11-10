@@ -46,6 +46,10 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
      */
     protected $tabsHelper;
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function indexAction()
     {
         $this->getTabs();
@@ -53,6 +57,9 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
 
     /**
      * Returns a tabbed grid with items
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function getTabs()
     {

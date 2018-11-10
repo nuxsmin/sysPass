@@ -92,6 +92,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             ErrorUtil::showExceptionInView($this->view, $e);
         }
     }
@@ -114,6 +116,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             ]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -162,6 +166,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view();
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
@@ -238,6 +244,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view();
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account-link');
         }
@@ -320,6 +328,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
@@ -368,6 +378,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
@@ -412,6 +424,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view();
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
@@ -458,6 +472,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account-editpass');
         }
     }
@@ -503,6 +519,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account-history');
         }
     }
@@ -536,6 +554,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->view();
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account-request');
         }
@@ -577,6 +597,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseData($data);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -635,6 +657,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseData($data);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -762,6 +786,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -809,6 +835,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -852,6 +880,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -890,6 +920,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -935,6 +967,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -985,6 +1019,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

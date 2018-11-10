@@ -37,8 +37,8 @@ sysPass.Config = function () {
         },
         FILES: {
             MAX_SIZE: 1024, // Max uploading file fize
-            ACCOUNT_ALLOWED_EXTS: [], // Allowed extensions for accounts' file uploading
-            IMPORT_ALLOWED_EXTS: [] // Allowed extensions for importing
+            ACCOUNT_ALLOWED_MIME: [], // Allowed mime types for accounts' file uploading
+            IMPORT_ALLOWED_MIME: [] // Allowed extensions for importing
         },
         STATUS: {
             CHECK_UPDATES: false, // Check for updates
@@ -83,11 +83,11 @@ sysPass.Config = function () {
         setFileMaxSize: function (size) {
             config.FILES.MAX_SIZE = parseInt(size);
         },
-        setFileAccountAllowedExts: function (extensions) {
-            config.FILES.ACCOUNT_ALLOWED_EXTS = extensions;
+        setFileAccountAllowedMime: function (mimetypes) {
+            config.FILES.ACCOUNT_ALLOWED_MIME = mimetypes;
         },
-        setFileImportAllowedExts: function (extensions) {
-            config.FILES.IMPORT_ALLOWED_EXTS = extensions;
+        setFileImportAllowedMime: function (mimetypes) {
+            config.FILES.IMPORT_ALLOWED_MIME = mimetypes;
         },
         setCheckUpdates: function (bool) {
             config.STATUS.CHECK_UPDATES = bool;

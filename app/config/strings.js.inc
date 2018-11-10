@@ -42,7 +42,7 @@ return [
     16 => __('Your browser does not support HTML5 file uploads'),
     17 => __('Too many files'),
     18 => __('File size not allowed'),
-    19 => __('Extension not allowed'),
+    19 => __('MIME type not allowed'),
     20 => __('Clear the event log out?'),
     21 => __('Select Group'),
     22 => __('Select User'),

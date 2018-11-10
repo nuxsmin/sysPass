@@ -9,11 +9,11 @@
   <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
   <authBasicDomain></authBasicDomain>
   <authBasicEnabled>1</authBasicEnabled>
-  <backup_hash>5185a5ba55cadceb1968623709dddb1d7626ed44</backup_hash>
+  <backup_hash>9ae12959c88b80ce06b7a4637bd0375ea6f9d1da</backup_hash>
   <checkUpdates>0</checkUpdates>
   <checknotices>0</checknotices>
-  <configDate>1541544393</configDate>
-  <configHash>f292660712a4970a14bb85c93d08c5611d8077a4</configHash>
+  <configDate>1541881367</configDate>
+  <configHash>481481df4e0c5d89f6cd01bffe151a6c8ba33bd4</configHash>
   <configSaver></configSaver>
   <configVersion></configVersion>
   <databaseVersion></databaseVersion>
@@ -32,7 +32,7 @@
   <dokuwikiUrlBase></dokuwikiUrlBase>
   <dokuwikiUser></dokuwikiUser>
   <encryptSession>0</encryptSession>
-  <export_hash>9d4a01b3e797c5d98f932e13ef6666d2fe5b52e9</export_hash>
+  <export_hash>54960891f385bc6fe57d75674340e278fa0291fc</export_hash>
   <filesAllowedExts>
     <item type="filesAllowedExts">PDF</item>
     <item type="filesAllowedExts">JPG</item>
@@ -49,6 +49,7 @@
     <item type="filesAllowedExts">CSV</item>
     <item type="filesAllowedExts">BAK</item>
   </filesAllowedExts>
+  <filesAllowedMime></filesAllowedMime>
   <filesAllowedSize>1024</filesAllowedSize>
   <filesEnabled>1</filesEnabled>
   <globalSearch>1</globalSearch>

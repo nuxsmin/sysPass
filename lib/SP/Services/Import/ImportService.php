@@ -34,7 +34,7 @@ defined('APP_ROOT') || die();
  */
 final class ImportService extends Service
 {
-    const ALLOWED_EXTS = ['CSV', 'XML'];
+    const ALLOWED_MIME = ['text/csv', 'application/xml', 'text/xml'];
 
     /**
      * @var ImportParams

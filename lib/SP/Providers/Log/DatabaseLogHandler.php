@@ -27,6 +27,7 @@ namespace SP\Providers\Log;
 use DI\Container;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\DataModel\EventlogData;
 use SP\Providers\EventsTrait;
@@ -90,10 +91,14 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
         $eventlogData->setAction($eventType);
         $eventlogData->setLevel('INFO');
 
-        if (($e = $event->getSource()) instanceof \Exception) {
-            /** @var \Exception $e */
+        $source = $event->getSource();
+
+        if ($source instanceof SPException) {
             $eventlogData->setLevel('ERROR');
-            $eventlogData->setDescription(__($e->getMessage()));
+            $eventlogData->setDescription(__($source->getMessage()) . PHP_EOL . __($source->getHint()));
+        } elseif ($source instanceof \Exception) {
+            $eventlogData->setLevel('ERROR');
+            $eventlogData->setDescription(__($source->getMessage()));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             $eventlogData->setDescription($eventMessage->composeText());
         }

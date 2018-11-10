@@ -30,6 +30,7 @@ use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextInterface;
+use SP\Core\MimeTypes;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Http\Request;
@@ -63,6 +64,9 @@ return [
         ->constructor(\DI\factory([DatabaseConnectionData::class, 'getFromConfig'])),
     Actions::class => function (ContainerInterface $c) {
         return new Actions($c->get(FileCache::class), new XmlHandler(new FileHandler(ACTIONS_FILE)));
+    },
+    MimeTypes::class => function (ContainerInterface $c) {
+        return new MimeTypes($c->get(FileCache::class), new XmlHandler(new FileHandler(MIMETYPES_FILE)));
     },
     Acl::class => \DI\autowire(Acl::class)
         ->constructorParameter('action', get(Actions::class)),

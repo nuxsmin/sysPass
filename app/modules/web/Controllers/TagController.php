@@ -117,6 +117,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -177,6 +179,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -217,6 +221,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -245,6 +251,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -279,6 +287,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -309,6 +319,8 @@ final class TagController extends ControllerBase implements CrudControllerInterf
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

@@ -39,6 +39,7 @@ define('CONFIG_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'config');
 // Setup config files
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+define('MIMETYPES_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
 define('OLD_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
 define('LOG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
 define('LOCK_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . '.lock');

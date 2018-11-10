@@ -24,6 +24,7 @@
 
 namespace SP\Services\Import;
 
+use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
@@ -59,31 +60,25 @@ final class FileImport
      *
      * @return FileImport
      * @throws FileException
+     * @throws SPException
      */
     public static function fromRequest(string $filename, Request $request)
     {
-        if (($file = $request->getFile($filename)) === null) {
-            throw new FileException(
-                __u('File successfully uploaded'),
-                FileException::ERROR,
-                __u('Please check the web server user permissions')
-            );
-        }
-
-        return new self(new FileHandler(self::checkFile($file)));
+        return new self(self::checkFile($request->getFile($filename)));
     }
 
     /**
      * Leer los datos del archivo.
      *
-     * @param array $fileData con los datos del archivo
+     * @param array $file con los datos del archivo
      *
-     * @return string
-     * @throws \SP\Storage\File\FileException
+     * @return FileHandler
+     * @throws FileException
+     * @throws SPException
      */
-    private static function checkFile($fileData): string
+    private static function checkFile($file): FileHandler
     {
-        if (!is_array($fileData)) {
+        if (!is_array($file)) {
             throw new FileException(
                 __u('File successfully uploaded'),
                 FileException::ERROR,
@@ -91,35 +86,30 @@ final class FileImport
             );
         }
 
-        if ($fileData['name']) {
-            // Comprobamos la extensión del archivo
-            $fileExtension = mb_strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
+        try {
+            $fileHandler = new FileHandler($file['tmp_name']);
+            $fileHandler->checkFileExists();
 
-            if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
-                throw new FileException(
+            if (!in_array($fileHandler->getFileType(), ImportService::ALLOWED_MIME)) {
+                throw new ImportException(
                     __u('File type not allowed'),
-                    FileException::ERROR,
-                    __u('Please, check the file extension')
+                    ImportException::ERROR,
+                    sprintf(__('MIME type: %s'), $fileHandler->getFileType())
                 );
             }
-        }
 
-        // Variables con información del archivo
-//        $this->tmpFile = $fileData['tmp_name'];
-//        $this->fileType = strtolower($fileData['type']);
-
-        if (!file_exists($fileData['tmp_name']) || !is_readable($fileData['tmp_name'])) {
-            // Registramos el máximo tamaño permitido por PHP
+            return $fileHandler;
+        } catch (FileException $e) {
             logger('Max. upload size: ' . Util::getMaxUpload());
 
             throw new FileException(
                 __u('Internal error while reading the file'),
                 FileException::ERROR,
-                __u('Please, check PHP configuration for upload files')
+                __u('Please, check PHP configuration for upload files'),
+                $e->getCode(),
+                $e
             );
         }
-
-        return $fileData['tmp_name'];
     }
 
     /**

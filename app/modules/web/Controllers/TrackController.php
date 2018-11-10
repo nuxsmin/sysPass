@@ -115,6 +115,8 @@ final class TrackController extends ControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -140,6 +142,8 @@ final class TrackController extends ControllerBase
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Tracks cleared out'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

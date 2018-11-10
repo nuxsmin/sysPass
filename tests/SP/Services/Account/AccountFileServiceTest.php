@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -98,9 +98,9 @@ class AccountFileServiceTest extends DatabaseTestCase
 
         $data = new FileData();
         $data->setAccountId(2);
-        $data->setName('app.png');
-        $data->setType('image/png');
-        $data->setExtension('SVG');
+        $data->setName('aaa.txt');
+        $data->setType('text/plain');
+        $data->setExtension('txt');
         $data->setContent('');
         $data->setSize(0);
 
@@ -118,7 +118,15 @@ class AccountFileServiceTest extends DatabaseTestCase
         $this->assertEquals('no_thumb', $resultData->getThumb());
 
         $this->assertEquals(5, $this->conn->getRowCount('AccountFile'));
+    }
 
+    /**
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function testCreateInvalid()
+    {
         $this->expectException(InvalidImageException::class);
 
         $data = new FileData();

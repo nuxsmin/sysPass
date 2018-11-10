@@ -69,8 +69,8 @@ final class BootstrapController extends SimpleControllerBase
             'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
             'pki_key' => $this->getPublicKey(),
             'pki_max_size' => CryptPKI::getMaxDataSize(),
-            'import_allowed_exts' => ImportService::ALLOWED_EXTS,
-            'files_allowed_exts' => $this->configData->getFilesAllowedExts(),
+            'import_allowed_mime' => ImportService::ALLOWED_MIME,
+            'files_allowed_mime' => $this->configData->getFilesAllowedMime(),
             'session_timeout' => $this->configData->getSessionTimeout()
         ];
 

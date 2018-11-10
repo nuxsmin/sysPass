@@ -304,23 +304,30 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Allowed file extensions'); ?>
-                <div id="help-allowed_exts"
+                <?php echo __('Allowed MIME types'); ?>
+                <div id="help-files_allowed_mimetypes"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-allowed_exts">
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-files_allowed_mimetypes">
                     <p>
-                        <?php echo __('Allowed file extensions for uploading.'); ?>
+                        <?php echo __('Allowed file MIME types for uploading.'); ?>
                     </p>
                     <p>
-                        <?php echo __('Write the extension and press enter to add. Remember to save the configuration.'); ?>
+                        <?php echo __('In order to add more MIME types, you need to add them into mime.xml file within the config directory.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Allowed file extensions'); ?></div>
+                <div class="lowres-title"><?php echo __('Allowed MIME types'); ?></div>
 
-                <input type="text" name="files_allowed_exts" id="allowed_exts"
-                       value="<?php echo implode(',', $configData->getFilesAllowedExts()); ?>"/>
+                <select id="files_allowed_mimetypes" name="files_allowed_mimetypes[]"
+                        multiple="multiple" class="select-box" data-create="true">
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $mimeType */
+                    foreach ($_getvar('mimeTypes') as $mimeType): ?>
+                        <option
+                                value="<?php echo $mimeType->getName(); ?>"
+                            <?php echo $mimeType->isSelected() ? 'selected' : '' ?>><?php echo $mimeType->getName(); ?></option>
+                    <?php endforeach; ?>
+                </select>
             </td>
         </tr>
         <tr>

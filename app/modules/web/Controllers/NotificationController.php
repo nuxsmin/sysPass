@@ -121,6 +121,8 @@ final class NotificationController extends ControllerBase implements CrudControl
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -203,6 +205,8 @@ final class NotificationController extends ControllerBase implements CrudControl
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -234,6 +238,8 @@ final class NotificationController extends ControllerBase implements CrudControl
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -288,6 +294,8 @@ final class NotificationController extends ControllerBase implements CrudControl
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -321,6 +329,8 @@ final class NotificationController extends ControllerBase implements CrudControl
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -351,6 +361,8 @@ final class NotificationController extends ControllerBase implements CrudControl
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification created'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -386,6 +398,8 @@ final class NotificationController extends ControllerBase implements CrudControl
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification updated'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

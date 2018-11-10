@@ -124,6 +124,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -209,6 +211,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -245,6 +249,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -292,6 +298,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -330,6 +338,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -396,6 +406,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -435,6 +447,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -465,6 +479,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

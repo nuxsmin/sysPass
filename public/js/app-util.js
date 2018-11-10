@@ -190,7 +190,7 @@ sysPass.Util = function (log) {
             },
             beforeSendAction: "",
             url: "",
-            allowedExts: []
+            allowedMime: []
         };
 
         /**
@@ -243,9 +243,13 @@ sysPass.Util = function (log) {
             return (size / 1000 > sysPassApp.config.FILES.MAX_SIZE);
         };
 
-        const checkFileExtension = function (name) {
-            for (let ext in options.allowedExts) {
-                if (name.indexOf(options.allowedExts[ext]) !== -1) {
+        const checkFileMimeType = function (mimeType) {
+            if (mimeType === '') {
+                return true;
+            }
+            
+            for (let mime in options.allowedMime) {
+                if (mimeType.indexOf(options.allowedMime[mime]) !== -1) {
                     return true;
                 }
             }
@@ -264,10 +268,11 @@ sysPass.Util = function (log) {
 
             for (let i = 0; i < filesArray.length; i++) {
                 const file = filesArray[i];
+
                 if (checkFileSize(file.size)) {
                     sysPassApp.msg.error(sysPassApp.config.LANG[18] + "<br>" + file.name + " (Max: " + sysPassApp.config.FILES.MAX_SIZE + ")");
-                } else if (!checkFileExtension(file.name.toUpperCase())) {
-                    sysPassApp.msg.error(sysPassApp.config.LANG[19] + "<br>" + file.name);
+                } else if (!checkFileMimeType(file.type)) {
+                    sysPassApp.msg.error(sysPassApp.config.LANG[19] + "<br>" + file.type);
                 } else {
                     sendFile(filesArray[i]);
                 }

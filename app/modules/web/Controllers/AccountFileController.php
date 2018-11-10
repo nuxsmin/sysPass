@@ -37,10 +37,10 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountService;
+use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 use SP\Util\ErrorUtil;
 use SP\Util\FileUtil;
-use SP\Util\Util;
 
 /**
  * Class AccountFileController
@@ -49,7 +49,7 @@ use SP\Util\Util;
  */
 final class AccountFileController extends ControllerBase implements CrudControllerInterface
 {
-    const EXTENSIONS_VIEW = ['TXT'];
+    const MIME_VIEW = ['text/plain'];
 
     use JsonTrait, ItemTrait;
 
@@ -91,10 +91,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 return $this->returnJsonResponseData(['html' => $this->render()]);
             }
 
-            $extension = mb_strtoupper($fileData->getExtension());
+            $type = strtolower($fileData->getType());
 
-            if (in_array($extension, self::EXTENSIONS_VIEW)) {
-                $this->view->assign('extension', $extension);
+            if (in_array($type, self::MIME_VIEW)) {
+                $this->view->assign('mime', $type);
                 $this->view->assign('data', htmlentities($fileData->getContent()));
 
                 $this->eventDispatcher->notifyEvent('show.accountFile',
@@ -108,6 +108,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
             }
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -148,9 +150,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $response->header('Content-Description', ' sysPass file');
             $response->header('Content-transfer-encoding', 'binary');
 
-            $extension = mb_strtoupper($fileData->getExtension());
+            $type = strtolower($fileData->getType());
 
-            if ($extension === 'PDF') {
+            if ($type === 'application/pdf') {
                 $response->header('Content-Disposition', 'inline; filename="' . $fileData->getName() . '"');
             } else {
                 $response->header('Set-Cookie', 'fileDownload=true; path=/');
@@ -186,61 +188,46 @@ final class AccountFileController extends ControllerBase implements CrudControll
                 throw new SPException(__u('INVALID QUERY'), SPException::ERROR);
             }
 
-            $allowedExts = $this->configData->getFilesAllowedExts();
+            $filesAllowedMime = $this->configData->getFilesAllowedMime();
 
-            if (empty($allowedExts)) {
-                throw new SPException(__u('There aren\'t any allowed extensions'), SPException::ERROR);
+            if (empty($filesAllowedMime)) {
+                throw new SPException(__u('There aren\'t any allowed mime types'));
             }
 
-            $fileHandler = new FileHandler($file['tmp_name']);
+            try {
+                $fileHandler = new FileHandler($file['tmp_name']);
 
-            $fileData = new FileData();
-            $fileData->setAccountId($accountId);
-            $fileData->setName(Html::sanitize($file['name']));
-            $fileData->setSize($file['size']);
-            $fileData->setType($file['type']);
-
-            if ($fileData->getName() !== '') {
-                // Comprobamos la extensión del archivo
+                $fileData = new FileData();
+                $fileData->setAccountId($accountId);
+                $fileData->setName(Html::sanitize($file['name']));
+                $fileData->setSize($file['size']);
+                $fileData->setType($file['type']);
                 $fileData->setExtension(mb_strtoupper(pathinfo($fileData->getName(), PATHINFO_EXTENSION)));
 
-                if (!in_array($fileData->getExtension(), $allowedExts, true)) {
+                if ($fileData->getName() === '') {
                     throw new SPException(
-                        __u('File type not allowed'),
+                        __u('Invalid file'),
                         SPException::ERROR,
-                        sprintf(__('Extension: %s'), $fileData->getExtension())
+                        sprintf(__u('File: %s'), $fileData->getName())
                     );
                 }
-            } else {
-                throw new SPException(
-                    __u('Invalid file'),
-                    SPException::ERROR,
-                    sprintf(__u('File: %s'), $fileData->getName())
-                );
-            }
 
-            if (!file_exists($file['tmp_name'])) {
-                throw new SPException(
-                    __u('Internal error while reading the file'),
-                    SPException::ERROR,
-                    sprintf(__u('Maximum size: %s'), Util::getMaxUpload())
-                );
-            }
+                $fileHandler->checkFileExists();
 
-            $allowedSize = $this->configData->getFilesAllowedSize();
+                $this->checkAllowedMimeType($fileData, $fileHandler);
 
-            if ($fileData->getSize() > ($allowedSize * 1000)) {
-                throw new SPException(
-                    __u('File size exceeded'),
-                    SPException::ERROR,
-                    sprintf(__u('Maximum size: %d KB'),
-                        $fileData->getRoundSize())
-                );
-            }
+                $allowedSize = $this->configData->getFilesAllowedSize();
 
-            $fileData->setContent($fileHandler->readToString());
+                if ($fileData->getSize() > ($allowedSize * 1000)) {
+                    throw new SPException(
+                        __u('File size exceeded'),
+                        SPException::ERROR,
+                        sprintf(__u('Maximum size: %d KB'), $fileData->getRoundSize())
+                    );
+                }
 
-            if ($fileData->getContent() === false) {
+                $fileData->setContent($fileHandler->readToString());
+            } catch (FileException $e) {
                 throw new SPException(__u('Internal error while reading the file'));
             }
 
@@ -266,11 +253,36 @@ final class AccountFileController extends ControllerBase implements CrudControll
         } catch (SPException $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * @param FileData    $fileData
+     *
+     * @param FileHandler $fileHandler
+     *
+     * @throws SPException
+     * @throws \SP\Storage\File\FileException
+     */
+    private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler)
+    {
+        if (!in_array($fileData->getType(), $this->configData->getFilesAllowedMime())
+            && !in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime())
+        ) {
+            throw new SPException(
+                __u('File type not allowed'),
+                SPException::ERROR,
+                sprintf(__('MIME type: %s'), $fileData->getType())
+            );
         }
     }
 
@@ -369,6 +381,8 @@ final class AccountFileController extends ControllerBase implements CrudControll
             return $this->returnJsonResponse(0, __u('File Deleted'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

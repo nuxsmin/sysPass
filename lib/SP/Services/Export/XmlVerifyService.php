@@ -123,10 +123,14 @@ final class XmlVerifyService extends Service
     public static function checkXmlHash(DOMDocument $document, string $key)
     {
         $DOMXPath = new DOMXPath($document);
-        $hash = $DOMXPath->query('/Root/Meta/Hash')->item(0)->nodeValue;
-        $hmac = $DOMXPath->query('/Root/Meta/Hash/@sign')->item(0)->nodeValue;
+        $hash = $DOMXPath->query('/Root/Meta/Hash');
+        $sign = $DOMXPath->query('/Root/Meta/Hash/@sign');
 
-        return Hash::checkMessage($hash, $key, $hmac) || $hash === XmlExportService::generateHashFromNodes($document);
+        if ($hash->length === 1 && $sign->length === 1) {
+            return Hash::checkMessage($hash->item(0)->nodeValue, $key, $sign->item(0)->nodeValue);
+        }
+
+        return $hash === XmlExportService::generateHashFromNodes($document);
     }
 
     /**

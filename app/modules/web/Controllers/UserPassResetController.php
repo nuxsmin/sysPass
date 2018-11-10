@@ -112,6 +112,8 @@ final class UserPassResetController extends ControllerBase
 
             $this->addTracking();
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -202,6 +204,8 @@ final class UserPassResetController extends ControllerBase
             processException($e);
 
             $this->addTracking();
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

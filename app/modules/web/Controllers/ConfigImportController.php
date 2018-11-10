@@ -86,10 +86,7 @@ final class ConfigImportController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notifyEvent('exception',
-                new Event($e, EventMessage::factory()
-                    ->addDescription($e->getMessage()))
-            );
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

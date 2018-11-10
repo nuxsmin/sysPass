@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\User\UserService;
@@ -75,12 +76,17 @@ final class UserSettingsGeneralController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
 
     /**
      * initialize
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function initialize()
     {

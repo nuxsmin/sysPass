@@ -101,6 +101,10 @@ final class ConfigLdapController extends SimpleControllerBase
                 $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
             });
         } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -161,8 +165,9 @@ final class ConfigLdapController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
-//            $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
         }
     }
 
@@ -206,8 +211,9 @@ final class ConfigLdapController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
-//            $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
         }
     }
 
@@ -283,6 +289,8 @@ final class ConfigLdapController extends SimpleControllerBase
             );
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

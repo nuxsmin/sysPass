@@ -29,6 +29,7 @@ use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
+use SP\Core\MimeTypes;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -162,7 +163,10 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\CheckException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getAccountConfig()
     {
@@ -170,6 +174,19 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('accounts');
         $template->assign('gdIsAvailable', $this->extensionChecker->checkGdAvailable());
+
+        $mimeTypesAvailable = array_map(function ($value) {
+            return $value['type'];
+        }, $this->dic->get(MimeTypes::class)->getMimeTypes());
+
+        $mimeTypes = SelectItemAdapter::factory(
+            array_merge($mimeTypesAvailable, $this->configData->getFilesAllowedMime())
+        );
+
+        $template->assign('mimeTypes', $mimeTypes->getItemsFromArraySelected(
+            $this->configData->getFilesAllowedMime(),
+            true)
+        );
 
         return new DataTab(__('Accounts'), $template);
     }
@@ -263,7 +280,9 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('tempMasterPassTime', $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0));
         $template->assign('tempMasterMaxTime', $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0));
 
-        $tempMasterAttempts = sprintf('%d/%d', $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0), TemporaryMasterPassService::MAX_ATTEMPTS);
+        $tempMasterAttempts = sprintf('%d/%d',
+            $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
+            TemporaryMasterPassService::MAX_ATTEMPTS);
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
         $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());
@@ -325,8 +344,14 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('import');
 
-        $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModelSelected([$this->userData->getUserGroupId()]));
-        $template->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$this->userData->getId()]));
+        $template->assign('userGroups', SelectItemAdapter::factory(
+            UserGroupService::getItemsBasic())
+            ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
+        );
+        $template->assign('users', SelectItemAdapter::factory(
+            UserService::getItemsBasic())
+            ->getItemsFromModelSelected([$this->userData->getId()])
+        );
 
         return new DataTab(__('Import Accounts'), $template);
     }

@@ -443,8 +443,8 @@ sysPass.Main = function () {
                 configHandler.setLocale(json.data.locale);
                 configHandler.setDebugEnabled(json.data.debug);
                 configHandler.setFileMaxSize(json.data.max_file_size);
-                configHandler.setFileAccountAllowedExts(json.data.files_allowed_exts);
-                configHandler.setFileImportAllowedExts(json.data.import_allowed_exts);
+                configHandler.setFileAccountAllowedMime(json.data.files_allowed_mime);
+                configHandler.setFileImportAllowedMime(json.data.import_allowed_mime);
                 configHandler.setCookiesEnabled(json.data.cookies_enabled);
                 configHandler.setPlugins(json.data.plugins);
                 configHandler.setLoggedIn(json.data.loggedin);

@@ -144,6 +144,8 @@ final class PluginController extends ControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -203,6 +205,8 @@ final class PluginController extends ControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -230,6 +234,8 @@ final class PluginController extends ControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -256,6 +262,8 @@ final class PluginController extends ControllerBase
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin reset'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -292,6 +300,8 @@ final class PluginController extends ControllerBase
             }
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

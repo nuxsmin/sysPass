@@ -27,6 +27,7 @@ namespace SP\Services\Upgrade;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\MimeTypes;
 use SP\Services\Service;
 use SP\Util\VersionUtil;
 
@@ -40,7 +41,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['112.4', '130.16020501', '200.17011202'];
+    const UPGRADES = ['112.4', '130.16020501', '200.17011202', '300.18111001'];
     /**
      * @var ConfigData
      */
@@ -226,17 +227,83 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     {
         switch ($version) {
             case '200.17011202':
-                $this->configData->setSiteTheme('material-blue');
-                $this->configData->setConfigVersion($version);
-
-                $this->config->saveConfig($this->configData, false);
-
-                $this->eventDispatcher->notifyEvent('upgrade.config.process',
-                    new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Update Configuration'))
-                        ->addDetail(__u('Version'), $version))
-                );
+                $this->upgrade_200_17011202($version);
+                break;
+            case '300.18111001':
+                $this->upgrade_300_18111001($version);
                 break;
         }
+    }
+
+    /**
+     * @param $version
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\File\FileException
+     */
+    private function upgrade_200_17011202($version)
+    {
+        $this->configData->setSiteTheme('material-blue');
+        $this->configData->setConfigVersion($version);
+
+        $this->config->saveConfig($this->configData, false);
+
+        $this->eventDispatcher->notifyEvent('upgrade.config.process',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Update Configuration'))
+                ->addDetail(__u('Version'), $version))
+        );
+    }
+
+    /**
+     * @param $version
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Storage\File\FileException
+     */
+    private function upgrade_300_18111001($version)
+    {
+        $extensions = array_map('strtolower', $this->configData->getFilesAllowedExts());
+        $mimeTypes = $this->dic->get(MimeTypes::class)->getMimeTypes();
+        $configMimeTypes = [];
+
+        foreach ($extensions as $extension) {
+            $exists = false;
+
+            foreach ($mimeTypes as $mimeType) {
+                if (strtolower($mimeType['extension']) === $extension) {
+                    $configMimeTypes[] = $mimeType['type'];
+                    $exists = true;
+
+                    $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('MIME type set for this extension'))
+                            ->addDetail(__u('MIME type'), $mimeType['type'])
+                            ->addDetail(__u('Extension'), $extension))
+                    );
+                }
+            }
+
+            if (!$exists) {
+                $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('MIME type not found for this extension'))
+                        ->addDetail(__u('Extension'), $extension))
+                );
+            }
+        }
+
+        $this->configData->setFilesAllowedMime($configMimeTypes);
+        $this->configData->setConfigVersion($version);
+
+        $this->config->saveConfig($this->configData, false);
+
+        $this->eventDispatcher->notifyEvent('upgrade.config.process',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Update Configuration'))
+                ->addDetail(__u('Version'), $version))
+        );
     }
 }

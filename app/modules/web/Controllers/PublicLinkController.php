@@ -123,6 +123,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -181,6 +183,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -212,6 +216,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -260,6 +266,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -288,6 +296,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -323,6 +333,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -364,6 +376,8 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

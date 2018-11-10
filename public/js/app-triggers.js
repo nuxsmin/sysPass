@@ -397,8 +397,11 @@ sysPass.Triggers = function (log) {
             if ($dropFiles.length > 0) {
                 const upload = sysPassApp.util.fileUpload($dropFiles);
 
-                upload.url = sysPassApp.actions.ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route");
-                upload.allowedExts = sysPassApp.config.FILES.IMPORT_ALLOWED_EXTS;
+                upload.url = sysPassApp.util.getUrl(
+                    sysPassApp.actions.ajaxUrl.entrypoint,
+                    {r: $dropFiles.data("action-route")}
+                );
+                upload.allowedMime = sysPassApp.config.FILES.IMPORT_ALLOWED_MIME;
                 upload.beforeSendAction = function () {
                     upload.setRequestData({
                         sk: sysPassApp.sk.get(),
@@ -425,9 +428,11 @@ sysPass.Triggers = function (log) {
             if ($dropFiles.length > 0) {
                 const upload = sysPassApp.util.fileUpload($dropFiles);
 
-                upload.url = sysPassApp.actions.ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route") + "/" + $dropFiles.data("item-id");
-                upload.allowedExts = sysPassApp.config.FILES.ACCOUNT_ALLOWED_EXTS;
-
+                upload.url = sysPassApp.util.getUrl(
+                    sysPassApp.actions.ajaxUrl.entrypoint,
+                    {r: [$dropFiles.data("action-route"), $dropFiles.data("item-id")]}
+                );
+                upload.allowedMime = sysPassApp.config.FILES.ACCOUNT_ALLOWED_MIME;
                 upload.requestDoneAction = function () {
                     sysPassApp.actions.account.listFiles($listFiles);
                 };

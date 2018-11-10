@@ -125,6 +125,8 @@ final class AccountHistoryManagerController extends ControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -161,6 +163,8 @@ final class AccountHistoryManagerController extends ControllerBase
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account restored'));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }

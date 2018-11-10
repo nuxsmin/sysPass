@@ -156,7 +156,11 @@ final class ConfigData implements JsonSerializable
     /**
      * @var array
      */
-    private $filesAllowedExts = ['PDF', 'JPG', 'GIF', 'PNG', 'ODT', 'ODS', 'DOC', 'DOCX', 'XLS', 'XSL', 'VSD', 'TXT', 'CSV', 'BAK'];
+    private $filesAllowedExts = [];
+    /**
+     * @var array
+     */
+    private $filesAllowedMime = [];
     /**
      * @var int
      */
@@ -1071,18 +1075,6 @@ final class ConfigData implements JsonSerializable
     public function getFilesAllowedExts()
     {
         return (array)$this->filesAllowedExts;
-    }
-
-    /**
-     * @param array $filesAllowedExts
-     *
-     * @return $this
-     */
-    public function setFilesAllowedExts(array $filesAllowedExts = [])
-    {
-        $this->filesAllowedExts = $filesAllowedExts;
-
-        return $this;
     }
 
     /**
@@ -2140,5 +2132,21 @@ final class ConfigData implements JsonSerializable
     public function setLdapTlsEnabled(bool $ldapTlsEnabled)
     {
         $this->ldapTlsEnabled = (int)$ldapTlsEnabled;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilesAllowedMime(): array
+    {
+        return $this->filesAllowedMime;
+    }
+
+    /**
+     * @param array $filesAllowedMime
+     */
+    public function setFilesAllowedMime(array $filesAllowedMime)
+    {
+        $this->filesAllowedMime = $filesAllowedMime;
     }
 }

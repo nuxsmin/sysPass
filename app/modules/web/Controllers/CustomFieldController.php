@@ -120,6 +120,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -182,6 +184,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -220,6 +224,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -254,6 +260,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             return $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
         }
@@ -294,6 +302,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             return $this->returnJsonResponseException($e);
         }
     }
@@ -322,6 +332,8 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.customField', new Event($this));
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }

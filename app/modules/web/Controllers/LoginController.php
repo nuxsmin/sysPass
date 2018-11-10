@@ -149,7 +149,6 @@ final class LoginController extends ControllerBase
             ->getCustomLayout('index', 'login');
 
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
-//        $this->view->assign('updated', SessionFactory::getAppUpdated());
 
         $this->prepareSignedUriOnView();
 

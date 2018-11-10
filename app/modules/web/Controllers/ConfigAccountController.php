@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Config\ConfigUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -75,7 +74,7 @@ final class ConfigAccountController extends SimpleControllerBase
             }
 
             $configData->setFilesEnabled(true);
-            $configData->setFilesAllowedExts(ConfigUtil::filesExtsAdapter($this->request->analyzeString('files_allowed_exts')));
+            $configData->setFilesAllowedMime($this->request->analyzeArray('files_allowed_mimetypes'));
             $configData->setFilesAllowedSize($filesAllowedSize);
 
             if ($configData->isFilesEnabled() === false) {
