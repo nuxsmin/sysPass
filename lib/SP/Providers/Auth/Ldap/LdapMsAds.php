@@ -110,7 +110,7 @@ final class LdapMsAds extends Ldap
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('User in group verified'))
                     ->addDetail(__u('User'), $userDn)
-                    ->addDetail(__u('Group'), $this->getGroupDn())));
+                    ->addDetail(__u('Group'), $this->ldapParams->getGroup())));
 
             return true;
         }

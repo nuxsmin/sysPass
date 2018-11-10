@@ -112,6 +112,8 @@ final class LdapAuth implements AuthInterface
     {
         try {
             $this->ldapAuthData->setAuthGranted($this->isAuthGranted());
+            $this->ldapAuthData->setServer($this->ldap->getServer());
+
             $this->setUserLogin($userLoginData->getLoginUser());
 
             $this->ldap->connect();

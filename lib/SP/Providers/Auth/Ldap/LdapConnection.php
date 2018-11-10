@@ -65,6 +65,10 @@ final class LdapConnection implements LdapConnectionInterface
      * @var bool
      */
     private $debug;
+    /**
+     * @var string
+     */
+    private $server;
 
     /**
      * LdapBase constructor.
@@ -132,14 +136,14 @@ final class LdapConnection implements LdapConnectionInterface
             @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         }
 
-        $this->ldapHandler = @ldap_connect($this->ldapParams->getServer(), $this->ldapParams->getPort());
+        $this->ldapHandler = @ldap_connect($this->getServer(), $this->ldapParams->getPort());
 
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
             $this->eventDispatcher->notifyEvent('ldap.connect',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Unable to connect to LDAP server'))
-                    ->addDetail(__u('Server'), $this->ldapParams->getServer()))
+                    ->addDetail(__u('Server'), $this->getServer()))
             );
 
             throw new LdapException(__u('Unable to connect to LDAP server'));
@@ -161,7 +165,7 @@ final class LdapConnection implements LdapConnectionInterface
     public function checkParams()
     {
         if (!$this->ldapParams->getSearchBase()
-            || !$this->ldapParams->getServer()
+            || !$this->getServer()
             || !$this->ldapParams->getBindDn()
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.params',
@@ -170,6 +174,26 @@ final class LdapConnection implements LdapConnectionInterface
 
             throw new LdapException(__u('LDAP parameters are not set'));
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getServer(): string
+    {
+        return $this->server ?: $this->ldapParams->getServer();
+    }
+
+    /**
+     * @param string $server
+     *
+     * @return LdapConnection
+     */
+    public function setServer(string $server)
+    {
+        $this->server = $server;
+
+        return $this;
     }
 
     /**
@@ -186,7 +210,7 @@ final class LdapConnection implements LdapConnectionInterface
                 $this->eventDispatcher->notifyEvent('ldap.connect.tls',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Unable to connect to LDAP server'))
-                        ->addDetail(__u('Server'), $this->ldapParams->getServer())
+                        ->addDetail(__u('Server'), $this->getServer())
                         ->addDetail('TLS', __u('ON'))
                         ->addDetail('LDAP ERROR', self::getLdapErrorMessage($this->ldapHandler))));
 

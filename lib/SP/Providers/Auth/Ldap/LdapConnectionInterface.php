@@ -74,4 +74,16 @@ interface LdapConnectionInterface
      * @return LdapParams
      */
     public function getLdapParams(): LdapParams;
+
+    /**
+     * @return string
+     */
+    public function getServer(): string;
+
+    /**
+     * @param string $server
+     *
+     * @return LdapConnectionInterface
+     */
+    public function setServer(string $server);
 }

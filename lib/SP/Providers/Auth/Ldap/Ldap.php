@@ -49,6 +49,10 @@ abstract class Ldap implements LdapInterface
      * @var LdapConnectionInterface
      */
     protected $ldapConnection;
+    /**
+     * @var string
+     */
+    private $server;
 
     /**
      * LdapBase constructor.
@@ -63,7 +67,9 @@ abstract class Ldap implements LdapInterface
         $this->ldapConnection = $ldapConnection;
 
         $this->ldapParams = $ldapConnection->getLdapParams();
-        $this->ldapParams->setServer($this->pickServer());
+        $this->server = $this->pickServer();
+
+        $this->ldapConnection->setServer($this->server);
 
         $this->eventDispatcher = $eventDispatcher;
         $this->ldapActions = new LdapActions($ldapConnection, $eventDispatcher);
@@ -104,6 +110,14 @@ abstract class Ldap implements LdapInterface
     public function bind(string $bindDn = null, string $bindPass = null): bool
     {
         return $this->ldapConnection->bind($bindDn, $bindPass);
+    }
+
+    /**
+     * @return string
+     */
+    public function getServer(): string
+    {
+        return $this->server;
     }
 
     /**

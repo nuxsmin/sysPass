@@ -84,4 +84,9 @@ interface LdapInterface
      * @return LdapActions
      */
     public function getLdapActions(): LdapActions;
+
+    /**
+     * @return string
+     */
+    public function getServer(): string;
 }
