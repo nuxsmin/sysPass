@@ -133,7 +133,10 @@ final class Init extends ModuleBase
      * Comprobar si es necesario actualizar componentes
      *
      * @throws InitializationException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
      */
     private function checkUpgrade()
     {

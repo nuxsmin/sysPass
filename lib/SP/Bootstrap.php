@@ -389,6 +389,7 @@ final class Bootstrap
      *
      * @throws ConfigException
      * @throws Services\Upgrade\UpgradeException
+     * @throws Storage\File\FileException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -403,6 +404,7 @@ final class Bootstrap
      * Comprobar la versión de configuración y actualizarla
      *
      * @throws Services\Upgrade\UpgradeException
+     * @throws Storage\File\FileException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */

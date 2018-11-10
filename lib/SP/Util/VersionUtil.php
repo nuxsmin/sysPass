@@ -54,7 +54,7 @@ final class VersionUtil
     public static function checkVersion($currentVersion, $upgradeableVersion)
     {
         if (is_array($upgradeableVersion)) {
-            $upgradeableVersion = $upgradeableVersion[count($upgradeableVersion) - 1];
+            $upgradeableVersion = array_pop($upgradeableVersion);
         }
 
         $currentVersion = self::normalizeVersionForCompare($currentVersion);

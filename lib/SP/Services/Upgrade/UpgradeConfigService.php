@@ -54,7 +54,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return VersionUtil::checkVersion(VersionUtil::checkVersion($version, VersionUtil::getVersionArrayNormalized()), self::UPGRADES);
+        return VersionUtil::checkVersion($version, self::UPGRADES);
     }
 
     /**
