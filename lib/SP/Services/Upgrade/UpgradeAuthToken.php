@@ -147,6 +147,5 @@ final class UpgradeAuthToken extends Service
     protected function initialize()
     {
         $this->authtokenService = $this->dic->get(AuthTokenService::class);
-
     }
 }

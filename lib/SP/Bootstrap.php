@@ -255,6 +255,7 @@ final class Bootstrap
      * @throws Services\Upgrade\UpgradeException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
+     * @throws Storage\File\FileException
      */
     protected function initializeCommon()
     {

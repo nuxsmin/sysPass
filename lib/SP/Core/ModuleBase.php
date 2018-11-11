@@ -116,16 +116,20 @@ abstract class ModuleBase
 
     /**
      * Initializes event handlers
+     *
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function initEventHandlers()
     {
         $eventDispatcher = $this->container->get(EventDispatcher::class);
 
+        if (DEBUG) {
+            $eventDispatcher->attach($this->container->get(FileLogHandler::class));
+        }
+
         if ($this->configData->isLogEnabled()) {
             $eventDispatcher->attach($this->container->get(DatabaseLogHandler::class));
-            if (DEBUG) {
-                $eventDispatcher->attach($this->container->get(FileLogHandler::class));
-            }
         }
 
         if ($this->configData->isMailEnabled()) {

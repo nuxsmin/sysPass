@@ -27,6 +27,7 @@ namespace SP\Services\Upgrade;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\MySQLFileParser;
@@ -213,8 +214,13 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         }
     }
 
+    /**
+     * initialize
+     */
     protected function initialize()
     {
+        $this->eventDispatcher->attach($this->dic->get(FileLogHandler::class));
+
         $this->db = $this->dic->get(Database::class);
     }
 }

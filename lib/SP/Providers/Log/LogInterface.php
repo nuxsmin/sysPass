@@ -57,6 +57,7 @@ interface LogInterface
         'clear.eventlog',
         'clear.track',
         'unlock.track',
-        'plugin.load.error'
+        'plugin.load.error',
+        'upgrade.'
     ];
 }

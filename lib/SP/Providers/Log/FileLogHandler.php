@@ -83,6 +83,7 @@ final class FileLogHandler extends Provider implements EventReceiver
      *                            </p>
      *
      * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @since 5.1.0
      */
     public function update(SplSubject $subject)

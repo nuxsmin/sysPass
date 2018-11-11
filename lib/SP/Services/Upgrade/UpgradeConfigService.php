@@ -28,6 +28,7 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\MimeTypes;
+use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
 use SP\Util\VersionUtil;
 
@@ -305,5 +306,13 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
                 ->addDescription(__u('Update Configuration'))
                 ->addDetail(__u('Version'), $version))
         );
+    }
+
+    /**
+     * initialize
+     */
+    protected function initialize()
+    {
+        $this->eventDispatcher->attach($this->dic->get(FileLogHandler::class));
     }
 }
