@@ -64,7 +64,7 @@ final class Init extends ModuleBase
     /**
      * List of controllers that don't need to update the user's session activity
      */
-    const NO_SESSION_ACTIVITY = ['items'];
+    const NO_SESSION_ACTIVITY = ['items', 'login'];
 
     /**
      * @var SessionContext
@@ -296,7 +296,7 @@ final class Init extends ModuleBase
         $lastActivity = $this->context->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
 
-        // Timeout de sesión
+        // Session timeout
         if ($lastActivity > 0
             && !$inMaintenance
             && time() > ($lastActivity + $this->getSessionLifeTime())
@@ -309,9 +309,9 @@ final class Init extends ModuleBase
         } else {
             $sidStartTime = $this->context->getSidStartTime();
 
-            // Regenerar el Id de sesión periódicamente para evitar fijación
+            // Regenerate session's ID frequently to avoid fixation
             if ($sidStartTime === 0) {
-                // Intentar establecer el tiempo de vida de la sesión en PHP
+                // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
 
                 $this->context->setSidStartTime(time());
