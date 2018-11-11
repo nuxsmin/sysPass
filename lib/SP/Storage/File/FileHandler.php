@@ -43,6 +43,10 @@ final class FileHandler
      * @var resource
      */
     protected $handle;
+    /**
+     * @var bool
+     */
+    private $locked = false;
 
     /**
      * FileHandler constructor.
@@ -57,7 +61,7 @@ final class FileHandler
     /**
      * Writes data into file
      *
-     * @param $data
+     * @param mixed $data
      *
      * @return FileHandler
      * @throws FileException
@@ -78,18 +82,44 @@ final class FileHandler
     /**
      * Opens the file
      *
-     * @param $mode
+     * @param string $mode
+     *
+     * @param bool   $lock
      *
      * @return resource
      * @throws FileException
      */
-    public function open($mode = 'r')
+    public function open($mode = 'r', $lock = false)
     {
-        if (($this->handle = @fopen($this->file, $mode)) === false) {
+        $this->handle = @fopen($this->file, $mode);
+
+        if ($lock && $this->locked === false) {
+            $this->lock();
+        }
+
+        if ($this->handle === false) {
             throw new FileException(sprintf(__('Unable to open the file (%s)'), $this->file));
         }
 
         return $this->handle;
+    }
+
+    /**
+     * Lock the file
+     *
+     * @param int $mode
+     *
+     * @throws FileException
+     */
+    private function lock($mode = LOCK_EX)
+    {
+        $this->locked = flock($this->handle, $mode);
+
+        if (!$this->locked) {
+            throw new FileException(sprintf(__('Unable to obtain a lock (%s)'), $this->file));
+        }
+
+        logger(sprintf('File locked: %s', $this->file));
     }
 
     /**
@@ -169,11 +199,23 @@ final class FileHandler
      */
     public function close()
     {
+        if ($this->locked) {
+            $this->unlock();
+        }
+
         if (!is_resource($this->handle) || @fclose($this->handle) === false) {
             throw new FileException(sprintf(__('Unable to close the file (%s)'), $this->file));
         }
 
         return $this;
+    }
+
+    /**
+     * Unlock the file
+     */
+    private function unlock()
+    {
+        $this->locked = !flock($this->handle, LOCK_UN);
     }
 
     /**

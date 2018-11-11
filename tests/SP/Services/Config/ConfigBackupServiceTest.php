@@ -29,6 +29,7 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Services\Config\ConfigBackupService;
 use function SP\Tests\getResource;
+use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
 use function SP\Tests\setupContext;
 
@@ -52,6 +53,7 @@ class ConfigBackupServiceTest extends TestCase
     public static function tearDownAfterClass()
     {
         saveResource('config', 'config.xml', self::$currentConfig);
+        recreateDir(CACHE_PATH);
     }
 
     /**

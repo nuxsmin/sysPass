@@ -138,7 +138,7 @@ final class Init extends ModuleBase
         // Volver a cargar la configuración si se recarga la página
         if ($this->request->checkReload() === false) {
             // Cargar la configuración
-            $this->config->loadConfig($this->context);
+            $this->config->loadConfig();
 
             // Cargar el lenguaje
             $this->language->setLanguage();
@@ -151,7 +151,7 @@ final class Init extends ModuleBase
             $this->context->setAppStatus(SessionContext::APP_STATUS_RELOADED);
 
             // Cargar la configuración
-            $this->config->loadConfig($this->context, true);
+            $this->config->loadConfig(true);
 
             // Restablecer el idioma
             $this->language->setLanguage(true);
@@ -313,9 +313,6 @@ final class Init extends ModuleBase
             if ($sidStartTime === 0) {
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-
-                $this->context->setSidStartTime(time());
-                $this->context->setStartActivity(time());
             } else if (!$inMaintenance
                 && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
                 && $this->context->isLoggedIn()

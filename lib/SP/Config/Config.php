@@ -24,12 +24,12 @@
 
 namespace SP\Config;
 
-use DI\Container;
 use Psr\Container\ContainerInterface;
 use ReflectionObject;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Services\Config\ConfigBackupService;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
 use SP\Storage\File\XmlFileStorageInterface;
 use SP\Util\PasswordUtil;
@@ -42,9 +42,17 @@ defined('APP_ROOT') || die();
 final class Config
 {
     /**
+     * Cache file name
+     */
+    const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
+    /**
      * @var int
      */
     private static $timeUpdated;
+    /**
+     * @var ContextInterface
+     */
+    private $context;
     /**
      * @var bool
      */
@@ -54,13 +62,13 @@ final class Config
      */
     private $configData;
     /**
-     * @var \SP\Storage\File\XmlFileStorageInterface
+     * @var XmlFileStorageInterface
      */
     private $fileStorage;
     /**
-     * @var ContextInterface
+     * @var FileCacheInterface
      */
-    private $context;
+    private $fileCache;
     /**
      * @var ContainerInterface
      */
@@ -69,16 +77,17 @@ final class Config
     /**
      * Config constructor.
      *
-     * @param \SP\Storage\File\XmlFileStorageInterface $fileStorage
-     * @param ContextInterface                         $session
-     * @param Container                                $dic
+     * @param XmlFileStorageInterface $fileStorage
+     * @param FileCacheInterface      $fileCache
+     * @param ContainerInterface      $dic
      *
      * @throws ConfigException
      */
-    public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
+    public function __construct(XmlFileStorageInterface $fileStorage, FileCacheInterface $fileCache, ContainerInterface $dic)
     {
-        $this->context = $session;
+        $this->fileCache = $fileCache;
         $this->fileStorage = $fileStorage;
+        $this->context = $dic->get(ContextInterface::class);
         $this->dic = $dic;
 
         $this->initialize();
@@ -91,21 +100,45 @@ final class Config
     {
         if (!$this->configLoaded) {
             try {
-                if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
-                    $this->configData = $this->loadConfigFromFile();
+                if ($this->fileCache->exists()
+                    && !$this->checkCacheDate()
+                ) {
+                    logger('Config cache loaded');
+                    $this->configData = $this->fileCache->load();
                 } else {
-                    $this->saveConfig(new ConfigData(), false);
+                    if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
+                        $this->configData = $this->loadConfigFromFile();
+                        $this->fileCache->save($this->configData);
+                    } else {
+                        $this->saveConfig(new ConfigData(), false);
+                    }
+
+                    logger('Config loaded');
                 }
 
                 self::$timeUpdated = $this->configData->getConfigDate();
                 $this->configLoaded = true;
-
-                logger('Config loaded');
             } catch (\Exception $e) {
                 processException($e);
 
-                throw new ConfigException($e->getMessage(), ConfigException::CRITICAL, null, $e->getCode(), $e);
+                throw new ConfigException($e->getMessage(),
+                    ConfigException::CRITICAL,
+                    null,
+                    $e->getCode(),
+                    $e);
             }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function checkCacheDate()
+    {
+        try {
+            return $this->fileCache->isExpiredDate($this->fileStorage->getFileHandler()->getFileTime());
+        } catch (FileException $e) {
+            return true;
         }
     }
 
@@ -144,8 +177,6 @@ final class Config
      *
      * @return Config
      * @throws FileException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function saveConfig(ConfigData $configData, $backup = true)
     {
@@ -159,6 +190,7 @@ final class Config
         $configData->setConfigHash();
 
         $this->fileStorage->save($configData, 'config');
+        $this->fileCache->save($configData);
 
         $this->configData = $configData;
 
@@ -196,36 +228,29 @@ final class Config
     /**
      * Cargar la configuración desde el contexto
      *
-     * @param ContextInterface $context
-     * @param bool             $reload
+     * @param bool $reload
      *
      * @return ConfigData
      */
-    public function loadConfig(ContextInterface $context, $reload = false)
+    public function loadConfig($reload = false)
     {
-        $configData = $context->getConfig();
+        try {
+            $configData = $this->fileCache->load();
 
-        if ($reload === true
-            || $configData === null
-            || time() >= ($context->getConfigTime() + $configData->getSessionTimeout() / 2)
-        ) {
-            return $this->saveConfigInSession($context);
+            if ($reload === true
+                || $configData === null
+                || !$this->checkCacheDate()
+            ) {
+                $this->configData = $this->loadConfigFromFile();
+                $this->fileCache->save($this->configData);
+
+                return $this->configData;
+            }
+
+            return $configData;
+        } catch (FileException $e) {
+            processException($e);
         }
-
-        return $configData;
-    }
-
-    /**
-     * Guardar la configuración en la sesión
-     *
-     * @param ContextInterface $context
-     *
-     * @return ConfigData
-     */
-    private function saveConfigInSession(ContextInterface $context)
-    {
-        $context->setConfig($this->configData);
-        $context->setConfigTime(time());
 
         return $this->configData;
     }
@@ -241,8 +266,6 @@ final class Config
     /**
      * @return Config
      * @throws FileException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function generateUpgradeKey()

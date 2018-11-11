@@ -24,6 +24,7 @@
 
 namespace SP\Tests\Services\Export;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
@@ -41,6 +42,15 @@ use function SP\Tests\setupContext;
 class XmlExportServiceTest extends DatabaseTestCase
 {
     /**
+     * @var XmlExportService
+     */
+    private static $xmlExportService;
+    /**
+     * @var XmlVerifyService
+     */
+    private static $xmlVerifyService;
+
+    /**
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Context\ContextException
@@ -55,24 +65,21 @@ class XmlExportServiceTest extends DatabaseTestCase
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$xmlExportService = $dic->get(XmlExportService::class);
+        self::$xmlVerifyService = $dic->get(XmlVerifyService::class);
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      * @throws \SP\Storage\File\FileException
      */
     public function testDoExportWithoutPassword()
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlExportService::class);
-        $service->doExport(TMP_DIR);
+        self::$xmlExportService->doExport(TMP_DIR);
 
-        $this->assertFileExists($service->getExportFile());
+        $this->assertFileExists(self::$xmlExportService->getExportFile());
 
-        $this->verifyExportWithoutPassword($service->getExportFile());
+        $this->verifyExportWithoutPassword(self::$xmlExportService->getExportFile());
     }
 
     /**
@@ -80,18 +87,12 @@ class XmlExportServiceTest extends DatabaseTestCase
      *
      * @param $file
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Storage\File\FileException
      */
     private function verifyExportWithoutPassword($file)
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlVerifyService::class);
-
-        $result = $service->verify($file);
+        $result = self::$xmlVerifyService->verify($file);
 
         $this->assertInstanceOf(VerifyResult::class, $result);
 
@@ -117,44 +118,32 @@ class XmlExportServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ServiceException
      * @throws \SP\Storage\File\FileException
      */
     public function testDoExportWithPassword()
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlExportService::class);
-
         $password = PasswordUtil::randomPassword();
 
-        $service->doExport(TMP_DIR, $password);
+        self::$xmlExportService->doExport(TMP_DIR, $password);
 
-        $this->assertFileExists($service->getExportFile());
+        $this->assertFileExists(self::$xmlExportService->getExportFile());
 
-        $this->verifyExportWithPassword($service->getExportFile(), $password);
+        $this->verifyExportWithPassword(self::$xmlExportService->getExportFile(), $password);
     }
 
     /**
      * @param $file
      * @param $password
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ServiceException
      * @throws \SP\Storage\File\FileException
      */
     private function verifyExportWithPassword($file, $password)
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlVerifyService::class);
-
-        $result = $service->verifyEncrypted($file, $password);
+        $result = self::$xmlVerifyService->verifyEncrypted($file, $password);
 
         $this->assertInstanceOf(VerifyResult::class, $result);
         $this->assertTrue($result->isEncrypted());
@@ -163,6 +152,6 @@ class XmlExportServiceTest extends DatabaseTestCase
 
         $this->expectException(ServiceException::class);
 
-        $service->verifyEncrypted($file, 'test123');
+        self::$xmlVerifyService->verifyEncrypted($file, 'test123');
     }
 }

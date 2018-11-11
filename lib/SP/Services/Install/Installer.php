@@ -53,11 +53,11 @@ defined('APP_ROOT') || die();
 final class Installer extends Service
 {
     /**
-     * Versión y número de compilación de sysPass
+     * sysPass' version and build number
      */
     const VERSION = [3, 0, 0];
-    const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18111001;
+    const VERSION_TEXT = '3.0-rc1';
+    const BUILD = 18111201;
 
     /**
      * @var DatabaseSetupInterface

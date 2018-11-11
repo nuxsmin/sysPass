@@ -22,7 +22,6 @@
 <form method="post" name="frmAccounts" id="frmAccounts" class="form-action"
       data-onsubmit="config/save"
       data-action-route="configAccount/save"
-      data-reload="1"
       data-hash="">
 
     <div id="title" class="titleNormal">

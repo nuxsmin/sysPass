@@ -48,6 +48,16 @@ abstract class FileCacheBase implements FileCacheInterface
     }
 
     /**
+     * @param $path
+     *
+     * @return FileCacheBase
+     */
+    public static function factory($path)
+    {
+        return new static($path);
+    }
+
+    /**
      * Returns if the file is expired adding time to modification date
      *
      * @param int $time
@@ -101,12 +111,10 @@ abstract class FileCacheBase implements FileCacheInterface
     }
 
     /**
-     * @param $path
-     *
-     * @return FileCacheBase
+     * @return bool
      */
-    public static function factory($path)
+    public function exists(): bool
     {
-        return new static($path);
+        return file_exists($this->path->getFile());
     }
 }

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-11 09:41+0100\n"
-"PO-Revision-Date: 2018-11-11 09:41+0100\n"
+"POT-Creation-Date: 2018-11-11 23:55+0100\n"
+"PO-Revision-Date: 2018-11-11 23:55+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: es_ES\n"
@@ -537,7 +537,7 @@ msgstr "Grupo actualizado"
 msgid "Group deleted"
 msgstr "Grupo eliminado"
 
-#: app/modules/api/Init.php:149
+#: app/modules/api/Init.php:150
 msgid "Updating needed"
 msgstr "Es necesario actualizar"
 
@@ -727,7 +727,7 @@ msgstr "Archivo visualizado"
 #: app/modules/web/Controllers/ConfigBackupController.php:255
 #: app/modules/web/Controllers/ConfigGeneralController.php:195
 #: app/modules/web/Controllers/ConfigGeneralController.php:236
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:123
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:124
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "Archivo"
@@ -1118,10 +1118,10 @@ msgid "Verification of exported data finished"
 msgstr "Verificación de datos exportados finalizada"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:122
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:114
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:255
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:306
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:163
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:115
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:256
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:307
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:164
 #: app/modules/web/themes/material-blue/views/config/info.inc:49
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
 msgid "Version"
@@ -1294,7 +1294,7 @@ msgstr "Importación finalizada"
 #: app/modules/web/Controllers/ConfigImportController.php:82
 #: app/modules/web/Controllers/ConfigImportController.php:85
 #: lib/SP/Services/Backup/FileBackupService.php:120
-#: lib/SP/Services/Export/XmlExportService.php:205
+#: lib/SP/Services/Export/XmlExportService.php:201
 msgid "Please check out the event log for more details"
 msgstr "Revise el registro de eventos para más detalles"
 
@@ -1570,10 +1570,10 @@ msgstr "Ver Actual"
 #: app/modules/web/themes/material-blue/views/_partials/error.inc:15
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:123
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:367
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:366
 #: app/modules/web/themes/material-blue/views/config/backup.inc:173
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:310
-#: app/modules/web/themes/material-blue/views/config/general.inc:28
+#: app/modules/web/themes/material-blue/views/config/general.inc:27
 #: app/modules/web/themes/material-blue/views/config/import.inc:91
 #: app/modules/web/themes/material-blue/views/config/info.inc:193
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:295
@@ -1994,7 +1994,7 @@ msgstr "Vaciar registro de eventos"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
 #: app/modules/web/themes/material-blue/views/account/account.inc:41
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:280
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:410
 #: app/config/actions.xml:19
@@ -3099,12 +3099,12 @@ msgstr "Primera página"
 msgid "Last page"
 msgstr "Última página"
 
-#: lib/SP/Bootstrap.php:278
+#: lib/SP/Bootstrap.php:279
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Versión de PHP requerida >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:280
+#: lib/SP/Bootstrap.php:281
 msgid "Please update the PHP version to run sysPass"
 msgstr ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
@@ -3161,7 +3161,7 @@ msgstr "Contexto inválido"
 msgid "Context not initialized"
 msgstr "Contexto no inicializado"
 
-#: lib/SP/Core/Context/SessionContext.php:547
+#: lib/SP/Core/Context/SessionContext.php:490
 msgid "Session cannot be initialized"
 msgstr "La sesión no puede ser inicializada"
 
@@ -3204,12 +3204,12 @@ msgstr "Error de codificación"
 msgid "Invalid XML-RPC response"
 msgstr "Respuesta XML-RPC inválida"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:70
+#: lib/SP/Mvc/Controller/ControllerTrait.php:73
 msgid "Session not started or timed out"
 msgstr "La sesión no se ha iniciado o ha caducado"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:115
-#: lib/SP/Mvc/Controller/ControllerTrait.php:124
+#: lib/SP/Mvc/Controller/ControllerTrait.php:118
+#: lib/SP/Mvc/Controller/ControllerTrait.php:127
 msgid "Invalid Action"
 msgstr "Acción Inválida"
 
@@ -4080,34 +4080,33 @@ msgstr "Error al eliminar los campos"
 msgid "Field type not found"
 msgstr "Tipo de campo no encontrado"
 
-#: lib/SP/Services/Export/XmlExportService.php:127
-#: lib/SP/Storage/File/FileCache.php:74
-#: lib/SP/Storage/File/FileCachePacked.php:116
+#: lib/SP/Services/Export/XmlExportService.php:125
+#: lib/SP/Storage/File/FileCacheBase.php:98
 #, php-format
 msgid "Unable to create the directory (%s)"
 msgstr "No es posible crear el directorio (%s)"
 
-#: lib/SP/Services/Export/XmlExportService.php:203
+#: lib/SP/Services/Export/XmlExportService.php:199
 msgid "Error while exporting"
 msgstr "Error al realizar la exportación"
 
-#: lib/SP/Services/Export/XmlExportService.php:271
+#: lib/SP/Services/Export/XmlExportService.php:267
 msgid "Exporting categories"
 msgstr "Exportando categorías"
 
-#: lib/SP/Services/Export/XmlExportService.php:383
+#: lib/SP/Services/Export/XmlExportService.php:379
 msgid "Exporting clients"
 msgstr "Exportando clientes"
 
-#: lib/SP/Services/Export/XmlExportService.php:429
+#: lib/SP/Services/Export/XmlExportService.php:425
 msgid "Exporting tags"
 msgstr "Exportando etiquetas"
 
-#: lib/SP/Services/Export/XmlExportService.php:473
+#: lib/SP/Services/Export/XmlExportService.php:469
 msgid "Exporting accounts"
 msgstr "Exportando cuentas"
 
-#: lib/SP/Services/Export/XmlExportService.php:583
+#: lib/SP/Services/Export/XmlExportService.php:579
 msgid "Error while creating the XML file"
 msgstr "Error al crear el archivo XML"
 
@@ -4519,18 +4518,18 @@ msgstr "Segundos"
 msgid "IP address not set"
 msgstr "Dirección IP no establecida"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:65
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:88
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:66
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:89
 msgid "Update Application"
 msgstr "Actualizar Aplicación"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:72
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:73
 msgid "Error while applying the application update"
 msgstr "Error al aplicar la actualización de la aplicación"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:74
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:100
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:108
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:75
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:101
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:109
 msgid "Please, check the event log for more details"
 msgstr "Compruebe el registro de eventos para más detalles"
 
@@ -4539,36 +4538,36 @@ msgstr "Compruebe el registro de eventos para más detalles"
 msgid "API authorizations update"
 msgstr "Actualización de autorizaciones API"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:71
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:207
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:254
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:305
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:72
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:208
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:255
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:306
 msgid "Update Configuration"
 msgstr "Actualizar Configuración"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:83
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:84
 msgid "Parameter"
 msgstr "Parámetro"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:122
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:126
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:123
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:127
 msgid "Error while updating the configuration"
 msgstr "Error al actualizar la configuración"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:282
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:283
 msgid "MIME type set for this extension"
 msgstr "Tipo MIME establecido para esta extensión"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:283
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:284
 msgid "MIME type"
 msgstr "Tipo MIME"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:284
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:293
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:285
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:294
 msgid "Extension"
 msgstr "Extensión"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:292
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:293
 msgid "MIME type not found for this extension"
 msgstr "Tipo MIME no encontrado para esta extensión"
 
@@ -4581,27 +4580,27 @@ msgstr "Tipo MIME no encontrado para esta extensión"
 msgid "Custom fields update"
 msgstr "Actualización de campos personalizados"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:91
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:122
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:92
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:123
 msgid "Update DB"
 msgstr "Actualizar BBDD"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:98
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:99
 msgid "Error while applying an auxiliary update"
 msgstr "Error al aplicar la actualización auxiliar"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:106
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:177
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:181
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:107
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:178
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:182
 msgid "Error while updating the database"
 msgstr "Error al aplicar la actualización de la Base de Datos"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:154
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:156
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:155
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:157
 msgid "Update file does not contain data"
 msgstr "El archivo de actualización no contiene datos"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:187
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:188
 msgid "Database updating was completed successfully."
 msgstr "Actualización de la Base de Datos realizada correctamente."
 
@@ -4683,63 +4682,64 @@ msgstr "Compruebe los datos de conexión"
 msgid "Error while querying"
 msgstr "Error en la consulta"
 
-#: lib/SP/Storage/File/FileCachePacked.php:57
+#: lib/SP/Storage/File/FileCachePacked.php:45
 #, php-format
 msgid "Error while decompressing the file data (%s)"
 msgstr "Error al descomprimir datos del archivo (%s)"
 
-#: lib/SP/Storage/File/FileCachePacked.php:61
+#: lib/SP/Storage/File/FileCachePacked.php:51
 msgid "Error while retrieving the data"
 msgstr "Error al obtener los datos"
 
-#: lib/SP/Storage/File/FileCachePacked.php:99
+#: lib/SP/Storage/File/FileCachePacked.php:70
 #, php-format
 msgid "Error while compressing the file data (%s)"
 msgstr "Error al comprimir datos del archivo (%s)"
 
-#: lib/SP/Storage/File/FileCachePacked.php:144
-msgid "Data not loaded"
-msgstr "Datos no cargados"
-
-#: lib/SP/Storage/File/FileHandler.php:72
-#: lib/SP/Storage/File/FileHandler.php:135
+#: lib/SP/Storage/File/FileHandler.php:76
+#: lib/SP/Storage/File/FileHandler.php:165
 #, php-format
 msgid "Unable to read/write the file (%s)"
 msgstr "No es posible leer/escribir el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:89
+#: lib/SP/Storage/File/FileHandler.php:101
 #, php-format
 msgid "Unable to open the file (%s)"
 msgstr "No es posible abrir el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:104
-#: lib/SP/Storage/File/FileHandler.php:118
+#: lib/SP/Storage/File/FileHandler.php:119
+#, php-format
+msgid "Unable to obtain a lock (%s)"
+msgstr "No es posible obtener un bloqueo (%s)"
+
+#: lib/SP/Storage/File/FileHandler.php:134
+#: lib/SP/Storage/File/FileHandler.php:148
 #, php-format
 msgid "Unable to read from file (%s)"
 msgstr "No es posible leer desde el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:173
+#: lib/SP/Storage/File/FileHandler.php:207
 #, php-format
 msgid "Unable to close the file (%s)"
 msgstr "No es posible cerrar el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:219
+#: lib/SP/Storage/File/FileHandler.php:261
 #, php-format
 msgid "Unable to write in file (%s)"
 msgstr "No es posible escribir el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:234
+#: lib/SP/Storage/File/FileHandler.php:276
 #, php-format
 msgid "File not found (%s)"
 msgstr "Archivo no encontrado (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:259
-#: lib/SP/Storage/File/FileHandler.php:314
+#: lib/SP/Storage/File/FileHandler.php:301
+#: lib/SP/Storage/File/FileHandler.php:356
 #, php-format
 msgid "Unable to read/write file (%s)"
 msgstr "No es posible leer el archivo (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:286
+#: lib/SP/Storage/File/FileHandler.php:328
 #, php-format
 msgid "Unable to delete file (%s)"
 msgstr "No es posible eliminar el archivo (%s)"
@@ -5412,61 +5412,61 @@ msgstr "La extensión '%s' no está disponible"
 msgid "This extension is needed to display passwords as images"
 msgstr "Esta extensión es necesaria para mostrar las claves como imágenes"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:30
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:29
 msgid "Searching"
 msgstr "Búsqueda"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:36
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:52
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:35
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:51
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:56
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:72
 msgid "Results per page"
 msgstr "Resultados por página"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:41
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:61
 msgid "Number of results per page to display when performing a search."
 msgstr "Número de resultados por página a mostrar, al realizar una búsqueda."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:70
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:69
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:30
 msgid "Accounts password expiry"
 msgstr "Caducidad clave cuentas"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:71
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:70
 msgid "Enables the accounts password expiry date."
 msgstr "Habilita la caducidad de la clave de cuentas."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:79
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:78
 msgid "Password expiry time"
 msgstr "Tiempo caducidad clave"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:84
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:83
 msgid "Number of days for account's password expiry date."
 msgstr "Número de días para la caducidad de la clave de cuenta."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:94
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:93
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:38
 msgid "Expire time (days)"
 msgstr "Tiempo caducidad (días)"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:112
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:111
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:90
 msgid "Account name as link"
 msgstr "Nombre de cuenta como enlace"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:113
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
 msgid "Enables to use the account name as a link to account details."
 msgstr ""
 "Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
 "de la cuenta."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:128
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:127
 msgid "Global searches"
 msgstr "Búsquedas globales"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:129
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:128
 msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
 "able to display the account details if they don't have permission."
@@ -5474,17 +5474,17 @@ msgstr ""
 "Permite que todos los usuarios puedan realizar búsquedas en todas las "
 "cuentas, pero no pueden ver el contenido de las que no tienen permisos."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:144
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:143
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:154
 msgid "Image to show password"
 msgstr "Imagen para mostrar clave"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:146
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:145
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:156
 msgid "Generate an image with a text of the account password."
 msgstr "Generar una imagen con el texto de la clave de la cuenta."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:148
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:147
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:158
 msgid ""
 "Useful for environments where copying a password to clipboard is a security "
@@ -5492,27 +5492,27 @@ msgid ""
 msgstr ""
 "Util para entornos donde copiar la clave supone un riesgo de seguridad."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:164
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:163
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:158
 msgid "Results like Cards"
 msgstr "Resultados en Tarjetas"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:166
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:165
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
 msgid "Displays account's search results on a card like format."
 msgstr "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:182
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:181
 msgid "Secondary Groups Access"
 msgstr "Acceso Grupos Secundarios"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:184
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:183
 msgid "Grants access to users that are included in secondary groups."
 msgstr ""
 "Habilita el acceso a los usuarios que estén incluidos en los grupos "
 "secundarios."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:186
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:185
 msgid ""
 "By default, user in a secondary group is granted if the secondary group is "
 "set as user's main group."
@@ -5521,28 +5521,28 @@ msgstr ""
 "secundario está establecido como el primario del usuario."
 
 #. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:197
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:196
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
 #: app/config/actions.xml:73
 msgid "Public Links"
 msgstr "Enlaces Públicos"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:215
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:214
 msgid "Enable Public Links"
 msgstr "Habilitar Enlaces Públicos"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:217
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:216
 msgid "Enables the ability to create public links to view an account's details"
 msgstr ""
 "Habilita la posibilidad de generar enlaces públicos para ver los detalles de "
 "una cuenta."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:219
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:218
 msgid "Linked accounts will be visible by anyone that have the link."
 msgstr ""
 "Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:221
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:220
 msgid ""
 "In order to create links, users must have activated the option on their "
 "profiles."
@@ -5550,43 +5550,43 @@ msgstr ""
 "Para crear enlaces, los usuarios tienen que tener activada la opción en su "
 "perfl."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:237
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:236
 msgid "Use an image for password"
 msgstr "Usar imagen para clave"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:239
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:238
 msgid "The account password is shown as image."
 msgstr "La clave de la cuenta es visualizada como una imagen."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:248
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:257
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:247
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
 msgid "Expire time"
 msgstr "Tiempo de caducidad"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:263
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:272
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:262
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:271
 msgid "Maximum visits"
 msgstr "Número máximo  de visitas"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:298
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:297
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:411
 msgid "Files management"
 msgstr "Gestión de archivos"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:299
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:298
 msgid "Enables the uploading and downloading of accounts files."
 msgstr "Habilita la subida/descarga de archivos para las cuentas."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:307
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:320
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:306
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:319
 msgid "Allowed MIME types"
 msgstr "Tipos MIME permitidos"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:312
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:311
 msgid "Allowed file MIME types for uploading."
 msgstr "Tipos MIME permitidos para subida de archivos"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:315
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:314
 msgid ""
 "In order to add more MIME types, you need to add them into mime.xml file "
 "within the config directory."
@@ -5594,19 +5594,19 @@ msgstr ""
 "Para añadir más tipos MIME, es necesario modificar el archivo mime.xml en el "
 "directorio de configuración."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:335
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
 msgstr "Tamaño máximo de archivo"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:340
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:339
 msgid "Sets the maximum file size for uploading."
 msgstr "Establece el tamaño máximo para subir archivos."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:344
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:343
 msgid "Absolute maximum is 16MB."
 msgstr "El máximo absuluto es de 16MB."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:355
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:354
 msgid "Maximum file size in kilobytes"
 msgstr "Tamaño máximo de archivo en kilobytes"
 
@@ -7512,3 +7512,6 @@ msgstr "Área de Texto"
 #: app/config/strings.xml:8
 msgid "Text"
 msgstr "Texto"
+
+#~ msgid "Data not loaded"
+#~ msgstr "Datos no cargados"

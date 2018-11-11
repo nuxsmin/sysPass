@@ -24,6 +24,7 @@
 
 namespace SP\Mvc\Controller;
 
+use SP\Config\ConfigData;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
@@ -55,11 +56,13 @@ trait ControllerTrait
      *
      * @param SessionContext $context
      * @param Request        $request
+     * @param ConfigData     $configData
      * @param \Closure       $onRedirect
      * @param bool           $requireAuthCompleted
      */
     protected function checkLoggedInSession(SessionContext $context,
                                             Request $request,
+                                            ConfigData $configData,
                                             \Closure $onRedirect,
                                             $requireAuthCompleted = true)
     {
@@ -85,7 +88,7 @@ trait ControllerTrait
                     $uri->addParam('_r', 'login');
 
                     if ($route && $hash) {
-                        $key = $context->getConfig()->getPasswordSalt();
+                        $key = $configData->getPasswordSalt();
                         $request->verifySignature($key);
 
                         $uri->addParam('from', $route);

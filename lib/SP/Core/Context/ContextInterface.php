@@ -24,7 +24,6 @@
 
 namespace SP\Core\Context;
 
-use SP\Config\ConfigData;
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
@@ -40,13 +39,6 @@ interface ContextInterface
      * @throws ContextException
      */
     public function initialize();
-
-    /**
-     * Establecer la configuración
-     *
-     * @param ConfigData $config
-     */
-    public function setConfig(ConfigData $config);
 
     /**
      * Establecer la hora de carga de la configuración
@@ -103,21 +95,16 @@ interface ContextInterface
     public function getSecurityKey();
 
     /**
+     * @param string $salt
+     *
      * @return string
      */
-    public function generateSecurityKey();
+    public function generateSecurityKey(string $salt);
 
     /**
      * @param $sk
      */
     public function setSecurityKey($sk);
-
-    /**
-     * Devolver la configuración
-     *
-     * @return ConfigData
-     */
-    public function getConfig();
 
     /**
      * Establecer el lenguaje de la sesión

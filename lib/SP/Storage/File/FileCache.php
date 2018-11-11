@@ -50,9 +50,10 @@ final class FileCache extends FileCacheBase
     {
         $this->createPath();
 
-        $this->path->checkIsWritable()
-            ->write(serialize($data))
-            ->close();
+        $this->path->checkIsWritable();
+        $this->path->open('wb', true);
+        $this->path->write(serialize($data));
+        $this->path->close();
 
         return $this;
     }

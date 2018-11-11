@@ -36,23 +36,33 @@ use function SP\Tests\setupContext;
  */
 class XmlVerifyServiceTest extends TestCase
 {
+    /**
+     * @var XmlVerifyService
+     */
+    private static $xmlVerifyService;
 
     /**
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Context\ContextException
+     */
+    public static function setUpBeforeClass()
+    {
+        $dic = setupContext();
+
+        self::$xmlVerifyService = $dic->get(XmlVerifyService::class);
+    }
+
+    /**
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Storage\File\FileException
      */
     public function testVerifyEncrypted()
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlVerifyService::class);
-
         $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml';
 
-        $result = $service->verifyEncrypted($file, 'test_encrypt');
+        $result = self::$xmlVerifyService->verifyEncrypted($file, 'test_encrypt');
 
         $this->assertInstanceOf(VerifyResult::class, $result);
         $this->assertEquals(300.18082201, $result->getVersion());
@@ -67,20 +77,14 @@ class XmlVerifyServiceTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
      * @throws \SP\Services\ServiceException
      * @throws \SP\Storage\File\FileException
      */
     public function testVerify()
     {
-        $dic = setupContext();
-        $service = $dic->get(XmlVerifyService::class);
-
         $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
 
-        $result = $service->verify($file);
+        $result = self::$xmlVerifyService->verify($file);
 
         $this->assertInstanceOf(VerifyResult::class, $result);
         $this->assertEquals(300.18071701, $result->getVersion());

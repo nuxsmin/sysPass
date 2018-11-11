@@ -55,7 +55,10 @@ return [
         }
     },
     Config::class => function (ContainerInterface $c) {
-        return new Config(new XmlHandler(new FileHandler(CONFIG_FILE)), $c->get(ContextInterface::class), $c);
+        return new Config(
+            new XmlHandler(new FileHandler(CONFIG_FILE)),
+            new FileCache(Config::CONFIG_CACHE_FILE),
+            $c);
     },
     ConfigData::class => function (Config $config) {
         return $config->getConfigData();

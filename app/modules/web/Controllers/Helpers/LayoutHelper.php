@@ -111,7 +111,7 @@ final class LayoutHelper extends HelperBase
 
         $this->loggedIn = $this->context->isLoggedIn();
 
-        $this->view->assign('sk', $this->view->get('sk') ?: $this->context->generateSecurityKey());
+        $this->view->assign('sk', $this->view->get('sk') ?: $this->context->generateSecurityKey($this->configData->getPasswordSalt()));
         $this->view->assign('loggedIn', $this->loggedIn);
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());

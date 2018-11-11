@@ -95,8 +95,6 @@ final class XmlExportService extends Service
      * @param string $pass string La clave de exportación
      *
      * @throws ServiceException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function doExport(string $exportPath, string $pass = null)
@@ -134,8 +132,6 @@ final class XmlExportService extends Service
      * Genera el nombre del archivo usado para la exportación.
      *
      * @return string
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     private function generateExportFilename(): string
@@ -217,8 +213,8 @@ final class XmlExportService extends Service
     private function createRoot()
     {
         try {
-            $root = $this->xml->createElement('Root');
-            $this->root = $this->xml->appendChild($root);
+            $this->xml = new \DOMDocument('1.0', 'UTF-8');
+            $this->root = $this->xml->appendChild($this->xml->createElement('Root'));
         } catch (\Exception $e) {
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
@@ -624,7 +620,6 @@ final class XmlExportService extends Service
     {
         $this->extensionChecker = $this->dic->get(PhpExtensionChecker::class);
         $this->configData = $this->config->getConfigData();
-        $this->xml = new \DOMDocument('1.0', 'UTF-8');
     }
 
     /**

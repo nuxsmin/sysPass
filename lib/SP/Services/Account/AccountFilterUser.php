@@ -60,10 +60,12 @@ final class AccountFilterUser
      * AccountFilterUser constructor.
      *
      * @param ContextInterface $context
+     * @param ConfigData       $configData
      */
-    public function __construct(ContextInterface $context)
+    public function __construct(ContextInterface $context, ConfigData $configData)
     {
         $this->context = $context;
+        $this->configData = $configData;
     }
 
     /**
@@ -117,7 +119,6 @@ final class AccountFilterUser
      */
     private function setUp()
     {
-        $this->configData = $this->context->getConfig();
         $this->userData = $this->context->getUserData();
         $this->userProfile = $this->context->getUserProfile();
     }

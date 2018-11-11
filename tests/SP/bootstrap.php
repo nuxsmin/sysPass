@@ -25,7 +25,6 @@
 namespace SP\Tests;
 
 use DI\ContainerBuilder;
-use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
@@ -113,10 +112,6 @@ function setupContext()
     $context = $dic->get(ContextInterface::class);
     $context->initialize();
 
-//    $configData = new ConfigData();
-//    $configData->setPasswordSalt('fd1058ca0bbaf967d08184ed22ee2c8d5675ca0c9d569c1f237f23fefadf');
-
-    $context->setConfig($dic->get(ConfigData::class));
     $context->setTrasientKey('_masterpass', '12345678900');
 
     $userData = new UserLoginResponse();
@@ -128,9 +123,6 @@ function setupContext()
     $context->setUserData($userData);
 
     $context->setUserProfile(new ProfileData());
-
-    // Inicializar la configuración
-//    $dic->set(ConfigData::class, $configData);
 
     // Inicializar los datos de conexión a la BBDD
     $dic->set(DBStorageInterface::class, getDbHandler());

@@ -24,7 +24,6 @@
 
 namespace SP\Core\Context;
 
-use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
@@ -35,16 +34,6 @@ use SP\Services\User\UserLoginResponse;
  */
 final class StatelessContext extends ContextBase
 {
-    /**
-     * Establecer la configuración
-     *
-     * @param ConfigData $config
-     */
-    public function setConfig(ConfigData $config)
-    {
-        $this->setContextKey('config', $config);
-    }
-
     /**
      * Establecer una variable de sesión
      *
@@ -144,11 +133,13 @@ final class StatelessContext extends ContextBase
     }
 
     /**
+     * @param string $salt
+     *
      * @return string
      */
-    public function generateSecurityKey()
+    public function generateSecurityKey(string $salt)
     {
-        return $this->setSecurityKey(sha1(time() . $this->getConfig()->getPasswordSalt()));
+        return $this->setSecurityKey(sha1(time() . $salt));
     }
 
     /**
@@ -159,16 +150,6 @@ final class StatelessContext extends ContextBase
     public function setSecurityKey($sk)
     {
         return $this->setContextKey('sk', $sk);
-    }
-
-    /**
-     * Devolver la configuración
-     *
-     * @return ConfigData
-     */
-    public function getConfig()
-    {
-        return $this->getContextKey('config');
     }
 
     /**

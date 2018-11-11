@@ -30,8 +30,8 @@ use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
 use function SP\Tests\getResource;
+use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
 use function SP\Tests\setupContext;
 
@@ -60,6 +60,7 @@ class ConfigTest extends TestCase
     {
         self::$dic = setupContext();
 
+        // Save current config
         self::$currentConfig = getResource('config', 'config.xml');
     }
 
@@ -68,7 +69,9 @@ class ConfigTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
+        // Restore to the initial state
         saveResource('config', 'config.xml', self::$currentConfig);
+        recreateDir(CACHE_PATH);
     }
 
     /**
@@ -94,13 +97,11 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function testSaveConfig($config)
     {
-        $config->saveConfig(new ConfigData(), false);
+        $config->saveConfig($config->getConfigData(), false);
 
         $this->assertFileExists(CONFIG_FILE);
     }
@@ -113,16 +114,10 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     public function testLoadConfig($config)
     {
-        $context = self::$dic->get(ContextInterface::class);
-
-        $config->loadConfig($context);
-
-        $this->assertInstanceOf(ConfigData::class, $context->getConfig());
+        $this->assertInstanceOf(ConfigData::class, $config->loadConfig());
     }
 
     /**
@@ -134,7 +129,7 @@ class ConfigTest extends TestCase
      */
     public function testUpdateConfig($config)
     {
-        $config->updateConfig(new ConfigData());
+        $config->updateConfig($config->getConfigData());
 
         $this->assertEquals(Config::getTimeUpdated(), $config->getConfigData()->getConfigDate());
     }
@@ -147,6 +142,7 @@ class ConfigTest extends TestCase
      * @param Config $config
      *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
      */
     public function testGenerateUpgradeKey($config)
     {

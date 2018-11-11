@@ -9,7 +9,6 @@
 <form method="post" name="frmConfig" id="frmConfig" class="form-action"
       data-onsubmit="config/save"
       data-action-route="configGeneral/save"
-      data-reload="1"
       data-hash="">
 
     <?php include $this->includeTemplate('general-site'); ?>

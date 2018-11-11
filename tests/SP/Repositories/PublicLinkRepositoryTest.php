@@ -184,7 +184,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals($data->getTypeId(), $resultData->getTypeId());
         $this->assertEquals($data->isNotify(), $resultData->isNotify());
         $this->assertEquals($data->getDateExpire(), $resultData->getDateExpire());
-        $this->assertEquals($data->getDateAdd(), $resultData->getDateAdd());
+        $this->assertTrue($data->getDateAdd() >= $resultData->getDateAdd());
         $this->assertEquals($data->getMaxCountViews(), $resultData->getMaxCountViews());
 
         $this->expectException(DuplicatedItemException::class);

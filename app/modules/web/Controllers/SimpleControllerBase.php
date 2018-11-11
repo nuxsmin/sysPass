@@ -78,6 +78,7 @@ abstract class SimpleControllerBase
         $this->checkLoggedInSession(
             $this->session,
             $this->request,
+            $this->configData,
             function ($redirect) {
                 $this->router->response()
                     ->redirect($redirect)

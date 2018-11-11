@@ -60,7 +60,7 @@ interface FileCacheInterface
     public function isExpired($time = 86400): bool;
 
     /**
-     * Returns if the file is expired adding time to modification date
+     * Returns if the file is expired comparing against a reference date
      *
      * @param int $date
      *
@@ -68,4 +68,9 @@ interface FileCacheInterface
      * @throws FileException
      */
     public function isExpiredDate($date): bool;
+
+    /**
+     * @return bool
+     */
+    public function exists(): bool;
 }

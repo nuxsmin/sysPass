@@ -24,7 +24,6 @@
 
 namespace SP\Core\Context;
 
-use SP\Config\ConfigData;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\Dto\AccountCache;
 use SP\DataModel\ProfileData;
@@ -137,16 +136,6 @@ final class SessionContext extends ContextBase
         }
 
         return null;
-    }
-
-    /**
-     * Establecer la configuración
-     *
-     * @param ConfigData $config
-     */
-    public function setConfig(ConfigData $config)
-    {
-        $this->setContextKey('config', $config);
     }
 
     /**
@@ -288,11 +277,13 @@ final class SessionContext extends ContextBase
     }
 
     /**
+     * @param string $salt
+     *
      * @return string
      */
-    public function generateSecurityKey()
+    public function generateSecurityKey(string $salt)
     {
-        return $this->setSecurityKey(sha1(time() . $this->getConfig()->getPasswordSalt()));
+        return $this->setSecurityKey(sha1(time() . $salt));
     }
 
     /**
@@ -303,16 +294,6 @@ final class SessionContext extends ContextBase
     public function setSecurityKey($sk)
     {
         return $this->setContextKey('sk', $sk);
-    }
-
-    /**
-     * Devolver la configuración
-     *
-     * @return ConfigData
-     */
-    public function getConfig()
-    {
-        return $this->getContextKey('config');
     }
 
     /**
@@ -380,30 +361,6 @@ final class SessionContext extends ContextBase
     }
 
     /**
-     * Devuelve la hora en la que el SID de sesión fue creado
-     *
-     * @return int
-     */
-    public function getSidStartTime()
-    {
-        return $this->getContextKey('sidStartTime', 0);
-    }
-
-    /**
-     * Establece la hora de creación del SID
-     *
-     * @param $time int La marca de hora
-     *
-     * @return int
-     */
-    public function setSidStartTime($time)
-    {
-        $this->setContextKey('sidStartTime', $time);
-
-        return $time;
-    }
-
-    /**
      * Devuelve la hora de inicio de actividad.
      *
      * @return int
@@ -411,20 +368,6 @@ final class SessionContext extends ContextBase
     public function getStartActivity()
     {
         return $this->getContextKey('startActivity', 0);
-    }
-
-    /**
-     * Establece la hora de inicio de actividad
-     *
-     * @param $time int La marca de hora
-     *
-     * @return int
-     */
-    public function setStartActivity($time)
-    {
-        $this->setContextKey('startActivity', $time);
-
-        return $time;
     }
 
     /**
@@ -548,6 +491,49 @@ final class SessionContext extends ContextBase
         }
 
         $this->setContextReference($_SESSION);
+
+        if ($this->getSidStartTime() === 0) {
+            $this->setSidStartTime(time());
+            $this->setStartActivity(time());
+        }
+    }
+
+    /**
+     * Devuelve la hora en la que el SID de sesión fue creado
+     *
+     * @return int
+     */
+    public function getSidStartTime()
+    {
+        return $this->getContextKey('sidStartTime', 0);
+    }
+
+    /**
+     * Establece la hora de creación del SID
+     *
+     * @param $time int La marca de hora
+     *
+     * @return int
+     */
+    public function setSidStartTime($time)
+    {
+        $this->setContextKey('sidStartTime', $time);
+
+        return $time;
+    }
+
+    /**
+     * Establece la hora de inicio de actividad
+     *
+     * @param $time int La marca de hora
+     *
+     * @return int
+     */
+    public function setStartActivity($time)
+    {
+        $this->setContextKey('startActivity', $time);
+
+        return $time;
     }
 
     /**

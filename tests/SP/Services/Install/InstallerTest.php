@@ -35,6 +35,7 @@ use SP\Storage\Database\DBStorageInterface;
 use SP\Tests\DatabaseUtil;
 use SP\Util\PasswordUtil;
 use function SP\Tests\getResource;
+use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
 use function SP\Tests\setupContext;
 
@@ -70,6 +71,7 @@ class InstallerTest extends TestCase
     public static function tearDownAfterClass()
     {
         saveResource('config', 'config.xml', self::$currentConfig);
+        recreateDir(CACHE_PATH);
     }
 
     /**

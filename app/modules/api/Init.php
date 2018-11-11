@@ -73,6 +73,7 @@ final class Init extends ModuleBase
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Storage\File\FileException
      */
     public function initialize($controller)
     {
@@ -82,7 +83,7 @@ final class Init extends ModuleBase
         $this->context->initialize();
 
         // Load config
-        $this->config->loadConfig($this->context);
+        $this->config->loadConfig();
 
         // Load language
         $this->language->setLanguage();
