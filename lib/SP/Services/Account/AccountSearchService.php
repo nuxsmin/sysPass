@@ -39,6 +39,7 @@ use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Storage\Database\QueryResult;
 use SP\Storage\File\FileCache;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
@@ -109,9 +110,9 @@ final class AccountSearchService extends Service
      */
     private $accountToUserGroupRepository;
     /**
-     * @var FileCache
+     * @var FileCacheInterface
      */
-    private $fileCache;
+    private $colorCache;
     /**
      * @var array
      */
@@ -387,7 +388,7 @@ final class AccountSearchService extends Service
         $this->accountColor[$id] = '#' . self::COLORS[array_rand(self::COLORS)];
 
         try {
-            $this->fileCache->save(self::COLORS_CACHE_FILE, $this->accountColor);
+            $this->colorCache->save($this->accountColor);
 
             logger('Saved accounts color cache');
 
@@ -409,7 +410,7 @@ final class AccountSearchService extends Service
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
         $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
-        $this->fileCache = $this->dic->get(FileCache::class);
+        $this->colorCache = new FileCache(self::COLORS_CACHE_FILE);
         $this->accountAclService = $this->dic->get(AccountAclService::class);
         $this->accountFilterUser = $this->dic->get(AccountFilterUser::class);
         $this->configData = $this->config->getConfigData();
@@ -423,7 +424,7 @@ final class AccountSearchService extends Service
     private function loadColors()
     {
         try {
-            $this->accountColor = $this->fileCache->load(self::COLORS_CACHE_FILE);
+            $this->accountColor = $this->colorCache->load();
 
             logger('Loaded accounts color cache');
         } catch (FileException $e) {

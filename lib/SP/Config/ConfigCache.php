@@ -24,7 +24,7 @@
 
 namespace SP\Config;
 
-use SP\Storage\File\FileCache;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
 
 /**
@@ -39,7 +39,7 @@ final class ConfigCache
      */
     const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
     /**
-     * @var FileCache
+     * @var FileCacheInterface
      */
     private $fileCache;
 
@@ -47,9 +47,9 @@ final class ConfigCache
     /**
      * ConfigCache constructor.
      *
-     * @param FileCache $fileCache
+     * @param FileCacheInterface $fileCache
      */
-    public function __construct(FileCache $fileCache)
+    public function __construct(FileCacheInterface $fileCache)
     {
         $this->fileCache = $fileCache;
     }
@@ -62,7 +62,7 @@ final class ConfigCache
     public function saveConfigToCache(ConfigData $configData)
     {
         try {
-            $this->fileCache->save(self::CONFIG_CACHE_FILE, $configData);
+            $this->fileCache->save($configData);
 
             logger('Saved config cache');
         } catch (FileException $e) {
@@ -78,7 +78,7 @@ final class ConfigCache
     public function loadConfigFromCache()
     {
         try {
-            $configData = $this->fileCache->load(self::CONFIG_CACHE_FILE);
+            $configData = $this->fileCache->load();
 
             if ($configData instanceof ConfigData) {
                 logger('Loaded config cache');

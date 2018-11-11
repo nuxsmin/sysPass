@@ -63,10 +63,6 @@ final class AccountAclService extends Service
      */
     private $acl;
     /**
-     * @var \SP\Storage\File\FileCache
-     */
-    private $fileCache;
-    /**
      * @var UserLoginResponse
      */
     private $userData;
@@ -163,7 +159,8 @@ final class AccountAclService extends Service
     public function getAclFromCache($accountId, $actionId)
     {
         try {
-            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
+            $acl = FileCache::factory($this->getCacheFileForAcl($accountId, $actionId))
+                ->load();
 
             if ($acl instanceof AccountAcl) {
                 return $acl;
@@ -384,12 +381,13 @@ final class AccountAclService extends Service
      *
      * @param AccountAcl $accountAcl
      *
-     * @return null|\SP\Storage\File\FileStorageInterface
+     * @return null|\SP\Storage\File\FileCacheInterface
      */
     public function saveAclInCache(AccountAcl $accountAcl)
     {
         try {
-            return $this->fileCache->save($this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId()), $accountAcl);
+            return FileCache::factory($this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId()))
+                ->save($accountAcl);
         } catch (FileException $e) {
             return null;
         }
@@ -398,7 +396,6 @@ final class AccountAclService extends Service
     protected function initialize()
     {
         $this->acl = $this->dic->get(Acl::class);
-        $this->fileCache = $this->dic->get(FileCache::class);
         $this->userData = $this->context->getUserData();
     }
 }

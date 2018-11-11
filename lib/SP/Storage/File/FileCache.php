@@ -29,97 +29,31 @@ namespace SP\Storage\File;
  *
  * @package SP\Storage\File;
  */
-final class FileCache implements FileStorageInterface
+final class FileCache extends FileCacheBase
 {
     /**
-     * @param string $path
-     *
      * @return mixed
      * @throws FileException
      */
-    public function load($path)
+    public function load()
     {
-        $file = new FileHandler($path);
-
-        return unserialize($file->checkIsReadable()->readToString());
+        return unserialize($this->path->checkIsReadable()->readToString());
     }
 
     /**
-     * @param string $path
-     * @param mixed  $data
+     * @param mixed $data
      *
-     * @return FileStorageInterface
+     * @return FileCacheInterface
      * @throws FileException
      */
-    public function save($path, $data)
+    public function save($data)
     {
-        $this->createPath(dirname($path));
+        $this->createPath();
 
-        $file = new FileHandler($path);
-        $file->checkIsWritable()
+        $this->path->checkIsWritable()
             ->write(serialize($data))
             ->close();
 
         return $this;
-    }
-
-    /**
-     * @param $path
-     *
-     * @throws FileException
-     */
-    public function createPath($path)
-    {
-        if (!is_dir($path) && mkdir($path, 0700, true) === false) {
-            throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
-        }
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return FileStorageInterface
-     * @throws FileException
-     */
-    public function delete($path)
-    {
-        $file = new FileHandler($path);
-        $file->delete();
-
-        return $this;
-    }
-
-    /**
-     * Returns if the file is expired adding time to modification date
-     *
-     * @param string $path
-     * @param int    $time
-     *
-     * @return bool
-     * @throws FileException
-     */
-    public function isExpired($path, $time = 86400): bool
-    {
-        $file = new FileHandler($path);
-        $file->checkFileExists();
-
-        return time() > $file->getFileTime() + $time;
-    }
-
-    /**
-     * Returns if the file is expired adding time to modification date
-     *
-     * @param string $path
-     * @param int    $date
-     *
-     * @return bool
-     * @throws FileException
-     */
-    public function isExpiredDate($path, $date): bool
-    {
-        $file = new FileHandler($path);
-        $file->checkFileExists();
-
-        return (int)$date > $file->getFileTime();
     }
 }

@@ -25,8 +25,8 @@
 namespace SP\Core\Acl;
 
 use SP\DataModel\ActionData;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
-use SP\Storage\File\FileStorageInterface;
 use SP\Storage\File\XmlFileStorageInterface;
 
 /**
@@ -57,22 +57,22 @@ final class Actions
      */
     protected $xmlFileStorage;
     /**
-     * @var FileStorageInterface
+     * @var FileCacheInterface
      */
-    private $fileStorage;
+    private $fileCache;
 
     /**
      * Action constructor.
      *
-     * @param FileStorageInterface                     $fileStorage
+     * @param FileCacheInterface                       $fileCache
      * @param \SP\Storage\File\XmlFileStorageInterface $xmlFileStorage
      *
      * @throws FileException
      */
-    public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
+    public function __construct(FileCacheInterface $fileCache, XmlFileStorageInterface $xmlFileStorage)
     {
         $this->xmlFileStorage = $xmlFileStorage;
-        $this->fileStorage = $fileStorage;
+        $this->fileCache = $fileCache;
 
         $this->loadCache();
     }
@@ -86,12 +86,12 @@ final class Actions
     protected function loadCache()
     {
         try {
-            if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)
-                || $this->fileStorage->isExpiredDate(self::ACTIONS_CACHE_FILE, $this->xmlFileStorage->getFileHandler()->getFileTime())
+            if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
+                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
             ) {
                 $this->mapAndSave();
             } else {
-                $this->actions = $this->fileStorage->load(self::ACTIONS_CACHE_FILE);
+                $this->actions = $this->fileCache->load();
 
                 logger('Loaded actions cache', 'INFO');
             }
@@ -154,7 +154,7 @@ final class Actions
     protected function saveCache()
     {
         try {
-            $this->fileStorage->save(self::ACTIONS_CACHE_FILE, $this->actions);
+            $this->fileCache->save($this->actions);
 
             logger('Saved actions cache', 'INFO');
         } catch (FileException $e) {

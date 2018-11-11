@@ -29,50 +29,43 @@ namespace SP\Storage\File;
  *
  * @package SP\Storage\File;
  */
-interface FileStorageInterface
+interface FileCacheInterface
 {
     /**
-     * @param string $path
-     *
      * @return mixed
      * @throws FileException
      */
-    public function load($path);
+    public function load();
 
     /**
-     * @param string $path
-     * @param mixed  $data
+     * @param mixed $data
      *
-     * @return FileStorageInterface
+     * @return FileCacheInterface
      * @throws FileException
      */
-    public function save($path, $data);
+    public function save($data);
 
     /**
-     * @param string $path
-     *
      * @return mixed
      */
-    public function delete($path);
+    public function delete();
 
     /**
      * Returns whether the file is expired
      *
-     * @param string $path
-     * @param int    $time
+     * @param int $time
      *
      * @return bool
      */
-    public function isExpired($path, $time = 86400): bool;
+    public function isExpired($time = 86400): bool;
 
     /**
      * Returns if the file is expired adding time to modification date
      *
-     * @param string $path
-     * @param int    $date
+     * @param int $date
      *
      * @return bool
      * @throws FileException
      */
-    public function isExpiredDate($path, $date): bool;
+    public function isExpiredDate($date): bool;
 }

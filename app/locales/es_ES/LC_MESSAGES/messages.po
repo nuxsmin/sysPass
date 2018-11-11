@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-04 23:42+0100\n"
-"PO-Revision-Date: 2018-11-04 23:43+0100\n"
+"POT-Creation-Date: 2018-11-11 09:41+0100\n"
+"PO-Revision-Date: 2018-11-11 09:41+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: es_ES\n"
@@ -57,8 +57,8 @@ msgstr "Cuenta visualizada"
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:116
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:107
-#: app/modules/web/Controllers/UserGroupController.php:274
-#: app/modules/web/Controllers/UserGroupController.php:315
+#: app/modules/web/Controllers/UserGroupController.php:280
+#: app/modules/web/Controllers/UserGroupController.php:323
 #: lib/SP/Plugin/PluginManager.php:320
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:30
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:43
@@ -85,20 +85,20 @@ msgstr "Nombre"
 #: app/modules/api/Controllers/AccountController.php:190
 #: app/modules/api/Controllers/AccountController.php:241
 #: app/modules/api/Controllers/AccountController.php:316
-#: app/modules/web/Controllers/AccountController.php:227
-#: app/modules/web/Controllers/AccountController.php:749
-#: app/modules/web/Controllers/AccountController.php:796
-#: app/modules/web/Controllers/AccountController.php:839
-#: app/modules/web/Controllers/AccountController.php:880
-#: app/modules/web/Controllers/AccountController.php:932
-#: app/modules/web/Controllers/AccountController.php:968
-#: app/modules/web/Controllers/AccountFileController.php:259
+#: app/modules/web/Controllers/AccountController.php:233
+#: app/modules/web/Controllers/AccountController.php:773
+#: app/modules/web/Controllers/AccountController.php:822
+#: app/modules/web/Controllers/AccountController.php:867
+#: app/modules/web/Controllers/AccountController.php:910
+#: app/modules/web/Controllers/AccountController.php:964
+#: app/modules/web/Controllers/AccountController.php:1002
+#: app/modules/web/Controllers/AccountFileController.php:246
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:121
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:158
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:160
 #: app/modules/web/Controllers/AccountManagerController.php:151
-#: app/modules/web/Controllers/ClientController.php:225
-#: app/modules/web/Controllers/ClientController.php:259
-#: app/modules/web/Controllers/ClientController.php:297
+#: app/modules/web/Controllers/ClientController.php:229
+#: app/modules/web/Controllers/ClientController.php:265
+#: app/modules/web/Controllers/ClientController.php:305
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
@@ -113,8 +113,8 @@ msgstr "Nombre"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:40
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:35
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:41
-#: app/modules/web/themes/material-blue/views/account/account.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:80
+#: app/modules/web/themes/material-blue/views/account/account.inc:79
+#: app/modules/web/themes/material-blue/views/account/account.inc:81
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
@@ -122,40 +122,40 @@ msgid "Client"
 msgstr "Cliente"
 
 #: app/modules/api/Controllers/AccountController.php:102
-#: app/modules/web/Controllers/AccountController.php:573
-#: app/modules/web/Controllers/AccountController.php:631
+#: app/modules/web/Controllers/AccountController.php:593
+#: app/modules/web/Controllers/AccountController.php:653
 msgid "Password viewed"
 msgstr "Clave visualizada"
 
 #: app/modules/api/Controllers/AccountController.php:138
 #: app/modules/api/Controllers/AccountController.php:144
-#: app/modules/web/Controllers/AccountController.php:837
-#: app/modules/web/Controllers/AccountController.php:848
-#: app/modules/web/Controllers/UserController.php:428
-#: app/modules/web/Controllers/UserController.php:432
-#: app/modules/web/Controllers/UserPassResetController.php:196
-#: app/modules/web/Controllers/UserPassResetController.php:200
+#: app/modules/web/Controllers/AccountController.php:865
+#: app/modules/web/Controllers/AccountController.php:876
+#: app/modules/web/Controllers/UserController.php:440
+#: app/modules/web/Controllers/UserController.php:444
+#: app/modules/web/Controllers/UserPassResetController.php:198
+#: app/modules/web/Controllers/UserPassResetController.php:202
 msgid "Password updated"
 msgstr "Clave actualizada"
 
 #: app/modules/api/Controllers/AccountController.php:188
 #: app/modules/api/Controllers/AccountController.php:194
-#: app/modules/web/Controllers/AccountController.php:747
-#: app/modules/web/Controllers/AccountController.php:758
+#: app/modules/web/Controllers/AccountController.php:771
+#: app/modules/web/Controllers/AccountController.php:782
 msgid "Account created"
 msgstr "Cuenta creada"
 
 #: app/modules/api/Controllers/AccountController.php:239
 #: app/modules/api/Controllers/AccountController.php:245
-#: app/modules/web/Controllers/AccountController.php:794
-#: app/modules/web/Controllers/AccountController.php:805
+#: app/modules/web/Controllers/AccountController.php:820
+#: app/modules/web/Controllers/AccountController.php:831
 msgid "Account updated"
 msgstr "Cuenta actualizada"
 
 #: app/modules/api/Controllers/AccountController.php:314
 #: app/modules/api/Controllers/AccountController.php:320
-#: app/modules/web/Controllers/AccountController.php:930
-#: app/modules/web/Controllers/AccountController.php:935
+#: app/modules/web/Controllers/AccountController.php:962
+#: app/modules/web/Controllers/AccountController.php:967
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:119
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:124
 #: app/modules/web/Controllers/AccountManagerController.php:149
@@ -169,22 +169,22 @@ msgstr "Categoría visualizada"
 
 #: app/modules/api/Controllers/CategoryController.php:91
 #: app/modules/api/Controllers/CategoryController.php:96
-#: app/modules/web/Controllers/CategoryController.php:263
-#: app/modules/web/Controllers/CategoryController.php:267
+#: app/modules/web/Controllers/CategoryController.php:269
+#: app/modules/web/Controllers/CategoryController.php:273
 msgid "Category added"
 msgstr "Categoría creada"
 
 #: app/modules/api/Controllers/CategoryController.php:121
 #: app/modules/api/Controllers/CategoryController.php:126
-#: app/modules/web/Controllers/CategoryController.php:305
-#: app/modules/web/Controllers/CategoryController.php:309
+#: app/modules/web/Controllers/CategoryController.php:313
+#: app/modules/web/Controllers/CategoryController.php:317
 msgid "Category updated"
 msgstr "Categoría actualizada"
 
 #: app/modules/api/Controllers/CategoryController.php:150
 #: app/modules/api/Controllers/CategoryController.php:155
-#: app/modules/web/Controllers/CategoryController.php:227
 #: app/modules/web/Controllers/CategoryController.php:231
+#: app/modules/web/Controllers/CategoryController.php:235
 msgid "Category deleted"
 msgstr "Categoría eliminada"
 
@@ -194,23 +194,23 @@ msgstr "Cliente visualizado"
 
 #: app/modules/api/Controllers/ClientController.php:93
 #: app/modules/api/Controllers/ClientController.php:98
-#: app/modules/web/Controllers/ClientController.php:258
-#: app/modules/web/Controllers/ClientController.php:262
+#: app/modules/web/Controllers/ClientController.php:264
+#: app/modules/web/Controllers/ClientController.php:268
 #: lib/SP/Services/Import/KeepassImport.php:77
 msgid "Client added"
 msgstr "Cliente creado"
 
 #: app/modules/api/Controllers/ClientController.php:124
 #: app/modules/api/Controllers/ClientController.php:129
-#: app/modules/web/Controllers/ClientController.php:296
-#: app/modules/web/Controllers/ClientController.php:300
+#: app/modules/web/Controllers/ClientController.php:304
+#: app/modules/web/Controllers/ClientController.php:308
 msgid "Client updated"
 msgstr "Cliente actualizado"
 
 #: app/modules/api/Controllers/ClientController.php:153
 #: app/modules/api/Controllers/ClientController.php:158
-#: app/modules/web/Controllers/ClientController.php:224
 #: app/modules/web/Controllers/ClientController.php:228
+#: app/modules/web/Controllers/ClientController.php:232
 msgid "Client deleted"
 msgstr "Cliente eliminado"
 
@@ -275,8 +275,8 @@ msgstr "Devolver detalles en la respuesta"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:89
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:92
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:101
-#: app/modules/web/themes/material-blue/views/account/account.inc:155
-#: app/modules/web/themes/material-blue/views/account/account.inc:163
+#: app/modules/web/themes/material-blue/views/account/account.inc:156
+#: app/modules/web/themes/material-blue/views/account/account.inc:164
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:42
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:293
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:296
@@ -304,7 +304,7 @@ msgstr "Clave"
 #: app/modules/api/Controllers/Help/AccountHelp.php:114
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:97
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:114
-#: app/modules/web/themes/material-blue/views/account/account.inc:181
+#: app/modules/web/themes/material-blue/views/account/account.inc:182
 #: app/modules/web/themes/material-blue/views/account/details.inc:88
 #: app/modules/web/themes/material-blue/views/account/details.inc:90
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:243
@@ -317,7 +317,7 @@ msgstr "Fecha Caducidad Clave"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:29
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:30
-#: app/modules/web/themes/material-blue/views/account/account.inc:73
+#: app/modules/web/themes/material-blue/views/account/account.inc:74
 msgid "Account name"
 msgstr "Nombre de cuenta"
 
@@ -340,14 +340,14 @@ msgstr "Id de cliente"
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:109
-#: app/modules/web/themes/material-blue/views/account/account.inc:149
+#: app/modules/web/themes/material-blue/views/account/account.inc:150
 msgid "Access user"
 msgstr "Usuario de acceso"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:136
+#: app/modules/web/themes/material-blue/views/account/account.inc:137
 msgid "Access URL or IP"
 msgstr "URL o IP de acceso"
 
@@ -355,7 +355,7 @@ msgstr "URL o IP de acceso"
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:134
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:207
+#: app/modules/web/themes/material-blue/views/account/account.inc:208
 msgid "Notes about the account"
 msgstr "Notas sobre la cuenta"
 
@@ -376,8 +376,8 @@ msgstr "Cuenta Privada Grupo"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
-#: app/modules/web/themes/material-blue/views/account/account.inc:252
-#: app/modules/web/themes/material-blue/views/account/account.inc:254
+#: app/modules/web/themes/material-blue/views/account/account.inc:253
+#: app/modules/web/themes/material-blue/views/account/account.inc:255
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
 msgid "Linked Account"
 msgstr "Cuenta Vinculada"
@@ -496,19 +496,19 @@ msgstr "Etiqueta visualizada"
 
 #: app/modules/api/Controllers/TagController.php:89
 #: app/modules/api/Controllers/TagController.php:94
-#: app/modules/web/Controllers/TagController.php:243
+#: app/modules/web/Controllers/TagController.php:249
 msgid "Tag added"
 msgstr "Etiqueta creada"
 
 #: app/modules/api/Controllers/TagController.php:118
 #: app/modules/api/Controllers/TagController.php:123
-#: app/modules/web/Controllers/TagController.php:276
+#: app/modules/web/Controllers/TagController.php:284
 msgid "Tag updated"
 msgstr "Etiqueta actualizada"
 
 #: app/modules/api/Controllers/TagController.php:147
 #: app/modules/api/Controllers/TagController.php:152
-#: app/modules/web/Controllers/TagController.php:215
+#: app/modules/web/Controllers/TagController.php:219
 msgid "Tag removed"
 msgstr "Etiqueta eliminada"
 
@@ -518,32 +518,32 @@ msgstr "Grupo visualizado"
 
 #: app/modules/api/Controllers/UserGroupController.php:91
 #: app/modules/api/Controllers/UserGroupController.php:96
-#: app/modules/web/Controllers/UserGroupController.php:273
-#: app/modules/web/Controllers/UserGroupController.php:277
+#: app/modules/web/Controllers/UserGroupController.php:279
+#: app/modules/web/Controllers/UserGroupController.php:283
 msgid "Group added"
 msgstr "Grupo creado"
 
 #: app/modules/api/Controllers/UserGroupController.php:122
 #: app/modules/api/Controllers/UserGroupController.php:127
-#: app/modules/web/Controllers/UserGroupController.php:314
-#: app/modules/web/Controllers/UserGroupController.php:318
+#: app/modules/web/Controllers/UserGroupController.php:322
+#: app/modules/web/Controllers/UserGroupController.php:326
 msgid "Group updated"
 msgstr "Grupo actualizado"
 
 #: app/modules/api/Controllers/UserGroupController.php:151
 #: app/modules/api/Controllers/UserGroupController.php:156
-#: app/modules/web/Controllers/UserGroupController.php:237
 #: app/modules/web/Controllers/UserGroupController.php:241
+#: app/modules/web/Controllers/UserGroupController.php:245
 msgid "Group deleted"
 msgstr "Grupo eliminado"
 
-#: app/modules/api/Init.php:146
+#: app/modules/api/Init.php:149
 msgid "Updating needed"
 msgstr "Es necesario actualizar"
 
-#: app/modules/web/Controllers/AccountController.php:149
-#: app/modules/web/Controllers/AccountController.php:204
-#: app/modules/web/Controllers/AccountController.php:489
+#: app/modules/web/Controllers/AccountController.php:153
+#: app/modules/web/Controllers/AccountController.php:210
+#: app/modules/web/Controllers/AccountController.php:505
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:164
@@ -553,24 +553,24 @@ msgstr "Es necesario actualizar"
 msgid "Account Details"
 msgstr "Detalles de Cuenta"
 
-#: app/modules/web/Controllers/AccountController.php:225
+#: app/modules/web/Controllers/AccountController.php:231
 msgid "Link viewed"
 msgstr "Enlace visualizado"
 
-#: app/modules/web/Controllers/AccountController.php:226
-#: app/modules/web/Controllers/AccountController.php:574
-#: app/modules/web/Controllers/AccountController.php:632
-#: app/modules/web/Controllers/AccountController.php:674
-#: app/modules/web/Controllers/AccountController.php:711
-#: app/modules/web/Controllers/AccountController.php:748
-#: app/modules/web/Controllers/AccountController.php:795
-#: app/modules/web/Controllers/AccountController.php:838
-#: app/modules/web/Controllers/AccountController.php:879
-#: app/modules/web/Controllers/AccountController.php:931
-#: app/modules/web/Controllers/AccountController.php:967
-#: app/modules/web/Controllers/AccountFileController.php:258
+#: app/modules/web/Controllers/AccountController.php:232
+#: app/modules/web/Controllers/AccountController.php:594
+#: app/modules/web/Controllers/AccountController.php:654
+#: app/modules/web/Controllers/AccountController.php:698
+#: app/modules/web/Controllers/AccountController.php:735
+#: app/modules/web/Controllers/AccountController.php:772
+#: app/modules/web/Controllers/AccountController.php:821
+#: app/modules/web/Controllers/AccountController.php:866
+#: app/modules/web/Controllers/AccountController.php:909
+#: app/modules/web/Controllers/AccountController.php:963
+#: app/modules/web/Controllers/AccountController.php:1001
+#: app/modules/web/Controllers/AccountFileController.php:245
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:120
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:157
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:159
 #: app/modules/web/Controllers/AccountManagerController.php:150
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
@@ -581,40 +581,40 @@ msgstr "Enlace visualizado"
 msgid "Account"
 msgstr "Cuenta"
 
-#: app/modules/web/Controllers/AccountController.php:228
+#: app/modules/web/Controllers/AccountController.php:234
 msgid "Agent"
 msgstr "Agente"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:235
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:235
 #: lib/SP/DataModel/PublicLinkListData.php:88
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:190
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:214
 msgid "ON"
 msgstr "ON"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:235
 #: lib/SP/DataModel/PublicLinkListData.php:88
 msgid "OFF"
 msgstr "OFF"
 
-#: app/modules/web/Controllers/AccountController.php:230
+#: app/modules/web/Controllers/AccountController.php:236
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:261
-#: app/modules/web/Controllers/AccountController.php:307
+#: app/modules/web/Controllers/AccountController.php:269
+#: app/modules/web/Controllers/AccountController.php:315
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:274
 #: app/config/actions.xml:157
 msgid "New Account"
 msgstr "Nueva Cuenta"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:353
+#: app/modules/web/Controllers/AccountController.php:363
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:20
@@ -623,7 +623,7 @@ msgid "Edit Account"
 msgstr "Modificar Cuenta"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:400
+#: app/modules/web/Controllers/AccountController.php:412
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:181
@@ -636,27 +636,27 @@ msgid "Remove Account"
 msgstr "Eliminar Cuenta"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:445
+#: app/modules/web/Controllers/AccountController.php:459
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 #: app/config/actions.xml:181
 msgid "Edit Account Password"
 msgstr "Modificar Clave de Cuenta"
 
-#: app/modules/web/Controllers/AccountController.php:673
-#: app/modules/web/Controllers/AccountController.php:710
+#: app/modules/web/Controllers/AccountController.php:697
+#: app/modules/web/Controllers/AccountController.php:734
 msgid "Password copied"
 msgstr "Clave copiada"
 
-#: app/modules/web/Controllers/AccountController.php:878
-#: app/modules/web/Controllers/AccountController.php:889
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:156
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:161
+#: app/modules/web/Controllers/AccountController.php:908
+#: app/modules/web/Controllers/AccountController.php:919
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:158
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:163
 msgid "Account restored"
 msgstr "Cuenta restaurada"
 
-#: app/modules/web/Controllers/AccountController.php:916
-#: app/modules/web/Controllers/AccountController.php:919
+#: app/modules/web/Controllers/AccountController.php:948
+#: app/modules/web/Controllers/AccountController.php:951
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:108
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:111
 #: app/modules/web/Controllers/AccountManagerController.php:135
@@ -664,12 +664,12 @@ msgstr "Cuenta restaurada"
 msgid "Accounts removed"
 msgstr "Cuentas eliminadas"
 
-#: app/modules/web/Controllers/AccountController.php:958
+#: app/modules/web/Controllers/AccountController.php:992
 #: app/modules/web/Forms/NotificationForm.php:106
 msgid "A description is needed"
 msgstr "Es necesaria una descripción"
 
-#: app/modules/web/Controllers/AccountController.php:965
+#: app/modules/web/Controllers/AccountController.php:999
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:44
@@ -677,11 +677,11 @@ msgstr "Es necesaria una descripción"
 msgid "Request"
 msgstr "Petición"
 
-#: app/modules/web/Controllers/AccountController.php:966
+#: app/modules/web/Controllers/AccountController.php:1000
 msgid "Requester"
 msgstr "Solicitante"
 
-#: app/modules/web/Controllers/AccountController.php:969
+#: app/modules/web/Controllers/AccountController.php:1003
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -695,20 +695,20 @@ msgstr "Solicitante"
 msgid "Description"
 msgstr "Descripción"
 
-#: app/modules/web/Controllers/AccountController.php:982
+#: app/modules/web/Controllers/AccountController.php:1016
 msgid "Request done"
 msgstr "Solicitud realizada"
 
-#: app/modules/web/Controllers/AccountFavoriteController.php:55
+#: app/modules/web/Controllers/AccountFavoriteController.php:56
 msgid "Favorite added"
 msgstr "Favorito añadido"
 
-#: app/modules/web/Controllers/AccountFavoriteController.php:73
+#: app/modules/web/Controllers/AccountFavoriteController.php:76
 msgid "Favorite deleted"
 msgstr "Favorito eliminado"
 
 #: app/modules/web/Controllers/AccountFileController.php:74
-#: app/modules/web/Controllers/AccountFileController.php:135
+#: app/modules/web/Controllers/AccountFileController.php:137
 msgid "File does not exist"
 msgstr "El archivo no existe"
 
@@ -719,25 +719,25 @@ msgstr "Archivo visualizado"
 
 #: app/modules/web/Controllers/AccountFileController.php:88
 #: app/modules/web/Controllers/AccountFileController.php:104
-#: app/modules/web/Controllers/AccountFileController.php:141
-#: app/modules/web/Controllers/AccountFileController.php:257
-#: app/modules/web/Controllers/AccountFileController.php:364
+#: app/modules/web/Controllers/AccountFileController.php:143
+#: app/modules/web/Controllers/AccountFileController.php:244
+#: app/modules/web/Controllers/AccountFileController.php:380
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
 #: app/modules/web/Controllers/ConfigGeneralController.php:195
 #: app/modules/web/Controllers/ConfigGeneralController.php:236
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:122
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:123
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "Archivo"
 
-#: app/modules/web/Controllers/AccountFileController.php:115
+#: app/modules/web/Controllers/AccountFileController.php:117
 #: app/config/strings.js.inc:40
 msgid "File not supported for preview"
 msgstr "Archivo no soportado para visualizar"
 
-#: app/modules/web/Controllers/AccountFileController.php:140
+#: app/modules/web/Controllers/AccountFileController.php:142
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
@@ -747,65 +747,49 @@ msgstr "Archivo no soportado para visualizar"
 msgid "File downloaded"
 msgstr "Archivo descargado"
 
-#: app/modules/web/Controllers/AccountFileController.php:186
+#: app/modules/web/Controllers/AccountFileController.php:188
 msgid "INVALID QUERY"
 msgstr "CONSULTA INVÁLIDA"
 
-#: app/modules/web/Controllers/AccountFileController.php:192
-msgid "There aren't any allowed extensions"
-msgstr "No hay extensiones permitidas"
+#: app/modules/web/Controllers/AccountFileController.php:194
+msgid "There aren't any allowed MIME types"
+msgstr "No hay tipos MIME permitidos"
 
 #: app/modules/web/Controllers/AccountFileController.php:209
-#: lib/SP/Services/Import/FileImport.php:100
-msgid "File type not allowed"
-msgstr "Tipo de archivo no soportado"
-
-#: app/modules/web/Controllers/AccountFileController.php:211
-#, php-format
-msgid "Extension: %s"
-msgstr "Extensión: %s"
-
-#: app/modules/web/Controllers/AccountFileController.php:216
 msgid "Invalid file"
 msgstr "Archivo inválido"
 
-#: app/modules/web/Controllers/AccountFileController.php:218
+#: app/modules/web/Controllers/AccountFileController.php:211
 #, php-format
 msgid "File: %s"
 msgstr "Archivo: %s"
 
-#: app/modules/web/Controllers/AccountFileController.php:224
-#: app/modules/web/Controllers/AccountFileController.php:244
-#: lib/SP/Services/Import/FileImport.php:116
-msgid "Internal error while reading the file"
-msgstr "Error interno al leer el archivo"
-
-#: app/modules/web/Controllers/AccountFileController.php:226
-#, php-format
-msgid "Maximum size: %s"
-msgstr "Máximo tamaño: %s"
-
-#: app/modules/web/Controllers/AccountFileController.php:234
+#: app/modules/web/Controllers/AccountFileController.php:223
 msgid "File size exceeded"
 msgstr "Tamaño de archivo superado"
 
-#: app/modules/web/Controllers/AccountFileController.php:236
+#: app/modules/web/Controllers/AccountFileController.php:225
 #, php-format
 msgid "Maximum size: %d KB"
 msgstr "Máximo tamaño: %d KB"
 
-#: app/modules/web/Controllers/AccountFileController.php:256
-#: app/modules/web/Controllers/AccountFileController.php:265
+#: app/modules/web/Controllers/AccountFileController.php:231
+#: lib/SP/Services/Import/FileImport.php:106
+msgid "Internal error while reading the file"
+msgstr "Error interno al leer el archivo"
+
+#: app/modules/web/Controllers/AccountFileController.php:243
+#: app/modules/web/Controllers/AccountFileController.php:252
 msgid "File saved"
 msgstr "Archivo guardado"
 
-#: app/modules/web/Controllers/AccountFileController.php:260
+#: app/modules/web/Controllers/AccountFileController.php:247
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:109
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:109
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:109
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:127
-#: app/modules/web/Controllers/ItemPresetController.php:323
-#: app/modules/web/Controllers/ItemPresetController.php:364
+#: app/modules/web/Controllers/ItemPresetController.php:331
+#: app/modules/web/Controllers/ItemPresetController.php:374
 #: lib/SP/Services/Auth/LoginService.php:455
 #: lib/SP/Services/Auth/LoginService.php:518
 #: lib/SP/Services/Auth/LoginService.php:564
@@ -817,123 +801,134 @@ msgstr "Archivo guardado"
 msgid "Type"
 msgstr "Tipo"
 
-#: app/modules/web/Controllers/AccountFileController.php:261
+#: app/modules/web/Controllers/AccountFileController.php:248
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:110
 msgid "Size"
 msgstr "Tamaño"
 
-#: app/modules/web/Controllers/AccountFileController.php:292
+#: app/modules/web/Controllers/AccountFileController.php:287
+#: lib/SP/Services/Import/FileImport.php:95
+msgid "File type not allowed"
+msgstr "Tipo de archivo no soportado"
+
+#: app/modules/web/Controllers/AccountFileController.php:289
+#: lib/SP/Services/Import/FileImport.php:97
+#, php-format
+msgid "MIME type: %s"
+msgstr "Tipo MIME: %s"
+
+#: app/modules/web/Controllers/AccountFileController.php:308
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:64
 #: app/modules/web/Controllers/AccountManagerController.php:79
 #: app/modules/web/Controllers/AccountManagerController.php:213
 #: app/modules/web/Controllers/AuthTokenController.php:71
 #: app/modules/web/Controllers/AuthTokenController.php:111
-#: app/modules/web/Controllers/AuthTokenController.php:176
-#: app/modules/web/Controllers/AuthTokenController.php:209
-#: app/modules/web/Controllers/AuthTokenController.php:254
-#: app/modules/web/Controllers/AuthTokenController.php:292
-#: app/modules/web/Controllers/AuthTokenController.php:344
+#: app/modules/web/Controllers/AuthTokenController.php:178
+#: app/modules/web/Controllers/AuthTokenController.php:213
+#: app/modules/web/Controllers/AuthTokenController.php:260
+#: app/modules/web/Controllers/AuthTokenController.php:300
+#: app/modules/web/Controllers/AuthTokenController.php:354
 #: app/modules/web/Controllers/CategoryController.php:69
 #: app/modules/web/Controllers/CategoryController.php:106
-#: app/modules/web/Controllers/CategoryController.php:170
-#: app/modules/web/Controllers/CategoryController.php:203
-#: app/modules/web/Controllers/CategoryController.php:248
-#: app/modules/web/Controllers/CategoryController.php:290
-#: app/modules/web/Controllers/CategoryController.php:332
+#: app/modules/web/Controllers/CategoryController.php:172
+#: app/modules/web/Controllers/CategoryController.php:207
+#: app/modules/web/Controllers/CategoryController.php:254
+#: app/modules/web/Controllers/CategoryController.php:298
+#: app/modules/web/Controllers/CategoryController.php:342
 #: app/modules/web/Controllers/ClientController.php:70
 #: app/modules/web/Controllers/ClientController.php:107
-#: app/modules/web/Controllers/ClientController.php:171
-#: app/modules/web/Controllers/ClientController.php:203
-#: app/modules/web/Controllers/ClientController.php:245
-#: app/modules/web/Controllers/ClientController.php:285
-#: app/modules/web/Controllers/ClientController.php:323
+#: app/modules/web/Controllers/ClientController.php:173
+#: app/modules/web/Controllers/ClientController.php:207
+#: app/modules/web/Controllers/ClientController.php:251
+#: app/modules/web/Controllers/ClientController.php:293
+#: app/modules/web/Controllers/ClientController.php:333
 #: app/modules/web/Controllers/CustomFieldController.php:71
 #: app/modules/web/Controllers/CustomFieldController.php:108
-#: app/modules/web/Controllers/CustomFieldController.php:170
-#: app/modules/web/Controllers/CustomFieldController.php:202
-#: app/modules/web/Controllers/CustomFieldController.php:236
-#: app/modules/web/Controllers/CustomFieldController.php:275
-#: app/modules/web/Controllers/CustomFieldController.php:314
+#: app/modules/web/Controllers/CustomFieldController.php:172
+#: app/modules/web/Controllers/CustomFieldController.php:206
+#: app/modules/web/Controllers/CustomFieldController.php:242
+#: app/modules/web/Controllers/CustomFieldController.php:283
+#: app/modules/web/Controllers/CustomFieldController.php:324
 #: app/modules/web/Controllers/EventlogController.php:107
 #: app/modules/web/Controllers/ItemPresetController.php:70
-#: app/modules/web/Controllers/ItemPresetController.php:157
-#: app/modules/web/Controllers/ItemPresetController.php:197
-#: app/modules/web/Controllers/ItemPresetController.php:236
-#: app/modules/web/Controllers/ItemPresetController.php:268
-#: app/modules/web/Controllers/ItemPresetController.php:309
-#: app/modules/web/Controllers/ItemPresetController.php:350
+#: app/modules/web/Controllers/ItemPresetController.php:159
+#: app/modules/web/Controllers/ItemPresetController.php:199
+#: app/modules/web/Controllers/ItemPresetController.php:240
+#: app/modules/web/Controllers/ItemPresetController.php:274
+#: app/modules/web/Controllers/ItemPresetController.php:317
+#: app/modules/web/Controllers/ItemPresetController.php:360
 #: app/modules/web/Controllers/NotificationController.php:110
-#: app/modules/web/Controllers/NotificationController.php:173
-#: app/modules/web/Controllers/NotificationController.php:191
-#: app/modules/web/Controllers/NotificationController.php:223
-#: app/modules/web/Controllers/NotificationController.php:255
-#: app/modules/web/Controllers/NotificationController.php:308
-#: app/modules/web/Controllers/NotificationController.php:337
-#: app/modules/web/Controllers/NotificationController.php:372
+#: app/modules/web/Controllers/NotificationController.php:175
+#: app/modules/web/Controllers/NotificationController.php:193
+#: app/modules/web/Controllers/NotificationController.php:227
+#: app/modules/web/Controllers/NotificationController.php:261
+#: app/modules/web/Controllers/NotificationController.php:316
+#: app/modules/web/Controllers/NotificationController.php:347
+#: app/modules/web/Controllers/NotificationController.php:384
 #: app/modules/web/Controllers/PluginController.php:111
 #: app/modules/web/Controllers/PluginController.php:133
-#: app/modules/web/Controllers/PluginController.php:277
+#: app/modules/web/Controllers/PluginController.php:285
 #: app/modules/web/Controllers/PublicLinkController.php:74
 #: app/modules/web/Controllers/PublicLinkController.php:111
-#: app/modules/web/Controllers/PublicLinkController.php:173
-#: app/modules/web/Controllers/PublicLinkController.php:201
-#: app/modules/web/Controllers/PublicLinkController.php:233
-#: app/modules/web/Controllers/PublicLinkController.php:276
-#: app/modules/web/Controllers/PublicLinkController.php:310
-#: app/modules/web/Controllers/PublicLinkController.php:354
+#: app/modules/web/Controllers/PublicLinkController.php:175
+#: app/modules/web/Controllers/PublicLinkController.php:205
+#: app/modules/web/Controllers/PublicLinkController.php:239
+#: app/modules/web/Controllers/PublicLinkController.php:284
+#: app/modules/web/Controllers/PublicLinkController.php:320
+#: app/modules/web/Controllers/PublicLinkController.php:366
 #: app/modules/web/Controllers/TagController.php:68
 #: app/modules/web/Controllers/TagController.php:105
-#: app/modules/web/Controllers/TagController.php:165
-#: app/modules/web/Controllers/TagController.php:197
-#: app/modules/web/Controllers/TagController.php:233
-#: app/modules/web/Controllers/TagController.php:266
-#: app/modules/web/Controllers/TagController.php:299
+#: app/modules/web/Controllers/TagController.php:167
+#: app/modules/web/Controllers/TagController.php:201
+#: app/modules/web/Controllers/TagController.php:239
+#: app/modules/web/Controllers/TagController.php:274
+#: app/modules/web/Controllers/TagController.php:309
 #: app/modules/web/Controllers/UserController.php:75
 #: app/modules/web/Controllers/UserController.php:112
-#: app/modules/web/Controllers/UserController.php:197
-#: app/modules/web/Controllers/UserController.php:230
-#: app/modules/web/Controllers/UserController.php:266
-#: app/modules/web/Controllers/UserController.php:308
-#: app/modules/web/Controllers/UserController.php:373
-#: app/modules/web/Controllers/UserController.php:416
-#: app/modules/web/Controllers/UserController.php:455
+#: app/modules/web/Controllers/UserController.php:199
+#: app/modules/web/Controllers/UserController.php:234
+#: app/modules/web/Controllers/UserController.php:272
+#: app/modules/web/Controllers/UserController.php:316
+#: app/modules/web/Controllers/UserController.php:383
+#: app/modules/web/Controllers/UserController.php:428
+#: app/modules/web/Controllers/UserController.php:469
 #: app/modules/web/Controllers/UserGroupController.php:77
 #: app/modules/web/Controllers/UserGroupController.php:114
-#: app/modules/web/Controllers/UserGroupController.php:185
-#: app/modules/web/Controllers/UserGroupController.php:217
-#: app/modules/web/Controllers/UserGroupController.php:259
-#: app/modules/web/Controllers/UserGroupController.php:300
-#: app/modules/web/Controllers/UserGroupController.php:341
+#: app/modules/web/Controllers/UserGroupController.php:187
+#: app/modules/web/Controllers/UserGroupController.php:221
+#: app/modules/web/Controllers/UserGroupController.php:265
+#: app/modules/web/Controllers/UserGroupController.php:308
+#: app/modules/web/Controllers/UserGroupController.php:351
 #: app/modules/web/Controllers/UserProfileController.php:70
 #: app/modules/web/Controllers/UserProfileController.php:107
-#: app/modules/web/Controllers/UserProfileController.php:174
-#: app/modules/web/Controllers/UserProfileController.php:206
-#: app/modules/web/Controllers/UserProfileController.php:248
-#: app/modules/web/Controllers/UserProfileController.php:285
-#: app/modules/web/Controllers/UserProfileController.php:323
+#: app/modules/web/Controllers/UserProfileController.php:176
+#: app/modules/web/Controllers/UserProfileController.php:210
+#: app/modules/web/Controllers/UserProfileController.php:254
+#: app/modules/web/Controllers/UserProfileController.php:293
+#: app/modules/web/Controllers/UserProfileController.php:333
 #: lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: lib/SP/Util/ErrorUtil.php:160
 msgid "You don't have permission to do this operation"
 msgstr "No tiene permisos para realizar esta operación"
 
-#: app/modules/web/Controllers/AccountFileController.php:355
-#: app/modules/web/Controllers/AccountFileController.php:358
+#: app/modules/web/Controllers/AccountFileController.php:371
+#: app/modules/web/Controllers/AccountFileController.php:374
 msgid "Files deleted"
 msgstr "Archivos eliminados"
 
-#: app/modules/web/Controllers/AccountFileController.php:363
+#: app/modules/web/Controllers/AccountFileController.php:379
 msgid "File deleted"
 msgstr "Archivo eliminado"
 
-#: app/modules/web/Controllers/AccountFileController.php:369
+#: app/modules/web/Controllers/AccountFileController.php:385
 msgid "File Deleted"
 msgstr "Archivo Eliminado"
 
-#: app/modules/web/Controllers/AccountFileController.php:405
+#: app/modules/web/Controllers/AccountFileController.php:423
 msgid "Files management disabled"
 msgstr "Gestión de archivos deshabilitada"
 
-#: app/modules/web/Controllers/AccountFileController.php:424
+#: app/modules/web/Controllers/AccountFileController.php:442
 msgid "There are no linked files for the account"
 msgstr "No hay archivos asociados a la cuenta"
 
@@ -957,46 +952,46 @@ msgstr "Actualización Masiva"
 msgid "New Authorization"
 msgstr "Nueva Autorización"
 
-#: app/modules/web/Controllers/AuthTokenController.php:179
+#: app/modules/web/Controllers/AuthTokenController.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:191
 msgid "Edit Authorization"
 msgstr "Editar Autorización"
 
-#: app/modules/web/Controllers/AuthTokenController.php:220
-#: app/modules/web/Controllers/AuthTokenController.php:223
+#: app/modules/web/Controllers/AuthTokenController.php:224
+#: app/modules/web/Controllers/AuthTokenController.php:227
 msgid "Authorizations deleted"
 msgstr "Autorizaciones eliminadas"
 
-#: app/modules/web/Controllers/AuthTokenController.php:233
 #: app/modules/web/Controllers/AuthTokenController.php:237
+#: app/modules/web/Controllers/AuthTokenController.php:241
 msgid "Authorization deleted"
 msgstr "Autorización eliminada"
 
-#: app/modules/web/Controllers/AuthTokenController.php:234
-#: app/modules/web/Controllers/AuthTokenController.php:306
-#: app/modules/web/Controllers/AuthTokenController.php:315
-#: app/modules/web/Controllers/AuthTokenController.php:356
+#: app/modules/web/Controllers/AuthTokenController.php:238
+#: app/modules/web/Controllers/AuthTokenController.php:314
+#: app/modules/web/Controllers/AuthTokenController.php:323
+#: app/modules/web/Controllers/AuthTokenController.php:366
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:71
 msgid "Authorization"
 msgstr "Autorización"
 
-#: app/modules/web/Controllers/AuthTokenController.php:269
+#: app/modules/web/Controllers/AuthTokenController.php:275
 msgid "Authorization added"
 msgstr "Autorización creada"
 
-#: app/modules/web/Controllers/AuthTokenController.php:305
-#: app/modules/web/Controllers/AuthTokenController.php:314
-#: app/modules/web/Controllers/AuthTokenController.php:321
+#: app/modules/web/Controllers/AuthTokenController.php:313
+#: app/modules/web/Controllers/AuthTokenController.php:322
+#: app/modules/web/Controllers/AuthTokenController.php:329
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
 msgid "Authorization updated"
 msgstr "Autorización actualizada"
 
-#: app/modules/web/Controllers/AuthTokenController.php:347
+#: app/modules/web/Controllers/AuthTokenController.php:357
 msgid "View Authorization"
 msgstr "Ver Autorización"
 
-#: app/modules/web/Controllers/AuthTokenController.php:355
+#: app/modules/web/Controllers/AuthTokenController.php:365
 msgid "Authorization viewed"
 msgstr "Autorización visualizada"
 
@@ -1004,27 +999,27 @@ msgstr "Autorización visualizada"
 #: app/modules/web/Controllers/CategoryController.php:109
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
-#: app/modules/web/themes/material-blue/views/account/account.inc:118
+#: app/modules/web/themes/material-blue/views/account/account.inc:119
 #: app/config/actions.xml:307
 msgid "New Category"
 msgstr "Nueva Categoría"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/CategoryController.php:173
+#: app/modules/web/Controllers/CategoryController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
 #: app/config/actions.xml:313
 msgid "Edit Category"
 msgstr "Editar Categoría"
 
-#: app/modules/web/Controllers/CategoryController.php:214
-#: app/modules/web/Controllers/CategoryController.php:217
+#: app/modules/web/Controllers/CategoryController.php:218
+#: app/modules/web/Controllers/CategoryController.php:221
 msgid "Categories deleted"
 msgstr "Categorías eliminadas"
 
-#: app/modules/web/Controllers/CategoryController.php:228
-#: app/modules/web/Controllers/CategoryController.php:264
-#: app/modules/web/Controllers/CategoryController.php:306
+#: app/modules/web/Controllers/CategoryController.php:232
+#: app/modules/web/Controllers/CategoryController.php:270
+#: app/modules/web/Controllers/CategoryController.php:314
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:115
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
@@ -1033,8 +1028,8 @@ msgstr "Categorías eliminadas"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:74
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:45
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:51
-#: app/modules/web/themes/material-blue/views/account/account.inc:103
-#: app/modules/web/themes/material-blue/views/account/account.inc:105
+#: app/modules/web/themes/material-blue/views/account/account.inc:104
+#: app/modules/web/themes/material-blue/views/account/account.inc:106
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:70
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
@@ -1042,7 +1037,7 @@ msgid "Category"
 msgstr "Categoría"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/CategoryController.php:335
+#: app/modules/web/Controllers/CategoryController.php:345
 #: app/config/actions.xml:301
 msgid "View Category"
 msgstr "Ver Categoría"
@@ -1051,47 +1046,47 @@ msgstr "Ver Categoría"
 #: app/modules/web/Controllers/ClientController.php:110
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:93
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
 #: app/config/actions.xml:337
 msgid "New Client"
 msgstr "Nuevo Cliente"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ClientController.php:174
+#: app/modules/web/Controllers/ClientController.php:176
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
 #: app/config/actions.xml:343
 msgid "Edit Client"
 msgstr "Editar Cliente"
 
-#: app/modules/web/Controllers/ClientController.php:213
-#: app/modules/web/Controllers/ClientController.php:216
+#: app/modules/web/Controllers/ClientController.php:217
+#: app/modules/web/Controllers/ClientController.php:220
 msgid "Clients deleted"
 msgstr "Clientes eliminados"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ClientController.php:326
+#: app/modules/web/Controllers/ClientController.php:336
 #: app/config/actions.xml:331
 msgid "View Client"
 msgstr "Ver Cliente"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:74
+#: app/modules/web/Controllers/ConfigAccountController.php:73
 msgid "Maximum size per file is 16MB"
 msgstr "El tamaño máximo por archivo es de 16MB"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:82
+#: app/modules/web/Controllers/ConfigAccountController.php:81
 msgid "Files enabled"
 msgstr "Archivos habilitados"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:87
+#: app/modules/web/Controllers/ConfigAccountController.php:86
 msgid "Files disabled"
 msgstr "Archivos deshabilitados"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:100
+#: app/modules/web/Controllers/ConfigAccountController.php:99
 msgid "Public links enabled"
 msgstr "Enlaces públicos habilitados"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:105
+#: app/modules/web/Controllers/ConfigAccountController.php:104
 msgid "Public links disabled"
 msgstr "Enlaces públicos deshabilitados"
 
@@ -1103,7 +1098,7 @@ msgstr "Enlaces públicos deshabilitados"
 #: app/modules/web/Controllers/ConfigGeneralController.php:183
 #: app/modules/web/Controllers/ConfigGeneralController.php:229
 #: app/modules/web/Controllers/ConfigImportController.php:59
-#: app/modules/web/Controllers/ConfigLdapController.php:226
+#: app/modules/web/Controllers/ConfigLdapController.php:232
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
 #: app/modules/web/Forms/UserForm.php:131
 #: app/modules/web/Forms/UserForm.php:153
@@ -1112,7 +1107,7 @@ msgid "Ey, this is a DEMO!!"
 msgstr "Ey, esto es una DEMO!!"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:90
-#: app/modules/web/Controllers/UserPassResetController.php:183
+#: app/modules/web/Controllers/UserPassResetController.php:185
 #: app/modules/web/Forms/AccountForm.php:135
 #: app/modules/web/Forms/UserForm.php:161
 msgid "Passwords do not match"
@@ -1123,8 +1118,9 @@ msgid "Verification of exported data finished"
 msgstr "Verificación de datos exportados finalizada"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:122
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:113
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:237
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:114
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:255
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:306
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:163
 #: app/modules/web/themes/material-blue/views/config/info.inc:49
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
@@ -1150,7 +1146,7 @@ msgstr "No"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigBackupController.php:124
-#: app/modules/web/Controllers/ConfigManagerController.php:174
+#: app/modules/web/Controllers/ConfigManagerController.php:191
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:101
 #: lib/SP/Providers/Notification/NotificationHandler.php:125
 #: lib/SP/Providers/Notification/NotificationHandler.php:156
@@ -1177,8 +1173,8 @@ msgstr "Categorías"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:211
-#: app/modules/web/themes/material-blue/views/account/account.inc:213
+#: app/modules/web/themes/material-blue/views/account/account.inc:212
+#: app/modules/web/themes/material-blue/views/account/account.inc:214
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
@@ -1291,7 +1287,7 @@ msgid "Accounts imported"
 msgstr "Cuentas importadas"
 
 #: app/modules/web/Controllers/ConfigImportController.php:82
-#: app/modules/web/Controllers/ConfigLdapController.php:268
+#: app/modules/web/Controllers/ConfigLdapController.php:274
 msgid "Import finished"
 msgstr "Importación finalizada"
 
@@ -1307,8 +1303,8 @@ msgid "No accounts were imported"
 msgstr "No se importaron cuentas"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:71
-#: app/modules/web/Controllers/ConfigLdapController.php:143
-#: app/modules/web/Controllers/ConfigLdapController.php:181
+#: app/modules/web/Controllers/ConfigLdapController.php:147
+#: app/modules/web/Controllers/ConfigLdapController.php:186
 msgid "Missing LDAP parameters"
 msgstr "Faltan parámetros de LDAP"
 
@@ -1326,46 +1322,46 @@ msgstr "LDAP deshabilitado"
 msgid "No changes"
 msgstr "Sin cambios"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:117
-#: app/modules/web/Controllers/ConfigLdapController.php:246
+#: app/modules/web/Controllers/ConfigLdapController.php:121
+#: app/modules/web/Controllers/ConfigLdapController.php:252
 msgid "Wrong LDAP parameters"
 msgstr "Parámetros de LDAP incorrectos"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:153
-#: app/modules/web/Controllers/ConfigLdapController.php:197
+#: app/modules/web/Controllers/ConfigLdapController.php:157
+#: app/modules/web/Controllers/ConfigLdapController.php:202
 msgid "Results"
 msgstr "Resultados"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:158
-#: app/modules/web/Controllers/ConfigLdapController.php:203
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:95
+#: app/modules/web/Controllers/ConfigLdapController.php:162
+#: app/modules/web/Controllers/ConfigLdapController.php:208
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:99
 msgid "LDAP connection OK"
 msgstr "Conexión a LDAP correcta"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:159
-#: app/modules/web/Controllers/ConfigLdapController.php:204
+#: app/modules/web/Controllers/ConfigLdapController.php:163
+#: app/modules/web/Controllers/ConfigLdapController.php:209
 #, php-format
 msgid "Objects found: %d"
 msgstr "Objetos encontrados: %d"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:253
+#: app/modules/web/Controllers/ConfigLdapController.php:259
 msgid "LDAP Import"
 msgstr "Importación LDAP"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:272
+#: app/modules/web/Controllers/ConfigLdapController.php:278
 msgid "There aren't any objects to synchronize"
 msgstr "No se encontraron objetos para sincronizar"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:277
+#: app/modules/web/Controllers/ConfigLdapController.php:283
 msgid "LDAP users import finished"
 msgstr "Importación de usuarios de LDAP realizada"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:279
+#: app/modules/web/Controllers/ConfigLdapController.php:285
 #, php-format
 msgid "Imported users: %d / %d"
 msgstr "Usuarios importados: %d / %d"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:280
+#: app/modules/web/Controllers/ConfigLdapController.php:286
 #, php-format
 msgid "Errors: %d"
 msgstr "Errores: %d"
@@ -1392,7 +1388,7 @@ msgstr "Destinatario"
 msgid "Please, check your inbox"
 msgstr "Compruebe su buzón de correo"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:160
+#: app/modules/web/Controllers/ConfigManagerController.php:161
 #: app/modules/web/themes/material-blue/views/install/index.inc:134
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:20
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:18
@@ -1401,38 +1397,38 @@ msgid "General"
 msgstr "General"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ConfigManagerController.php:189
+#: app/modules/web/Controllers/ConfigManagerController.php:206
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:29
 #: app/config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:208
+#: app/modules/web/Controllers/ConfigManagerController.php:225
 msgid "LDAP"
 msgstr "LDAP"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:234
+#: app/modules/web/Controllers/ConfigManagerController.php:251
 #: app/modules/web/themes/material-blue/views/config/mail.inc:12
 msgid "Mail"
 msgstr "Correo"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:273
+#: app/modules/web/Controllers/ConfigManagerController.php:292
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:462
 msgid "Encryption"
 msgstr "Encriptación"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:301
+#: app/modules/web/Controllers/ConfigManagerController.php:320
 #: app/modules/web/themes/material-blue/views/config/backup.inc:61
 msgid "There aren't any backups available"
 msgstr "No se encontraron backups"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:311
+#: app/modules/web/Controllers/ConfigManagerController.php:330
 #: app/modules/web/themes/material-blue/views/config/backup.inc:132
 msgid "No export file found"
 msgstr "No se encontró archivo de exportación"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ConfigManagerController.php:314
+#: app/modules/web/Controllers/ConfigManagerController.php:333
 #: app/modules/web/themes/material-blue/views/config/backup.inc:24
 #: app/modules/web/themes/material-blue/views/config/backup.inc:78
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
@@ -1440,15 +1436,15 @@ msgstr "No se encontró archivo de exportación"
 msgid "Backup"
 msgstr "Backup"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:331
+#: app/modules/web/Controllers/ConfigManagerController.php:356
 msgid "Import Accounts"
 msgstr "Importar Cuentas"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:353
+#: app/modules/web/Controllers/ConfigManagerController.php:378
 msgid "Not installed"
 msgstr "No instalado"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:363
+#: app/modules/web/Controllers/ConfigManagerController.php:388
 #: app/modules/web/themes/material-blue/inc/Icons.php:63
 msgid "Information"
 msgstr "Información"
@@ -1483,42 +1479,42 @@ msgstr "DokuWiki deshabilitada"
 msgid "New Field"
 msgstr "Nuevo Campo"
 
-#: app/modules/web/Controllers/CustomFieldController.php:173
+#: app/modules/web/Controllers/CustomFieldController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:178
 msgid "Edit Field"
 msgstr "Editar Campo"
 
-#: app/modules/web/Controllers/CustomFieldController.php:209
-#: app/modules/web/Controllers/CustomFieldController.php:212
+#: app/modules/web/Controllers/CustomFieldController.php:213
+#: app/modules/web/Controllers/CustomFieldController.php:216
 msgid "Fields deleted"
 msgstr "Campos eliminados"
 
-#: app/modules/web/Controllers/CustomFieldController.php:218
+#: app/modules/web/Controllers/CustomFieldController.php:222
 msgid "Field deleted"
 msgstr "Campo eliminado"
 
-#: app/modules/web/Controllers/CustomFieldController.php:248
-#: app/modules/web/Controllers/CustomFieldController.php:252
+#: app/modules/web/Controllers/CustomFieldController.php:254
+#: app/modules/web/Controllers/CustomFieldController.php:258
 msgid "Field added"
 msgstr "Campo creado"
 
-#: app/modules/web/Controllers/CustomFieldController.php:249
-#: app/modules/web/Controllers/CustomFieldController.php:288
+#: app/modules/web/Controllers/CustomFieldController.php:255
+#: app/modules/web/Controllers/CustomFieldController.php:296
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:88
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:157
 msgid "Field"
 msgstr "Campo"
 
-#: app/modules/web/Controllers/CustomFieldController.php:287
-#: app/modules/web/Controllers/CustomFieldController.php:291
+#: app/modules/web/Controllers/CustomFieldController.php:295
+#: app/modules/web/Controllers/CustomFieldController.php:299
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:87
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:156
 msgid "Field updated"
 msgstr "Campo actualizado"
 
-#: app/modules/web/Controllers/CustomFieldController.php:317
+#: app/modules/web/Controllers/CustomFieldController.php:327
 msgid "View Field"
 msgstr "Ver Campo"
 
@@ -1550,10 +1546,10 @@ msgstr "Consulte con el administrador"
 
 #: app/modules/web/Controllers/ErrorController.php:139
 #: lib/SP/Services/Install/MySQL.php:99
-#: lib/SP/Storage/Database/MySQLHandler.php:97
-#: lib/SP/Storage/Database/MySQLHandler.php:117
-#: lib/SP/Storage/Database/MySQLHandler.php:164
-#: lib/SP/Storage/Database/MySQLHandler.php:176
+#: lib/SP/Storage/Database/MySQLHandler.php:98
+#: lib/SP/Storage/Database/MySQLHandler.php:118
+#: lib/SP/Storage/Database/MySQLHandler.php:165
+#: lib/SP/Storage/Database/MySQLHandler.php:177
 msgid "Unable to connect to DB"
 msgstr "No es posible conectar con la BD"
 
@@ -1574,7 +1570,7 @@ msgstr "Ver Actual"
 #: app/modules/web/themes/material-blue/views/_partials/error.inc:15
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:123
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:360
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:367
 #: app/modules/web/themes/material-blue/views/config/backup.inc:173
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:310
 #: app/modules/web/themes/material-blue/views/config/general.inc:28
@@ -1691,11 +1687,11 @@ msgstr "Ordenar por Categoría"
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:112
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:105
 #: app/modules/web/Controllers/LoginController.php:122
-#: app/modules/web/Controllers/UserController.php:287
-#: app/modules/web/Controllers/UserController.php:323
-#: app/modules/web/Controllers/UserController.php:388
-#: app/modules/web/Controllers/UserController.php:429
-#: app/modules/web/Controllers/UserPassResetController.php:197
+#: app/modules/web/Controllers/UserController.php:293
+#: app/modules/web/Controllers/UserController.php:331
+#: app/modules/web/Controllers/UserController.php:398
+#: app/modules/web/Controllers/UserController.php:441
+#: app/modules/web/Controllers/UserPassResetController.php:199
 #: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
@@ -1713,7 +1709,7 @@ msgstr "Ordenar por Categoría"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:101
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:67
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:73
-#: app/modules/web/themes/material-blue/views/account/account.inc:141
+#: app/modules/web/themes/material-blue/views/account/account.inc:142
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:76
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:25
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:67
@@ -1750,7 +1746,7 @@ msgstr "Ordenar por Usuario"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:88
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:56
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:62
-#: app/modules/web/themes/material-blue/views/account/account.inc:128
+#: app/modules/web/themes/material-blue/views/account/account.inc:129
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:81
 msgid "URL / IP"
 msgstr "URL / IP"
@@ -1824,7 +1820,7 @@ msgstr "Cuentas (H)"
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:106
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:122
-#: app/modules/web/themes/material-blue/views/account/account.inc:190
+#: app/modules/web/themes/material-blue/views/account/account.inc:191
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:251
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
@@ -1950,9 +1946,9 @@ msgid "Event Log"
 msgstr "Registro de Eventos"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
-#: app/modules/web/Controllers/ItemPresetController.php:289
-#: app/modules/web/Controllers/ItemPresetController.php:324
-#: app/modules/web/Controllers/ItemPresetController.php:365
+#: app/modules/web/Controllers/ItemPresetController.php:295
+#: app/modules/web/Controllers/ItemPresetController.php:332
+#: app/modules/web/Controllers/ItemPresetController.php:375
 #: app/modules/web/themes/material-blue/views/account/details.inc:97
 #: app/modules/web/themes/material-blue/views/account/details.inc:99
 msgid "ID"
@@ -2041,7 +2037,7 @@ msgstr "Valores Predeterminados"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:119
-#: app/modules/web/Controllers/UserGroupController.php:238
+#: app/modules/web/Controllers/UserGroupController.php:242
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:120
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
@@ -2065,7 +2061,7 @@ msgstr "Grupo"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:112
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:118
-#: app/modules/web/Controllers/UserProfileController.php:228
+#: app/modules/web/Controllers/UserProfileController.php:232
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:65
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:70
@@ -2129,7 +2125,7 @@ msgstr "Nuevo Valor de Clave de Cuentas"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
-#: app/modules/web/Controllers/ItemPresetController.php:239
+#: app/modules/web/Controllers/ItemPresetController.php:243
 #: app/config/actions.xml:877
 msgid "Edit Value"
 msgstr "Editar Valor"
@@ -2175,7 +2171,7 @@ msgstr "Buscar Notificación"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:183
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:184
-#: app/modules/web/Controllers/NotificationController.php:194
+#: app/modules/web/Controllers/NotificationController.php:196
 msgid "New Notification"
 msgstr "Nueva Notificación"
 
@@ -2197,7 +2193,7 @@ msgstr "Marcar Notificación"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:249
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:250
-#: app/modules/web/Controllers/NotificationController.php:226
+#: app/modules/web/Controllers/NotificationController.php:230
 #: app/config/actions.xml:829
 msgid "Edit Notification"
 msgstr "Editar Notificación"
@@ -2305,7 +2301,7 @@ msgstr "Nuevo Enlace"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:183
-#: app/modules/web/Controllers/PublicLinkController.php:357
+#: app/modules/web/Controllers/PublicLinkController.php:369
 msgid "View Link"
 msgstr "Ver Enlace"
 
@@ -2329,7 +2325,7 @@ msgstr "Buscar Etiqueta"
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:108
-#: app/modules/web/themes/material-blue/views/account/account.inc:226
+#: app/modules/web/themes/material-blue/views/account/account.inc:227
 #: app/config/actions.xml:505
 msgid "New Tag"
 msgstr "Nueva Etiqueta"
@@ -2337,7 +2333,7 @@ msgstr "Nueva Etiqueta"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
-#: app/modules/web/Controllers/TagController.php:168 app/config/actions.xml:517
+#: app/modules/web/Controllers/TagController.php:170 app/config/actions.xml:517
 msgid "Edit Tag"
 msgstr "Editar Etiqueta"
 
@@ -2395,7 +2391,7 @@ msgstr "Nuevo Usuario"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:189
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:190
-#: app/modules/web/Controllers/UserController.php:200
+#: app/modules/web/Controllers/UserController.php:202
 #: app/config/actions.xml:589
 msgid "Edit User"
 msgstr "Editar Usuario"
@@ -2452,7 +2448,7 @@ msgstr "Nuevo Grupo"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
-#: app/modules/web/Controllers/UserGroupController.php:344
+#: app/modules/web/Controllers/UserGroupController.php:354
 #: app/config/actions.xml:613
 msgid "View Group"
 msgstr "Ver Grupo"
@@ -2460,7 +2456,7 @@ msgstr "Ver Grupo"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
-#: app/modules/web/Controllers/UserGroupController.php:188
+#: app/modules/web/Controllers/UserGroupController.php:190
 #: app/config/actions.xml:625
 msgid "Edit Group"
 msgstr "Editar Grupo"
@@ -2499,7 +2495,7 @@ msgstr "Ver Detalles de Perfil"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
-#: app/modules/web/Controllers/UserProfileController.php:177
+#: app/modules/web/Controllers/UserProfileController.php:179
 #: app/config/actions.xml:655
 msgid "Edit Profile"
 msgstr "Editar Perfil"
@@ -2544,28 +2540,28 @@ msgid "Display Value"
 msgstr "Ver Valor"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ItemPresetController.php:207
+#: app/modules/web/Controllers/ItemPresetController.php:209
 #: app/config/actions.xml:871
 msgid "New Value"
 msgstr "Nuevo Valor"
 
-#: app/modules/web/Controllers/ItemPresetController.php:277
-#: app/modules/web/Controllers/ItemPresetController.php:280
+#: app/modules/web/Controllers/ItemPresetController.php:283
+#: app/modules/web/Controllers/ItemPresetController.php:286
 msgid "Values deleted"
 msgstr "Valores eliminados"
 
-#: app/modules/web/Controllers/ItemPresetController.php:288
-#: app/modules/web/Controllers/ItemPresetController.php:292
+#: app/modules/web/Controllers/ItemPresetController.php:294
+#: app/modules/web/Controllers/ItemPresetController.php:298
 msgid "Value deleted"
 msgstr "Valor eliminado"
 
-#: app/modules/web/Controllers/ItemPresetController.php:322
-#: app/modules/web/Controllers/ItemPresetController.php:327
+#: app/modules/web/Controllers/ItemPresetController.php:330
+#: app/modules/web/Controllers/ItemPresetController.php:335
 msgid "Value created"
 msgstr "Valor creado"
 
-#: app/modules/web/Controllers/ItemPresetController.php:363
-#: app/modules/web/Controllers/ItemPresetController.php:368
+#: app/modules/web/Controllers/ItemPresetController.php:373
+#: app/modules/web/Controllers/ItemPresetController.php:378
 msgid "Value updated"
 msgstr "Valor actualizado"
 
@@ -2590,58 +2586,58 @@ msgstr "Tiempo inactivo"
 msgid "Total time"
 msgstr "Tiempo total"
 
-#: app/modules/web/Controllers/NotificationController.php:268
-#: app/modules/web/Controllers/NotificationController.php:271
+#: app/modules/web/Controllers/NotificationController.php:274
+#: app/modules/web/Controllers/NotificationController.php:277
 msgid "Notifications deleted"
 msgstr "Notificaciones eliminadas"
 
-#: app/modules/web/Controllers/NotificationController.php:283
-#: app/modules/web/Controllers/NotificationController.php:287
+#: app/modules/web/Controllers/NotificationController.php:289
+#: app/modules/web/Controllers/NotificationController.php:293
 msgid "Notification deleted"
 msgstr "Notificación eliminada"
 
-#: app/modules/web/Controllers/NotificationController.php:284
-#: app/modules/web/Controllers/NotificationController.php:317
+#: app/modules/web/Controllers/NotificationController.php:290
+#: app/modules/web/Controllers/NotificationController.php:325
 #: lib/SP/Providers/Notification/NotificationHandler.php:155
 msgid "Notification"
 msgstr "Notificación"
 
-#: app/modules/web/Controllers/NotificationController.php:316
-#: app/modules/web/Controllers/NotificationController.php:320
+#: app/modules/web/Controllers/NotificationController.php:324
+#: app/modules/web/Controllers/NotificationController.php:328
 msgid "Notification read"
 msgstr "Notificación leída"
 
-#: app/modules/web/Controllers/NotificationController.php:348
-#: app/modules/web/Controllers/NotificationController.php:351
+#: app/modules/web/Controllers/NotificationController.php:358
+#: app/modules/web/Controllers/NotificationController.php:361
 msgid "Notification created"
 msgstr "Notificación creada"
 
-#: app/modules/web/Controllers/NotificationController.php:383
-#: app/modules/web/Controllers/NotificationController.php:386
+#: app/modules/web/Controllers/NotificationController.php:395
+#: app/modules/web/Controllers/NotificationController.php:398
 msgid "Notification updated"
 msgstr "Notificación actualizada"
 
-#: app/modules/web/Controllers/PluginController.php:199
-#: app/modules/web/Controllers/PluginController.php:202
+#: app/modules/web/Controllers/PluginController.php:201
+#: app/modules/web/Controllers/PluginController.php:204
 msgid "Plugin enabled"
 msgstr "Plugin habilitado"
 
-#: app/modules/web/Controllers/PluginController.php:226
-#: app/modules/web/Controllers/PluginController.php:229
+#: app/modules/web/Controllers/PluginController.php:230
+#: app/modules/web/Controllers/PluginController.php:233
 #: lib/SP/Plugin/PluginManager.php:219 lib/SP/Plugin/PluginManager.php:339
 msgid "Plugin disabled"
 msgstr "Plugin deshabilitado"
 
-#: app/modules/web/Controllers/PluginController.php:253
-#: app/modules/web/Controllers/PluginController.php:256
+#: app/modules/web/Controllers/PluginController.php:259
+#: app/modules/web/Controllers/PluginController.php:262
 msgid "Plugin reset"
 msgstr "Plugin restablecido"
 
-#: app/modules/web/Controllers/PluginController.php:285
+#: app/modules/web/Controllers/PluginController.php:293
 msgid "Plugins deleted"
 msgstr "Plugins eliminados"
 
-#: app/modules/web/Controllers/PluginController.php:291
+#: app/modules/web/Controllers/PluginController.php:299
 msgid "Plugin deleted"
 msgstr "Plugin eliminado"
 
@@ -2649,33 +2645,33 @@ msgstr "Plugin eliminado"
 msgid "New Public Link"
 msgstr "Nuevo Enlace Público"
 
-#: app/modules/web/Controllers/PublicLinkController.php:180
+#: app/modules/web/Controllers/PublicLinkController.php:182
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
 msgid "Link updated"
 msgstr "Enlace actualizado"
 
-#: app/modules/web/Controllers/PublicLinkController.php:204
+#: app/modules/web/Controllers/PublicLinkController.php:208
 msgid "Edit Public Link"
 msgstr "Editar Enlace Público"
 
-#: app/modules/web/Controllers/PublicLinkController.php:243
-#: app/modules/web/Controllers/PublicLinkController.php:246
+#: app/modules/web/Controllers/PublicLinkController.php:249
+#: app/modules/web/Controllers/PublicLinkController.php:252
 msgid "Links deleted"
 msgstr "Enlaces eliminados"
 
-#: app/modules/web/Controllers/PublicLinkController.php:254
-#: app/modules/web/Controllers/PublicLinkController.php:258
+#: app/modules/web/Controllers/PublicLinkController.php:260
+#: app/modules/web/Controllers/PublicLinkController.php:264
 msgid "Link deleted"
 msgstr "Enlace eliminado"
 
 #. (itstool) path: strings/text
-#: app/modules/web/Controllers/PublicLinkController.php:255
+#: app/modules/web/Controllers/PublicLinkController.php:261
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
 msgid "Link"
 msgstr "Enlace"
 
-#: app/modules/web/Controllers/PublicLinkController.php:286
-#: app/modules/web/Controllers/PublicLinkController.php:323
+#: app/modules/web/Controllers/PublicLinkController.php:294
+#: app/modules/web/Controllers/PublicLinkController.php:333
 msgid "Link created"
 msgstr "Enlace creado"
 
@@ -2687,12 +2683,12 @@ msgstr "Versión no disponible"
 msgid "Notifications not available"
 msgstr "Notificaciones no disponibles"
 
-#: app/modules/web/Controllers/TagController.php:207
+#: app/modules/web/Controllers/TagController.php:211
 msgid "Tags deleted"
 msgstr "Etiquetas eliminadas"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/TagController.php:302 app/config/actions.xml:511
+#: app/modules/web/Controllers/TagController.php:312 app/config/actions.xml:511
 msgid "View Tag"
 msgstr "Ver Etiqueta"
 
@@ -2700,7 +2696,7 @@ msgstr "Ver Etiqueta"
 msgid "Track unlocked"
 msgstr "Track desbloqueado"
 
-#: app/modules/web/Controllers/TrackController.php:140
+#: app/modules/web/Controllers/TrackController.php:142
 msgid "Tracks cleared out"
 msgstr "Tracks limpiados"
 
@@ -2761,42 +2757,42 @@ msgstr "Aplicación actualizada correctamente"
 msgid "You will be redirected to log in within 5 seconds"
 msgstr "En 5 segundos será redirigido al login"
 
-#: app/modules/web/Controllers/UserController.php:235
-#: app/modules/web/Controllers/UserController.php:356
+#: app/modules/web/Controllers/UserController.php:239
+#: app/modules/web/Controllers/UserController.php:366
 #: app/modules/web/Controllers/UserPassResetController.php:107
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:65
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:238
 msgid "Password Change"
 msgstr "Cambio de Clave"
 
-#: app/modules/web/Controllers/UserController.php:275
-#: app/modules/web/Controllers/UserController.php:278
+#: app/modules/web/Controllers/UserController.php:281
+#: app/modules/web/Controllers/UserController.php:284
 msgid "Users deleted"
 msgstr "Usuarios eliminados"
 
-#: app/modules/web/Controllers/UserController.php:286
-#: app/modules/web/Controllers/UserController.php:290
+#: app/modules/web/Controllers/UserController.php:292
+#: app/modules/web/Controllers/UserController.php:296
 msgid "User deleted"
 msgstr "Usuario eliminado"
 
-#: app/modules/web/Controllers/UserController.php:322
-#: app/modules/web/Controllers/UserController.php:328
+#: app/modules/web/Controllers/UserController.php:330
+#: app/modules/web/Controllers/UserController.php:336
 msgid "User added"
 msgstr "Usuario creado"
 
-#: app/modules/web/Controllers/UserController.php:387
-#: app/modules/web/Controllers/UserController.php:393
+#: app/modules/web/Controllers/UserController.php:397
+#: app/modules/web/Controllers/UserController.php:403
 msgid "User updated"
 msgstr "Usuario actualizado"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/UserController.php:458
+#: app/modules/web/Controllers/UserController.php:472
 #: app/config/actions.xml:577
 msgid "View User"
 msgstr "Ver Usuario"
 
-#: app/modules/web/Controllers/UserGroupController.php:226
-#: app/modules/web/Controllers/UserGroupController.php:229
+#: app/modules/web/Controllers/UserGroupController.php:230
+#: app/modules/web/Controllers/UserGroupController.php:233
 msgid "Groups deleted"
 msgstr "Grupos eliminados"
 
@@ -2824,48 +2820,48 @@ msgstr "Solicitud enviada"
 msgid "You will receive an email to complete the request shortly."
 msgstr "En breve recibirá un correo para completar la solicitud."
 
-#: app/modules/web/Controllers/UserPassResetController.php:126
+#: app/modules/web/Controllers/UserPassResetController.php:128
 #: lib/SP/Services/Api/ApiService.php:96
 #: lib/SP/Services/Auth/LoginService.php:138
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 msgid "Attempts exceeded"
 msgstr "Intentos excedidos"
 
-#: app/modules/web/Controllers/UserPassResetController.php:179
+#: app/modules/web/Controllers/UserPassResetController.php:181
 #: app/modules/web/Forms/AuthTokenForm.php:101
 #: app/modules/web/Forms/UserForm.php:157
 msgid "Password cannot be blank"
 msgstr "La clave no puede estar en blanco"
 
-#: app/modules/web/Controllers/UserProfileController.php:215
-#: app/modules/web/Controllers/UserProfileController.php:218
+#: app/modules/web/Controllers/UserProfileController.php:219
+#: app/modules/web/Controllers/UserProfileController.php:222
 msgid "Profiles deleted"
 msgstr "Perfiles eliminados"
 
-#: app/modules/web/Controllers/UserProfileController.php:227
 #: app/modules/web/Controllers/UserProfileController.php:231
+#: app/modules/web/Controllers/UserProfileController.php:235
 msgid "Profile deleted"
 msgstr "Perfil eliminado"
 
-#: app/modules/web/Controllers/UserProfileController.php:262
+#: app/modules/web/Controllers/UserProfileController.php:268
 msgid "Profile added"
 msgstr "Perfil creado"
 
-#: app/modules/web/Controllers/UserProfileController.php:300
+#: app/modules/web/Controllers/UserProfileController.php:308
 msgid "Profile updated"
 msgstr "Perfil actualizado"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/UserProfileController.php:326
+#: app/modules/web/Controllers/UserProfileController.php:336
 #: app/config/actions.xml:643
 msgid "View Profile"
 msgstr "Ver Perfil"
 
-#: app/modules/web/Controllers/UserSettingsGeneralController.php:74
+#: app/modules/web/Controllers/UserSettingsGeneralController.php:75
 msgid "Preferences updated"
 msgstr "Preferencias actualizadas"
 
-#: app/modules/web/Controllers/UserSettingsManagerController.php:87
+#: app/modules/web/Controllers/UserSettingsManagerController.php:94
 msgid "Preferences"
 msgstr "Preferencias"
 
@@ -3319,15 +3315,15 @@ msgstr "Error al localizar el usuario en LDAP"
 msgid "Error while searching objects in base DN"
 msgstr "Error al buscar objetos en DN base"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:141
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:188
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:193
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:149
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:212
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:217
 msgid "Unable to connect to LDAP server"
 msgstr "No es posible conectar con el servidor de LDAP"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:142
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:189
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:213
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:70
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:39
 #: app/modules/web/themes/material-blue/views/config/info.inc:75
@@ -3339,17 +3335,17 @@ msgstr "No es posible conectar con el servidor de LDAP"
 msgid "Server"
 msgstr "Servidor"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:169
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:171
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:173
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:175
 msgid "LDAP parameters are not set"
 msgstr "Los parámetros de LDAP no están configurados"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:231
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:237
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:255
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:261
 msgid "Connection error (BIND)"
 msgstr "Error al conectar (BIND)"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:301
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:325
 msgid "Error while disconnecting from LDAP server"
 msgstr "Error al desconectar del servidor de LDAP"
 
@@ -3967,16 +3963,16 @@ msgstr "No es posible crear el directorio de backups (\"%s\")"
 msgid "Please, check the backup directory permissions"
 msgstr "Compruebe los permisos del directorio de backups"
 
-#: lib/SP/Services/Backup/FileBackupService.php:211
+#: lib/SP/Services/Backup/FileBackupService.php:218
 msgid "Copying database"
 msgstr "Copiando base de datos"
 
-#: lib/SP/Services/Backup/FileBackupService.php:343
-#: lib/SP/Services/Backup/FileBackupService.php:367
+#: lib/SP/Services/Backup/FileBackupService.php:350
+#: lib/SP/Services/Backup/FileBackupService.php:374
 msgid "Copying application"
 msgstr "Copiando aplicación"
 
-#: lib/SP/Services/Backup/FileBackupService.php:362
+#: lib/SP/Services/Backup/FileBackupService.php:369
 msgid "This operation is only available on Linux environments"
 msgstr "Esta operación sólo es posible en entornos Linux"
 
@@ -4120,13 +4116,13 @@ msgstr "Error al crear el archivo XML"
 msgid "Unable to process the XML file"
 msgstr "No es posible procesar el archivo XML"
 
-#: lib/SP/Services/Export/XmlVerifyService.php:177
+#: lib/SP/Services/Export/XmlVerifyService.php:181
 #: lib/SP/Services/Import/SyspassImport.php:176
 msgid "Error while checking integrity hash"
 msgstr "Fallo en la verificación del hash de integridad"
 
-#: lib/SP/Services/Export/XmlVerifyService.php:194
-#: lib/SP/Services/Export/XmlVerifyService.php:224
+#: lib/SP/Services/Export/XmlVerifyService.php:198
+#: lib/SP/Services/Export/XmlVerifyService.php:228
 #: lib/SP/Services/Import/SyspassImport.php:124
 #: lib/SP/Services/Import/SyspassImport.php:148
 msgid "Wrong encryption password"
@@ -4163,21 +4159,15 @@ msgstr "Error importando cuenta"
 msgid "Error while processing line"
 msgstr "Error procesando línea"
 
-#: lib/SP/Services/Import/FileImport.php:67
-#: lib/SP/Services/Import/FileImport.php:88
+#: lib/SP/Services/Import/FileImport.php:83
 msgid "File successfully uploaded"
 msgstr "Archivo no subido correctamente"
 
-#: lib/SP/Services/Import/FileImport.php:69
-#: lib/SP/Services/Import/FileImport.php:90
+#: lib/SP/Services/Import/FileImport.php:85
 msgid "Please check the web server user permissions"
 msgstr "Verifique los permisos del usuario del servidor web"
 
-#: lib/SP/Services/Import/FileImport.php:102
-msgid "Please, check the file extension"
-msgstr "Compruebe la extensión del archivo"
-
-#: lib/SP/Services/Import/FileImport.php:118
+#: lib/SP/Services/Import/FileImport.php:108
 msgid "Please, check PHP configuration for upload files"
 msgstr "Compruebe la configuración de PHP para subir archivos"
 
@@ -4549,20 +4539,38 @@ msgstr "Compruebe el registro de eventos para más detalles"
 msgid "API authorizations update"
 msgstr "Actualización de autorizaciones API"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:70
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:206
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:236
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:71
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:207
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:254
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:305
 msgid "Update Configuration"
 msgstr "Actualizar Configuración"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:82
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:83
 msgid "Parameter"
 msgstr "Parámetro"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:121
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:125
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:122
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:126
 msgid "Error while updating the configuration"
 msgstr "Error al actualizar la configuración"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:282
+msgid "MIME type set for this extension"
+msgstr "Tipo MIME establecido para esta extensión"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:283
+msgid "MIME type"
+msgstr "Tipo MIME"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:284
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:293
+msgid "Extension"
+msgstr "Extensión"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:292
+msgid "MIME type not found for this extension"
+msgstr "Tipo MIME no encontrado para esta extensión"
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:57
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:88
@@ -4662,16 +4670,16 @@ msgstr "URL de conexión no establecida"
 msgid "Blank query"
 msgstr "Consulta en blanco"
 
-#: lib/SP/Storage/Database/Database.php:259
+#: lib/SP/Storage/Database/Database.php:248
 msgid "Integrity constraint"
 msgstr "Restricción de integridad"
 
-#: lib/SP/Storage/Database/MySQLHandler.php:99
-#: lib/SP/Storage/Database/MySQLHandler.php:166
+#: lib/SP/Storage/Database/MySQLHandler.php:100
+#: lib/SP/Storage/Database/MySQLHandler.php:167
 msgid "Please, check the connection parameters"
 msgstr "Compruebe los datos de conexión"
 
-#: lib/SP/Storage/Database/QueryData.php:354 app/config/strings.js.inc:26
+#: lib/SP/Storage/Database/QueryData.php:338 app/config/strings.js.inc:26
 msgid "Error while querying"
 msgstr "Error en la consulta"
 
@@ -4835,8 +4843,8 @@ msgid "File size not allowed"
 msgstr "Tamaño de archivo no permitido"
 
 #: app/config/strings.js.inc:45
-msgid "Extension not allowed"
-msgstr "Extensión no permitida"
+msgid "MIME type not allowed"
+msgstr "Tipo MIME no permitido"
 
 #: app/config/strings.js.inc:46
 msgid "Clear the event log out?"
@@ -4873,7 +4881,7 @@ msgid "Select Profile"
 msgstr "Seleccionar Perfil"
 
 #: app/config/strings.js.inc:50
-#: app/modules/web/themes/material-blue/views/account/account.inc:84
+#: app/modules/web/themes/material-blue/views/account/account.inc:85
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
 msgid "Select Client"
@@ -4881,7 +4889,7 @@ msgstr "Seleccionar Cliente"
 
 #: app/config/strings.js.inc:51
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:109
+#: app/modules/web/themes/material-blue/views/account/account.inc:110
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
 msgid "Select Category"
@@ -5167,8 +5175,8 @@ msgid "No records found"
 msgstr "No se encontraron registros"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:168
-#: app/modules/web/themes/material-blue/views/account/account.inc:175
+#: app/modules/web/themes/material-blue/views/account/account.inc:169
+#: app/modules/web/themes/material-blue/views/account/account.inc:176
 #: app/modules/web/themes/material-blue/views/install/index.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:115
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
@@ -5180,8 +5188,8 @@ msgstr "Clave (repetir)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
-#: app/modules/web/themes/material-blue/views/account/account.inc:194
-#: app/modules/web/themes/material-blue/views/account/account.inc:278
+#: app/modules/web/themes/material-blue/views/account/account.inc:195
+#: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
 msgstr "Seleccionar fecha"
@@ -5189,8 +5197,8 @@ msgstr "Seleccionar fecha"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:142
-#: app/modules/web/themes/material-blue/views/account/account.inc:271
-#: app/modules/web/themes/material-blue/views/account/account.inc:273
+#: app/modules/web/themes/material-blue/views/account/account.inc:272
+#: app/modules/web/themes/material-blue/views/account/account.inc:274
 msgid "History"
 msgstr "Historial"
 
@@ -5202,7 +5210,7 @@ msgstr "Detalles"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:200
+#: app/modules/web/themes/material-blue/views/account/account.inc:201
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:163
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:169
@@ -5210,7 +5218,7 @@ msgid "Notes"
 msgstr "Notas"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
-#: app/modules/web/themes/material-blue/views/account/account.inc:293
+#: app/modules/web/themes/material-blue/views/account/account.inc:294
 #: app/modules/web/themes/material-blue/views/account/details.inc:32
 #: app/modules/web/themes/material-blue/views/account/details.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:291
@@ -5278,26 +5286,26 @@ msgstr "Enviar"
 msgid "Permissions"
 msgstr "Permisos"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:218
+#: app/modules/web/themes/material-blue/views/account/account.inc:219
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
 msgid "Select Tags"
 msgstr "Seleccionar Etiquetas"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:262
+#: app/modules/web/themes/material-blue/views/account/account.inc:263
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:26
 msgid "Select Account"
 msgstr "Seleccionar Cuenta"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:301
-#: app/modules/web/themes/material-blue/views/account/account.inc:303
-#: app/modules/web/themes/material-blue/views/account/account.inc:306
+#: app/modules/web/themes/material-blue/views/account/account.inc:302
+#: app/modules/web/themes/material-blue/views/account/account.inc:304
+#: app/modules/web/themes/material-blue/views/account/account.inc:307
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:193
 msgid "Public Link"
 msgstr "Enlace Público"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:314
-#: app/modules/web/themes/material-blue/views/account/account.inc:316
-#: app/modules/web/themes/material-blue/views/account/account.inc:319
+#: app/modules/web/themes/material-blue/views/account/account.inc:315
+#: app/modules/web/themes/material-blue/views/account/account.inc:317
+#: app/modules/web/themes/material-blue/views/account/account.inc:320
 msgid "Direct Link"
 msgstr "Enlace Directo"
 
@@ -5571,34 +5579,34 @@ msgstr "Habilita la subida/descarga de archivos para las cuentas."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:307
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:320
-msgid "Allowed file extensions"
-msgstr "Extensiones de archivos permitidas"
+msgid "Allowed MIME types"
+msgstr "Tipos MIME permitidos"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:312
-msgid "Allowed file extensions for uploading."
-msgstr "Extensiones permitidas para la subida de archivos."
+msgid "Allowed file MIME types for uploading."
+msgstr "Tipos MIME permitidos para subida de archivos"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:315
 msgid ""
-"Write the extension and press enter to add. Remember to save the "
-"configuration."
+"In order to add more MIME types, you need to add them into mime.xml file "
+"within the config directory."
 msgstr ""
-"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
-"configuración."
+"Para añadir más tipos MIME, es necesario modificar el archivo mime.xml en el "
+"directorio de configuración."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:328
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:335
 msgid "Maximum file size"
 msgstr "Tamaño máximo de archivo"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:333
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:340
 msgid "Sets the maximum file size for uploading."
 msgstr "Establece el tamaño máximo para subir archivos."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:337
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:344
 msgid "Absolute maximum is 16MB."
 msgstr "El máximo absuluto es de 16MB."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:348
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:355
 msgid "Maximum file size in kilobytes"
 msgstr "Tamaño máximo de archivo en kilobytes"
 

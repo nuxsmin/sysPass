@@ -191,7 +191,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $filesAllowedMime = $this->configData->getFilesAllowedMime();
 
             if (empty($filesAllowedMime)) {
-                throw new SPException(__u('There aren\'t any allowed mime types'));
+                throw new SPException(__u('There aren\'t any allowed MIME types'));
             }
 
             try {

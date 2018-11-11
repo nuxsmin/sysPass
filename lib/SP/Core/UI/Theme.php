@@ -30,7 +30,7 @@ use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Storage\File\FileCache;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
@@ -84,19 +84,19 @@ final class Theme implements ThemeInterface
      */
     private $module;
     /**
-     * @var FileCache
+     * @var FileCacheInterface
      */
     private $fileCache;
 
     /**
      * Theme constructor.
      *
-     * @param string           $module
-     * @param Config           $config
-     * @param ContextInterface $context
-     * @param FileCache        $fileCache
+     * @param string             $module
+     * @param Config             $config
+     * @param ContextInterface   $context
+     * @param FileCacheInterface $fileCache
      */
-    public function __construct($module, Config $config, ContextInterface $context, FileCache $fileCache)
+    public function __construct($module, Config $config, ContextInterface $context, FileCacheInterface $fileCache)
     {
         $this->configData = $config->getConfigData();
         $this->context = $context;
@@ -156,9 +156,9 @@ final class Theme implements ThemeInterface
     {
         try {
             if ($this->context->getAppStatus() !== SessionContext::APP_STATUS_RELOADED
-                && !$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)
+                && !$this->fileCache->isExpired(self::CACHE_EXPIRE)
             ) {
-                $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
+                $this->icons = $this->fileCache->load();
 
                 logger('Loaded icons cache', 'INFO');
 
@@ -186,7 +186,7 @@ final class Theme implements ThemeInterface
             }
 
             try {
-                $this->fileCache->save(self::ICONS_CACHE_FILE, $this->icons);
+                $this->fileCache->save($this->icons);
 
                 logger('Saved icons cache', 'INFO');
             } catch (FileException $e) {

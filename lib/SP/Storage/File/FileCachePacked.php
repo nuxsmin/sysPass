@@ -24,175 +24,56 @@
 
 namespace SP\Storage\File;
 
-use RuntimeException;
-
 /**
  * Class FileCachePacked
  *
  * @package SP\Storage\File;
  */
-final class FileCachePacked implements FileStorageInterface
+final class FileCachePacked extends FileCacheBase
 {
     /**
-     * @var array
-     */
-    protected $data;
-    /**
-     * @var bool
-     */
-    protected $loaded = false;
-
-    /**
-     * @param string $path
-     *
      * @return mixed
      * @throws \RuntimeException
      * @throws FileException
      */
-    public function load($path)
+    public function load()
     {
-        $file = new FileHandler($path);
+        $this->path->checkIsReadable();
+        $dataUnpacked = gzuncompress($this->path->readToString());
 
-        if (!($data = gzuncompress($file->checkIsReadable()->readToString()))) {
-            throw new FileException(sprintf(__('Error while decompressing the file data (%s)'), $path));
+        if ($dataUnpacked === false) {
+            throw new FileException(sprintf(__('Error while decompressing the file data (%s)'), $this->path->getFile()));
         }
 
-        if (($this->data = unserialize($data)) === false) {
+        $data = unserialize($dataUnpacked);
+
+        if ($data === false) {
             throw new FileException(__('Error while retrieving the data'));
         }
 
-        $this->loaded = true;
-
-        return $this;
+        return $data;
     }
 
     /**
-     * @param string $path
      * @param mixed  $data
      *
-     * @return FileStorageInterface
+     * @return FileCacheInterface
      * @throws FileException
      */
-    public function save($path, $data = null)
+    public function save($data)
     {
-        if ($data === null) {
-            $this->saveData($path, $this->data);
-        } else {
-            $this->saveData($path, $data);
+        $this->createPath();
+
+        $data = gzcompress(serialize($data));
+
+        if ($data === false) {
+            throw new FileException(sprintf(__('Error while compressing the file data (%s)'), $this->path->getFile()));
         }
 
-        return $this;
-    }
-
-    /**
-     * @param $path
-     * @param $data
-     *
-     * @throws FileException
-     */
-    protected function saveData($path, $data)
-    {
-
-        $this->createPath(dirname($path));
-
-        if (!($data = gzcompress(serialize($data)))) {
-            throw new FileException(sprintf(__('Error while compressing the file data (%s)'), $path));
-        }
-
-        $file = new FileHandler($path);
-        $file->checkIsWritable()
-            ->write(gzcompress(serialize($data)))
+        $this->path->checkIsWritable()
+            ->write($data)
             ->close();
-    }
-
-    /**
-     * @param $path
-     *
-     * @throws FileException
-     */
-    public function createPath($path)
-    {
-        if (!is_dir($path) && mkdir($path, 0700, true) === false) {
-            throw new FileException(sprintf(__('Unable to create the directory (%s)'), $path));
-        }
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return FileStorageInterface
-     * @throws FileException
-     */
-    public function delete($path)
-    {
-        $file = new FileHandler($path);
-        $file->delete();
 
         return $this;
-    }
-
-    /**
-     * Gets key data from cache
-     *
-     * @param $key
-     *
-     * @return mixed
-     */
-    public function get($key)
-    {
-        if (!$this->loaded) {
-            throw new RuntimeException((__('Data not loaded')));
-        }
-
-        return isset($this->data[$key]) ? $this->data[$key] : null;
-    }
-
-    /**
-     * Sets key data into cache
-     *
-     * @param $key
-     * @param $data
-     */
-    public function set($key, $data)
-    {
-        if (!$this->loaded) {
-            $this->data = [];
-        }
-
-        $this->data[$key] = ['time' => time(), 'data' => serialize($data)];
-    }
-
-    /**
-     * Returns whether the file is expired
-     *
-     * @param string $path
-     * @param int    $time
-     *
-     * @return bool
-     * @throws FileException
-     */
-    public function isExpired($path, $time = 86400): bool
-    {
-        $file = new FileHandler($path);
-        $file->checkFileExists();
-
-        return time() > $file->getFileTime() + $time;
-    }
-
-    /**
-     * Returns if the file is expired adding time to modification date
-     *
-     * @param string $path
-     * @param int    $date
-     *
-     * @return bool
-     * @throws FileException
-     */
-    public function isExpiredDate($path, $date): bool
-    {
-        $file = new FileHandler($path);
-        $file->checkFileExists();
-
-        return (int)$date > $file->getFileTime();
     }
 }

@@ -114,12 +114,4 @@ final class ArchiveHandler
         // Delete the non-compressed archive
         $this->archive->delete();
     }
-
-    /**
-     * @return FileHandler
-     */
-    public function getArchive(): FileHandler
-    {
-        return $this->archive;
-    }
 }

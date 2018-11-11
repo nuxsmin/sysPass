@@ -44,10 +44,6 @@ final class SecureSessionService extends Service
     const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';
 
     /**
-     * @var FileCache
-     */
-    protected $fileCache;
-    /**
      * @var string
      */
     protected $seed;
@@ -76,13 +72,15 @@ final class SecureSessionService extends Service
         $this->cookie = $cookie;
 
         try {
-            if ($this->fileCache->isExpired($this->getFileNameFromCookie(), self::CACHE_EXPIRE_TIME)) {
+            $cache = FileCache::factory($this->getFileNameFromCookie());
+
+            if ($cache->isExpired(self::CACHE_EXPIRE_TIME)) {
                 logger('Session key expired or does not exist', 'ERROR');
 
                 return $this->saveKey();
             }
 
-            if (($vault = $this->fileCache->load($this->getFileNameFromCookie())) instanceof Vault) {
+            if (($vault = $cache->load()) instanceof Vault) {
                 return Key::loadFromAsciiSafeString($vault->getData($this->getCypher()));
             }
         } catch (FileException $e) {
@@ -124,7 +122,8 @@ final class SecureSessionService extends Service
     {
         try {
             $securedKey = Key::createNewRandomKey();
-            $this->fileCache->save($this->getFileNameFromCookie(), (new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
+
+            FileCache::factory($this->getFileNameFromCookie())->save((new Vault())->saveData($securedKey->saveToAsciiSafeString(), $this->getCypher()));
 
             logger('Saved session key');
 
@@ -161,7 +160,6 @@ final class SecureSessionService extends Service
 
     protected function initialize()
     {
-        $this->fileCache = $this->dic->get(FileCache::class);
         $this->request = $this->dic->get(Request::class);
         $this->seed = $this->config->getConfigData()->getPasswordSalt();
     }

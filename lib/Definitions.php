@@ -63,15 +63,22 @@ return [
     DBStorageInterface::class => \DI\create(MySQLHandler::class)
         ->constructor(\DI\factory([DatabaseConnectionData::class, 'getFromConfig'])),
     Actions::class => function (ContainerInterface $c) {
-        return new Actions($c->get(FileCache::class), new XmlHandler(new FileHandler(ACTIONS_FILE)));
+        return new Actions(
+            new FileCache(Actions::ACTIONS_CACHE_FILE),
+            new XmlHandler(new FileHandler(ACTIONS_FILE))
+        );
     },
     MimeTypes::class => function (ContainerInterface $c) {
-        return new MimeTypes($c->get(FileCache::class), new XmlHandler(new FileHandler(MIMETYPES_FILE)));
+        return new MimeTypes(
+            new FileCache(MimeTypes::MIME_CACHE_FILE),
+            new XmlHandler(new FileHandler(MIMETYPES_FILE))
+        );
     },
     Acl::class => \DI\autowire(Acl::class)
         ->constructorParameter('action', get(Actions::class)),
     ThemeInterface::class => \DI\autowire(Theme::class)
-        ->constructorParameter('module', APP_MODULE),
+        ->constructorParameter('module', APP_MODULE)
+        ->constructorParameter('fileCache', new FileCache(Theme::ICONS_CACHE_FILE)),
     PHPMailer::class => \DI\create(PHPMailer::class)
         ->constructor(true),
     Logger::class => \DI\create(Logger::class)
