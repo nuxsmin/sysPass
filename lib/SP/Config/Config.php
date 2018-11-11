@@ -101,10 +101,11 @@ final class Config
         if (!$this->configLoaded) {
             try {
                 if ($this->fileCache->exists()
-                    && !$this->checkCacheDate()
+                    && !$this->isCacheExpired()
                 ) {
-                    logger('Config cache loaded');
                     $this->configData = $this->fileCache->load();
+
+                    logger('Config cache loaded');
                 } else {
                     if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
                         $this->configData = $this->loadConfigFromFile();
@@ -133,7 +134,7 @@ final class Config
     /**
      * @return bool
      */
-    private function checkCacheDate()
+    private function isCacheExpired()
     {
         try {
             return $this->fileCache->isExpiredDate($this->fileStorage->getFileHandler()->getFileTime());
@@ -239,7 +240,7 @@ final class Config
 
             if ($reload === true
                 || $configData === null
-                || !$this->checkCacheDate()
+                || $this->isCacheExpired()
             ) {
                 $this->configData = $this->loadConfigFromFile();
                 $this->fileCache->save($this->configData);
