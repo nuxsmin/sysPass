@@ -82,7 +82,7 @@ final class BootstrapController extends SimpleControllerBase
      */
     private function getJsLang()
     {
-        return require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
+        return require RESOURCES_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
     }
 
     /**

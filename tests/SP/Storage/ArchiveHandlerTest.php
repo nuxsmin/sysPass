@@ -46,7 +46,7 @@ class ArchiveHandlerTest extends TestCase
         $archive = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_file';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
-        $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml');
+        $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
 
         $this->assertFileExists($archive . ArchiveHandler::COMPRESS_EXTENSION);
     }

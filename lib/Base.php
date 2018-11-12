@@ -35,11 +35,12 @@ define('APP_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app');
 
 // Please, notice that this file should be outside the webserver root. You can move it and then update this path
 define('CONFIG_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'config');
+define('RESOURCES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'resources');
 
 // Setup config files
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
-define('MIMETYPES_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
+define('ACTIONS_FILE', RESOURCES_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+define('MIMETYPES_FILE', RESOURCES_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
 define('OLD_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
 define('LOG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
 define('LOCK_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . '.lock');

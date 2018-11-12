@@ -37,7 +37,7 @@ final class ResourceController extends SimpleControllerBase
     /**
      * @var Minify
      */
-    protected $minify;
+    private $minify;
 
     /**
      * Returns CSS resources
@@ -126,8 +126,6 @@ final class ResourceController extends SimpleControllerBase
 
     /**
      * @throws SPException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     protected function initialize()
     {
