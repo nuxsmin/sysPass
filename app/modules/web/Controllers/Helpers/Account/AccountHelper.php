@@ -383,7 +383,8 @@ final class AccountHelper extends HelperBase
 
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->getIsAdminApp());
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() || $userData->getIsAdminApp());
-        $this->view->assign('accountPrivate', $accountPrivate);
+        $this->view->assign('privateUserCheck', $accountPrivate->isPrivateUser());
+        $this->view->assign('privateUserGroupCheck', $accountPrivate->isPrivateGroup());
 
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);

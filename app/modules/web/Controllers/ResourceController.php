@@ -92,7 +92,6 @@ final class ResourceController extends SimpleControllerBase
 
                 $this->minify->addFiles([
                     'jquery-3.3.1.min.js',
-//                    'jquery-migrate-3.0.0.min.js',
                     'jquery.fileDownload.min.js',
                     'clipboard.min.js',
                     'selectize.min.js',
@@ -109,15 +108,14 @@ final class ResourceController extends SimpleControllerBase
                 $this->minify->setType(Minify::FILETYPE_JS)
                     ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
 
-                // FIXME: use MIN version
                 $this->minify->addFiles([
-                    'app.js',
-                    'app-config.js',
-                    'app-triggers.js',
-                    'app-actions.js',
-                    'app-requests.js',
-                    'app-util.js',
-                    'app-main.js'], false);
+                    'app.min.js',
+                    'app-config.min.js',
+                    'app-triggers.min.js',
+                    'app-actions.min.js',
+                    'app-requests.min.js',
+                    'app-util.min.js',
+                    'app-main.min.js'], false);
             }
 
             $this->minify->getMinified();
@@ -126,6 +124,8 @@ final class ResourceController extends SimpleControllerBase
 
     /**
      * @throws SPException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     protected function initialize()
     {

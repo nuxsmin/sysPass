@@ -198,5 +198,19 @@
                 <field name="hash">fa66da8c08bf2728dfa90bb0682494a763dc0c11</field>
             </row>
         </table_data>
+        <table_data name="UserToUserGroup">
+            <row>
+                <field name="userId">1</field>
+                <field name="userGroupId">2</field>
+            </row>
+            <row>
+                <field name="userId">3</field>
+                <field name="userGroupId">2</field>
+            </row>
+            <row>
+                <field name="userId">2</field>
+                <field name="userGroupId">1</field>
+            </row>
+        </table_data>
     </database>
 </mysqldump>

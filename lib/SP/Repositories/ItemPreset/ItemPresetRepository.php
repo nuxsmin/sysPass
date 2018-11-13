@@ -174,13 +174,23 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemPresetData::class);
         $queryData->setQuery(
-            'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data` 
-        FROM ItemPreset 
-        WHERE type = ? AND (userId = ? OR userGroupId = ? OR userProfileId = ?)
-        ORDER BY priority DESC, userId DESC, userProfileId DESC, userGroupId DESC
-        LIMIT 1');
+            'SELECT id, type, userId, userGroupId, userProfileId, `fixed`, priority, `data`,
+                    IF(userId IS NOT NULL, priority + 3,
+                      IF(userGroupId IS NOT NULL, priority + 2,
+                        IF(userProfileId IS NOT NULL, priority + 1, 0))) AS score
+                    FROM ItemPreset
+                    WHERE type = ?
+                    AND (userId = ? 
+                      OR userGroupId = ? 
+                      OR userProfileId = ? 
+                      OR userGroupId IN (SELECT UserToUserGroup.userGroupId
+                        FROM UserToUserGroup
+                        WHERE UserToUserGroup.userId = ?)
+                    )
+                    ORDER BY score DESC
+                    LIMIT 1');
 
-        $queryData->setParams([$type, $userId, $userGroupId, $userProfileId]);
+        $queryData->setParams([$type, $userId, $userGroupId, $userProfileId, $userId]);
 
         return $this->db->doSelect($queryData);
     }
@@ -304,19 +314,17 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
             ItemPreset.data,
             User.name AS userName,
             UserProfile.name AS userProfileName,
-            UserGroup.name AS userGroupName');
+            UserGroup.name AS userGroupName,
+            IF(ItemPreset.userId IS NOT NULL, ItemPreset.priority + 3,
+                      IF(ItemPreset.userGroupId IS NOT NULL, ItemPreset.priority + 2,
+                        IF(ItemPreset.userProfileId IS NOT NULL, ItemPreset.priority + 1, 0))) AS score');
         $queryData->setFrom('
             ItemPreset
             LEFT JOIN User ON ItemPreset.userId = User.id 
             LEFT JOIN UserProfile ON ItemPreset.userProfileId = UserProfile.id 
             LEFT JOIN UserGroup ON ItemPreset.userGroupId = UserGroup.id');
         $queryData->setOrder(
-            'ItemPreset.type, 
-            ItemPreset.priority DESC, 
-            ItemPreset.userId DESC, 
-            ItemPreset.userProfileId DESC, 
-            ItemPreset.userGroupId DESC
-            ');
+            'ItemPreset.type, score DESC');
 
         if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere(

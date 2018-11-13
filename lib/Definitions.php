@@ -71,7 +71,7 @@ return [
             new XmlHandler(new FileHandler(ACTIONS_FILE))
         );
     },
-    MimeTypes::class => function (ContainerInterface $c) {
+    MimeTypes::class => function () {
         return new MimeTypes(
             new FileCache(MimeTypes::MIME_CACHE_FILE),
             new XmlHandler(new FileHandler(MIMETYPES_FILE))

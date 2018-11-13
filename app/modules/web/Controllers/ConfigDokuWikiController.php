@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,11 +32,11 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
 /**
- * Class ConfigWikiController
+ * Class ConfigDokuWikiController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class ConfigWikiController extends SimpleControllerBase
+final class ConfigDokuWikiController extends SimpleControllerBase
 {
     use ConfigTrait;
 
@@ -52,34 +52,38 @@ final class ConfigWikiController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
 
-        // Wiki
-        $wikiEnabled = $this->request->analyzeBool('wiki_enabled', false);
-        $wikiSearchUrl = $this->request->analyzeString('wiki_searchurl');
-        $wikiPageUrl = $this->request->analyzeString('wiki_pageurl');
-        $wikiFilter = $this->request->analyzeString('wiki_filter');
+        // DokuWiki
+        $dokuWikiEnabled = $this->request->analyzeBool('dokuwiki_enabled', false);
+        $dokuWikiUrl = $this->request->analyzeString('dokuwiki_url');
+        $dokuWikiUrlBase = $this->request->analyzeString('dokuwiki_urlbase');
+        $dokuWikiUser = $this->request->analyzeString('dokuwiki_user');
+        $dokuWikiPass = $this->request->analyzeEncrypted('dokuwiki_pass');
+        $dokuWikiNamespace = $this->request->analyzeString('dokuwiki_namespace');
 
-        // Valores para la conexión a la Wiki
-        if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Wiki parameters'));
+        // Valores para la conexión a la API de DokuWiki
+        if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
+            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing DokuWiki parameters'));
         }
 
-        if ($wikiEnabled) {
-            $configData->setWikiEnabled(true);
-            $configData->setWikiSearchurl($wikiSearchUrl);
-            $configData->setWikiPageurl($wikiPageUrl);
-            $configData->setWikiFilter(explode(',', $wikiFilter));
+        if ($dokuWikiEnabled) {
+            $configData->setDokuwikiEnabled(true);
+            $configData->setDokuwikiUrl($dokuWikiUrl);
+            $configData->setDokuwikiUrlBase(trim($dokuWikiUrlBase, '/'));
+            $configData->setDokuwikiUser($dokuWikiUser);
+            $configData->setDokuwikiPass($dokuWikiPass);
+            $configData->setDokuwikiNamespace($dokuWikiNamespace);
 
-            if ($configData->isWikiEnabled() === false) {
-                $eventMessage->addDescription(__u('Wiki enabled'));
+            if ($configData->isDokuwikiEnabled() === false) {
+                $eventMessage->addDescription(__u('DokuWiki enabled'));
             }
-        } elseif ($wikiEnabled === false && $configData->isWikiEnabled()) {
-            $configData->setWikiEnabled(false);
+        } elseif ($dokuWikiEnabled === false && $configData->isDokuwikiEnabled()) {
+            $configData->setDokuwikiEnabled(false);
 
-            $eventMessage->addDescription(__u('Wiki disabled'));
+            $eventMessage->addDescription(__u('DokuWiki disabled'));
         }
 
         return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-            $this->eventDispatcher->notifyEvent('save.config.wiki', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent('save.config.dokuwiki', new Event($this, $eventMessage));
         });
     }
 

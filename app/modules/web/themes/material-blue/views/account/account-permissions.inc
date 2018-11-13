@@ -189,17 +189,14 @@
         <?php endif; ?>
 
         <?php if ($_getvar('allowPrivate') === true):
-            $accountPrivate = $_getvar('accountPrivate');
-
-            $privateUserCheck = (($gotData && $accountData->getIsPrivate())
-                || (is_object($accountPrivate) && $accountPrivate->isPrivateUser())) ? 'checked' : '';
+            $checked = ($gotData && $accountData->getIsPrivate()) || $_getvar('privateUserCheck');
             ?>
             <tr>
                 <td class="descField"><?php echo __('Private Account'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_enabled">
                         <input name="private_enabled" type="checkbox" id="private_enabled"
-                               class="mdl-switch__input" <?php echo $_getvar('privateUserCheck');
+                               class="mdl-switch__input" <?php echo $checked ? 'checked' : '';
                         echo $_getvar('disabled'); ?>/>
                         <span class="mdl-switch__label"><?php echo __('Private'); ?></span>
                     </label>
@@ -208,17 +205,14 @@
         <?php endif; ?>
 
         <?php if ($_getvar('allowPrivateGroup') === true):
-            $accountPrivate = $_getvar('accountPrivate');
-
-            $privateUserGroupCheck = (($gotData && $accountData->getIsPrivateGroup())
-                || (is_object($accountPrivate) && $accountPrivate->isPrivateGroup())) ? 'checked' : '';
+            $checked = ($gotData && $accountData->getIsPrivateGroup()) || $_getvar('privateUserGroupCheck');
             ?>
             <tr>
                 <td class="descField"><?php echo __('Private Account for Group'); ?></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_group_enabled">
                         <input name="private_group_enabled" type="checkbox" id="private_group_enabled"
-                               class="mdl-switch__input" <?php echo $_getvar('privateUserGroupCheck');
+                               class="mdl-switch__input" <?php echo $checked ? 'checked' : '';
                         echo $_getvar('disabled'); ?>/>
                         <span class="mdl-switch__label"><?php echo __('Private for Group'); ?></span>
                     </label>

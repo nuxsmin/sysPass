@@ -280,7 +280,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
             return $fileData->getType();
         } elseif (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime())) {
             return $fileHandler->getFileType();
-
         }
 
         throw new SPException(

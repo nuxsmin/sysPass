@@ -95,7 +95,14 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
 
         if ($source instanceof SPException) {
             $eventlogData->setLevel('ERROR');
-            $eventlogData->setDescription(__($source->getMessage()) . PHP_EOL . __($source->getHint()));
+
+            $hint = $source->getHint();
+
+            if ($hint !== null) {
+                $eventlogData->setDescription(__($source->getMessage()) . PHP_EOL . $hint);
+            } else {
+                $eventlogData->setDescription(__($source->getMessage()));
+            }
         } elseif ($source instanceof \Exception) {
             $eventlogData->setLevel('ERROR');
             $eventlogData->setDescription(__($source->getMessage()));

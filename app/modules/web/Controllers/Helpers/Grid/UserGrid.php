@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -66,13 +65,6 @@ final class UserGrid extends GridBase
         $grid->setPager($this->getPager($searchAction));
 
         $grid->addDataAction($this->getCreateAction());
-
-        if ($this->acl->checkUserAccess(ActionsInterface::CONFIG_IMPORT)
-            && $this->configData->isLdapEnabled()
-        ) {
-            $grid->addDataAction($this->getLdapSyncAction());
-        }
-
         $grid->addDataAction($this->getViewAction());
         $grid->addDataAction($this->getEditAction());
         $grid->addDataAction($this->getEditPassAction());
@@ -208,24 +200,6 @@ final class UserGrid extends GridBase
         $gridAction->setIcon($this->icons->getIconDelete());
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_DELETE));
-
-        return $gridAction;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    private function getLdapSyncAction()
-    {
-        $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::CONFIG_LDAP_SYNC);
-        $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
-        $gridAction->setName(__('Import users from LDAP'));
-        $gridAction->setTitle(__('Import users from LDAP'));
-        $gridAction->setIcon(new FontIcon('get_app'));
-        $gridAction->setSkip(true);
-        $gridAction->setOnClickFunction('appMgmt/ldapSync');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::CONFIG_LDAP_SYNC));
 
         return $gridAction;
     }
