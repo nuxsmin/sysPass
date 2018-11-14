@@ -2139,7 +2139,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedMime(): array
     {
-        return $this->filesAllowedMime;
+        return (array)$this->filesAllowedMime;
     }
 
     /**
