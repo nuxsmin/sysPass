@@ -62,6 +62,8 @@ final class ItemManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
