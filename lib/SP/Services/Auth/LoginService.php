@@ -497,7 +497,9 @@ final class LoginService extends Service
                 );
             }
 
-            if ($authData->isAuthGranted() === false) {
+            if ($authData->getStatusCode() === LdapCode::NO_SUCH_OBJECT
+                || $authData->isAuthGranted() === false
+            ) {
                 return false;
             }
 
