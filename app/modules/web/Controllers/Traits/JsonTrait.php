@@ -79,7 +79,7 @@ trait JsonTrait
         $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
 
-        if (property_exists($this, 'session')) {
+        if (isset($this->session)) {
             $jsonResponse->setCsrf($this->session->getSecurityKey());
         }
 
@@ -112,7 +112,7 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        if (property_exists($this, 'session')) {
+        if (isset($this->session)) {
             $jsonResponse->setCsrf($this->session->getSecurityKey());
         }
 

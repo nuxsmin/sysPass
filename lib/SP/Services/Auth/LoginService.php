@@ -173,7 +173,9 @@ final class LoginService extends Service
         $this->loadUserPreferences();
         $this->cleanUserData();
 
-        return new LoginResponse(self::STATUS_PASS, 'index.php?r=' . ($this->from ?: 'index'));
+        $redirect = 'index.php?r=' . ($this->from ? $this->from . '&sk=' . $this->context->getSecurityKey() : 'index');
+
+        return new LoginResponse(self::STATUS_PASS, $redirect);
     }
 
     /**

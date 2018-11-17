@@ -390,7 +390,12 @@ final class Request
         }
 
         if ($result === false) {
-            throw new SPException('URI string altered');
+            throw new SPException(
+                'URI string altered',
+                SPException::ERROR,
+                null,
+                1
+            );
         }
     }
 
@@ -416,12 +421,14 @@ final class Request
             return strtolower($xForward['proto'] . '://' . $xForward['host']);
         }
 
+        $protocol = 'http://';
+
         // We got called directly
         if ($this->https) {
-            return 'https://' . $this->request->server()->get('HTTP_HOST');
+            $protocol = 'https://';
         }
 
-        return 'http://' . $this->request->server()->get('HTTP_HOST');
+        return $protocol . $this->request->server()->get('HTTP_HOST');
     }
 
     /**

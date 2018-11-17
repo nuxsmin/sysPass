@@ -25,27 +25,11 @@ sysPass.Util = function (log) {
     "use strict";
 
     /**
-     * @author http://stackoverflow.com/users/24950/robert-k
+     * @author https://stackoverflow.com/users/82548/david-thomas
      * @link http://stackoverflow.com/questions/5796718/html-entity-decode
      */
-    const decodeEntities = function () {
-        // this prevents any overhead from creating the object each time
-        const element = document.createElement("div");
-
-        function decodeHTMLEntities(str) {
-            if (str && typeof str === "string") {
-                // strip script/html tags
-                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, "");
-                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, "");
-                element.innerHTML = str;
-                str = element.textContent;
-                element.textContent = "";
-            }
-
-            return str;
-        }
-
-        return decodeHTMLEntities;
+    const decodeEntities = function (str) {
+        return $('<textarea />').html(str).text();
     };
 
     /**

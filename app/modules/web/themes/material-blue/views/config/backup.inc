@@ -3,6 +3,7 @@
  * @var \SP\Core\UI\ThemeIcons $icons
  * @var \SP\Config\ConfigData  $configData
  * @var callable               $_getvar
+ * @var callable               $_getRoute
  * @var \SP\Mvc\View\Template  $this
  */
 ?>

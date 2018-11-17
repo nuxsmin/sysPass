@@ -136,6 +136,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
 
+            $this->view->addTemplate('account');
+
             $accountDetailsResponse = $this->accountService->getById($id);
             $this->accountService
                 ->withUsersById($accountDetailsResponse)
@@ -146,7 +148,6 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $accountHelper->setIsView(true);
             $accountHelper->setViewForAccount($accountDetailsResponse, Acl::ACCOUNT_VIEW);
 
-            $this->view->addTemplate('account');
             $this->view->assign('title',
                 [
                     'class' => 'titleNormal',
@@ -168,6 +169,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
@@ -282,6 +289,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
         } catch (\Exception $e) {
             processException($e);
 
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
@@ -329,6 +342,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
@@ -380,6 +399,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
@@ -426,6 +451,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
@@ -474,6 +505,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account-editpass');
         }
     }
@@ -521,6 +558,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
+
             ErrorUtil::showExceptionInView($this->view, $e, 'account-history');
         }
     }
@@ -556,6 +599,12 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            if ($this->isAjax === false
+                && !$this->view->isUpgraded()
+            ) {
+                $this->upgradeView();
+            }
 
             ErrorUtil::showExceptionInView($this->view, $e, 'account-request');
         }

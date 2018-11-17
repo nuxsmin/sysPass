@@ -356,30 +356,14 @@ final class Bootstrap
      */
     private function initPaths()
     {
-        self::$SUBURI = str_replace("\\", '/', substr(realpath($this->request->getServer('SCRIPT_FILENAME')), strlen(APP_ROOT)));
+        self::$SUBURI = '/' . basename($this->request->getServer('SCRIPT_FILENAME'));
 
-        $scriptName = $this->request->getServer('REQUEST_URI');
+        $uri = $this->request->getServer('REQUEST_URI');
 
-        if (substr($scriptName, -1) === '/') {
-            $scriptName .= 'index.php';
+        $pos = strpos($uri, self::$SUBURI);
 
-            // Asegurar que suburi sigue las mismas reglas que scriptName
-            if (substr(self::$SUBURI, -9) !== 'index.php') {
-                if (substr(self::$SUBURI, -1) !== '/') {
-                    self::$SUBURI .= '/';
-                }
-                self::$SUBURI .= 'index.php';
-            }
-        }
-
-        if (($pos = strpos($scriptName, self::$SUBURI)) === false) {
-            $pos = strpos($scriptName, '?');
-        }
-
-        self::$WEBROOT = substr($scriptName, 0, $pos);
-
-        if (self::$WEBROOT !== '' && self::$WEBROOT[0] !== '/') {
-            self::$WEBROOT = '/' . self::$WEBROOT;
+        if ($pos > 0) {
+            self::$WEBROOT = substr($uri, 0, $pos);
         }
 
         self::$WEBURI = $this->request->getHttpHost() . self::$WEBROOT;

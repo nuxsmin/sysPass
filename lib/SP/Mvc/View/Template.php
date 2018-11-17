@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Bootstrap;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\UI\ThemeInterface;
+use SP\Http\Uri;
 
 /**
  * Class Template
@@ -371,7 +372,11 @@ final class Template
         };
 
         $_getRoute = function ($path) use ($sk) {
-            return Bootstrap::$WEBURI . '/index.php?r=' . $path . '&sk=' . $sk;
+            $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
+            $uri->addParam('r', $path);
+            $uri->addParam('sk', $sk);
+
+            return $uri->getUri();
         };
 
         ob_start();

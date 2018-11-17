@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use SP\Bootstrap;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -322,7 +323,7 @@ final class AccountHelper extends HelperBase
     {
         $route = Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : '');
 
-        $uri = new Uri('index.php');
+        $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
         $uri->addParam('r', $route);
 
         return $uri->getUriSigned($this->configData->getPasswordSalt());

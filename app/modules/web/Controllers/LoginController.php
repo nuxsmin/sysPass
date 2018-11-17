@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Bootstrap;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -63,7 +64,7 @@ final class LoginController extends ControllerBase
             $this->checkForwarded();
 
             $redirector = function ($route) use ($from) {
-                $uri = new Uri('index.php');
+                $uri = new Uri(Bootstrap::$SUBURI);
                 $uri->addParam('r', $route);
 
                 if ($from !== null) {

@@ -24,6 +24,7 @@
 
 namespace SP\Mvc\Controller;
 
+use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
@@ -38,6 +39,7 @@ use SP\Util\Util;
  * Trait ControllerTrait
  *
  * @package SP\Mvc\Controller
+ * @property ConfigData $configData
  */
 trait ControllerTrait
 {
@@ -84,7 +86,7 @@ trait ControllerTrait
                     $route = $request->analyzeString('r');
                     $hash = $request->analyzeString('h');
 
-                    $uri = new Uri('index.php');
+                    $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
                     $uri->addParam('_r', 'login');
 
                     if ($route && $hash) {
@@ -112,10 +114,22 @@ trait ControllerTrait
      */
     protected function checkSecurityToken($previousToken, Request $request)
     {
-        $sk = $request->analyzeString('sk');
+        if ($request->analyzeString('h') !== null
+            && $request->analyzeString('from') === null
+            && isset($this->configData)
+        ) {
+            $request->verifySignature($this->configData->getPasswordSalt());
+        } else {
+            $sk = $request->analyzeString('sk');
 
-        if (!$sk || $previousToken !== $sk) {
-            throw new SPException(__u('Invalid Action'));
+            if (!$sk || $previousToken !== $sk) {
+                throw new SPException(
+                    __u('Invalid Action'),
+                    SPException::ERROR,
+                    null,
+                    1
+                );
+            }
         }
     }
 

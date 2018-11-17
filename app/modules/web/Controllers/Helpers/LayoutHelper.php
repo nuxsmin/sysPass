@@ -102,10 +102,10 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', Installer::VERSION_TEXT);
-        $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');
-        $this->view->assign('logoNoText', Bootstrap::$WEBURI . '/public/images/logo_icon.svg');
-        $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');
-        $this->view->assign('logonobg', Bootstrap::$WEBURI . '/public/images/logo_full_nobg.png');
+        $this->view->assign('logoIcon', Bootstrap::$WEBROOT . '/public/images/logo_icon.png');
+        $this->view->assign('logoNoText', Bootstrap::$WEBROOT . '/public/images/logo_icon.svg');
+        $this->view->assign('logo', Bootstrap::$WEBROOT . '/public/images/logo_full_bg.png');
+        $this->view->assign('logonobg', Bootstrap::$WEBROOT . '/public/images/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
 
@@ -134,8 +134,9 @@ final class LayoutHelper extends HelperBase
     protected function getResourcesLinks()
     {
         $version = VersionUtil::getVersionStringNormalized();
+        $uri = Bootstrap::$WEBROOT . Bootstrap::$SUBURI;
 
-        $jsUri = new Uri(Bootstrap::$WEBURI . '/index.php');
+        $jsUri = new Uri($uri);
         $jsUri->addParam('_r', 'resource/js');
         $jsUri->addParam('_v', md5($version));
 
@@ -164,7 +165,7 @@ final class LayoutHelper extends HelperBase
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
-        $cssUri = new Uri(Bootstrap::$WEBURI . '/index.php');
+        $cssUri = new Uri($uri);
         $cssUri->addParam('_r', 'resource/css');
         $cssUri->addParam('_v', md5($version . $resultsAsCards));
 

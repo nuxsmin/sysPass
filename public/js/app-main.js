@@ -128,7 +128,7 @@ sysPass.Main = function () {
         }
 
         $("body").on("click", ".clip-pass-button", function () {
-            const json = sysPassApp.actions.account.copyPass($(this)).done(function (json) {
+            const json = oPublic.actions.account.copyPass($(this)).done(function (json) {
                 if (json.status !== 0) {
                     msg.out(json);
 
@@ -165,8 +165,10 @@ sysPass.Main = function () {
                     }
                 );
         }).on("click", ".clip-pass-icon", function () {
+            const $target =$(this.dataset.clipboardTarget);
+
             clipboard
-                .copy(sysPass.Util.decodeEntities($(this.dataset.clipboardTarget).val()))
+                .copy(oPublic.util.decodeEntities($target.val()))
                 .then(
                     function () {
                         msg.ok(oPublic.config.LANG[45]);
@@ -176,8 +178,10 @@ sysPass.Main = function () {
                     }
                 );
         }).on("click", ".clip-pass-field", function () {
+            const target = document.getElementById(this.dataset.clipboardTarget);
+
             clipboard
-                .copy(sysPass.Util.decodeEntities(document.getElementById(this.dataset.clipboardTarget).dataset.pass))
+                .copy(oPublic.util.decodeEntities(target.dataset.pass))
                 .then(
                     function () {
                         msg.ok(oPublic.config.LANG[45]);
@@ -364,7 +368,7 @@ sysPass.Main = function () {
                         this.warn(description);
                         break;
                     case 10:
-                        sysPassApp.actions.main.logout();
+                        oPublic.actions.main.logout();
                         break;
                     case 100:
                         this.ok(description);
