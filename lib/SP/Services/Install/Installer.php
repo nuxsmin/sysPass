@@ -57,7 +57,7 @@ final class Installer extends Service
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-rc3';
-    const BUILD = 18111801;
+    const BUILD = 18111901;
 
     /**
      * @var DatabaseSetupInterface
@@ -289,7 +289,13 @@ final class Installer extends Service
     private function updateConnectionData()
     {
         $this->dic->set(DBStorageInterface::class, $this->dbs->createDbHandlerFromInstaller());
-        $this->dic->set(Database::class, new Database($this->dic->get(DBStorageInterface::class), $this->dic->get(EventDispatcher::class)));
+        $this->dic->set(
+            Database::class,
+            new Database(
+                $this->dic->get(DBStorageInterface::class),
+                $this->dic->get(EventDispatcher::class)
+            )
+        );
     }
 
     /**

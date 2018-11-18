@@ -95,7 +95,7 @@ final class Init extends ModuleBase
         $this->checkInstalled();
 
         // Checks if maintenance mode is turned on
-        if (!$this->checkMaintenanceMode($this->context)) {
+        if ($this->checkMaintenanceMode($this->context)) {
             throw new InitializationException('Maintenance mode');
         }
 

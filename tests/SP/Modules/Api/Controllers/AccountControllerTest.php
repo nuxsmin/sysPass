@@ -68,7 +68,7 @@ class AccountControllerTest extends WebTestCase
         $this->assertNull($result->result->count);
         $this->assertInstanceOf(\stdClass::class, $result->result);
         $this->assertEquals(3, $result->result->itemId);
-        $this->assertEquals('Account added', $result->result->resultMessage);
+        $this->assertEquals('Account created', $result->result->resultMessage);
 
         return $result->result->itemId;
     }
@@ -102,7 +102,7 @@ class AccountControllerTest extends WebTestCase
         $this->assertNull($result->result->count);
         $this->assertInstanceOf(\stdClass::class, $result->result);
         $this->assertEquals(4, $result->result->itemId);
-        $this->assertEquals('Account added', $result->result->resultMessage);
+        $this->assertEquals('Account created', $result->result->resultMessage);
 
         $data = [
             'jsonrpc' => '2.0',

@@ -380,16 +380,16 @@ CREATE TABLE `EventLog` (
   COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 INSERT INTO CustomFieldType (id, name, text)
-VALUES (1, 'text', 'Texto'),
-       (2, 'password', 'Clave'),
-       (3, 'date', 'Fecha'),
-       (4, 'number', 'Número'),
+VALUES (1, 'text', 'Text'),
+       (2, 'password', 'Password'),
+       (3, 'date', 'Date'),
+       (4, 'number', 'Number'),
        (5, 'email', 'Email'),
-       (6, 'telephone', 'Teléfono'),
+       (6, 'telephone', 'Phone'),
        (7, 'url', 'URL'),
        (8, 'color', 'Color'),
        (9, 'wiki', 'Wiki'),
-       (10, 'textarea', 'Área de Texto');
+       (10, 'textarea', 'Text Area');
 DROP TABLE IF EXISTS `Notification`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
