@@ -24,8 +24,6 @@
 
 namespace SP\Core\Messages;
 
-use SP\Html\Html;
-
 /**
  * Class LogMessage
  *
@@ -51,57 +49,6 @@ final class LogMessage extends MessageBase
     protected $detailsCounter = 0;
 
     /**
-     * Devuelve la descripción de la acción realizada en formato HTML
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getHtmlDescription($translate = false)
-    {
-        return nl2br($this->getDescription($translate));
-    }
-
-    /**
-     * Devuelve la descripción de la acción realizada
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getDescription($translate = false)
-    {
-        if (count($this->description) === 0) {
-            return '';
-        }
-
-        if (count($this->description) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map('__', $this->description));
-            }
-
-            return implode(PHP_EOL, $this->description);
-        }
-
-        return $translate === true ? __($this->description[0]) : $this->description[0];
-    }
-
-    /**
-     * Añadir detalle en formato HTML. Se resalta el texto clave.
-     *
-     * @param $key   string
-     * @param $value string
-     *
-     * @return $this
-     */
-    public function addDetailsHtml($key, $value)
-    {
-        $this->addDetails(Html::strongText($key), $value);
-
-        return $this;
-    }
-
-    /**
      * Establece los detalles de la acción realizada
      *
      * @param $key   string
@@ -116,7 +63,6 @@ final class LogMessage extends MessageBase
         }
 
         $this->details[] = [$this->formatString($key), $this->formatString($value)];
-
         $this->detailsCounter++;
 
         return $this;
@@ -132,20 +78,6 @@ final class LogMessage extends MessageBase
     private function formatString($string)
     {
         return strip_tags($string);
-    }
-
-    /**
-     * Establece la descripción de la acción realizada en formato HTML
-     *
-     * @param string $description
-     *
-     * @return $this
-     */
-    public function addDescriptionHtml($description = '')
-    {
-        $this->addDescription(Html::strongText($description));
-
-        return $this;
     }
 
     /**
@@ -182,9 +114,11 @@ final class LogMessage extends MessageBase
      */
     public function composeText($delimiter = PHP_EOL)
     {
+        $formatter = new TextFormatter();
+
         $message[] = $this->getAction(true);
-        $message[] = $this->getDescription(true);
-        $message[] = $this->getDetails(true);
+        $message[] = $this->getDescription($formatter, true);
+        $message[] = $this->getDetails($formatter, true);
 
         return implode(PHP_EOL, $message);
     }
@@ -198,7 +132,7 @@ final class LogMessage extends MessageBase
      */
     public function getAction($translate = false)
     {
-        return $translate === true ? __($this->action) : $this->action;
+        return $translate ? __($this->action) : $this->action;
     }
 
     /**
@@ -216,46 +150,37 @@ final class LogMessage extends MessageBase
     }
 
     /**
-     * Devuelve los detalles de la acción realizada
+     * Devuelve la descripción de la acción realizada
      *
-     * @param bool $translate
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
      *
      * @return string
      */
-    public function getDetails($translate = false)
+    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    {
+        if (count($this->description) === 0) {
+            return '';
+        }
+
+        return $formatter->formatDescription($this->description, $translate);
+    }
+
+    /**
+     * Devuelve los detalles de la acción realizada
+     *
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
+     *
+     * @return string
+     */
+    public function getDetails(FormatterInterface $formatter, $translate = false): string
     {
         if (count($this->details) === 0) {
             return '';
         }
 
-        if (count($this->details) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
-                    return $this->formatDetail($detail, $translate);
-                }, $this->details));
-            }
-
-            return implode(PHP_EOL, array_map([$this, 'formatDetail'], $this->details));
-        }
-
-        return $this->formatDetail($this->details[0], $translate);
-    }
-
-    /**
-     * Devolver un detalle formateado
-     *
-     * @param array $detail
-     * @param bool  $translate
-     *
-     * @return string
-     */
-    protected function formatDetail(array $detail, $translate = false)
-    {
-        if ($translate === true) {
-            return sprintf('%s : %s', __($detail[0]), __($detail[1]));
-        }
-
-        return sprintf('%s : %s', $detail[0], $detail[1]);
+        return $formatter->formatDetail($this->details, $translate);
     }
 
     /**
@@ -265,14 +190,16 @@ final class LogMessage extends MessageBase
      */
     public function composeHtml()
     {
-        $message[] = '<div class="log-message">';
-        $message[] = '<h1>' . $this->action . '</h1>';
-        $message[] = '<p class="description">' . nl2br($this->getDescription(true)) . '</p>';
-        $message[] = '<p class="details">' . nl2br($this->getDetails(true)) . '</p>';
-        $message[] = '<footer>' . $this->footer . '</footer>';
-        $message[] = '</div>';
+        $formatter = new HtmlFormatter();
 
-        return implode('', $message);
+        $message = '<div class="log-message">';
+        $message .= '<h1>' . $this->action . '</h1>';
+        $message .= '<div class="log-description">' . $this->getDescription($formatter, true) . '</div>';
+        $message .= '<div class="log-details">' . $this->getDetails($formatter, true) . '</div>';
+        $message .= '<footer>' . $this->footer . '</footer>';
+        $message .= '</div>';
+
+        return $message;
     }
 
     /**
@@ -295,18 +222,6 @@ final class LogMessage extends MessageBase
         $this->detailsCounter = 0;
 
         return $this;
-    }
-
-    /**
-     * Devuelve los detalles en formato HTML
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getHtmlDetails($translate = false)
-    {
-        return nl2br($this->getDetails($translate));
     }
 
     /**

@@ -24,8 +24,10 @@
 
 namespace SP\Core\Events;
 
+use SP\Core\Messages\FormatterInterface;
+use SP\Core\Messages\HtmlFormatter;
 use SP\Core\Messages\MessageInterface;
-use SP\Html\Html;
+use SP\Core\Messages\TextFormatter;
 
 /**
  * Class EventMessage
@@ -53,7 +55,7 @@ final class EventMessage implements MessageInterface
     /**
      * @var array
      */
-    protected $data = [];
+    protected $extra = [];
 
     /**
      * @return static
@@ -64,38 +66,6 @@ final class EventMessage implements MessageInterface
     }
 
     /**
-     * Devuelve la descripción de la acción realizada en formato HTML
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getHtmlDescription($translate = false)
-    {
-        return nl2br($this->getDescription($translate));
-    }
-
-    /**
-     * Devuelve la descripción de la acción realizada
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getDescription($translate = false)
-    {
-        if (count($this->description) === 0) {
-            return '';
-        }
-
-        if ($translate === true) {
-            return implode(PHP_EOL, array_map('__', $this->description));
-        }
-
-        return implode(PHP_EOL, $this->description);
-    }
-
-    /**
      * Devuelve la descripción
      *
      * @return array
@@ -103,21 +73,6 @@ final class EventMessage implements MessageInterface
     public function getDescriptionRaw()
     {
         return $this->description;
-    }
-
-    /**
-     * Añadir detalle en formato HTML. Se resalta el texto clave.
-     *
-     * @param $key   string
-     * @param $value string
-     *
-     * @return $this
-     */
-    public function addDetailHtml($key, $value)
-    {
-        $this->addDetail(Html::strongText($key), $value);
-
-        return $this;
     }
 
     /**
@@ -154,20 +109,6 @@ final class EventMessage implements MessageInterface
     }
 
     /**
-     * Establece la descripción de la acción realizada en formato HTML
-     *
-     * @param string $description
-     *
-     * @return $this
-     */
-    public function addDescriptionHtml($description = '')
-    {
-        $this->addDescription(Html::strongText($description));
-
-        return $this;
-    }
-
-    /**
      * Establece la descripción de la acción realizada
      *
      * @param string $description
@@ -200,42 +141,46 @@ final class EventMessage implements MessageInterface
      */
     public function composeText($delimiter = PHP_EOL)
     {
-        return implode($delimiter, [$this->getDescription(true), $this->getDetails(true)]);
+        $formatter = new TextFormatter();
+
+        return implode($delimiter, [
+            $this->getDescription($formatter, true),
+            $this->getDetails($formatter, true)
+        ]);
+    }
+
+    /**
+     * Devuelve la descripción de la acción realizada
+     *
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
+     *
+     * @return string
+     */
+    public function getDescription(FormatterInterface $formatter, $translate = false)
+    {
+        if (count($this->description) === 0) {
+            return '';
+        }
+
+        return $formatter->formatDescription($this->description, $translate);
     }
 
     /**
      * Devuelve los detalles de la acción realizada
      *
-     * @param bool $translate
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
      *
      * @return string
      */
-    public function getDetails($translate = false)
+    public function getDetails(FormatterInterface $formatter, bool $translate = false)
     {
         if (count($this->details) === 0) {
             return '';
         }
 
-        return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
-            return $this->formatDetail($detail, $translate);
-        }, $this->details));
-    }
-
-    /**
-     * Devolver un detalle formateado
-     *
-     * @param array $detail
-     * @param bool  $translate
-     *
-     * @return string
-     */
-    protected function formatDetail(array $detail, $translate = false)
-    {
-        if ($translate === true) {
-            return sprintf('%s : %s', __($detail[0]), __($detail[1]));
-        }
-
-        return sprintf('%s : %s', $detail[0], $detail[1]);
+        return $formatter->formatDetail($this->details, $translate);
     }
 
     /**
@@ -255,26 +200,14 @@ final class EventMessage implements MessageInterface
      */
     public function composeHtml()
     {
-        $message = [
-            '<div class="log-message">',
-            '<p class="description">' . nl2br($this->getDescription(true)) . '</p>',
-            '<p class="details">' . nl2br($this->getDetails(true)) . '</p>',
-            '</div>'
-        ];
+        $formatter = new HtmlFormatter();
 
-        return implode('', $message);
-    }
+        $message = '<div class="event-message">';
+        $message .= '<div class="event-description">' . $this->getDescription($formatter, true) . '</div>';
+        $message .= '<div class="event-details">' . $this->getDetails($formatter, true) . '</div>';
+        $message .= '</div>';
 
-    /**
-     * Devuelve los detalles en formato HTML
-     *
-     * @param bool $translate
-     *
-     * @return string
-     */
-    public function getHtmlDetails($translate = false)
-    {
-        return nl2br($this->getDetails($translate));
+        return $message;
     }
 
     /**
@@ -296,24 +229,43 @@ final class EventMessage implements MessageInterface
     /**
      * @return array
      */
-    public function getData()
+    public function getExtra()
     {
-        return $this->data;
+        return $this->extra;
     }
 
     /**
+     * @param       $type
+     * @param array $data
+     *
+     * @return EventMessage
+     */
+    public function setExtra($type, array $data)
+    {
+        if (isset($this->extra[$type])) {
+            $this->extra[$type] = array_merge($this->extra[$type], $data);
+        } else {
+            $this->extra[$type] = $data;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Extra data are stored as an array of values per key, thus each key is unique
+     *
      * @param string $type
      * @param mixed  $data
      *
      * @return EventMessage
      */
-    public function addData($type, $data)
+    public function addExtra($type, $data)
     {
-        if (isset($this->data[$type]) && in_array($data, $this->data[$type])) {
+        if (isset($this->extra[$type]) && in_array($data, $this->extra[$type])) {
             return $this;
         }
 
-        $this->data[$type][] = $data;
+        $this->extra[$type][] = $data;
 
         return $this;
     }

@@ -348,7 +348,7 @@ final class Database implements DatabaseInterface
             $result = $conn->beginTransaction();
 
             $this->eventDispatcher->notifyEvent('database.transaction.begin',
-                new Event($this, EventMessage::factory()->addData('result', $result)));
+                new Event($this, EventMessage::factory()->addExtra('result', $result)));
 
             return $result;
         } else {
@@ -370,7 +370,7 @@ final class Database implements DatabaseInterface
         $result = $conn->inTransaction() && $conn->commit();
 
         $this->eventDispatcher->notifyEvent('database.transaction.end',
-            new Event($this, EventMessage::factory()->addData('result', $result)));
+            new Event($this, EventMessage::factory()->addExtra('result', $result)));
 
         return $result;
     }
@@ -387,7 +387,7 @@ final class Database implements DatabaseInterface
         $result = $conn->inTransaction() && $conn->rollBack();
 
         $this->eventDispatcher->notifyEvent('database.transaction.rollback',
-            new Event($this, EventMessage::factory()->addData('result', $result)));
+            new Event($this, EventMessage::factory()->addExtra('result', $result)));
 
         return $result;
     }

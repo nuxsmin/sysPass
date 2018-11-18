@@ -73,12 +73,12 @@ abstract class MessageBase implements MessageInterface
     }
 
     /**
-     * @return array
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
+     *
+     * @return string
      */
-    public function getDescription()
-    {
-        return $this->description;
-    }
+    public abstract function getDescription(FormatterInterface $formatter, $translate = false): string;
 
     /**
      * @param array $description

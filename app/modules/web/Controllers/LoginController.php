@@ -78,7 +78,7 @@ final class LoginController extends ControllerBase
             $this->eventDispatcher->notifyEvent('login.finish',
                 new Event($this,
                     EventMessage::factory()
-                        ->addData('redirect', $redirector))
+                        ->addExtra('redirect', $redirector))
             );
 
             return $this->returnJsonResponseData([

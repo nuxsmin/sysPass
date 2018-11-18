@@ -159,4 +159,21 @@ final class Html
 
         return sprintf('<a href="%s" title="%s" %s>%s</a>', $alink, $atitle, $attribs, $text);
     }
+
+    /**
+     * Strips out HTML tags preserving some spaces
+     *
+     * @param $text
+     *
+     * @return string
+     */
+    public static function stripTags(string $text): string
+    {
+        if (empty($text)) {
+            return $text;
+        }
+
+        // Replace tags, then new lines, tabs and return chars, and then 2 or more spaces
+        return trim(preg_replace(['/<[^>]*>/', '/[\n\t\r]+/', '/\s{2,}/'], ' ', $text));
+    }
 }

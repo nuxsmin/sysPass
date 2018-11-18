@@ -32,6 +32,7 @@ use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Http\Request;
+use SP\Providers\Acl\AclHandler;
 use SP\Providers\Log\DatabaseLogHandler;
 use SP\Providers\Log\FileLogHandler;
 use SP\Providers\Log\RemoteSyslogHandler;
@@ -144,6 +145,7 @@ abstract class ModuleBase
             $eventDispatcher->attach($this->container->get(RemoteSyslogHandler::class));
         }
 
+        $eventDispatcher->attach($this->container->get(AclHandler::class));
         $eventDispatcher->attach($this->container->get(NotificationHandler::class));
     }
 }

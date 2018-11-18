@@ -121,7 +121,8 @@ final class UserGroupController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group updated'))
                     ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $userGroupData->getId()))
+                    ->addDetail('ID', $userGroupData->getId())
+                    ->addExtra('userGroupId', $userGroupData->getId()))
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated')));
@@ -150,7 +151,8 @@ final class UserGroupController extends ControllerBase
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group deleted'))
                     ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id))
+                    ->addDetail('ID', $id)
+                    ->addExtra('userGroupId', $id))
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));

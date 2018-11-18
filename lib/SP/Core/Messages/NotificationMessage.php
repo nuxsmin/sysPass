@@ -38,6 +38,8 @@ final class NotificationMessage extends MessageBase
      */
     public function composeHtml()
     {
+        $formatter = new HtmlFormatter();
+
         $message = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
 
         if ($this->title) {
@@ -45,7 +47,7 @@ final class NotificationMessage extends MessageBase
         }
 
         if (!empty($this->description)) {
-            $message .= '<div class="notice-description">' . implode('<br>', $this->description) . '</div>';
+            $message .= '<div class="notice-description">' . $this->getDescription($formatter) . '</div>';
         }
 
         if (!empty($this->footer)) {
@@ -55,6 +57,17 @@ final class NotificationMessage extends MessageBase
         $message .= '</div>';
 
         return $message;
+    }
+
+    /**
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
+     *
+     * @return string
+     */
+    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    {
+        return $formatter->formatDescription($this->description, $translate);
     }
 
     /**

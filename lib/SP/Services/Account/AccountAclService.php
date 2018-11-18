@@ -74,7 +74,7 @@ final class AccountAclService extends Service
      */
     public static function clearAcl($userId)
     {
-        logger(__FUNCTION__);
+        logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
             if (FileUtil::rmdir_recursive(self::ACL_PATH . $userId) === false) {

@@ -129,7 +129,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
 
-            // Set the security toke to its previous value because we can't tell
+            // Set the security token to its previous value because we can't tell
             // the browser which will be the new security token (not so good...)
             $this->session->setSecurityKey($this->previousSk);
 

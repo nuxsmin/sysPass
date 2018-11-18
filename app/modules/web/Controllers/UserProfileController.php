@@ -229,7 +229,8 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('delete.userProfile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Profile deleted'))
-                    ->addDetail(__u('Profile'), $id))
+                    ->addDetail(__u('Profile'), $id)
+                    ->addExtra('userProfileId', $id))
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile deleted'));
@@ -265,6 +266,12 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
 
+            $this->eventDispatcher->notifyEvent('create.userProfile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Profile added'))
+                    ->addDetail(__u('Name'), $profileData->getName()))
+            );
+
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
@@ -299,11 +306,15 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $profileData = $form->getItemData();
 
             $this->userProfileService->update($profileData);
-//            $this->userProfileService->logAction($id, Acl::PROFILE_EDIT);
 
             $this->updateCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
 
-            $this->eventDispatcher->notifyEvent('edit.userProfile', new Event($this));
+            $this->eventDispatcher->notifyEvent('edit.userProfile',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Profile updated'))
+                    ->addDetail(__u('Name'), $profileData->getName())
+                    ->addExtra('userProfileId', $id))
+            );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile updated'));
         } catch (ValidationException $e) {

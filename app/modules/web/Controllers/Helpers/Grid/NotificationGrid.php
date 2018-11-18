@@ -35,6 +35,7 @@ use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
+use SP\Html\Html;
 use SP\Storage\Database\QueryResult;
 use SP\Util\DateUtil;
 
@@ -146,7 +147,9 @@ final class NotificationGrid extends GridBase
             });
         $gridData->addDataRowSource('type');
         $gridData->addDataRowSource('component');
-        $gridData->addDataRowSource('description');
+        $gridData->addDataRowSource('description', false, function ($data) {
+            return Html::stripTags($data);
+        });
         $gridData->addDataRowSourceWithIcon('checked', $this->icons->getIconEnabled()->setTitle(__('Read')));
         $gridData->addDataRowSourceWithIcon('onlyAdmin', $this->icons->getIconAppAdmin()->setTitle(__('Only Admins')));
         $gridData->addDataRowSourceWithIcon('sticky', $this->icons->getIconGroup()->setTitle(__('Global')));

@@ -28,6 +28,7 @@ use DI\Container;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
+use SP\Core\Messages\TextFormatter;
 use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
@@ -124,7 +125,10 @@ final class MailHandler extends Provider implements EventReceiver
                 $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
                 $mailMessage->addDescription(sprintf(__('IP Address: %s'), $this->request->getClientAddress(true)));
 
-                $this->mailService->send($eventMessage->getDescription(true), $configData->getMailFrom(), $mailMessage);
+                $this->mailService->send(
+                    $eventMessage->getDescription(new TextFormatter(), true),
+                    $configData->getMailFrom(), $mailMessage
+                );
             } catch (\Exception $e) {
                 processException($e);
             }

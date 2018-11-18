@@ -239,7 +239,8 @@ final class UserGroupController extends ControllerBase implements CrudController
                 $this->eventDispatcher->notifyEvent('delete.userGroup',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Group deleted'))
-                        ->addDetail(__u('Group'), $id))
+                        ->addDetail(__u('Group'), $id)
+                        ->addExtra('userGroupId', $id))
                 );
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group deleted'));
@@ -320,7 +321,8 @@ final class UserGroupController extends ControllerBase implements CrudController
             $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group updated'))
-                    ->addDetail(__u('Name'), $groupData->getName()))
+                    ->addDetail(__u('Name'), $groupData->getName())
+                    ->addExtra('userGroupId', $id))
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group updated'));

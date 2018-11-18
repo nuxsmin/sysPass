@@ -125,6 +125,31 @@
       color: $color-bluegrey-fg;
       font-size: 12px;
     }
+    .notification-description {
+      font-size: 16px;
+      max-width: 100%;
+      .event-description, .event-details {
+        padding: .5em 0;
+      }
+      .event-description {
+        color: $color-indigo-fg;
+        border-bottom: 1px solid #e9e9e9;
+      }
+      .event-details {
+        .detail {
+          display: flex;
+          padding: .2em 0;
+          .detail-left {
+            flex: none;
+            width: 8em;
+            font-weight: bold;
+          }
+          .detail-right {
+            flex-grow: 1;
+          }
+        }
+      }
+    }
   }
 }
 

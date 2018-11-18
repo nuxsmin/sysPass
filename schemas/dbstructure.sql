@@ -397,7 +397,7 @@ CREATE TABLE `Notification` (
   `id`          int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type`        varchar(100)              DEFAULT NULL,
   `component`   varchar(100)     NOT NULL,
-  `description` varchar(500)     NOT NULL,
+  `description` text             NOT NULL,
   `date`        int(10) unsigned NOT NULL,
   `checked`     tinyint(1)                DEFAULT 0,
   `userId`      smallint(5) unsigned      DEFAULT NULL,

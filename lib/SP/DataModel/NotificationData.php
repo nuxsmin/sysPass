@@ -128,10 +128,15 @@ class NotificationData implements DataModelInterface
 
     /**
      * @param MessageInterface $message
+     * @param bool             $useHtml
      */
-    public function setDescription(MessageInterface $message)
+    public function setDescription(MessageInterface $message, bool $useHtml = false)
     {
-        $this->description = $message->composeText();
+        if ($useHtml) {
+            $this->description = $message->composeHtml();
+        } else {
+            $this->description = $message->composeText();
+        }
     }
 
     /**

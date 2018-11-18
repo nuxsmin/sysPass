@@ -297,6 +297,23 @@ body.userpassreset {
     width: 100%;
     color: #607d8b;
     font-size: 12px; }
+  #content td.valField .notification-description, #box-popup td.valField .notification-description {
+    font-size: 16px;
+    max-width: 100%; }
+    #content td.valField .notification-description .event-description, #content td.valField .notification-description .event-details, #box-popup td.valField .notification-description .event-description, #box-popup td.valField .notification-description .event-details {
+      padding: .5em 0; }
+    #content td.valField .notification-description .event-description, #box-popup td.valField .notification-description .event-description {
+      color: #5c6bc0;
+      border-bottom: 1px solid #e9e9e9; }
+    #content td.valField .notification-description .event-details .detail, #box-popup td.valField .notification-description .event-details .detail {
+      display: flex;
+      padding: .2em 0; }
+      #content td.valField .notification-description .event-details .detail .detail-left, #box-popup td.valField .notification-description .event-details .detail .detail-left {
+        flex: none;
+        width: 8em;
+        font-weight: bold; }
+      #content td.valField .notification-description .event-details .detail .detail-right, #box-popup td.valField .notification-description .event-details .detail .detail-right {
+        flex-grow: 1; }
 
 #content .pager {
   width: 100%;

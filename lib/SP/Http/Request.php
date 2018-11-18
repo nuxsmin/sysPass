@@ -96,7 +96,7 @@ final class Request
      */
     private function detectHttps()
     {
-        $this->https = ($this->request->server()->exists('HTTPS') && $this->request->server()->get('HTTPS') !== 'off')
+        $this->https = Util::boolval($this->request->server()->get('HTTPS', 'off'))
             || $this->request->server()->get('SERVER_PORT', 0) === 443;
     }
 

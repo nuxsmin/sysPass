@@ -257,10 +257,6 @@ final class NotificationController extends ControllerBase implements CrudControl
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
 
-            if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_DELETE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
-            }
-
             if ($id === null) {
                 if ($this->userData->getIsAdminApp()) {
                     $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));

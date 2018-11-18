@@ -552,10 +552,10 @@ $profileData = $_getvar('profileData');
                             <ul class="mdl-list">
                                 <?php foreach ($_getvar('usedBy') as $user): ?>
                                     <li class="mdl-list__item mdl-list__item">
-                                <span class="mdl-list__item-primary-content">
-                                <i class="material-icons mdl-list__item-icon">person</i>
-                                    <?php echo $user->login; ?>
-                                </span>
+                                        <span class="mdl-list__item-primary-content">
+                                        <i class="material-icons mdl-list__item-icon">person</i>
+                                            <?php echo $user->login; ?>
+                                        </span>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>

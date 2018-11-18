@@ -60,13 +60,19 @@ $notification = $_getvar('notification');
             <tr>
                 <td class="descField"><?php echo __('Description'); ?></td>
                 <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield">
-                        <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
-                                  id="notification_description"
-                                  name="notification_description" <?php echo $_getvar('readonly'); ?>><?php echo $notification->getDescription(); ?></textarea>
-                        <label class="mdl-textfield__label"
-                               for="notification_description"><?php echo __('Description'); ?></label>
-                    </div>
+                    <?php if ($_getvar('isView') === false): ?>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
+                                      id="notification_description"
+                                      name="notification_description" <?php echo $_getvar('readonly'); ?>><?php echo $notification->getDescription(); ?></textarea>
+                            <label class="mdl-textfield__label"
+                                   for="notification_description"><?php echo __('Description'); ?></label>
+                        </div>
+                    <?php else: ?>
+                        <div class="notification-description">
+                            <?php echo $notification->getDescription(); ?>
+                        </div>
+                    <?php endif; ?>
                 </td>
             </tr>
 

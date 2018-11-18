@@ -22,39 +22,44 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Notification;
+namespace SP\Providers\Acl;
 
 use DI\Container;
+use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
-use SP\DataModel\NotificationData;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\Notification\NotificationService;
+use SP\Services\Account\AccountAclService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserProfile\UserProfileService;
 use SplSubject;
 
 /**
- * Class NotificationHandler
+ * Class AclHandler
  *
- * @package SP\Providers\Notification
+ * @package SP\Providers\Acl
  */
-final class NotificationHandler extends Provider implements EventReceiver
+final class AclHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
     const EVENTS = [
-        'request.account',
-        'show.account.link'
+        'edit.userProfile',
+        'edit.user',
+        'edit.userGroup',
+        'delete.user',
+        'delete.user.selection'
     ];
 
-    /**
-     * @var NotificationService
-     */
-    private $notificationService;
     /**
      * @var string
      */
     private $events;
+    /**
+     * @var ContainerInterface
+     */
+    private $dic;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -79,7 +84,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * Receive update from subject
      *
-     * @link  http://php.net/manual/en/splobserver.update.php
+     * @link  https://php.net/manual/en/splobserver.update.php
      *
      * @param SplSubject $subject <p>
      *                            The <b>SplSubject</b> notifying the observer of an update.
@@ -102,11 +107,16 @@ final class NotificationHandler extends Provider implements EventReceiver
     public function updateEvent($eventType, Event $event)
     {
         switch ($eventType) {
-            case 'request.account':
-                $this->requestAccountNotification($event);
+            case 'edit.userProfile':
+                $this->processUserProfile($event);
                 break;
-            case 'show.account.link':
-                $this->showAccountLinkNotification($event);
+            case 'edit.user':
+            case 'delete.user':
+            case 'delete.user.selection':
+                $this->processUser($event);
+                break;
+            case 'edit.userGroup':
+                $this->processUserGroup($event);
                 break;
         }
     }
@@ -114,29 +124,19 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function requestAccountNotification(Event $event)
-    {
-        $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
-
-        foreach ($data['userId'] as $userId) {
-            $notificationData = new NotificationData();
-            $notificationData->setType(__('Request'));
-            $notificationData->setComponent(__('Accounts'));
-            $notificationData->setUserId($userId);
-            $notificationData->setDescription($eventMessage);
-
-            $this->notify($notificationData);
-        }
-    }
-
-    /**
-     * @param NotificationData $notificationData
-     */
-    private function notify(NotificationData $notificationData)
+    private function processUserProfile(Event $event)
     {
         try {
-            $this->notificationService->create($notificationData);
+            $eventMessage = $event->getEventMessage();
+            $extra = $eventMessage->getExtra();
+
+            if (isset($extra['userProfileId'])) {
+                $userProfileService = $this->dic->get(UserProfileService::class);
+
+                foreach ($userProfileService->getUsersForProfile($extra['userProfileId'][0]) as $user) {
+                    AccountAclService::clearAcl($user->id);
+                }
+            }
         } catch (\Exception $e) {
             processException($e);
         }
@@ -145,32 +145,45 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Event $event
      */
-    private function showAccountLinkNotification(Event $event)
+    private function processUser(Event $event)
     {
         $eventMessage = $event->getEventMessage();
-        $data = $eventMessage->getExtra();
+        $extra = $eventMessage->getExtra();
 
-        if ($data['notify'][0] === true) {
-            $notificationData = new NotificationData();
-            $notificationData->setType(__('Notification'));
-            $notificationData->setComponent(__('Accounts'));
-            $notificationData->setUserId($data['userId'][0]);
-            $notificationData->setDescription($eventMessage, true);
+        if (isset($extra['userId'])) {
+            foreach ($extra['userId'] as $id) {
+                AccountAclService::clearAcl($id);
+            }
+        }
+    }
 
-            $this->notify($notificationData);
+    /**
+     * @param Event $event
+     */
+    private function processUserGroup(Event $event)
+    {
+        try {
+            $eventMessage = $event->getEventMessage();
+            $extra = $eventMessage->getExtra();
+
+            if (isset($extra['userGroupId'])) {
+                $userGroupService = $this->dic->get(UserGroupService::class);
+
+                foreach ($userGroupService->getUsageByUsers($extra['userGroupId'][0]) as $user) {
+                    AccountAclService::clearAcl($user->id);
+                }
+            }
+        } catch (\Exception $e) {
+            processException($e);
         }
     }
 
     /**
      * @param Container $dic
-     *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     protected function initialize(Container $dic)
     {
-        $this->notificationService = $dic->get(NotificationService::class);
-
+        $this->dic = $dic;
         $this->events = $this->parseEventsToRegex(self::EVENTS);
     }
 }

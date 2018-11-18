@@ -26,7 +26,9 @@ namespace SP\Modules\Web\Controllers;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Bootstrap;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
@@ -36,6 +38,7 @@ use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\ItemPreset\Password;
 use SP\Http\JsonResponse;
+use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
@@ -191,6 +194,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     public function viewLinkAction($hash)
     {
         try {
+            // Set the security token to its previous value because we can't tell
+            // the browser which will be the new security token (not so good...)
+            $this->session->setSecurityKey($this->previousSk);
+
             $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getPublicLayout('account-link', 'account');
 
@@ -233,16 +240,20 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
                 $clientAddress = $this->configData->isDemoEnabled() ? '***' : $this->request->getClientAddress(true);
 
+                $deepLink = new Uri(Bootstrap::$WEBURI . Bootstrap::$SUBURI);
+                $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId());
+
                 $this->eventDispatcher->notifyEvent('show.account.link',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('Link viewed'))
                         ->addDetail(__u('Account'), $accountData->getName())
                         ->addDetail(__u('Client'), $accountData->getClientName())
-                        ->addDetail(__u('Agent'), $this->router->request()->headers()->get('User-Agent'))
-                        ->addDetail(__u('HTTPS'), $this->router->request()->isSecure() ? __u('ON') : __u('OFF'))
+                        ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
+                        ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
                         ->addDetail(__u('IP'), $clientAddress)
-                        ->addData('userId', $publicLinkData->getUserId())
-                        ->addData('notify', $publicLinkData->isNotify()))
+                        ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
+                        ->addExtra('userId', $publicLinkData->getUserId())
+                        ->addExtra('notify', $publicLinkData->isNotify()))
                 );
             } else {
                 ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, true, 'account-link');
@@ -1050,10 +1061,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail(__u('Description'), $description)
-                    ->addData('accountId', $id)
-                    ->addData('whoId', $this->userData->getId())
-                    ->addData('userId', $accountDetails->userId)
-                    ->addData('userId', $accountDetails->userEditId))
+                    ->addExtra('accountId', $id)
+                    ->addExtra('whoId', $this->userData->getId())
+                    ->addExtra('userId', $accountDetails->userId)
+                    ->addExtra('userId', $accountDetails->userEditId))
             );
 
             return $this->returnJsonResponseData(
@@ -1088,7 +1099,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->checkLoggedIn();
         }
 
-        if (DEBUG === true && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
+        if (DEBUG === true
+            && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED
+        ) {
             $this->session->resetAppStatus();
 
             // Reset de los datos de ACL de cuentas

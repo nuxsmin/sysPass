@@ -277,8 +277,11 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
                 $this->deleteCustomFieldsForItem(Acl::USER, $id);
 
-                $this->eventDispatcher->notifyEvent('delete.user.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Users deleted')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.user.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Users deleted'))
+                        ->setExtra('userId', $this->getItemsIdFromRequest($this->request)))
                 );
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Users deleted'));
@@ -290,7 +293,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
                 $this->eventDispatcher->notifyEvent('delete.user',
                     new Event($this, EventMessage::factory()
                         ->addDescription(__u('User deleted'))
-                        ->addDetail(__u('User'), $id))
+                        ->addDetail(__u('User'), $id)
+                        ->addExtra('userId', $id))
                 );
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User deleted'));
@@ -395,7 +399,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('edit.user',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('User updated'))
-                    ->addDetail(__u('User'), $itemData->getName()))
+                    ->addDetail(__u('User'), $itemData->getName())
+                    ->addExtra('userId', $id))
             );
 
             $this->checkChangeUserPass($id, $itemData);

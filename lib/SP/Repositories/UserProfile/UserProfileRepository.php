@@ -56,7 +56,7 @@ final class UserProfileRepository extends Repository implements RepositoryItemIn
     public function getUsersForProfile($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT login FROM User WHERE userProfileId = ?');
+        $queryData->setQuery('SELECT id, login FROM User WHERE userProfileId = ?');
         $queryData->addParam($id);
 
         return $this->db->doSelect($queryData);

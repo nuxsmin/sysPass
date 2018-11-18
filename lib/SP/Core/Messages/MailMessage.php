@@ -46,13 +46,26 @@ final class MailMessage extends MessageBase implements MessageInterface
      */
     public function composeHtml()
     {
-        $message[] = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
-        $message[] = '<h3>' . $this->title . '</h3>';
-        $message[] = '<div class="mail-description">' . nl2br(implode('<br>', $this->getDescription())) . '</div>';
-        $message[] = '<footer>' . implode('<br>', $this->footer) . '</footer>';
-        $message[] = '</div>';
+        $formatter = new HtmlFormatter();
 
-        return implode('', $message);
+        $message = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
+        $message .= '<h3>' . $this->title . '</h3>';
+        $message .= '<div class="mail-description">' . $this->getDescription($formatter, true) . '</div>';
+        $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
+        $message .= '</div>';
+
+        return $message;
+    }
+
+    /**
+     * @param FormatterInterface $formatter
+     * @param bool               $translate
+     *
+     * @return string
+     */
+    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    {
+        return $formatter->formatDescription($this->description, $translate);
     }
 
     /**
@@ -64,6 +77,12 @@ final class MailMessage extends MessageBase implements MessageInterface
      */
     public function composeText($delimiter = PHP_EOL)
     {
-        return $this->title . $delimiter . implode($delimiter, $this->description) . $delimiter . implode($delimiter, $this->footer);
+        $formatter = new TextFormatter($delimiter);
+
+        return $this->title
+            . $delimiter
+            . $formatter->formatDescription($this->description)
+            . $delimiter
+            . implode($delimiter, $this->footer);
     }
 }
