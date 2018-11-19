@@ -105,9 +105,16 @@ final class ConfigAccountController extends SimpleControllerBase
         }
 
 
-        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-            $this->eventDispatcher->notifyEvent('save.config.account', new Event($this, $eventMessage));
-        });
+        return $this->saveConfig(
+            $configData,
+            $this->config,
+            function () use ($eventMessage) {
+                $this->eventDispatcher->notifyEvent(
+                    'save.config.account',
+                    new Event($this, $eventMessage)
+                );
+            }
+        );
     }
 
     /**

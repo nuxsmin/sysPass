@@ -54,7 +54,8 @@ final class MailHandler extends Provider implements EventReceiver
         'update.masterPassword.end',
         'import.ldap.end',
         'run.backup.end',
-        'run.import.end'
+        'run.import.end',
+        'request.account'
     ];
 
     /**
@@ -121,13 +122,17 @@ final class MailHandler extends Provider implements EventReceiver
                 $userData = $this->context->getUserData();
 
                 $mailMessage = new MailMessage();
-                $mailMessage->addDescription($eventMessage->composeText());
+                $mailMessage->addDescription($eventMessage->composeText('<br>'));
+                $mailMessage->addDescriptionLine();
                 $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
                 $mailMessage->addDescription(sprintf(__('IP Address: %s'), $this->request->getClientAddress(true)));
 
+                $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
+
                 $this->mailService->send(
-                    $eventMessage->getDescription(new TextFormatter(), true),
-                    $configData->getMailFrom(), $mailMessage
+                    $subject,
+                    $configData->getMailRecipients(),
+                    $mailMessage
                 );
             } catch (\Exception $e) {
                 processException($e);

@@ -79,10 +79,18 @@ final class ConfigImportController extends SimpleControllerBase
             );
 
             if ($counter > 0) {
-                return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Import finished'), [__u('Please check out the event log for more details')]);
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Import finished'),
+                    [__u('Please check out the event log for more details')]
+                );
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No accounts were imported'), [__u('Please check out the event log for more details')]);
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_WARNING,
+                __u('No accounts were imported'),
+                [__u('Please check out the event log for more details')]
+            );
         } catch (\Exception $e) {
             processException($e);
 

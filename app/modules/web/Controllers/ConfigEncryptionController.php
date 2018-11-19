@@ -144,7 +144,11 @@ final class ConfigEncryptionController extends SimpleControllerBase
             }
         }
 
-        return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Master password updated'), [__u('Please, restart the session for update it')]);
+        return $this->returnJsonResponse(
+            JsonResponse::JSON_SUCCESS_STICKY,
+            __u('Master password updated'),
+            [__u('Please, restart the session for update it')]
+        );
     }
 
     /**
@@ -196,13 +200,21 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 try {
                     $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'), [__u('Email sent')]);
+                    return $this->returnJsonResponse(
+                        JsonResponse::JSON_SUCCESS,
+                        __u('Temporary password generated'),
+                        [__u('Email sent')]
+                    );
                 } catch (\Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-                    return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Temporary password generated'), [__u('Error while sending the email')]);
+                    return $this->returnJsonResponse(
+                        JsonResponse::JSON_WARNING,
+                        __u('Temporary password generated'),
+                        [__u('Error while sending the email')]
+                    );
                 }
             }
 

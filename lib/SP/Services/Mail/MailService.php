@@ -112,16 +112,24 @@ final class MailService extends Service
     }
 
     /**
-     * @param string      $subject
-     * @param string      $to
-     * @param MailMessage $mailMessage
+     * @param string       $subject
+     * @param array|string $to
+     * @param MailMessage  $mailMessage
      *
      * @throws ServiceException
      */
     public function send($subject, $to, MailMessage $mailMessage)
     {
         $this->mailer->isHTML();
-        $this->mailer->addAddress($to);
+
+        if (is_array($to)) {
+            foreach ($to as $addr) {
+                $this->mailer->addAddress($addr);
+            }
+        } else {
+            $this->mailer->addAddress($to);
+        }
+
         $this->mailer->Subject = $this->getSubjectForAction($subject);
         $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())->composeHtml();
 
@@ -175,15 +183,12 @@ final class MailService extends Service
 
     /**
      * @throws MailProviderException
-     * @throws ServiceException
      */
     protected function initialize()
     {
         if ($this->config->getConfigData()->isMailEnabled()) {
             $this->mailer = $this->dic->get(MailProvider::class)
                 ->getMailer($this->getParamsFromConfig());
-        } else {
-            throw new ServiceException(__u('Mail service unavailable'));
         }
     }
 

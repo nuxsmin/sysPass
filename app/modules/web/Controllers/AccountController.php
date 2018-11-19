@@ -1054,6 +1054,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
+            $deepLink = new Uri(Bootstrap::$WEBURI . Bootstrap::$SUBURI);
+            $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $id);
+
             $this->eventDispatcher->notifyEvent('request.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Request'))
@@ -1061,10 +1064,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail(__u('Description'), $description)
+                    ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
                     ->addExtra('accountId', $id)
                     ->addExtra('whoId', $this->userData->getId())
-                    ->addExtra('userId', $accountDetails->userId)
-                    ->addExtra('userId', $accountDetails->userEditId))
+                    ->setExtra('userId', [$accountDetails->userId, $accountDetails->userEditId]))
             );
 
             return $this->returnJsonResponseData(

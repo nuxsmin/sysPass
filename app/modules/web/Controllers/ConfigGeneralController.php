@@ -166,9 +166,16 @@ final class ConfigGeneralController extends SimpleControllerBase
             $eventMessage->addDescription(__u('Auth Basic disabled'));
         }
 
-        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-            $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $eventMessage));
-        });
+        return $this->saveConfig(
+            $configData,
+            $this->config,
+            function () use ($eventMessage) {
+                $this->eventDispatcher->notifyEvent(
+                    'save.config.general',
+                    new Event($this, $eventMessage)
+                );
+            }
+        );
     }
 
     /**

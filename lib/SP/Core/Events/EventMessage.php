@@ -141,7 +141,7 @@ final class EventMessage implements MessageInterface
      */
     public function composeText($delimiter = PHP_EOL)
     {
-        $formatter = new TextFormatter();
+        $formatter = new TextFormatter($delimiter);
 
         return implode($delimiter, [
             $this->getDescription($formatter, true),

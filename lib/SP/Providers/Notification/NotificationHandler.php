@@ -124,7 +124,7 @@ final class NotificationHandler extends Provider implements EventReceiver
             $notificationData->setType(__('Request'));
             $notificationData->setComponent(__('Accounts'));
             $notificationData->setUserId($userId);
-            $notificationData->setDescription($eventMessage);
+            $notificationData->setDescription($eventMessage, true);
 
             $this->notify($notificationData);
         }

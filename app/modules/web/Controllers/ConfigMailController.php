@@ -68,7 +68,9 @@ final class ConfigMailController extends SimpleControllerBase
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
-        if ($mailEnabled && (!$mailServer || !$mailFrom || count($mailRecipients) === 0)) {
+        if ($mailEnabled
+            && (empty($mailServer) || empty($mailFrom) || empty($mailRecipients))
+        ) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
@@ -106,9 +108,16 @@ final class ConfigMailController extends SimpleControllerBase
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('No changes'));
         }
 
-        return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
-            $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
-        });
+        return $this->saveConfig(
+            $configData,
+            $this->config,
+            function () use ($eventMessage) {
+                $this->eventDispatcher->notifyEvent(
+                    'save.config.mail',
+                    new Event($this, $eventMessage)
+                );
+            }
+        );
     }
 
     /**
@@ -125,11 +134,11 @@ final class ConfigMailController extends SimpleControllerBase
         $mailParams->port = $this->request->analyzeInt('mail_port', 25);
         $mailParams->security = $this->request->analyzeString('mail_security');
         $mailParams->from = $this->request->analyzeEmail('mail_from');
-        $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_authenabled', false);
+        $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_auth_enabled', false);
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
-        if (!$mailParams->server || empty($mailParams->from) || empty($mailRecipients)) {
+        if (empty($mailParams->server) || empty($mailParams->from) || empty($mailRecipients)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
 
@@ -164,7 +173,8 @@ final class ConfigMailController extends SimpleControllerBase
     /**
      * @return bool
      */
-    protected function initialize()
+    protected
+    function initialize()
     {
         try {
             $this->checks();

@@ -145,7 +145,7 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Recipient email address'); ?>
+                <?php echo __('Sender email address'); ?>
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -153,7 +153,7 @@
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128" value="<?php echo $configData->getMailFrom(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="mail_from"><?php echo __('Recipient email address'); ?></label>
+                           for="mail_from"><?php echo __('Sender email address'); ?></label>
                 </div>
             </td>
         </tr>
