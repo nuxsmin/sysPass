@@ -144,7 +144,7 @@ final class LdapActions
      */
     protected function getGroupFromParams(): string
     {
-        if (strpos($this->ldapParams->getGroup(), 'cn') === 0) {
+        if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
             return LdapUtil::getGroupName($this->ldapParams->getGroup());
         }
 
