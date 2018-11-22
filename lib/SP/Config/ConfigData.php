@@ -202,6 +202,10 @@ final class ConfigData implements JsonSerializable
      */
     private $ldapAds = false;
     /**
+     * @var bool
+     */
+    private $ldapAzure = false;
+    /**
      * @var string
      */
     private $ldapGroup;
@@ -1673,6 +1677,26 @@ final class ConfigData implements JsonSerializable
     public function setLdapAds($ldapAds)
     {
         $this->ldapAds = (bool)$ldapAds;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isLdapAzure()
+    {
+        return $this->ldapAzure;
+    }
+
+    /**
+     * @param boolean $ldapAzure
+     *
+     * @return $this
+     */
+    public function setLdapAzure($ldapAzure)
+    {
+        $this->ldapAzure = (bool)$ldapAzure;
 
         return $this;
     }

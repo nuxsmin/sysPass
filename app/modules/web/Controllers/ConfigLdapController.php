@@ -74,6 +74,7 @@ final class ConfigLdapController extends SimpleControllerBase
             if ($ldapEnabled) {
                 $configData->setLdapEnabled(true);
                 $configData->setLdapAds($ldapParams->isAds());
+                $configData->setLdapAzure($ldapParams->isAzure());
                 $configData->setLdapTlsEnabled($ldapParams->isTlsEnabled());
                 $configData->setLdapServer($ldapParams->getServer());
                 $configData->setLdapBase($ldapParams->getSearchBase());
@@ -129,6 +130,7 @@ final class ConfigLdapController extends SimpleControllerBase
             ->setBindDn($this->request->analyzeString('ldap_binduser'))
             ->setBindPass($this->request->analyzeEncrypted('ldap_bindpass'))
             ->setAds($this->request->analyzeBool('ldap_ads_enabled', false))
+            ->SetAzure($this->request->analyzeBool('ldap_azure_enabled', false))
             ->setTlsEnabled($this->request->analyzeBool('ldap_tls_enabled', false));
     }
 

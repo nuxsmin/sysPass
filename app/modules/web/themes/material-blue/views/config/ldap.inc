@@ -71,6 +71,23 @@
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_azure_enabled">
+                                <input type="checkbox" id="ldap_azure_enabled"
+                                       class="mdl-switch__input"
+                                       name="ldap_azure_enabled" <?php echo $configData->isLdapAzure() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('Azure Active Directory'); ?></span>
+                                <span class="mdl-list__item-sub-title">
+                                    <?php echo __('Disables empty password and disabled user account filters.'); ?>
+                                </span>
+                            </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_tls_enabled">
                                 <input type="checkbox" id="ldap_tls_enabled"
                                        class="mdl-switch__input"

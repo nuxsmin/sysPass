@@ -64,6 +64,10 @@ final class LdapParams
     /**
      * @var bool
      */
+    protected $azure = false;
+    /**
+     * @var bool
+     */
     protected $tlsEnabled = false;
 
     /**
@@ -210,6 +214,26 @@ final class LdapParams
     public function setAds($ads)
     {
         $this->ads = (bool)$ads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAzure()
+    {
+        return $this->azure;
+    }
+
+    /**
+     * @param bool $azure
+     *
+     * @return LdapParams
+     */
+    public function setAzure($azure)
+    {
+        $this->azure= (bool)$azure;
 
         return $this;
     }

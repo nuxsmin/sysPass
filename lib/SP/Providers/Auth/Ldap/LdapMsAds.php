@@ -37,7 +37,8 @@ use SP\Http\Address;
  */
 final class LdapMsAds extends Ldap
 {
-    const FILTER_USER_OBJECT = '(|(objectCategory=person)(objectClass=user))';
+    const FILTER_USER_OBJECT_AZURE = '(|(objectCategory=person)(objectClass=user))';
+    const FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectCategory=person)(objectClass=user)))';
     const FILTER_GROUP_OBJECT = '(objectCategory=group)';
     const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
     const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:='];
@@ -51,16 +52,29 @@ final class LdapMsAds extends Ldap
     public function getGroupMembershipFilter(): string
     {
         if (empty($this->ldapParams->getGroup())) {
-            return self::FILTER_USER_OBJECT;
+            if ($this->ldapParams->IsAzure())
+                return self::FILTER_USER_OBJECT_AZURE;
+            else
+                return self::FILTER_USER_OBJECT;
         }
 
-        return '(&(|'
-            . LdapUtil::getAttributesForFilter(
-                self::FILTER_GROUP_ATTRIBUTES,
-                $this->getGroupDn())
-            . ')'
-            . self::FILTER_USER_OBJECT
-            . ')';
+        if ($this->ldapParams->IsAzure()) {
+            return '(&(|'
+                . LdapUtil::getAttributesForFilter(
+                    self::FILTER_GROUP_ATTRIBUTES,
+                    $this->getGroupDn())
+                . ')'
+                . self::FILTER_USER_OBJECT_AZURE
+                . ')';
+        } else {
+            return '(&(|'
+                . LdapUtil::getAttributesForFilter(
+                    self::FILTER_GROUP_ATTRIBUTES,
+                    $this->getGroupDn())
+                . ')'
+                . self::FILTER_USER_OBJECT
+                . ')';
+        }
     }
 
     /**
@@ -72,11 +86,19 @@ final class LdapMsAds extends Ldap
      */
     public function getUserDnFilter(string $userLogin): string
     {
-        return '(&(|'
-            . LdapUtil::getAttributesForFilter(self::FILTER_USER_ATTRIBUTES, $userLogin)
-            . ')'
-            . self::FILTER_USER_OBJECT
-            . ')';
+        if ($this->ldapParams->IsAzure()) {
+            return '(&(|'
+                . LdapUtil::getAttributesForFilter(self::FILTER_USER_ATTRIBUTES, $userLogin)
+                . ')'
+                . self::FILTER_USER_OBJECT_AZURE
+                . ')';
+        } else {
+            return '(&(|'
+                . LdapUtil::getAttributesForFilter(self::FILTER_USER_ATTRIBUTES, $userLogin)
+                . ')'
+                . self::FILTER_USER_OBJECT
+                . ')';
+        }
     }
 
     /**
