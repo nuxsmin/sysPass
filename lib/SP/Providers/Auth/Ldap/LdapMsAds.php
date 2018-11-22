@@ -40,7 +40,7 @@ final class LdapMsAds extends Ldap
     const FILTER_USER_OBJECT = '(|(objectCategory=person)(objectClass=user))';
     const FILTER_GROUP_OBJECT = '(objectCategory=group)';
     const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
-    const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:='];
+    const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
 
     /**
      * Devolver el filtro para comprobar la pertenecia al grupo
