@@ -79,7 +79,7 @@
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Azure Active Directory'); ?></span>
+                                <span><?php echo __('Azure & Compatible Active Directory'); ?></span>
                                 <span class="mdl-list__item-sub-title">
                                     <?php echo __('Disables empty password and disabled user account filters.'); ?>
                                 </span>
