@@ -5846,7 +5846,7 @@ msgstr "Nouveau Mot de Passe Maître (confirmer)"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:80
 msgid "You should save the new password on a secure place"
-msgstr "Vous devriez sauvegarder le mot de passe dans un endroit sûre."
+msgstr "Vous devriez sauvegarder le mot de passe dans un endroit sûr."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:84
 msgid "All accounts passwords will be encrypted again."
