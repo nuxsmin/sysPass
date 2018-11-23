@@ -5560,8 +5560,8 @@ msgstr "La clave de la cuenta es visualizada como una imagen."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:256
-msgid "Expire time"
-msgstr "Tiempo de caducidad"
+msgid "Expire time (seconds)"
+msgstr "Tiempo de caducidad (segundo)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271

@@ -5667,8 +5667,8 @@ msgstr "Le mot de passe du compte est montré comme une image."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Durée d'expiration"
+msgid "Expire time (seconds)"
+msgstr "Durée d'expiration (secondes)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272

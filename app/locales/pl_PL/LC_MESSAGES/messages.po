@@ -5712,8 +5712,8 @@ msgstr "Hasło jest wyświetlone jako obrazek"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Czas wygaśnięcia"
+msgid "Expire time (seconds)"
+msgstr "Czas wygaśnięcia (sekund)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272

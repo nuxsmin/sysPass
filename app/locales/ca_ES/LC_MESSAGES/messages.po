@@ -5627,8 +5627,8 @@ msgstr "La clau del compte és visualitzada com una imatge."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Temps de caducitat"
+msgid "Expire time (seconds)"
+msgstr "Temps de caducitat (segon)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272

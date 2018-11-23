@@ -5730,8 +5730,8 @@ msgstr "Пароль учетной записи показан как карт�
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Срок действия"
+msgid "Expire time (seconds)"
+msgstr "Срок действия (секунд)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272

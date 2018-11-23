@@ -5554,8 +5554,8 @@ msgstr "The account password is shown as image."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:256
-msgid "Expire time"
-msgstr "Expire time"
+msgid "Expire time (seconds)"
+msgstr "Expire time (seconds)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271

@@ -5617,8 +5617,8 @@ msgstr "Il tasto account è visualizzato come un'immagine."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Scadenza"
+msgid "Expire time (seconds)"
+msgstr "Scadenza (secondi)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272

@@ -5708,8 +5708,8 @@ msgstr "Het account wachtwoord wordt weergegeven als afbeelding."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:248
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:257
-msgid "Expire time"
-msgstr "Verval datum"
+msgid "Expire time (seconds)"
+msgstr "Verval datum (seconden)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:263
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:272
