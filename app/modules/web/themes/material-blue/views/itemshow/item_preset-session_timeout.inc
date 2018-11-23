@@ -34,7 +34,7 @@ $sessionTimeout = $_getvar('sessionTimeout');
                        min="0" max="604800"
                        value="<?php echo $sessionTimeout->getTimeout(); ?>">
                 <label class="mdl-textfield__label"
-                       for="ip_address"><?php echo __('Timeout'); ?></label>
+                       for="ip_address"><?php echo __('Timeout (seconds, max 604800)'); ?></label>
             </div>
         </td>
     </tr>
