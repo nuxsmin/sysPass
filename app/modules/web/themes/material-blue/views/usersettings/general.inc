@@ -123,7 +123,7 @@ $userPreferences = $_getvar('userPreferences');
                         <span class="mdl-list__item-primary-content">
                             <span><?php echo __('Navigation bar on top'); ?></span>
                             <span class="mdl-list__item-sub-title">
-                                <?php echo __('Dysplays a navigation bar on top of the search results.'); ?>
+                                <?php echo __('Displays a navigation bar on top of the search results.'); ?>
                             </span>
                         </span>
                     </li>
