@@ -152,7 +152,7 @@ final class PublicLinkService extends Service
         $publicLinkData->setHash($key->getHash());
         $publicLinkData->setData($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
         $publicLinkData->setDateExpire(self::calcDateExpire($this->config));
-        $publicLinkData->setCountViews($this->config->getConfigData()->getPublinksMaxViews());
+        $publicLinkData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
 
         return $this->publicLinkRepository->refresh($publicLinkData);
     }
@@ -292,20 +292,6 @@ final class PublicLinkService extends Service
         $useInfo = unserialize($publicLinkData->getUseInfo());
         $useInfo[] = self::getUseInfo($publicLinkData->getHash(), $this->request);
         $publicLinkData->setUseInfo($useInfo);
-
-        // FIXME
-//        $Log = new Log();
-//        $LogMessage = $Log->getLogMessage();
-//        $LogMessage->setAction(__u('Show Public Link'));
-//        $LogMessage->addDescription(__u('Link viewed'));
-//        $LogMessage->addDetails(__u('Type'), $publicLinkData->getPublicLinkTypeId());
-//        $LogMessage->addDetails(__u('Account'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
-//        $LogMessage->addDetails(__u('User'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
-//        $Log->writeLog();
-//
-//        if ($publicLinkData->isPublicLinkNotify()) {
-//            Email::sendEmail($LogMessage);
-//        }
 
         if ($this->publicLinkRepository->addLinkView($publicLinkData) === 0) {
             throw new NoSuchItemException(__u('Link not found'));
