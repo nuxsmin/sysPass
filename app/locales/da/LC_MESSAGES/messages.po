@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-11-04 20:30+0100\n"
+"POT-Creation-Date: 2018-11-25 20:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: \n"
@@ -46,7 +46,7 @@ msgstr "Konto vist"
 #: app/modules/api/Controllers/UserGroupController.php:62
 #: app/modules/api/Controllers/UserGroupController.php:92
 #: app/modules/api/Controllers/UserGroupController.php:123
-#: app/modules/api/Controllers/UserGroupController.php:152
+#: app/modules/api/Controllers/UserGroupController.php:153
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:240
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:113
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
@@ -55,11 +55,13 @@ msgstr "Konto vist"
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:108
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:106
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:116
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:108
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:107
-#: app/modules/web/Controllers/UserGroupController.php:274
-#: app/modules/web/Controllers/UserGroupController.php:315
+#: app/modules/web/Controllers/UserGroupController.php:281
+#: app/modules/web/Controllers/UserGroupController.php:324
+#: app/modules/web/Controllers/UserProfileController.php:272
+#: app/modules/web/Controllers/UserProfileController.php:315
 #: lib/SP/Plugin/PluginManager.php:320
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:30
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:43
@@ -86,20 +88,20 @@ msgstr "Navn"
 #: app/modules/api/Controllers/AccountController.php:190
 #: app/modules/api/Controllers/AccountController.php:241
 #: app/modules/api/Controllers/AccountController.php:316
-#: app/modules/web/Controllers/AccountController.php:227
-#: app/modules/web/Controllers/AccountController.php:749
-#: app/modules/web/Controllers/AccountController.php:796
-#: app/modules/web/Controllers/AccountController.php:839
-#: app/modules/web/Controllers/AccountController.php:880
-#: app/modules/web/Controllers/AccountController.php:932
-#: app/modules/web/Controllers/AccountController.php:968
-#: app/modules/web/Controllers/AccountFileController.php:259
+#: app/modules/web/Controllers/AccountController.php:250
+#: app/modules/web/Controllers/AccountController.php:833
+#: app/modules/web/Controllers/AccountController.php:882
+#: app/modules/web/Controllers/AccountController.php:927
+#: app/modules/web/Controllers/AccountController.php:970
+#: app/modules/web/Controllers/AccountController.php:1024
+#: app/modules/web/Controllers/AccountController.php:1065
+#: app/modules/web/Controllers/AccountFileController.php:246
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:121
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:158
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:160
 #: app/modules/web/Controllers/AccountManagerController.php:151
-#: app/modules/web/Controllers/ClientController.php:225
-#: app/modules/web/Controllers/ClientController.php:259
-#: app/modules/web/Controllers/ClientController.php:297
+#: app/modules/web/Controllers/ClientController.php:229
+#: app/modules/web/Controllers/ClientController.php:265
+#: app/modules/web/Controllers/ClientController.php:305
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
@@ -114,8 +116,8 @@ msgstr "Navn"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:40
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:35
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:41
-#: app/modules/web/themes/material-blue/views/account/account.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:80
+#: app/modules/web/themes/material-blue/views/account/account.inc:79
+#: app/modules/web/themes/material-blue/views/account/account.inc:81
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
@@ -123,41 +125,41 @@ msgid "Client"
 msgstr "Klient"
 
 #: app/modules/api/Controllers/AccountController.php:102
-#: app/modules/web/Controllers/AccountController.php:573
-#: app/modules/web/Controllers/AccountController.php:631
+#: app/modules/web/Controllers/AccountController.php:653
+#: app/modules/web/Controllers/AccountController.php:713
 msgid "Password viewed"
 msgstr "Kodeord vist"
 
 #: app/modules/api/Controllers/AccountController.php:138
 #: app/modules/api/Controllers/AccountController.php:144
-#: app/modules/web/Controllers/AccountController.php:837
-#: app/modules/web/Controllers/AccountController.php:848
-#: app/modules/web/Controllers/UserController.php:428
-#: app/modules/web/Controllers/UserController.php:432
-#: app/modules/web/Controllers/UserPassResetController.php:196
-#: app/modules/web/Controllers/UserPassResetController.php:200
+#: app/modules/web/Controllers/AccountController.php:925
+#: app/modules/web/Controllers/AccountController.php:936
+#: app/modules/web/Controllers/UserController.php:445
+#: app/modules/web/Controllers/UserController.php:449
+#: app/modules/web/Controllers/UserPassResetController.php:198
+#: app/modules/web/Controllers/UserPassResetController.php:202
 msgid "Password updated"
 msgstr "Kodeord skiftet"
 
 #: app/modules/api/Controllers/AccountController.php:188
 #: app/modules/api/Controllers/AccountController.php:194
-#: app/modules/web/Controllers/AccountController.php:747
-#: app/modules/web/Controllers/AccountController.php:758
+#: app/modules/web/Controllers/AccountController.php:831
+#: app/modules/web/Controllers/AccountController.php:842
 #, fuzzy
 msgid "Account created"
 msgstr "Konto tilføjet"
 
 #: app/modules/api/Controllers/AccountController.php:239
 #: app/modules/api/Controllers/AccountController.php:245
-#: app/modules/web/Controllers/AccountController.php:794
-#: app/modules/web/Controllers/AccountController.php:805
+#: app/modules/web/Controllers/AccountController.php:880
+#: app/modules/web/Controllers/AccountController.php:891
 msgid "Account updated"
 msgstr "Konto opdateret"
 
 #: app/modules/api/Controllers/AccountController.php:314
 #: app/modules/api/Controllers/AccountController.php:320
-#: app/modules/web/Controllers/AccountController.php:930
-#: app/modules/web/Controllers/AccountController.php:935
+#: app/modules/web/Controllers/AccountController.php:1022
+#: app/modules/web/Controllers/AccountController.php:1027
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:119
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:124
 #: app/modules/web/Controllers/AccountManagerController.php:149
@@ -171,22 +173,22 @@ msgstr "Kategori vist"
 
 #: app/modules/api/Controllers/CategoryController.php:91
 #: app/modules/api/Controllers/CategoryController.php:96
-#: app/modules/web/Controllers/CategoryController.php:263
-#: app/modules/web/Controllers/CategoryController.php:267
+#: app/modules/web/Controllers/CategoryController.php:269
+#: app/modules/web/Controllers/CategoryController.php:273
 msgid "Category added"
 msgstr "Kategori tilføjet"
 
 #: app/modules/api/Controllers/CategoryController.php:121
 #: app/modules/api/Controllers/CategoryController.php:126
-#: app/modules/web/Controllers/CategoryController.php:305
-#: app/modules/web/Controllers/CategoryController.php:309
+#: app/modules/web/Controllers/CategoryController.php:313
+#: app/modules/web/Controllers/CategoryController.php:317
 msgid "Category updated"
 msgstr "Kategori opdateret"
 
 #: app/modules/api/Controllers/CategoryController.php:150
 #: app/modules/api/Controllers/CategoryController.php:155
-#: app/modules/web/Controllers/CategoryController.php:227
 #: app/modules/web/Controllers/CategoryController.php:231
+#: app/modules/web/Controllers/CategoryController.php:235
 msgid "Category deleted"
 msgstr "Kategori slettet"
 
@@ -196,23 +198,23 @@ msgstr "Klient vist"
 
 #: app/modules/api/Controllers/ClientController.php:93
 #: app/modules/api/Controllers/ClientController.php:98
-#: app/modules/web/Controllers/ClientController.php:258
-#: app/modules/web/Controllers/ClientController.php:262
+#: app/modules/web/Controllers/ClientController.php:264
+#: app/modules/web/Controllers/ClientController.php:268
 #: lib/SP/Services/Import/KeepassImport.php:77
 msgid "Client added"
 msgstr "Klient tilføjet"
 
 #: app/modules/api/Controllers/ClientController.php:124
 #: app/modules/api/Controllers/ClientController.php:129
-#: app/modules/web/Controllers/ClientController.php:296
-#: app/modules/web/Controllers/ClientController.php:300
+#: app/modules/web/Controllers/ClientController.php:304
+#: app/modules/web/Controllers/ClientController.php:308
 msgid "Client updated"
 msgstr "Klient opdateret"
 
 #: app/modules/api/Controllers/ClientController.php:153
 #: app/modules/api/Controllers/ClientController.php:158
-#: app/modules/web/Controllers/ClientController.php:224
 #: app/modules/web/Controllers/ClientController.php:228
+#: app/modules/web/Controllers/ClientController.php:232
 msgid "Client deleted"
 msgstr "Klient slettet"
 
@@ -277,17 +279,17 @@ msgstr "Send detaljer i svaret"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:89
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:92
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:101
-#: app/modules/web/themes/material-blue/views/account/account.inc:155
-#: app/modules/web/themes/material-blue/views/account/account.inc:163
+#: app/modules/web/themes/material-blue/views/account/account.inc:156
+#: app/modules/web/themes/material-blue/views/account/account.inc:164
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:42
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:293
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:296
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:81
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:170
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:169
 #: app/modules/web/themes/material-blue/views/config/mail.inc:119
 #: app/modules/web/themes/material-blue/views/config/mail.inc:126
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:253
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:260
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:136
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:143
 #: app/modules/web/themes/material-blue/views/install/index.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:52
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:59
@@ -306,7 +308,7 @@ msgstr "Kodeord"
 #: app/modules/api/Controllers/Help/AccountHelp.php:114
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:97
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:114
-#: app/modules/web/themes/material-blue/views/account/account.inc:181
+#: app/modules/web/themes/material-blue/views/account/account.inc:182
 #: app/modules/web/themes/material-blue/views/account/details.inc:88
 #: app/modules/web/themes/material-blue/views/account/details.inc:90
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:243
@@ -319,7 +321,7 @@ msgstr "Udløbsdato for kodeord"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:29
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:30
-#: app/modules/web/themes/material-blue/views/account/account.inc:73
+#: app/modules/web/themes/material-blue/views/account/account.inc:74
 msgid "Account name"
 msgstr "Kontonavn"
 
@@ -342,14 +344,14 @@ msgstr "Klient-ID"
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:109
-#: app/modules/web/themes/material-blue/views/account/account.inc:149
+#: app/modules/web/themes/material-blue/views/account/account.inc:150
 msgid "Access user"
 msgstr "Bruger med adgang"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:136
+#: app/modules/web/themes/material-blue/views/account/account.inc:137
 msgid "Access URL or IP"
 msgstr "Adgangs-URL eller IP"
 
@@ -357,13 +359,13 @@ msgstr "Adgangs-URL eller IP"
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:134
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:207
+#: app/modules/web/themes/material-blue/views/account/account.inc:208
 msgid "Notes about the account"
 msgstr "Noter til kontoen"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:198
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:195
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
 msgid "Private Account"
@@ -371,15 +373,15 @@ msgstr "Privat konto"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:217
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:211
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
 msgid "Private Account for Group"
 msgstr "Privat konto for gruppen"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
-#: app/modules/web/themes/material-blue/views/account/account.inc:252
-#: app/modules/web/themes/material-blue/views/account/account.inc:254
+#: app/modules/web/themes/material-blue/views/account/account.inc:253
+#: app/modules/web/themes/material-blue/views/account/account.inc:255
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
 msgid "Linked Account"
 msgstr "Forbundet konto"
@@ -461,9 +463,9 @@ msgstr "Klientbeskrivelse"
 #: app/modules/api/Controllers/Help/ClientHelp.php:56
 #: app/modules/api/Controllers/Help/ClientHelp.php:70
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:107
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:152
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:155
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:66
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:99
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:105
 msgid "Global"
 msgstr "Global"
 
@@ -502,19 +504,19 @@ msgstr "Mærke vist"
 
 #: app/modules/api/Controllers/TagController.php:89
 #: app/modules/api/Controllers/TagController.php:94
-#: app/modules/web/Controllers/TagController.php:243
+#: app/modules/web/Controllers/TagController.php:249
 msgid "Tag added"
 msgstr "Mærke tilføjet"
 
 #: app/modules/api/Controllers/TagController.php:118
 #: app/modules/api/Controllers/TagController.php:123
-#: app/modules/web/Controllers/TagController.php:276
+#: app/modules/web/Controllers/TagController.php:284
 msgid "Tag updated"
 msgstr "Mærke opdateret"
 
 #: app/modules/api/Controllers/TagController.php:147
 #: app/modules/api/Controllers/TagController.php:152
-#: app/modules/web/Controllers/TagController.php:215
+#: app/modules/web/Controllers/TagController.php:219
 msgid "Tag removed"
 msgstr "Mærke slettet"
 
@@ -524,32 +526,32 @@ msgstr "Group viewed"
 
 #: app/modules/api/Controllers/UserGroupController.php:91
 #: app/modules/api/Controllers/UserGroupController.php:96
-#: app/modules/web/Controllers/UserGroupController.php:273
-#: app/modules/web/Controllers/UserGroupController.php:277
+#: app/modules/web/Controllers/UserGroupController.php:280
+#: app/modules/web/Controllers/UserGroupController.php:284
 msgid "Group added"
 msgstr "Gruppe tilføjet"
 
 #: app/modules/api/Controllers/UserGroupController.php:122
-#: app/modules/api/Controllers/UserGroupController.php:127
-#: app/modules/web/Controllers/UserGroupController.php:314
-#: app/modules/web/Controllers/UserGroupController.php:318
+#: app/modules/api/Controllers/UserGroupController.php:128
+#: app/modules/web/Controllers/UserGroupController.php:323
+#: app/modules/web/Controllers/UserGroupController.php:328
 msgid "Group updated"
 msgstr "Gruppen er opdateret"
 
-#: app/modules/api/Controllers/UserGroupController.php:151
-#: app/modules/api/Controllers/UserGroupController.php:156
-#: app/modules/web/Controllers/UserGroupController.php:237
+#: app/modules/api/Controllers/UserGroupController.php:152
+#: app/modules/api/Controllers/UserGroupController.php:158
 #: app/modules/web/Controllers/UserGroupController.php:241
+#: app/modules/web/Controllers/UserGroupController.php:246
 msgid "Group deleted"
 msgstr "Gruppe slettet"
 
-#: app/modules/api/Init.php:146
+#: app/modules/api/Init.php:150
 msgid "Updating needed"
 msgstr "Opdatering påkrævet"
 
-#: app/modules/web/Controllers/AccountController.php:149
-#: app/modules/web/Controllers/AccountController.php:204
-#: app/modules/web/Controllers/AccountController.php:489
+#: app/modules/web/Controllers/AccountController.php:157
+#: app/modules/web/Controllers/AccountController.php:224
+#: app/modules/web/Controllers/AccountController.php:553
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:164
@@ -559,24 +561,24 @@ msgstr "Opdatering påkrævet"
 msgid "Account Details"
 msgstr "Kontodetaljer"
 
-#: app/modules/web/Controllers/AccountController.php:225
+#: app/modules/web/Controllers/AccountController.php:248
 msgid "Link viewed"
 msgstr "Link vist"
 
-#: app/modules/web/Controllers/AccountController.php:226
-#: app/modules/web/Controllers/AccountController.php:574
-#: app/modules/web/Controllers/AccountController.php:632
-#: app/modules/web/Controllers/AccountController.php:674
-#: app/modules/web/Controllers/AccountController.php:711
-#: app/modules/web/Controllers/AccountController.php:748
+#: app/modules/web/Controllers/AccountController.php:249
+#: app/modules/web/Controllers/AccountController.php:654
+#: app/modules/web/Controllers/AccountController.php:714
+#: app/modules/web/Controllers/AccountController.php:758
 #: app/modules/web/Controllers/AccountController.php:795
-#: app/modules/web/Controllers/AccountController.php:838
-#: app/modules/web/Controllers/AccountController.php:879
-#: app/modules/web/Controllers/AccountController.php:931
-#: app/modules/web/Controllers/AccountController.php:967
-#: app/modules/web/Controllers/AccountFileController.php:258
+#: app/modules/web/Controllers/AccountController.php:832
+#: app/modules/web/Controllers/AccountController.php:881
+#: app/modules/web/Controllers/AccountController.php:926
+#: app/modules/web/Controllers/AccountController.php:969
+#: app/modules/web/Controllers/AccountController.php:1023
+#: app/modules/web/Controllers/AccountController.php:1064
+#: app/modules/web/Controllers/AccountFileController.php:245
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:120
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:157
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:159
 #: app/modules/web/Controllers/AccountManagerController.php:150
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
@@ -587,40 +589,48 @@ msgstr "Link vist"
 msgid "Account"
 msgstr "Konto"
 
-#: app/modules/web/Controllers/AccountController.php:228
+#: app/modules/web/Controllers/AccountController.php:251
 msgid "Agent"
 msgstr "Agent"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:252
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:252
 #: lib/SP/DataModel/PublicLinkListData.php:88
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:190
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
 msgstr "TIL"
 
-#: app/modules/web/Controllers/AccountController.php:229
+#: app/modules/web/Controllers/AccountController.php:252
 #: lib/SP/DataModel/PublicLinkListData.php:88
 msgid "OFF"
 msgstr "FRA"
 
-#: app/modules/web/Controllers/AccountController.php:230
+#: app/modules/web/Controllers/AccountController.php:253
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
+#. (itstool) path: strings/text
+#: app/modules/web/Controllers/AccountController.php:254
+#: app/modules/web/Controllers/AccountController.php:1067
+#: app/modules/web/Controllers/PublicLinkController.php:261
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
+msgid "Link"
+msgstr "Link"
+
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:261
-#: app/modules/web/Controllers/AccountController.php:307
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:274
+#: app/modules/web/Controllers/AccountController.php:287
+#: app/modules/web/Controllers/AccountController.php:339
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:275
 #: app/config/actions.xml:157
 msgid "New Account"
 msgstr "Ny konto"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:353
+#: app/modules/web/Controllers/AccountController.php:393
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:20
@@ -629,7 +639,7 @@ msgid "Edit Account"
 msgstr "Tilret konto"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:400
+#: app/modules/web/Controllers/AccountController.php:448
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:181
@@ -642,27 +652,27 @@ msgid "Remove Account"
 msgstr "Slet konto"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:445
+#: app/modules/web/Controllers/AccountController.php:501
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 #: app/config/actions.xml:181
 msgid "Edit Account Password"
 msgstr "Skift konto-kodeord"
 
-#: app/modules/web/Controllers/AccountController.php:673
-#: app/modules/web/Controllers/AccountController.php:710
+#: app/modules/web/Controllers/AccountController.php:757
+#: app/modules/web/Controllers/AccountController.php:794
 msgid "Password copied"
 msgstr "Kodeord kopieret"
 
-#: app/modules/web/Controllers/AccountController.php:878
-#: app/modules/web/Controllers/AccountController.php:889
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:156
-#: app/modules/web/Controllers/AccountHistoryManagerController.php:161
+#: app/modules/web/Controllers/AccountController.php:968
+#: app/modules/web/Controllers/AccountController.php:979
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:158
+#: app/modules/web/Controllers/AccountHistoryManagerController.php:163
 msgid "Account restored"
 msgstr "Kontoen er genskabt"
 
-#: app/modules/web/Controllers/AccountController.php:916
-#: app/modules/web/Controllers/AccountController.php:919
+#: app/modules/web/Controllers/AccountController.php:1008
+#: app/modules/web/Controllers/AccountController.php:1011
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:108
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:111
 #: app/modules/web/Controllers/AccountManagerController.php:135
@@ -670,51 +680,51 @@ msgstr "Kontoen er genskabt"
 msgid "Accounts removed"
 msgstr "Konti slettet"
 
-#: app/modules/web/Controllers/AccountController.php:958
+#: app/modules/web/Controllers/AccountController.php:1052
 #: app/modules/web/Forms/NotificationForm.php:106
 msgid "A description is needed"
 msgstr "En beskrivelse er påkrævet"
 
-#: app/modules/web/Controllers/AccountController.php:965
+#: app/modules/web/Controllers/AccountController.php:1062
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:44
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:46
 msgid "Request"
-msgstr ""
+msgstr "Forespørgsel"
 
-#: app/modules/web/Controllers/AccountController.php:966
+#: app/modules/web/Controllers/AccountController.php:1063
 msgid "Requester"
 msgstr "Ansøger"
 
-#: app/modules/web/Controllers/AccountController.php:969
+#: app/modules/web/Controllers/AccountController.php:1066
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:129
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:130
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:108
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:36
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:37
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:61
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:68
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:69
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: app/modules/web/Controllers/AccountController.php:982
+#: app/modules/web/Controllers/AccountController.php:1079
 msgid "Request done"
 msgstr "Forespørgsel udført"
 
-#: app/modules/web/Controllers/AccountFavoriteController.php:55
+#: app/modules/web/Controllers/AccountFavoriteController.php:56
 msgid "Favorite added"
 msgstr "Foretrukken tilføjet"
 
-#: app/modules/web/Controllers/AccountFavoriteController.php:73
+#: app/modules/web/Controllers/AccountFavoriteController.php:76
 msgid "Favorite deleted"
 msgstr "Foretrukken slettet"
 
 #: app/modules/web/Controllers/AccountFileController.php:74
-#: app/modules/web/Controllers/AccountFileController.php:135
+#: app/modules/web/Controllers/AccountFileController.php:137
 #, fuzzy
 msgid "File does not exist"
 msgstr "Filen findes ikke"
@@ -726,97 +736,81 @@ msgstr "Fil vist"
 
 #: app/modules/web/Controllers/AccountFileController.php:88
 #: app/modules/web/Controllers/AccountFileController.php:104
-#: app/modules/web/Controllers/AccountFileController.php:141
-#: app/modules/web/Controllers/AccountFileController.php:257
-#: app/modules/web/Controllers/AccountFileController.php:364
+#: app/modules/web/Controllers/AccountFileController.php:143
+#: app/modules/web/Controllers/AccountFileController.php:244
+#: app/modules/web/Controllers/AccountFileController.php:379
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
-#: app/modules/web/Controllers/ConfigGeneralController.php:195
-#: app/modules/web/Controllers/ConfigGeneralController.php:236
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:122
+#: app/modules/web/Controllers/ConfigGeneralController.php:202
+#: app/modules/web/Controllers/ConfigGeneralController.php:243
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "Fil"
 
-#: app/modules/web/Controllers/AccountFileController.php:115
+#: app/modules/web/Controllers/AccountFileController.php:117
 #: app/config/strings.js.inc:40
 msgid "File not supported for preview"
 msgstr "Filen er ikke understøttet som forhåndsvisning"
 
-#: app/modules/web/Controllers/AccountFileController.php:140
+#: app/modules/web/Controllers/AccountFileController.php:142
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
-#: app/modules/web/Controllers/ConfigGeneralController.php:194
-#: app/modules/web/Controllers/ConfigGeneralController.php:235
+#: app/modules/web/Controllers/ConfigGeneralController.php:201
+#: app/modules/web/Controllers/ConfigGeneralController.php:242
 #: app/config/strings.js.inc:97
 msgid "File downloaded"
 msgstr "Fil hentet"
 
-#: app/modules/web/Controllers/AccountFileController.php:186
+#: app/modules/web/Controllers/AccountFileController.php:188
 msgid "INVALID QUERY"
 msgstr "UGYLDIG FORESPØRGSEL"
 
-#: app/modules/web/Controllers/AccountFileController.php:192
-msgid "There aren't any allowed extensions"
-msgstr "Der findes ingen tilladte filtype-angivelser(endelser)"
+#: app/modules/web/Controllers/AccountFileController.php:194
+msgid "There aren't any allowed MIME types"
+msgstr "Der er ingen tilladte MIME-typer"
 
 #: app/modules/web/Controllers/AccountFileController.php:209
-#: lib/SP/Services/Import/FileImport.php:100
-msgid "File type not allowed"
-msgstr "Filtype ikke tilladt"
-
-#: app/modules/web/Controllers/AccountFileController.php:211
-#, php-format
-msgid "Extension: %s"
-msgstr "Udvidelse: %s"
-
-#: app/modules/web/Controllers/AccountFileController.php:216
 msgid "Invalid file"
 msgstr "Ugyldig fil"
 
-#: app/modules/web/Controllers/AccountFileController.php:218
+#: app/modules/web/Controllers/AccountFileController.php:211
 #, php-format
 msgid "File: %s"
 msgstr "Fil: %s"
 
-#: app/modules/web/Controllers/AccountFileController.php:224
-#: app/modules/web/Controllers/AccountFileController.php:244
-#: lib/SP/Services/Import/FileImport.php:116
-msgid "Internal error while reading the file"
-msgstr "Intern fejl under læsning af filen"
-
-#: app/modules/web/Controllers/AccountFileController.php:226
-#, php-format
-msgid "Maximum size: %s"
-msgstr "Maks. størrelse: %s"
-
-#: app/modules/web/Controllers/AccountFileController.php:234
+#: app/modules/web/Controllers/AccountFileController.php:223
 msgid "File size exceeded"
 msgstr "Max. filstørrelse overskredet"
 
-#: app/modules/web/Controllers/AccountFileController.php:236
+#: app/modules/web/Controllers/AccountFileController.php:225
 #, php-format
 msgid "Maximum size: %d KB"
 msgstr "Maks størrelse: %d KB"
 
-#: app/modules/web/Controllers/AccountFileController.php:256
-#: app/modules/web/Controllers/AccountFileController.php:265
+#: app/modules/web/Controllers/AccountFileController.php:231
+#: lib/SP/Services/Import/FileImport.php:106
+msgid "Internal error while reading the file"
+msgstr "Intern fejl under læsning af filen"
+
+#: app/modules/web/Controllers/AccountFileController.php:243
+#: app/modules/web/Controllers/AccountFileController.php:252
 msgid "File saved"
 msgstr "Fil gemt"
 
-#: app/modules/web/Controllers/AccountFileController.php:260
+#: app/modules/web/Controllers/AccountFileController.php:247
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:109
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:109
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:109
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:127
-#: app/modules/web/Controllers/ItemPresetController.php:323
-#: app/modules/web/Controllers/ItemPresetController.php:364
-#: lib/SP/Services/Auth/LoginService.php:455
-#: lib/SP/Services/Auth/LoginService.php:518
-#: lib/SP/Services/Auth/LoginService.php:564
-#: lib/SP/Services/Auth/LoginService.php:607
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:128
+#: app/modules/web/Controllers/ItemPresetController.php:331
+#: app/modules/web/Controllers/ItemPresetController.php:374
+#: lib/SP/Services/Auth/LoginService.php:457
+#: lib/SP/Services/Auth/LoginService.php:522
+#: lib/SP/Services/Auth/LoginService.php:568
+#: lib/SP/Services/Auth/LoginService.php:611
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:37
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:23
@@ -824,123 +818,133 @@ msgstr "Fil gemt"
 msgid "Type"
 msgstr "Type"
 
-#: app/modules/web/Controllers/AccountFileController.php:261
+#: app/modules/web/Controllers/AccountFileController.php:248
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:110
 msgid "Size"
 msgstr "Størrelse"
 
-#: app/modules/web/Controllers/AccountFileController.php:292
+#: app/modules/web/Controllers/AccountFileController.php:286
+#: lib/SP/Services/Import/FileImport.php:95
+msgid "File type not allowed"
+msgstr "Filtype ikke tilladt"
+
+#: app/modules/web/Controllers/AccountFileController.php:288
+#: lib/SP/Services/Import/FileImport.php:97
+#, php-format
+msgid "MIME type: %s"
+msgstr "MIME-type: %s"
+
+#: app/modules/web/Controllers/AccountFileController.php:307
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:64
 #: app/modules/web/Controllers/AccountManagerController.php:79
 #: app/modules/web/Controllers/AccountManagerController.php:213
 #: app/modules/web/Controllers/AuthTokenController.php:71
 #: app/modules/web/Controllers/AuthTokenController.php:111
-#: app/modules/web/Controllers/AuthTokenController.php:176
-#: app/modules/web/Controllers/AuthTokenController.php:209
-#: app/modules/web/Controllers/AuthTokenController.php:254
-#: app/modules/web/Controllers/AuthTokenController.php:292
-#: app/modules/web/Controllers/AuthTokenController.php:344
+#: app/modules/web/Controllers/AuthTokenController.php:178
+#: app/modules/web/Controllers/AuthTokenController.php:213
+#: app/modules/web/Controllers/AuthTokenController.php:260
+#: app/modules/web/Controllers/AuthTokenController.php:300
+#: app/modules/web/Controllers/AuthTokenController.php:354
 #: app/modules/web/Controllers/CategoryController.php:69
 #: app/modules/web/Controllers/CategoryController.php:106
-#: app/modules/web/Controllers/CategoryController.php:170
-#: app/modules/web/Controllers/CategoryController.php:203
-#: app/modules/web/Controllers/CategoryController.php:248
-#: app/modules/web/Controllers/CategoryController.php:290
-#: app/modules/web/Controllers/CategoryController.php:332
+#: app/modules/web/Controllers/CategoryController.php:172
+#: app/modules/web/Controllers/CategoryController.php:207
+#: app/modules/web/Controllers/CategoryController.php:254
+#: app/modules/web/Controllers/CategoryController.php:298
+#: app/modules/web/Controllers/CategoryController.php:342
 #: app/modules/web/Controllers/ClientController.php:70
 #: app/modules/web/Controllers/ClientController.php:107
-#: app/modules/web/Controllers/ClientController.php:171
-#: app/modules/web/Controllers/ClientController.php:203
-#: app/modules/web/Controllers/ClientController.php:245
-#: app/modules/web/Controllers/ClientController.php:285
-#: app/modules/web/Controllers/ClientController.php:323
+#: app/modules/web/Controllers/ClientController.php:173
+#: app/modules/web/Controllers/ClientController.php:207
+#: app/modules/web/Controllers/ClientController.php:251
+#: app/modules/web/Controllers/ClientController.php:293
+#: app/modules/web/Controllers/ClientController.php:333
 #: app/modules/web/Controllers/CustomFieldController.php:71
 #: app/modules/web/Controllers/CustomFieldController.php:108
-#: app/modules/web/Controllers/CustomFieldController.php:170
-#: app/modules/web/Controllers/CustomFieldController.php:202
-#: app/modules/web/Controllers/CustomFieldController.php:236
-#: app/modules/web/Controllers/CustomFieldController.php:275
-#: app/modules/web/Controllers/CustomFieldController.php:314
+#: app/modules/web/Controllers/CustomFieldController.php:172
+#: app/modules/web/Controllers/CustomFieldController.php:206
+#: app/modules/web/Controllers/CustomFieldController.php:242
+#: app/modules/web/Controllers/CustomFieldController.php:283
+#: app/modules/web/Controllers/CustomFieldController.php:324
 #: app/modules/web/Controllers/EventlogController.php:107
 #: app/modules/web/Controllers/ItemPresetController.php:70
-#: app/modules/web/Controllers/ItemPresetController.php:157
-#: app/modules/web/Controllers/ItemPresetController.php:197
-#: app/modules/web/Controllers/ItemPresetController.php:236
-#: app/modules/web/Controllers/ItemPresetController.php:268
-#: app/modules/web/Controllers/ItemPresetController.php:309
-#: app/modules/web/Controllers/ItemPresetController.php:350
+#: app/modules/web/Controllers/ItemPresetController.php:159
+#: app/modules/web/Controllers/ItemPresetController.php:199
+#: app/modules/web/Controllers/ItemPresetController.php:240
+#: app/modules/web/Controllers/ItemPresetController.php:274
+#: app/modules/web/Controllers/ItemPresetController.php:317
+#: app/modules/web/Controllers/ItemPresetController.php:360
 #: app/modules/web/Controllers/NotificationController.php:110
-#: app/modules/web/Controllers/NotificationController.php:173
-#: app/modules/web/Controllers/NotificationController.php:191
-#: app/modules/web/Controllers/NotificationController.php:223
-#: app/modules/web/Controllers/NotificationController.php:255
-#: app/modules/web/Controllers/NotificationController.php:308
-#: app/modules/web/Controllers/NotificationController.php:337
-#: app/modules/web/Controllers/NotificationController.php:372
+#: app/modules/web/Controllers/NotificationController.php:175
+#: app/modules/web/Controllers/NotificationController.php:193
+#: app/modules/web/Controllers/NotificationController.php:227
+#: app/modules/web/Controllers/NotificationController.php:312
+#: app/modules/web/Controllers/NotificationController.php:343
+#: app/modules/web/Controllers/NotificationController.php:380
 #: app/modules/web/Controllers/PluginController.php:111
 #: app/modules/web/Controllers/PluginController.php:133
-#: app/modules/web/Controllers/PluginController.php:277
+#: app/modules/web/Controllers/PluginController.php:285
 #: app/modules/web/Controllers/PublicLinkController.php:74
 #: app/modules/web/Controllers/PublicLinkController.php:111
-#: app/modules/web/Controllers/PublicLinkController.php:173
-#: app/modules/web/Controllers/PublicLinkController.php:201
-#: app/modules/web/Controllers/PublicLinkController.php:233
-#: app/modules/web/Controllers/PublicLinkController.php:276
-#: app/modules/web/Controllers/PublicLinkController.php:310
-#: app/modules/web/Controllers/PublicLinkController.php:354
+#: app/modules/web/Controllers/PublicLinkController.php:175
+#: app/modules/web/Controllers/PublicLinkController.php:205
+#: app/modules/web/Controllers/PublicLinkController.php:239
+#: app/modules/web/Controllers/PublicLinkController.php:284
+#: app/modules/web/Controllers/PublicLinkController.php:320
+#: app/modules/web/Controllers/PublicLinkController.php:366
 #: app/modules/web/Controllers/TagController.php:68
 #: app/modules/web/Controllers/TagController.php:105
-#: app/modules/web/Controllers/TagController.php:165
-#: app/modules/web/Controllers/TagController.php:197
-#: app/modules/web/Controllers/TagController.php:233
-#: app/modules/web/Controllers/TagController.php:266
-#: app/modules/web/Controllers/TagController.php:299
+#: app/modules/web/Controllers/TagController.php:167
+#: app/modules/web/Controllers/TagController.php:201
+#: app/modules/web/Controllers/TagController.php:239
+#: app/modules/web/Controllers/TagController.php:274
+#: app/modules/web/Controllers/TagController.php:309
 #: app/modules/web/Controllers/UserController.php:75
 #: app/modules/web/Controllers/UserController.php:112
-#: app/modules/web/Controllers/UserController.php:197
-#: app/modules/web/Controllers/UserController.php:230
-#: app/modules/web/Controllers/UserController.php:266
-#: app/modules/web/Controllers/UserController.php:308
-#: app/modules/web/Controllers/UserController.php:373
-#: app/modules/web/Controllers/UserController.php:416
-#: app/modules/web/Controllers/UserController.php:455
+#: app/modules/web/Controllers/UserController.php:199
+#: app/modules/web/Controllers/UserController.php:234
+#: app/modules/web/Controllers/UserController.php:272
+#: app/modules/web/Controllers/UserController.php:320
+#: app/modules/web/Controllers/UserController.php:387
+#: app/modules/web/Controllers/UserController.php:433
+#: app/modules/web/Controllers/UserController.php:474
 #: app/modules/web/Controllers/UserGroupController.php:77
 #: app/modules/web/Controllers/UserGroupController.php:114
-#: app/modules/web/Controllers/UserGroupController.php:185
-#: app/modules/web/Controllers/UserGroupController.php:217
-#: app/modules/web/Controllers/UserGroupController.php:259
-#: app/modules/web/Controllers/UserGroupController.php:300
-#: app/modules/web/Controllers/UserGroupController.php:341
+#: app/modules/web/Controllers/UserGroupController.php:187
+#: app/modules/web/Controllers/UserGroupController.php:221
+#: app/modules/web/Controllers/UserGroupController.php:266
+#: app/modules/web/Controllers/UserGroupController.php:309
+#: app/modules/web/Controllers/UserGroupController.php:353
 #: app/modules/web/Controllers/UserProfileController.php:70
 #: app/modules/web/Controllers/UserProfileController.php:107
-#: app/modules/web/Controllers/UserProfileController.php:174
-#: app/modules/web/Controllers/UserProfileController.php:206
-#: app/modules/web/Controllers/UserProfileController.php:248
-#: app/modules/web/Controllers/UserProfileController.php:285
-#: app/modules/web/Controllers/UserProfileController.php:323
+#: app/modules/web/Controllers/UserProfileController.php:176
+#: app/modules/web/Controllers/UserProfileController.php:210
+#: app/modules/web/Controllers/UserProfileController.php:255
+#: app/modules/web/Controllers/UserProfileController.php:300
+#: app/modules/web/Controllers/UserProfileController.php:344
 #: lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: lib/SP/Util/ErrorUtil.php:160
 msgid "You don't have permission to do this operation"
 msgstr "Du har ikke tilladelse til at udføre denne handling"
 
-#: app/modules/web/Controllers/AccountFileController.php:355
-#: app/modules/web/Controllers/AccountFileController.php:358
+#: app/modules/web/Controllers/AccountFileController.php:370
+#: app/modules/web/Controllers/AccountFileController.php:373
 msgid "Files deleted"
 msgstr "Filer slettet"
 
-#: app/modules/web/Controllers/AccountFileController.php:363
+#: app/modules/web/Controllers/AccountFileController.php:378
 msgid "File deleted"
 msgstr "Fil slettet"
 
-#: app/modules/web/Controllers/AccountFileController.php:369
+#: app/modules/web/Controllers/AccountFileController.php:384
 msgid "File Deleted"
 msgstr "Fil slettet"
 
-#: app/modules/web/Controllers/AccountFileController.php:405
+#: app/modules/web/Controllers/AccountFileController.php:422
 msgid "Files management disabled"
 msgstr "Filhåndtering deaktiveret"
 
-#: app/modules/web/Controllers/AccountFileController.php:424
+#: app/modules/web/Controllers/AccountFileController.php:441
 msgid "There are no linked files for the account"
 msgstr "Der findes ingen filer linket til kontoen"
 
@@ -964,46 +968,46 @@ msgstr "Bulk Update"
 msgid "New Authorization"
 msgstr "Ny autorisation"
 
-#: app/modules/web/Controllers/AuthTokenController.php:179
+#: app/modules/web/Controllers/AuthTokenController.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:191
 msgid "Edit Authorization"
 msgstr "Tilret autorisation"
 
-#: app/modules/web/Controllers/AuthTokenController.php:220
-#: app/modules/web/Controllers/AuthTokenController.php:223
+#: app/modules/web/Controllers/AuthTokenController.php:224
+#: app/modules/web/Controllers/AuthTokenController.php:227
 msgid "Authorizations deleted"
 msgstr "Autorisationer slettet"
 
-#: app/modules/web/Controllers/AuthTokenController.php:233
 #: app/modules/web/Controllers/AuthTokenController.php:237
+#: app/modules/web/Controllers/AuthTokenController.php:241
 msgid "Authorization deleted"
 msgstr "Autorisation slettet"
 
-#: app/modules/web/Controllers/AuthTokenController.php:234
-#: app/modules/web/Controllers/AuthTokenController.php:306
-#: app/modules/web/Controllers/AuthTokenController.php:315
-#: app/modules/web/Controllers/AuthTokenController.php:356
+#: app/modules/web/Controllers/AuthTokenController.php:238
+#: app/modules/web/Controllers/AuthTokenController.php:314
+#: app/modules/web/Controllers/AuthTokenController.php:323
+#: app/modules/web/Controllers/AuthTokenController.php:366
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:71
 msgid "Authorization"
 msgstr "Autorisation"
 
-#: app/modules/web/Controllers/AuthTokenController.php:269
+#: app/modules/web/Controllers/AuthTokenController.php:275
 msgid "Authorization added"
 msgstr "Autorisation tilføjet"
 
-#: app/modules/web/Controllers/AuthTokenController.php:305
-#: app/modules/web/Controllers/AuthTokenController.php:314
-#: app/modules/web/Controllers/AuthTokenController.php:321
+#: app/modules/web/Controllers/AuthTokenController.php:313
+#: app/modules/web/Controllers/AuthTokenController.php:322
+#: app/modules/web/Controllers/AuthTokenController.php:329
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
 msgid "Authorization updated"
 msgstr "Autorisation opdateret"
 
-#: app/modules/web/Controllers/AuthTokenController.php:347
+#: app/modules/web/Controllers/AuthTokenController.php:357
 msgid "View Authorization"
 msgstr "Se autorisation"
 
-#: app/modules/web/Controllers/AuthTokenController.php:355
+#: app/modules/web/Controllers/AuthTokenController.php:365
 msgid "Authorization viewed"
 msgstr "Autorisation vist"
 
@@ -1011,27 +1015,27 @@ msgstr "Autorisation vist"
 #: app/modules/web/Controllers/CategoryController.php:109
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
-#: app/modules/web/themes/material-blue/views/account/account.inc:118
+#: app/modules/web/themes/material-blue/views/account/account.inc:119
 #: app/config/actions.xml:307
 msgid "New Category"
 msgstr "Ny kategori"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/CategoryController.php:173
+#: app/modules/web/Controllers/CategoryController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
 #: app/config/actions.xml:313
 msgid "Edit Category"
 msgstr "Tilret kategori"
 
-#: app/modules/web/Controllers/CategoryController.php:214
-#: app/modules/web/Controllers/CategoryController.php:217
+#: app/modules/web/Controllers/CategoryController.php:218
+#: app/modules/web/Controllers/CategoryController.php:221
 msgid "Categories deleted"
 msgstr "Kategorier slettet"
 
-#: app/modules/web/Controllers/CategoryController.php:228
-#: app/modules/web/Controllers/CategoryController.php:264
-#: app/modules/web/Controllers/CategoryController.php:306
+#: app/modules/web/Controllers/CategoryController.php:232
+#: app/modules/web/Controllers/CategoryController.php:270
+#: app/modules/web/Controllers/CategoryController.php:314
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:115
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
@@ -1040,8 +1044,8 @@ msgstr "Kategorier slettet"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:74
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:45
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:51
-#: app/modules/web/themes/material-blue/views/account/account.inc:103
-#: app/modules/web/themes/material-blue/views/account/account.inc:105
+#: app/modules/web/themes/material-blue/views/account/account.inc:104
+#: app/modules/web/themes/material-blue/views/account/account.inc:106
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:70
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
@@ -1049,7 +1053,7 @@ msgid "Category"
 msgstr "Kategori"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/CategoryController.php:335
+#: app/modules/web/Controllers/CategoryController.php:345
 #: app/config/actions.xml:301
 msgid "View Category"
 msgstr "Se kategori"
@@ -1058,48 +1062,48 @@ msgstr "Se kategori"
 #: app/modules/web/Controllers/ClientController.php:110
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:93
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
 #: app/config/actions.xml:337
 msgid "New Client"
 msgstr "Ny klient"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ClientController.php:174
+#: app/modules/web/Controllers/ClientController.php:176
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
 #: app/config/actions.xml:343
 msgid "Edit Client"
 msgstr "Tilret klient"
 
-#: app/modules/web/Controllers/ClientController.php:213
-#: app/modules/web/Controllers/ClientController.php:216
+#: app/modules/web/Controllers/ClientController.php:217
+#: app/modules/web/Controllers/ClientController.php:220
 msgid "Clients deleted"
 msgstr "Klienter slettet"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ClientController.php:326
+#: app/modules/web/Controllers/ClientController.php:336
 #: app/config/actions.xml:331
 msgid "View Client"
 msgstr "Se klient"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:74
+#: app/modules/web/Controllers/ConfigAccountController.php:73
 #, fuzzy
 msgid "Maximum size per file is 16MB"
 msgstr "Maksimal tilladt filstørrelse er 16MB"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:82
+#: app/modules/web/Controllers/ConfigAccountController.php:81
 msgid "Files enabled"
 msgstr "Filer aktiveret"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:87
+#: app/modules/web/Controllers/ConfigAccountController.php:86
 msgid "Files disabled"
 msgstr "Filer deaktiveret"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:100
+#: app/modules/web/Controllers/ConfigAccountController.php:99
 msgid "Public links enabled"
 msgstr "Offentlige links aktiveret"
 
-#: app/modules/web/Controllers/ConfigAccountController.php:105
+#: app/modules/web/Controllers/ConfigAccountController.php:104
 msgid "Public links disabled"
 msgstr "Offentlige links deaktiveret"
 
@@ -1107,11 +1111,11 @@ msgstr "Offentlige links deaktiveret"
 #: app/modules/web/Controllers/ConfigBackupController.php:195
 #: app/modules/web/Controllers/ConfigBackupController.php:241
 #: app/modules/web/Controllers/ConfigEncryptionController.php:97
-#: app/modules/web/Controllers/ConfigEncryptionController.php:159
-#: app/modules/web/Controllers/ConfigGeneralController.php:183
-#: app/modules/web/Controllers/ConfigGeneralController.php:229
+#: app/modules/web/Controllers/ConfigEncryptionController.php:163
+#: app/modules/web/Controllers/ConfigGeneralController.php:190
+#: app/modules/web/Controllers/ConfigGeneralController.php:236
 #: app/modules/web/Controllers/ConfigImportController.php:59
-#: app/modules/web/Controllers/ConfigLdapController.php:226
+#: app/modules/web/Controllers/ConfigLdapController.php:233
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
 #: app/modules/web/Forms/UserForm.php:131
 #: app/modules/web/Forms/UserForm.php:153
@@ -1120,7 +1124,7 @@ msgid "Ey, this is a DEMO!!"
 msgstr "Øj, dette er en DEMO-version!!"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:90
-#: app/modules/web/Controllers/UserPassResetController.php:183
+#: app/modules/web/Controllers/UserPassResetController.php:185
 #: app/modules/web/Forms/AccountForm.php:135
 #: app/modules/web/Forms/UserForm.php:161
 #, fuzzy
@@ -1132,9 +1136,11 @@ msgid "Verification of exported data finished"
 msgstr "Verifikation af eksporterede data udført"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:122
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:113
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:237
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:163
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:122
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:260
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:309
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:334
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:166
 #: app/modules/web/themes/material-blue/views/config/info.inc:49
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
 msgid "Version"
@@ -1159,7 +1165,7 @@ msgstr "Nej"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigBackupController.php:124
-#: app/modules/web/Controllers/ConfigManagerController.php:174
+#: app/modules/web/Controllers/ConfigManagerController.php:192
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:101
 #: lib/SP/Providers/Notification/NotificationHandler.php:125
 #: lib/SP/Providers/Notification/NotificationHandler.php:156
@@ -1186,25 +1192,37 @@ msgstr "Kategorier"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:211
-#: app/modules/web/themes/material-blue/views/account/account.inc:213
+#: app/modules/web/themes/material-blue/views/account/account.inc:212
+#: app/modules/web/themes/material-blue/views/account/account.inc:214
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
 msgstr "Mærker"
 
+#: app/modules/web/Controllers/ConfigDokuWikiController.php:65
+msgid "Missing DokuWiki parameters"
+msgstr "Manglende DokuWiki-parametre"
+
+#: app/modules/web/Controllers/ConfigDokuWikiController.php:77
+msgid "DokuWiki enabled"
+msgstr "DokuWiki aktiveret"
+
+#: app/modules/web/Controllers/ConfigDokuWikiController.php:82
+msgid "DokuWiki disabled"
+msgstr "DokuWiki deaktiveret"
+
 #: app/modules/web/Controllers/ConfigEncryptionController.php:73
-#: app/modules/web/Controllers/ConfigEncryptionController.php:147
+#: app/modules/web/Controllers/ConfigEncryptionController.php:149
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:118
-#: lib/SP/Services/Auth/LoginService.php:300
-#: lib/SP/Services/Auth/LoginService.php:324
+#: lib/SP/Services/Auth/LoginService.php:302
+#: lib/SP/Services/Auth/LoginService.php:326
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:164
 msgid "Master password updated"
 msgstr "Hoved-kodeord er opdateret"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:73
-#: app/modules/web/Controllers/ConfigEncryptionController.php:147
+#: app/modules/web/Controllers/ConfigEncryptionController.php:150
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:118
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:165
@@ -1238,33 +1256,33 @@ msgstr "Det nuværende hoved-kodeord passer ikke"
 msgid "Error while saving the Master Password's hash"
 msgstr "Fejl under lagring af Hoved-kodeordets kontrolsum"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:166
-#: app/modules/web/Controllers/ConfigEncryptionController.php:168
+#: app/modules/web/Controllers/ConfigEncryptionController.php:170
+#: app/modules/web/Controllers/ConfigEncryptionController.php:172
 msgid "Master password hash updated"
 msgstr "Hoved-kodeord kontrolsum opdateret"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:175
+#: app/modules/web/Controllers/ConfigEncryptionController.php:179
 msgid "Error while updating the master password hash"
 msgstr "Fejl under opdatering af Hoved-kodeords kontrolsum"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:199
 #: app/modules/web/Controllers/ConfigEncryptionController.php:205
-#: app/modules/web/Controllers/ConfigEncryptionController.php:209
+#: app/modules/web/Controllers/ConfigEncryptionController.php:215
+#: app/modules/web/Controllers/ConfigEncryptionController.php:221
 msgid "Temporary password generated"
 msgstr "Temporary password generated"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:199
-#: app/modules/web/Controllers/ConfigMailController.php:146
-#: app/modules/web/Controllers/ConfigMailController.php:152
-#: lib/SP/Services/Mail/MailService.php:141
+#: app/modules/web/Controllers/ConfigEncryptionController.php:206
+#: app/modules/web/Controllers/ConfigMailController.php:155
+#: app/modules/web/Controllers/ConfigMailController.php:161
+#: lib/SP/Services/Mail/MailService.php:149
 msgid "Email sent"
 msgstr "E-mail afsendt"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:205
+#: app/modules/web/Controllers/ConfigEncryptionController.php:216
 #: lib/SP/Services/Mail/MailService.php:81
-#: lib/SP/Services/Mail/MailService.php:151
+#: lib/SP/Services/Mail/MailService.php:159
 msgid "Error while sending the email"
-msgstr ""
+msgstr "Fejl da emailen blev sendt"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:96
 msgid "Missing remote syslog parameters"
@@ -1302,109 +1320,109 @@ msgstr "Basal autentificering deaktiveret"
 msgid "Accounts imported"
 msgstr "Konti importeret"
 
-#: app/modules/web/Controllers/ConfigImportController.php:82
-#: app/modules/web/Controllers/ConfigLdapController.php:268
+#: app/modules/web/Controllers/ConfigImportController.php:84
+#: app/modules/web/Controllers/ConfigLdapController.php:275
 msgid "Import finished"
 msgstr "Import færdig"
 
-#: app/modules/web/Controllers/ConfigImportController.php:82
 #: app/modules/web/Controllers/ConfigImportController.php:85
+#: app/modules/web/Controllers/ConfigImportController.php:92
 #: lib/SP/Services/Backup/FileBackupService.php:120
-#: lib/SP/Services/Export/XmlExportService.php:205
+#: lib/SP/Services/Export/XmlExportService.php:201
 msgid "Please check out the event log for more details"
 msgstr "Se venligst hændelsesloggen for yderligere detaljer"
 
-#: app/modules/web/Controllers/ConfigImportController.php:85
+#: app/modules/web/Controllers/ConfigImportController.php:91
 msgid "No accounts were imported"
 msgstr "Der blev ikke importeret nogle konti"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:71
-#: app/modules/web/Controllers/ConfigLdapController.php:143
-#: app/modules/web/Controllers/ConfigLdapController.php:181
+#: app/modules/web/Controllers/ConfigLdapController.php:72
+#: app/modules/web/Controllers/ConfigLdapController.php:148
+#: app/modules/web/Controllers/ConfigLdapController.php:187
 msgid "Missing LDAP parameters"
 msgstr "LDAP-parametre er ikke angivet"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:90
+#: app/modules/web/Controllers/ConfigLdapController.php:91
 msgid "LDAP enabled"
 msgstr "LDAP aktiveret"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:95
+#: app/modules/web/Controllers/ConfigLdapController.php:96
 msgid "LDAP disabled"
 msgstr "LDAP deaktiveret"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:97
-#: app/modules/web/Controllers/ConfigMailController.php:106
+#: app/modules/web/Controllers/ConfigLdapController.php:98
+#: app/modules/web/Controllers/ConfigMailController.php:108
 #: app/config/strings.js.inc:80
 msgid "No changes"
 msgstr "Ingen ændringer"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:117
-#: app/modules/web/Controllers/ConfigLdapController.php:246
+#: app/modules/web/Controllers/ConfigLdapController.php:122
+#: app/modules/web/Controllers/ConfigLdapController.php:253
 msgid "Wrong LDAP parameters"
 msgstr "Forkerte LDAP parametre"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:153
-#: app/modules/web/Controllers/ConfigLdapController.php:197
+#: app/modules/web/Controllers/ConfigLdapController.php:158
+#: app/modules/web/Controllers/ConfigLdapController.php:203
 msgid "Results"
 msgstr "Resultater"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:158
-#: app/modules/web/Controllers/ConfigLdapController.php:203
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:95
+#: app/modules/web/Controllers/ConfigLdapController.php:163
+#: app/modules/web/Controllers/ConfigLdapController.php:209
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:99
 msgid "LDAP connection OK"
 msgstr "LDAP-forbindelsen er OK"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:159
-#: app/modules/web/Controllers/ConfigLdapController.php:204
+#: app/modules/web/Controllers/ConfigLdapController.php:164
+#: app/modules/web/Controllers/ConfigLdapController.php:210
 #, php-format
 msgid "Objects found: %d"
 msgstr "Objekter fundet: %d"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:253
+#: app/modules/web/Controllers/ConfigLdapController.php:260
 msgid "LDAP Import"
 msgstr "LDAP import"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:272
+#: app/modules/web/Controllers/ConfigLdapController.php:279
 msgid "There aren't any objects to synchronize"
 msgstr "Der findes ingen objekter der kan synkroniseres"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:277
+#: app/modules/web/Controllers/ConfigLdapController.php:284
 msgid "LDAP users import finished"
 msgstr "Import af LDAP-brugere udført"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:279
+#: app/modules/web/Controllers/ConfigLdapController.php:286
 #, php-format
 msgid "Imported users: %d / %d"
 msgstr "Importerede brugere: %d / %d"
 
-#: app/modules/web/Controllers/ConfigLdapController.php:280
+#: app/modules/web/Controllers/ConfigLdapController.php:287
 #, php-format
 msgid "Errors: %d"
 msgstr "Fejl: %d"
 
-#: app/modules/web/Controllers/ConfigMailController.php:72
-#: app/modules/web/Controllers/ConfigMailController.php:133
+#: app/modules/web/Controllers/ConfigMailController.php:74
+#: app/modules/web/Controllers/ConfigMailController.php:142
 msgid "Missing Mail parameters"
 msgstr "E-mail parametre ikke angivet"
 
-#: app/modules/web/Controllers/ConfigMailController.php:97
+#: app/modules/web/Controllers/ConfigMailController.php:99
 msgid "Mail enabled"
 msgstr "E-mail er aktiveret"
 
-#: app/modules/web/Controllers/ConfigMailController.php:104
+#: app/modules/web/Controllers/ConfigMailController.php:106
 msgid "Mail disabled"
 msgstr "E-mail er deaktiveret"
 
-#: app/modules/web/Controllers/ConfigMailController.php:147
-#: lib/SP/Services/Mail/MailService.php:142
+#: app/modules/web/Controllers/ConfigMailController.php:156
+#: lib/SP/Services/Mail/MailService.php:150
 msgid "Recipient"
 msgstr "Modtager"
 
-#: app/modules/web/Controllers/ConfigMailController.php:153
+#: app/modules/web/Controllers/ConfigMailController.php:162
 msgid "Please, check your inbox"
 msgstr "Kontrollér venligst din indbakke"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:160
+#: app/modules/web/Controllers/ConfigManagerController.php:162
 #: app/modules/web/themes/material-blue/views/install/index.inc:134
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:20
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:18
@@ -1413,54 +1431,54 @@ msgid "General"
 msgstr "Generelt"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ConfigManagerController.php:189
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:29
+#: app/modules/web/Controllers/ConfigManagerController.php:207
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:17
 #: app/config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:208
+#: app/modules/web/Controllers/ConfigManagerController.php:234
 msgid "LDAP"
 msgstr "LDAP"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:234
+#: app/modules/web/Controllers/ConfigManagerController.php:260
 #: app/modules/web/themes/material-blue/views/config/mail.inc:12
 msgid "Mail"
 msgstr "E-mail"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:273
+#: app/modules/web/Controllers/ConfigManagerController.php:301
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:462
 msgid "Encryption"
 msgstr "Kryptering"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:301
-#: app/modules/web/themes/material-blue/views/config/backup.inc:61
+#: app/modules/web/Controllers/ConfigManagerController.php:329
+#: app/modules/web/themes/material-blue/views/config/backup.inc:62
 msgid "There aren't any backups available"
 msgstr "Der er ingen backups tilgængelige"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:311
-#: app/modules/web/themes/material-blue/views/config/backup.inc:132
+#: app/modules/web/Controllers/ConfigManagerController.php:339
+#: app/modules/web/themes/material-blue/views/config/backup.inc:133
 msgid "No export file found"
 msgstr "Ingen eksportfil fundet"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ConfigManagerController.php:314
-#: app/modules/web/themes/material-blue/views/config/backup.inc:24
-#: app/modules/web/themes/material-blue/views/config/backup.inc:78
+#: app/modules/web/Controllers/ConfigManagerController.php:342
+#: app/modules/web/themes/material-blue/views/config/backup.inc:25
+#: app/modules/web/themes/material-blue/views/config/backup.inc:79
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
 #: app/config/actions.xml:739
 msgid "Backup"
 msgstr "Backup"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:331
+#: app/modules/web/Controllers/ConfigManagerController.php:365
 msgid "Import Accounts"
 msgstr "Importer konti"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:353
+#: app/modules/web/Controllers/ConfigManagerController.php:387
 msgid "Not installed"
 msgstr "Ikke installeret"
 
-#: app/modules/web/Controllers/ConfigManagerController.php:363
+#: app/modules/web/Controllers/ConfigManagerController.php:397
 #: app/modules/web/themes/material-blue/inc/Icons.php:63
 msgid "Information"
 msgstr "Information"
@@ -1477,60 +1495,48 @@ msgstr "Wiki er aktiveret"
 msgid "Wiki disabled"
 msgstr "Wiki er deaktiveret"
 
-#: app/modules/web/Controllers/ConfigWikiController.php:91
-msgid "Missing DokuWiki parameters"
-msgstr "Manglende DokuWiki-parametre"
-
-#: app/modules/web/Controllers/ConfigWikiController.php:103
-msgid "DokuWiki enabled"
-msgstr "DokuWiki aktiveret"
-
-#: app/modules/web/Controllers/ConfigWikiController.php:108
-msgid "DokuWiki disabled"
-msgstr "DokuWiki deaktiveret"
-
 #: app/modules/web/Controllers/CustomFieldController.php:111
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:159
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:160
 msgid "New Field"
 msgstr "Nyt felt"
 
-#: app/modules/web/Controllers/CustomFieldController.php:173
+#: app/modules/web/Controllers/CustomFieldController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:178
 msgid "Edit Field"
 msgstr "Tilret felt"
 
-#: app/modules/web/Controllers/CustomFieldController.php:209
-#: app/modules/web/Controllers/CustomFieldController.php:212
+#: app/modules/web/Controllers/CustomFieldController.php:213
+#: app/modules/web/Controllers/CustomFieldController.php:216
 msgid "Fields deleted"
 msgstr "Felter slettet"
 
-#: app/modules/web/Controllers/CustomFieldController.php:218
+#: app/modules/web/Controllers/CustomFieldController.php:222
 msgid "Field deleted"
 msgstr "Felt slettet"
 
-#: app/modules/web/Controllers/CustomFieldController.php:248
-#: app/modules/web/Controllers/CustomFieldController.php:252
+#: app/modules/web/Controllers/CustomFieldController.php:254
+#: app/modules/web/Controllers/CustomFieldController.php:258
 msgid "Field added"
 msgstr "Felt tilføjet"
 
-#: app/modules/web/Controllers/CustomFieldController.php:249
-#: app/modules/web/Controllers/CustomFieldController.php:288
+#: app/modules/web/Controllers/CustomFieldController.php:255
+#: app/modules/web/Controllers/CustomFieldController.php:296
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:88
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:157
 msgid "Field"
 msgstr "Felt"
 
-#: app/modules/web/Controllers/CustomFieldController.php:287
-#: app/modules/web/Controllers/CustomFieldController.php:291
+#: app/modules/web/Controllers/CustomFieldController.php:295
+#: app/modules/web/Controllers/CustomFieldController.php:299
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:87
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:156
 msgid "Field updated"
 msgstr "Felt opdateret"
 
-#: app/modules/web/Controllers/CustomFieldController.php:317
+#: app/modules/web/Controllers/CustomFieldController.php:327
 msgid "View Field"
 msgstr "Vis felt"
 
@@ -1563,10 +1569,10 @@ msgstr "Kontakt venligst administratoren"
 
 #: app/modules/web/Controllers/ErrorController.php:139
 #: lib/SP/Services/Install/MySQL.php:99
-#: lib/SP/Storage/Database/MySQLHandler.php:97
-#: lib/SP/Storage/Database/MySQLHandler.php:117
-#: lib/SP/Storage/Database/MySQLHandler.php:164
-#: lib/SP/Storage/Database/MySQLHandler.php:176
+#: lib/SP/Storage/Database/MySQLHandler.php:98
+#: lib/SP/Storage/Database/MySQLHandler.php:118
+#: lib/SP/Storage/Database/MySQLHandler.php:165
+#: lib/SP/Storage/Database/MySQLHandler.php:177
 #, fuzzy
 msgid "Unable to connect to DB"
 msgstr "Kan ikke forbinde til databasen"
@@ -1588,16 +1594,17 @@ msgstr "Vis aktuel"
 #: app/modules/web/themes/material-blue/views/_partials/error.inc:15
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:123
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:360
-#: app/modules/web/themes/material-blue/views/config/backup.inc:173
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:366
+#: app/modules/web/themes/material-blue/views/config/backup.inc:174
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:310
-#: app/modules/web/themes/material-blue/views/config/general.inc:28
+#: app/modules/web/themes/material-blue/views/config/general.inc:27
 #: app/modules/web/themes/material-blue/views/config/import.inc:91
 #: app/modules/web/themes/material-blue/views/config/info.inc:193
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:295
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:440
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:304
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:449
 #: app/modules/web/themes/material-blue/views/config/mail.inc:206
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:294
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:177
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:138
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:13
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:14
 #: app/modules/web/themes/material-blue/views/error/error-maintenance.inc:13
@@ -1705,39 +1712,42 @@ msgstr "Sortér efter kategori"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:112
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:105
-#: app/modules/web/Controllers/LoginController.php:122
-#: app/modules/web/Controllers/UserController.php:287
-#: app/modules/web/Controllers/UserController.php:323
-#: app/modules/web/Controllers/UserController.php:388
-#: app/modules/web/Controllers/UserController.php:429
-#: app/modules/web/Controllers/UserPassResetController.php:197
-#: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
-#: lib/SP/Services/Auth/LoginService.php:220
-#: lib/SP/Services/Auth/LoginService.php:238
-#: lib/SP/Services/Auth/LoginService.php:390
-#: lib/SP/Services/Auth/LoginService.php:457
-#: lib/SP/Services/Auth/LoginService.php:565
-#: lib/SP/Services/Auth/LoginService.php:608
-#: lib/SP/Services/Ldap/LdapImportService.php:238
+#: app/modules/web/Controllers/LoginController.php:123
+#: app/modules/web/Controllers/UserController.php:296
+#: app/modules/web/Controllers/UserController.php:335
+#: app/modules/web/Controllers/UserController.php:402
+#: app/modules/web/Controllers/UserController.php:446
+#: app/modules/web/Controllers/UserPassResetController.php:199
+#: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:113
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
+#: lib/SP/Services/Auth/LoginService.php:222
+#: lib/SP/Services/Auth/LoginService.php:240
+#: lib/SP/Services/Auth/LoginService.php:392
+#: lib/SP/Services/Auth/LoginService.php:459
+#: lib/SP/Services/Auth/LoginService.php:569
+#: lib/SP/Services/Auth/LoginService.php:612
+#: lib/SP/Services/Ldap/LdapImportService.php:230
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:63
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:69
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:101
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:67
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:73
-#: app/modules/web/themes/material-blue/views/account/account.inc:141
+#: app/modules/web/themes/material-blue/views/account/account.inc:142
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:76
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:25
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:67
 #: app/modules/web/themes/material-blue/views/config/info.inc:61
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:149
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:106
 #: app/modules/web/themes/material-blue/views/config/mail.inc:113
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:233
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:247
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:116
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:130
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:22
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:24
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:31
@@ -1749,8 +1759,8 @@ msgstr "Sortér efter kategori"
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:97
 #: app/modules/web/themes/material-blue/views/login/index.inc:24
 #: app/modules/web/themes/material-blue/views/login/index.inc:94
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:75
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:77
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:81
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:83
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:19
 msgid "User"
 msgstr "Bruger"
@@ -1765,7 +1775,7 @@ msgstr "Sortér efter brugernavn"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:88
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:56
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:62
-#: app/modules/web/themes/material-blue/views/account/account.inc:128
+#: app/modules/web/themes/material-blue/views/account/account.inc:129
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:81
 msgid "URL / IP"
 msgstr "URL / IP"
@@ -1790,16 +1800,16 @@ msgstr "Sortér efter URL / IP"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:72
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:75
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:76
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:90
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:91
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:92
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:74
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:75
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:73
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:74
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:72
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:73
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:82
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:83
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:74
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:75
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:73
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:74
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:73
@@ -1835,11 +1845,11 @@ msgid "Accounts (H)"
 msgstr "Konti (H)"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:107
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:126
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:106
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:122
-#: app/modules/web/themes/material-blue/views/account/account.inc:190
+#: app/modules/web/themes/material-blue/views/account/account.inc:191
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:251
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
@@ -1848,7 +1858,7 @@ msgid "Date"
 msgstr "Dato"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:108
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:130
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:131
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:109
 msgid "Status"
 msgstr "Status"
@@ -1943,7 +1953,7 @@ msgid "Module"
 msgstr "Modul"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:110
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:120
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:112
 msgid "Properties"
 msgstr "Egenskaber"
 
@@ -1965,9 +1975,9 @@ msgid "Event Log"
 msgstr "Hændelseslog"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
-#: app/modules/web/Controllers/ItemPresetController.php:289
-#: app/modules/web/Controllers/ItemPresetController.php:324
-#: app/modules/web/Controllers/ItemPresetController.php:365
+#: app/modules/web/Controllers/ItemPresetController.php:295
+#: app/modules/web/Controllers/ItemPresetController.php:332
+#: app/modules/web/Controllers/ItemPresetController.php:375
 #: app/modules/web/themes/material-blue/views/account/details.inc:97
 #: app/modules/web/themes/material-blue/views/account/details.inc:99
 msgid "ID"
@@ -1986,7 +1996,7 @@ msgid "Event"
 msgstr "Hændelse"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:103
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:117
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:109
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:50
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:33
 msgid "Login"
@@ -2014,7 +2024,7 @@ msgstr "Ryd hændelsesloggen"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
 #: app/modules/web/themes/material-blue/views/account/account.inc:41
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:280
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:410
 #: app/config/actions.xml:19
@@ -2056,21 +2066,24 @@ msgid "Preset Values"
 msgstr "Preset Values"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:119
-#: app/modules/web/Controllers/UserGroupController.php:238
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:111
+#: app/modules/web/Controllers/UserGroupController.php:242
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:120
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
-#: lib/SP/Services/Ldap/LdapImportService.php:140
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:114
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:147
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:114
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:147
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:112
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:144
+#: lib/SP/Services/Ldap/LdapImportService.php:138
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:133
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:25
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:274
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:277
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:206
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:233
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:215
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:242
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:50
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:53
@@ -2080,8 +2093,8 @@ msgid "Group"
 msgstr "Gruppe"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:112
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:118
-#: app/modules/web/Controllers/UserProfileController.php:228
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:110
+#: app/modules/web/Controllers/UserProfileController.php:232
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:65
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:70
@@ -2145,7 +2158,7 @@ msgstr "New Account Password Preset"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
-#: app/modules/web/Controllers/ItemPresetController.php:239
+#: app/modules/web/Controllers/ItemPresetController.php:243
 #: app/config/actions.xml:877
 msgid "Edit Value"
 msgstr "Edit Value"
@@ -2158,7 +2171,7 @@ msgid "Delete Value"
 msgstr "Delete Value"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:113
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:114
 #: app/modules/web/themes/material-blue/inc/Icons.php:65
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:106
 #: app/modules/web/themes/material-blue/views/notification/index.inc:1
@@ -2166,67 +2179,67 @@ msgstr "Delete Value"
 msgid "Notifications"
 msgstr "Notifikationer"
 
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:128
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:129
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:35
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:42
 msgid "Component"
 msgstr "Komponent"
 
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:150
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:111
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:115
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:153
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:117
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:121
 msgid "Read"
 msgstr "Læs"
 
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:151
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:107
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:154
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:113
 msgid "Only Admins"
 msgstr "Kun administratorer"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:168
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:171
 #: app/config/actions.xml:847
 msgid "Search for Notification"
 msgstr "Søg efter notifikationer"
 
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:183
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:184
-#: app/modules/web/Controllers/NotificationController.php:194
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:186
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:187
+#: app/modules/web/Controllers/NotificationController.php:196
 msgid "New Notification"
 msgstr "Ny notifikation"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:201
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:202
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:204
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:205
 #: app/modules/web/Controllers/NotificationController.php:113
 #: app/config/actions.xml:817
 msgid "View Notification"
 msgstr "Vis notifikation"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:231
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:232
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:234
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
 #: app/config/actions.xml:841
 msgid "Checkout Notification"
 msgstr "Markér"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:249
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:250
-#: app/modules/web/Controllers/NotificationController.php:226
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:253
+#: app/modules/web/Controllers/NotificationController.php:230
 #: app/config/actions.xml:829
 msgid "Edit Notification"
 msgstr "Tilret notifikation"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:266
-#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:267
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:269
+#: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:270
 #: app/config/actions.xml:835
 msgid "Delete Notification"
 msgstr "Slet notifikation"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:96
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:330
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:331
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
@@ -2321,7 +2334,7 @@ msgstr "Nyt link"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:183
-#: app/modules/web/Controllers/PublicLinkController.php:357
+#: app/modules/web/Controllers/PublicLinkController.php:369
 msgid "View Link"
 msgstr "Vis link"
 
@@ -2345,7 +2358,7 @@ msgstr "Søg efter mærker"
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:108
-#: app/modules/web/themes/material-blue/views/account/account.inc:226
+#: app/modules/web/themes/material-blue/views/account/account.inc:227
 #: app/config/actions.xml:505
 msgid "New Tag"
 msgstr "Nyt mærke"
@@ -2353,7 +2366,7 @@ msgstr "Nyt mærke"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
-#: app/modules/web/Controllers/TagController.php:168 app/config/actions.xml:517
+#: app/modules/web/Controllers/TagController.php:170 app/config/actions.xml:517
 msgid "Edit Tag"
 msgstr "Tilret mærke"
 
@@ -2382,7 +2395,7 @@ msgstr "Kilde"
 msgid "Search for track"
 msgstr "Search for track"
 
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:104
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:96
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:77
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:16
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:113
@@ -2395,47 +2408,41 @@ msgid "Users"
 msgstr "Brugere"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:156
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
 #: app/config/actions.xml:607
 msgid "Search for User"
 msgstr "Søg efter bruger"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:171
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:172
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:163
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:164
 #: app/modules/web/Controllers/UserController.php:115
 #: app/config/actions.xml:583
 msgid "New User"
 msgstr "Ny bruger"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:189
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:190
-#: app/modules/web/Controllers/UserController.php:200
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:181
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:182
+#: app/modules/web/Controllers/UserController.php:202
 #: app/config/actions.xml:589
 msgid "Edit User"
 msgstr "Tilret bruger"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:206
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:207
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:198
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:199
 #: app/config/actions.xml:595
 msgid "Delete User"
 msgstr "Slet bruger"
 
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:223
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:224
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:460
-msgid "Import users from LDAP"
-msgstr "Importér brugere fra LDAP"
-
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:241
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:242
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:215
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:216
 msgid "View User Details"
 msgstr "Vis brugerdetaljer"
 
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:258
-#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:259
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:232
+#: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:233
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:63
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:116
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:122
@@ -2468,7 +2475,7 @@ msgstr "Ny gruppe"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
-#: app/modules/web/Controllers/UserGroupController.php:344
+#: app/modules/web/Controllers/UserGroupController.php:356
 #: app/config/actions.xml:613
 msgid "View Group"
 msgstr "Se gruppe"
@@ -2476,7 +2483,7 @@ msgstr "Se gruppe"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
-#: app/modules/web/Controllers/UserGroupController.php:188
+#: app/modules/web/Controllers/UserGroupController.php:190
 #: app/config/actions.xml:625
 msgid "Edit Group"
 msgstr "Tilret gruppe"
@@ -2515,7 +2522,7 @@ msgstr "Vis profildetaljer"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
-#: app/modules/web/Controllers/UserProfileController.php:177
+#: app/modules/web/Controllers/UserProfileController.php:179
 #: app/config/actions.xml:655
 msgid "Edit Profile"
 msgstr "Tilret profil"
@@ -2527,13 +2534,13 @@ msgstr "Tilret profil"
 msgid "Delete Profile"
 msgstr "Slet profil"
 
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:261
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:262
 #: app/modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Search"
 msgstr "Søg"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:344
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:345
 #: app/modules/web/themes/material-blue/inc/Icons.php:61
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:24
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:27
@@ -2560,28 +2567,28 @@ msgid "Display Value"
 msgstr "Display Value"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/ItemPresetController.php:207
+#: app/modules/web/Controllers/ItemPresetController.php:209
 #: app/config/actions.xml:871
 msgid "New Value"
 msgstr "New Value"
 
-#: app/modules/web/Controllers/ItemPresetController.php:277
-#: app/modules/web/Controllers/ItemPresetController.php:280
+#: app/modules/web/Controllers/ItemPresetController.php:283
+#: app/modules/web/Controllers/ItemPresetController.php:286
 msgid "Values deleted"
 msgstr "Values deleted"
 
-#: app/modules/web/Controllers/ItemPresetController.php:288
-#: app/modules/web/Controllers/ItemPresetController.php:292
+#: app/modules/web/Controllers/ItemPresetController.php:294
+#: app/modules/web/Controllers/ItemPresetController.php:298
 msgid "Value deleted"
 msgstr "Value deleted"
 
-#: app/modules/web/Controllers/ItemPresetController.php:322
-#: app/modules/web/Controllers/ItemPresetController.php:327
+#: app/modules/web/Controllers/ItemPresetController.php:330
+#: app/modules/web/Controllers/ItemPresetController.php:335
 msgid "Value created"
 msgstr "Value created"
 
-#: app/modules/web/Controllers/ItemPresetController.php:363
-#: app/modules/web/Controllers/ItemPresetController.php:368
+#: app/modules/web/Controllers/ItemPresetController.php:373
+#: app/modules/web/Controllers/ItemPresetController.php:378
 msgid "Value updated"
 msgstr "Value updated"
 
@@ -2594,70 +2601,70 @@ msgstr "Der findes ingen afventende notifikationer"
 msgid "There are pending notifications: %d"
 msgstr "There are pending notifications: %d"
 
-#: app/modules/web/Controllers/LoginController.php:121
+#: app/modules/web/Controllers/LoginController.php:122
 msgid "Logout session"
 msgstr "Afslut session"
 
-#: app/modules/web/Controllers/LoginController.php:123
+#: app/modules/web/Controllers/LoginController.php:124
 msgid "Inactive time"
 msgstr "Inaktiv tid"
 
-#: app/modules/web/Controllers/LoginController.php:124
+#: app/modules/web/Controllers/LoginController.php:125
 msgid "Total time"
 msgstr "Total tid"
 
-#: app/modules/web/Controllers/NotificationController.php:268
-#: app/modules/web/Controllers/NotificationController.php:271
+#: app/modules/web/Controllers/NotificationController.php:270
+#: app/modules/web/Controllers/NotificationController.php:273
 msgid "Notifications deleted"
 msgstr "Notifikationer slettet"
 
-#: app/modules/web/Controllers/NotificationController.php:283
-#: app/modules/web/Controllers/NotificationController.php:287
+#: app/modules/web/Controllers/NotificationController.php:285
+#: app/modules/web/Controllers/NotificationController.php:289
 msgid "Notification deleted"
 msgstr "Notifikation slettet"
 
-#: app/modules/web/Controllers/NotificationController.php:284
-#: app/modules/web/Controllers/NotificationController.php:317
+#: app/modules/web/Controllers/NotificationController.php:286
+#: app/modules/web/Controllers/NotificationController.php:321
 #: lib/SP/Providers/Notification/NotificationHandler.php:155
 msgid "Notification"
 msgstr "Notifikation"
 
-#: app/modules/web/Controllers/NotificationController.php:316
 #: app/modules/web/Controllers/NotificationController.php:320
+#: app/modules/web/Controllers/NotificationController.php:324
 msgid "Notification read"
 msgstr "Notifikation læst"
 
-#: app/modules/web/Controllers/NotificationController.php:348
-#: app/modules/web/Controllers/NotificationController.php:351
+#: app/modules/web/Controllers/NotificationController.php:354
+#: app/modules/web/Controllers/NotificationController.php:357
 msgid "Notification created"
 msgstr "Notifikation oprettet"
 
-#: app/modules/web/Controllers/NotificationController.php:383
-#: app/modules/web/Controllers/NotificationController.php:386
+#: app/modules/web/Controllers/NotificationController.php:391
+#: app/modules/web/Controllers/NotificationController.php:394
 msgid "Notification updated"
 msgstr "Notifikation opdateret"
 
-#: app/modules/web/Controllers/PluginController.php:199
-#: app/modules/web/Controllers/PluginController.php:202
+#: app/modules/web/Controllers/PluginController.php:201
+#: app/modules/web/Controllers/PluginController.php:204
 msgid "Plugin enabled"
 msgstr "Plugin aktiveret"
 
-#: app/modules/web/Controllers/PluginController.php:226
-#: app/modules/web/Controllers/PluginController.php:229
+#: app/modules/web/Controllers/PluginController.php:230
+#: app/modules/web/Controllers/PluginController.php:233
 #: lib/SP/Plugin/PluginManager.php:219 lib/SP/Plugin/PluginManager.php:339
 msgid "Plugin disabled"
 msgstr "Plugin deaktiveret"
 
-#: app/modules/web/Controllers/PluginController.php:253
-#: app/modules/web/Controllers/PluginController.php:256
+#: app/modules/web/Controllers/PluginController.php:259
+#: app/modules/web/Controllers/PluginController.php:262
 msgid "Plugin reset"
 msgstr "Plugin nulstillet"
 
-#: app/modules/web/Controllers/PluginController.php:285
+#: app/modules/web/Controllers/PluginController.php:293
 msgid "Plugins deleted"
 msgstr "Plugins deleted"
 
-#: app/modules/web/Controllers/PluginController.php:291
+#: app/modules/web/Controllers/PluginController.php:299
 msgid "Plugin deleted"
 msgstr "Plugin deleted"
 
@@ -2665,33 +2672,27 @@ msgstr "Plugin deleted"
 msgid "New Public Link"
 msgstr "Nyt offentligt link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:180
+#: app/modules/web/Controllers/PublicLinkController.php:182
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
 msgid "Link updated"
 msgstr "Link opdateret"
 
-#: app/modules/web/Controllers/PublicLinkController.php:204
+#: app/modules/web/Controllers/PublicLinkController.php:208
 msgid "Edit Public Link"
 msgstr "Tilret offentligt link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:243
-#: app/modules/web/Controllers/PublicLinkController.php:246
+#: app/modules/web/Controllers/PublicLinkController.php:249
+#: app/modules/web/Controllers/PublicLinkController.php:252
 msgid "Links deleted"
 msgstr "Links slettet"
 
-#: app/modules/web/Controllers/PublicLinkController.php:254
-#: app/modules/web/Controllers/PublicLinkController.php:258
+#: app/modules/web/Controllers/PublicLinkController.php:260
+#: app/modules/web/Controllers/PublicLinkController.php:264
 msgid "Link deleted"
 msgstr "Link slettet"
 
-#. (itstool) path: strings/text
-#: app/modules/web/Controllers/PublicLinkController.php:255
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
-msgid "Link"
-msgstr "Link"
-
-#: app/modules/web/Controllers/PublicLinkController.php:286
-#: app/modules/web/Controllers/PublicLinkController.php:323
+#: app/modules/web/Controllers/PublicLinkController.php:294
+#: app/modules/web/Controllers/PublicLinkController.php:333
 msgid "Link created"
 msgstr "Link oprettet"
 
@@ -2703,12 +2704,12 @@ msgstr "Version ikke tilgængelig"
 msgid "Notifications not available"
 msgstr "Notifikationer ikke tilgængelige"
 
-#: app/modules/web/Controllers/TagController.php:207
+#: app/modules/web/Controllers/TagController.php:211
 msgid "Tags deleted"
 msgstr "Mærker slettet"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/TagController.php:302 app/config/actions.xml:511
+#: app/modules/web/Controllers/TagController.php:312 app/config/actions.xml:511
 msgid "View Tag"
 msgstr "Vis mærke"
 
@@ -2716,7 +2717,7 @@ msgstr "Vis mærke"
 msgid "Track unlocked"
 msgstr "Track unlocked"
 
-#: app/modules/web/Controllers/TrackController.php:140
+#: app/modules/web/Controllers/TrackController.php:142
 msgid "Tracks cleared out"
 msgstr "Tracks cleared out"
 
@@ -2742,12 +2743,12 @@ msgstr "Fejl under lagring af konfigurationen"
 #: lib/SP/Services/Api/ApiService.php:129
 #: lib/SP/Services/Api/ApiService.php:229
 #: lib/SP/Services/Api/ApiService.php:237
-#: lib/SP/Services/Auth/LoginService.php:190
-#: lib/SP/Services/Auth/LoginService.php:354
-#: lib/SP/Services/Auth/LoginService.php:504
-#: lib/SP/Services/Auth/LoginService.php:509
-#: lib/SP/Services/Auth/LoginService.php:541
-#: lib/SP/Services/Auth/LoginService.php:648
+#: lib/SP/Services/Auth/LoginService.php:192
+#: lib/SP/Services/Auth/LoginService.php:356
+#: lib/SP/Services/Auth/LoginService.php:508
+#: lib/SP/Services/Auth/LoginService.php:513
+#: lib/SP/Services/Auth/LoginService.php:545
+#: lib/SP/Services/Auth/LoginService.php:652
 #: lib/SP/Services/AuthToken/AuthTokenService.php:311
 #: lib/SP/Services/CustomField/CustomFieldService.php:203
 #: lib/SP/Services/Export/XmlVerifyService.php:108
@@ -2777,42 +2778,42 @@ msgstr "Applikationen er korrekt opdateret"
 msgid "You will be redirected to log in within 5 seconds"
 msgstr "Du vil blive omdirigeret til login indenfor 5 sekunder"
 
-#: app/modules/web/Controllers/UserController.php:235
-#: app/modules/web/Controllers/UserController.php:356
+#: app/modules/web/Controllers/UserController.php:239
+#: app/modules/web/Controllers/UserController.php:370
 #: app/modules/web/Controllers/UserPassResetController.php:107
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:65
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:238
 msgid "Password Change"
 msgstr "Ændring af kodeord"
 
-#: app/modules/web/Controllers/UserController.php:275
-#: app/modules/web/Controllers/UserController.php:278
+#: app/modules/web/Controllers/UserController.php:283
+#: app/modules/web/Controllers/UserController.php:287
 msgid "Users deleted"
 msgstr "Brugere slettet"
 
-#: app/modules/web/Controllers/UserController.php:286
-#: app/modules/web/Controllers/UserController.php:290
+#: app/modules/web/Controllers/UserController.php:295
+#: app/modules/web/Controllers/UserController.php:300
 msgid "User deleted"
 msgstr "Bruger slettet"
 
-#: app/modules/web/Controllers/UserController.php:322
-#: app/modules/web/Controllers/UserController.php:328
+#: app/modules/web/Controllers/UserController.php:334
+#: app/modules/web/Controllers/UserController.php:340
 msgid "User added"
 msgstr "Bruger tilføjet"
 
-#: app/modules/web/Controllers/UserController.php:387
-#: app/modules/web/Controllers/UserController.php:393
+#: app/modules/web/Controllers/UserController.php:401
+#: app/modules/web/Controllers/UserController.php:408
 msgid "User updated"
 msgstr "Bruger opdateret"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/UserController.php:458
+#: app/modules/web/Controllers/UserController.php:477
 #: app/config/actions.xml:577
 msgid "View User"
 msgstr "Se bruger"
 
-#: app/modules/web/Controllers/UserGroupController.php:226
-#: app/modules/web/Controllers/UserGroupController.php:229
+#: app/modules/web/Controllers/UserGroupController.php:230
+#: app/modules/web/Controllers/UserGroupController.php:233
 msgid "Groups deleted"
 msgstr "Grupper slettet"
 
@@ -2840,48 +2841,50 @@ msgstr "Anmodning afsendt"
 msgid "You will receive an email to complete the request shortly."
 msgstr "Du vil snart modtage en e-mail for at gennemføre anmodningen"
 
-#: app/modules/web/Controllers/UserPassResetController.php:126
+#: app/modules/web/Controllers/UserPassResetController.php:128
 #: lib/SP/Services/Api/ApiService.php:96
 #: lib/SP/Services/Auth/LoginService.php:138
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 msgid "Attempts exceeded"
 msgstr "Maks. antal forsøg overskredet"
 
-#: app/modules/web/Controllers/UserPassResetController.php:179
+#: app/modules/web/Controllers/UserPassResetController.php:181
 #: app/modules/web/Forms/AuthTokenForm.php:101
 #: app/modules/web/Forms/UserForm.php:157
 msgid "Password cannot be blank"
 msgstr "Kodeordet må ikke være tomt"
 
-#: app/modules/web/Controllers/UserProfileController.php:215
-#: app/modules/web/Controllers/UserProfileController.php:218
+#: app/modules/web/Controllers/UserProfileController.php:219
+#: app/modules/web/Controllers/UserProfileController.php:222
 msgid "Profiles deleted"
 msgstr "Profiler slettet"
 
-#: app/modules/web/Controllers/UserProfileController.php:227
 #: app/modules/web/Controllers/UserProfileController.php:231
+#: app/modules/web/Controllers/UserProfileController.php:236
 msgid "Profile deleted"
 msgstr "Profil slettet"
 
-#: app/modules/web/Controllers/UserProfileController.php:262
+#: app/modules/web/Controllers/UserProfileController.php:271
+#: app/modules/web/Controllers/UserProfileController.php:275
 msgid "Profile added"
 msgstr "Profil tilføjet"
 
-#: app/modules/web/Controllers/UserProfileController.php:300
+#: app/modules/web/Controllers/UserProfileController.php:314
+#: app/modules/web/Controllers/UserProfileController.php:319
 msgid "Profile updated"
 msgstr "Profil opdateret"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/UserProfileController.php:326
+#: app/modules/web/Controllers/UserProfileController.php:347
 #: app/config/actions.xml:643
 msgid "View Profile"
 msgstr "Se profil"
 
-#: app/modules/web/Controllers/UserSettingsGeneralController.php:74
+#: app/modules/web/Controllers/UserSettingsGeneralController.php:75
 msgid "Preferences updated"
 msgstr "Foretrukne indstillinger opdaterede"
 
-#: app/modules/web/Controllers/UserSettingsManagerController.php:87
+#: app/modules/web/Controllers/UserSettingsManagerController.php:94
 msgid "Preferences"
 msgstr "Præferencer"
 
@@ -3120,12 +3123,12 @@ msgstr "Første side"
 msgid "Last page"
 msgstr "Sidste side"
 
-#: lib/SP/Bootstrap.php:278
+#: lib/SP/Bootstrap.php:279
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Påkrævet PHP version >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:280
+#: lib/SP/Bootstrap.php:281
 msgid "Please update the PHP version to run sysPass"
 msgstr "Opdater venligst din PHP version for at køre sysPass"
 
@@ -3149,7 +3152,7 @@ msgstr "Rettighederne på \"/config\" -mappen er forkerte"
 msgid "Current: %s - Needed: 750"
 msgstr "Nuværende: %s -Påkrævet: 750"
 
-#: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:604
+#: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:608
 msgid "N/A"
 msgstr "Ej tilgængelig"
 
@@ -3183,7 +3186,7 @@ msgstr "Ugyldig kontekst"
 msgid "Context not initialized"
 msgstr "Kontekst ikke initialiseret"
 
-#: lib/SP/Core/Context/SessionContext.php:547
+#: lib/SP/Core/Context/SessionContext.php:490
 msgid "Session cannot be initialized"
 msgstr "Sessionen kan ikke initialiseres"
 
@@ -3207,7 +3210,7 @@ msgstr "Observatør ikke initialiseret"
 msgid "Invalid icons class"
 msgstr "Ugyldig ikonklasse"
 
-#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:126
+#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:127
 #, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Kan ikke indlæse \"%s\" skabelonen: %s"
@@ -3226,12 +3229,12 @@ msgstr "Krypteringsfejl"
 msgid "Invalid XML-RPC response"
 msgstr "Ugyldigt XML-RPC-svar"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:70
+#: lib/SP/Mvc/Controller/ControllerTrait.php:75
 msgid "Session not started or timed out"
 msgstr "Sessionen er ikke startet eller den er udløbet"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:115
-#: lib/SP/Mvc/Controller/ControllerTrait.php:124
+#: lib/SP/Mvc/Controller/ControllerTrait.php:127
+#: lib/SP/Mvc/Controller/ControllerTrait.php:141
 msgid "Invalid Action"
 msgstr "Ugyldig handling"
 
@@ -3273,17 +3276,17 @@ msgstr "Ugyldig filtertype"
 msgid "Wrong object type"
 msgstr "Forkert objekttype"
 
-#: lib/SP/Mvc/View/Template.php:301 lib/SP/Mvc/View/Template.php:365
+#: lib/SP/Mvc/View/Template.php:302 lib/SP/Mvc/View/Template.php:366
 #, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Kan ikke indlæse \"%s\" variablen"
 
-#: lib/SP/Mvc/View/Template.php:334
+#: lib/SP/Mvc/View/Template.php:335
 #, fuzzy, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Kan ikke nulstille \"%s\" variablen"
 
-#: lib/SP/Mvc/View/Template.php:355
+#: lib/SP/Mvc/View/Template.php:356
 msgid "Template does not contain files"
 msgstr "Skabelonen indeholder ingen filer"
 
@@ -3314,13 +3317,17 @@ msgstr "Plugin loaded"
 msgid "New Plugin"
 msgstr "Ny plugin"
 
-#: lib/SP/Providers/Auth/AuthProvider.php:208
+#: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
 msgstr "Metoden er ikke tilgængelig"
 
-#: lib/SP/Providers/Auth/AuthProvider.php:212
+#: lib/SP/Providers/Auth/AuthProvider.php:220
 msgid "Method already initialized"
 msgstr "Metoden er allerede initialiseret"
+
+#: lib/SP/Providers/Auth/Ldap/Ldap.php:110
+msgid "LDAP type not set"
+msgstr ""
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:119
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:126
@@ -3337,60 +3344,63 @@ msgstr "Fejl under søgning efter brugeren i LDAP"
 msgid "Error while searching objects in base DN"
 msgstr "Fejl under søgnig efter objekter i 'base DN'"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:141
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:188
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:193
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:149
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:213
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:218
 #, fuzzy
 msgid "Unable to connect to LDAP server"
 msgstr "Kan ikke forbinde til LDAP-serveren"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:142
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:189
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:214
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:70
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:39
 #: app/modules/web/themes/material-blue/views/config/info.inc:75
 #: app/modules/web/themes/material-blue/views/config/info.inc:78
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:94
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:119
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:93
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:118
 #: app/modules/web/themes/material-blue/views/config/mail.inc:59
 #: app/modules/web/themes/material-blue/views/config/mail.inc:66
 msgid "Server"
 msgstr "Server"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:169
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:171
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:174
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:176
 #, fuzzy
 msgid "LDAP parameters are not set"
 msgstr "LDAP-parametrene er ikke angivet"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:231
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:237
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:256
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:262
 msgid "Connection error (BIND)"
 msgstr "Forbindelsesfejl (BIND)"
 
-#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:301
+#: lib/SP/Providers/Auth/Ldap/LdapConnection.php:326
 msgid "Error while disconnecting from LDAP server"
 msgstr "Error while disconnecting from LDAP server"
 
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:111
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:109
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:112
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
 msgid "User in group verified"
 msgstr "Bruger verificeret som tilhørende gruppen"
 
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:144
-#: lib/SP/Providers/Auth/Ldap/LdapStd.php:141
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
 #, fuzzy
 msgid "User does not belong to the group"
 msgstr "Brugeren tilhører ikke gruppen"
 
-#: lib/SP/Providers/Mail/MailHandler.php:124
+#: lib/SP/Providers/Mail/MailHandler.php:127
 #, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Udført af: %s (%s)"
 
-#: lib/SP/Providers/Mail/MailHandler.php:125
+#: lib/SP/Providers/Mail/MailHandler.php:128
 #, php-format
 msgid "IP Address: %s"
 msgstr "IP-adresse: %s"
@@ -3436,7 +3446,7 @@ msgstr "Fejl under sletning af konti"
 #: lib/SP/Services/Account/AccountHistoryService.php:233
 #: lib/SP/Services/User/UserService.php:331
 msgid "Error while updating the password"
-msgstr ""
+msgstr "Fejl under adgangskodeopdatering"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:200
 msgid "Error while creating the account"
@@ -3601,7 +3611,7 @@ msgstr "Fejl under opdatering af rettigheden"
 msgid "Error while removing the permission"
 msgstr "Fejl under sletning af rettigheden"
 
-#: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:249
+#: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:259
 msgid "Error while removing the permissions"
 msgstr "Fejl under sletning af rettighederne"
 
@@ -3907,56 +3917,56 @@ msgid "Wrong parameters"
 msgstr "Forkerte parametre"
 
 #: lib/SP/Services/Auth/LoginService.php:160
-#: lib/SP/Services/Auth/LoginService.php:460
-#: lib/SP/Services/Auth/LoginService.php:467
-#: lib/SP/Services/Auth/LoginService.php:575
-#: lib/SP/Services/Auth/LoginService.php:580
-#: lib/SP/Services/Auth/LoginService.php:619
-#: lib/SP/Services/Auth/LoginService.php:624
+#: lib/SP/Services/Auth/LoginService.php:462
+#: lib/SP/Services/Auth/LoginService.php:469
+#: lib/SP/Services/Auth/LoginService.php:579
+#: lib/SP/Services/Auth/LoginService.php:584
+#: lib/SP/Services/Auth/LoginService.php:623
+#: lib/SP/Services/Auth/LoginService.php:628
 msgid "Wrong login"
 msgstr "Forkert login"
 
-#: lib/SP/Services/Auth/LoginService.php:219
-#: lib/SP/Services/Auth/LoginService.php:226
+#: lib/SP/Services/Auth/LoginService.php:221
+#: lib/SP/Services/Auth/LoginService.php:228
 msgid "User disabled"
 msgstr "Brugerkonto inaktiv"
 
-#: lib/SP/Services/Auth/LoginService.php:273
+#: lib/SP/Services/Auth/LoginService.php:275
 msgid "Using temporary password"
 msgstr "Anvender midlertidigt kodeord"
 
-#: lib/SP/Services/Auth/LoginService.php:285
-#: lib/SP/Services/Auth/LoginService.php:291
-#: lib/SP/Services/Auth/LoginService.php:309
-#: lib/SP/Services/Auth/LoginService.php:315
+#: lib/SP/Services/Auth/LoginService.php:287
+#: lib/SP/Services/Auth/LoginService.php:293
+#: lib/SP/Services/Auth/LoginService.php:311
+#: lib/SP/Services/Auth/LoginService.php:317
 msgid "Wrong master password"
 msgstr "Forkert Hoved-kodeord"
 
-#: lib/SP/Services/Auth/LoginService.php:330
+#: lib/SP/Services/Auth/LoginService.php:332
 msgid "Your previous password is needed"
 msgstr "Dit tidligere kodeord er påkrævet"
 
-#: lib/SP/Services/Auth/LoginService.php:342
+#: lib/SP/Services/Auth/LoginService.php:344
 msgid "The Master Password either is not saved or is wrong"
 msgstr "Hoved-kodeordet er enten ikke gemt, eller forkert"
 
-#: lib/SP/Services/Auth/LoginService.php:456
-#: lib/SP/Services/Auth/LoginService.php:519
+#: lib/SP/Services/Auth/LoginService.php:458
+#: lib/SP/Services/Auth/LoginService.php:523
 msgid "LDAP Server"
 msgstr "LDAP-server"
 
-#: lib/SP/Services/Auth/LoginService.php:475
-#: lib/SP/Services/Auth/LoginService.php:480
+#: lib/SP/Services/Auth/LoginService.php:477
+#: lib/SP/Services/Auth/LoginService.php:482
 msgid "Account expired"
 msgstr "Konto udløbet"
 
-#: lib/SP/Services/Auth/LoginService.php:488
-#: lib/SP/Services/Auth/LoginService.php:493
+#: lib/SP/Services/Auth/LoginService.php:490
+#: lib/SP/Services/Auth/LoginService.php:495
 #, fuzzy
 msgid "User has no associated groups"
 msgstr "Brugeren er ikke associeret med nogle grupper"
 
-#: lib/SP/Services/Auth/LoginService.php:609
+#: lib/SP/Services/Auth/LoginService.php:613
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:12
 msgid "Authentication"
 msgstr "Autentikering"
@@ -3992,16 +4002,16 @@ msgstr "Backupmappen (\"%s\") kan ikke oprettes"
 msgid "Please, check the backup directory permissions"
 msgstr "Kontroller venligst rettighederne på backup-mappen"
 
-#: lib/SP/Services/Backup/FileBackupService.php:211
+#: lib/SP/Services/Backup/FileBackupService.php:218
 msgid "Copying database"
 msgstr "Kopierer database"
 
-#: lib/SP/Services/Backup/FileBackupService.php:343
-#: lib/SP/Services/Backup/FileBackupService.php:367
+#: lib/SP/Services/Backup/FileBackupService.php:350
+#: lib/SP/Services/Backup/FileBackupService.php:374
 msgid "Copying application"
 msgstr "Kopierer applikation"
 
-#: lib/SP/Services/Backup/FileBackupService.php:362
+#: lib/SP/Services/Backup/FileBackupService.php:369
 msgid "This operation is only available on Linux environments"
 msgstr "Denne handling kan kun udføres på Linux-systemer"
 
@@ -4112,34 +4122,33 @@ msgstr "Fejl under sletning af felterne"
 msgid "Field type not found"
 msgstr "Felttype ikke fundet"
 
-#: lib/SP/Services/Export/XmlExportService.php:127
-#: lib/SP/Storage/File/FileCache.php:74
-#: lib/SP/Storage/File/FileCachePacked.php:116
+#: lib/SP/Services/Export/XmlExportService.php:125
+#: lib/SP/Storage/File/FileCacheBase.php:98
 #, php-format
 msgid "Unable to create the directory (%s)"
 msgstr "Kan ikke oprette mappen (%s)"
 
-#: lib/SP/Services/Export/XmlExportService.php:203
+#: lib/SP/Services/Export/XmlExportService.php:199
 msgid "Error while exporting"
 msgstr "Fejl under eksportering"
 
-#: lib/SP/Services/Export/XmlExportService.php:271
+#: lib/SP/Services/Export/XmlExportService.php:266
 msgid "Exporting categories"
 msgstr "Eksporterer kategorier"
 
-#: lib/SP/Services/Export/XmlExportService.php:383
+#: lib/SP/Services/Export/XmlExportService.php:378
 msgid "Exporting clients"
 msgstr "Eksporterer klienter"
 
-#: lib/SP/Services/Export/XmlExportService.php:429
+#: lib/SP/Services/Export/XmlExportService.php:424
 msgid "Exporting tags"
 msgstr "Eksporterer mærker"
 
-#: lib/SP/Services/Export/XmlExportService.php:473
+#: lib/SP/Services/Export/XmlExportService.php:468
 msgid "Exporting accounts"
 msgstr "Eksporterer konti"
 
-#: lib/SP/Services/Export/XmlExportService.php:583
+#: lib/SP/Services/Export/XmlExportService.php:578
 msgid "Error while creating the XML file"
 msgstr "Fejl under oprettelsen af XML-filen"
 
@@ -4148,13 +4157,13 @@ msgstr "Fejl under oprettelsen af XML-filen"
 msgid "Unable to process the XML file"
 msgstr "Kan ikke processere XML-filen"
 
-#: lib/SP/Services/Export/XmlVerifyService.php:177
+#: lib/SP/Services/Export/XmlVerifyService.php:181
 #: lib/SP/Services/Import/SyspassImport.php:176
 msgid "Error while checking integrity hash"
 msgstr "Fejl under kontrol af integritetskontrolsum"
 
-#: lib/SP/Services/Export/XmlVerifyService.php:194
-#: lib/SP/Services/Export/XmlVerifyService.php:224
+#: lib/SP/Services/Export/XmlVerifyService.php:198
+#: lib/SP/Services/Export/XmlVerifyService.php:228
 #: lib/SP/Services/Import/SyspassImport.php:124
 #: lib/SP/Services/Import/SyspassImport.php:148
 msgid "Wrong encryption password"
@@ -4191,30 +4200,24 @@ msgstr "Fejl under importering af konto"
 msgid "Error while processing line"
 msgstr "Fejl under processering af linje"
 
-#: lib/SP/Services/Import/FileImport.php:67
-#: lib/SP/Services/Import/FileImport.php:88
+#: lib/SP/Services/Import/FileImport.php:83
 msgid "File successfully uploaded"
 msgstr "Filen er uploadet"
 
-#: lib/SP/Services/Import/FileImport.php:69
-#: lib/SP/Services/Import/FileImport.php:90
+#: lib/SP/Services/Import/FileImport.php:85
 msgid "Please check the web server user permissions"
 msgstr "Kontroller venligst webserverens brugertilladelser"
 
-#: lib/SP/Services/Import/FileImport.php:102
-msgid "Please, check the file extension"
-msgstr "Kontroller venligst fil-endelsen"
-
-#: lib/SP/Services/Import/FileImport.php:118
+#: lib/SP/Services/Import/FileImport.php:108
 msgid "Please, check PHP configuration for upload files"
 msgstr "Kontroller venligst PHP konfigurationen for fil-upload"
 
-#: lib/SP/Services/Import/ImportService.php:89
+#: lib/SP/Services/Import/ImportService.php:96
 #, php-format
 msgid "Mime type not supported (\"%s\")"
 msgstr "Mime-typen er ikke understøttet (\"%s\")"
 
-#: lib/SP/Services/Import/ImportService.php:91
+#: lib/SP/Services/Import/ImportService.php:98
 msgid "Please, check the file format"
 msgstr "Kontroller venligst filformatet"
 
@@ -4372,12 +4375,12 @@ msgstr "Indtast venligst databaseserverens navn/adresse"
 msgid "Server where the database will be installed"
 msgstr "Serveren som databasen oprettes på"
 
-#: lib/SP/Services/Install/Installer.php:318
-#: lib/SP/Services/Install/Installer.php:369
+#: lib/SP/Services/Install/Installer.php:324
+#: lib/SP/Services/Install/Installer.php:375
 msgid "Warn to developer"
 msgstr "Advarsel til udviklerne"
 
-#: lib/SP/Services/Install/Installer.php:359
+#: lib/SP/Services/Install/Installer.php:365
 msgid "Error while creating 'admin' user"
 msgstr "Fejl under oprettelsen af 'admin'-brugeren"
 
@@ -4458,13 +4461,13 @@ msgstr "Value not found"
 msgid "Error while deleting the values"
 msgstr "Error while deleting the values"
 
-#: lib/SP/Services/Ldap/LdapImportService.php:109
-#: lib/SP/Services/Ldap/LdapImportService.php:196
+#: lib/SP/Services/Ldap/LdapImportService.php:107
+#: lib/SP/Services/Ldap/LdapImportService.php:188
 msgid "Objects found"
 msgstr "Objekter fundet"
 
-#: lib/SP/Services/Ldap/LdapImportService.php:134
-#: lib/SP/Services/Ldap/LdapImportService.php:229
+#: lib/SP/Services/Ldap/LdapImportService.php:132
+#: lib/SP/Services/Ldap/LdapImportService.php:221
 msgid "Imported from LDAP"
 msgstr "Importeret fra LDAP"
 
@@ -4479,10 +4482,6 @@ msgid ""
 msgstr ""
 "Dette er en test-E-mail med det formaål at kontrollere at konfigurationen er "
 "korrekt."
-
-#: lib/SP/Services/Mail/MailService.php:186
-msgid "Mail service unavailable"
-msgstr "E-mail-tjenesten er ikke tilgængelig"
 
 #: lib/SP/Services/Notification/NotificationService.php:102
 #: lib/SP/Services/Notification/NotificationService.php:121
@@ -4505,9 +4504,9 @@ msgstr "Plugin ikke fundet"
 #: lib/SP/Services/PublicLink/PublicLinkService.php:122
 #: lib/SP/Services/PublicLink/PublicLinkService.php:145
 #: lib/SP/Services/PublicLink/PublicLinkService.php:219
-#: lib/SP/Services/PublicLink/PublicLinkService.php:311
-#: lib/SP/Services/PublicLink/PublicLinkService.php:346
-#: lib/SP/Services/PublicLink/PublicLinkService.php:367
+#: lib/SP/Services/PublicLink/PublicLinkService.php:297
+#: lib/SP/Services/PublicLink/PublicLinkService.php:332
+#: lib/SP/Services/PublicLink/PublicLinkService.php:353
 msgid "Link not found"
 msgstr "Link ikke fundet"
 
@@ -4563,18 +4562,18 @@ msgstr "Sekunder"
 msgid "IP address not set"
 msgstr "IP address not set"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:65
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:88
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:66
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:89
 msgid "Update Application"
 msgstr "Opdatér applikation"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:72
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:73
 msgid "Error while applying the application update"
 msgstr "Fejl under udførelsen af applikationsopdateringen"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:74
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:100
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:108
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:75
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:111
 msgid "Please, check the event log for more details"
 msgstr "Se venligst hændelsesloggen for yderligere detaljer"
 
@@ -4583,20 +4582,39 @@ msgstr "Se venligst hændelsesloggen for yderligere detaljer"
 msgid "API authorizations update"
 msgstr "API autorisationsopdatering"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:70
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:206
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:236
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:79
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:213
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:259
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:308
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:333
 msgid "Update Configuration"
 msgstr "Opdater konfigurationen"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:82
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:91
 msgid "Parameter"
 msgstr "Parameter"
 
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:121
-#: lib/SP/Services/Upgrade/UpgradeConfigService.php:125
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:130
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:134
 msgid "Error while updating the configuration"
 msgstr "Fejl under opdatering af konfigurationen"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:285
+msgid "MIME type set for this extension"
+msgstr "MIME-type sat til denne udvidelse"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:286
+msgid "MIME type"
+msgstr "MIME-type"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:287
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:296
+msgid "Extension"
+msgstr "Udvidelse"
+
+#: lib/SP/Services/Upgrade/UpgradeConfigService.php:295
+msgid "MIME type not found for this extension"
+msgstr "MIME-type ikke fundet til denne udvidelse"
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:57
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:88
@@ -4607,28 +4625,28 @@ msgstr "Fejl under opdatering af konfigurationen"
 msgid "Custom fields update"
 msgstr "Opdatering af brugerdefinerede felter"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:91
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:122
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:94
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:125
 msgid "Update DB"
 msgstr "Opdater databasen"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:98
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:101
 msgid "Error while applying an auxiliary update"
 msgstr "Fejl under udførelsen af en tillægsopdatering"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:106
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:177
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:181
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:109
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:180
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:184
 msgid "Error while updating the database"
 msgstr "Fejl under opdateringen af databasen"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:154
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:156
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:157
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:159
 #, fuzzy
 msgid "Update file does not contain data"
 msgstr "Opdateringsfilen indeholder ingen data"
 
-#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:187
+#: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:190
 msgid "Database updating was completed successfully."
 msgstr "Databaseopdateringen blev korrekt udført"
 
@@ -4699,76 +4717,77 @@ msgstr "Forbindelses-URL er ikke sat"
 msgid "Blank query"
 msgstr "Tom forespørgsel"
 
-#: lib/SP/Storage/Database/Database.php:259
+#: lib/SP/Storage/Database/Database.php:248
 msgid "Integrity constraint"
 msgstr "Integritetsbegrænsning"
 
-#: lib/SP/Storage/Database/MySQLHandler.php:99
-#: lib/SP/Storage/Database/MySQLHandler.php:166
+#: lib/SP/Storage/Database/MySQLHandler.php:100
+#: lib/SP/Storage/Database/MySQLHandler.php:167
 msgid "Please, check the connection parameters"
 msgstr "Kontroller venligst forbindelsesparametrene"
 
-#: lib/SP/Storage/Database/QueryData.php:354 app/config/strings.js.inc:26
+#: lib/SP/Storage/Database/QueryData.php:338 app/config/strings.js.inc:26
 msgid "Error while querying"
 msgstr "Fejl under forespørgsel"
 
-#: lib/SP/Storage/File/FileCachePacked.php:57
+#: lib/SP/Storage/File/FileCachePacked.php:45
 #, php-format
 msgid "Error while decompressing the file data (%s)"
 msgstr "Fejl under dekomrṕression af fildata (%s)"
 
-#: lib/SP/Storage/File/FileCachePacked.php:61
+#: lib/SP/Storage/File/FileCachePacked.php:51
 msgid "Error while retrieving the data"
 msgstr "Fejl under indlæsning af dataene"
 
-#: lib/SP/Storage/File/FileCachePacked.php:99
+#: lib/SP/Storage/File/FileCachePacked.php:70
 #, php-format
 msgid "Error while compressing the file data (%s)"
 msgstr "Fejl under komprimering af dataene (%s)"
 
-#: lib/SP/Storage/File/FileCachePacked.php:144
-msgid "Data not loaded"
-msgstr "Data ikke indlæst"
-
-#: lib/SP/Storage/File/FileHandler.php:72
-#: lib/SP/Storage/File/FileHandler.php:135
+#: lib/SP/Storage/File/FileHandler.php:76
+#: lib/SP/Storage/File/FileHandler.php:165
 #, php-format
 msgid "Unable to read/write the file (%s)"
 msgstr "Kan ikke læse/skrive filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:89
+#: lib/SP/Storage/File/FileHandler.php:101
 #, php-format
 msgid "Unable to open the file (%s)"
 msgstr "Kan ikke åbne filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:104
-#: lib/SP/Storage/File/FileHandler.php:118
+#: lib/SP/Storage/File/FileHandler.php:119
+#, php-format
+msgid "Unable to obtain a lock (%s)"
+msgstr "Ude af stand til at fp en lås (%s)"
+
+#: lib/SP/Storage/File/FileHandler.php:134
+#: lib/SP/Storage/File/FileHandler.php:148
 #, php-format
 msgid "Unable to read from file (%s)"
 msgstr "Kan ikke læse fra filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:173
+#: lib/SP/Storage/File/FileHandler.php:207
 #, php-format
 msgid "Unable to close the file (%s)"
 msgstr "Kan ikke lukke filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:219
+#: lib/SP/Storage/File/FileHandler.php:261
 #, php-format
 msgid "Unable to write in file (%s)"
 msgstr "Kan ikke skrive i filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:234
+#: lib/SP/Storage/File/FileHandler.php:276
 #, php-format
 msgid "File not found (%s)"
 msgstr "Fil ikke fundet (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:259
-#: lib/SP/Storage/File/FileHandler.php:314
+#: lib/SP/Storage/File/FileHandler.php:301
+#: lib/SP/Storage/File/FileHandler.php:356
 #, fuzzy, php-format
 msgid "Unable to read/write file (%s)"
 msgstr "Kan ikke læse/skrive filen (%s)"
 
-#: lib/SP/Storage/File/FileHandler.php:286
+#: lib/SP/Storage/File/FileHandler.php:328
 #, php-format
 msgid "Unable to delete file (%s)"
 msgstr "Kan ikke slette filen (%s)"
@@ -4873,8 +4892,8 @@ msgid "File size not allowed"
 msgstr "Filstørrelse ikke tilladt"
 
 #: app/config/strings.js.inc:45
-msgid "Extension not allowed"
-msgstr "Fil-endelse er ikke tilladt "
+msgid "MIME type not allowed"
+msgstr "MIME-type ikke tilladt"
 
 #: app/config/strings.js.inc:46
 #, fuzzy
@@ -4886,7 +4905,7 @@ msgstr "Ryd hændelsesloggen?"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:281
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
 #: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:253
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
@@ -4897,11 +4916,11 @@ msgstr "Vælg gruppe"
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:161
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
 #: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:278
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:81
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
 msgid "Select User"
 msgstr "Vælg bruger"
 
@@ -4912,7 +4931,7 @@ msgid "Select Profile"
 msgstr "Vælg profil"
 
 #: app/config/strings.js.inc:50
-#: app/modules/web/themes/material-blue/views/account/account.inc:84
+#: app/modules/web/themes/material-blue/views/account/account.inc:85
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
 msgid "Select Client"
@@ -4920,7 +4939,7 @@ msgstr "Vælg klient"
 
 #: app/config/strings.js.inc:51
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:109
+#: app/modules/web/themes/material-blue/views/account/account.inc:110
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
 msgid "Select Category"
@@ -5019,7 +5038,7 @@ msgstr "Send notifikationer?"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
 #: app/config/actions.xml:247
 msgid "Mark as Favorite"
-msgstr ""
+msgstr "Markér som favorit"
 
 #. (itstool) path: action/text
 #: app/config/strings.js.inc:75
@@ -5214,8 +5233,8 @@ msgid "No records found"
 msgstr "Ingen registreringer fundet"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:168
-#: app/modules/web/themes/material-blue/views/account/account.inc:175
+#: app/modules/web/themes/material-blue/views/account/account.inc:169
+#: app/modules/web/themes/material-blue/views/account/account.inc:176
 #: app/modules/web/themes/material-blue/views/install/index.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:115
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
@@ -5227,8 +5246,8 @@ msgstr "Kodeord(gentaget)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
-#: app/modules/web/themes/material-blue/views/account/account.inc:194
-#: app/modules/web/themes/material-blue/views/account/account.inc:278
+#: app/modules/web/themes/material-blue/views/account/account.inc:195
+#: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
 msgstr "Vælg dato"
@@ -5236,8 +5255,8 @@ msgstr "Vælg dato"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:142
-#: app/modules/web/themes/material-blue/views/account/account.inc:271
-#: app/modules/web/themes/material-blue/views/account/account.inc:273
+#: app/modules/web/themes/material-blue/views/account/account.inc:272
+#: app/modules/web/themes/material-blue/views/account/account.inc:274
 msgid "History"
 msgstr "Historik"
 
@@ -5249,7 +5268,7 @@ msgstr "Detaljer"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:200
+#: app/modules/web/themes/material-blue/views/account/account.inc:201
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:163
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:169
@@ -5257,7 +5276,7 @@ msgid "Notes"
 msgstr "Noter"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
-#: app/modules/web/themes/material-blue/views/account/account.inc:293
+#: app/modules/web/themes/material-blue/views/account/account.inc:294
 #: app/modules/web/themes/material-blue/views/account/details.inc:32
 #: app/modules/web/themes/material-blue/views/account/details.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:291
@@ -5296,12 +5315,12 @@ msgstr "Vis"
 msgid "Select Groups"
 msgstr "Vælg grupper"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:201
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
 msgstr "Privat"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:223
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:217
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:198
 msgid "Private for Group"
 msgstr "Privat for gruppen"
@@ -5325,26 +5344,26 @@ msgstr "Send"
 msgid "Permissions"
 msgstr "Rettigheder"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:218
+#: app/modules/web/themes/material-blue/views/account/account.inc:219
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
 msgid "Select Tags"
 msgstr "Vælg mærker"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:262
+#: app/modules/web/themes/material-blue/views/account/account.inc:263
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:26
 msgid "Select Account"
 msgstr "Vælg konto"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:301
-#: app/modules/web/themes/material-blue/views/account/account.inc:303
-#: app/modules/web/themes/material-blue/views/account/account.inc:306
+#: app/modules/web/themes/material-blue/views/account/account.inc:302
+#: app/modules/web/themes/material-blue/views/account/account.inc:304
+#: app/modules/web/themes/material-blue/views/account/account.inc:307
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:193
 msgid "Public Link"
 msgstr "Offentligt link"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:314
-#: app/modules/web/themes/material-blue/views/account/account.inc:316
-#: app/modules/web/themes/material-blue/views/account/account.inc:319
+#: app/modules/web/themes/material-blue/views/account/account.inc:315
+#: app/modules/web/themes/material-blue/views/account/account.inc:317
+#: app/modules/web/themes/material-blue/views/account/account.inc:320
 msgid "Direct Link"
 msgstr "Direkte link"
 
@@ -5440,10 +5459,10 @@ msgid "Data will be unencrypted after saving"
 msgstr "Data vil blive dekrypteret ved lagring"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:12
-#: app/modules/web/themes/material-blue/views/config/backup.inc:12
+#: app/modules/web/themes/material-blue/views/config/backup.inc:13
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:12
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:12
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:12
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:12
 #, php-format
 msgid "The '%s' extension is unavailable"
 msgstr "'%s' udvidelsen er ikke tilgængelig"
@@ -5452,62 +5471,62 @@ msgstr "'%s' udvidelsen er ikke tilgængelig"
 msgid "This extension is needed to display passwords as images"
 msgstr "Denne udvidelse er påkrævet for at kunne vise kodeord som billeder"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:30
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:29
 msgid "Searching"
 msgstr "Søger"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:36
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:52
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:35
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:51
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:56
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:72
 msgid "Results per page"
 msgstr "Antal resultater pr. side"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:41
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:61
 #, fuzzy
 msgid "Number of results per page to display when performing a search."
 msgstr "Antal resultater pr. side ved søgning."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:70
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:69
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:30
 msgid "Accounts password expiry"
 msgstr "Konti'enes kodeordsudløb"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:71
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:70
 msgid "Enables the accounts password expiry date."
 msgstr "Aktiverer udløbsdato for konti"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:79
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:78
 msgid "Password expiry time"
 msgstr "Udløbsdato for kodeord"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:84
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:83
 #, fuzzy
 msgid "Number of days for account's password expiry date."
 msgstr "Antal dage før kontoen udløber"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:94
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:93
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:38
 msgid "Expire time (days)"
 msgstr "Udløbstid (dage)"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:112
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:111
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:90
 msgid "Account name as link"
 msgstr "Kontonavn som link"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:113
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
 #, fuzzy
 msgid "Enables to use the account name as a link to account details."
 msgstr "Aktiverer at kontonavnet fungerer som et link til kontodetaljer"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:128
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:127
 msgid "Global searches"
 msgstr "Globale søgninger"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:129
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:128
 #, fuzzy
 msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
@@ -5516,17 +5535,17 @@ msgstr ""
 "Tillader bruger at søge i alle konti. Hvis de ikke har rettigheder til det, "
 "kan de ikke se kontodetaljer."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:144
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:143
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:154
 msgid "Image to show password"
 msgstr "Billede til at vise kodeord"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:146
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:145
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:156
 msgid "Generate an image with a text of the account password."
 msgstr "Genererer et billede med kodeordsteksten"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:148
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:147
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:158
 msgid ""
 "Useful for environments where copying a password to clipboard is a security "
@@ -5535,28 +5554,28 @@ msgstr ""
 "Er anvendeligt i miljøer hvor brug af udklipsholder anses som en "
 "sikkerhedsrisiko"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:164
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:163
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:158
 msgid "Results like Cards"
 msgstr "Resultater som kort"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:166
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:165
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
 #, fuzzy
 msgid "Displays account's search results on a card like format."
 msgstr "Aktiverer at søgeresultater vises som kartotekskort"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:182
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:181
 msgid "Secondary Groups Access"
 msgstr "Adgang for sekundærgrupper"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:184
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:183
 #, fuzzy
 msgid "Grants access to users that are included in secondary groups."
 msgstr ""
 "Giver adgang til de brugere der er medlem af den sekundære brugergruppe."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:186
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:185
 #, fuzzy
 msgid ""
 "By default, user in a secondary group is granted if the secondary group is "
@@ -5566,28 +5585,28 @@ msgstr ""
 "sekundære gruppe er brugerens primærgruppe."
 
 #. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:197
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:196
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
 #: app/config/actions.xml:73
 msgid "Public Links"
 msgstr "Offentlige links"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:215
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:214
 msgid "Enable Public Links"
 msgstr "Aktivér offentlige links"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:217
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:216
 msgid "Enables the ability to create public links to view an account's details"
 msgstr ""
 "Giver mulighed for at oprette offentlige links der kan vise en kontos "
 "detaljer"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:219
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:218
 #, fuzzy
 msgid "Linked accounts will be visible by anyone that have the link."
 msgstr "De forbundne konti kan ses af alle der har linket."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:221
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:220
 #, fuzzy
 msgid ""
 "In order to create links, users must have activated the option on their "
@@ -5595,96 +5614,99 @@ msgid ""
 msgstr ""
 "For at oprette links skal brugerne have aktiveret funktionen i deres profil."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:237
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:236
 msgid "Use an image for password"
 msgstr "Brug et billede til at vise kodeordet"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:239
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:238
 msgid "The account password is shown as image."
 msgstr "Kontoens kodeord vises som et billede."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:248
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:257
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 msgid "Expire time"
 msgstr "Udløbstid"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:263
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:272
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
+msgid "Expire time (minutes)"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:262
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:271
 msgid "Maximum visits"
 msgstr "Maks. antal besøg"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:298
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:297
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:411
 msgid "Files management"
 msgstr "Filadministration"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:299
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:298
 msgid "Enables the uploading and downloading of accounts files."
 msgstr "Aktivere upload og download af filer i konti."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:307
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:320
-msgid "Allowed file extensions"
-msgstr "Tilladte filendelser"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:306
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:319
+msgid "Allowed MIME types"
+msgstr "Tilladte MIME-typer"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:312
-msgid "Allowed file extensions for uploading."
-msgstr "Tilladte filendelser ved upload"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:311
+msgid "Allowed file MIME types for uploading."
+msgstr "Tilladte MIME-typer til uploading."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:315
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:314
 msgid ""
-"Write the extension and press enter to add. Remember to save the "
-"configuration."
+"In order to add more MIME types, you need to add them into mime.xml file "
+"within the config directory."
 msgstr ""
-"Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
-"konfigurationen."
+"For at tilføje flere MIME-typer skal du tilføje dem i mime.xml-filen i "
+"config-mappen."
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:328
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
 msgstr "Max filstørrelse"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:333
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:339
 #, fuzzy
 msgid "Sets the maximum file size for uploading."
 msgstr "Indstil den maksimale filstørrelse ved upload"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:337
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:343
 #, fuzzy
 msgid "Absolute maximum is 16MB."
 msgstr "Det absolutte maximum er 16MB"
 
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:348
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:354
 msgid "Maximum file size in kilobytes"
 msgstr "Maksimal filstørrelse i kilobyte"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:16
+#: app/modules/web/themes/material-blue/views/config/backup.inc:17
 msgid "This extension is needed to build the application's backup files"
 msgstr ""
 "Denne udvidelser er påkrævet for at generere applikationens backupfiler"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:30
-#: app/modules/web/themes/material-blue/views/config/backup.inc:33
-#: app/modules/web/themes/material-blue/views/config/backup.inc:109
-#: app/modules/web/themes/material-blue/views/config/backup.inc:112
+#: app/modules/web/themes/material-blue/views/config/backup.inc:31
+#: app/modules/web/themes/material-blue/views/config/backup.inc:34
+#: app/modules/web/themes/material-blue/views/config/backup.inc:110
+#: app/modules/web/themes/material-blue/views/config/backup.inc:113
 msgid "Result"
 msgstr "Resultat"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:41
-#: app/modules/web/themes/material-blue/views/config/backup.inc:44
-#: app/modules/web/themes/material-blue/views/config/backup.inc:120
-#: app/modules/web/themes/material-blue/views/config/backup.inc:123
+#: app/modules/web/themes/material-blue/views/config/backup.inc:42
+#: app/modules/web/themes/material-blue/views/config/backup.inc:45
+#: app/modules/web/themes/material-blue/views/config/backup.inc:121
+#: app/modules/web/themes/material-blue/views/config/backup.inc:124
 msgid "Download Current"
 msgstr "Hent aktuel"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:51
+#: app/modules/web/themes/material-blue/views/config/backup.inc:52
 msgid "DB Backup"
 msgstr "Databasebackup"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:58
+#: app/modules/web/themes/material-blue/views/config/backup.inc:59
 msgid "sysPass Backup"
 msgstr "sysPass-backup"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:80
+#: app/modules/web/themes/material-blue/views/config/backup.inc:81
 #, fuzzy
 msgid ""
 "The backup allows you to save and download sysPass database and application "
@@ -5693,7 +5715,7 @@ msgstr ""
 "Backup tillader dig at gemme enten sysPass databasen, applikationsfilerne "
 "eller konfigurationen."
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:82
+#: app/modules/web/themes/material-blue/views/config/backup.inc:83
 msgid ""
 "With this method it's possible to either save all sysPass data in another "
 "place or use it to make the application portable."
@@ -5701,22 +5723,22 @@ msgstr ""
 "Med denne metode er det muligt at enten gamme alle sysPass data et andet "
 "sted eller bruge dem til at gøre applikationen portabel"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:101
-#: app/modules/web/themes/material-blue/views/config/backup.inc:185
+#: app/modules/web/themes/material-blue/views/config/backup.inc:102
+#: app/modules/web/themes/material-blue/views/config/backup.inc:186
 msgid "Export Accounts"
 msgstr "Eksportér konti"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:139
-#: app/modules/web/themes/material-blue/views/config/backup.inc:147
+#: app/modules/web/themes/material-blue/views/config/backup.inc:140
+#: app/modules/web/themes/material-blue/views/config/backup.inc:148
 msgid "Export Password"
 msgstr "Eksport-kodeord"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:153
-#: app/modules/web/themes/material-blue/views/config/backup.inc:161
+#: app/modules/web/themes/material-blue/views/config/backup.inc:154
+#: app/modules/web/themes/material-blue/views/config/backup.inc:162
 msgid "Export Password (repeat)"
 msgstr "Eskport-kodeord(gentaget)"
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:187
+#: app/modules/web/themes/material-blue/views/config/backup.inc:188
 msgid ""
 "The accounts export allows you to save the accounts and their data in XML "
 "format to be imported in another sysPass instance."
@@ -5724,18 +5746,18 @@ msgstr ""
 "Eksport af konti giver mulighed for at gemme dem som XML så de kan "
 "importeres i en anden sysPass installation."
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:189
+#: app/modules/web/themes/material-blue/views/config/backup.inc:190
 #, fuzzy
 msgid "Exported items are accounts, clients, categories and tags."
 msgstr "De eksporterede elementer er Konti, Klienter, Kategorier og Mærker."
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:191
+#: app/modules/web/themes/material-blue/views/config/backup.inc:192
 #, fuzzy
 msgid ""
 "Accounts' password are exported in an encrypted way for better security."
 msgstr "Konto-kodeordene er eksporteret krypteret for højere sikkerhed."
 
-#: app/modules/web/themes/material-blue/views/config/backup.inc:193
+#: app/modules/web/themes/material-blue/views/config/backup.inc:194
 #, fuzzy
 msgid ""
 "It's possible to set an export password to save all the encrypted data in "
@@ -5928,8 +5950,8 @@ msgstr "Domænenavn"
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:85
 #: app/modules/web/themes/material-blue/views/config/import.inc:45
 #: app/modules/web/themes/material-blue/views/config/import.inc:55
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:239
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:249
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:248
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:258
 msgid "Default Group"
 msgstr "Standardgruppe"
 
@@ -5940,8 +5962,8 @@ msgstr "Angiver standard-brugergruppen for nyoprettede SSO-brugere"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:100
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:110
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:264
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:274
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:273
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:283
 msgid "Default Profile"
 msgstr "Standardprofil"
 
@@ -6343,122 +6365,130 @@ msgstr "Aktiverer brugergodkendelse op mod en LDAP server"
 msgid "This method will use MySQL as fallback."
 msgstr "Denne metode vil bruge MySQL som nødløsning."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:65
-msgid "Active Directory"
-msgstr "Active Directory"
-
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
-msgid "Enables Active Directory LDAP connection mode."
-msgstr "Aktiverer Active Directory LDAP-forbindelsestilstand"
-
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:84
 msgid "Enables the connection over TLS"
 msgstr "Enables the connection over TLS"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:99
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:76
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:78
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:82
+msgid "Server Type"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:98
 #, fuzzy
 msgid "Hostname or IP address of LDAP server."
 msgstr "Hostnavn eller IP-adresse på LDAP serveren"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:103
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:134
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:185
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:219
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:131
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:102
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:133
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:194
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:228
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:119
 msgid "Examples:"
 msgstr "Eksempler:"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:125
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:124
 msgid "Bind User"
 msgstr "Bindings-bruger"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:130
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:129
 #, fuzzy
 msgid "User to connect to LDAP service."
 msgstr "Brugeren der anvendes til at forbinde til LDAP-tjenesten."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:155
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:154
 msgid "Bind Password"
 msgstr "Bind-kodeord"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:160
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:159
 #, fuzzy
 msgid "LDAP connection user's password"
 msgstr "LDAP forbindelses-brugers kodeord"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:176
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:200
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:177
+msgid ""
+"This isn't the real LDAP password. You should set the real one before "
+"checking or importing LDAP objects"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:185
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:209
 msgid "Search base"
 msgstr "Søgebase"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:181
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:190
 #, fuzzy
 msgid "LDAP base to perform the LDAP users search."
 msgstr "Det basis i LDAP hvorfra søgninger vil udgå."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:211
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:220
 #, fuzzy
 msgid "LDAP group which user must belong to for granting to log in."
 msgstr "LDAP-gruppen som brugeren skal tilhøre for at måtte logge ind."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:215
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:224
 msgid "This group needs to be placed in the LDAP search base."
 msgstr "Denne gruppe skal findes i LDAP Søgebasen"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:244
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:253
 #, fuzzy
 msgid "Sets the default users group for newly created LDAP users"
 msgstr "Indstil standard-brugergruppen for nyoprettede LDAP-brugere"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:269
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:278
 msgid "Sets the default profile for the newly created LDAP users."
 msgstr "Indstil standardprofilen for nyoprettede LDAP-brugere"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:321
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:330
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:494
 msgid "Import"
-msgstr ""
+msgstr "Importér"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:327
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:337
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:336
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:346
 msgid "Login Attribute"
 msgstr "Loginattribut"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:332
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:341
 msgid "Defines the attribute for the user's login when importing."
 msgstr "Fastsætter attributter for brugerens login ved import."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:350
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:360
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:359
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:369
 msgid "Name Attribute"
 msgstr "Navneattribut"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:355
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:364
 msgid "Defines the attribute for the user's name when importing."
 msgstr "Definerer attributten for brugerens navn under import."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:385
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:394
 msgid "Import Groups"
 msgstr "Importér grupper"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:394
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:404
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:403
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:413
 msgid "Group Name Attribute"
 msgstr "Gruppenavnsattribut"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:399
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:408
 msgid "Defines the attribute for the user group name when importing."
 msgstr ""
 "Definerer attributten for det brugergruppenavn der anvendes ved import."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:415
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:429
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:424
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:438
 msgid "Filter"
 msgstr "Filter"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:420
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:429
 msgid "Filter for importing LDAP users or groups."
 msgstr "Filter til import af LDAP-brugere eller grupper."
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:469
+msgid "Import users from LDAP"
+msgstr "Importér brugere fra LDAP"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:33
 #: app/modules/web/themes/material-blue/views/config/mail.inc:34
@@ -6489,87 +6519,31 @@ msgstr "Sikkerhed"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
-#, fuzzy
-msgid "Recipient email address"
-msgstr "Afsenderens E-mail adresse"
+msgid "Sender email address"
+msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
 #: app/modules/web/themes/material-blue/views/config/mail.inc:165
 msgid "Recipients"
 msgstr "Modtagere"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:16
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:16
 msgid "This extension is needed to connect with DokuWiki"
 msgstr "Denne udvidelse er påkrævet for at kunne forbinde til DokuWiki"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:47
-msgid "Enable Wiki links"
-msgstr "Aktivér Wiki links"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:48
-msgid ""
-"Enables the option to add a link to search for results in an external Wiki."
-msgstr "Giver mulighed for at linke til søgeresultater i en ekstern Wiki"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:56
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:83
-msgid "Wiki search URL"
-msgstr "Wiki søge-URL"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:61
-#, fuzzy
-msgid "URL that Wiki uses for making an entry searching."
-msgstr "Den URL som wikien anvender til søgning"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:65
-#, fuzzy
-msgid "The client's name is used as parameter."
-msgstr "Klientnavnet anvendes som parameter"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:69
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:102
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:187
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:214
-msgid "Example:"
-msgstr "Eksempel:"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:89
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:116
-msgid "Wiki page URL"
-msgstr "Wiki URL"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:94
-#, fuzzy
-msgid "URL that Wiki uses for accessing to the entry details."
-msgstr "Den URL som wikien anvender til adgang til sidedetaljer"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:98
-#, fuzzy
-msgid "Account's name is used as parameter of Wiki search variable."
-msgstr "Kontonavnet anvendes som en en wiki-søgeparameter"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:122
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:136
-msgid "Account name prefix"
-msgstr "Præfiks på kontonavn"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:127
-msgid "Prefix to determine which accounts have a link to the Wiki."
-msgstr "Præfiks der angiver hvilke konti der har et Wiki-link"
-
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:146
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:29
 msgid "DokuWiki API"
 msgstr "DokuWiki API"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:164
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:47
 msgid "Enable DokuWiki API"
 msgstr "Aktivér DokuWiki API"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:166
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:49
 msgid "Enables DokuWiki XML-RPC API for Wiki links."
 msgstr "Aktiverer DokuWiki XML-RPC API'et til Wiki links."
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:168
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:51
 msgid ""
 "In order to get this feature working, you should enable Wiki links for "
 "accounts filtering"
@@ -6577,37 +6551,92 @@ msgstr ""
 "For at få dette til at fungere skal du aktivere Wiki links til "
 "kontofiltrering"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:178
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:199
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:61
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:82
 msgid "API URL"
 msgstr "API URL"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:183
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:66
 msgid "DokuWiki API URL"
 msgstr "DokuWiki API URL"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:205
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:227
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:70
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:97
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:57
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:90
+msgid "Example:"
+msgstr "Eksempel:"
+
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:88
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:110
 msgid "Base URL"
 msgstr "Basis URL"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:210
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:93
 msgid "DokuWiki base URL"
 msgstr "DokuWiki basis URL"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:238
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:121
 #, fuzzy
 msgid "User for connecting to the DokuWiki API."
 msgstr "Bruger der anvendes til at forbinde til DokuWiki API"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:266
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:282
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:149
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:165
 msgid "Namespace"
 msgstr "Namespace"
 
-#: app/modules/web/themes/material-blue/views/config/wiki.inc:271
+#: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:154
 msgid "Namespace used to search pages."
 msgstr "Namespace der anvendes til at søge i siderne."
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:35
+msgid "Enable Wiki links"
+msgstr "Aktivér Wiki links"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:36
+msgid ""
+"Enables the option to add a link to search for results in an external Wiki."
+msgstr "Giver mulighed for at linke til søgeresultater i en ekstern Wiki"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:44
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:71
+msgid "Wiki search URL"
+msgstr "Wiki søge-URL"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:49
+#, fuzzy
+msgid "URL that Wiki uses for making an entry searching."
+msgstr "Den URL som wikien anvender til søgning"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:53
+#, fuzzy
+msgid "The client's name is used as parameter."
+msgstr "Klientnavnet anvendes som parameter"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:77
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:104
+msgid "Wiki page URL"
+msgstr "Wiki URL"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:82
+#, fuzzy
+msgid "URL that Wiki uses for accessing to the entry details."
+msgstr "Den URL som wikien anvender til adgang til sidedetaljer"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:86
+#, fuzzy
+msgid "Account's name is used as parameter of Wiki search variable."
+msgstr "Kontonavnet anvendes som en en wiki-søgeparameter"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:110
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:124
+msgid "Account name prefix"
+msgstr "Præfiks på kontonavn"
+
+#: app/modules/web/themes/material-blue/views/config/wiki.inc:115
+msgid "Prefix to determine which accounts have a link to the Wiki."
+msgstr "Præfiks der angiver hvilke konti der har et Wiki-link"
 
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:17
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:19
@@ -6693,7 +6722,7 @@ msgstr "Delete History"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:92
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:98
 msgid "Options"
 msgstr "Valgmuligheder"
 
@@ -7114,11 +7143,11 @@ msgstr "Vent venligst mens processen kører"
 msgid "Start Update"
 msgstr "Iværksæt opdatering"
 
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:95
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:101
 msgid "Global notification"
 msgstr "Global notifikation"
 
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:103
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:109
 msgid "Only for application administrators"
 msgstr "Kun for applikationsadministratorer"
 
@@ -7188,9 +7217,8 @@ msgid "Navigation bar on top"
 msgstr "Navigationsbjælke øverst"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
-#, fuzzy
-msgid "Dysplays a navigation bar on top of the search results."
-msgstr "Viser en navigationsbjælke over søgeresultaterne."
+msgid "Displays a navigation bar on top of the search results."
+msgstr ""
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
@@ -7575,524 +7603,50 @@ msgstr "Tekstfelt"
 msgid "Text"
 msgstr "Tekst"
 
-#~ msgid "Es necesario un usuario"
-#~ msgstr "Et brugernavn er påkrævet"
+#~ msgid "Mail service unavailable"
+#~ msgstr "E-mail-tjenesten er ikke tilgængelig"
 
-#~ msgid "No es posible eliminar"
-#~ msgstr "Kan ikke slette"
+#~ msgid "Active Directory"
+#~ msgstr "Active Directory"
 
-#~ msgid "Error al realizar la exportación de cuentas"
-#~ msgstr "Fejl under eksportering af konti"
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Aktiverer Active Directory LDAP-forbindelsestilstand"
 
-#~ msgid "Exportación de cuentas realizada correctamente"
-#~ msgstr "Eksportering blev gennemført korrekt"
+#, fuzzy
+#~ msgid "Recipient email address"
+#~ msgstr "Afsenderens E-mail adresse"
 
-#~ msgid "Modificar Configuración"
-#~ msgstr "Tilret konfiguration"
+#, fuzzy
+#~ msgid "Dysplays a navigation bar on top of the search results."
+#~ msgstr "Viser en navigationsbjælke over søgeresultaterne."
 
-#~ msgid "Sección"
-#~ msgstr "Sektion"
+#~ msgid "There aren't any allowed extensions"
+#~ msgstr "Der findes ingen tilladte filtype-angivelser(endelser)"
 
-#~ msgid "Generar Clave Temporal"
-#~ msgstr "Opret midlertidigt kodeord"
+#~ msgid "Extension: %s"
+#~ msgstr "Udvidelse: %s"
 
-#~ msgid "Clave Temporal Generada"
-#~ msgstr "Midlertidigt kodeord oprettet"
+#~ msgid "Maximum size: %s"
+#~ msgstr "Maks. størrelse: %s"
 
-#~ msgid "Usuario/Clave no introducidos"
-#~ msgstr "Bruger/Kodeord skal angives"
+#~ msgid "Please, check the file extension"
+#~ msgstr "Kontroller venligst fil-endelsen"
 
-#~ msgid "Inicio sesión"
-#~ msgstr "Log ind"
+#~ msgid "Data not loaded"
+#~ msgstr "Data ikke indlæst"
 
-#~ msgid "Error al guardar los datos de LDAP"
-#~ msgstr "Fejl under lagring af LDAP brugerdata"
+#~ msgid "Extension not allowed"
+#~ msgstr "Fil-endelse er ikke tilladt "
 
-#~ msgid "Error al actualizar la clave del usuario en la BBDD"
-#~ msgstr "Fejl under opdatering af brugerens kodeord i databasen"
+#~ msgid "Allowed file extensions"
+#~ msgstr "Tilladte filendelser"
 
-#~ msgid "Error al obtener los datos del usuario de la BBDD"
-#~ msgstr "Fejl under indlæsning af brugerens data fra databasen"
-
-#~ msgid "No es un ID de archivo válido"
-#~ msgstr "Ugyldigt fil-ID"
-
-#~ msgid "Modificar Clave Usuario"
-#~ msgstr "Skift brugerens kodeord"
-
-#~ msgid "La clave es incorrecta o no coincide"
-#~ msgstr "Forkerte kodeord eller ikke-identiske kodeord"
-
-#~ msgid "Solicitud de Modificación de Cuenta"
-#~ msgstr "Anmodning om ændring af konto"
-
-#~ msgid "La clave maestra no coincide"
-#~ msgstr "Hoved-kodeordene er ikke identiske"
-
-#~ msgid "No es posible acceder directamente a este archivo"
-#~ msgstr "Kan ikke tilgå filen"
-
-#~ msgid "Actualizar Cuenta"
-#~ msgstr "Opdater konto"
-
-#~ msgid "Error al eliminar archivos asociados a la cuenta"
-#~ msgstr "Fejl under sletning af kontoens filer"
-
-#~ msgid "Inicio"
-#~ msgstr "Start"
-
-#~ msgid "Error en el módulo de encriptación"
-#~ msgstr "Fejl i krypteringsmodulet"
-
-#~ msgid "No se pudieron obtener los datos de las cuentas"
-#~ msgstr "Kan ikke indlæse kontoens data"
-
-#~ msgid "Fallo al actualizar la clave del histórico"
-#~ msgstr "Fejl under opdateringen af historikkens Hoved-kodeord"
-
-#~ msgid "Gestión Aplicación"
-#~ msgstr "Applikationsadministration"
-
-#~ msgid "Exportar"
-#~ msgstr "Eksport"
-
-#~ msgid "Actualizar Autorización"
-#~ msgstr "Opdater autorisation"
-
-#~ msgid "Modificar configuración"
-#~ msgstr "Opdater konfiguration"
-
-#~ msgid "Valor"
-#~ msgstr "Værdi"
+#~ msgid "Allowed file extensions for uploading."
+#~ msgstr "Tilladte filendelser ved upload"
 
 #~ msgid ""
-#~ "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
 #~ msgstr ""
-#~ "Hoved-kodeordets kontrolsum er blevet genudregnet. Ingen yderligere "
-#~ "handling er påkrævet"
-
-#~ msgid "No es posible generar las claves RSA"
-#~ msgstr "Kan ikke oprette RSA-nøgler"
-
-#~ msgid "El archivo de clave no existe"
-#~ msgstr "Nøglefilen findes ikke"
-
-#~ msgid "Actualizar Cliente"
-#~ msgstr "Opdater klient"
-
-#~ msgid "Realizado por"
-#~ msgstr "Udført af"
-
-#~ msgid "Enviar Email"
-#~ msgstr "Send E-mail"
-
-#~ msgid "CC"
-#~ msgstr "CC"
-
-#~ msgid "Compruebe los permisos del directorio temporal"
-#~ msgstr "Kontroller venligst tilladelserne på det midlertidige fil-lager"
-
-#~ msgid "Actualización"
-#~ msgstr "Opdatering"
-
-#~ msgid "Actualización de versión realizada."
-#~ msgstr "Versionsopdatering udført."
-
-#~ msgid "No es posible comprobar el usuario de sysPass"
-#~ msgstr "Kan ikke kontrollere sysPass-brugeren"
-
-#~ msgid "Error al crear la BBDD"
-#~ msgstr "Fejl under oprettelsen af databasen"
-
-#~ msgid "El archivo de estructura de la BBDD no existe"
-#~ msgstr "Databasens strukturfil findes ikke"
-
-#~ msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
-#~ msgstr "Kan ikke oprette databasen. Download den venligst igen."
-
-#~ msgid "Error al seleccionar la BBDD"
-#~ msgstr "Fejl under valg af databasen."
-
-#~ msgid "Error al actualizar la clave maestra del usuario \"admin\""
-#~ msgstr "Fejl under opdateringen af Hoved-kodeordet for brugeren \"admin\""
-
-#~ msgid "Error al buscar el grupo de usuarios"
-#~ msgstr "Fejl under søgningen i brugergruppen"
-
-#~ msgid "Vaciar Eventos"
-#~ msgstr "Ryd hændelser"
-
-#~ msgid "Error al obtener los usuarios"
-#~ msgstr "Fejl under indlæsning af brugerne"
-
-#~ msgid "Migrar Perfiles"
-#~ msgstr "Migrer profiler"
-
-#~ msgid "Error al obtener perfiles"
-#~ msgstr "Fejl under indlæsning af profilerne"
-
-#~ msgid "Operación realizada correctamente"
-#~ msgstr "Handlingen blev korrekt gennemført"
-
-#~ msgid "Fallo al realizar la operación"
-#~ msgstr "Fejl under udførelse af handlingen"
-
-#~ msgid "No es necesario actualizar la Base de Datos."
-#~ msgstr "Databaseopdatering ikke påkrævet"
-
-#~ msgid "No se pudo realizar la petición de cambio de clave."
-#~ msgstr "Kunne ikke gennemføre forespørgslen om ændring af kodeord"
-
-#~ msgid "Activación Cuenta"
-#~ msgstr "Kontoaktivering"
-
-#~ msgid "Su cuenta está pendiente de activación."
-#~ msgstr "Din konto afventer aktivering"
-
-#~ msgid "En breve recibirá un email de confirmación."
-#~ msgstr "Du vil snarest modtage en bekræftelses-mail"
-
-#~ msgid "Nuevo usuario de LDAP"
-#~ msgstr "Ny LDAP-bruger"
-
-#~ msgid "Error al migrar grupo del usuario"
-#~ msgstr "Fejl under migrering af brugergruppe"
-
-#~ msgid "Versión de PHP requerida >= "
-#~ msgstr "Påkrævet PHP version >= "
-
-#~ msgid "Exportar XML"
-#~ msgstr "XML eksport"
-
-#~ msgid "Último backup"
-#~ msgstr "Sidste backup"
-
-#~ msgid "Última exportación"
-#~ msgstr "Sidste eksportering"
-
-#~ msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
-#~ msgstr ""
-#~ "Denne PHP-version er følsom overfor NULL byte attack (CVE-2006-7243)"
-
-#~ msgid "Actualice la versión de PHP para usar sysPass de forma segura"
-#~ msgstr "Opdater venligst PHP så sysPass kan afvikles sikkert"
-
-#~ msgid "No se encuentra el generador de números aleatorios."
-#~ msgstr "Kan ikke finde en tilfældighedsgenerator"
-
-#~ msgid ""
-#~ "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
-#~ msgstr ""
-#~ "Uden denne funktion kan en angriber overtage din konto hvis du nulstiller "
-#~ "kodeordet"
-
-#~ msgid "Descargar nueva versión"
-#~ msgstr "Download ny version"
-
-#~ msgid "Token de autorización visualizado"
-#~ msgstr "Autorisationspolet vist"
-
-#~ msgid "Autorizaciones"
-#~ msgstr "Autorisationer"
-
-#~ msgid "Hablitar edición"
-#~ msgstr "Aktiver tilretning"
-
-#~ msgid "Usuarios Secundarios"
-#~ msgstr "Sekundære brugere"
-
-#~ msgid "Grupos Secundarios"
-#~ msgstr "Sekundære grupper"
-
-#~ msgid "Modificar Cuenta"
-#~ msgstr "Tilret konto"
-
-#~ msgid "No hay backups para descargar"
-#~ msgstr "Der findes ingen backup til download"
-
-#~ msgid "No hay archivos XML para descargar"
-#~ msgstr "Der findes ingen XML-filer til download"
-
-#~ msgid "Se permite un máximo de 4 caracteres."
-#~ msgstr "Max 4 tegn tilladt"
-
-#~ msgid "Abrir enlace a"
-#~ msgstr "Åbn link til"
-
-#~ msgid "Parámetros especiales:"
-#~ msgstr "Specielle parametre"
-
-#~ msgid "Extensión"
-#~ msgstr "Udvidelse"
-
-#~ msgid "Solicitud no enviada"
-#~ msgstr "Forespørgsel ikke sendt"
-
-#~ msgid "Compruebe datos de usuario o consulte con el administrador"
-#~ msgstr "Kontrollér venligst brugerens data eller kontakt administratoren"
-
-#~ msgid "Formato incorrecto"
-#~ msgstr "Forkert format"
-
-#~ msgid "Nombre de categoría a buscar"
-#~ msgstr "Kategorinavne der skal søges efter"
-
-#~ msgid "Nombre de cliente a buscar"
-#~ msgstr "Klientnavn der skal søges efter"
-
-#~ msgid "Los parámetros de DokuWiki no están configurados"
-#~ msgstr "DokuWiki-parametrene er ikke sat"
-
-#~ msgid "Error"
-#~ msgstr "Fejl"
-
-#~ msgid "Conexión correcta"
-#~ msgstr "Forbindelse oprettet"
-
-#~ msgid "Error de conexión a DokuWiki"
-#~ msgstr "Fejl under forbindelse til DokuWiki"
-
-#~ msgid "DokuWiki habiltada"
-#~ msgstr "DokuWiki aktiveret"
-
-#~ msgid "Error al importar usuarios de LDAP"
-#~ msgstr "Fejl under import af LDAP-brugere"
-
-#~ msgid "Solicitud enviada por correo"
-#~ msgstr "Forespørgsel er sendt pr. E-mail"
-
-#~ msgid "Solicitud no enviada por correo"
-#~ msgstr "Forespørgsel er ikke sendt pr. E-mail"
-
-#~ msgid "Detalles de Plugin"
-#~ msgstr "Plugindetaljer"
-
-#~ msgid "Error al obtener la clave maestra del usuario"
-#~ msgstr "Fejl under indlæsning af brugerens Hoved-kodeord"
-
-#~ msgid "Buscar Categorías"
-#~ msgstr "Søg efter kategorier"
-
-#~ msgid "Añadir Categoría"
-#~ msgstr "Tilføj kategori"
-
-#~ msgid "Buscar Clientes"
-#~ msgstr "Søg efter klient"
-
-#~ msgid "Añadir Cliente"
-#~ msgstr "Tilføj klient"
-
-#~ msgid "Extensión '%s' no cargada"
-#~ msgstr "Udvidelsen \"%s\" er ikke indlæst"
-
-#~ msgid "Campo personalizado no encontrado"
-#~ msgstr "Brugerdefineret felt ikke fundet"
-
-#~ msgid "No se encontraron campos personalizados"
-#~ msgstr "Brugerdefinerede felter ikke fundet"
-
-#~ msgid "Error al migrar campos personalizados"
-#~ msgstr "Fejl under migrering af brugerdefinerede felter"
-
-#~ msgid "Archivo subido"
-#~ msgstr "Fil uploadet"
-
-#~ msgid "Grupo en uso"
-#~ msgstr "Gruppen anvendes allerede"
-
-#~ msgid "Actualizar Grupo"
-#~ msgstr "Opdatér gruppe"
-
-#~ msgid "Perfil en uso"
-#~ msgstr "Profilen er i brug"
-
-#~ msgid "Actualizar Enlace"
-#~ msgstr "Opdatér link"
-
-#~ msgid "Error al obtener etiqueta"
-#~ msgstr "Fejl under indlæsning af mærke"
-
-#~ msgid "Sincronización finalizada"
-#~ msgstr "Synkronisering udført"
-
-#~ msgid "Error al migrar cuenta de usuario"
-#~ msgstr "Fejl under migrering af brugerkonto"
-
-#~ msgid "Error al obtener grupo de usuarios"
-#~ msgstr "Fejl under indlæsning af brugergruppen"
-
-#~ msgid "Actualizando preferencias"
-#~ msgstr "Opdaterer præferencer"
-
-#~ msgid "No es posible leer/escribir el archivo: %s"
-#~ msgstr "Kan ikke læse/skrive filen: %s"
-
-#~ msgid "Respuesta"
-#~ msgstr "Svar"
-
-#~ msgid "Accesos"
-#~ msgstr "Adgange"
-
-#~ msgid "Cuentas Vinculadas"
-#~ msgstr "Forbundne konti"
-
-#~ msgid "Hay %d notificaciones pendientes"
-#~ msgstr "Der findes %d ulæste notifikationer"
-
-#~ msgid "Crear Usuario"
-#~ msgstr "Tilføj bruger"
-
-#~ msgid "Actualizar Usuario"
-#~ msgstr "Opdatér bruger"
-
-#~ msgid "Actualizar Clave Usuario"
-#~ msgstr "Opdatér brugers kodeord"
-
-#~ msgid "Crear Grupo"
-#~ msgstr "Tilføj gruppe"
-
-#~ msgid "Crear Perfil"
-#~ msgstr "Tilføj profil"
-
-#~ msgid "Actualizar Perfil"
-#~ msgstr "Opdatér profil"
-
-#~ msgid "Crear Cliente"
-#~ msgstr "Tilføj klient"
-
-#~ msgid "Crear Categoría"
-#~ msgstr "Tilføj kategori"
-
-#~ msgid "Actualizar Categoría"
-#~ msgstr "Opdatér kategori"
-
-#~ msgid "Crear Autorización"
-#~ msgstr "Tilføj autorisation"
-
-#~ msgid "Crear Campo"
-#~ msgstr "Tilføj felt"
-
-#~ msgid "Actualizar Campo"
-#~ msgstr "Opdatér felt"
-
-#~ msgid "Crear Enlace"
-#~ msgstr "Opret link"
-
-#~ msgid "Crear Etiqueta"
-#~ msgstr "Tilføj mærke"
-
-#~ msgid "Actualizar Etiqueta"
-#~ msgstr "Opdatér mærke"
-
-#~ msgid "Actualizar Plugin"
-#~ msgstr "Opdatér plugin"
-
-#~ msgid "Crear Cuenta"
-#~ msgstr "Tilføj konto"
-
-#~ msgid "Usuarios importados"
-#~ msgstr "Importerede brugere"
-
-#~ msgid "Sesión"
-#~ msgstr "Session"
-
-#~ msgid "No es posible finalizar una transacción"
-#~ msgstr "Kan ikke færdiggøre transaktion"
-
-#~ msgid "Actualizando IDs de cuentas"
-#~ msgstr "Opdaterer Konti ID'er"
-
-#~ msgid "Actualizando IDs de categorías"
-#~ msgstr "Opdaterer Kategori ID'er"
-
-#~ msgid "Actualizando IDs de clientes"
-#~ msgstr "Opdaterer Klient ID'er"
-
-#~ msgid "Actualizando IDs de grupos"
-#~ msgstr "Opdaterer Gruppe ID'er"
-
-#~ msgid "Actualizando IDs de perfil"
-#~ msgstr "Opdaterer Profil ID'er"
-
-#~ msgid "Actualizando IDs de usuarios"
-#~ msgstr "Opdaterer bruger ID'er"
-
-#~ msgid "El enlace no existe"
-#~ msgstr "Linket findes ikke"
-
-#~ msgid "Error al leer datos del archivo (%s)"
-#~ msgstr "Fejl under læsning af fildata (%s)"
-
-#~ msgid "Error al eliminar el archivo (%s)"
-#~ msgstr "Fejl under sletning af filen (%s)"
-
-#~ msgid "No es posible leer/escribir el archivo (%s)"
-#~ msgstr "Kan ikke læse/skrive filen (%s)"
-
-#~ msgid "Error al escribir datos en el archivo (%s)"
-#~ msgstr "Fejl under skrivning af data til filen (%s)"
-
-#~ msgid "Etiqueta"
-#~ msgstr "Mærke"
-
-#~ msgid "Usar auto-login con Auth Basic"
-#~ msgstr "Anvend automatisk login via basal autentificering "
-
-#~ msgid "Error ol obtener la clave maestra del contexto"
-#~ msgstr "Fejl under indlæsning af Hoved-kodeord fra kontekst"
-
-#~ msgid "Nuevo CLiente"
-#~ msgstr "Ny klient"
-
-#~ msgid "Permiso no encontrada"
-#~ msgstr "Rettighed ikke fundet"
-
-#~ msgid "Ver Permiso"
-#~ msgstr "Se rettighed"
-
-#~ msgid "Nuevo Permiso"
-#~ msgstr "Ny rettighed"
-
-#~ msgid "Editar Permiso"
-#~ msgstr "Tilret rettighed"
-
-#~ msgid "Permisos eliminados"
-#~ msgstr "Rettigheder slettet"
-
-#~ msgid "Permiso eliminado"
-#~ msgstr "Rettighed slettet"
-
-#~ msgid "Permiso creado"
-#~ msgstr "Rettighed tilføjet"
-
-#~ msgid "Permiso actualizado"
-#~ msgstr "Rettighed opdateret"
-
-#~ msgid "Permisos por Defecto"
-#~ msgstr "Standardrettigheder"
-
-#~ msgid "Buscar Permiso"
-#~ msgstr "Søg efter rettighed"
-
-#~ msgid "Eliminar Permiso"
-#~ msgstr "Slet rettighed"
-
-#~ msgid ""
-#~ "Prioridad de asignación en caso de coincidir con otros permisos asignados "
-#~ "por usuario, grupo o perfil."
-#~ msgstr ""
-#~ "Tildelingsprioritet hvis rettigheder er identiske med andre tildelt via "
-#~ "bruger, gruppe eller profil."
-
-#~ msgid ""
-#~ "Indica si los permisos serán forzados al crear o modificar la cuenta."
-#~ msgstr ""
-#~ "Gennemtvinger tildeling af rettigheder ved oprettelse eller opdatering af "
-#~ "en konto."
-
-#~ msgid "Los permisos serán añadidos a los existentes."
-#~ msgstr ""
-#~ "Rettigheder vil blive flettet sammen med de eksisterende rettigheder."
-
-#~ msgid "Gestión Permisos"
-#~ msgstr "Rettighedsadministration"
+#~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
+#~ "konfigurationen."
