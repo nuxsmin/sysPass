@@ -34,7 +34,14 @@ defined('APP_ROOT') || die();
  */
 final class ImportService extends Service
 {
-    const ALLOWED_MIME = ['text/csv', 'application/xml', 'text/xml'];
+    const ALLOWED_MIME = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.mes-excel',
+        'text/plain',
+        'text/csv',
+        'application/xml',
+        'text/xml'
+    ];
 
     /**
      * @var ImportParams
