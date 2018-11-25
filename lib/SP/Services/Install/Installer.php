@@ -56,7 +56,7 @@ final class Installer extends Service
      * sysPass' version and build number
      */
     const VERSION = [3, 0, 0];
-    const VERSION_TEXT = '3.0-rc5';
+    const VERSION_TEXT = '3.0-rc4';
     const BUILD = 18112501;
 
     /**
