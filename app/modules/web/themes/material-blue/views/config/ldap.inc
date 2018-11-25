@@ -54,23 +54,6 @@
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads_enabled">
-                                <input type="checkbox" id="ldap_ads_enabled"
-                                       class="mdl-switch__input"
-                                       name="ldap_ads_enabled" <?php echo $configData->isLdapAds() ? 'checked' : ''; ?>/>
-                            </label>
-                        </div>
-
-                        <span class="mdl-list__item-primary-content">
-                                <span><?php echo __('Active Directory'); ?></span>
-                                <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enables Active Directory LDAP connection mode.'); ?>
-                                </span>
-                            </span>
-                    </li>
-
-                    <li class="mdl-list__item mdl-list__item--two-line">
-                        <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_tls_enabled">
                                 <input type="checkbox" id="ldap_tls_enabled"
                                        class="mdl-switch__input"
@@ -87,6 +70,22 @@
                     </li>
 
                 </ul>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo __('Server Type'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Server Type'); ?></div>
+
+                <select id="ldap_defaultgroup" name="ldap_server_type"
+                        class="select-box sel-chosen-usergroup" required>
+                    <option value=""><?php echo __('Server Type'); ?></option>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem $serverType */
+                    foreach ($_getvar('serverTypes') as $serverType): ?>
+                        <option
+                                value="<?php echo $serverType->getId(); ?>" <?php echo $serverType->isSelected() ? 'selected' : ''; ?>><?php echo $serverType->getName(); ?></option>
+                    <?php endforeach; ?>
+                </select>
             </td>
         </tr>
         <tr>
@@ -168,7 +167,17 @@
                            maxlength="128" value="<?php echo $configData->getLdapBindPass() ? '***' : ''; ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_bindpass"><?php echo __('Password'); ?></label>
+
                 </div>
+                <?php if ($configData->getLdapBindPass()): ?>
+                    <div id="help-ldap_password"
+                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_password">
+                        <p>
+                            <?php echo __('This isn\'t the real LDAP password. You should set the real one before checking or importing LDAP objects'); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
             </td>
         </tr>
         <tr>

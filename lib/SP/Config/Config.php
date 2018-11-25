@@ -187,7 +187,7 @@ final class Config
         }
 
         $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->context->getUserData()->getLogin());
+        $configData->setConfigSaver($this->context->getUserData()->getLogin() ?: 'sysPass');
         $configData->setConfigHash();
 
         $this->fileStorage->save($configData, 'config');

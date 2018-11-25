@@ -172,7 +172,10 @@ final class LdapAuth implements AuthInterface
         $this->ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
                 $attributes['dn'],
-                (array)$attributes->get('group')));
+                $userLogin,
+                (array)$attributes->get('group')
+            )
+        );
 
         return $this->ldapAuthData;
     }

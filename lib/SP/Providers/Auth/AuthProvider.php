@@ -31,12 +31,11 @@ use SP\Providers\Auth\Browser\Browser;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\Database;
 use SP\Providers\Auth\Database\DatabaseAuthData;
+use SP\Providers\Auth\Ldap\Ldap;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthData;
-use SP\Providers\Auth\Ldap\LdapConnection;
-use SP\Providers\Auth\Ldap\LdapMsAds;
+use SP\Providers\Auth\Ldap\LdapException;
 use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Providers\Provider;
 use SP\Services\Auth\AuthException;
 
@@ -77,6 +76,10 @@ final class AuthProvider extends Provider
      *
      * @param UserLoginData $userLoginData
      *
+     * @uses authLdap
+     * @uses authDatabase
+     * @uses authBrowser
+     *
      * @return false|AuthResult[]
      */
     public function doAuth(UserLoginData $userLoginData)
@@ -101,33 +104,12 @@ final class AuthProvider extends Provider
      * Autentificación de usuarios con LDAP.
      *
      * @return bool|LdapAuthData
-     * @throws Ldap\LdapException
+     * @throws AuthException
+     * @throws LdapException
      */
     public function authLdap()
     {
-        $data = LdapParams::getServerAndPort($this->configData->getLdapServer());
-
-        $ldapParams = (new LdapParams())
-            ->setServer($data['server'])
-            ->setPort(isset($data['port']) ? $data['port'] : 389)
-            ->setSearchBase($this->configData->getLdapBase())
-            ->setGroup($this->configData->getLdapGroup())
-            ->setBindDn($this->configData->getLdapBindUser())
-            ->setBindPass($this->configData->getLdapBindPass())
-            ->setAds($this->configData->isLdapAds());
-
-        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
-
-        if ($this->configData->isLdapAds()) {
-            $ldap = new LdapAuth(
-                new LdapMsAds($ldapConnection, $this->eventDispatcher),
-                $this->eventDispatcher);
-        } else {
-            $ldap = new LdapAuth(
-                new LdapStd($ldapConnection, $this->eventDispatcher),
-                $this->eventDispatcher);
-        }
-
+        $ldap = $this->getLdapAuth();
         $ldapAuthData = $ldap->getLdapAuthData();
 
         $ldapAuthData->setAuthenticated($ldap->authenticate($this->userLoginData));
@@ -142,6 +124,32 @@ final class AuthProvider extends Provider
         }
 
         return $ldapAuthData;
+    }
+
+    /**
+     * @return LdapAuth
+     * @throws LdapException
+     */
+    private function getLdapAuth()
+    {
+        $data = LdapParams::getServerAndPort($this->configData->getLdapServer());
+
+        $ldapParams = (new LdapParams())
+            ->setServer($data['server'])
+            ->setPort(isset($data['port']) ? $data['port'] : 389)
+            ->setSearchBase($this->configData->getLdapBase())
+            ->setGroup($this->configData->getLdapGroup())
+            ->setBindDn($this->configData->getLdapBindUser())
+            ->setBindPass($this->configData->getLdapBindPass())
+            ->setType($this->configData->getLdapType());
+
+        return new LdapAuth(
+            Ldap::factory(
+                $ldapParams,
+                $this->eventDispatcher,
+                $this->configData->isDebug()),
+            $this->eventDispatcher
+        );
     }
 
     /**

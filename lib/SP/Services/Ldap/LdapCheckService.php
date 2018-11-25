@@ -25,11 +25,8 @@
 namespace SP\Services\Ldap;
 
 use SP\Providers\Auth\Ldap\Ldap;
-use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Services\Service;
 
 /**
@@ -51,14 +48,7 @@ final class LdapCheckService extends Service
      */
     public function checkConnection(LdapParams $ldapParams)
     {
-        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, true);
-        $ldapConnection->checkConnection();
-
-        if ($ldapParams->isAds()) {
-            $this->ldap = new LdapMsAds($ldapConnection, $this->eventDispatcher);
-        } else {
-            $this->ldap = new LdapStd($ldapConnection, $this->eventDispatcher);
-        }
+        $this->ldap = Ldap::factory($ldapParams, $this->eventDispatcher, true);
     }
 
     /**

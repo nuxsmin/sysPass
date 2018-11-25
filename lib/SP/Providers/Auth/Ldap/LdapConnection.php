@@ -151,6 +151,7 @@ final class LdapConnection implements LdapConnectionInterface
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, self::TIMEOUT);
         @ldap_set_option($this->ldapHandler, LDAP_OPT_PROTOCOL_VERSION, 3);
+        @ldap_set_option($this->ldapHandler, LDAP_OPT_REFERRALS, 0);
 
         $this->isTls = $this->connectTls();
 

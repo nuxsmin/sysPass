@@ -75,13 +75,13 @@ final class LdapUtil
      */
     public static function getAttributesForFilter(array $attributes, $value): string
     {
-        $out = [];
         $value = ldap_escape((string)$value, null, LDAP_ESCAPE_FILTER);
 
-        foreach ($attributes as $attribute) {
-            $out[] = '(' . $attribute . '=' . $value . ')';
-        }
-
-        return implode('', $out);
+        return implode(
+            '',
+            array_map(function ($attribute) use ($value) {
+                return sprintf('(%s=%s)', $attribute, $value);
+            }, $attributes)
+        );
     }
 }

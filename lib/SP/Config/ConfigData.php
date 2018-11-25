@@ -202,6 +202,10 @@ final class ConfigData implements JsonSerializable
      */
     private $ldapAds = false;
     /**
+     * @var int
+     */
+    private $ldapType;
+    /**
      * @var string
      */
     private $ldapGroup;
@@ -2148,5 +2152,21 @@ final class ConfigData implements JsonSerializable
     public function setFilesAllowedMime(array $filesAllowedMime)
     {
         $this->filesAllowedMime = $filesAllowedMime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLdapType()
+    {
+        return (int)$this->ldapType;
+    }
+
+    /**
+     * @param int $ldapType
+     */
+    public function setLdapType(int $ldapType)
+    {
+        $this->ldapType = $ldapType;
     }
 }

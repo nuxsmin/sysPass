@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,15 +29,15 @@ use SP\Core\Events\EventMessage;
 use SP\Http\Address;
 
 /**
- * Class LdapAds
+ * Class LdapMsAzureAd
  *
- * LDAP authentication based on Active Directory
+ * LDAP authentication based on Azure Active Directory
  *
  * @package SP\Auth\Ldap
  */
-final class LdapMsAds extends Ldap
+final class LdapMsAzureAd extends Ldap
 {
-    const FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectCategory=person)(objectClass=user)))';
+    const FILTER_USER_OBJECT = '(|(objectCategory=person)(objectClass=user))';
     const FILTER_GROUP_OBJECT = '(objectCategory=group)';
     const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
     const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];

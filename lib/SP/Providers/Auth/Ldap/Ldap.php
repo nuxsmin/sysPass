@@ -83,6 +83,34 @@ abstract class Ldap implements LdapInterface
     protected abstract function pickServer();
 
     /**
+     * @param LdapParams      $ldapParams
+     * @param EventDispatcher $eventDispatcher
+     * @param bool            $debug
+     *
+     * @return LdapInterface
+     * @throws LdapException
+     */
+    public static function factory(LdapParams $ldapParams, EventDispatcher $eventDispatcher, bool $debug)
+    {
+        $ldapConnection = new LdapConnection($ldapParams, $eventDispatcher, $debug);
+        $ldapConnection->checkConnection();
+
+        switch ($ldapParams->getType()) {
+            case LdapTypeInterface::LDAP_STD:
+                return new LdapStd($ldapConnection, $eventDispatcher);
+                break;
+            case LdapTypeInterface::LDAP_ADS:
+                return new LdapMsAds($ldapConnection, $eventDispatcher);
+                break;
+            case LdapTypeInterface::LDAP_AZURE;
+                return new LdapMsAzureAd($ldapConnection, $eventDispatcher);
+                break;
+        }
+
+        throw new LdapException(__u('LDAP type not set'));
+    }
+
+    /**
      * @return LdapActions
      */
     public function getLdapActions(): LdapActions

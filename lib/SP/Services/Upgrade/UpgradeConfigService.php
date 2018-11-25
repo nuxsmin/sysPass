@@ -28,6 +28,7 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\MimeTypes;
+use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
 use SP\Util\VersionUtil;
@@ -42,7 +43,13 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @var array Versiones actualizables
      */
-    const UPGRADES = ['112.4', '130.16020501', '200.17011202', '300.18111001'];
+    const UPGRADES = [
+        '112.4',
+        '130.16020501',
+        '200.17011202',
+        '300.18111001',
+        '300.18112501'
+    ];
     /**
      * @var ConfigData
      */
@@ -197,8 +204,6 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
      * @param            $version
      * @param ConfigData $configData
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function upgrade($version, ConfigData $configData)
@@ -220,8 +225,6 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     private function applyUpgrade($version)
@@ -233,14 +236,15 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             case '300.18111001':
                 $this->upgrade_300_18111001($version);
                 break;
+            case '300.18112501':
+                $this->upgrade_300_18112501($version);
+                break;
         }
     }
 
     /**
      * @param $version
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     private function upgrade_200_17011202($version)
@@ -260,8 +264,6 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     private function upgrade_300_18111001($version)
@@ -306,6 +308,32 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
                 ->addDescription(__u('Update Configuration'))
                 ->addDetail(__u('Version'), $version))
         );
+    }
+
+    /**
+     * @param $version
+     *
+     * @throws \SP\Storage\File\FileException
+     */
+    private function upgrade_300_18112501($version)
+    {
+        if ($this->configData->isLdapEnabled()) {
+            if ($this->configData->isLdapAds()) {
+                $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
+            } else {
+                $this->configData->setLdapType(LdapTypeInterface::LDAP_STD);
+            }
+
+            $this->configData->setConfigVersion($version);
+
+            $this->config->saveConfig($this->configData, false);
+
+            $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Update Configuration'))
+                    ->addDetail(__u('Version'), $version))
+            );
+        }
     }
 
     /**

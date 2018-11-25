@@ -34,6 +34,7 @@ use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
+use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
@@ -221,6 +222,14 @@ final class ConfigManagerController extends ControllerBase
         $template->assign('ldapIsAvailable', $this->extensionChecker->checkIsAvailable('ldap'));
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
+
+        $serverTypes = [
+            LdapTypeInterface::LDAP_STD => 'Standard',
+            LdapTypeInterface::LDAP_ADS => 'Active Directory',
+            LdapTypeInterface::LDAP_AZURE => 'Azure Active Directory',
+        ];
+
+        $template->assign('serverTypes', SelectItemAdapter::factory($serverTypes)->getItemsFromArraySelected([$this->configData->getLdapType()]));
 
         return new DataTab(__('LDAP'), $template);
     }

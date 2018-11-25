@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 /**
  * Class LdapStd
  *
- * Autentificación basada en LDAP estándard
+ * LDAP authentication based on an standard implementation
  *
  * @package SP\Auth\Ldap
  */
@@ -91,12 +91,13 @@ final class LdapStd extends Ldap
      * Buscar al usuario en un grupo.
      *
      * @param string $userDn
+     * @param string $userLogin
      * @param array  $groupsDn
      *
      * @return bool
      * @throws LdapException
      */
-    public function isUserInGroup(string $userDn, array $groupsDn): bool
+    public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool
     {
         // Comprobar si está establecido el filtro de grupo o el grupo coincide con
         // los grupos del usuario
@@ -145,19 +146,6 @@ final class LdapStd extends Ldap
 
             return false;
         }
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function connect()
-    {
-        $handler = parent::connect();
-
-        @ldap_set_option($handler, LDAP_OPT_REFERRALS, 0);
 
         return true;
     }
