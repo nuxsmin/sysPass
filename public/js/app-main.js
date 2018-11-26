@@ -165,7 +165,7 @@ sysPass.Main = function () {
                     }
                 );
         }).on("click", ".clip-pass-icon", function () {
-            const $target =$(this.dataset.clipboardTarget);
+            const $target = $(this.dataset.clipboardTarget);
 
             clipboard
                 .copy(oPublic.util.decodeEntities($target.val()))
@@ -424,11 +424,11 @@ sysPass.Main = function () {
         };
 
         const configHandler = sysPass.Config();
-
-        configHandler.setAppRoot(window.location.protocol + "//" + window.location.host + rootPath());
+        const root = window.location.protocol + "//" + window.location.host + rootPath();
+        configHandler.setAppRoot(root);
 
         const opts = oPublic.requests.getRequestOpts();
-        opts.url = "/index.php?r=bootstrap/getEnvironment";
+        opts.url = root + "/index.php?r=bootstrap/getEnvironment";
         opts.method = "get";
         // opts.async = false;
         opts.useLoading = false;
