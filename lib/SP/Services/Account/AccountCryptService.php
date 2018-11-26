@@ -212,9 +212,9 @@ final class AccountCryptService extends Service
                 new Event($this, EventMessage::factory()->addDescription(__u('Update Master Password (H)')))
             );
 
-            $taskId = $this->request->getTask()->getTaskId();
-
             if ($this->request->useTask()) {
+                $taskId = $this->request->getTask()->getTaskId();
+
                 TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Update Master Password (H)')));
             }
 

@@ -378,6 +378,10 @@ final class LoginService extends Service
         // Actualizar el último login del usuario
         $this->userService->updateLastLoginById($userLoginResponse->getId());
 
+        if ($this->context->getTrasientKey('mpass_updated')) {
+            $userLoginResponse->setLastUpdateMPass(time());
+        }
+
         // Cargar las variables de ussuario en la sesión
         $this->context->setUserData($userLoginResponse);
         $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
