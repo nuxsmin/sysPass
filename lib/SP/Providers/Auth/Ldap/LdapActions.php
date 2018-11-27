@@ -167,12 +167,11 @@ final class LdapActions
         do {
             ldap_control_paged_result($this->ldapHandler, 1000, false, $cookie);
 
-            if ($searchBase != false) {
-                $searchRes = @ldap_search($this->ldapHandler, $searchBase, $filter, $attributes);
-            } else {
-                $searchRes = @ldap_search($this->ldapHandler, $this->ldapParams->getSearchBase(), $filter, $attributes);
+            if ($searchBase == false) {
+                $searchBase = $this->ldapParams->getSearchBase();
             }
-
+            $searchRes = @ldap_search($this->ldapHandler, $searchBase, $filter, $attributes);
+            
             if (!$searchRes) {
                 return false;
             }
