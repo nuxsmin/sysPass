@@ -84,7 +84,7 @@ final class ConfigMailController extends SimpleControllerBase
             $configData->setMailRecipients($mailRecipients);
             $configData->setMailEvents($this->request->analyzeArray('mail_events', function ($items) {
                 return ConfigUtil::eventsAdapter($items);
-            }));
+            }, []));
 
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);

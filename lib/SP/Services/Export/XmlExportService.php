@@ -236,8 +236,7 @@ final class XmlExportService extends Service
             $metaTime = $this->xml->createElement('Time', time());
             $metaUser = $this->xml->createElement('User', $userData->getLogin());
             $metaUser->setAttribute('id', $userData->getId());
-            // FIXME: get user group name
-            $metaGroup = $this->xml->createElement('Group', '');
+            $metaGroup = $this->xml->createElement('Group', $userData->getUserGroupName());
             $metaGroup->setAttribute('id', $userData->getUserGroupId());
 
             $nodeMeta->appendChild($metaGenerator);

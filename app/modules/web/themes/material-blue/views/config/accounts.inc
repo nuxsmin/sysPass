@@ -253,7 +253,7 @@
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxTime() / 60; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publiclinks_maxtime"><?php echo __('Expire time'); ?></label>
+                           for="publiclinks_maxtime"><?php echo __('Expire time (minutes)'); ?></label>
                 </div>
             </td>
         </tr>

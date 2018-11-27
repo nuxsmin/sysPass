@@ -129,7 +129,9 @@ final class PublicLinkGrid extends GridBase
         $gridData->addDataRowSource('getDateAddFormat', true);
         $gridData->addDataRowSource('getDateExpireFormat', true);
         $gridData->addDataRowSource('userLogin');
-        $gridData->addDataRowSource('getNotifyString', true);
+        $gridData->addDataRowSource('notify', false, function ($value) {
+            return $value ? __('ON') : __('OFF');
+        });
         $gridData->addDataRowSource('getCountViewsString', true);
         $gridData->setData($this->queryResult);
 

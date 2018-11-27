@@ -29,11 +29,9 @@ use SP\Core\Events\EventMessage;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\Providers\Auth\Ldap\Ldap;
-use SP\Providers\Auth\Ldap\LdapConnection;
 use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapMsAds;
+use SP\Providers\Auth\Ldap\LdapInterface;
 use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
@@ -157,18 +155,12 @@ final class LdapImportService extends Service
     /**
      * @param LdapParams $ldapParams
      *
-     * @return Ldap
+     * @return LdapInterface
      * @throws LdapException
      */
     protected function getLdap(LdapParams $ldapParams)
     {
-        $ldapConnection = new LdapConnection($ldapParams, $this->eventDispatcher, $this->config->getConfigData()->isDebug());
-
-        if ($ldapParams->isAds()) {
-            return new LdapMsAds($ldapConnection, $this->eventDispatcher);
-        } else {
-            return new LdapStd($ldapConnection, $this->eventDispatcher);
-        }
+        return Ldap::factory($ldapParams, $this->eventDispatcher, $this->config->getConfigData()->isDebug());
     }
 
     /**

@@ -35,6 +35,7 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Services\Ldap\LdapCheckService;
 use SP\Services\Ldap\LdapImportParams;
 use SP\Services\Ldap\LdapImportService;
@@ -73,7 +74,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
             if ($ldapEnabled) {
                 $configData->setLdapEnabled(true);
-                $configData->setLdapAds($ldapParams->isAds());
+                $configData->setLdapType($ldapParams->getType());
                 $configData->setLdapTlsEnabled($ldapParams->isTlsEnabled());
                 $configData->setLdapServer($ldapParams->getServer());
                 $configData->setLdapBase($ldapParams->getSearchBase());
@@ -128,7 +129,7 @@ final class ConfigLdapController extends SimpleControllerBase
             ->setGroup($this->request->analyzeString('ldap_group'))
             ->setBindDn($this->request->analyzeString('ldap_binduser'))
             ->setBindPass($this->request->analyzeEncrypted('ldap_bindpass'))
-            ->setAds($this->request->analyzeBool('ldap_ads_enabled', false))
+            ->setType($this->request->analyzeInt('ldap_server_type', LdapTypeInterface::LDAP_STD))
             ->setTlsEnabled($this->request->analyzeBool('ldap_tls_enabled', false));
     }
 

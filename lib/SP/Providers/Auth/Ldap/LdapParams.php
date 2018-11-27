@@ -58,9 +58,9 @@ final class LdapParams
      */
     protected $group;
     /**
-     * @var bool
+     * @var int
      */
-    protected $ads = false;
+    protected $type;
     /**
      * @var bool
      */
@@ -195,21 +195,21 @@ final class LdapParams
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isAds()
+    public function getType()
     {
-        return $this->ads;
+        return $this->type;
     }
 
     /**
-     * @param bool $ads
+     * @param int $type
      *
      * @return LdapParams
      */
-    public function setAds($ads)
+    public function setType($type)
     {
-        $this->ads = (bool)$ads;
+        $this->type = (int)$type;
 
         return $this;
     }

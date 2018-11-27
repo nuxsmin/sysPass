@@ -81,14 +81,6 @@ class PublicLinkListData extends PublicLinkData
     }
 
     /**
-     * @return string
-     */
-    public function getNotifyString()
-    {
-        return $this->isNotify() ? __u('ON') : __u('OFF');
-    }
-
-    /**
      * @return false|string
      */
     public function getDateAddFormat()

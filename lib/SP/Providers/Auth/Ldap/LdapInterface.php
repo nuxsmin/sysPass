@@ -52,11 +52,12 @@ interface LdapInterface
      * Buscar al usuario en un grupo.
      *
      * @param string $userDn
+     * @param string $userLogin
      * @param array  $groupsDn
      *
      * @return bool
      */
-    public function isUserInGroup(string $userDn, array $groupsDn): bool;
+    public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool;
 
     /**
      * Devolver el filtro para objetos del tipo grupo
