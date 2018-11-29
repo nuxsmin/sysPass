@@ -159,7 +159,7 @@ final class LdapActions
      *
      * @return bool|array
      */
-    protected function getResults($filter, array $attributes = null, $searchBase = false)
+    protected function getResults($filter, array $attributes = null, $searchBase = null)
     {
         $cookie = '';
         $results = [];
@@ -167,7 +167,7 @@ final class LdapActions
         do {
             ldap_control_paged_result($this->ldapHandler, 1000, false, $cookie);
 
-            if ($searchBase == false) {
+            if (empty($searchBase)) {
                 $searchBase = $this->ldapParams->getSearchBase();
             }
             $searchRes = @ldap_search($this->ldapHandler, $searchBase, $filter, $attributes);
