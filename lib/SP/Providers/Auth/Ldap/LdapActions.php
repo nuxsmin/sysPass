@@ -252,7 +252,7 @@ final class LdapActions
      * @return array
      * @throws LdapException
      */
-    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES, $searchBase = false)
+    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES, $searchBase = null)
     {
         $searchResults = $this->getResults($filter, $attributes, $searchBase);
 
