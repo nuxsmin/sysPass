@@ -148,6 +148,13 @@
                     </div>
                 </td>
             </tr>
+
+            <?php if ($_getvar('copyAction')): // Forces an update of permissions when copying from another account ?>
+                <input type="hidden" name="other_users_view_update" value="1">
+                <input type="hidden" name="other_users_edit_update" value="1">
+                <input type="hidden" name="other_usergroups_view_update" value="1">
+                <input type="hidden" name="other_usergroups_edit_update" value="1">
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($_getvar('editAction')
