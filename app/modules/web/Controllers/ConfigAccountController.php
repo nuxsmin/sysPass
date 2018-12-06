@@ -74,7 +74,7 @@ final class ConfigAccountController extends SimpleControllerBase
             }
 
             $configData->setFilesEnabled(true);
-            $configData->setFilesAllowedMime($this->request->analyzeArray('files_allowed_mimetypes'));
+            $configData->setFilesAllowedMime($this->request->analyzeArray('files_allowed_mimetypes', null, []));
             $configData->setFilesAllowedSize($filesAllowedSize);
 
             if ($configData->isFilesEnabled() === false) {
