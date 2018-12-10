@@ -205,18 +205,34 @@ final class TemporaryMasterPassService extends Service
     /**
      * @param $key
      *
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function sendByEmailForAllUsers($key)
+    {
+        $mailMessage = $this->getMessageForEmail($key);
+
+        $emails = array_map(function ($value) {
+            return $value->email;
+        }, $this->dic->get(UserService::class)->getUserEmailForAll());
+
+        $this->dic->get(MailService::class)
+            ->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+    }
+
+    /**
+     * @param $key
+     *
      * @return MailMessage
      */
     private function getMessageForEmail($key)
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(sprintf(__('Master Password %s'), AppInfoInterface::APP_NAME));
+        $mailMessage->setTitle(sprintf(__('%s Master Password'), AppInfoInterface::APP_NAME));
         $mailMessage->addDescription(__('A new sysPass master password has been generated, so next time you log into the application it will be requested.'));
-        $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(sprintf(__('The new Master Password is: %s'), $key));
-        $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->getMaxTime())));
-        $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__('Please, don\'t forget to log in as soon as possible to save the changes.'));
 
         return $mailMessage;

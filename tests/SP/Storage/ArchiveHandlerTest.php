@@ -35,7 +35,7 @@ use SP\Storage\File\ArchiveHandler;
  */
 class ArchiveHandlerTest extends TestCase
 {
-    const  ARCHIVE = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive';
+    const  ARCHIVE = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive';
 
     /**
      * @throws \SP\Core\Exceptions\CheckException
@@ -43,7 +43,7 @@ class ArchiveHandlerTest extends TestCase
      */
     public function testCompressFile()
     {
-        $archive = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_file';
+        $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_file';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
         $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
@@ -59,7 +59,7 @@ class ArchiveHandlerTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        $archive = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_file';
+        $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_file';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
         $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'non_existant_file');
@@ -71,7 +71,7 @@ class ArchiveHandlerTest extends TestCase
      */
     public function testCompressDirectory()
     {
-        $archive = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_dir';
+        $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_dir';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
         $handler->compressDirectory(RESOURCE_DIR);
@@ -87,7 +87,7 @@ class ArchiveHandlerTest extends TestCase
     {
         $this->expectException(\UnexpectedValueException::class);
 
-        $archive = TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_dir';
+        $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_dir';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
         $handler->compressDirectory(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'non_existant_dir');
@@ -99,6 +99,6 @@ class ArchiveHandlerTest extends TestCase
      */
     protected function setUp()
     {
-        array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . 'test_archive_*'));
+        array_map('unlink', glob(TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_*'));
     }
 }

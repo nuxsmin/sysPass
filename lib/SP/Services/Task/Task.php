@@ -26,6 +26,8 @@ namespace SP\Services\Task;
 
 use SP\Core\Context\SessionContext;
 use SP\Core\Messages\TaskMessage;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 /**
@@ -38,35 +40,31 @@ final class Task
     /**
      * @var string Nombre de la tarea
      */
-    protected $name;
+    private $name;
     /**
      * @var string ID de la tarea
      */
-    protected $taskId;
+    private $taskId;
     /**
-     * @var string Ruta y archivo salida de la tarea
+     * @var FileHandler
      */
-    protected $fileOut;
+    private $fileOut;
     /**
-     * @var string Ruta y archivo de la tarea
+     * @var FileHandler
      */
-    protected $fileTask;
-    /**
-     * @var resource Manejador del archivo
-     */
-    protected $fileHandler;
+    private $fileTask;
     /**
      * @var int Intérvalo en segundos
      */
-    protected $interval = 5;
+    private $interval = 5;
     /**
      * @var bool Si se ha inicializado para escribir en el archivo
      */
-    protected $initialized = false;
+    private $initialized = false;
     /**
      * @var string
      */
-    protected $uid;
+    private $uid;
 
     /**
      * Task constructor.
@@ -87,13 +85,13 @@ final class Task
      *
      * @return bool
      */
-    protected function checkFile()
+    private function checkFile()
     {
         $tempDir = Util::getTempDir();
 
         if ($tempDir !== false) {
-            $this->fileOut = $tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.out';
-            $this->fileTask = $tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.task';
+            $this->fileOut = new FileHandler($tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.out');
+            $this->fileTask = new FileHandler($tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.task');
 
             $this->deleteTaskFiles();
 
@@ -106,13 +104,12 @@ final class Task
     /**
      * Eliminar los archivos de la tarea no usados
      */
-    protected function deleteTaskFiles()
+    private function deleteTaskFiles()
     {
-        $filesOut = dirname($this->fileOut) . DIRECTORY_SEPARATOR . $this->taskId . '*.out';
-        $filesTask = dirname($this->fileOut) . DIRECTORY_SEPARATOR . $this->taskId . '*.task';
+        $filesOut = dirname($this->fileOut->getFile()) . DIRECTORY_SEPARATOR . $this->taskId . '*.out';
+        $filesTask = dirname($this->fileTask->getFile()) . DIRECTORY_SEPARATOR . $this->taskId . '*.task';
 
-        array_map('unlink', glob($filesOut));
-        array_map('unlink', glob($filesTask));
+        array_map('unlink', array_merge(glob($filesOut), glob($filesTask)));
     }
 
     /**
@@ -136,119 +133,68 @@ final class Task
     }
 
     /**
-     * Iniciar la tarea
-     *
-     * @return bool
-     */
-    public function start()
-    {
-        return $this->openFile();
-    }
-
-    /**
-     * Abrir el archivo para escritura
-     *
-     * @return  bool
-     */
-    protected function openFile()
-    {
-        if ($this->initialized === false
-            || !$this->fileHandler = fopen($this->fileOut, 'wb')
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Escribir el tado de la tarea a un archivo
      *
-     * @param TaskMessage $Message
+     * @param TaskMessage $message
      *
      * @return bool
      */
-    public function writeStatus(TaskMessage $Message)
+    public function writeStatusAndFlush(TaskMessage $message)
     {
-        if ($this->initialized === false
-            || !is_resource($this->fileHandler)
-        ) {
-            return false;
+        try {
+            if ($this->initialized === true) {
+                $this->fileOut->save($message->composeText());
+                return true;
+            }
+        } catch (FileException $e) {
+            processException($e);
         }
 
-        fwrite($this->fileHandler, $Message->composeText());
-
-        return true;
-    }
-
-    /**
-     * Escribir el tado de la tarea a un archivo
-     *
-     * @param TaskMessage $Message
-     *
-     * @return bool
-     */
-    public function writeStatusAndFlush(TaskMessage $Message)
-    {
-        return $this->initialized === true
-            && !is_resource($this->fileHandler)
-            && file_put_contents($this->fileOut, $Message->composeText()) !== false;
+        return false;
     }
 
     /**
      * Escribir un mensaje en el archivo de la tarea en formato JSON
      *
-     * @param TaskMessage $Message
-     *
-     * @return bool
+     * @param TaskMessage $message
      */
-    public function writeJsonStatusAndFlush(TaskMessage $Message)
+    public function writeJsonStatusAndFlush(TaskMessage $message)
     {
-        return $this->initialized === true
-            && !is_resource($this->fileHandler)
-            && file_put_contents($this->fileOut, $Message->composeJson()) !== false;
+        try {
+            if ($this->initialized === true) {
+                $this->fileOut->save($message->composeJson());
+            }
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 
     /**
      * Iniciar la tarea
-     *
-     * @param bool $startSession
-     *
-     * @return bool
      */
-    public function end($startSession = true)
+    public function end()
     {
-        if ($startSession) {
-            session_start();
+        try {
+            logger("End Task: {$this->name}");
+
+            $this->unregister();
+
+            $this->fileOut->delete();
+        } catch (FileException $e) {
+            processException($e);
         }
-
-        $this->deregister();
-
-        return $this->closeFile() && @unlink($this->fileOut);
     }
 
     /**
      * Desregistrar la tarea en la sesión
-     */
-    public function deregister()
-    {
-        logger('Deregister Task: ' . $this->name);
-
-        return unlink($this->fileTask);
-    }
-
-    /**
-     * Abrir el archivo para escritura
      *
-     * @return  bool
+     * @throws FileException
      */
-    protected function closeFile()
+    public function unregister()
     {
-        if ($this->initialized === true && is_resource($this->fileHandler)) {
-            return fclose($this->fileHandler);
-        }
+        logger("Unregister Task: {$this->name}");
 
-        return $this->initialized;
+        $this->fileTask->delete();
     }
 
     /**
@@ -280,31 +226,43 @@ final class Task
     }
 
     /**
-     * @return string
+     * @return FileHandler
      */
-    public function getFileOut()
+    public function getFileOut(): FileHandler
     {
         return $this->fileOut;
     }
 
     /**
-     * Registrar la tarea en la sesión.
-     *
-     * Es necesario bloquear la sesión para permitir la ejecución de otros scripts
-     *
-     * @param bool $lockSession Bloquear la sesión
+     * Register a task
      *
      * @return Task
+     * @throws \SP\Storage\File\FileException
      */
-    public function register($lockSession = true)
+    public function register()
     {
-        logger('Register Task: ' . $this->name);
+        logger("Register Task: {$this->name}");
 
-        file_put_contents($this->fileTask, serialize($this));
+        $this->fileTask->save(serialize($this));
 
-        if ($lockSession === true) {
-            SessionContext::close();
-        }
+        return $this;
+    }
+
+    /**
+     * Register a task
+     *
+     * Session is locked in order to allow other scripts execution
+     *
+     * @return Task
+     * @throws \SP\Storage\File\FileException
+     */
+    public function registerSession()
+    {
+        logger("Register Task (session): {$this->name}");
+
+        $this->fileTask->save(serialize($this));
+
+        SessionContext::close();
 
         return $this;
     }
@@ -312,16 +270,16 @@ final class Task
     /**
      * @return string
      */
-    public function getFileTask()
+    public function getUid(): string
     {
-        return $this->fileTask;
+        return $this->uid;
     }
 
     /**
-     * @return string
+     * @return FileHandler
      */
-    public function getUid()
+    public function getFileTask(): FileHandler
     {
-        return $this->uid;
+        return $this->fileTask;
     }
 }

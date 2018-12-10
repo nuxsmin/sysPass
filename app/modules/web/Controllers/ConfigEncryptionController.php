@@ -37,7 +37,6 @@ use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\Task\TaskFactory;
-use SP\Util\Util;
 
 /**
  * Class ConfigEncryptionController
@@ -52,9 +51,9 @@ final class ConfigEncryptionController extends SimpleControllerBase
      * @return bool
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Repositories\NoSuchItemException
      * @throws \SP\Services\ServiceException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function saveAction()
     {
@@ -70,41 +69,69 @@ final class ConfigEncryptionController extends SimpleControllerBase
         $taskId = $this->request->analyzeString('taskId');
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Master password updated'), [__u('Please, restart the session for update it')]);
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS_STICKY,
+                __u('Master password updated'),
+                [__u('Please, restart the session for update it')]
+            );
         }
 
         if (empty($newMasterPass) || empty($currentMasterPass)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Master password not entered'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Master password not entered')
+            );
         }
 
         if ($confirmPassChange === false) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The password update must be confirmed'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('The password update must be confirmed')
+            );
         }
 
         if ($newMasterPass === $currentMasterPass) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Passwords are the same'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Passwords are the same')
+            );
         }
 
         if ($newMasterPass !== $newMasterPassR) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Master passwords do not match'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Master passwords do not match')
+            );
         }
 
         if (!$mastePassService->checkMasterPassword($currentMasterPass)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The current master password does not match'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('The current master password does not match')
+            );
+        }
+
+        if (!$this->config->getConfigData()->isMaintenance()) {
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_WARNING,
+                __u('Maintenance mode not enabled'),
+                [__u('Please, emable it to avoid unwanted behavior from other sessions')]
+            );
         }
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_WARNING,
+                __u('Ey, this is a DEMO!!')
+            );
         }
 
         $configService = $this->dic->get(ConfigService::class);
 
         if (!$noAccountPassChange) {
-            Util::lockApp($this->session->getUserData()->getId(), 'masterpass');
-
-            $task = $taskId !== null ? TaskFactory::create(__FUNCTION__, $taskId) : null;
-
             try {
+                $task = $taskId !== null ? TaskFactory::create(__FUNCTION__, $taskId) : null;
+
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
                     $newMasterPass,
@@ -124,10 +151,8 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
                 return $this->returnJsonResponseException($e);
             } finally {
-                Util::unlockApp();
-
-                if ($task) {
-                    TaskFactory::end($task->getTaskId());
+                if (isset($task)) {
+                    TaskFactory::end($task);
                 }
             }
         } else {
@@ -193,12 +218,15 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
             $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
             $sendEmail = $this->configData->isMailEnabled()
-                && $this->request->analyzeBool('temporary_masterpass_email')
-                && $groupId > 0;
+                && $this->request->analyzeBool('temporary_masterpass_email');
 
             if ($sendEmail) {
                 try {
-                    $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
+                    if ($groupId > 0) {
+                        $temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
+                    } else {
+                        $temporaryMasterPassService->sendByEmailForAllUsers($key);
+                    }
 
                     return $this->returnJsonResponse(
                         JsonResponse::JSON_SUCCESS,

@@ -26,6 +26,8 @@ namespace SP\Services\Task;
 
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\File\FileException;
+use SP\Storage\File\FileHandler;
 use SP\Util\Util;
 
 /**
@@ -36,62 +38,65 @@ use SP\Util\Util;
 final class TaskService extends Service
 {
     /**
-     * Tiempo de espera en cada intento de inicialización
+     * Time for waiting to initialization
      */
     const STARTUP_WAIT_TIME = 5;
     /**
-     * Intentos de inicialización
+     * Initialization attempts
      */
     const STARTUP_WAIT_COUNT = 30;
+    /**
+     * @var \Closure
+     */
+    private $messagePusher;
+    /**
+     * @var Task
+     */
+    private $task;
+    /**
+     * @var string
+     */
+    private $taskDirectory;
+    /**
+     * @var string
+     */
+    private $taskId;
+    /**
+     * @var FileHandler
+     */
+    private $taskFile;
 
     /**
-     * @var Task Instancia de la tarea
-     */
-    protected $task;
-    /**
-     * @var string Archivo de bloqueo
-     */
-    protected $lockFile;
-    /**
-     * @var string Directorio de las tareas
-     */
-    protected $dir;
-    /**
-     * @var string ID de la tarea
-     */
-    protected $taskId;
-    /**
-     * @var string Archivo de la tarea
-     */
-    protected $taskFile;
-
-    /**
-     * Realizar acción
+     * Track task status
      *
-     * @param string $taskId
+     * @param string   $taskId
+     * @param \Closure $messagePusher
      *
      * @throws ServiceException
      */
-    public function run($taskId)
+    public function trackStatus($taskId, \Closure $messagePusher)
     {
         $this->taskId = $taskId;
-        $this->dir = Util::getTempDir();
+        $this->taskDirectory = Util::getTempDir();
+        $this->messagePusher = $messagePusher;
 
-        if ($this->dir === false || !$this->getLock()) {
+        if ($this->taskDirectory === false || !$this->getLock()) {
             throw new ServiceException(__('Unable to create the lock file'));
         }
 
-        $this->taskFile = $this->dir . DIRECTORY_SEPARATOR . $this->taskId . '.task';
-
         $count = 0;
 
-        while (!$this->checkTaskRegistered() || !$this->checkTaskFile()) {
-            if ($count >= self::STARTUP_WAIT_COUNT || !file_exists($this->lockFile)) {
-                logger('Aborting ...');
-
-                die(1);
+        while (!$this->checkTaskRegistered()
+            || !file_exists($this->task->getFileOut()->getFile())
+        ) {
+            if ($count >= self::STARTUP_WAIT_COUNT) {
+                throw new ServiceException(__('Task not set within wait time'));
             } else {
-                logger(sprintf('Waiting for task "%s" (%ds) ...', $taskId, (self::STARTUP_WAIT_COUNT - $count) * self::STARTUP_WAIT_TIME));
+                logger(sprintf(
+                    'Waiting for task "%s" (%ds) ...',
+                    $taskId,
+                    (self::STARTUP_WAIT_COUNT - $count) * self::STARTUP_WAIT_TIME
+                ));
 
                 $count++;
                 sleep(self::STARTUP_WAIT_TIME);
@@ -99,48 +104,42 @@ final class TaskService extends Service
         }
 
         $this->readTaskStatus();
-
-        die(0);
     }
 
     /**
-     * Obtener un bloqueo para la ejecución de la tarea
+     * Get a lock for task execution
      *
      * @return bool
      */
     private function getLock()
     {
-        $this->lockFile = $this->dir . DIRECTORY_SEPARATOR . $this->taskId . '.lock';
+        $lockFile = new FileHandler($this->taskDirectory . DIRECTORY_SEPARATOR . $this->taskId . '.lock');
 
-        if (file_exists($this->lockFile)) {
-            $timeout = self::STARTUP_WAIT_COUNT * self::STARTUP_WAIT_TIME;
-
-            if (filemtime($this->lockFile) + $timeout < time()) {
-                unlink($this->lockFile);
-
-                return $this->updateLock();
+        try {
+            if ($lockFile->getFileTime() + (self::STARTUP_WAIT_COUNT * self::STARTUP_WAIT_TIME) < time()) {
+                $lockFile->delete();
             }
+        } catch (FileException $e) {
+            processException($e);
+        }
+
+        try {
+            $lockFile->write(time());
+
+            return true;
+        } catch (FileException $e) {
+            processException($e);
 
             return false;
         }
-
-        return $this->updateLock();
     }
 
     /**
-     * Actualizar el tiempo del archivo de bloqueo
-     */
-    protected function updateLock()
-    {
-        return file_put_contents($this->lockFile, time()) !== false;
-    }
-
-    /**
-     * Comprueba si una tarea ha sido registrada en la sesión
+     * Check whether the task's file has been registered
      *
      * @return bool
      */
-    protected function checkTaskRegistered()
+    private function checkTaskRegistered()
     {
         if (is_object($this->task)) {
             logger('Task detected: ' . $this->task->getTaskId());
@@ -148,69 +147,78 @@ final class TaskService extends Service
             return true;
         }
 
-        if (file_exists($this->taskFile)) {
-            $task = file_get_contents($this->taskFile);
-
-            if ($task !== false) {
-                $this->task = unserialize($task);
-            }
+        try {
+            $this->taskFile = new FileHandler($this->taskDirectory . DIRECTORY_SEPARATOR . $this->taskId . '.task');
+            $this->taskFile->checkFileExists();
+            $this->task = unserialize($this->taskFile->readToString());
 
             return is_object($this->task);
+        } catch (FileException $e) {
+            return false;
         }
-
-        return false;
     }
 
     /**
-     *  Comprobar si el archivo de salida de la tarea existe
+     * Read a task status and send it back to the browser (messagePusher)
      */
-    protected function checkTaskFile()
+    private function readTaskStatus()
     {
-        return file_exists($this->task->getFileOut());
-    }
-
-    /**
-     * Leer el estado de una tarea y enviarlo
-     */
-    protected function readTaskStatus()
-    {
-        logger('Tracking task: ' . $this->task->getTaskId());
+        logger('Tracking task status: ' . $this->task->getTaskId());
 
         $id = 0;
         $failCount = 0;
-        $file = $this->task->getFileOut();
-        $interval = $this->task->getInterval();
+        $outputFile = $this->task->getFileOut();
 
-        $taskMessage = TaskFactory::createMessage($this->task->getTaskId(), __('Waiting for progress updating ...'));
+        while ($failCount <= self::STARTUP_WAIT_COUNT
+            && $this->checkTaskFile()
+        ) {
+            try {
+                $content = $outputFile->readToString();
 
-        while ($failCount <= self::STARTUP_WAIT_COUNT && file_exists($this->taskFile)) {
-            $content = file_get_contents($file);
+                if (!empty($content)) {
+                    $this->messagePusher->call($this, $id, $content);
+                    $id++;
+                } else {
+                    $message = TaskFactory::createMessage($this->task->getTaskId(), __('Waiting for progress updating ...'));
 
-            if (!empty($content)) {
-                $this->sendMessage($id, $content);
-                $id++;
-            } else {
-                logger($taskMessage->composeJson());
+                    logger($message->getTask());
 
-                $this->sendMessage($id, $taskMessage->composeJson());
+                    $this->messagePusher->call(
+                        $this,
+                        $id,
+                        $message->composeJson()
+                    );
+
+                    $failCount++;
+                }
+            } catch (FileException $e) {
+                processException($e);
+
+                $this->messagePusher->call(
+                    $this,
+                    $id,
+                    TaskFactory::createMessage($this->task->getTaskId(), $e->getMessage())
+                        ->composeJson()
+                );
+
                 $failCount++;
             }
 
-            sleep($interval);
+            sleep($this->task->getInterval());
         }
     }
 
     /**
-     * Enviar un mensaje
-     *
-     * @param $id
-     * @param $message
+     *  Check whether the task's output file exists
      */
-    protected function sendMessage($id, $message)
+    private function checkTaskFile()
     {
-        echo 'id: ', $id, PHP_EOL, 'data: ', $message, PHP_EOL, PHP_EOL;
+        try {
+            $this->taskFile->checkFileExists();
 
-        ob_flush();
-        flush();
+            return true;
+        } catch (FileException $e) {
+            return false;
+        }
     }
 }

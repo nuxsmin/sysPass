@@ -81,7 +81,7 @@ final class MailMessage extends MessageBase implements MessageInterface
 
         return $this->title
             . $delimiter
-            . $formatter->formatDescription($this->description)
+            . $this->getDescription($formatter, true)
             . $delimiter
             . implode($delimiter, $this->footer);
     }

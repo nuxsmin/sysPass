@@ -93,7 +93,6 @@ abstract class ModuleBase
     /**
      * Comprobar si el modo mantenimiento está activado
      * Esta función comprueba si el modo mantenimiento está activado.
-     * Devuelve un error 503 y un reintento de 120s al cliente.
      *
      * @param ContextInterface $context
      *
@@ -104,12 +103,11 @@ abstract class ModuleBase
         if ($this->configData->isMaintenance()) {
             Bootstrap::$LOCK = Util::getAppLock();
 
-            return ($this->request->isAjax()
-                    || (Bootstrap::$LOCK !== false
-                        && Bootstrap::$LOCK->userId > 0
-                        && $context->isLoggedIn()
-                        && Bootstrap::$LOCK->userId === $context->getUserData()->getId())
-                ) === false;
+            return !$this->request->isAjax()
+                || !(Bootstrap::$LOCK !== false
+                    && Bootstrap::$LOCK->userId > 0
+                    && $context->isLoggedIn()
+                    && Bootstrap::$LOCK->userId === $context->getUserData()->getId());
         }
 
         return false;

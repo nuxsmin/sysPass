@@ -278,7 +278,7 @@ final class ConfigManagerController extends ControllerBase
         $numAccounts = $this->dic->get(AccountService::class)->getTotalNumAccounts();
         $template->assign('numAccounts', $numAccounts);
 
-        if ($numAccounts > 500) {
+        if ($numAccounts > 100) {
             $template->assign('taskId', Task::genTaskId('masterpass'));
         }
 

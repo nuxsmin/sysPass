@@ -45,15 +45,15 @@ final class AccountCryptService extends Service
     /**
      * @var AccountService
      */
-    protected $accountService;
+    private $accountService;
     /**
      * @var AccountHistoryService
      */
-    protected $accountHistoryService;
+    private $accountHistoryService;
     /**
      * @var UpdateMasterPassRequest
      */
-    protected $request;
+    private $request;
 
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
@@ -72,9 +72,11 @@ final class AccountCryptService extends Service
             );
 
             if ($this->request->useTask()) {
-                $taskId = $this->request->getTask()->getTaskId();
+                $task = $this->request->getTask();
 
-                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Update Master Password')));
+                TaskFactory::update($task,
+                    TaskFactory::createMessage($task->getTaskId(), __u('Update Master Password'))
+                );
             }
 
             $eventMessage = $this->processAccounts($this->accountService->getAccountsPassData(), function ($request) {
@@ -101,7 +103,7 @@ final class AccountCryptService extends Service
      * @return EventMessage
      * @throws ServiceException
      */
-    protected function processAccounts(array $accounts, callable $passUpdater)
+    private function processAccounts(array $accounts, callable $passUpdater)
     {
         set_time_limit(0);
 
@@ -119,7 +121,7 @@ final class AccountCryptService extends Service
         $currentMasterPassHash = $this->request->getCurrentHash();
 
         if ($this->request->useTask()) {
-            $taskId = $this->request->getTask()->getTaskId();
+            $task = $this->request->getTask();
         }
 
         $eventMessage = EventMessage::factory();
@@ -134,13 +136,13 @@ final class AccountCryptService extends Service
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                if (isset($taskId)) {
-                    $taskMessage = TaskFactory::createMessage($taskId, __('Update Master Password'))
+                if (isset($task)) {
+                    $taskMessage = TaskFactory::createMessage($task->getTaskId(), __('Update Master Password'))
                         ->setMessage(sprintf(__('Accounts updated: %d / %d'), $counter, $numAccounts))
                         ->setProgress(round(($counter * 100) / $numAccounts, 2))
                         ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                    TaskFactory::update($taskId, $taskMessage);
+                    TaskFactory::update($task, $taskMessage);
 
                     logger($taskMessage->composeText());
                 } else {
@@ -213,9 +215,11 @@ final class AccountCryptService extends Service
             );
 
             if ($this->request->useTask()) {
-                $taskId = $this->request->getTask()->getTaskId();
+                $task = $this->request->getTask();
 
-                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Update Master Password (H)')));
+                TaskFactory::update($task,
+                    TaskFactory::createMessage($task->getTaskId(), __u('Update Master Password (H)'))
+                );
             }
 
             $eventMessage = $this->processAccounts($this->accountHistoryService->getAccountsPassData(), function ($request) {

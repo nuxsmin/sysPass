@@ -57,7 +57,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      */
     public static function setUpBeforeClass()
     {
-        array_map('unlink', glob(TMP_DIR . DIRECTORY_SEPARATOR . '*.xml'));
+        array_map('unlink', glob(TMP_PATH . DIRECTORY_SEPARATOR . '*.xml'));
 
         $dic = setupContext();
 
@@ -75,7 +75,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      */
     public function testDoExportWithoutPassword()
     {
-        self::$xmlExportService->doExport(TMP_DIR);
+        self::$xmlExportService->doExport(TMP_PATH);
 
         $this->assertFileExists(self::$xmlExportService->getExportFile());
 
@@ -126,7 +126,7 @@ class XmlExportServiceTest extends DatabaseTestCase
     {
         $password = PasswordUtil::randomPassword();
 
-        self::$xmlExportService->doExport(TMP_DIR, $password);
+        self::$xmlExportService->doExport(TMP_PATH, $password);
 
         $this->assertFileExists(self::$xmlExportService->getExportFile());
 

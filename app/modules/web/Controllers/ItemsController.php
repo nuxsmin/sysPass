@@ -117,7 +117,11 @@ final class ItemsController extends SimpleControllerBase
         $notifications = array_map(
             function ($notification) {
                 /** @@var $notification NotificationData */
-                return sprintf('(%s) - %s', $notification->getComponent(), Html::truncate($notification->getDescription(), 30));
+                return sprintf(
+                    '(%s) - %s',
+                    $notification->getComponent(),
+                    Html::truncate(Html::stripTags($notification->getDescription()), 30)
+                );
             }, $this->dic
             ->get(NotificationService::class)
             ->getAllActiveForUserId($this->session->getUserData()->getId()));
@@ -169,7 +173,7 @@ final class ItemsController extends SimpleControllerBase
      *
      * @return array
      */
-    protected function prepareItems(array $items)
+    private function prepareItems(array $items)
     {
         $outItems = [];
 

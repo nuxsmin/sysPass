@@ -24,6 +24,7 @@
 
 namespace SP\Util;
 
+use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 
 defined('APP_ROOT') || die();
@@ -42,7 +43,6 @@ final class Util
     public static function getTempDir()
     {
         $sysTmp = sys_get_temp_dir();
-        $appTmp = APP_PATH . DIRECTORY_SEPARATOR . 'temp';
         $file = 'syspass.test';
 
         $checkDir = function ($dir) use ($file) {
@@ -59,8 +59,8 @@ final class Util
             return false;
         };
 
-        if ($checkDir($appTmp)) {
-            return $appTmp;
+        if ($checkDir(TMP_PATH)) {
+            return TMP_PATH;
         }
 
         return $checkDir($sysTmp);
@@ -218,13 +218,16 @@ final class Util
      * @param int    $userId
      * @param string $subject
      *
-     * @return bool
+     * @throws \SP\Storage\File\FileException
      */
     public static function lockApp($userId, $subject)
     {
         $data = ['time' => time(), 'userId' => (int)$userId, 'subject' => $subject];
 
-        return file_put_contents(LOCK_FILE, json_encode($data));
+        $file = new FileHandler(LOCK_FILE);
+        $file->save(json_encode($data));
+
+        logger('Application locked out');
     }
 
     /**
@@ -234,23 +237,24 @@ final class Util
      */
     public static function unlockApp()
     {
+        logger('Application unlocked');
+
         return @unlink(LOCK_FILE);
     }
 
     /**
      * Comprueba si la aplicación está bloqueada
      *
-     * @return int
+     * @return mixed
      */
     public static function getAppLock()
     {
-        if (file_exists(LOCK_FILE)
-            && ($data = file_get_contents(LOCK_FILE)) !== false
-        ) {
-            return json_decode($data) ?: false;
+        try {
+            $file = new FileHandler(LOCK_FILE);
+            return json_decode($file->readToString());
+        } catch (FileException $e) {
+            return false;
         }
-
-        return false;
     }
 
     /**

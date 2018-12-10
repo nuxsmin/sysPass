@@ -208,12 +208,8 @@ sysPass.Requests = function (sysPassApp) {
      * @param callbackEnd
      */
     const getActionEvent = function (opts, callbackProgress, callbackEnd) {
-        let url = getUrl(opts.url);
-        url += "?" + $.param(opts.data);
+        const source = new EventSource(getUrl(opts.url));
 
-        const source = new EventSource(url);
-
-        //a message is received
         source.addEventListener("message", function (e) {
             const result = JSON.parse(e.data);
 
@@ -235,6 +231,7 @@ sysPass.Requests = function (sysPassApp) {
 
         source.addEventListener("error", function (e) {
             log.error("getActionEvent:Error occured");
+
             source.close();
         });
 

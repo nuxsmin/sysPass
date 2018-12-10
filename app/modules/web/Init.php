@@ -60,7 +60,15 @@ final class Init extends ModuleBase
      * List of controllers that don't need to perform fully initialization
      * like: install/database checks, session/event handlers initialization
      */
-    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status', 'upgrade', 'error'];
+    const PARTIAL_INIT = [
+        'resource',
+        'install',
+        'bootstrap',
+        'status',
+        'upgrade',
+        'error',
+        'task'
+    ];
     /**
      * List of controllers that don't need to update the user's session activity
      */

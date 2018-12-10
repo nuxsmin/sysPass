@@ -77,10 +77,10 @@ final class CustomFieldCryptService extends Service
         );
 
         if ($this->request->useTask()) {
-            $taskId = $this->request->getTask()->getTaskId();
+            $task = $this->request->getTask();
 
-            TaskFactory::update($taskId,
-                TaskFactory::createMessage($taskId, __('Update Master Password'))
+            TaskFactory::update($task,
+                TaskFactory::createMessage($task->getTaskId(), __('Update Master Password'))
                     ->setMessage(__('Updating encrypted data')));
         }
 

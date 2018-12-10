@@ -36,7 +36,7 @@ use SP\Storage\File\FileException;
  */
 class FileCacheTest extends TestCase
 {
-    const CACHE_FILE = TMP_DIR . DIRECTORY_SEPARATOR . 'test.cache';
+    const CACHE_FILE = TMP_PATH . DIRECTORY_SEPARATOR . 'test.cache';
 
     private static $data;
 

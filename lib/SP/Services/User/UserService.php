@@ -391,6 +391,20 @@ final class UserService extends Service
     }
 
     /**
+     * Obtener el email de los usuarios de un grupo
+     *
+     * @return array
+     * @throws ConstraintException
+     * @throws QueryException
+     *
+     * @TODO create unit test
+     */
+    public function getUserEmailForAll()
+    {
+        return $this->userRepository->getUserEmail()->getDataAsArray();
+    }
+
+    /**
      * Returns the usage of the given user's id
      *
      * @param int $id

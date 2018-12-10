@@ -24,11 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\Container;
 use Klein\Klein;
-use SP\Core\Context\SessionContext;
+use Psr\Container\ContainerInterface;
 use SP\Services\ServiceException;
-use SP\Services\Task\Task;
 use SP\Services\Task\TaskFactory;
 use SP\Services\Task\TaskService;
 
@@ -40,41 +38,46 @@ use SP\Services\Task\TaskService;
 final class TaskController
 {
     /**
-     * @var Container
+     * @var TaskService
      */
-    private $container;
+    private $taskService;
+    /**
+     * @var Klein
+     */
+    private $router;
 
     /**
      * TaskController constructor.
      *
-     * @param Container $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param ContainerInterface $container
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->router = $container->get(Klein::class);
+        $this->taskService = $container->get(TaskService::class);
     }
 
     /**
      * @param string $taskId
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function runTaskAction($taskId)
+    public function trackStatusAction($taskId)
     {
-        SessionContext::close();
+        $response = $this->router->response();
+        $response->header('Content-Type', 'text/event-stream');
+        $response->header('Cache-Control', 'no-store, no-cache');
+        $response->header('Access-Control-Allow-Origin', '*');
+        $response->send(true);
 
-        $router = $this->container->get(Klein::class);
-        $router->response()->header('Content-Type', 'text/event-stream');
-        $router->response()->header('Cache-Control', 'no-store, no-cache');
-        $router->response()->header('Access-Control-Allow-Origin', '*');
-        $router->response()->send(true);
+        ob_end_flush();
 
         try {
-            $this->container->get(TaskService::class)->run($taskId);
+            $this->taskService->trackStatus($taskId,
+                function ($id, $message) {
+                    echo 'id: ', $id, PHP_EOL, 'data: ', $message, PHP_EOL, PHP_EOL;
+
+                    ob_flush();
+                    flush();
+                });
         } catch (ServiceException $e) {
             processException($e);
         }
@@ -82,13 +85,26 @@ final class TaskController
 
     /**
      * @param $taskId
+     *
+     * @throws \SP\Storage\File\FileException
      */
     public function testTaskAction($taskId)
     {
-        $task = TaskFactory::create($taskId, Task::genTaskId($taskId));
-
-        TaskFactory::update($task->getTaskId(), TaskFactory::createMessage($task->getTaskId(), 'Test Task'));
+        $task = TaskFactory::create($taskId, $taskId);
 
         echo $task->getTaskId();
+
+        $count = 0;
+
+        while ($count < 60) {
+            TaskFactory::update($task,
+                TaskFactory::createMessage($task->getTaskId(), "Test Task $count")
+            );
+
+            sleep(1);
+            $count++;
+        }
+
+        TaskFactory::end($task);
     }
 }

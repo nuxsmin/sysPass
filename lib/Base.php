@@ -50,6 +50,7 @@ define('MODULES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'modules');
 define('LOCALES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'locales');
 define('BACKUP_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'backup');
 define('CACHE_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'cache');
+define('TMP_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'temp');
 
 // Setup other paths
 define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');

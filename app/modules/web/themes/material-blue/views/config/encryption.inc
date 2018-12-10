@@ -8,7 +8,7 @@
 ?>
 
 <form method="post" name="frmCrypt" id="frmCrypt" class="form-action"
-      data-onsubmit="config/save"
+      data-onsubmit="config/masterpass"
       data-action-route="configEncryption/save"
       data-hash="">
 

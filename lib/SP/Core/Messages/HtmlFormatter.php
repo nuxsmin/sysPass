@@ -84,9 +84,9 @@ final class HtmlFormatter implements FormatterInterface
     public function formatDescription(array $text, bool $translate = false): string
     {
         return implode(
-            '<br>',
+            '',
             array_map(function ($value) use ($translate) {
-                return '<strong>' . ($translate ? __($value) : $value) . '</strong>';
+                return '<div class="description-line">' . ($translate ? __($value) : $value) . '</div>';
             }, $text));
     }
 }

@@ -25,6 +25,7 @@
 namespace SP\Services\Task;
 
 use SP\Core\Messages\TaskMessage;
+use SP\Storage\File\FileException;
 
 /**
  * Class TaskFactory
@@ -44,11 +45,20 @@ final class TaskFactory
      * @param string $name
      * @param string $id
      *
+     * @param bool   $hasSession
+     *
      * @return Task
+     * @throws FileException
      */
-    public static function create($name, $id)
+    public static function create($name, $id, $hasSession = true)
     {
-        return self::add((new Task($name, $id))->register());
+        $task = self::add((new Task($name, $id)));
+
+        if ($hasSession) {
+            return $task->registerSession();
+        }
+
+        return $task->register();
     }
 
     /**
@@ -58,25 +68,26 @@ final class TaskFactory
      */
     private static function add(Task $task)
     {
-        if (isset(self::$tasks[$task->getTaskId()])) {
-            throw new \RuntimeException('Task already registered');
+        if (!isset(self::$tasks[$task->getUid()])) {
+            self::$tasks[$task->getUid()] = $task;
+
+            return $task;
         }
 
-        self::$tasks[$task->getTaskId()] = $task;
-
-        return $task;
+        throw new \RuntimeException('Task already registered');
     }
 
     /**
      * Finalizar la tarea
      *
-     * @param $id
+     * @param Task $task
      */
-    public static function end($id)
+    public static function end(Task $task)
     {
-        self::get($id)->end(false);
+        self::get($task->getUid())
+            ->end();
 
-        self::delete($id);
+        self::delete($task->getUid());
     }
 
     /**
@@ -88,9 +99,9 @@ final class TaskFactory
     {
         if (isset(self::$tasks[$id])) {
             return self::$tasks[$id];
-        } else {
-            throw new \RuntimeException('Task not registered');
         }
+
+        throw new \RuntimeException('Task not registered');
     }
 
     /**
@@ -98,11 +109,9 @@ final class TaskFactory
      */
     private static function delete($id)
     {
-        if (!isset(self::$tasks[$id])) {
-            throw new \RuntimeException('Task not registered');
+        if (isset(self::$tasks[$id])) {
+            unset(self::$tasks[$id]);
         }
-
-        unset(self::$tasks[$id]);
     }
 
     /**
@@ -119,11 +128,12 @@ final class TaskFactory
     /**
      * Enviar un mensaje de actualización a la tarea
      *
-     * @param string      $id
+     * @param Task        $task
      * @param TaskMessage $taskMessage
      */
-    public static function update($id, TaskMessage $taskMessage)
+    public static function update(Task $task, TaskMessage $taskMessage)
     {
-        self::get($id)->writeJsonStatusAndFlush($taskMessage);
+        self::get($task->getUid())
+            ->writeJsonStatusAndFlush($taskMessage);
     }
 }

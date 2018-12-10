@@ -34,6 +34,7 @@ use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\File\FileHandler;
+use SP\Util\Util;
 
 /**
  * Class ConfigGeneral
@@ -169,7 +170,11 @@ final class ConfigGeneralController extends SimpleControllerBase
         return $this->saveConfig(
             $configData,
             $this->config,
-            function () use ($eventMessage) {
+            function () use ($eventMessage, $configData) {
+                if ($configData->isMaintenance()) {
+                    Util::lockApp($this->session->getUserData()->getId(), 'config');
+                }
+
                 $this->eventDispatcher->notifyEvent(
                     'save.config.general',
                     new Event($this, $eventMessage)

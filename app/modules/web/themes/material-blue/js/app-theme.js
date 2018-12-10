@@ -258,7 +258,7 @@ sysPass.Theme = function (log) {
 
             // Crear evento para mostrar clave generada/introducida
             $icon.on("mouseover", function () {
-                $icon.attr("title", $this.val());
+                $icon.attr("title", $this[0].dataset.pass);
             });
         });
     };

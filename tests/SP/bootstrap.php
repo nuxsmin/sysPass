@@ -38,14 +38,16 @@ define('APP_MODULE', 'tests');
 
 define('APP_ROOT', dirname(__DIR__, 2));
 define('TEST_ROOT', dirname(__DIR__));
-define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-define('TMP_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+
+define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
-define('LOG_FILE', TMP_DIR . DIRECTORY_SEPARATOR . 'test.log');
+define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
+
+define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
@@ -57,7 +59,7 @@ print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
 print 'SELF_IP_ADDRESS=' . SELF_IP_ADDRESS . PHP_EOL;
 
 // Setup directories
-recreateDir(TMP_DIR);
+recreateDir(TMP_PATH);
 recreateDir(CACHE_PATH);
 
 if (is_dir(CONFIG_PATH)

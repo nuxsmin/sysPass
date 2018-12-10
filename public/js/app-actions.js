@@ -646,15 +646,15 @@ sysPass.Actions = function (log) {
                     onClick: function (e) {
                         let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
+                        const opts = sysPassApp.requests.getRequestOpts();
 
                         if (taskId) {
+                            opts.useFullLoading = true;
                             taskRunner = task(taskId);
                         }
 
-                        const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
                         opts.method = "get";
-                        opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
@@ -681,7 +681,10 @@ sysPass.Actions = function (log) {
 
             const opts = sysPassApp.requests.getRequestOpts();
             opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: "status/checkRelease", isAjax: 1});
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {
+                r: "status/checkRelease",
+                isAjax: 1
+            });
             opts.timeout = 10000;
             opts.useLoading = false;
 
@@ -787,7 +790,9 @@ sysPass.Actions = function (log) {
             tabs.save($obj);
         },
         masterpass: function ($obj) {
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[59] + "</p></div>";
+            log.info("config:masterpass");
+
+            const atext = `<div id="alert"><p id="alert-text">${sysPassApp.config.LANG[59]}</p></div>`;
 
             mdlDialog().show({
                 text: atext,
@@ -806,15 +811,15 @@ sysPass.Actions = function (log) {
                     onClick: function (e) {
                         let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
+                        const opts = sysPassApp.requests.getRequestOpts();
 
                         if (taskId) {
+                            opts.useFullLoading = true;
                             taskRunner = task(taskId);
                         }
 
-                        const opts = sysPassApp.requests.getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
-                        opts.useFullLoading = !!taskId;
-                        opts.data = $obj.serialize();
+                        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
+                        opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
@@ -1778,21 +1783,24 @@ sysPass.Actions = function (log) {
     };
 
     const task = function (taskId) {
-        const $taskStatus = $("#taskStatus");
+        log.info("task:" + taskId);
 
+        const $taskStatus = $("#taskStatus");
         $taskStatus.css("display", "block");
         $taskStatus.empty().html(sysPassApp.config.LANG[62]);
 
         const opts = sysPassApp.requests.getRequestOpts();
         opts.method = "get";
-        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: ["task/runTask", taskId],});
+        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: ["task/trackStatus", taskId]});
 
-        return sysPassApp.requests.getActionEvent(opts, function (result) {
-            let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
-            text += "<br>" + sysPassApp.config.LANG[62];
+        return sysPassApp.requests.getActionEvent(opts,
+            function (result) {
+                const text = `${result.task} - ${result.message} - ${result.time} - ${result.progress}%<br>${sysPassApp.config.LANG[62]}`;
 
-            $taskStatus.empty().html(text);
-        });
+                log.info(text);
+
+                $taskStatus.empty().html(text);
+            });
     };
 
     const track = {

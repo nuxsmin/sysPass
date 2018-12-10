@@ -55,11 +55,13 @@ final class SessionContext extends ContextBase
      */
     public static function close()
     {
-        logger('Session closed');
+        if (!self::$isLocked) {
+            logger('Session closed');
 
-        session_write_close();
+            session_write_close();
 
-        self::$isLocked = true;
+            self::$isLocked = true;
+        }
     }
 
     /**
