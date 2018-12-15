@@ -42,7 +42,6 @@ use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\DBStorageInterface;
-use SP\Util\PasswordUtil;
 use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
@@ -229,14 +228,9 @@ final class Installer extends Service
 
     /**
      * Setup sysPass config data
-     *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function setupConfig()
     {
-        // Generate a random salt that is used to salt the local user passwords
-        $this->configData->setPasswordSalt(PasswordUtil::generateRandomBytes(30));
-
         // Sets version and remove upgrade key
         $this->configData->setConfigVersion(VersionUtil::getVersionStringNormalized());
         $this->configData->setDatabaseVersion(VersionUtil::getVersionStringNormalized());

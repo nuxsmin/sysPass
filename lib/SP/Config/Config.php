@@ -111,13 +111,21 @@ final class Config
                         $this->configData = $this->loadConfigFromFile();
                         $this->fileCache->save($this->configData);
                     } else {
-                        $this->saveConfig(new ConfigData(), false);
+                        $configData = new ConfigData();
+
+                        // Generate a random salt that is used to add more seed to some passwords
+                        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes(30));
+
+                        $this->saveConfig($configData, false);
+
+                        logger('Config file created', 'INFO');
                     }
 
                     logger('Config loaded');
                 }
 
                 self::$timeUpdated = $this->configData->getConfigDate();
+
                 $this->configLoaded = true;
             } catch (\Exception $e) {
                 processException($e);
