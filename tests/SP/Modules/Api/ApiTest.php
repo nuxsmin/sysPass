@@ -41,7 +41,7 @@ class ApiTest extends WebTestCase
 
     public function testInvalidRequest()
     {
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL));
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL), 404);
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
@@ -82,11 +82,10 @@ class ApiTest extends WebTestCase
             'id' => 1
         ];
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data), 404);
 
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
-        $this->assertEquals('Oops, it looks like this content does not exist...', $result->error->message);
         $this->assertEquals(JsonRpcResponse::METHOD_NOT_FOUND, $result->error->code);
         $this->assertNull($result->error->data);
         $this->assertEquals(1, $result->id);

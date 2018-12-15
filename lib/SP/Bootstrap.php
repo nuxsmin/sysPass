@@ -150,6 +150,8 @@ final class Bootstrap
             '@/api\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
+                    logger('API route');
+
                     $apiRequest = self::$container->get(ApiRequest::class);
 
                     list($controller, $action) = explode('/', $apiRequest->getMethod());
@@ -180,15 +182,19 @@ final class Bootstrap
                     $response->headers()->set('Content-type', 'application/json; charset=utf-8');
                     return $response->body(JsonRpcResponse::getResponseException($e, 0));
 
+                } finally {
+                    $this->router->skipRemaining();
                 }
             }
         );
 
         // Manage requests for web module
         $this->router->respond(['GET', 'POST'],
-            '@/index\.php',
+            '@(?!/api\.php)',
             function ($request, $response, $service) use ($oops) {
                 try {
+                    logger('WEB route');
+
                     /** @var \Klein\Request $request */
                     $route = Filter::getString($request->param('r', 'index/index'));
 

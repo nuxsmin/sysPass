@@ -62,14 +62,16 @@ abstract class WebTestCase extends TestCase
     /**
      * @param Client $client
      *
+     * @param int    $httpCode
+     *
      * @return \stdClass
      */
-    protected static function checkAndProcessJsonResponse(Client $client)
+    protected static function checkAndProcessJsonResponse(Client $client, $httpCode = 200)
     {
         /** @var Response $response */
         $response = $client->getResponse();
 
-        self::assertEquals(200, $response->getStatus());
+        self::assertEquals($httpCode, $response->getStatus());
         self::assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
 
         return json_decode($response->getContent());
