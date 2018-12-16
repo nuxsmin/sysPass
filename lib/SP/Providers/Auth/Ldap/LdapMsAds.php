@@ -116,7 +116,7 @@ final class LdapMsAds extends Ldap
             return true;
         }
 
-        return $this->checkUserInGroupByFilter($userLogin);
+        return $this->checkUserInGroupByFilter($userLogin, $userDn);
     }
 
     /**
@@ -125,17 +125,14 @@ final class LdapMsAds extends Ldap
      * @return bool
      * @throws LdapException
      */
-    private function checkUserInGroupByFilter(string $userLogin): bool
+    private function checkUserInGroupByFilter(string $userLogin, string $userDn): bool
     {
         $groupDn = $this->getGroupDn();
-
-        $filter = '(&(|'
-            . LdapUtil::getAttributesForFilter(self::FILTER_USER_ATTRIBUTES, $userLogin)
-            . ')(|'
+        $filter = '(|'
             . LdapUtil::getAttributesForFilter(self::FILTER_GROUP_ATTRIBUTES, $groupDn)
-            . '))';
+            . ')';
 
-        $searchResults = $this->ldapActions->getObjects($filter, ['dn']);
+        $searchResults = $this->ldapActions->getObjects($filter, ['dn'], $userDn);
 
         if (isset($searchResults['count'])
             && (int)$searchResults['count'] === 0

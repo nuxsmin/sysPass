@@ -159,7 +159,7 @@ final class LdapActions
      *
      * @return bool|array
      */
-    protected function getResults($filter, array $attributes = null)
+    protected function getResults($filter, array $attributes = null, $searchBase = null)
     {
         $cookie = '';
         $results = [];
@@ -167,8 +167,11 @@ final class LdapActions
         do {
             ldap_control_paged_result($this->ldapHandler, 1000, false, $cookie);
 
-            $searchRes = @ldap_search($this->ldapHandler, $this->ldapParams->getSearchBase(), $filter, $attributes);
-
+            if (empty($searchBase)) {
+                $searchBase = $this->ldapParams->getSearchBase();
+            }
+            $searchRes = @ldap_search($this->ldapHandler, $searchBase, $filter, $attributes);
+            
             if (!$searchRes) {
                 return false;
             }
@@ -249,9 +252,9 @@ final class LdapActions
      * @return array
      * @throws LdapException
      */
-    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES)
+    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES, $searchBase = null)
     {
-        $searchResults = $this->getResults($filter, $attributes);
+        $searchResults = $this->getResults($filter, $attributes, $searchBase);
 
         if ($searchResults === false) {
             $this->eventDispatcher->notifyEvent('ldap.search',
