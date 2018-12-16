@@ -316,10 +316,17 @@ body.userpassreset {
         flex-grow: 1; }
 
 #content .pager {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  align-content: space-between;
+  flex-wrap: wrap;
   width: 100%;
   margin-top: 15px;
   padding: .5em;
-  vertical-align: middle;
   font-size: 11px;
   color: #999;
   background-color: #fcfcfc; }
@@ -330,13 +337,6 @@ body.userpassreset {
     margin-left: 5px;
     font-size: 12px;
     color: #999; }
-  #content .pager > div {
-    display: inline-block;
-    width: 49%; }
-  #content .pager .pager-left {
-    text-align: left; }
-  #content .pager .pager-right {
-    text-align: right; }
 #content #title {
   width: 100%;
   padding: 7px;
@@ -1270,6 +1270,9 @@ div.tag-list-box span.tag, div.tags-box span.tag {
   #content .mdl-tabs__tab-bar {
     flex-wrap: wrap;
     height: auto; }
+  #content .pager {
+    text-align: center;
+    flex-direction: column; }
 
   #box-popup h2 > .btn-popup-close {
     display: inline-block; }
