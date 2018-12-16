@@ -64,7 +64,7 @@ class SPException extends \Exception
         $this->type = $type;
         $this->hint = $hint;
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, (int)$code, $previous);
     }
 
     /**

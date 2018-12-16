@@ -271,7 +271,7 @@ class InstallerTest extends TestCase
         $params->setDbAdminUser('syspass_user');
         $params->setDbAdminPass($pass);
         $params->setDbName(self::DB_NAME);
-        $params->setDbHost(getenv('DB_SERVER'));
+        $params->setDbHost($host);
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');

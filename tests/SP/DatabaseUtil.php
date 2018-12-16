@@ -47,7 +47,12 @@ class DatabaseUtil
 
         $conn = self::getConnection();
         $conn->query(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
-        $conn->query(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+
+        // Long hostname returned on Travis CI
+        if (getenv('TRAVIS') === false) {
+            $conn->query(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+        }
+
         $conn->query(sprintf($query, $database, $user, $host, $pass));
     }
 
@@ -95,7 +100,7 @@ class DatabaseUtil
      *
      * @throws \SP\Storage\Database\DatabaseException
      */
-    public static function createDatabase($database)
+    public static function createDataase($database)
     {
         self::getConnection()
             ->query(sprintf('CREATE DATABASE `%s`', $database));
