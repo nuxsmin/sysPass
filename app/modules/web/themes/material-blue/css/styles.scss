@@ -1457,8 +1457,12 @@ div.tag-list-box, div.tags-box {
     }
 
     .pager {
-      text-align: center;
-      flex-direction: column;
+      flex-direction: column-reverse;
+
+      > div {
+        text-align: center;
+        width: 100%;
+      }
     }
   }
 

@@ -300,25 +300,30 @@ sysPass.Triggers = function (log) {
                 return;
             }
 
-            $frmSearch.find("input[name='search']").on("keyup", function (e) {
-                e.preventDefault();
+            // $frmSearch.find("input[name='search']")
+            //     .on("keyup", function (e) {
+            //         e.preventDefault();
+            //
+            //         if (e.key === "Enter"
+            //             || e.which === 13
+            //         ) {
+            //             $frmSearch.submit();
+            //         }
+            //     });
 
-                if (e.which === 13 || e.keyCode === 13) {
+            $frmSearch.find("select, #rpp")
+                .on("change", function () {
                     $frmSearch.submit();
-                }
-            });
+                });
 
-            $frmSearch.find("select, #rpp").on("change", function () {
-                $frmSearch.submit();
-            });
+            $frmSearch.find("button.btn-clear")
+                .on("click", function (e) {
+                    e.preventDefault();
 
-            $frmSearch.find("button.btn-clear").on("click", function (e) {
-                e.preventDefault();
+                    $frmSearch.find("input[name=\"searchfav\"]").val(0);
 
-                $frmSearch.find("input[name=\"searchfav\"]").val(0);
-
-                $frmSearch[0].reset();
-            });
+                    $frmSearch[0].reset();
+                });
 
             $("#globalSearch").click(function () {
                     const val = $(this).prop("checked") == true ? 1 : 0;

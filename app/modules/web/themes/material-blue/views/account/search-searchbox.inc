@@ -17,7 +17,8 @@ $searchFavorites = $_getvar('searchFavorites');
 $pager = $data->getPager();
 ?>
 <div id="searchbox" class="round5 shadow">
-    <form method="post" name="frmSearch" id="frmSearch" class="form-action" data-onsubmit="account/search"
+    <form method="post" name="frmSearch" id="frmSearch" class="form-action"
+          data-onsubmit="account/search"
           data-action-route="<?php echo $_getvar('searchRoute'); ?>">
         <div class="search-text">
             <div class="mdl-textfield mdl-js-textfield">
@@ -118,6 +119,8 @@ $pager = $data->getPager();
                 <?php endforeach; ?>
             </select>
         </div>
+
+        <input type="submit" style="display: none"/>
 
         <input type="hidden" name="start" value="<?php echo $pager->getLimitStart(); ?>">
         <input type="hidden" name="skey" value="<?php echo $pager->getSortKey(); ?>"/>

@@ -1271,8 +1271,10 @@ div.tag-list-box span.tag, div.tags-box span.tag {
     flex-wrap: wrap;
     height: auto; }
   #content .pager {
-    text-align: center;
-    flex-direction: column; }
+    flex-direction: column-reverse; }
+    #content .pager > div {
+      text-align: center;
+      width: 100%; }
 
   #box-popup h2 > .btn-popup-close {
     display: inline-block; }
