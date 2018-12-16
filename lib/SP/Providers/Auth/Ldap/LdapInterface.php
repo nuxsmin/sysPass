@@ -32,6 +32,8 @@ namespace SP\Providers\Auth\Ldap;
  */
 interface LdapInterface
 {
+    const PAGE_SIZE = 500;
+
     /**
      * Obtener el filtro para buscar el usuario
      *

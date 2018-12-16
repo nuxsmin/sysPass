@@ -22,6 +22,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/** @noinspection PhpComposerExtensionStubsInspection */
+
 namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\Event;
@@ -165,9 +167,19 @@ final class LdapActions
         $results = [];
 
         do {
-            ldap_control_paged_result($this->ldapHandler, 1000, false, $cookie);
+            ldap_control_paged_result(
+                $this->ldapHandler,
+                LdapInterface::PAGE_SIZE,
+                false,
+                $cookie
+            );
 
-            $searchRes = @ldap_search($this->ldapHandler, $this->ldapParams->getSearchBase(), $filter, $attributes);
+            $searchRes = @ldap_search(
+                $this->ldapHandler,
+                $this->ldapParams->getSearchBase(),
+                $filter,
+                $attributes
+            );
 
             if (!$searchRes) {
                 return false;
@@ -181,8 +193,12 @@ final class LdapActions
 
             $results = array_merge($results, $entries);
 
-            ldap_control_paged_result_response($this->ldapHandler, $searchRes, $cookie);
-        } while (!empty($cookie));
+            ldap_control_paged_result_response(
+                $this->ldapHandler,
+                $searchRes,
+                $cookie
+            );
+        } while ($cookie !== null && $cookie != '');
 
         return $results;
     }
