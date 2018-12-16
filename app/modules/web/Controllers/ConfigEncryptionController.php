@@ -115,7 +115,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
             return $this->returnJsonResponse(
                 JsonResponse::JSON_WARNING,
                 __u('Maintenance mode not enabled'),
-                [__u('Please, emable it to avoid unwanted behavior from other sessions')]
+                [__u('Please, enable it to avoid unwanted behavior from other sessions')]
             );
         }
 

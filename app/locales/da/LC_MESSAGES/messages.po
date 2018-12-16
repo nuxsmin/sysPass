@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-11-25 20:26+0100\n"
+"POT-Creation-Date: 2018-12-16 13:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: \n"
@@ -136,8 +136,8 @@ msgstr "Kodeord vist"
 #: app/modules/web/Controllers/AccountController.php:936
 #: app/modules/web/Controllers/UserController.php:445
 #: app/modules/web/Controllers/UserController.php:449
-#: app/modules/web/Controllers/UserPassResetController.php:198
-#: app/modules/web/Controllers/UserPassResetController.php:202
+#: app/modules/web/Controllers/UserPassResetController.php:214
+#: app/modules/web/Controllers/UserPassResetController.php:222
 msgid "Password updated"
 msgstr "Kodeord skiftet"
 
@@ -145,7 +145,6 @@ msgstr "Kodeord skiftet"
 #: app/modules/api/Controllers/AccountController.php:194
 #: app/modules/web/Controllers/AccountController.php:831
 #: app/modules/web/Controllers/AccountController.php:842
-#, fuzzy
 msgid "Account created"
 msgstr "Konto tilføjet"
 
@@ -299,7 +298,7 @@ msgstr "Send detaljer i svaret"
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:52
 #: app/modules/web/themes/material-blue/views/login/index.inc:35
 #: app/modules/web/themes/material-blue/views/login/index.inc:98
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:27
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:29
 msgid "Password"
 msgstr "Kodeord"
 
@@ -365,7 +364,7 @@ msgstr "Noter til kontoen"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:195
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:202
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
 msgid "Private Account"
@@ -373,7 +372,7 @@ msgstr "Privat konto"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:211
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:218
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
 msgid "Private Account for Group"
 msgstr "Privat konto for gruppen"
@@ -405,7 +404,7 @@ msgstr "Group Id"
 #: app/modules/api/Controllers/Help/ClientHelp.php:81
 #: app/modules/api/Controllers/Help/TagHelp.php:77
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:81
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:26
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:27
 #, fuzzy
 msgid "Text to search for"
 msgstr "Søgetekst"
@@ -598,13 +597,13 @@ msgid "HTTPS"
 msgstr "HTTPS"
 
 #: app/modules/web/Controllers/AccountController.php:252
-#: lib/SP/DataModel/PublicLinkListData.php:88
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
 msgstr "TIL"
 
 #: app/modules/web/Controllers/AccountController.php:252
-#: lib/SP/DataModel/PublicLinkListData.php:88
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 msgid "OFF"
 msgstr "FRA"
 
@@ -688,8 +687,8 @@ msgstr "En beskrivelse er påkrævet"
 #: app/modules/web/Controllers/AccountController.php:1062
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:44
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:46
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:47
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:49
 msgid "Request"
 msgstr "Forespørgsel"
 
@@ -742,8 +741,8 @@ msgstr "Fil vist"
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
-#: app/modules/web/Controllers/ConfigGeneralController.php:202
-#: app/modules/web/Controllers/ConfigGeneralController.php:243
+#: app/modules/web/Controllers/ConfigGeneralController.php:207
+#: app/modules/web/Controllers/ConfigGeneralController.php:248
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
@@ -758,8 +757,8 @@ msgstr "Filen er ikke understøttet som forhåndsvisning"
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
-#: app/modules/web/Controllers/ConfigGeneralController.php:201
-#: app/modules/web/Controllers/ConfigGeneralController.php:242
+#: app/modules/web/Controllers/ConfigGeneralController.php:206
+#: app/modules/web/Controllers/ConfigGeneralController.php:247
 #: app/config/strings.js.inc:97
 msgid "File downloaded"
 msgstr "Fil hentet"
@@ -807,10 +806,10 @@ msgstr "Fil gemt"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:128
 #: app/modules/web/Controllers/ItemPresetController.php:331
 #: app/modules/web/Controllers/ItemPresetController.php:374
-#: lib/SP/Services/Auth/LoginService.php:457
-#: lib/SP/Services/Auth/LoginService.php:522
-#: lib/SP/Services/Auth/LoginService.php:568
-#: lib/SP/Services/Auth/LoginService.php:611
+#: lib/SP/Services/Auth/LoginService.php:482
+#: lib/SP/Services/Auth/LoginService.php:560
+#: lib/SP/Services/Auth/LoginService.php:606
+#: lib/SP/Services/Auth/LoginService.php:655
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:37
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:23
@@ -950,7 +949,7 @@ msgstr "Der findes ingen filer linket til kontoen"
 
 #: app/modules/web/Controllers/AccountManagerController.php:191
 #: app/modules/web/Controllers/AccountManagerController.php:194
-#: lib/SP/Services/Account/AccountCryptService.php:193
+#: lib/SP/Services/Account/AccountCryptService.php:195
 msgid "Accounts updated"
 msgstr "Konti opdaterede"
 
@@ -1110,10 +1109,10 @@ msgstr "Offentlige links deaktiveret"
 #: app/modules/web/Controllers/ConfigBackupController.php:57
 #: app/modules/web/Controllers/ConfigBackupController.php:195
 #: app/modules/web/Controllers/ConfigBackupController.php:241
-#: app/modules/web/Controllers/ConfigEncryptionController.php:97
-#: app/modules/web/Controllers/ConfigEncryptionController.php:163
-#: app/modules/web/Controllers/ConfigGeneralController.php:190
-#: app/modules/web/Controllers/ConfigGeneralController.php:236
+#: app/modules/web/Controllers/ConfigEncryptionController.php:125
+#: app/modules/web/Controllers/ConfigEncryptionController.php:188
+#: app/modules/web/Controllers/ConfigGeneralController.php:195
+#: app/modules/web/Controllers/ConfigGeneralController.php:241
 #: app/modules/web/Controllers/ConfigImportController.php:59
 #: app/modules/web/Controllers/ConfigLdapController.php:233
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
@@ -1124,8 +1123,8 @@ msgid "Ey, this is a DEMO!!"
 msgstr "Øj, dette er en DEMO-version!!"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:90
-#: app/modules/web/Controllers/UserPassResetController.php:185
-#: app/modules/web/Forms/AccountForm.php:135
+#: app/modules/web/Controllers/UserPassResetController.php:197
+#: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
 #, fuzzy
 msgid "Passwords do not match"
@@ -1211,108 +1210,116 @@ msgstr "DokuWiki aktiveret"
 msgid "DokuWiki disabled"
 msgstr "DokuWiki deaktiveret"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:73
-#: app/modules/web/Controllers/ConfigEncryptionController.php:149
+#: app/modules/web/Controllers/ConfigEncryptionController.php:74
+#: app/modules/web/Controllers/ConfigEncryptionController.php:174
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:118
-#: lib/SP/Services/Auth/LoginService.php:302
-#: lib/SP/Services/Auth/LoginService.php:326
+#: lib/SP/Services/Auth/LoginService.php:317
+#: lib/SP/Services/Auth/LoginService.php:343
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:164
 msgid "Master password updated"
 msgstr "Hoved-kodeord er opdateret"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:73
-#: app/modules/web/Controllers/ConfigEncryptionController.php:150
+#: app/modules/web/Controllers/ConfigEncryptionController.php:75
+#: app/modules/web/Controllers/ConfigEncryptionController.php:175
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:118
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:165
 msgid "Please, restart the session for update it"
 msgstr "Genstart venligst sessionen for at genindlæse den"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:77
+#: app/modules/web/Controllers/ConfigEncryptionController.php:82
 #, fuzzy
 msgid "Master password not entered"
 msgstr "Hoved-kodeord skal angives"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:81
+#: app/modules/web/Controllers/ConfigEncryptionController.php:89
 msgid "The password update must be confirmed"
 msgstr "Opdateringen af kodeordet skal bekræftes"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:85
+#: app/modules/web/Controllers/ConfigEncryptionController.php:96
 #, fuzzy
 msgid "Passwords are the same"
 msgstr "Kodeordene er identiske"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:89
+#: app/modules/web/Controllers/ConfigEncryptionController.php:103
 #, fuzzy
 msgid "Master passwords do not match"
 msgstr "Hoved-kodeordene er ikke identiske"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:93
+#: app/modules/web/Controllers/ConfigEncryptionController.php:110
 msgid "The current master password does not match"
 msgstr "Det nuværende hoved-kodeord passer ikke"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:143
+#: app/modules/web/Controllers/ConfigEncryptionController.php:117
+msgid "Maintenance mode not enabled"
+msgstr ""
+
+#: app/modules/web/Controllers/ConfigEncryptionController.php:118
+msgid "Please, enable it to avoid unwanted behavior from other sessions"
+msgstr ""
+
+#: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
 msgstr "Fejl under lagring af Hoved-kodeordets kontrolsum"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:170
-#: app/modules/web/Controllers/ConfigEncryptionController.php:172
+#: app/modules/web/Controllers/ConfigEncryptionController.php:195
+#: app/modules/web/Controllers/ConfigEncryptionController.php:197
 msgid "Master password hash updated"
 msgstr "Hoved-kodeord kontrolsum opdateret"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:179
+#: app/modules/web/Controllers/ConfigEncryptionController.php:204
 msgid "Error while updating the master password hash"
 msgstr "Fejl under opdatering af Hoved-kodeords kontrolsum"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:205
-#: app/modules/web/Controllers/ConfigEncryptionController.php:215
-#: app/modules/web/Controllers/ConfigEncryptionController.php:221
+#: app/modules/web/Controllers/ConfigEncryptionController.php:233
+#: app/modules/web/Controllers/ConfigEncryptionController.php:243
+#: app/modules/web/Controllers/ConfigEncryptionController.php:249
 msgid "Temporary password generated"
 msgstr "Temporary password generated"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:206
+#: app/modules/web/Controllers/ConfigEncryptionController.php:234
 #: app/modules/web/Controllers/ConfigMailController.php:155
 #: app/modules/web/Controllers/ConfigMailController.php:161
 #: lib/SP/Services/Mail/MailService.php:149
 msgid "Email sent"
 msgstr "E-mail afsendt"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:216
+#: app/modules/web/Controllers/ConfigEncryptionController.php:244
 #: lib/SP/Services/Mail/MailService.php:81
 #: lib/SP/Services/Mail/MailService.php:159
 msgid "Error while sending the email"
 msgstr "Fejl da emailen blev sendt"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:96
+#: app/modules/web/Controllers/ConfigGeneralController.php:97
 msgid "Missing remote syslog parameters"
 msgstr "Der mangler parametre til ekstern syslog "
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:104
+#: app/modules/web/Controllers/ConfigGeneralController.php:105
 msgid "Remote syslog enabled"
 msgstr "Ekstern syslog aktiveret"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:109
+#: app/modules/web/Controllers/ConfigGeneralController.php:110
 msgid "Remote syslog disabled"
 msgstr "Ekstern syslog er deaktiveret"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:122
+#: app/modules/web/Controllers/ConfigGeneralController.php:123
 msgid "Missing Proxy parameters "
 msgstr "Proxy-parametre ikke angivet"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:136
+#: app/modules/web/Controllers/ConfigGeneralController.php:137
 msgid "Proxy enabled"
 msgstr "Proxy er aktiveret"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:141
+#: app/modules/web/Controllers/ConfigGeneralController.php:142
 msgid "Proxy disabled"
 msgstr "Proxy er deaktiveret"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:160
+#: app/modules/web/Controllers/ConfigGeneralController.php:161
 msgid "Auth Basic enabled"
 msgstr "Basal autentificering aktiveret"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:166
+#: app/modules/web/Controllers/ConfigGeneralController.php:167
 msgid "Auth Basic disabled"
 msgstr "Basal autentificering deaktiveret"
 
@@ -1556,7 +1563,7 @@ msgstr "Fejl under kontrol af databasen"
 
 #: app/modules/web/Controllers/ErrorController.php:124
 #: app/modules/web/Controllers/ErrorController.php:140
-#: app/modules/web/Controllers/UserPassResetController.php:96
+#: app/modules/web/Controllers/UserPassResetController.php:99
 #: lib/SP/Core/Acl/AccountPermissionException.php:45
 #: lib/SP/Core/Acl/UnauthorizedActionException.php:46
 #: lib/SP/Core/Acl/UnauthorizedPageException.php:45
@@ -1609,8 +1616,8 @@ msgstr "Vis aktuel"
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:14
 #: app/modules/web/themes/material-blue/views/error/error-maintenance.inc:13
 #: app/modules/web/themes/material-blue/views/error/error-maintenance.inc:14
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:40
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:50
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:42
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:55
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:211
 msgid "Back"
 msgstr "Tilbage"
@@ -1717,7 +1724,7 @@ msgstr "Sortér efter kategori"
 #: app/modules/web/Controllers/UserController.php:335
 #: app/modules/web/Controllers/UserController.php:402
 #: app/modules/web/Controllers/UserController.php:446
-#: app/modules/web/Controllers/UserPassResetController.php:199
+#: app/modules/web/Controllers/UserPassResetController.php:215
 #: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
@@ -1726,12 +1733,12 @@ msgstr "Sortér efter kategori"
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
-#: lib/SP/Services/Auth/LoginService.php:222
-#: lib/SP/Services/Auth/LoginService.php:240
-#: lib/SP/Services/Auth/LoginService.php:392
-#: lib/SP/Services/Auth/LoginService.php:459
-#: lib/SP/Services/Auth/LoginService.php:569
-#: lib/SP/Services/Auth/LoginService.php:612
+#: lib/SP/Services/Auth/LoginService.php:230
+#: lib/SP/Services/Auth/LoginService.php:248
+#: lib/SP/Services/Auth/LoginService.php:414
+#: lib/SP/Services/Auth/LoginService.php:484
+#: lib/SP/Services/Auth/LoginService.php:607
+#: lib/SP/Services/Auth/LoginService.php:656
 #: lib/SP/Services/Ldap/LdapImportService.php:230
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:63
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:69
@@ -1761,7 +1768,7 @@ msgstr "Sortér efter kategori"
 #: app/modules/web/themes/material-blue/views/login/index.inc:94
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:81
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:83
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:19
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:20
 msgid "User"
 msgstr "Bruger"
 
@@ -1818,14 +1825,14 @@ msgid "Delete Selected"
 msgstr "Slet valgte"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:116
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:158
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:165
 #: app/modules/web/themes/material-blue/views/account/details.inc:42
 #: app/modules/web/themes/material-blue/views/account/details.inc:44
 msgid "Owner"
 msgstr "Owner"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:117
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:175
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:182
 #: app/modules/web/themes/material-blue/views/account/details.inc:50
 #: app/modules/web/themes/material-blue/views/account/details.inc:52
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:79
@@ -2068,7 +2075,7 @@ msgstr "Preset Values"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:111
 #: app/modules/web/Controllers/UserGroupController.php:242
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:120
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:122
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:114
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:147
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:157
@@ -2221,7 +2228,7 @@ msgstr "Vis notifikation"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
 #: app/config/actions.xml:841
 msgid "Checkout Notification"
-msgstr "Markér"
+msgstr "Udtjek Notifikation"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
@@ -2323,28 +2330,28 @@ msgstr "Orientér"
 msgid "Visits"
 msgstr "Besøg"
 
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:149
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:151
 msgid "Search for Link"
 msgstr "Søg efter link"
 
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:164
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:165
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:166
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:167
 msgid "New Link"
 msgstr "Nyt link"
 
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:182
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:183
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:184
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:185
 #: app/modules/web/Controllers/PublicLinkController.php:369
 msgid "View Link"
 msgstr "Vis link"
 
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:198
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:199
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:200
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:201
 msgid "Renew Link"
 msgstr "Forny link"
 
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:215
-#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:216
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:217
+#: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:218
 msgid "Delete Link"
 msgstr "Slet link"
 
@@ -2592,11 +2599,11 @@ msgstr "Value created"
 msgid "Value updated"
 msgstr "Value updated"
 
-#: app/modules/web/Controllers/ItemsController.php:130
+#: app/modules/web/Controllers/ItemsController.php:134
 msgid "There aren't any pending notifications"
 msgstr "Der findes ingen afventende notifikationer"
 
-#: app/modules/web/Controllers/ItemsController.php:131
+#: app/modules/web/Controllers/ItemsController.php:135
 #, php-format
 msgid "There are pending notifications: %d"
 msgstr "There are pending notifications: %d"
@@ -2743,12 +2750,12 @@ msgstr "Fejl under lagring af konfigurationen"
 #: lib/SP/Services/Api/ApiService.php:129
 #: lib/SP/Services/Api/ApiService.php:229
 #: lib/SP/Services/Api/ApiService.php:237
-#: lib/SP/Services/Auth/LoginService.php:192
-#: lib/SP/Services/Auth/LoginService.php:356
-#: lib/SP/Services/Auth/LoginService.php:508
-#: lib/SP/Services/Auth/LoginService.php:513
-#: lib/SP/Services/Auth/LoginService.php:545
-#: lib/SP/Services/Auth/LoginService.php:652
+#: lib/SP/Services/Auth/LoginService.php:200
+#: lib/SP/Services/Auth/LoginService.php:373
+#: lib/SP/Services/Auth/LoginService.php:542
+#: lib/SP/Services/Auth/LoginService.php:550
+#: lib/SP/Services/Auth/LoginService.php:583
+#: lib/SP/Services/Auth/LoginService.php:704
 #: lib/SP/Services/AuthToken/AuthTokenService.php:311
 #: lib/SP/Services/CustomField/CustomFieldService.php:203
 #: lib/SP/Services/Export/XmlVerifyService.php:108
@@ -2780,7 +2787,7 @@ msgstr "Du vil blive omdirigeret til login indenfor 5 sekunder"
 
 #: app/modules/web/Controllers/UserController.php:239
 #: app/modules/web/Controllers/UserController.php:370
-#: app/modules/web/Controllers/UserPassResetController.php:107
+#: app/modules/web/Controllers/UserPassResetController.php:113
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:65
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:238
 msgid "Password Change"
@@ -2821,34 +2828,34 @@ msgstr "Grupper slettet"
 msgid "Wrong data"
 msgstr "Forkerte data"
 
-#: app/modules/web/Controllers/UserPassResetController.php:96
+#: app/modules/web/Controllers/UserPassResetController.php:97
 msgid "Unable to reset the password"
 msgstr "Kan ikke nulstille kodeordet"
 
-#: app/modules/web/Controllers/UserPassResetController.php:103
+#: app/modules/web/Controllers/UserPassResetController.php:108
 msgid "Password Recovery"
 msgstr "Genskabelse af kodeord"
 
-#: app/modules/web/Controllers/UserPassResetController.php:104
+#: app/modules/web/Controllers/UserPassResetController.php:109
 msgid "Requested for"
 msgstr "Efterspørges af"
 
-#: app/modules/web/Controllers/UserPassResetController.php:109
+#: app/modules/web/Controllers/UserPassResetController.php:119
 msgid "Request sent"
 msgstr "Anmodning afsendt"
 
-#: app/modules/web/Controllers/UserPassResetController.php:109
+#: app/modules/web/Controllers/UserPassResetController.php:120
 msgid "You will receive an email to complete the request shortly."
-msgstr "Du vil snart modtage en e-mail for at gennemføre anmodningen"
+msgstr "Du vil snart modtage en e-mail for at afslutte anmodningen"
 
-#: app/modules/web/Controllers/UserPassResetController.php:128
+#: app/modules/web/Controllers/UserPassResetController.php:143
 #: lib/SP/Services/Api/ApiService.php:96
-#: lib/SP/Services/Auth/LoginService.php:138
+#: lib/SP/Services/Auth/LoginService.php:139
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:103
 msgid "Attempts exceeded"
 msgstr "Maks. antal forsøg overskredet"
 
-#: app/modules/web/Controllers/UserPassResetController.php:181
+#: app/modules/web/Controllers/UserPassResetController.php:193
 #: app/modules/web/Forms/AuthTokenForm.php:101
 #: app/modules/web/Forms/UserForm.php:157
 msgid "Password cannot be blank"
@@ -2888,20 +2895,20 @@ msgstr "Foretrukne indstillinger opdaterede"
 msgid "Preferences"
 msgstr "Præferencer"
 
-#: app/modules/web/Forms/AccountForm.php:131
+#: app/modules/web/Forms/AccountForm.php:129
 msgid "A key is needed"
 msgstr "En er påkrævet"
 
-#: app/modules/web/Forms/AccountForm.php:171
+#: app/modules/web/Forms/AccountForm.php:169
 msgid "An account name needed"
 msgstr "Et kontonavn er påkrævet"
 
-#: app/modules/web/Forms/AccountForm.php:175
+#: app/modules/web/Forms/AccountForm.php:173
 #: app/modules/web/Forms/ClientForm.php:84
 msgid "A client name needed"
 msgstr "Et klientnavn er påkrævet"
 
-#: app/modules/web/Forms/AccountForm.php:179
+#: app/modules/web/Forms/AccountForm.php:177
 msgid "A category is needed"
 msgstr "En kategori er påkrævet"
 
@@ -2931,7 +2938,7 @@ msgstr "Feltmodul ikke angivet"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:116
 msgid "Value type not set or incorrect"
-msgstr "Value type not set or incorrect"
+msgstr "Værditype ikke angivet eller ukorrekt"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:133
 msgid "There aren't any defined permissions"
@@ -3123,12 +3130,12 @@ msgstr "Første side"
 msgid "Last page"
 msgstr "Sidste side"
 
-#: lib/SP/Bootstrap.php:279
+#: lib/SP/Bootstrap.php:285
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Påkrævet PHP version >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:281
+#: lib/SP/Bootstrap.php:287
 msgid "Please update the PHP version to run sysPass"
 msgstr "Opdater venligst din PHP version for at køre sysPass"
 
@@ -3152,7 +3159,7 @@ msgstr "Rettighederne på \"/config\" -mappen er forkerte"
 msgid "Current: %s - Needed: 750"
 msgstr "Nuværende: %s -Påkrævet: 750"
 
-#: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:608
+#: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:652
 msgid "N/A"
 msgstr "Ej tilgængelig"
 
@@ -3186,7 +3193,7 @@ msgstr "Ugyldig kontekst"
 msgid "Context not initialized"
 msgstr "Kontekst ikke initialiseret"
 
-#: lib/SP/Core/Context/SessionContext.php:490
+#: lib/SP/Core/Context/SessionContext.php:492
 msgid "Session cannot be initialized"
 msgstr "Sessionen kan ikke initialiseres"
 
@@ -3327,20 +3334,20 @@ msgstr "Metoden er allerede initialiseret"
 
 #: lib/SP/Providers/Auth/Ldap/Ldap.php:110
 msgid "LDAP type not set"
-msgstr ""
+msgstr "LDAP-type ikke angivet"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:119
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:126
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:121
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:128
 msgid "Error while searching the group RDN"
 msgstr "Fejl under søgning i gruppen RDN"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:205
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:210
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:221
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
 msgid "Error while searching the user on LDAP"
 msgstr "Fejl under søgning efter brugeren i LDAP"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:259
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:265
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:275
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
 msgid "Error while searching objects in base DN"
 msgstr "Fejl under søgnig efter objekter i 'base DN'"
 
@@ -3395,12 +3402,18 @@ msgstr "Bruger verificeret som tilhørende gruppen"
 msgid "User does not belong to the group"
 msgstr "Brugeren tilhører ikke gruppen"
 
-#: lib/SP/Providers/Mail/MailHandler.php:127
+#: lib/SP/Providers/Mail/MailHandler.php:136
+#, php-format
+msgid "Event: %s"
+msgstr ""
+
+#: lib/SP/Providers/Mail/MailHandler.php:144
+#: lib/SP/Providers/Mail/MailHandler.php:146
 #, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Udført af: %s (%s)"
 
-#: lib/SP/Providers/Mail/MailHandler.php:128
+#: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "IP Address: %s"
 msgstr "IP-adresse: %s"
@@ -3835,8 +3848,8 @@ msgid "Error while updating the profile"
 msgstr "Fejl under opdatering af profilen"
 
 #: lib/SP/Services/Account/AccountCryptService.php:71
-#: lib/SP/Services/Account/AccountCryptService.php:77
-#: lib/SP/Services/Account/AccountCryptService.php:138
+#: lib/SP/Services/Account/AccountCryptService.php:78
+#: lib/SP/Services/Account/AccountCryptService.php:140
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:67
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:75
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:83
@@ -3844,43 +3857,43 @@ msgstr "Fejl under opdatering af profilen"
 msgid "Update Master Password"
 msgstr "Opdater Hoved-kodeordet"
 
-#: lib/SP/Services/Account/AccountCryptService.php:89
+#: lib/SP/Services/Account/AccountCryptService.php:91
 msgid "Error while updating the accounts' passwords"
 msgstr "Fejl under opdatering af kontoens kodeord"
 
-#: lib/SP/Services/Account/AccountCryptService.php:115
+#: lib/SP/Services/Account/AccountCryptService.php:117
 msgid "Error while retrieving the accounts' passwords"
 msgstr "Fejl under indlæsning af kontoens kodeord"
 
-#: lib/SP/Services/Account/AccountCryptService.php:139
+#: lib/SP/Services/Account/AccountCryptService.php:141
 #, php-format
 msgid "Accounts updated: %d / %d"
 msgstr "Konti opdateret: %d / %d"
 
-#: lib/SP/Services/Account/AccountCryptService.php:148
+#: lib/SP/Services/Account/AccountCryptService.php:150
 #, php-format
 msgid "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 msgstr "Opdaterede konti: %d / %d -%d%% - ETA: %ds (%.2f/s)"
 
-#: lib/SP/Services/Account/AccountCryptService.php:158
+#: lib/SP/Services/Account/AccountCryptService.php:160
 msgid "The record's master password does not match"
 msgstr "Registreringens Hoved-kodeord passer ikke"
 
-#: lib/SP/Services/Account/AccountCryptService.php:183
-#: lib/SP/Services/Account/AccountCryptService.php:188
+#: lib/SP/Services/Account/AccountCryptService.php:185
+#: lib/SP/Services/Account/AccountCryptService.php:190
 msgid "Error while updating the account's password"
 msgstr "Fejl under opdatering af kontoens kodeord"
 
-#: lib/SP/Services/Account/AccountCryptService.php:194
+#: lib/SP/Services/Account/AccountCryptService.php:196
 msgid "Errors"
 msgstr "Fejl"
 
-#: lib/SP/Services/Account/AccountCryptService.php:212
-#: lib/SP/Services/Account/AccountCryptService.php:218
+#: lib/SP/Services/Account/AccountCryptService.php:214
+#: lib/SP/Services/Account/AccountCryptService.php:221
 msgid "Update Master Password (H)"
 msgstr "Opdater Hoved-kodeord (H)"
 
-#: lib/SP/Services/Account/AccountCryptService.php:233
+#: lib/SP/Services/Account/AccountCryptService.php:237
 msgid "Error while updating the accounts' passwords in history"
 msgstr "Fej under opdatering af kontoens kodeords-historik"
 
@@ -3916,57 +3929,57 @@ msgstr "Ugyldigt format"
 msgid "Wrong parameters"
 msgstr "Forkerte parametre"
 
-#: lib/SP/Services/Auth/LoginService.php:160
-#: lib/SP/Services/Auth/LoginService.php:462
-#: lib/SP/Services/Auth/LoginService.php:469
-#: lib/SP/Services/Auth/LoginService.php:579
-#: lib/SP/Services/Auth/LoginService.php:584
-#: lib/SP/Services/Auth/LoginService.php:623
-#: lib/SP/Services/Auth/LoginService.php:628
+#: lib/SP/Services/Auth/LoginService.php:161
+#: lib/SP/Services/Auth/LoginService.php:487
+#: lib/SP/Services/Auth/LoginService.php:497
+#: lib/SP/Services/Auth/LoginService.php:617
+#: lib/SP/Services/Auth/LoginService.php:625
+#: lib/SP/Services/Auth/LoginService.php:667
+#: lib/SP/Services/Auth/LoginService.php:675
 msgid "Wrong login"
 msgstr "Forkert login"
 
-#: lib/SP/Services/Auth/LoginService.php:221
-#: lib/SP/Services/Auth/LoginService.php:228
+#: lib/SP/Services/Auth/LoginService.php:229
+#: lib/SP/Services/Auth/LoginService.php:236
 msgid "User disabled"
 msgstr "Brugerkonto inaktiv"
 
-#: lib/SP/Services/Auth/LoginService.php:275
+#: lib/SP/Services/Auth/LoginService.php:288
 msgid "Using temporary password"
 msgstr "Anvender midlertidigt kodeord"
 
-#: lib/SP/Services/Auth/LoginService.php:287
-#: lib/SP/Services/Auth/LoginService.php:293
-#: lib/SP/Services/Auth/LoginService.php:311
-#: lib/SP/Services/Auth/LoginService.php:317
+#: lib/SP/Services/Auth/LoginService.php:301
+#: lib/SP/Services/Auth/LoginService.php:307
+#: lib/SP/Services/Auth/LoginService.php:327
+#: lib/SP/Services/Auth/LoginService.php:333
 msgid "Wrong master password"
 msgstr "Forkert Hoved-kodeord"
 
-#: lib/SP/Services/Auth/LoginService.php:332
+#: lib/SP/Services/Auth/LoginService.php:349
 msgid "Your previous password is needed"
 msgstr "Dit tidligere kodeord er påkrævet"
 
-#: lib/SP/Services/Auth/LoginService.php:344
+#: lib/SP/Services/Auth/LoginService.php:361
 msgid "The Master Password either is not saved or is wrong"
 msgstr "Hoved-kodeordet er enten ikke gemt, eller forkert"
 
-#: lib/SP/Services/Auth/LoginService.php:458
-#: lib/SP/Services/Auth/LoginService.php:523
+#: lib/SP/Services/Auth/LoginService.php:483
+#: lib/SP/Services/Auth/LoginService.php:561
 msgid "LDAP Server"
 msgstr "LDAP-server"
 
-#: lib/SP/Services/Auth/LoginService.php:477
-#: lib/SP/Services/Auth/LoginService.php:482
+#: lib/SP/Services/Auth/LoginService.php:505
+#: lib/SP/Services/Auth/LoginService.php:513
 msgid "Account expired"
 msgstr "Konto udløbet"
 
-#: lib/SP/Services/Auth/LoginService.php:490
-#: lib/SP/Services/Auth/LoginService.php:495
+#: lib/SP/Services/Auth/LoginService.php:521
+#: lib/SP/Services/Auth/LoginService.php:529
 #, fuzzy
 msgid "User has no associated groups"
 msgstr "Brugeren er ikke associeret med nogle grupper"
 
-#: lib/SP/Services/Auth/LoginService.php:613
+#: lib/SP/Services/Auth/LoginService.php:657
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:12
 msgid "Authentication"
 msgstr "Autentikering"
@@ -4060,12 +4073,12 @@ msgstr "Midlertidigt kodeord er udløbet"
 msgid "Error while checking the temporary password"
 msgstr "Fejl under kontrol af midlertidigt kodeord"
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
 #, php-format
-msgid "Master Password %s"
-msgstr "Hoved-kodeord %s"
+msgid "%s Master Password"
+msgstr ""
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:214
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 #, fuzzy
 msgid ""
 "A new sysPass master password has been generated, so next time you log into "
@@ -4074,17 +4087,17 @@ msgstr ""
 "Et nyt sysPass Hoved-kodeord er genereret, så næste gang du logger på vil du "
 "blive bedt om det."
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:216
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:234
 #, php-format
 msgid "The new Master Password is: %s"
 msgstr "Det nye Hoved-Kodeord er: %s"
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:218
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:235
 #, php-format
 msgid "This password will be valid until: %s"
 msgstr "Kodeordet er gyldigt til: %s"
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:220
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
 msgid "Please, don't forget to log in as soon as possible to save the changes."
 msgstr ""
 "Glem venligst ikke at logge på så snart som muligt for at gemme ændringerne."
@@ -4246,7 +4259,7 @@ msgstr "sysPass XML import"
 
 #: lib/SP/Services/Import/SyspassImport.php:69
 msgid "Encryption password not set"
-msgstr "Krypteringskodeord er ikke sat"
+msgstr "Krypteringskodeord er ikke angivet"
 
 #: lib/SP/Services/Import/SyspassImport.php:162
 msgid "Data unencrypted"
@@ -4302,85 +4315,85 @@ msgstr "Ugyldigt XML-format"
 msgid "\"%s\" node doesn't exist"
 msgstr "\"%s\" -noden findes ikke"
 
-#: lib/SP/Services/Install/Installer.php:106
+#: lib/SP/Services/Install/Installer.php:105
 msgid "Please, enter the admin username"
 msgstr "Indtast venligst administrator-brugernavnet"
 
-#: lib/SP/Services/Install/Installer.php:108
+#: lib/SP/Services/Install/Installer.php:107
 msgid "Admin user to log into the application"
 msgstr "Administrator-brugeren der logger ind i applikationen"
 
-#: lib/SP/Services/Install/Installer.php:113
+#: lib/SP/Services/Install/Installer.php:112
 msgid "Please, enter the admin's password"
 msgstr "Indtast venligst administrator-adgangskoden"
 
-#: lib/SP/Services/Install/Installer.php:115
+#: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
 msgstr "Applikationsadministratorens adgangskode"
 
-#: lib/SP/Services/Install/Installer.php:120
+#: lib/SP/Services/Install/Installer.php:119
 msgid "Please, enter the Master Password"
 msgstr "Indtast venligst Hoved-kodeordet"
 
-#: lib/SP/Services/Install/Installer.php:122
+#: lib/SP/Services/Install/Installer.php:121
 msgid "Master password to encrypt the passwords"
 msgstr "Hoved-kodeord til kryptering af kodeordene"
 
-#: lib/SP/Services/Install/Installer.php:127
+#: lib/SP/Services/Install/Installer.php:126
 msgid "Master password too short"
 msgstr "Hoved-kodeordet er for kort"
 
-#: lib/SP/Services/Install/Installer.php:129
+#: lib/SP/Services/Install/Installer.php:128
 msgid "The Master Password length need to be at least 11 characters"
 msgstr "Hoved-kodeordet skal være mindst 11 tegn"
 
-#: lib/SP/Services/Install/Installer.php:134
+#: lib/SP/Services/Install/Installer.php:133
 msgid "Please, enter the database user"
 msgstr "Indtast venligst database-brugernavnet"
 
-#: lib/SP/Services/Install/Installer.php:136
+#: lib/SP/Services/Install/Installer.php:135
 #, fuzzy
 msgid "An user with database administrative rights"
 msgstr "En bruger med administrationsrettigheder på databasen"
 
-#: lib/SP/Services/Install/Installer.php:141
+#: lib/SP/Services/Install/Installer.php:140
 msgid "Please, enter the database password"
 msgstr "Indtast venligst databasekodeordet"
 
-#: lib/SP/Services/Install/Installer.php:143
+#: lib/SP/Services/Install/Installer.php:142
 msgid "Database administrator's password"
 msgstr "Databaseadministratorens kodeord"
 
-#: lib/SP/Services/Install/Installer.php:148
+#: lib/SP/Services/Install/Installer.php:147
 msgid "Please, enter the database name"
 msgstr "Indtast venligst databasenavnet"
 
-#: lib/SP/Services/Install/Installer.php:150
+#: lib/SP/Services/Install/Installer.php:149
 msgid "Application database name. eg. syspass"
 msgstr "Applikationsdatabasenavn, f.eks. syspass"
 
-#: lib/SP/Services/Install/Installer.php:155
+#: lib/SP/Services/Install/Installer.php:154
 msgid "Database name cannot contain \".\""
 msgstr "Databasenavnet må ikke indeholde \".\""
 
-#: lib/SP/Services/Install/Installer.php:157
+#: lib/SP/Services/Install/Installer.php:156
 msgid "Please, remove dots in database name"
 msgstr "Fjern venligst punktummer i databasenavnet"
 
-#: lib/SP/Services/Install/Installer.php:162
+#: lib/SP/Services/Install/Installer.php:161
 msgid "Please, enter the database server"
 msgstr "Indtast venligst databaseserverens navn/adresse"
 
-#: lib/SP/Services/Install/Installer.php:164
+#: lib/SP/Services/Install/Installer.php:163
 msgid "Server where the database will be installed"
 msgstr "Serveren som databasen oprettes på"
 
-#: lib/SP/Services/Install/Installer.php:324
-#: lib/SP/Services/Install/Installer.php:375
+#: lib/SP/Services/Install/Installer.php:318
+#: lib/SP/Services/Install/Installer.php:369
 msgid "Warn to developer"
 msgstr "Advarsel til udviklerne"
 
-#: lib/SP/Services/Install/Installer.php:365
+#: lib/SP/Services/Install/Installer.php:359
 msgid "Error while creating 'admin' user"
 msgstr "Fejl under oprettelsen af 'admin'-brugeren"
 
@@ -4480,7 +4493,7 @@ msgid ""
 "This is a test email in order to verify that the configuration is working "
 "right."
 msgstr ""
-"Dette er en test-E-mail med det formaål at kontrollere at konfigurationen er "
+"Dette er en test-E-mail sendt for at kontrollere at konfigurationen er "
 "korrekt."
 
 #: lib/SP/Services/Notification/NotificationService.php:102
@@ -4535,11 +4548,15 @@ msgstr "Fejl ved indsætning af Hoved-kodeord i kontekst"
 msgid "Tag not found"
 msgstr "Mærke ikke fundet"
 
-#: lib/SP/Services/Task/TaskService.php:81
+#: lib/SP/Services/Task/TaskService.php:84
 msgid "Unable to create the lock file"
 msgstr "Kan ikke oprette låse-filen"
 
-#: lib/SP/Services/Task/TaskService.php:184
+#: lib/SP/Services/Task/TaskService.php:93
+msgid "Task not set within wait time"
+msgstr ""
+
+#: lib/SP/Services/Task/TaskService.php:182
 msgid "Waiting for progress updating ..."
 msgstr "Afventer status ..."
 
@@ -4560,7 +4577,7 @@ msgstr "Sekunder"
 
 #: lib/SP/Services/Track/TrackService.php:208
 msgid "IP address not set"
-msgstr "IP address not set"
+msgstr "IP addresse ikke angivet"
 
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:66
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:89
@@ -4711,7 +4728,7 @@ msgstr "Fejl under udførelse af forespørgsel"
 
 #: lib/SP/Services/Wiki/DokuWikiApiBase.php:228
 msgid "Connection URL not set"
-msgstr "Forbindelses-URL er ikke sat"
+msgstr "Forbindelses-URL er ikke angivet"
 
 #: lib/SP/Storage/Database/Database.php:131
 msgid "Blank query"
@@ -4901,7 +4918,7 @@ msgid "Clear the event log out?"
 msgstr "Ryd hændelsesloggen?"
 
 #: app/config/strings.js.inc:47
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:179
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:186
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:281
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
 #: app/modules/web/themes/material-blue/views/config/import.inc:59
@@ -4913,7 +4930,7 @@ msgid "Select Group"
 msgstr "Vælg gruppe"
 
 #: app/config/strings.js.inc:48
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:161
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:168
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
 #: app/modules/web/themes/material-blue/views/config/import.inc:32
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:287
@@ -4932,7 +4949,7 @@ msgstr "Vælg profil"
 
 #: app/config/strings.js.inc:50
 #: app/modules/web/themes/material-blue/views/account/account.inc:85
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:34
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
 msgid "Select Client"
 msgstr "Vælg klient"
@@ -4940,7 +4957,7 @@ msgstr "Vælg klient"
 #: app/config/strings.js.inc:51
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:78
 #: app/modules/web/themes/material-blue/views/account/account.inc:110
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
 msgid "Select Category"
 msgstr "Vælg kategori"
@@ -5053,13 +5070,13 @@ msgstr "Ryd valgte"
 
 #. (itstool) path: action/text
 #: app/config/strings.js.inc:77
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:80
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
 #: app/config/actions.xml:241
 msgid "Show Favorites"
 msgstr "Vis foretrukne"
 
 #: app/config/strings.js.inc:78
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:74
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
 #, fuzzy
 msgid "Display All"
 msgstr "Vis alle"
@@ -5240,7 +5257,7 @@ msgstr "Ingen registreringer fundet"
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:59
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:66
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:38
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:41
 msgid "Password (repeat)"
 msgstr "Kodeord(gentaget)"
 
@@ -5315,12 +5332,12 @@ msgstr "Vis"
 msgid "Select Groups"
 msgstr "Vælg grupper"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:201
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:208
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
 msgstr "Privat"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:217
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:224
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:198
 msgid "Private for Group"
 msgstr "Privat for gruppen"
@@ -5426,27 +5443,27 @@ msgstr "Link til Wiki"
 msgid "View at Wiki"
 msgstr "Vis i Wiki"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:59
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:63
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:60
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:230
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:231
 #, fuzzy
 msgid "Global search"
 msgstr "Global søgning"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:85
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
 msgstr "Filtrér efter foretrukne"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:100
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:101
 msgid "Accounts per page"
 msgstr "Antal konti pr. side"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:108
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:109
 msgid "More Filters"
 msgstr "Flere filtre"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:113
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:114
 msgid "Select Tag"
 msgstr "Vælg mærke"
 
@@ -5628,7 +5645,7 @@ msgstr "Udløbstid"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:256
 msgid "Expire time (minutes)"
-msgstr ""
+msgstr "Udløbstid (minutter)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271
@@ -5895,8 +5912,7 @@ msgstr "Send E-mail"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:265
 msgid "Sends an email to all users or only to those whose group is selected."
-msgstr ""
-"Sender en E-mail til alle brugere eller kun de brugere hvis gruppe er valgt."
+msgstr "Sender en E-mail til alle brugere eller kun de hvis gruppe er valgt."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:325
 msgid ""
@@ -6373,7 +6389,7 @@ msgstr "Enables the connection over TLS"
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:78
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:82
 msgid "Server Type"
-msgstr ""
+msgstr "Servertype"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
 #, fuzzy
@@ -6411,6 +6427,8 @@ msgid ""
 "This isn't the real LDAP password. You should set the real one before "
 "checking or importing LDAP objects"
 msgstr ""
+"Ukorrekt LDAP-kodeord. Anvend det korrekte for at kontrollere eller "
+"importere LDAP-objekter"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:185
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:209
@@ -6520,7 +6538,7 @@ msgstr "Sikkerhed"
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
 msgid "Sender email address"
-msgstr ""
+msgstr "Afsenders e-mail"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
 #: app/modules/web/themes/material-blue/views/config/mail.inc:165
@@ -7094,7 +7112,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
 #, fuzzy
 msgid "If items IDs are not set, they will be created."
-msgstr "Hvis elementernes ID ikke er sat, vil de blive genereret."
+msgstr "Hvis elementernes ID ikke er angivet, vil de blive genereret."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:74
 msgid "Enter a valid user ID for the accounts"
@@ -7189,17 +7207,17 @@ msgstr "Indtast venligst sikkerhedskoden for at begynde opdateringen"
 msgid "Request Password Change"
 msgstr "Anmod om ændring af kodeord"
 
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:29
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:30
 msgid "User's Email"
 msgstr "Brugers E-mail"
 
-#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:39
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:49
+#: app/modules/web/themes/material-blue/views/userpassreset/request.inc:41
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:54
 msgid "Go back to login"
 msgstr "Tilbage til login"
 
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:54
-#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:56
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:60
+#: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:62
 msgid "Change"
 msgstr "Skift"
 
@@ -7218,7 +7236,7 @@ msgstr "Navigationsbjælke øverst"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
 msgid "Displays a navigation bar on top of the search results."
-msgstr ""
+msgstr "Viser en navigationsbjælke øverst i søgeresultaterne."
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
@@ -7602,51 +7620,3 @@ msgstr "Tekstfelt"
 #: app/config/strings.xml:8
 msgid "Text"
 msgstr "Tekst"
-
-#~ msgid "Mail service unavailable"
-#~ msgstr "E-mail-tjenesten er ikke tilgængelig"
-
-#~ msgid "Active Directory"
-#~ msgstr "Active Directory"
-
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Aktiverer Active Directory LDAP-forbindelsestilstand"
-
-#, fuzzy
-#~ msgid "Recipient email address"
-#~ msgstr "Afsenderens E-mail adresse"
-
-#, fuzzy
-#~ msgid "Dysplays a navigation bar on top of the search results."
-#~ msgstr "Viser en navigationsbjælke over søgeresultaterne."
-
-#~ msgid "There aren't any allowed extensions"
-#~ msgstr "Der findes ingen tilladte filtype-angivelser(endelser)"
-
-#~ msgid "Extension: %s"
-#~ msgstr "Udvidelse: %s"
-
-#~ msgid "Maximum size: %s"
-#~ msgstr "Maks. størrelse: %s"
-
-#~ msgid "Please, check the file extension"
-#~ msgstr "Kontroller venligst fil-endelsen"
-
-#~ msgid "Data not loaded"
-#~ msgstr "Data ikke indlæst"
-
-#~ msgid "Extension not allowed"
-#~ msgstr "Fil-endelse er ikke tilladt "
-
-#~ msgid "Allowed file extensions"
-#~ msgstr "Tilladte filendelser"
-
-#~ msgid "Allowed file extensions for uploading."
-#~ msgstr "Tilladte filendelser ved upload"
-
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
-#~ "konfigurationen."
