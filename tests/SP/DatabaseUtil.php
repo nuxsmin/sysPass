@@ -100,7 +100,7 @@ class DatabaseUtil
      *
      * @throws \SP\Storage\Database\DatabaseException
      */
-    public static function createDataase($database)
+    public static function createDatabase($database)
     {
         self::getConnection()
             ->query(sprintf('CREATE DATABASE `%s`', $database));

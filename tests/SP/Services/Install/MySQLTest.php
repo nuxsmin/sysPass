@@ -64,7 +64,14 @@ class MySQLTest extends TestCase
         $params->setDbName(self::DB_NAME);
         $params->setDbHost(getenv('DB_SERVER'));
         $params->setDbAuthHost(SELF_IP_ADDRESS);
-        $params->setDbAuthHostDns(SELF_HOSTNAME);
+
+        // Long hostname returned on Travis CI
+        if (getenv('TRAVIS') === false) {
+            $params->setDbAuthHostDns(SELF_HOSTNAME);
+        } else {
+            $params->setDbAuthHostDns('localhost');
+        }
+
         $params->setAdminLogin('admin');
         $params->setAdminPass('syspass_admin');
         $params->setMasterPassword('00123456789');
