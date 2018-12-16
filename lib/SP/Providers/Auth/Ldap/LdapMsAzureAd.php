@@ -121,6 +121,7 @@ final class LdapMsAzureAd extends Ldap
 
     /**
      * @param string $userLogin
+     * @param string $userDn
      *
      * @return bool
      * @throws LdapException

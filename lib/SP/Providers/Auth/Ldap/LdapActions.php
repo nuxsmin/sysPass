@@ -158,6 +158,7 @@ final class LdapActions
      *
      * @param string $filter     Filtro a utilizar
      * @param array  $attributes Atributos a devolver
+     * @param string $searchBase
      *
      * @return bool|array
      */
@@ -165,6 +166,10 @@ final class LdapActions
     {
         $cookie = '';
         $results = [];
+
+        if (empty($searchBase)) {
+            $searchBase = $this->ldapParams->getSearchBase();
+        }
 
         do {
             ldap_control_paged_result(
@@ -176,15 +181,10 @@ final class LdapActions
 
             $searchRes = @ldap_search(
                 $this->ldapHandler,
-                $this->ldapParams->getSearchBase(),
+                $searchBase,
                 $filter,
                 $attributes
             );
-
-            if (empty($searchBase)) {
-                $searchBase = $this->ldapParams->getSearchBase();
-            }
-            $searchRes = @ldap_search($this->ldapHandler, $searchBase, $filter, $attributes);
 
             if (!$searchRes) {
                 return false;
@@ -266,6 +266,7 @@ final class LdapActions
      *
      * @param string $filter
      * @param array  $attributes
+     * @param string $searchBase
      *
      * @return array
      * @throws LdapException
