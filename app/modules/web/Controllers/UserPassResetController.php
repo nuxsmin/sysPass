@@ -93,26 +93,41 @@ final class UserPassResetController extends ControllerBase
             }
 
             if ($userData->isDisabled() || $userData->isLdap()) {
-                throw new SPException(__u('Unable to reset the password'), SPException::WARNING, __u('Please contact to the administrator'));
+                throw new SPException(
+                    __u('Unable to reset the password'),
+                    SPException::WARNING,
+                    __u('Please contact to the administrator')
+                );
             }
 
             $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
 
-            $this->eventDispatcher->notifyEvent('request.user.passReset',
+            $this->eventDispatcher->notifyEvent(
+                'request.user.passReset',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Password Recovery'))
                     ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email)))
             );
 
-            $this->dic->get(MailService::class)->send(__('Password Change'), $email, UserPassRecoverService::getMailMessage($hash));
+            $this->dic->get(MailService::class)
+                ->send(__('Password Change'),
+                    $email,
+                    UserPassRecoverService::getMailMessage($hash));
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Request sent'), [__u('You will receive an email to complete the request shortly.')]);
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Request sent'),
+                [__u('You will receive an email to complete the request shortly.')]
+            );
         } catch (\Exception $e) {
             processException($e);
 
             $this->addTracking();
 
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+            $this->eventDispatcher->notifyEvent(
+                'exception',
+                new Event($e)
+            );
 
             return $this->returnJsonResponseException($e);
         }
@@ -146,12 +161,9 @@ final class UserPassResetController extends ControllerBase
      *
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws SPException
      */
     public function resetAction($hash = null)
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('reset', strtolower($this->controllerName));
 
@@ -191,15 +203,24 @@ final class UserPassResetController extends ControllerBase
             $userId = $userPassRecoverService->getUserIdForHash($hash);
             $userPassRecoverService->toggleUsedByHash($hash);
 
-            $this->dic->get(UserService::class)->updatePass($userId, $pass);
+            $userService = $this->dic->get(UserService::class);
+            $userService->updatePass($userId, $pass);
 
-            $this->eventDispatcher->notifyEvent('edit.user.password',
+            $user = $userService->getById($userId);
+
+            $this->eventDispatcher->notifyEvent(
+                'edit.user.password',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Password updated'))
-                    ->addDetail(__u('User'), $userId))
+                    ->addDetail(__u('User'), $user->getLogin())
+                    ->addExtra('userId', $userId)
+                    ->addExtra('email', $user->getEmail()))
             );
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Password updated'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Password updated')
+            );
         } catch (\Exception $e) {
             processException($e);
 

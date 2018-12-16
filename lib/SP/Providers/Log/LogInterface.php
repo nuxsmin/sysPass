@@ -41,23 +41,31 @@ interface LogInterface
         'show.account.pass',
         'show.account.link',
         'copy.account.pass',
-        'clear.eventlog',
         'login.',
         'logout',
         'track.',
-        'acl.deny',
         'check.tempMasterPassword',
         'expire.tempMasterPassword',
-        'refresh.masterPassword',
         'update.',
         'import.ldap.',
         'run.',
         'send.mail',
+        'unlock.track',
+    ];
+
+    const EVENTS_FIXED = [
+        'upgrade.',
+        'acl.deny',
+        'plugin.load.error',
         'show.authToken',
         'clear.eventlog',
         'clear.track',
-        'unlock.track',
-        'plugin.load.error',
-        'upgrade.'
+        'refresh.masterPassword',
+        'update.masterPassword.start',
+        'update.masterPassword.end',
+        'request.account',
+        'edit.user.password',
+        'save.config.',
+        'create.tempMasterPassword'
     ];
 }

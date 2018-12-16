@@ -88,6 +88,7 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
      *                            </p>
      *
      * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @since 5.1.0
      */
     public function update(SplSubject $subject)
@@ -144,9 +145,9 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
         $configEvents = $configData->getLogEvents();
 
         if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS);
+            $this->events = $this->parseEventsToRegex(array_merge(LogInterface::EVENTS, LogInterface::EVENTS_FIXED));
         } else {
-            $this->events = $this->parseEventsToRegex($configEvents);
+            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
     }
 }

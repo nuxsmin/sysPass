@@ -121,6 +121,6 @@ final class FileLogHandler extends Provider implements EventReceiver
     protected function initialize(Container $dic)
     {
         $this->language = $dic->get(Language::class);
-        $this->events = $this->parseEventsToRegex(LogInterface::EVENTS);
+        $this->events = $this->parseEventsToRegex(array_merge(LogInterface::EVENTS, LogInterface::EVENTS_FIXED));
     }
 }

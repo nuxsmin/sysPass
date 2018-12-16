@@ -49,13 +49,20 @@ final class MailHandler extends Provider implements EventReceiver
         'delete.',
         'edit.',
         'save.',
-        'clear.eventlog',
-        'refresh.masterPassword',
-        'update.masterPassword.end',
         'import.ldap.end',
         'run.backup.end',
-        'run.import.end',
-        'request.account'
+        'run.import.end'
+    ];
+
+    const EVENTS_FIXED = [
+        'clear.eventlog',
+        'refresh.masterPassword',
+        'update.masterPassword.start',
+        'update.masterPassword.end',
+        'request.account',
+        'edit.user.password',
+        'save.config.',
+        'create.tempMasterPassword'
     ];
 
     /**
@@ -132,7 +139,13 @@ final class MailHandler extends Provider implements EventReceiver
                 }
 
                 $mailMessage->addDescriptionLine();
-                $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
+
+                if ($userData->getId() !== null) {
+                    $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), $userData->getName(), $userData->getLogin()));
+                } else {
+                    $mailMessage->addDescription(sprintf(__('Performed by: %s (%s)'), 'sysPass', 'APP'));
+                }
+
                 $mailMessage->addDescription(sprintf(__('IP Address: %s'), $this->request->getClientAddress(true)));
 
                 $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
@@ -142,6 +155,16 @@ final class MailHandler extends Provider implements EventReceiver
                     $configData->getMailRecipients(),
                     $mailMessage
                 );
+
+                $extra = $eventMessage->getExtra();
+
+                if (isset($extra['userId'], $extra['email'])) {
+                    $this->mailService->send(
+                        $subject,
+                        $extra['email'],
+                        $mailMessage
+                    );
+                }
             } catch (\Exception $e) {
                 processException($e);
             }
@@ -162,9 +185,9 @@ final class MailHandler extends Provider implements EventReceiver
         $configEvents = $this->config->getConfigData()->getMailEvents();
 
         if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(self::EVENTS);
+            $this->events = $this->parseEventsToRegex(array_merge(self::EVENTS, self::EVENTS_FIXED));
         } else {
-            $this->events = $this->parseEventsToRegex($configEvents);
+            $this->events = $this->parseEventsToRegex(array_merge($configEvents, self::EVENTS_FIXED));
         }
     }
 }

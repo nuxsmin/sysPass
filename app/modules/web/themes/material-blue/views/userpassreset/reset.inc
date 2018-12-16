@@ -13,13 +13,15 @@
         <?php echo __('Request Password Change'); ?>
     </div>
     <div id="box-passreset" class="box-form round">
-        <form id="frmUserPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset"
+        <form id="frmUserPassReset" action="" method="post" class="form-action"
+              data-onsubmit="user/passreset"
               data-action-route="userPassReset/saveReset">
             <fieldset id="box-data">
                 <div class="form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="password" name="password" type="password" required
+                        <input id="password" name="password" type="password"
+                               required
                                class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                value="" maxlength="255"
                                autocomplete="off">
@@ -30,7 +32,8 @@
                 <div class="form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="password_repeat" name="password_repeat" type="password" required
+                        <input id="password_repeat" name="password_repeat"
+                               type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="" maxlength="255"
                                autocomplete="off">
@@ -38,7 +41,9 @@
                                for="password_repeat"><?php echo __('Password (repeat)'); ?></label>
                     </div>
                 </div>
-                <input type="hidden" name="hash" value="<?php echo $_getvar('hash'); ?>">
+                <input type="hidden" name="hash"
+                       value="<?php echo $_getvar('hash'); ?>">
+                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
             </fieldset>
 
@@ -50,7 +55,8 @@
                     <?php echo __('Back'); ?>
                 </button>
 
-                <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                <button id="btnChange"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                     <?php echo __('Change'); ?>
                     <i class="material-icons"
                        title="<?php echo __('Change'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>

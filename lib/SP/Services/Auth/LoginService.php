@@ -36,6 +36,7 @@ use SP\Core\UI\ThemeInterface;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
+use SP\Http\Uri;
 use SP\Providers\Auth\AuthProvider;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
@@ -173,9 +174,16 @@ final class LoginService extends Service
         $this->loadUserPreferences();
         $this->cleanUserData();
 
-        $redirect = 'index.php?r=' . ($this->from ? $this->from . '&sk=' . $this->context->getSecurityKey() : 'index');
+        $uri = new Uri('index.php');
 
-        return new LoginResponse(self::STATUS_PASS, $redirect);
+        if ($this->from) {
+            $uri->addParam('r', $this->from);
+            $uri->addParam('sk', $this->context->getSecurityKey());
+        } else {
+            $uri->addParam('r', 'index');
+        }
+
+        return new LoginResponse(self::STATUS_PASS, $uri->getUri());
     }
 
     /**
@@ -215,11 +223,11 @@ final class LoginService extends Service
         if ($userLoginResponse !== null) {
             // Comprobar si el usuario está deshabilitado
             if ($userLoginResponse->getIsDisabled()) {
-                $this->eventDispatcher->notifyEvent('login.checkUser.disabled',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__u('User disabled'))
-                            ->addDetail(__u('User'), $userLoginResponse->getLogin()))
+                $this->eventDispatcher->notifyEvent(
+                    'login.checkUser.disabled',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('User disabled'))
+                        ->addDetail(__u('User'), $userLoginResponse->getLogin()))
                 );
 
                 $this->addTracking();
@@ -232,19 +240,23 @@ final class LoginService extends Service
                 );
             }
 
-            // Comprobar si se ha forzado un cambio de clave
+            // Check whether a user's password change has been requested
             if ($userLoginResponse->getIsChangePass()) {
-                $this->eventDispatcher->notifyEvent('login.checkUser.changePass',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDetail(__u('User'), $userLoginResponse->getLogin()))
+                $this->eventDispatcher->notifyEvent(
+                    'login.checkUser.changePass',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__u('User'), $userLoginResponse->getLogin()))
                 );
 
                 $hash = PasswordUtil::generateRandomBytes(16);
 
-                $this->dic->get(UserPassRecoverService::class)->add($userLoginResponse->getId(), $hash);
+                $this->dic->get(UserPassRecoverService::class)
+                    ->add($userLoginResponse->getId(), $hash);
 
-                return new LoginResponse(self::STATUS_PASS_RESET, 'index.php?r=userPassReset/change/' . $hash);
+                $uri = new Uri('index.php');
+                $uri->addParam('r', 'userPassReset/reset/' . $hash);
+
+                return new LoginResponse(self::STATUS_PASS_RESET, $uri->getUri());
             }
         }
 
@@ -270,9 +282,10 @@ final class LoginService extends Service
         try {
             if ($masterPass) {
                 if ($temporaryMasterPass->checkTempMasterPass($masterPass)) {
-                    $this->eventDispatcher->notifyEvent('login.masterPass.temporary',
-                        new Event($this,
-                            EventMessage::factory()->addDescription(__u('Using temporary password')))
+                    $this->eventDispatcher->notifyEvent(
+                        'login.masterPass.temporary',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Using temporary password')))
                     );
 
                     $masterPass = $temporaryMasterPass->getUsingKey($masterPass);
@@ -282,9 +295,10 @@ final class LoginService extends Service
                         $masterPass,
                         $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
                 ) {
-                    $this->eventDispatcher->notifyEvent('login.masterPass',
-                        new Event($this,
-                            EventMessage::factory()->addDescription(__u('Wrong master password')))
+                    $this->eventDispatcher->notifyEvent(
+                        'login.masterPass',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Wrong master password')))
                     );
 
                     $this->addTracking();
@@ -297,18 +311,20 @@ final class LoginService extends Service
                     );
                 }
 
-                $this->eventDispatcher->notifyEvent('login.masterPass',
-                    new Event($this,
-                        EventMessage::factory()->addDescription(__u('Master password updated')))
+                $this->eventDispatcher->notifyEvent(
+                    'login.masterPass',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Master password updated')))
                 );
             } else if ($oldPass) {
                 if ($userPassService->updateMasterPassFromOldPass(
                         $oldPass,
                         $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK
                 ) {
-                    $this->eventDispatcher->notifyEvent('login.masterPass',
-                        new Event($this,
-                            EventMessage::factory()->addDescription(__u('Wrong master password')))
+                    $this->eventDispatcher->notifyEvent(
+                        'login.masterPass',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Wrong master password')))
                     );
 
                     $this->addTracking();
@@ -321,9 +337,10 @@ final class LoginService extends Service
                     );
                 }
 
-                $this->eventDispatcher->notifyEvent('login.masterPass',
-                    new Event($this,
-                        EventMessage::factory()->addDescription(__u('Master password updated')))
+                $this->eventDispatcher->notifyEvent(
+                    'login.masterPass',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Master password updated')))
                 );
             } else {
                 switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {
@@ -391,7 +408,8 @@ final class LoginService extends Service
             $userLoginResponse->setPreferences(new UserPreferencesData());
         }
 
-        $this->eventDispatcher->notifyEvent('login.session.load',
+        $this->eventDispatcher->notifyEvent(
+            'login.session.load',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('User'), $userLoginResponse->getLogin()))
         );
@@ -408,7 +426,10 @@ final class LoginService extends Service
 
         $this->context->setAuthCompleted(true);
 
-        $this->eventDispatcher->notifyEvent('login.preferences.load', new Event($this));
+        $this->eventDispatcher->notifyEvent(
+            'login.preferences.load',
+            new Event($this)
+        );
     }
 
     /**
@@ -467,7 +488,10 @@ final class LoginService extends Service
 
                 $this->addTracking();
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.ldap',
+                    new Event($this, $eventMessage)
+                );
 
                 throw new AuthException(
                     __u('Wrong login'),
@@ -480,7 +504,10 @@ final class LoginService extends Service
             if ($authData->getStatusCode() === LdapAuth::ACCOUNT_EXPIRED) {
                 $eventMessage->addDescription(__u('Account expired'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.ldap',
+                    new Event($this, $eventMessage)
+                );
 
                 throw new AuthException(
                     __u('Account expired'),
@@ -493,7 +520,10 @@ final class LoginService extends Service
             if ($authData->getStatusCode() === LdapAuth::ACCOUNT_NO_GROUPS) {
                 $eventMessage->addDescription(__u('User has no associated groups'));
 
-                $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.ldap',
+                    new Event($this, $eventMessage)
+                );
 
                 throw new AuthException(
                     __u('User has no associated groups'),
@@ -511,7 +541,10 @@ final class LoginService extends Service
 
             $eventMessage->addDescription(__u('Internal error'));
 
-            $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'login.auth.ldap',
+                new Event($this, $eventMessage)
+            );
 
             throw new AuthException(
                 __u('Internal error'),
@@ -521,7 +554,8 @@ final class LoginService extends Service
             );
         }
 
-        $this->eventDispatcher->notifyEvent('login.auth.ldap',
+        $this->eventDispatcher->notifyEvent(
+            'login.auth.ldap',
             new Event($this, EventMessage::factory()
                 ->addDetail(__u('Type'), __FUNCTION__)
                 ->addDetail(__u('LDAP Server'), $authData->getServer())
@@ -582,7 +616,10 @@ final class LoginService extends Service
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'login.auth.database',
+                new Event($this, $eventMessage)
+            );
 
             throw new AuthException(
                 __u('Wrong login'),
@@ -593,7 +630,10 @@ final class LoginService extends Service
         }
 
         if ($authData->getAuthenticated() === true) {
-            $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'login.auth.database',
+                new Event($this, $eventMessage)
+            );
         }
 
         return true;
@@ -626,7 +666,10 @@ final class LoginService extends Service
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'login.auth.browser',
+                new Event($this, $eventMessage)
+            );
 
             throw new AuthException(
                 __u('Wrong login'),
@@ -636,7 +679,9 @@ final class LoginService extends Service
             );
         }
 
-        if ($authData->getAuthenticated() === true && $this->configData->isAuthBasicAutoLoginEnabled()) {
+        if ($authData->getAuthenticated() === true
+            && $this->configData->isAuthBasicAutoLoginEnabled()
+        ) {
             try {
                 $userLoginRequest = new UserLoginRequest();
                 $userLoginRequest->setLogin($this->userLoginData->getLoginUser());
@@ -648,7 +693,10 @@ final class LoginService extends Service
                     $this->userService->createOnLogin($userLoginRequest);
                 }
 
-                $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.browser',
+                    new Event($this, $eventMessage)
+                );
 
                 return true;
             } catch (\Exception $e) {
