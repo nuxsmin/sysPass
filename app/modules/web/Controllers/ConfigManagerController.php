@@ -314,9 +314,9 @@ final class ConfigManagerController extends ControllerBase
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
-        $backupAppFile = new FileHandler(FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true));
-        $backupDbFile = new FileHandler(FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash(), true));
-        $exportFile = new FileHandler(XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash(), true));
+        $backupAppFile = new FileHandler(FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash() ?: '', true));
+        $backupDbFile = new FileHandler(FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash() ?: '', true));
+        $exportFile = new FileHandler(XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash() ?: '', true));
 
         try {
             $backupAppFile->checkFileExists();
