@@ -145,7 +145,7 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
         $configEvents = $configData->getLogEvents();
 
         if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(array_merge(LogInterface::EVENTS, LogInterface::EVENTS_FIXED));
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
