@@ -885,6 +885,7 @@
   EventSourcePolyfill.prototype.OPEN = OPEN;
   EventSourcePolyfill.prototype.CLOSED = CLOSED;
   EventSourcePolyfill.prototype.close = function () {
+    this.controller.abort();
     this._close();
   };
 

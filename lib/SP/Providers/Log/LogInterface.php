@@ -66,6 +66,8 @@ interface LogInterface
         'request.account',
         'edit.user.password',
         'save.config.',
-        'create.tempMasterPassword'
+        'create.tempMasterPassword',
+        'run.import.start',
+        'run.import.end',
     ];
 }

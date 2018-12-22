@@ -5,6 +5,8 @@
  * @var callable               $_getvar
  * @var \SP\Mvc\View\Template  $this
  */
+
+$disabled = $configData->isMaintenance() ? '' : 'disabled';
 ?>
 
 <form method="post" name="frmCrypt" id="frmCrypt" class="form-action"
@@ -36,9 +38,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="current_masterpass" name="current_masterpass" type="password"
+                    <input id="current_masterpass" name="current_masterpass"
+                           type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
-                           maxlength="255" required/>
+                           maxlength="255" required <?php echo $disabled; ?> />
                     <label class="mdl-textfield__label"
                            for="current_masterpass"><?php echo __('Current Master Password'); ?></label>
                 </div>
@@ -50,9 +53,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="new_masterpass" name="new_masterpass" type="password"
+                    <input id="new_masterpass" name="new_masterpass"
+                           type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                           maxlength="255" required/>
+                           maxlength="255" required <?php echo $disabled; ?> />
                     <label class="mdl-textfield__label"
                            for="new_masterpass"><?php echo __('New Master Password'); ?></label>
                 </div>
@@ -64,9 +68,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="new_masterpass_repeat" name="new_masterpass_repeat" type="password"
+                    <input id="new_masterpass_repeat"
+                           name="new_masterpass_repeat" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="255" required/>
+                           maxlength="255" required <?php echo $disabled; ?> />
                     <label class="mdl-textfield__label"
                            for="new_masterpass_repeat"><?php echo __('New Master Password (repeat)'); ?></label>
                 </div>
@@ -75,6 +80,12 @@
         <tr>
             <td class="descField"></td>
             <td class="valField">
+                <?php if (!$configData->isMaintenance()): ?>
+                    <div
+                            class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                    <?php echo __('Maintenance mode not enabled'); ?>. <?php echo __('Please, enable it to avoid unwanted behavior from other sessions'); ?>
+                    <br>
+                <?php endif; ?>
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                 <?php echo __('You should save the new password on a secure place'); ?>
@@ -98,7 +109,8 @@
                 <ul class="config-masterpass-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="no_account_change">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="no_account_change">
                                 <input type="checkbox" id="no_account_change"
                                        class="mdl-switch__input"
                                        name="no_account_change"/>
@@ -117,7 +129,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="confirm_masterpass_change">
-                                <input type="checkbox" id="confirm_masterpass_change"
+                                <input type="checkbox"
+                                       id="confirm_masterpass_change"
                                        class="mdl-switch__input"
                                        name="confirm_masterpass_change"/>
                             </label>
@@ -136,7 +149,8 @@
     </table>
 
     <?php if ($_getvar('taskId')): ?>
-        <input type="hidden" name="taskId" value="<?php echo $_getvar('taskId'); ?>">
+        <input type="hidden" name="taskId"
+               value="<?php echo $_getvar('taskId'); ?>">
         <input type="hidden" name="lock" value="masterpass">
     <?php endif; ?>
 </form>
@@ -150,7 +164,8 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-mpass" class="help-box" title="<?php echo __('Master Password'); ?>">
+            <div for="help-mpass" class="help-box"
+                 title="<?php echo __('Master Password'); ?>">
                 <div class="help-container">
                     <p class="help-text"><?php echo __('The Master Password is used to encrypt sysPass accounts passwords and keep them safe.'); ?></p>
 
@@ -172,7 +187,7 @@
             </li>
         <?php endif; ?>
 
-        <?php if ($_getvar('numAccounts') > 0): ?>
+        <?php if ($configData->isMaintenance() && $_getvar('numAccounts') > 0): ?>
             <li>
                 <button form="frmCrypt"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
@@ -189,7 +204,8 @@
     <?php echo __('Temporary Password'); ?>
 </div>
 
-<form method="post" name="frmTempMasterPass" id="frmTempMasterPass" class="form-action"
+<form method="post" name="frmTempMasterPass" id="frmTempMasterPass"
+      class="form-action"
       data-onsubmit="config/save"
       data-action-route="configEncryption/saveTemp">
     <table class="data tblConfig">
@@ -235,9 +251,11 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="temporary_masterpass_maxtime" name="temporary_masterpass_maxtime" type="number"
+                    <input id="temporary_masterpass_maxtime"
+                           name="temporary_masterpass_maxtime" type="number"
                            step="600"
-                           pattern="[0-9]{2,6}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                           pattern="[0-9]{2,6}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="3600"
                            required/>
                     <label class="mdl-textfield__label"
@@ -253,7 +271,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="temporary_masterpass_email">
-                                <input type="checkbox" id="temporary_masterpass_email"
+                                <input type="checkbox"
+                                       id="temporary_masterpass_email"
                                        class="mdl-switch__input"
                                        name="temporary_masterpass_email" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>/>
                             </label>
@@ -276,7 +295,8 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Group'); ?></div>
 
-                <select id="temporary_masterpass_group" name="temporary_masterpass_group"
+                <select id="temporary_masterpass_group"
+                        name="temporary_masterpass_group"
                         class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
                     <option value=""><?php echo __('Select Group'); ?></option>
                     <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
@@ -320,7 +340,8 @@
             </button>
 
 
-            <div for="help-tmpass" class="help-box" title="<?php echo __('Temporary Password'); ?>">
+            <div for="help-tmpass" class="help-box"
+                 title="<?php echo __('Temporary Password'); ?>">
                 <div class="help-container">
                     <p class="help-text"><?php echo __('The temporary password is used as a Master Password for the users that need to enter it during login. By this way there is no need to tell them the real Master Password.'); ?></p>
                 </div>

@@ -644,13 +644,12 @@ sysPass.Actions = function (log) {
                 positive: {
                     title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
-                        let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
                         const opts = sysPassApp.requests.getRequestOpts();
 
                         if (taskId) {
                             opts.useFullLoading = true;
-                            taskRunner = task(taskId);
+                            task.run(taskId);
                         }
 
                         opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
@@ -663,9 +662,7 @@ sysPass.Actions = function (log) {
                             if (json.status !== 0) {
                                 $obj.find(":input[name=key]").val("");
                             } else {
-                                if (taskRunner !== undefined) {
-                                    taskRunner.close();
-                                }
+                                task.end();
 
                                 setTimeout(function () {
                                     sysPassApp.util.redirect("index.php");
@@ -809,13 +806,12 @@ sysPass.Actions = function (log) {
                 positive: {
                     title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
-                        let taskRunner;
                         const taskId = $obj.find("input[name='taskId']").val();
                         const opts = sysPassApp.requests.getRequestOpts();
 
                         if (taskId) {
                             opts.useFullLoading = true;
-                            taskRunner = task(taskId);
+                            task.run(taskId);
                         }
 
                         opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
@@ -826,9 +822,7 @@ sysPass.Actions = function (log) {
 
                             $obj.find(":input[type=password]").val("");
 
-                            if (taskRunner !== undefined) {
-                                taskRunner.close();
-                            }
+                            task.end();
                         });
                     }
                 }
@@ -1782,25 +1776,42 @@ sysPass.Actions = function (log) {
         },
     };
 
-    const task = function (taskId) {
-        log.info("task:" + taskId);
+    const task = {
+        runner: null,
+        run: function (taskId) {
+            log.info("task:run");
+            log.info("taskId: " + taskId);
 
-        const $taskStatus = $("#taskStatus");
-        $taskStatus.css("display", "block");
-        $taskStatus.empty().html(sysPassApp.config.LANG[62]);
+            const $taskStatus = $("#taskStatus");
+            $taskStatus.css("display", "block");
+            $taskStatus.empty().html(sysPassApp.config.LANG[62]);
 
-        const opts = sysPassApp.requests.getRequestOpts();
-        opts.method = "get";
-        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: ["task/trackStatus", taskId]});
+            const opts = sysPassApp.requests.getRequestOpts();
+            opts.method = "get";
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: ["task/trackStatus", taskId]});
 
-        return sysPassApp.requests.getActionEvent(opts,
-            function (result) {
-                const text = `${result.task} - ${result.message} - ${result.time} - ${result.progress}%<br>${sysPassApp.config.LANG[62]}`;
+            this.runner = sysPassApp.requests.getActionEvent(opts,
+                function (result) {
+                    const text = `${result.task} - ${result.message} - ${result.time} - ${result.progress}%<br>${sysPassApp.config.LANG[62]}`;
 
-                log.info(text);
+                    log.info(text);
 
-                $taskStatus.empty().html(text);
-            });
+                    $taskStatus.empty().html(text);
+                });
+
+            return this.runner;
+        },
+        end: function () {
+            log.info("task:end");
+
+            if (this.runner !== null) {
+                log.info('Task ended');
+
+                this.runner.close();
+
+                $("#taskStatus").css("display", "none");
+            }
+        }
     };
 
     const track = {
