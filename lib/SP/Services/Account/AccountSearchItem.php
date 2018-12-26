@@ -428,6 +428,6 @@ final class AccountSearchItem
      */
     public function isWikiMatch($wikiFilter)
     {
-        return preg_match('/^(' . $wikiFilter . ').*/i', $this->accountSearchVData->getName()) !== false;
+        return preg_match('/^' . $wikiFilter . '/i', $this->accountSearchVData->getName()) === 1;
     }
 }

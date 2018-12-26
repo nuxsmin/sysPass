@@ -131,7 +131,7 @@ final class SyslogHandler extends Provider implements EventReceiver
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
-        if (count($configEvents) === 0) {
+        if (empty($configEvents)) {
             $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));

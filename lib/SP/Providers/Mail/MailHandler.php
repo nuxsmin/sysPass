@@ -184,7 +184,7 @@ final class MailHandler extends Provider implements EventReceiver
 
         $configEvents = $this->config->getConfigData()->getMailEvents();
 
-        if (count($configEvents) === 0) {
+        if (empty($configEvents)) {
             $this->events = $this->parseEventsToRegex(self::EVENTS_FIXED);
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, self::EVENTS_FIXED));

@@ -403,7 +403,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLogEvents()
     {
-        return (array)$this->logEvents;
+        return is_array($this->logEvents) ? $this->logEvents : [];
     }
 
     /**
@@ -2031,7 +2031,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailEvents()
     {
-        return (array)$this->mailEvents;
+        return is_array($this->mailEvents) ? $this->mailEvents : [];
     }
 
     /**

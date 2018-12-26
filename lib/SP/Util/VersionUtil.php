@@ -102,6 +102,22 @@ final class VersionUtil
     }
 
     /**
+     * @param string $version
+     *
+     * @return float|int
+     */
+    public static function versionToInteger(string $version)
+    {
+        $intVersion = 0;
+
+        foreach (str_split(str_replace('.', '', $version)) as $key => $value) {
+            $intVersion += (int)$value * (10 ** (3 - $key));
+        }
+
+        return $intVersion;
+    }
+
+    /**
      * Devuelve la versión de sysPass.
      *
      * @param bool $retBuild devolver el número de compilación

@@ -36,6 +36,7 @@ use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Export\XmlVerifyService;
+use SP\Util\VersionUtil;
 
 defined('APP_ROOT') || die();
 
@@ -76,7 +77,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
 
             $this->processCategories();
 
-            if ($this->version >= 300) {
+            if ($this->version >= VersionUtil::versionToInteger('3.0.0')) {
                 $this->processClients();
             } else {
                 $this->processCustomers();
@@ -98,7 +99,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
      */
     protected function getXmlVersion()
     {
-        return (int)str_replace('.', '', (new DOMXPath($this->xmlDOM))->query('/Root/Meta/Version')->item(0)->nodeValue);
+        return VersionUtil::versionToInteger((new DOMXPath($this->xmlDOM))->query('/Root/Meta/Version')->item(0)->nodeValue);
     }
 
     /**
