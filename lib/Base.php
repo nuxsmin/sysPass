@@ -57,7 +57,7 @@ define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('PUBLIC_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
 
-define('DEBUG', true);
+define('DEBUG', false);
 
 // Empezar a calcular la memoria utilizada
 $memInit = memory_get_usage();
