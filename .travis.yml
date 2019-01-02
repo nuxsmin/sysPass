@@ -9,6 +9,7 @@ php:
 
 branches:
   only:
+  - master
   - 3.0
 
 addons:
