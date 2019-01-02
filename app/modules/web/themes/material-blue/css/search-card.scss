@@ -1,0 +1,142 @@
+/* Estilos para mostrar la búsqueda en formato cuadrícula */
+@import "base";
+
+#content {
+  #data-search {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    text-align: center;
+    padding: 0.5em 0;
+    width: 100%;
+    margin: 0 auto;
+
+    .account-label {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      width: 25em;
+      min-height: 8em;
+      height: auto;
+      text-align: left;
+      margin: .5em .5em;
+      color: #696969;
+      background-color: #fcfcfc;
+      padding: 0 .5em;
+
+      .label-row-up,
+      .label-row-down {
+        display: flex;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 3em;
+        width: 100%;
+        padding: 0.5em 0;
+      }
+
+      .label-row-down {
+        height: 3em;
+      }
+
+      .label-left {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        height: auto;
+      }
+
+      .label-right {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        height: auto;
+        & > div {
+          width: 100%;
+        }
+      }
+
+      .label-field {
+        width: 100%;
+        min-height: 3em;
+        height: auto;
+        padding: 0 .3em;
+      }
+
+      .field-text {
+        word-wrap: break-word;
+        a {
+          color: $color-indigo-fg;
+        }
+      }
+
+      .field-customer {
+        flex-grow: 2;
+      }
+
+      .field-name {
+        padding: 0.3em 0.2em;
+        color: #b9b9b9;
+        text-align: left;
+        border-bottom: 1px solid #d9d9d9
+      }
+
+      .field-name-hidden {
+        display: none;
+      }
+
+      .header .field-name {
+        color: white;
+        font-weight: bold
+      }
+
+      .no-link,
+      .no-link a {
+        color: white;
+        font-weight: bold;
+      }
+    }
+
+    .account-info {
+      padding: .5em 0 .5em 0;
+      text-align: left;
+      opacity: 0.3;
+      min-height: 4em;
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .account-actions {
+      align-self: baseline;
+      padding: .5em 0;
+      text-align: right;
+      border-top: 1px solid #c9c9c9;
+      i {
+        opacity: .5;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    .account-spacer {
+      float: left;
+      clear: left;
+      height: 2em;
+      width: 20%
+    }
+
+    .tags-box {
+      display: inline-block;
+
+      span.tag {
+        cursor: pointer;
+        opacity: 0.3;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,209 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE mimetypes>
+<mimetypes>
+  <mime multiple="1">
+    <type>application/x-abiword</type>
+    <description>AbiWord document</description>
+    <extension>abw</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/octet-stream</type>
+    <description>Archive document (multiple files embedded)</description>
+    <extension>arc</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.amazon.ebook</type>
+    <description>Amazon Kindle eBook format</description>
+    <extension>azw</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/octet-stream</type>
+    <description>Any kind of binary data</description>
+    <extension>bin</extension>
+  </mime>
+  <mime multiple="1">
+    <type>image/bmp</type>
+    <description>Windows OS/2 Bitmap Graphics</description>
+    <extension>bmp</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-bzip</type>
+    <description>BZip archive</description>
+    <extension>bz</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-bzip2</type>
+    <description>BZip2 archive</description>
+    <extension>bz2</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-csh</type>
+    <description>C-Shell script</description>
+    <extension>csh</extension>
+  </mime>
+  <mime multiple="1">
+    <type>text/csv</type>
+    <description>Comma-separated values (CSV)</description>
+    <extension>csv</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/msword</type>
+    <description>Microsoft Word</description>
+    <extension>doc</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</type>
+    <description>Microsoft Word (OpenXML)</description>
+    <extension>docx</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.ms-fontobject</type>
+    <description>MS Embedded OpenType fonts</description>
+    <extension>eot</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/epub+zip</type>
+    <description>Electronic publication (EPUB)</description>
+    <extension>epub</extension>
+  </mime>
+  <mime multiple="1">
+    <type>image/gif</type>
+    <description>Graphics Interchange Format (GIF)</description>
+    <extension>gif</extension>
+  </mime>
+  <mime multiple="1">
+    <type>text/html</type>
+    <description>HyperText Markup Language (HTML)</description>
+    <extension>html</extension>
+  </mime>
+  <mime multiple="1">
+    <type>text/calendar</type>
+    <description>iCalendar format</description>
+    <extension>ics</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/java-archive</type>
+    <description>Java Archive (JAR)</description>
+    <extension>jar</extension>
+  </mime>
+  <mime multiple="1">
+    <type>image/jpeg</type>
+    <description>JPEG images</description>
+    <extension>jpg</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/json</type>
+    <description>JSON format</description>
+    <extension>json</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.apple.installer+xml</type>
+    <description>Apple Installer Package</description>
+    <extension>mpkg</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.oasis.opendocument.presentation</type>
+    <description>OpenDocument presentation document</description>
+    <extension>odp</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.oasis.opendocument.spreadsheet</type>
+    <description>OpenDocument spreadsheet document</description>
+    <extension>ods</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.oasis.opendocument.text</type>
+    <description>OpenDocument text document</description>
+    <extension>odt</extension>
+  </mime>
+  <mime multiple="1">
+    <type>image/png</type>
+    <description>Portable Network Graphics</description>
+    <extension>png</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/pdf</type>
+    <description>Adobe Portable Document Format (PDF)</description>
+    <extension>pdf</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.ms-powerpoint</type>
+    <description>Microsoft PowerPoint</description>
+    <extension>ppt</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.openxmlformats-officedocument.presentationml.presentation</type>
+    <description>Microsoft PowerPoint (OpenXML)</description>
+    <extension>pptx</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-rar-compressed</type>
+    <description>RAR archive</description>
+    <extension>rar</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/rtf</type>
+    <description>Rich Text Format (RTF)</description>
+    <extension>rtf</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-sh</type>
+    <description>Bourne shell script</description>
+    <extension>sh</extension>
+  </mime>
+  <mime multiple="1">
+    <type>image/svg+xml</type>
+    <description>Scalable Vector Graphics (SVG)</description>
+    <extension>svg</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-tar</type>
+    <description>Tape Archive (TAR)</description>
+    <extension>tar</extension>
+  </mime>
+  <mime multiple="1">
+    <type>text/plain</type>
+    <description>Text, (generally ASCII or ISO 8859-n)</description>
+    <extension>txt</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.visio</type>
+    <description>Microsoft Visio</description>
+    <extension>vsd</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/xhtml+xml</type>
+    <description>XHTML</description>
+    <extension>xhtml</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.ms-excel</type>
+    <description>Microsoft Excel</description>
+    <extension>xls</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</type>
+    <description>Microsoft Excel (OpenXML)</description>
+    <extension>xlsx</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/xml</type>
+    <description>XML</description>
+    <extension>xml</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/vnd.mozilla.xul+xml</type>
+    <description>XUL</description>
+    <extension>xul</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/zip</type>
+    <description>ZIP archive</description>
+    <extension>zip</extension>
+  </mime>
+  <mime multiple="1">
+    <type>application/x-7z-compressed</type>
+    <description>7-zip archive</description>
+    <extension>7z</extension>
+  </mime>
+</mimetypes>

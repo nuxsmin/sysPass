@@ -45,10 +45,23 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-backup/*
-config/*
-res/
+app/cache/*
+app/backup/*
+app/config/*
+app/temp/*
+app/plugins/*
+app/modules/**/plugins/*
+!app/config/actions.xml
+!app/config/mime.xml
+!app/config/*.inc
+res/*
 tools/
-tmp/
+vendor/*
+doc/*
+build/*
+tests/_output/*
+
+.phpstorm.meta.php
+composer.phar
 
 !.blank

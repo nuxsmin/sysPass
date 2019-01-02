@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="syspass">
+    <table_data name="Notification">
+        <row>
+            <field name="id">1</field>
+            <field name="type">Prueba</field>
+            <field name="component">Accounts</field>
+            <field name="description">Notificación de prueba</field>
+            <field name="date">1529145158</field>
+            <field name="checked">0</field>
+            <field name="userId">2</field>
+            <field name="sticky">0</field>
+            <field name="onlyAdmin">0</field>
+        </row>
+        <row>
+            <field name="id">2</field>
+            <field name="type">Global</field>
+            <field name="component">Accounts</field>
+            <field name="description">test</field>
+            <field name="date">1529145296</field>
+            <field name="checked">0</field>
+            <field name="userId" xsi:nil="true" />
+            <field name="sticky">1</field>
+            <field name="onlyAdmin">0</field>
+        </row>
+        <row>
+            <field name="id">3</field>
+            <field name="type">Admins</field>
+            <field name="component">Accounts</field>
+            <field name="description">test</field>
+            <field name="date">1529145313</field>
+            <field name="checked">0</field>
+            <field name="userId" xsi:nil="true" />
+            <field name="sticky">0</field>
+            <field name="onlyAdmin">1</field>
+        </row>
+    </table_data>
+</database>
+</mysqldump>

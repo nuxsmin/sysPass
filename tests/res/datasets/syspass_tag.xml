@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="syspass">
+    <table_data name="Tag">
+        <row>
+            <field name="id">1</field>
+            <field name="name">www</field>
+            <field name="hash" xsi:type="xs:hexBinary">3465616533356631623335393737613030656264383038366332353964346339</field>
+        </row>
+        <row>
+            <field name="id">2</field>
+            <field name="name">windows</field>
+            <field name="hash" xsi:type="xs:hexBinary">3066343133376564313530326235303435643630383361613235386235633432</field>
+        </row>
+        <row>
+            <field name="id">3</field>
+            <field name="name">Linux</field>
+            <field name="hash" xsi:type="xs:hexBinary">6532303661353465393736393063636535306363383732646437306565383936</field>
+        </row>
+    </table_data>
+    <table_data name="AccountToTag">
+        <row>
+            <field name="accountId">1</field>
+            <field name="tagId">1</field>
+        </row>
+    </table_data>
+</database>
+</mysqldump>

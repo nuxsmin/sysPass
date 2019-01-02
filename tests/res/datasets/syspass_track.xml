@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="syspass">
+	<table_data name="Track">
+	<row>
+		<field name="id">1</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529145183</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529145189</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529145194</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="id">4</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529272367</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="id">5</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529272372</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="id">6</field>
+		<field name="userId" xsi:nil="true" />
+		<field name="source">login</field>
+		<field name="time">1529272376</field>
+		<field name="ipv4" xsi:type="xs:hexBinary">AC160001</field>
+		<field name="ipv6" xsi:nil="true" />
+	</row>
+	</table_data>
+</database>
+</mysqldump>

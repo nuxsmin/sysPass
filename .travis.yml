@@ -1,0 +1,45 @@
+language: php
+
+sudo: false
+
+php:
+  - '7.0'
+  - '7.1'
+  - '7.2'
+
+branches:
+  only:
+  - 3.0
+
+addons:
+  mariadb: '10.1'
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter && ./cc-test-reporter before-build
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+
+script: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite Core
+
+after_script:
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then mv ./tests/_output/coverage-clover.xml clover.xml && ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover; fi
+
+notifications:
+  email:
+    recipients:
+    - nuxsmin@syspass.org
+    on_success: change # default: change
+    on_failure: always # default: always
+
+env:
+  - DB_SERVER=127.0.0.1 DB_NAME=syspass DB_USER=root DB_PASS=
+
+before_install:
+  - mysql -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
+  - mysql -e 'CREATE DATABASE `'"$DB_NAME"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+  - mysql $DB_NAME < ./schemas/dbstructure.sql
+
+cache:
+  directories:
+  - vendor

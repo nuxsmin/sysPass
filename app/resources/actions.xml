@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE actions>
+<actions>
+    <action multiple="1">
+        <id>2</id>
+        <name>ACCOUNT_SEARCH</name>
+        <text>Search for Accounts</text>
+        <route>account/search</route>
+    </action>
+    <action multiple="1">
+        <id>1</id>
+        <name>ACCOUNT</name>
+        <text>Accounts</text>
+        <route>account/index</route>
+    </action>
+    <action multiple="1">
+        <id>20</id>
+        <name>ACCOUNT_FILE</name>
+        <text>Files</text>
+        <route>account/listFile</route>
+    </action>
+    <action multiple="1">
+        <id>12</id>
+        <name>ACCOUNT_REQUEST</name>
+        <text>Requests</text>
+        <route>account/requestAccess</route>
+    </action>
+    <action multiple="1">
+        <id>30</id>
+        <name>ACCOUNT_FAVORITE</name>
+        <text>Favorites</text>
+        <route>favorite/index</route>
+    </action>
+    <action multiple="1">
+        <id>1201</id>
+        <name>WIKI</name>
+        <text>Wiki</text>
+        <route>wiki/index</route>
+    </action>
+    <action multiple="1">
+        <id>5001</id>
+        <name>ITEMS_MANAGE</name>
+        <text>Items and Customizations</text>
+        <route>itemManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>101</id>
+        <name>CATEGORY</name>
+        <text>Categories Management</text>
+        <route>category/index</route>
+    </action>
+    <action multiple="1">
+        <id>301</id>
+        <name>CLIENT</name>
+        <text>Customers Management</text>
+        <route>client/index</route>
+    </action>
+    <action multiple="1">
+        <id>1001</id>
+        <name>AUTHTOKEN</name>
+        <text>API Authorizations Management</text>
+        <route>authToken/index</route>
+    </action>
+    <action multiple="1">
+        <id>401</id>
+        <name>CUSTOMFIELD</name>
+        <text>Custom Fields Management</text>
+        <route>customField/index</route>
+    </action>
+    <action multiple="1">
+        <id>501</id>
+        <name>PUBLICLINK</name>
+        <text>Public Links</text>
+        <route>publicLink/index</route>
+    </action>
+    <action multiple="1">
+        <id>601</id>
+        <name>FILE</name>
+        <text>Files Management</text>
+        <route>file/index</route>
+    </action>
+    <action multiple="1">
+        <id>1301</id>
+        <name>ACCOUNTMGR</name>
+        <text>Accounts Management</text>
+        <route>accountManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>201</id>
+        <name>TAG</name>
+        <text>Tags Management</text>
+        <route>tag/index</route>
+    </action>
+    <action multiple="1">
+        <id>1101</id>
+        <name>PLUGIN</name>
+        <text>Plugins Management</text>
+        <route>plugin/index</route>
+    </action>
+    <action multiple="1">
+        <id>5002</id>
+        <name>ACCESS_MANAGE</name>
+        <text>Users and Accesses</text>
+        <route>accessManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>5003</id>
+        <name>SECURITY_MANAGE</name>
+        <text>Security and Audit</text>
+        <route>securityManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>701</id>
+        <name>USER</name>
+        <text>Users Management</text>
+        <route>user/index</route>
+    </action>
+    <action multiple="1">
+        <id>801</id>
+        <name>GROUP</name>
+        <text>Groups Management</text>
+        <route>group/index</route>
+    </action>
+    <action multiple="1">
+        <id>901</id>
+        <name>PROFILE</name>
+        <text>Profiles Management</text>
+        <route>profile/index</route>
+    </action>
+    <action multiple="1">
+        <id>1701</id>
+        <name>EVENTLOG</name>
+        <text>Event Log</text>
+        <route>eventlog/index</route>
+    </action>
+    <action multiple="1">
+        <id>1702</id>
+        <name>EVENTLOG_SEARCH</name>
+        <text>Search for Events</text>
+        <route>eventlog/search</route>
+    </action>
+    <action multiple="1">
+        <id>1703</id>
+        <name>EVENTLOG_CLEAR</name>
+        <text>Clear Events</text>
+        <route>eventlog/clear</route>
+    </action>
+    <action multiple="1">
+        <id>3</id>
+        <name>ACCOUNT_VIEW</name>
+        <text>View Account</text>
+        <route>account/view</route>
+    </action>
+    <action multiple="1">
+        <id>4</id>
+        <name>ACCOUNT_CREATE</name>
+        <text>New Account</text>
+        <route>account/create</route>
+    </action>
+    <action multiple="1">
+        <id>5</id>
+        <name>ACCOUNT_EDIT</name>
+        <text>Edit Account</text>
+        <route>account/edit</route>
+    </action>
+    <action multiple="1">
+        <id>6</id>
+        <name>ACCOUNT_DELETE</name>
+        <text>Remove Account</text>
+        <route>account/delete</route>
+    </action>
+    <action multiple="1">
+        <id>7</id>
+        <name>ACCOUNT_VIEW_PASS</name>
+        <text>View password</text>
+        <route>account/viewPass</route>
+    </action>
+    <action multiple="1">
+        <id>8</id>
+        <name>ACCOUNT_EDIT_PASS</name>
+        <text>Edit Account Password</text>
+        <route>account/editPass</route>
+    </action>
+    <action multiple="1">
+        <id>9</id>
+        <name>ACCOUNT_EDIT_RESTORE</name>
+        <text>Account Restore</text>
+        <route>account/restore</route>
+    </action>
+    <action multiple="1">
+        <id>10</id>
+        <name>ACCOUNT_COPY</name>
+        <text>Copy Account</text>
+        <route>account/copy</route>
+    </action>
+    <action multiple="1">
+        <id>11</id>
+        <name>ACCOUNT_COPY_PASS</name>
+        <text>Copy Password</text>
+        <route>account/copyPass</route>
+    </action>
+    <action multiple="1">
+        <id>21</id>
+        <name>ACCOUNT_FILE_VIEW</name>
+        <text>View File</text>
+        <route>accountFile/view</route>
+    </action>
+    <action multiple="1">
+        <id>22</id>
+        <name>ACCOUNT_FILE_UPLOAD</name>
+        <text>Upload File</text>
+        <route>accountFile/upload</route>
+    </action>
+    <action multiple="1">
+        <id>23</id>
+        <name>ACCOUNT_FILE_DOWNLOAD</name>
+        <text>Download File</text>
+        <route>accountFile/download</route>
+    </action>
+    <action multiple="1">
+        <id>24</id>
+        <name>ACCOUNT_FILE_DELETE</name>
+        <text>Delete File</text>
+        <route>accountFile/delete</route>
+    </action>
+    <action multiple="1">
+        <id>25</id>
+        <name>ACCOUNT_FILE_SEARCH</name>
+        <text>Search for Files</text>
+        <route>accountFile/search</route>
+    </action>
+    <action multiple="1">
+        <id>26</id>
+        <name>ACCOUNT_FILE_LIST</name>
+        <text>List Files</text>
+        <route>accountFile/list</route>
+    </action>
+    <action multiple="1">
+        <id>31</id>
+        <name>ACCOUNT_FAVORITE_VIEW</name>
+        <text>Show Favorites</text>
+        <route>favorite/view</route>
+    </action>
+    <action multiple="1">
+        <id>32</id>
+        <name>ACCOUNT_FAVORITE_ADD</name>
+        <text>Mark as Favorite</text>
+        <route>accountFavorite/mark</route>
+    </action>
+    <action multiple="1">
+        <id>33</id>
+        <name>ACCOUNT_FAVORITE_DELETE</name>
+        <text>Delete Favorite</text>
+        <route>accountFavorite/unmark</route>
+    </action>
+    <action multiple="1">
+        <id>40</id>
+        <name>ACCOUNT_HISTORY_VIEW</name>
+        <text>View History</text>
+        <route>account/viewHistory</route>
+    </action>
+    <action multiple="1">
+        <id>41</id>
+        <name>ACCOUNT_HISTORY_VIEW_PASS</name>
+        <text>View password</text>
+        <route>account/viewPassHistory</route>
+    </action>
+    <action multiple="1">
+        <id>42</id>
+        <name>ACCOUNT_HISTORY_COPY_PASS</name>
+        <text>Copy Password</text>
+        <route>account/copyPassHistory</route>
+    </action>
+    <action multiple="1">
+        <id>1203</id>
+        <name>WIKI_VIEW</name>
+        <text>View Wiki</text>
+        <route>wiki/view</route>
+    </action>
+    <action multiple="1">
+        <id>1204</id>
+        <name>WIKI_CREATE</name>
+        <text>Add Wiki</text>
+        <route>wiki/create</route>
+    </action>
+    <action multiple="1">
+        <id>1205</id>
+        <name>WIKI_EDIT</name>
+        <text>Edit Wiki</text>
+        <route>wiki/edit</route>
+    </action>
+    <action multiple="1">
+        <id>1206</id>
+        <name>WIKI_DELETE</name>
+        <text>Delete Wiki</text>
+        <route>wiki/delete</route>
+    </action>
+    <action multiple="1">
+        <id>103</id>
+        <name>CATEGORY_VIEW</name>
+        <text>View Category</text>
+        <route>category/view</route>
+    </action>
+    <action multiple="1">
+        <id>104</id>
+        <name>CATEGORY_CREATE</name>
+        <text>New Category</text>
+        <route>category/create</route>
+    </action>
+    <action multiple="1">
+        <id>105</id>
+        <name>CATEGORY_EDIT</name>
+        <text>Edit Category</text>
+        <route>category/edit</route>
+    </action>
+    <action multiple="1">
+        <id>106</id>
+        <name>CATEGORY_DELETE</name>
+        <text>Delete Category</text>
+        <route>category/delete</route>
+    </action>
+    <action multiple="1">
+        <id>102</id>
+        <name>CATEGORY_SEARCH</name>
+        <text>Search for Category</text>
+        <route>category/search</route>
+    </action>
+    <action multiple="1">
+        <id>303</id>
+        <name>CLIENT_VIEW</name>
+        <text>View Client</text>
+        <route>client/view</route>
+    </action>
+    <action multiple="1">
+        <id>304</id>
+        <name>CLIENT_CREATE</name>
+        <text>New Client</text>
+        <route>client/create</route>
+    </action>
+    <action multiple="1">
+        <id>305</id>
+        <name>CLIENT_EDIT</name>
+        <text>Edit Client</text>
+        <route>client/edit</route>
+    </action>
+    <action multiple="1">
+        <id>306</id>
+        <name>CLIENT_DELETE</name>
+        <text>Delete Client</text>
+        <route>client/delete</route>
+    </action>
+    <action multiple="1">
+        <id>302</id>
+        <name>CLIENT_SEARCH</name>
+        <text>Search for Client</text>
+        <route>client/search</route>
+    </action>
+    <action multiple="1">
+        <id>1004</id>
+        <name>AUTHTOKEN_CREATE</name>
+        <text>New API Token</text>
+        <route>authToken/create</route>
+    </action>
+    <action multiple="1">
+        <id>1003</id>
+        <name>AUTHTOKEN_VIEW</name>
+        <text>View API Token</text>
+        <route>authToken/view</route>
+    </action>
+    <action multiple="1">
+        <id>1005</id>
+        <name>AUTHTOKEN_EDIT</name>
+        <text>Edit API Token</text>
+        <route>authToken/edit</route>
+    </action>
+    <action multiple="1">
+        <id>1006</id>
+        <name>AUTHTOKEN_DELETE</name>
+        <text>Delete API Token</text>
+        <route>authToken/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1002</id>
+        <name>AUTHTOKEN_SEARCH</name>
+        <text>Search for API Token</text>
+        <route>authToken/search</route>
+    </action>
+    <action multiple="1">
+        <id>404</id>
+        <name>CUSTOMFIELD_CREATE</name>
+        <text>New Custom Field</text>
+        <route>customField/create</route>
+    </action>
+    <action multiple="1">
+        <id>403</id>
+        <name>CUSTOMFIELD_VIEW</name>
+        <text>Show Custom Field</text>
+        <route>customField/view</route>
+    </action>
+    <action multiple="1">
+        <id>405</id>
+        <name>CUSTOMFIELD_EDIT</name>
+        <text>Edit Custom Field</text>
+        <route>customField/edit</route>
+    </action>
+    <action multiple="1">
+        <id>406</id>
+        <name>CUSTOMFIELD_DELETE</name>
+        <text>Delete Custom Field</text>
+        <route>customField/delete</route>
+    </action>
+    <action multiple="1">
+        <id>402</id>
+        <name>CUSTOMFIELD_SEARCH</name>
+        <text>Search for Custom Field</text>
+        <route>customField/search</route>
+    </action>
+    <action multiple="1">
+        <id>504</id>
+        <name>PUBLICLINK_CREATE</name>
+        <text>Create Public Link</text>
+        <route>publicLink/create</route>
+    </action>
+    <action multiple="1">
+        <id>503</id>
+        <name>PUBLICLINK_VIEW</name>
+        <text>Show Public Link</text>
+        <route>publicLink/view</route>
+    </action>
+    <action multiple="1">
+        <id>506</id>
+        <name>PUBLICLINK_DELETE</name>
+        <text>Delete Public Link</text>
+        <route>publicLink/delete</route>
+    </action>
+    <action multiple="1">
+        <id>507</id>
+        <name>PUBLICLINK_REFRESH</name>
+        <text>Update Public Link</text>
+        <route>publicLink/refresh</route>
+    </action>
+    <action multiple="1">
+        <id>502</id>
+        <name>PUBLICLINK_SEARCH</name>
+        <text>Search for Public Link</text>
+        <route>publicLink/search</route>
+    </action>
+    <action multiple="1">
+        <id>603</id>
+        <name>FILE_VIEW</name>
+        <text>View File</text>
+        <route>file/view</route>
+    </action>
+    <action multiple="1">
+        <id>605</id>
+        <name>FILE_DOWNLOAD</name>
+        <text>Download File</text>
+        <route>file/download</route>
+    </action>
+    <action multiple="1">
+        <id>606</id>
+        <name>FILE_DELETE</name>
+        <text>Delete File</text>
+        <route>file/delete</route>
+    </action>
+    <action multiple="1">
+        <id>604</id>
+        <name>FILE_UPLOAD</name>
+        <text>Upload File</text>
+        <route>file/upload</route>
+    </action>
+    <action multiple="1">
+        <id>602</id>
+        <name>FILE_SEARCH</name>
+        <text>Search for File</text>
+        <route>file/search</route>
+    </action>
+    <action multiple="1">
+        <id>1303</id>
+        <name>ACCOUNTMGR_VIEW</name>
+        <text>View Account</text>
+        <route>accountManager/view</route>
+    </action>
+    <action multiple="1">
+        <id>1304</id>
+        <name>ACCOUNTMGR_DELETE</name>
+        <text>Remove Account</text>
+        <route>accountManager/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1305</id>
+        <name>ACCOUNTMGR_BULK_EDIT</name>
+        <text>Bulk Update</text>
+        <route>accountManager/bulkEdit</route>
+    </action>
+    <action multiple="1">
+        <id>1302</id>
+        <name>ACCOUNTMGR_SEARCH</name>
+        <text>Search for Account</text>
+        <route>accountManager/search</route>
+    </action>
+    <action multiple="1">
+        <id>204</id>
+        <name>TAG_CREATE</name>
+        <text>New Tag</text>
+        <route>tag/create</route>
+    </action>
+    <action multiple="1">
+        <id>203</id>
+        <name>TAG_VIEW</name>
+        <text>View Tag</text>
+        <route>tag/view</route>
+    </action>
+    <action multiple="1">
+        <id>205</id>
+        <name>TAG_EDIT</name>
+        <text>Edit Tag</text>
+        <route>tag/edit</route>
+    </action>
+    <action multiple="1">
+        <id>206</id>
+        <name>TAG_DELETE</name>
+        <text>Delete Tag</text>
+        <route>tag/delete</route>
+    </action>
+    <action multiple="1">
+        <id>202</id>
+        <name>TAG_SEARCH</name>
+        <text>Search for Tag</text>
+        <route>tag/search</route>
+    </action>
+    <action multiple="1">
+        <id>1104</id>
+        <name>PLUGIN_CREATE</name>
+        <text>New Plugin</text>
+        <route>plugin/create</route>
+    </action>
+    <action multiple="1">
+        <id>1103</id>
+        <name>PLUGIN_VIEW</name>
+        <text>View Plugin</text>
+        <route>plugin/view</route>
+    </action>
+    <action multiple="1">
+        <id>1102</id>
+        <name>PLUGIN_SEARCH</name>
+        <text>Search for Plugin</text>
+        <route>plugin/search</route>
+    </action>
+    <action multiple="1">
+        <id>1105</id>
+        <name>PLUGIN_ENABLE</name>
+        <text>Enable Plugin</text>
+        <route>plugin/enable</route>
+    </action>
+    <action multiple="1">
+        <id>1106</id>
+        <name>PLUGIN_DISABLE</name>
+        <text>Disable Plugin</text>
+        <route>plugin/disable</route>
+    </action>
+    <action multiple="1">
+        <id>1107</id>
+        <name>PLUGIN_RESET</name>
+        <text>Reset Plugin</text>
+        <route>plugin/reset</route>
+    </action>
+    <action multiple="1">
+        <id>1108</id>
+        <name>PLUGIN_DELETE</name>
+        <text>Delete Plugin</text>
+        <route>plugin/delete</route>
+    </action>
+    <action multiple="1">
+        <id>703</id>
+        <name>USER_VIEW</name>
+        <text>View User</text>
+        <route>user/view</route>
+    </action>
+    <action multiple="1">
+        <id>704</id>
+        <name>USER_CREATE</name>
+        <text>New User</text>
+        <route>user/create</route>
+    </action>
+    <action multiple="1">
+        <id>705</id>
+        <name>USER_EDIT</name>
+        <text>Edit User</text>
+        <route>user/edit</route>
+    </action>
+    <action multiple="1">
+        <id>706</id>
+        <name>USER_DELETE</name>
+        <text>Delete User</text>
+        <route>user/delete</route>
+    </action>
+    <action multiple="1">
+        <id>707</id>
+        <name>USER_EDIT_PASS</name>
+        <text>Edit User Password</text>
+        <route>user/editPass</route>
+    </action>
+    <action multiple="1">
+        <id>702</id>
+        <name>USER_SEARCH</name>
+        <text>Search for User</text>
+        <route>user/search</route>
+    </action>
+    <action multiple="1">
+        <id>803</id>
+        <name>GROUP_VIEW</name>
+        <text>View Group</text>
+        <route>userGroup/view</route>
+    </action>
+    <action multiple="1">
+        <id>804</id>
+        <name>GROUP_CREATE</name>
+        <text>New Group</text>
+        <route>userGroup/create</route>
+    </action>
+    <action multiple="1">
+        <id>805</id>
+        <name>GROUP_EDIT</name>
+        <text>Edit Group</text>
+        <route>userGroup/edit</route>
+    </action>
+    <action multiple="1">
+        <id>806</id>
+        <name>GROUP_DELETE</name>
+        <text>Delete Group</text>
+        <route>userGroup/delete</route>
+    </action>
+    <action multiple="1">
+        <id>802</id>
+        <name>GROUP_SEARCH</name>
+        <text>Search for Group</text>
+        <route>userGroup/search</route>
+    </action>
+    <action multiple="1">
+        <id>903</id>
+        <name>PROFILE_VIEW</name>
+        <text>View Profile</text>
+        <route>userProfile/view</route>
+    </action>
+    <action multiple="1">
+        <id>904</id>
+        <name>PROFILE_CREATE</name>
+        <text>New Profile</text>
+        <route>userProfile/create</route>
+    </action>
+    <action multiple="1">
+        <id>905</id>
+        <name>PROFILE_EDIT</name>
+        <text>Edit Profile</text>
+        <route>userProfile/edit</route>
+    </action>
+    <action multiple="1">
+        <id>906</id>
+        <name>PROFILE_DELETE</name>
+        <text>Delete Profile</text>
+        <route>userProfile/delete</route>
+    </action>
+    <action multiple="1">
+        <id>902</id>
+        <name>PROFILE_SEARCH</name>
+        <text>Search for Profile</text>
+        <route>userProfile/search</route>
+    </action>
+    <action multiple="1">
+        <id>5010</id>
+        <name>USERSETTINGS</name>
+        <text>User Configuration</text>
+        <route>userSettingsManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>5011</id>
+        <name>USERSETTINGS_GENERAL</name>
+        <text>General Preferences</text>
+        <route>userSettings/general</route>
+    </action>
+    <action multiple="1">
+        <id>1401</id>
+        <name>NOTIFICATION</name>
+        <text>Notifications</text>
+        <route>notification/index</route>
+    </action>
+    <action multiple="1">
+        <id>1501</id>
+        <name>CONFIG</name>
+        <text>Configuration</text>
+        <route>configManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>1502</id>
+        <name>CONFIG_GENERAL</name>
+        <text>General Configuration</text>
+        <route>configManager/general</route>
+    </action>
+    <action multiple="1">
+        <id>1510</id>
+        <name>CONFIG_ACCOUNT</name>
+        <text>Accounts Configuration</text>
+        <route>account/config</route>
+    </action>
+    <action multiple="1">
+        <id>1520</id>
+        <name>CONFIG_WIKI</name>
+        <text>Wiki Configuration</text>
+        <route>wiki/config</route>
+    </action>
+    <action multiple="1">
+        <id>1530</id>
+        <name>CONFIG_CRYPT</name>
+        <text>Encryption Configuration</text>
+        <route>encryption/config</route>
+    </action>
+    <action multiple="1">
+        <id>1531</id>
+        <name>CONFIG_CRYPT_REFRESH</name>
+        <text>Update Hash</text>
+        <route>encryption/updateHash</route>
+    </action>
+    <action multiple="1">
+        <id>1532</id>
+        <name>CONFIG_CRYPT_TEMPPASS</name>
+        <text>Temporary Master Password</text>
+        <route>encryption/createTempPass</route>
+    </action>
+    <action multiple="1">
+        <id>1540</id>
+        <name>CONFIG_BACKUP</name>
+        <text>Backup Configuration</text>
+        <route>backup/config</route>
+    </action>
+    <action multiple="1">
+        <id>1541</id>
+        <name>CONFIG_BACKUP_RUN</name>
+        <text>Backup</text>
+        <route>backup/backup</route>
+    </action>
+    <action multiple="1">
+        <id>1550</id>
+        <name>CONFIG_IMPORT</name>
+        <text>Import Configuration</text>
+        <route>import/config</route>
+    </action>
+    <action multiple="1">
+        <id>1551</id>
+        <name>CONFIG_IMPORT_CSV</name>
+        <text>CSV Import</text>
+        <route>import/csv</route>
+    </action>
+    <action multiple="1">
+        <id>1552</id>
+        <name>CONFIG_IMPORT_XML</name>
+        <text>XML Import</text>
+        <route>import/xml</route>
+    </action>
+    <action multiple="1">
+        <id>1560</id>
+        <name>CONFIG_EXPORT</name>
+        <text>Export Configuration</text>
+        <route>export/config</route>
+    </action>
+    <action multiple="1">
+        <id>1561</id>
+        <name>CONFIG_EXPORT_RUN</name>
+        <text>Export</text>
+        <route>export/export</route>
+    </action>
+    <action multiple="1">
+        <id>1570</id>
+        <name>CONFIG_MAIL</name>
+        <text>Email Configuration</text>
+        <route>mail/config</route>
+    </action>
+    <action multiple="1">
+        <id>1580</id>
+        <name>CONFIG_LDAP</name>
+        <text>LDAP Configuration</text>
+        <route>ldap/config</route>
+    </action>
+    <action multiple="1">
+        <id>1581</id>
+        <name>CONFIG_LDAP_SYNC</name>
+        <text>LDAP synchronization</text>
+        <route>ldap/sync</route>
+    </action>
+    <action multiple="1">
+        <id>1311</id>
+        <name>ACCOUNTMGR_HISTORY</name>
+        <text>Account Management (H)</text>
+        <route>accountHistoryManager/index</route>
+    </action>
+    <action multiple="1">
+        <id>1314</id>
+        <name>ACCOUNTMGR_HISTORY_DELETE</name>
+        <text>Remove Account</text>
+        <route>accountHistoryManager/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1312</id>
+        <name>ACCOUNTMGR_HISTORY_SEARCH</name>
+        <text>Search for Account</text>
+        <route>accountHistoryManager/search</route>
+    </action>
+    <action multiple="1">
+        <id>1315</id>
+        <name>ACCOUNTMGR_HISTORY_RESTORE</name>
+        <text>Account Restore</text>
+        <route>accountHistoryManager/restore</route>
+    </action>
+    <action multiple="1">
+        <id>1403</id>
+        <name>NOTIFICATION_VIEW</name>
+        <text>View Notification</text>
+        <route>notification/view</route>
+    </action>
+    <action multiple="1">
+        <id>1404</id>
+        <name>NOTIFICATION_CREATE</name>
+        <text>Create Notification</text>
+        <route>notification/create</route>
+    </action>
+    <action multiple="1">
+        <id>1405</id>
+        <name>NOTIFICATION_EDIT</name>
+        <text>Edit Notification</text>
+        <route>notification/edit</route>
+    </action>
+    <action multiple="1">
+        <id>1406</id>
+        <name>NOTIFICATION_DELETE</name>
+        <text>Delete Notification</text>
+        <route>notification/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1407</id>
+        <name>NOTIFICATION_CHECK</name>
+        <text>Checkout Notification</text>
+        <route>notification/check</route>
+    </action>
+    <action multiple="1">
+        <id>1402</id>
+        <name>NOTIFICATION_SEARCH</name>
+        <text>Search for Notification</text>
+        <route>notification/search</route>
+    </action>
+    <action multiple="1">
+        <id>1801</id>
+        <name>ITEMPRESET</name>
+        <text>Preset Values Management</text>
+        <route>itemPreset/index</route>
+    </action>
+    <action multiple="1">
+        <id>1802</id>
+        <name>ITEMPRESET_SEARCH</name>
+        <text>Search for Value</text>
+        <route>itemPreset/search</route>
+    </action>
+    <action multiple="1">
+        <id>1803</id>
+        <name>ITEMPRESET_VIEW</name>
+        <text>Display Value</text>
+        <route>itemPreset/view</route>
+    </action>
+    <action multiple="1">
+        <id>1804</id>
+        <name>ITEMPRESET_CREATE</name>
+        <text>New Value</text>
+        <route>itemPreset/create</route>
+    </action>
+    <action multiple="1">
+        <id>1805</id>
+        <name>ITEMPRESET_EDIT</name>
+        <text>Edit Value</text>
+        <route>itemPreset/edit</route>
+    </action>
+    <action multiple="1">
+        <id>1806</id>
+        <name>ITEMPRESET_DELETE</name>
+        <text>Delete Value</text>
+        <route>itemPreset/delete</route>
+    </action>
+    <action multiple="1">
+        <id>1901</id>
+        <name>TRACK</name>
+        <text>Tracks Management</text>
+        <route>track/index</route>
+    </action>
+    <action multiple="1">
+        <id>1902</id>
+        <name>TRACK_SEARCH</name>
+        <text>Search for track</text>
+        <route>track/search</route>
+    </action>
+    <action multiple="1">
+        <id>1903</id>
+        <name>TRACK_UNLOCK</name>
+        <text>Unlock track</text>
+        <route>track/unlock</route>
+    </action>
+    <action multiple="1">
+        <id>1904</id>
+        <name>TRACK_CLEAR</name>
+        <text>Clear the tracks out</text>
+        <route>track/clear</route>
+    </action>
+</actions>
