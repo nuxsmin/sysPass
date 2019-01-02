@@ -1,6 +1,6 @@
 ## sysPass - Systems Password Manager
 
-[![Build Status](https://travis-ci.org/nuxsmin/sysPass.svg?branch=devel-3.0)](https://travis-ci.org/nuxsmin/sysPass)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=devel-3.0)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=devel-3.0)
+[![Build Status](https://travis-ci.org/nuxsmin/sysPass.svg?branch=master)](https://travis-ci.org/nuxsmin/sysPass)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=master)
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Percentage of issues still open")
 
