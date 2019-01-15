@@ -30,6 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\DataModel\CustomFieldDefDataOld;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Services\CustomField\CustomFieldDefService;
+use SP\Services\CustomField\CustomFieldTypeService;
 use SP\Services\Service;
 use SP\Storage\Database\Database;
 use SP\Storage\Database\QueryData;
@@ -61,7 +62,16 @@ final class UpgradeCustomFieldDefinition extends Service
         );
 
         try {
-            $this->transactionAware(function () {
+            $customFieldTypeService = $this->dic->get(CustomFieldTypeService::class);
+            $customFieldTypeService->getAll();
+
+            $customFieldType = [];
+
+            foreach ($customFieldTypeService->getAll() as $customFieldTypeData) {
+                $customFieldType[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
+            }
+
+            $this->transactionAware(function () use ($customFieldType) {
                 $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
 
                 $queryData = new QueryData();
@@ -78,7 +88,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     $itemData->setHelp($data->getHelp());
                     $itemData->setRequired($data->isRequired());
                     $itemData->setShowInList($data->isShowInItemsList());
-                    $itemData->setTypeId($data->getType());
+                    $itemData->setTypeId($customFieldType[$data->getType()]);
 
                     $customFieldDefService->updateRaw($itemData);
 
