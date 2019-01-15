@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,30 +22,21 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mgmt\Files;
-
-use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\FileData;
-use SP\Mgmt\ItemBaseInterface;
-use SP\Mgmt\ItemBaseTrait;
+namespace SP\DataModel;
 
 /**
- * Class FileBase
+ * Interface HydratableInterface
  *
- * @package SP\Mgmt\Files
+ * @package SP\DataModel
  */
-abstract class FileBase implements ItemBaseInterface
+interface HydratableInterface
 {
-    use ItemBaseTrait;
-
     /**
-     * Inicializar la clase
+     * @param string $class
      *
-     * @return void
-     * @throws InvalidClassException
+     * @param string $property
+     *
+     * @return mixed|null
      */
-    protected function init()
-    {
-        $this->setDataModel(FileData::class);
-    }
+    public function hydrate(string $class = null, string $property = 'data');
 }

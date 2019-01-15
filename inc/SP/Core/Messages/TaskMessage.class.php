@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use JsonSerializable;
  *
  * @package SP\Core\Messages
  */
-class TaskMessage implements MessageInterface, JsonSerializable
+final class TaskMessage implements MessageInterface, JsonSerializable
 {
     /**
      * @var string
@@ -59,6 +59,18 @@ class TaskMessage implements MessageInterface, JsonSerializable
     protected $end = 0;
 
     /**
+     * TaskMessage constructor.
+     *
+     * @param string $taskId
+     * @param string $task
+     */
+    public function __construct($taskId, $task)
+    {
+        $this->taskId = $taskId;
+        $this->task = $task;
+    }
+
+    /**
      * @return string
      */
     public function getTask()
@@ -68,10 +80,14 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $task
+     *
+     * @return TaskMessage
      */
     public function setTask($task)
     {
         $this->task = $task;
+
+        return $this;
     }
 
     /**
@@ -84,10 +100,14 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $message
+     *
+     * @return TaskMessage
      */
     public function setMessage($message)
     {
         $this->message = $message;
+
+        return $this;
     }
 
     /**
@@ -100,10 +120,14 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $time
+     *
+     * @return TaskMessage
      */
     public function setTime($time)
     {
         $this->time = $time;
+
+        return $this;
     }
 
     /**
@@ -116,10 +140,14 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $progress
+     *
+     * @return TaskMessage
      */
     public function setProgress($progress)
     {
         $this->progress = $progress;
+
+        return $this;
     }
 
     /**
@@ -132,20 +160,26 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $end
+     *
+     * @return TaskMessage
      */
     public function setEnd($end)
     {
         $this->end = $end;
+
+        return $this;
     }
 
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
+     *
      * @return string
      */
-    public function composeText()
+    public function composeText($delimiter = ';')
     {
-        return implode(';', [
+        return implode($delimiter, [
             'taskId' => $this->taskId,
             'task' => $this->task,
             'message' => $this->message,
@@ -203,9 +237,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $taskId
+     *
+     * @return TaskMessage
      */
     public function setTaskId($taskId)
     {
         $this->taskId = $taskId;
+
+        return $this;
     }
 }

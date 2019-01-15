@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth\Database;
+namespace SP\Providers\Auth\Database;
 
-use SP\Auth\AuthDataBase;
+use SP\Providers\Auth\AuthDataBase;
 
 /**
  * Class DatabaseAuthData
  *
  * @package SP\Auth\Database
  */
-class DatabaseAuthData extends AuthDataBase
+final class DatabaseAuthData extends AuthDataBase
 {
 
 }

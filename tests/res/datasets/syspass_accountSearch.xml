@@ -1,0 +1,213 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="syspass">
+    <table_data name="Account">
+        <row>
+            <field name="id">1</field>
+            <field name="userGroupId">1</field>
+            <field name="userId">1</field>
+            <field name="userEditId">1</field>
+            <field name="clientId">1</field>
+            <field name="name">Google</field>
+            <field name="categoryId">1</field>
+            <field name="login">admin</field>
+            <field name="url">http://google.com</field>
+            <field name="pass" xsi:type="xs:hexBinary">a</field>
+            <field name="key" xsi:type="xs:hexBinary">a</field>
+            <field name="notes">aaaa</field>
+            <field name="countView">341</field>
+            <field name="countDecrypt">35</field>
+            <field name="dateAdd">2018-03-25 09:54:07</field>
+            <field name="dateEdit">2018-04-02 21:38:25</field>
+            <field name="otherUserGroupEdit">0</field>
+            <field name="otherUserEdit">0</field>
+            <field name="isPrivate">0</field>
+            <field name="isPrivateGroup">0</field>
+            <field name="passDate">1522341709</field>
+            <field name="passDateChange">0</field>
+            <field name="parentId">0</field>
+        </row>
+        <row>
+            <field name="id">2</field>
+            <field name="userGroupId">1</field>
+            <field name="userId">1</field>
+            <field name="userEditId">1</field>
+            <field name="clientId">2</field>
+            <field name="name">Apple</field>
+            <field name="categoryId">2</field>
+            <field name="login">admin</field>
+            <field name="url">http://apple.com</field>
+            <field name="pass" xsi:type="xs:hexBinary">a</field>
+            <field name="key" xsi:type="xs:hexBinary">a</field>
+            <field name="notes">bbbb</field>
+            <field name="countView">341</field>
+            <field name="countDecrypt">35</field>
+            <field name="dateAdd">2018-03-25 09:54:07</field>
+            <field name="dateEdit">2018-04-02 21:38:25</field>
+            <field name="otherUserGroupEdit">0</field>
+            <field name="otherUserEdit">0</field>
+            <field name="isPrivate">0</field>
+            <field name="isPrivateGroup">0</field>
+            <field name="passDate">1522341709</field>
+            <field name="passDateChange">0</field>
+            <field name="parentId">0</field>
+        </row>
+        <row>
+            <field name="id">3</field>
+            <field name="userGroupId">3</field>
+            <field name="userId">3</field>
+            <field name="userEditId">3</field>
+            <field name="clientId">2</field>
+            <field name="name">Github</field>
+            <field name="categoryId">2</field>
+            <field name="login">admin</field>
+            <field name="url">http://github.com</field>
+            <field name="pass" xsi:type="xs:hexBinary">a</field>
+            <field name="key" xsi:type="xs:hexBinary">a</field>
+            <field name="notes">bbbb</field>
+            <field name="countView">341</field>
+            <field name="countDecrypt">35</field>
+            <field name="dateAdd">2018-03-25 09:54:07</field>
+            <field name="dateEdit">2018-04-02 21:38:25</field>
+            <field name="otherUserGroupEdit">0</field>
+            <field name="otherUserEdit">0</field>
+            <field name="isPrivate">1</field>
+            <field name="isPrivateGroup">0</field>
+            <field name="passDate">1522341709</field>
+            <field name="passDateChange">0</field>
+            <field name="parentId">0</field>
+        </row>
+        <row>
+            <field name="id">4</field>
+            <field name="userGroupId">3</field>
+            <field name="userId">3</field>
+            <field name="userEditId">3</field>
+            <field name="clientId">3</field>
+            <field name="name">Slack</field>
+            <field name="categoryId">2</field>
+            <field name="login">admin</field>
+            <field name="url">http://slack.com</field>
+            <field name="pass" xsi:type="xs:hexBinary">a</field>
+            <field name="key" xsi:type="xs:hexBinary">a</field>
+            <field name="notes">bbbb</field>
+            <field name="countView">341</field>
+            <field name="countDecrypt">35</field>
+            <field name="dateAdd">2018-03-25 09:54:07</field>
+            <field name="dateEdit">2018-04-02 21:38:25</field>
+            <field name="otherUserGroupEdit">0</field>
+            <field name="otherUserEdit">0</field>
+            <field name="isPrivate">0</field>
+            <field name="isPrivateGroup">1</field>
+            <field name="passDate">1522341709</field>
+            <field name="passDateChange">0</field>
+            <field name="parentId">0</field>
+        </row>
+    </table_data>
+    <table_data name="AccountFile">
+        <row>
+            <field name="id">1</field>
+            <field name="accountId">1</field>
+            <field name="name">sysPass.xml</field>
+            <field name="type">text/xml</field>
+            <field name="size">1312</field>
+            <field name="content" xsi:type="xs:hexBinary">a</field>
+            <field name="extension">XML</field>
+            <field name="thumb" xsi:type="xs:hexBinary">6E6F5F7468756D62</field>
+        </row>
+        <row>
+            <field name="id">3</field>
+            <field name="accountId">2</field>
+            <field name="name">Clock 3.jpg</field>
+            <field name="type">image/jpeg</field>
+            <field name="size">4273</field>
+            <field name="content" xsi:type="xs:hexBinary">a</field>
+            <field name="extension">JPG</field>
+            <field name="thumb" xsi:type="xs:hexBinary">a</field>
+        </row>
+        <row>
+            <field name="id">4</field>
+            <field name="accountId">1</field>
+            <field name="name">android.png</field>
+            <field name="type">image/png</field>
+            <field name="size">4295</field>
+            <field name="content" xsi:type="xs:hexBinary">a</field>
+            <field name="extension">PNG</field>
+            <field name="thumb" xsi:type="xs:hexBinary">a</field>
+        </row>
+    </table_data>
+    <table_data name="AccountToFavorite">
+        <row>
+            <field name="accountId">1</field>
+            <field name="userId">3</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userId">3</field>
+        </row>
+        <row>
+            <field name="accountId">1</field>
+            <field name="userId">1</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userId">2</field>
+        </row>
+    </table_data>
+	<table_data name="AccountToTag">
+        <row>
+            <field name="accountId">1</field>
+            <field name="tagId">1</field>
+        </row>
+        <row>
+            <field name="accountId">1</field>
+            <field name="tagId">2</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="tagId">3</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="tagId">1</field>
+        </row>
+	</table_data>
+	<table_data name="AccountToUser">
+        <row>
+            <field name="accountId">1</field>
+            <field name="userId">3</field>
+            <field name="isEdit">1</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userId">3</field>
+            <field name="isEdit">0</field>
+        </row>
+	</table_data>
+	<table_data name="AccountToUserGroup">
+        <row>
+            <field name="accountId">1</field>
+            <field name="userGroupId">2</field>
+            <field name="isEdit">1</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userGroupId">3</field>
+            <field name="isEdit">0</field>
+        </row>
+	</table_data>
+	<table_data name="UserToUserGroup">
+        <row>
+            <field name="userId">1</field>
+            <field name="userGroupId">2</field>
+        </row>
+        <row>
+            <field name="userId">3</field>
+            <field name="userGroupId">2</field>
+        </row>
+        <row>
+            <field name="userId">2</field>
+            <field name="userGroupId">1</field>
+        </row>
+	</table_data>
+</database>
+</mysqldump>

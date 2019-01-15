@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 
@@ -35,7 +34,7 @@ use Defuse\Crypto\KeyProtectedByPassword;
  *
  * @package SP\Core\Crypt
  */
-class Crypt
+final class Crypt
 {
     /**
      * Encriptar datos con una clave segura
@@ -43,6 +42,7 @@ class Crypt
      * @param string     $data
      * @param string|Key $securedKey
      * @param string     $password
+     *
      * @return string
      * @throws CryptoException
      */
@@ -51,15 +51,15 @@ class Crypt
         try {
             if ($securedKey instanceof Key) {
                 $key = $securedKey;
-            } elseif (!empty($password)) {
+            } elseif (null !== $password) {
                 $key = self::unlockSecuredKey($securedKey, $password, false);
             } else {
                 $key = Key::loadFromAsciiSafeString($securedKey);
             }
 
-            return Crypto::encrypt($data, $key);
+            return Crypto::encrypt((string)$data, $key);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -69,6 +69,7 @@ class Crypt
      * @param string $key
      * @param string $password
      * @param bool   $useAscii
+     *
      * @return string|Key
      * @throws CryptoException
      */
@@ -81,7 +82,7 @@ class Crypt
 
             return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -90,9 +91,10 @@ class Crypt
     /**
      * Desencriptar datos con una clave segura
      *
-     * @param string     $data
-     * @param string|Key $securedKey
-     * @param string     $password
+     * @param string                            $data
+     * @param string|Key|KeyProtectedByPassword $securedKey
+     * @param string                            $password
+     *
      * @return string
      * @throws CryptoException
      */
@@ -100,16 +102,18 @@ class Crypt
     {
         try {
             if ($securedKey instanceof Key) {
-                $key = $securedKey;
-            } elseif (!empty($password) && $securedKey instanceof KeyProtectedByPassword) {
-                $key = self::unlockSecuredKey($securedKey, $password);
-            } else {
-                $key = Key::loadFromAsciiSafeString($securedKey);
+                return Crypto::decrypt($data, $securedKey);
+            } elseif (null !== $password) {
+                if ($securedKey instanceof KeyProtectedByPassword) {
+                    return Crypto::decrypt($data, $securedKey->unlockKey($password));
+                } else {
+                    return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password, false));
+                }
             }
 
-            return Crypto::decrypt($data, $key);
+            return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }
@@ -121,7 +125,8 @@ class Crypt
      *
      * @param string $password
      * @param bool   $useAscii
-     * @return string|Key
+     *
+     * @return string|KeyProtectedByPassword
      * @throws CryptoException
      */
     public static function makeSecuredKey($password, $useAscii = true)
@@ -133,7 +138,7 @@ class Crypt
 
             return KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            logger($e->getMessage());
 
             throw $e;
         }

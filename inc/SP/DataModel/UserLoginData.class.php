@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,50 +25,58 @@
 namespace SP\DataModel;
 
 /**
- * Class UserLoginData
+ * Class ActionData
  *
  * @package SP\DataModel
  */
-class UserLoginData extends UserData
+class ActionData implements DataModelInterface
 {
     /**
-     * @var string
+     * @var int
      */
-    protected $login;
+    public $id;
     /**
      * @var string
      */
-    protected $loginPass;
+    public $name;
+    /**
+     * @var string
+     */
+    public $text;
+    /**
+     * @var string
+     */
+    public $route;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string
      */
-    public function getLogin()
+    public function getName()
     {
-        return $this->login;
-    }
-
-    /**
-     * @param string $login
-     */
-    public function setLogin($login)
-    {
-        $this->login = $login;
+        return $this->name;
     }
 
     /**
      * @return string
      */
-    public function getLoginPass()
+    public function getText()
     {
-        return $this->loginPass;
+        return $this->text;
     }
 
     /**
-     * @param string $loginPass
+     * @return string
      */
-    public function setLoginPass($loginPass)
+    public function getRoute()
     {
-        $this->loginPass = $loginPass;
+        return $this->route;
     }
 }

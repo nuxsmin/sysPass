@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ namespace SP\DataModel;
  *
  * @package SP\DataModel
  */
-class AccountHistoryData extends AccountData
+class AccountHistoryData extends AccountExtData
 {
     /**
      * @var bool
@@ -39,9 +39,13 @@ class AccountHistoryData extends AccountData
      * @var bool
      */
     public $isDeleted = 0;
+    /**
+     * @var int
+     */
+    public $accountId;
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isIsModify()
     {
@@ -57,7 +61,7 @@ class AccountHistoryData extends AccountData
     }
 
     /**
-     * @return boolean
+     * @return int
      */
     public function isIsDeleted()
     {
@@ -70,5 +74,21 @@ class AccountHistoryData extends AccountData
     public function setIsDeleted($isDeleted)
     {
         $this->isDeleted = (int)$isDeleted;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @param int $accountId
+     */
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
     }
 }

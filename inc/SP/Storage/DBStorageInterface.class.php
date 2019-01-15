@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
 /**
  * Interface DBStorageInterface
@@ -32,17 +32,33 @@ namespace SP\Storage;
 interface DBStorageInterface
 {
     /**
+     * Obtener una conexión PDO
+     *
      * @return \PDO
      */
     public function getConnection();
 
     /**
-     * @return mixed
+     * Obtener una conexión PDO sin seleccionar la BD
+     *
+     * @return \PDO
      */
-    public function setConnectionData();
+    public function getConnectionSimple();
 
     /**
+     * Devolcer el estado de la BD
+     *
      * @return int
      */
     public function getDbStatus();
+
+    /**
+     * @return mixed
+     */
+    public function getConnectionUri();
+
+    /**
+     * @return string
+     */
+    public function getDatabaseName();
 }

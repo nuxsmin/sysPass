@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,67 +31,35 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class ProfileBaseData extends DataModelBase implements DataModelInterface
+class UserProfileData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
      */
-    public $userprofile_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $userprofile_name = '';
+    public $name = '';
     /**
      * @var ProfileData
      */
-    public $userprofile_profile;
+    public $profile;
 
     /**
      * @return string
      */
-    public function getUserprofileName()
+    public function getName()
     {
-        return $this->userprofile_name;
+        return $this->name;
     }
 
     /**
-     * @param string $userprofile_name
+     * @param string $name
      */
-    public function setUserprofileName($userprofile_name)
+    public function setName($name)
     {
-        $this->userprofile_name = $userprofile_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserprofileId()
-    {
-        return $this->userprofile_id;
-    }
-
-    /**
-     * @param int $userprofile_id
-     */
-    public function setUserprofileId($userprofile_id)
-    {
-        $this->userprofile_id = $userprofile_id;
-    }
-
-    /**
-     * @return ProfileData
-     */
-    public function getUserprofileProfile()
-    {
-        return $this->userprofile_profile;
-    }
-
-    /**
-     * @param ProfileData $userprofile_profile
-     */
-    public function setUserprofileProfile($userprofile_profile)
-    {
-        $this->userprofile_profile = $userprofile_profile;
+        $this->name = $name;
     }
 
     /**
@@ -99,14 +67,30 @@ class ProfileBaseData extends DataModelBase implements DataModelInterface
      */
     public function getId()
     {
-        return $this->userprofile_id;
+        return (int)$this->id;
     }
 
     /**
-     * @return string
+     * @param int $id
      */
-    public function getName()
+    public function setId($id)
     {
-        return $this->userprofile_name;
+        $this->id = (int)$id;
+    }
+
+    /**
+     * @return ProfileData
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @param ProfileData $profile
+     */
+    public function setProfile(ProfileData $profile)
+    {
+        $this->profile = $profile;
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,37 +22,37 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth\Ldap;
+namespace SP\Http;
 
+use SP\Config\ConfigData;
 
 /**
- * Class LdapUtil
+ * Class Client
  *
- * @package SP\Auth\Ldap
+ * @package SP\Http
  */
-class LdapUtil
+final class Client
 {
     /**
-     * Obtener los datos de una búsqueda de LDAP de un atributo
+     * @param ConfigData $configData
      *
-     * @param array  $results
-     * @param string $attribute
      * @return array
      */
-    public static function getResultsData(array &$results, $attribute)
+    public static function getOptions(ConfigData $configData)
     {
-        $out = [];
+        $options = [
+            'timeout' => 10,
+            'version' => 1.1
+        ];
 
-        foreach ($results as $result) {
-            if (is_array($result)) {
-                foreach ($result as $ldapAttribute => $value) {
-                    if (strtolower($ldapAttribute) === $attribute) {
-                        $out[] = $value;
-                    }
-                }
+        if ($configData->isProxyEnabled()) {
+            $options['proxy'] = sprintf('tcp://%s:%d', $configData->getProxyServer(), $configData->getProxyPort());
+
+            if (!empty($configData->getProxyUser()) && !empty($configData->getProxyPass())) {
+                $options['auth'] = [$configData->getProxyUser(), $configData->getProxyPass()];
             }
         }
 
-        return $out;
+        return $options;
     }
 }

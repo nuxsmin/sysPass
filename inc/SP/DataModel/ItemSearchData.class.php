@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +23,7 @@
  */
 
 namespace SP\DataModel;
+
 use SP\Util\Filter;
 
 
@@ -82,7 +83,7 @@ class ItemSearchData
      */
     public function setLimitStart($limitStart)
     {
-        $this->limitStart = $limitStart;
+        $this->limitStart = (int)$limitStart;
     }
 
     /**
@@ -98,7 +99,7 @@ class ItemSearchData
      */
     public function setLimitCount($limitCount)
     {
-        $this->limitCount = $limitCount;
+        $this->limitCount = (int)$limitCount;
     }
 
     /**

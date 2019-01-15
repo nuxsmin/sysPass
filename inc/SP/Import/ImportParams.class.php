@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,15 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 
 /**
  * Class ImportParams
  *
- * @package SP\Import
+ * @package SP\Services\Import
  */
-class ImportParams
+final class ImportParams
 {
     /**
      * @var string

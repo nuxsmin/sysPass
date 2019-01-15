@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,13 +27,12 @@ namespace SP\Core\Crypt;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 
-
 /**
  * Class CryptSessionHandler
  *
  * @package SP\Core\Crypt
  */
-class CryptSessionHandler extends \SessionHandler
+final class CryptSessionHandler extends \SessionHandler
 {
     /**
      * @var bool Indica si la sesión está encriptada
@@ -42,7 +41,7 @@ class CryptSessionHandler extends \SessionHandler
     /**
      * @var Key
      */
-    private $Key;
+    private $key;
 
     /**
      * Session constructor.
@@ -51,14 +50,16 @@ class CryptSessionHandler extends \SessionHandler
      */
     public function __construct(Key $Key)
     {
-        $this->Key = $Key;
+        $this->key = $Key;
     }
 
     /**
      * Read session data
      *
      * @link  http://php.net/manual/en/sessionhandler.read.php
-     * @param string $id         The session id to read data for.
+     *
+     * @param string $id The session id to read data for.
+     *
      * @return string <p>
      *                           Returns an encoded string of the read data.
      *                           If nothing was read, it must return an empty string.
@@ -76,12 +77,12 @@ class CryptSessionHandler extends \SessionHandler
             try {
                 self::$isSecured = true;
 
-                return Crypt::decrypt($data, $this->Key);
+                return Crypt::decrypt($data, $this->key);
             } catch (CryptoException $e) {
                 self::$isSecured = false;
 
-                debugLog($e->getMessage());
-                debugLog('Session data not encrypted.');
+                logger($e->getMessage());
+                logger('Session data not encrypted.');
 
                 return $data;
             }
@@ -92,6 +93,7 @@ class CryptSessionHandler extends \SessionHandler
      * Write session data
      *
      * @link  http://php.net/manual/en/sessionhandler.write.php
+     *
      * @param string $id           The session id.
      * @param string $data         <p>
      *                             The encoded session data. This data is the
@@ -100,6 +102,7 @@ class CryptSessionHandler extends \SessionHandler
      *                             string and passing it as this parameter.
      *                             Please note sessions use an alternative serialization method.
      *                             </p>
+     *
      * @return bool <p>
      *                             The return value (usually TRUE on success, FALSE on failure).
      *                             Note this value is returned internally to PHP for processing.
@@ -109,14 +112,14 @@ class CryptSessionHandler extends \SessionHandler
     public function write($id, $data)
     {
         try {
-            $data = Crypt::encrypt($data, $this->Key);
+            $data = Crypt::encrypt($data, $this->key);
 
             self::$isSecured = true;
         } catch (CryptoException $e) {
             self::$isSecured = false;
 
-            debugLog('Could not encrypt session data.');
-            debugLog($e->getMessage());
+            logger('Could not encrypt session data.');
+            logger($e->getMessage());
         }
 
         return parent::write($id, $data);

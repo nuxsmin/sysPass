@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
+namespace SP\Providers\Auth;
 
 /**
  * Class AuthData
@@ -40,7 +40,7 @@ abstract class AuthDataBase
      */
     protected $email;
     /**
-     * @var int
+     * @var bool
      */
     protected $authenticated;
     /**
@@ -54,7 +54,7 @@ abstract class AuthDataBase
     /**
      * @var bool
      */
-    protected $required = false;
+    protected $authGranted = false;
     /**
      * @var bool
      */
@@ -101,11 +101,15 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param int $authenticated
+     * @param bool $authenticated
+     *
+     * @return $this
      */
-    public function setAuthenticated($authenticated)
+    public function setAuthenticated($authenticated = null)
     {
-        $this->authenticated = (int)$authenticated;
+        $this->authenticated = $authenticated !== null ? (bool)$authenticated : null;
+
+        return $this;
     }
 
     /**
@@ -141,19 +145,23 @@ abstract class AuthDataBase
     }
 
     /**
+     * Indica si es requerida para acceder a la aplicación
+     *
      * @return bool
      */
-    public function isRequired()
+    public function isAuthGranted()
     {
-        return (bool)$this->required;
+        return (bool)$this->authGranted;
     }
 
     /**
-     * @param bool $required
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @param bool $authGranted
      */
-    public function setRequired($required)
+    public function setAuthGranted($authGranted)
     {
-        $this->required = (bool)$required;
+        $this->authGranted = (bool)$authGranted;
     }
 
     /**

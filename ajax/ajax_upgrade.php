@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\MainActionController;
-use SP\Http\Request;
+namespace SP\Services\Api;
 
-define('APP_ROOT', '..');
-define('IS_UPGRADE', 1);
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+use SP\Core\DataCollection;
 
-Request::checkReferer('GET');
+/**
+ * Class ApiData
+ *
+ * @package SP\Services\Api
+ */
+final class ApiRequestData extends DataCollection
+{
 
-$Controller = new MainActionController();
-$Controller->doAction();
+}

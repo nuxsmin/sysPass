@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Html\Assets
  */
-class ImageIcon extends IconBase
+final class ImageIcon extends IconBase
 {
     /**
      * @param string $icon

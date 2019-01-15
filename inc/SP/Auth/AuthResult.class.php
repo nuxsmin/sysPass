@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,14 +22,14 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
+namespace SP\Providers\Auth;
 
 /**
  * Class AuthData
  *
- * @package SP\Auth
+ * @package SP\Providers\Auth
  */
-class AuthResult
+final class AuthResult
 {
     /**
      * @var string
@@ -39,6 +39,10 @@ class AuthResult
      * @var AuthDataBase
      */
     public $data;
+    /**
+     * @var bool
+     */
+    public $authGranted = false;
 
     /**
      * AuthResult constructor.
@@ -50,6 +54,7 @@ class AuthResult
     {
         $this->auth = $auth;
         $this->data = $data;
+        $this->authGranted = $data->isAuthGranted();
     }
 
     /**
@@ -66,5 +71,13 @@ class AuthResult
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthGranted()
+    {
+        return $this->authGranted;
     }
 }

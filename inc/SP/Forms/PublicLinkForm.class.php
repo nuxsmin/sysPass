@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,49 +22,53 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
-
-use SP\DataModel\PublicLinkData;
+namespace SP\DataModel\ItemPreset;
 
 /**
- * Class PublicLinkForm
+ * Class AccountPrivate
  *
- * @package SP\Forms
+ * @package SP\DataModel
  */
-class PublicLinkForm implements FormInterface
+class AccountPrivate
 {
     /**
-     * @var PublicLinkData
+     * @var bool
      */
-    protected $PublicLinkData;
+    private $privateUser = false;
+    /**
+     * @var bool
+     */
+    private $privateGroup = false;
 
     /**
-     * CustomerForm constructor.
-     *
-     * @param PublicLinkData $PublicLinkData
-     */
-    public function __construct(PublicLinkData $PublicLinkData)
-    {
-        $this->PublicLinkData = $PublicLinkData;
-    }
-
-    /**
-     * Validar el formulario
-     *
-     * @param $action
      * @return bool
-     * @throws \SP\Core\Exceptions\ValidationException
      */
-    public function validate($action)
+    public function isPrivateUser(): bool
     {
-        return true;
+        return $this->privateUser;
     }
 
     /**
-     * @return mixed
+     * @param bool $privateUser
      */
-    public function getItemData()
+    public function setPrivateUser(bool $privateUser)
     {
-        // TODO: Implement getItemData() method.
+        $this->privateUser = $privateUser;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivateGroup(): bool
+    {
+        return $this->privateGroup;
+    }
+
+    /**
+     * @param bool $privateGroup
+     */
+    public function setPrivateGroup(bool $privateGroup)
+    {
+        $this->privateGroup = $privateGroup;
     }
 }

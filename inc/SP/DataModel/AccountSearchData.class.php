@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,30 +25,34 @@
 namespace SP\DataModel;
 
 /**
- * Class AccountSearchData
+ * Class ItemData
  *
  * @package SP\DataModel
  */
-class AccountSearchData extends AccountExtData
+class ItemData implements DataModelInterface
 {
     /**
      * @var int
      */
-    public $num_files = 0;
+    public $id;
+    /**
+     * @var string
+     */
+    public $name;
 
     /**
      * @return int
      */
-    public function getNumFiles()
+    public function getId()
     {
-        return (int)$this->num_files;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $num_files
+     * @return string
      */
-    public function setNumFiles($num_files)
+    public function getName()
     {
-        $this->num_files = (int)$num_files;
+        return $this->name;
     }
 }

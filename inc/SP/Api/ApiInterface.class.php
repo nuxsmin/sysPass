@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,27 +22,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Api;
+namespace SP\Modules\Api\Controllers\Help;
 
 /**
- * Interface ApiInterface
+ * Interface HelpInterface
  *
- * @package SP\Api
+ * @package SP\Modules\Api\Controllers\Help
  */
-interface ApiInterface
+interface HelpInterface
 {
     /**
-     * Devuelve las acciones que implementa la API
-     *
-     * @return array
-     */
-    public function getActions();
-
-    /**
-     * Devuelve la ayuda para una acción
-     *
      * @param string $action
+     *
      * @return array
      */
-    public function getHelp($action);
+    public static function getHelpFor(string $action): array;
 }

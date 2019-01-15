@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,14 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\ConfigActionController;
-use SP\Http\Request;
+namespace SP\Repositories;
 
-define('APP_ROOT', '..');
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+use SP\Core\Exceptions\SPException;
 
-Request::checkReferer('POST');
+/**
+ * Class NoSuchItemException
+ *
+ * @package SP\Repositories
+ */
+final class NoSuchItemException extends SPException
+{
 
-$Controller = new ConfigActionController();
-$Controller->doAction();
+}

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,45 +22,45 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Controller;
+namespace SP\DataModel\Dto;
 
 
 /**
- * Class TabControllerBase
+ * Class ConfigRequest
  *
- * @package SP\Controller
+ * @package SP\DataModel\Dto
  */
-abstract class TabControllerBase extends ControllerBase implements TabsInterface
+class ConfigRequest
 {
     /**
-     * Pestañas
-     *
      * @var array
      */
-    private $tabs = [];
+    private $data = [];
 
     /**
-     * Añadir una nueva pestaña
-     *
-     * @param string $title
-     * @return int Índice de la última pestaña añadida
+     * @param $param
+     * @param $value
      */
-    public function addTab($title)
+    public function add($param, $value)
     {
-        $this->tabs[] = ['title' => $title];
-
-        $this->view->assign('tabs', $this->tabs);
-
-        return count($this->tabs) - 1;
+        $this->data[$param] = $value;
     }
 
     /**
-     * Devuelve las pestañas
+     * @param $param
      *
+     * @return mixed|null
+     */
+    public function get($param)
+    {
+        return isset($this->data[$param]) ? $this->data[$param] : null;
+    }
+
+    /**
      * @return array
      */
-    public function getTabs()
+    public function getData()
     {
-        return $this->tabs;
+        return $this->data;
     }
 }

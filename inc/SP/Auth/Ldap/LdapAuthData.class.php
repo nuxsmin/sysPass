@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,16 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth\Ldap;
+namespace SP\Providers\Auth\Ldap;
 
-use SP\Auth\AuthDataBase;
+use SP\Providers\Auth\AuthDataBase;
 
 /**
  * Class LdapUserData
  *
- * @package SP\Auth\Ldap
+ * @package SP\Providers\Auth\Ldap
  */
-class LdapAuthData extends AuthDataBase
+final class LdapAuthData extends AuthDataBase
 {
     /**
      * @var string
@@ -41,10 +41,6 @@ class LdapAuthData extends AuthDataBase
      * @var string
      */
     protected $groupDn;
-    /**
-     * @var array
-     */
-    protected $groups = [];
     /**
      * @var int
      */
@@ -68,22 +64,6 @@ class LdapAuthData extends AuthDataBase
     public function setDn($dn)
     {
         $this->dn = $dn;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    /**
-     * @param array|string $groups
-     */
-    public function setGroups($groups)
-    {
-        $this->groups = is_string($groups) ? [$groups] : $groups;
     }
 
     /**

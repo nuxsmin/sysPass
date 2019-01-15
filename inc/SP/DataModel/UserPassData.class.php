@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,121 +34,121 @@ class UserPassData extends DataModelBase
     /**
      * @var int
      */
-    public $user_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $user_pass = '';
+    public $pass;
     /**
      * @var string
      */
-    public $user_hashSalt = '';
+    public $hashSalt;
     /**
      * @var string
      */
-    public $user_mPass = '';
+    public $mPass;
     /**
      * @var string
      */
-    public $user_mKey = '';
+    public $mKey;
     /**
      * @var int
      */
-    public $user_lastUpdateMPass = 0;
+    public $lastUpdateMPass = 0;
 
     /**
      * @return string
      */
-    public function getUserPass()
+    public function getPass()
     {
-        return $this->user_pass;
+        return $this->pass;
     }
 
     /**
-     * @param string $user_pass
+     * @param string $pass
      */
-    public function setUserPass($user_pass)
+    public function setPass($pass)
     {
-        $this->user_pass = $user_pass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserHashSalt()
-    {
-        return $this->user_hashSalt;
-    }
-
-    /**
-     * @param string $user_hashSalt
-     */
-    public function setUserHashSalt($user_hashSalt)
-    {
-        $this->user_hashSalt = $user_hashSalt;
+        $this->pass = $pass;
     }
 
     /**
      * @return string
      */
-    public function getUserMPass()
+    public function getHashSalt()
     {
-        return $this->user_mPass;
+        return $this->hashSalt;
     }
 
     /**
-     * @param string $user_mPass
+     * @param string $hashSalt
      */
-    public function setUserMPass($user_mPass)
+    public function setHashSalt($hashSalt)
     {
-        $this->user_mPass = $user_mPass;
+        $this->hashSalt = $hashSalt;
     }
 
     /**
      * @return string
      */
-    public function getUserMKey()
+    public function getMPass()
     {
-        return $this->user_mKey;
+        return $this->mPass;
     }
 
     /**
-     * @param string $user_mKey
+     * @param string $mPass
      */
-    public function setUserMKey($user_mKey)
+    public function setMPass($mPass)
     {
-        $this->user_mKey = $user_mKey;
+        $this->mPass = $mPass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMKey()
+    {
+        return $this->mKey;
+    }
+
+    /**
+     * @param string $mKey
+     */
+    public function setMKey($mKey)
+    {
+        $this->mKey = $mKey;
     }
 
     /**
      * @return int
      */
-    public function getUserLastUpdateMPass()
+    public function getLastUpdateMPass()
     {
-        return (int)$this->user_lastUpdateMPass;
+        return (int)$this->lastUpdateMPass;
     }
 
     /**
-     * @param int $user_lastUpdateMPass
+     * @param int $lastUpdateMPass
      */
-    public function setUserLastUpdateMPass($user_lastUpdateMPass)
+    public function setLastUpdateMPass($lastUpdateMPass)
     {
-        $this->user_lastUpdateMPass = (int)$user_lastUpdateMPass;
+        $this->lastUpdateMPass = (int)$lastUpdateMPass;
     }
 
     /**
      * @return int
      */
-    public function getUserId()
+    public function getId()
     {
-        return (int)$this->user_id;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $user_id
+     * @param int $id
      */
-    public function setUserId($user_id)
+    public function setId($id)
     {
-        $this->user_id = (int)$user_id;
+        $this->id = (int)$id;
     }
 }

@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="syspass">
+        <table_data name="EventLog">
+            <row>
+                <field name="id">1</field>
+                <field name="date">1527720052</field>
+                <field name="login">-</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.auth.database</field>
+                <field name="description">
+                    Tipo : authDatabase
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="date">1527720053</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.session.load</field>
+                <field name="description">
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="date">1527720053</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.preferences.load</field>
+                <field name="description" xsi:nil="true"/>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">4</field>
+                <field name="date">1527723866</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">logout</field>
+                <field name="description">Finalizar sesión
+                    Usuario : admin
+                    Tiempo inactivo : 0.02 min.
+                    Tiempo total : 63.72 min.
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">5</field>
+                <field name="date">1527796875</field>
+                <field name="login">-</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.auth.database</field>
+                <field name="description">
+                    Tipo : authDatabase
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">6</field>
+                <field name="date">1527796876</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.session.load</field>
+                <field name="description">
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">7</field>
+                <field name="date">1527796876</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.preferences.load</field>
+                <field name="description" xsi:nil="true"/>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">8</field>
+                <field name="date">1527800242</field>
+                <field name="login">-</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.auth.database</field>
+                <field name="description">
+                    Tipo : authDatabase
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">9</field>
+                <field name="date">1527800243</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.session.load</field>
+                <field name="description">
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">10</field>
+                <field name="date">1527800243</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.preferences.load</field>
+                <field name="description" xsi:nil="true"/>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">11</field>
+                <field name="date">1527807482</field>
+                <field name="login">-</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.auth.database</field>
+                <field name="description">
+                    Tipo : authDatabase
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">12</field>
+                <field name="date">1527807483</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.session.load</field>
+                <field name="description">
+                    Usuario : admin
+                </field>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">13</field>
+                <field name="date">1527807483</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">login.preferences.load</field>
+                <field name="description" xsi:nil="true"/>
+                <field name="level">INFO</field>
+            </row>
+            <row>
+                <field name="id">14</field>
+                <field name="date">1527807531</field>
+                <field name="login">admin</field>
+                <field name="userId">1</field>
+                <field name="ipAddress">172.19.0.1</field>
+                <field name="action">logout</field>
+                <field name="description">Finalizar sesión
+                    Usuario : admin
+                    Tiempo inactivo : 0 min.
+                    Tiempo total : 0.92 min.
+                </field>
+                <field name="level">INFO</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>

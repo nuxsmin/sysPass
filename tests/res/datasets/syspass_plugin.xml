@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database name="syspass">
+	<table_data name="Plugin">
+	<row>
+		<field name="id">1</field>
+		<field name="name">Authenticator</field>
+		<field name="data" xsi:nil="true" />
+		<field name="enabled">0</field>
+		<field name="available">1</field>
+	</row>
+	<row>
+		<field name="id">2</field>
+		<field name="name">XML Exporter</field>
+		<field name="data" >data</field>
+		<field name="enabled">1</field>
+		<field name="available">1</field>
+	</row>
+	<row>
+		<field name="id">3</field>
+		<field name="name">DokuWiki</field>
+		<field name="data" xsi:nil="true" />
+		<field name="enabled">1</field>
+		<field name="available">0</field>
+	</row>
+	</table_data>
+</database>
+</mysqldump>

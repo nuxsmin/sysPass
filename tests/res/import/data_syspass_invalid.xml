@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <Meta>
+    <Generator>sysPass</Generator>
+    <Version>300.18071701</Version>
+    <Time>1531870108</Time>
+    <User id="1">admin</User>
+    <Group id="1"/>
+    <Hash sign="defedb24fb4aa485a09d998a5bdbda55e3d3998735b549e3c74feeb29d5cb0bb">e633ecaaa0a76d06ab220d8eaed0784138916ba5</Hash>
+  </Meta>
+  <Categories>
+    <Category id="4">
+      <name>CSV Category 1</name>
+      <description/>
+    </Category>
+    <Category id="6">
+      <name>SSH</name>
+      <description/>
+    </Category>
+    <Category id="2">
+      <name>Test</name>
+      <description/>
+    </Category>
+    <Category id="1">
+      <name>Web</name>
+      <description/>
+    </Category>
+  </Categories>
+  <Clients>
+    <Client id="5">
+      <name>Apple</name>
+      <description/>
+    </Client>
+    <Client id="4">
+      <name>CSV Client 1</name>
+      <description/>
+    </Client>
+    <Client id="1">
+      <name>Google</name>
+      <description/>
+    </Client>
+    <Client id="2">
+      <name>KK</name>
+      <description/>
+    </Client>
+  </Clients>
+  <Tags>
+    <Tag id="5">
+      <name>Apache</name>
+    </Tag>
+    <Tag id="7">
+      <name>Debian</name>
+    </Tag>
+    <Tag id="6">
+      <name>JBoss</name>
+    </Tag>
+    <Tag id="4">
+      <name>MySQL</name>
+    </Tag>
+    <Tag id="2">
+      <name>server</name>
+    </Tag>
+    <Tag id="3">
+      <name>SSH</name>
+    </Tag>
+    <Tag id="1">
+      <name>www</name>
+    </Tag>
+  </Tags>
+  <Accounts>
+    <Account id="1">
+      <name>Google</name>
+      <clientId>1</clientId>
+      <categoryId>1</categoryId>
+      <login>admin</login>
+      <url>https://google.com</url>
+      <notes/>
+      <pass>def502008d12c14486b3cc5986ada5dd5c94e5fd518665d0bbcba98526dc69fb3836e7665991536e2b2e33c92229fccc671996b1f1ad22892e9232463ead8bb2b4603fee0f0d6f23d83766a63c5195c4330c19cf4b6d4119cb5a68b2cc2e4eab295a</pass>
+      <key>def10000def5020092a48432287c2ca6bae1716581fa1fc9825cde731cab3a1fa482de6bc6f0fda8b1323f9a7bffd878d4b8bc24e3d671ba6a6a961478c47e8dbcceee3164464bbb25b5cc3bf95600e044f62ffcb706543b330aea6063c284380c091853e46ad09a1954e0d923d48192952df1591b013665da737dd5e56b46e699c2a1e648e7ab76e7f872e5f7e5b13088ff6f1314a7c659d75a8ab2554f5e17ba9bbf9b660ba750da177bc906b1f6c7f47684b4f85605faf8c23edd797f39a003fa7e3a6fe861717a4e3076f793d5a52e6db6602f0a7947908653b8ad7389dc8e78890024c5ab3e3d17869babf06242fa0aef189ac7a8af616620719037bfee</key>
+      <tags>
+        <tag id="4"/>
+        <tag id="2"/>
+        <tag id="3"/>
+      </tags>
+    </Account>
+    <Account id="2">
+      <name>Google</name>
+      <clientId>1</clientId>
+      <categoryId>1</categoryId>
+      <login>admin</login>
+      <url>https://google.com</url>
+      <notes>blablacar</notes>
+      <pass>def502006b4eba70d6527f4e3288ec35ae2f4a686b22bfa5dc5355417da61dc25e4f461a56d83c9461ad6ee72029d5f94f8cca4a5f0907a60fedd32cf0dc77aea9341be24c284f534edc4d96c2004454de1a22f953436bb1d61a54ec552ba478</pass>
+      <key>def10000def502007548ee1ed2267a46dcf504cd7ac9e7306f20d6045a47a844b14618095dfe2c30913d6553d04de88d37b949b61c84979dffa35f102677f930a954c01c840e26159af20eca93f04eed277e919a69ff2e69a8c441990a0fe700e8b6af47a6094d47cb52df94ef12c59dd700f02f9ae2f0ca76361ce4fb149d3cde45f54b2223d0adf2be0d94f06d92cf6e1e9d4de2032ef4550f01e425a73848f350d5f0d0b4d820ab9fa7c5875c71a7d65d793a886a7626077c22247d66e1b07518f562f75b248478a6915342953f2caf876a4577d428a707c7cb52889a5b849eec0c0e89cd5b103cd477ce91347a181fcaafd9f77344674315ee1cbe208038</key>
+      <tags>
+        <tag id="2"/>
+        <tag id="3"/>
+        <tag id="1"/>
+      </tags>
+    </Account>
+    <Account id="4">
+      <name>Test CSV 1</name>
+      <clientId>4</clientId>
+      <categoryId>4</categoryId>
+      <login>csv_login1</login>
+      <url>http://test.me</url>
+      <notes>CSV Notes</notes>
+      <pass>def502009758bc1ad3e55a57d8bbd7fbe698b9f0bfa9b592607dc7806fc197fab96f2402be8ad6d1e5fe8639ff0e6860f0f761d1204df6be6b2c98a2a6c841e60bf3f0a7c719f26597240388432231b042f30acc01d8b504c5cb51ce50</pass>
+      <key>def10000def50200a01a063b4244219d1d2e534abbb65f77534d3c29c321d4eb977daac11d3196741ba3b2973c46e1281857e433c0d3e85a21cb24e1646e6a8bd2f991afec881c9c230d844c0324ecd21729fb7ad596b5687d797b74c2b989333836a71f5cac6cba8a50cdd2165fe3627301c87516e822421539957a5ebaec39f478511f6140b044e3df8723f8b50b242238cf9ecc9b66488c4d1ee90aec1042176ede6481a9e57bd69c8dd309b992f0598b2193e7172a3223e45f7d4c87b63f4b95f6fa8f1723db7a6bcdbb1a5d2f85b59c29839380012a17c671aee627107c1b54af17d7d0e1da2582d1bb79e0060ba5e997beb6e44e219201c4bb643f1ded</key>
+      <tags/>
+    </Account>
+    <Account id="5">
+      <name>Test CSV 2</name>
+      <clientId>1</clientId>
+      <categoryId>5</categoryId>
+      <login>csv_login2</login>
+      <url>http://linux.org</url>
+      <notes>CSV Notes 2
+bla
+bla
+car
+</notes>
+      <pass>def50200d96ee2feda40fc05246d2170399a88c6d84039dd6f043b99cf71af45eec61def13c331b0dcc22db9a78f3c6ae42aeca2f304bcb5b3266b60f14044ba2bd9c4d6d6530ee04ec70af7a02af19266bc2e94df0b01dc956a0990f1</pass>
+      <key>def10000def50200db49c60711ecd68ba7c5e638e609f4f259f71ba0ea3b55679779b75e65047fb9f8fad9f679f41ef7486abd7f0f3b106dd5e73b689a337bc4ec65cb540e783e0012309208f510a543d99ee1e7c7075cdf4c08f12cfba8923da543b09b08844361c556b3e771b41b2219c74f35bbe2c3382167c7f4a4bf57acd69364dbb09b916b15c15509dd9eb6edf828ab93750323772936bee4e09d330421c90f8747aaf2da88ec2616534272d258ea105433fd52b268bb65417d18adb875fb075060497ee3ffa7bba808d0a7cba61794716f53f92e04174d7ac0fd867a7132d9918a4b29ba61e1dabef37b32145f9ca5c99974018a6f9313a41b06866d</key>
+      <tags/>
+    </Account>
+    <Account id="6">
+      <name>Test CSV 3</name>
+      <clientId>5</clientId>
+      <categoryId>6</categoryId>
+      <login>csv_login2</login>
+      <url>http://apple.com</url>
+      <notes>CSV Notes 3</notes>
+      <pass>def502005f79a3efb835d6c8e2c9156e18a90664ec5deae37a7fa905f53a424ba2e855a4b5aedcfe0e5926aa1c70deb736a10b039a67eee96d67806fe3e8ea025705c3eb99c954dc55b7a7cc227116edeef4f23a7d1bae12ded3cd255d</pass>
+      <key>def10000def50200bd6d13fa15111969fdcdcddb54a83dc76b4be2f25ee7b16650f94505cb433f7530a53ad337a9e044a0c3f7d2789ecac9e3bef6299294812e21a3e6bab0cb4fb4ec186b723820a8e5c9dae22e59dc2439225b56777328daa6744b3801c57dfe4cd717c81cc7352b319f111b80b1764e52cddc25fe6fd509003560832e53686d4747e55024be63fdd1a0d5d1001cdf43d7aa3a5e2e5835730626aacb8f9864c3959d03bc6935f0dc5cf510d5660190cc409df728fd57c273619afe18abb00c8c37137a00379e5100ca386ef098171333b3ff99c937d5f6ac998595b36580d5a6be428dce9f801d156de4903a9383d488f8f7fd2f76c4b4a4ee</key>
+      <tags/>
+    </Account>
+  </Accounts>
+</Root>

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,33 +22,29 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Services\Account;
 
 /**
- * Interface StorageInterface
+ * Class AccountPasswordRequest
  *
- * @package SMD\Storage
+ * @package SP\Services\Account
  */
-interface FileStorageInterface
+final class AccountPasswordRequest
 {
     /**
-     * @return FileStorageInterface
+     * @var int
      */
-    public function load();
-
+    public $id;
     /**
-     * @return FileStorageInterface
+     * @var string
      */
-    public function save();
-
+    public $pass;
     /**
-     * @return mixed
+     * @var string
      */
-    public function getItems();
-
+    public $key;
     /**
-     * @param $items
-     * @return mixed
+     * @var string
      */
-    public function setItems($items);
+    public $hash;
 }

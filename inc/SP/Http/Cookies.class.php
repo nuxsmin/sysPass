@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,22 +22,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Http;
+namespace SP\Mvc\Controller\Validators;
 
 /**
- * Class Cookies
+ * Interface ValidatorInterface
  *
- * @package SP\Http
+ * @package SP\Mvc\Controller\Validators
  */
-class Cookies
+interface ValidatorInterface
 {
     /**
-     * Comprueba si las cookies están habilitadas
+     * @param string $string
      *
      * @return bool
      */
-    public static function checkCookies()
-    {
-        return isset($_COOKIE[session_name()]);
-    }
+    public function validate(string $string): bool;
 }

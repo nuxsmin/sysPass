@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,17 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mgmt;
+namespace SP\Services;
 
 /**
- * Interface ItemSelectInterface
+ * Interface ServiceItemInterface
  *
- * @package SP\Mgmt
+ * @package SP\Services
  */
-interface ItemSelectInterface
+interface ServiceItemInterface
 {
     /**
      * @return array
      */
-    public function getItemsForSelect();
+    public function getAll();
 }

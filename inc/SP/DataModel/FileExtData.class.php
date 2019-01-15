@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,26 +34,26 @@ class FileExtData extends FileData
     /**
      * @var string
      */
-    public $customer_name = '';
+    public $clientName = '';
     /**
      * @var string
      */
-    public $account_name = '';
+    public $accountName = '';
 
     /**
      * @return string
      */
-    public function getCustomerName()
+    public function getClientName()
     {
-        return $this->customer_name;
+        return $this->clientName;
     }
 
     /**
-     * @param string $customer_name
+     * @param string $clientName
      */
-    public function setCustomerName($customer_name)
+    public function setClientName($clientName)
     {
-        $this->customer_name = $customer_name;
+        $this->clientName = $clientName;
     }
 
     /**
@@ -61,14 +61,14 @@ class FileExtData extends FileData
      */
     public function getAccountName()
     {
-        return $this->account_name;
+        return $this->accountName;
     }
 
     /**
-     * @param string $account_name
+     * @param string $accountName
      */
-    public function setAccountName($account_name)
+    public function setAccountName($accountName)
     {
-        $this->account_name = $account_name;
+        $this->accountName = $accountName;
     }
 }

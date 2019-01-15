@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <Meta>
+    <Generator>sysPass</Generator>
+    <Version>300.18082201</Version>
+    <Time>1535359057</Time>
+    <User id="1">admin</User>
+    <Group id="1"/>
+    <Hash sign="7e7a9be6632ef86ec4094e9ad65825792e2f9c3283b07cdc9262b692fc9b9855">aa38d7292f6a00f3c16a19f99dd2940f04a2026a</Hash>
+  </Meta>
+  <Categories>
+    <Category id="2">
+      <name>AWS</name>
+      <description/>
+    </Category>
+    <Category id="1">
+      <name>GCP</name>
+      <description/>
+    </Category>
+    <Category id="3">
+      <name>SSH</name>
+      <description/>
+    </Category>
+    <Category id="4">
+      <name>Web</name>
+      <description/>
+    </Category>
+  </Categories>
+  <Clients>
+    <Client id="3">
+      <name>Amazon</name>
+      <description/>
+    </Client>
+    <Client id="2">
+      <name>Apple</name>
+      <description/>
+    </Client>
+    <Client id="1">
+      <name>Google</name>
+      <description/>
+    </Client>
+  </Clients>
+  <Tags>
+    <Tag id="4">
+      <name>Apache</name>
+    </Tag>
+    <Tag id="6">
+      <name>Email</name>
+    </Tag>
+    <Tag id="2">
+      <name>JBoss</name>
+    </Tag>
+    <Tag id="3">
+      <name>SaaS</name>
+    </Tag>
+    <Tag id="1">
+      <name>SSH</name>
+    </Tag>
+    <Tag id="5">
+      <name>Tomcat</name>
+    </Tag>
+  </Tags>
+  <Accounts>
+    <Account id="1">
+      <name>Amazon SES</name>
+      <clientId>3</clientId>
+      <categoryId>2</categoryId>
+      <login>admin</login>
+      <url>https://aws.amazon.com/</url>
+      <notes>Simple Email Service</notes>
+      <pass>def502008fde3a27bb1a6023f1b4ec524ba147c80ae78f90f9b3d0637af6809ad9263afaa36d34237ded5e8803b53f17121bd5e2a66919c0ce21d27c9360dfbc39d8151df9cbb4aadd1a0daa83ff59181ce1f1535c4b93d2701fa72c662115e919</pass>
+      <key>def10000def502002937bbb81177ff4f769aeae126108783a141170588f3482fcbab44ae3390e80f85ab38521bafa8ec19648d267c9d46062294f5068a16706dcdb9042ddbb5b23ef54b3a12e7c5723b15d32ab9d8f5559e1fbc658c0b547a2a88a34b2498ef934d55395f857f28c9e3314493f319ebd4140d4a1b968e678cc12b58b5d2d057530be80f5f58c592cedcd85a90529d0895b11d6c04768bfbf4f1527babf5ee563798d35886f1c1017d1a3221cfd317cb84b13302d7d71c33e6753bcdb913dacd8909e195387f47b136a2789f85c48c3600f4ac6433a26e2bd0cae74fa2c461e4495108d340d7120febc65cfe79a4e2acc046f9bac29a0ce35cda</key>
+      <tags>
+        <tag id="6"/>
+      </tags>
+    </Account>
+    <Account id="2">
+      <name>Google GCP</name>
+      <clientId>1</clientId>
+      <categoryId>1</categoryId>
+      <login>admin</login>
+      <url>https://cloud.google.com/</url>
+      <notes>Google Cloud</notes>
+      <pass>def50200894e22b540a4975a3efe7dae669760aa6337195c690ac79ebff28f03393ae1070c5c7a635fa5a9aee5059df912c1948c41d8198f24f9f892a728d400d12d200c184a793d03a3f13eebfa45614efd0004ad7ea83338d1a04e20e6846078</pass>
+      <key>def10000def50200f3d572936f4496e90369f6cc1feadce57c803b01a78c64b5987efd6369f7ecf526494a148d0e056feafe60d903bbb65ea9f79ad9b4f7ad42c7fe3c9c586f1807d252444c42667129da3727cf6f702a5aadf5db2391ba4a581f950df65262ae04b314b88d69d3174e6f226cb1f939f04d102799e58e0b6ed839fe2282056c58069e6298865c386e3d2114635621ed14eb199b1dad6dfcabc9b364ea2ae147c38352cd72bc0c79761a9df0f58690d5da1d1e3cc5e17261d740ca6863383a869b0253790d46ba2df032e741e8bb788033d8eb7b97d124d58b3c4310d15df7a4fd4d373dcc0ae111d46f6d623bac7ccf330520439736b223ae81</key>
+      <tags>
+        <tag id="3"/>
+      </tags>
+    </Account>
+  </Accounts>
+</Root>

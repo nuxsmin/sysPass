@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,16 +31,16 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class GroupAccountsData extends DataModelBase 
+class AccountToUserGroupData extends DataModelBase
 {
     /**
      * @var int
      */
-    public $accgroup_groupId = 0;
+    public $userGroupId = 0;
     /**
      * @var int
      */
-    public $accgroup_accountId = 0;
+    public $accountId = 0;
     /**
      * @var array
      */
@@ -49,33 +49,33 @@ class GroupAccountsData extends DataModelBase
     /**
      * @return int
      */
-    public function getAccgroupGroupId()
+    public function getUserGroupId()
     {
-        return $this->accgroup_groupId;
+        return $this->userGroupId;
     }
 
     /**
-     * @param int $accgroup_groupId
+     * @param int $userGroupId
      */
-    public function setAccgroupGroupId($accgroup_groupId)
+    public function setUserGroupId($userGroupId)
     {
-        $this->accgroup_groupId = $accgroup_groupId;
+        $this->userGroupId = $userGroupId;
     }
 
     /**
      * @return int
      */
-    public function getAccgroupAccountId()
+    public function getAccountId()
     {
-        return $this->accgroup_accountId;
+        return $this->accountId;
     }
 
     /**
-     * @param int $accgroup_accountId
+     * @param int $accountId
      */
-    public function setAccgroupAccountId($accgroup_accountId)
+    public function setAccountId($accountId)
     {
-        $this->accgroup_accountId = $accgroup_accountId;
+        $this->accountId = $accountId;
     }
 
     /**
@@ -99,6 +99,6 @@ class GroupAccountsData extends DataModelBase
      */
     public function addGroup($group)
     {
-        $this->groups[] = intval($group);
+        $this->groups[] = (int)$group;
     }
 }

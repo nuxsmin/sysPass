@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -34,82 +34,82 @@ class UserPassRecoverData extends DataModelBase
     /**
      * @var int
      */
-    public $userpassr_userId = 0;
+    public $userId = 0;
     /**
      * @var string
      */
-    public $userpassr_hash = '';
+    public $hash = '';
     /**
      * @var int
      */
-    public $userpassr_date = 0;
+    public $date = 0;
     /**
      * @var bool
      */
-    public $userpassr_used = 0;
+    public $used = 0;
 
     /**
      * @return int
      */
-    public function getUserpassrUserId()
+    public function getUserId()
     {
-        return (int)$this->userpassr_userId;
+        return (int)$this->userId;
     }
 
     /**
-     * @param int $userpassr_userId
+     * @param int $userId
      */
-    public function setUserpassrUserId($userpassr_userId)
+    public function setUserId($userId)
     {
-        $this->userpassr_userId = (int)$userpassr_userId;
+        $this->userId = (int)$userId;
     }
 
     /**
      * @return string
      */
-    public function getUserpassrHash()
+    public function getHash()
     {
-        return $this->userpassr_hash;
+        return $this->hash;
     }
 
     /**
-     * @param string $userpassr_hash
+     * @param string $hash
      */
-    public function setUserpassrHash($userpassr_hash)
+    public function setHash($hash)
     {
-        $this->userpassr_hash = $userpassr_hash;
+        $this->hash = $hash;
     }
 
     /**
      * @return int
      */
-    public function getUserpassrDate()
+    public function getDate()
     {
-        return $this->userpassr_date;
+        return $this->date;
     }
 
     /**
-     * @param int $userpassr_date
+     * @param int $date
      */
-    public function setUserpassrDate($userpassr_date)
+    public function setDate($date)
     {
-        $this->userpassr_date = $userpassr_date;
+        $this->date = $date;
     }
 
     /**
      * @return boolean
      */
-    public function isUserpassrUsed()
+    public function isUsed()
     {
-        return (int)$this->userpassr_used;
+        return (int)$this->used;
     }
 
     /**
-     * @param boolean $userpassr_used
+     * @param boolean $used
      */
-    public function setUserpassrUsed($userpassr_used)
+    public function setUsed($used)
     {
-        $this->userpassr_used = (int)$userpassr_used;
+        $this->used = (int)$used;
     }
-    
+
 }

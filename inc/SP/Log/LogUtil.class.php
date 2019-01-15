@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,27 +22,22 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Log;
+namespace SP\Services\Account;
+
+use SP\DataModel\Dto\AccountDetailsResponse;
 
 /**
- * Class LogUtil
+ * Interface AccountServiceInterface
  *
- * @package SP\Log
+ * @package SP\Services\Account
  */
-class LogUtil
+interface AccountServiceInterface
 {
     /**
-     * Registrar que una extensión no ha sido cargada
+     * @param int $id
      *
-     * @param string $extension La extensión no cargada
-     * @param string $source    El origen del error
-     * @return Log
+     * @return AccountDetailsResponse
      * @throws \SP\Core\Exceptions\SPException
      */
-    public static function extensionNotLoaded($extension, $source = __FUNCTION__)
-    {
-        $msg = sprintf(__('Extensión \'%s\' no cargada'), $extension);
-
-        return Log::writeNewLog($source, $msg, Log::ERROR);
-    }
+    public function getById($id);
 }

@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +24,12 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\Session as CoreSession;
-use SP\Core\SessionUtil;
-
 /**
  * Class Vault
  *
  * @package SP\Core\Crypt
  */
-class Vault
+final class Vault
 {
     /**
      * @var string
@@ -52,22 +49,28 @@ class Vault
     private $timeUpdated = 0;
 
     /**
+     * @return static
+     */
+    public static function getInstance()
+    {
+        return new static();
+    }
+
+    /**
      * Regenerar la clave de sesión
      *
-     * @param  string $key
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @param string $newSeed
+     * @param string $oldSeed
+     *
      * @return Vault
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function reKey($key = null)
+    public function reKey($newSeed, $oldSeed)
     {
         $this->timeUpdated = time();
-        $sessionMPass = $this->getData($key);
+        $sessionMPass = $this->getData($oldSeed);
 
-        SessionUtil::regenerate();
-
-        $this->saveData($sessionMPass, $key);
+        $this->saveData($sessionMPass, $newSeed);
 
         return $this;
     }
@@ -76,46 +79,30 @@ class Vault
      * Devolver la clave maestra de la sesión
      *
      * @param  string $key
-     * @return string
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     */
-    public function getData($key = null)
-    {
-        $key = $key ?: $this->getKey();
-        $securedKey = Crypt::unlockSecuredKey($this->key, $key);
-
-        return Crypt::decrypt($this->data, $securedKey, $key);
-    }
-
-    /**
-     * Devolver la clave utilizada para generar la llave segura
      *
      * @return string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    private function getKey()
+    public function getData($key)
     {
-        return session_id() . CoreSession::getSidStartTime();
+        return Crypt::decrypt($this->data, $this->key, $key);
     }
 
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param $data
+     * @param  mixed  $data
      * @param  string $key
+     *
      * @return $this
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function saveData($data, $key = null)
+    public function saveData($data, $key)
     {
         if ($this->timeSet === 0) {
             $this->timeSet = time();
         }
 
-        $key = $key ?: $this->getKey();
         $this->key = Crypt::makeSecuredKey($key);
         $this->data = Crypt::encrypt($data, $this->key, $key);
 
@@ -136,5 +123,13 @@ class Vault
     public function getTimeUpdated()
     {
         return $this->timeUpdated;
+    }
+
+    /**
+     * Serializaes the current object
+     */
+    public function getSerialized()
+    {
+        return serialize($this);
     }
 }

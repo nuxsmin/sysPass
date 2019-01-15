@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,34 +22,31 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth\Ldap;
+namespace SP\Services\Upgrade;
+
+use SP\Config\ConfigData;
 
 /**
- * Interface LdapInterface
+ * Interface UpgradeInterface
  *
- * @package Auth\Ldap
+ * @package SP\Services\Upgrade
  */
-interface LdapInterface
+interface UpgradeInterface
 {
     /**
-     * Comprobar la conexión al servidor de LDAP.
+     * Performs the upgrading process
+     *
+     * @param            $version
+     * @param ConfigData $configData
+     */
+    public function upgrade($version, ConfigData $configData);
+
+    /**
+     * Check if it needs to be upgraded
+     *
+     * @param $version
      *
      * @return bool
      */
-    public function checkConnection();
-
-
-    /**
-     * Comprobar si los parámetros necesarios de LDAP están establecidos.
-     *
-     * @return bool
-     */
-    public function checkParams();
-
-    /**
-     * Obtener los atributos del usuario.
-     *
-     * @return LdapAuthData
-     */
-    public function getAttributes();
+    public static function needsUpgrade($version);
 }

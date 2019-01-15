@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,47 +38,37 @@ abstract class IconBase implements IconInterface
      *
      * @var string
      */
-    protected $_icon = '';
+    protected $icon = '';
 
     /**
      * Título del icono
      *
      * @var string
      */
-    protected $_title = '';
+    protected $title = '';
     /**
      * Clases CSS del icono
      *
      * @var array
      */
-    protected $_class = array();
+    protected $class = [];
 
     /**
      * @return string
      */
     public function getTitle()
     {
-        return $this->_title;
+        return __($this->title);
     }
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
-        $this->_title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @param $class
-     * @return $this
-     */
-    public function setClass($class)
-    {
-        $this->_class[] = $class;
+        $this->title = $title;
 
         return $this;
     }
@@ -88,7 +78,19 @@ abstract class IconBase implements IconInterface
      */
     public function getClass()
     {
-        return implode(' ', $this->_class);
+        return implode(' ', $this->class);
+    }
+
+    /**
+     * @param $class
+     *
+     * @return $this
+     */
+    public function setClass($class)
+    {
+        $this->class[] = $class;
+
+        return $this;
     }
 
     /**
@@ -96,16 +98,17 @@ abstract class IconBase implements IconInterface
      */
     public function getIcon()
     {
-        return $this->_icon;
+        return $this->icon;
     }
 
     /**
      * @param $icon
+     *
      * @return $this
      */
     public function setIcon($icon)
     {
-        $this->_icon = $icon;
+        $this->icon = $icon;
         return $this;
     }
 }

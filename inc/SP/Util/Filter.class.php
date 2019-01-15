@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,25 +24,23 @@
 
 namespace SP\Util;
 
-defined('APP_ROOT') || die();
-
-
 /**
- * Class Filter para el filtrado de datos
+ * Class DateUtil
  *
  * @package SP\Util
  */
-class Filter
+final class DateUtil
 {
     /**
-     * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares
+     * Returns date string from UNIX timestamp
      *
-     * @param $string
-     * @return mixed
+     * @param        $date
+     * @param string $format
+     *
+     * @return false|string
      */
-    public static function safeSearchString($string)
+    public static function getDateFromUnix($date, $format = 'Y-m-d H:i')
     {
-        return preg_replace(/** @lang RegExp */
-            '/[\[\]%{}*$]+/', '', (string)$string);
+        return is_numeric($date) ? date($format, $date) : $date;
     }
 }

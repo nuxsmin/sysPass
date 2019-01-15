@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link      https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 /**
  * Interface ImportInterface
@@ -33,6 +33,8 @@ interface ImportInterface
 {
     /**
      * Iniciar la importación
+     *
+     * @return ImportInterface
      */
     public function doImport();
 
