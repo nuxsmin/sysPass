@@ -32,6 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Services\CustomField\CustomFieldItem;
 use SP\Services\CustomField\CustomFieldService;
+use SP\Util\Filter;
 
 /**
  * Trait ItemTrait
@@ -105,7 +106,13 @@ trait ItemTrait
      */
     protected function addCustomFieldsForItem($moduleId, $itemId, Request $request)
     {
-        if ($customFields = $request->analyzeArray('customfield')) {
+        $customFields = $request->analyzeArray('customfield', function ($values) {
+            return array_map(function ($value) {
+                return Filter::getString($value);
+            }, $values);
+        });
+
+        if (!empty($customFields)) {
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
@@ -158,7 +165,13 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId, Request $request)
     {
-        if ($customFields = $request->analyzeArray('customfield')) {
+        $customFields = $request->analyzeArray('customfield', function ($values) {
+            return array_map(function ($value) {
+                return Filter::getString($value);
+            }, $values);
+        });
+
+        if (!empty($customFields)) {
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
