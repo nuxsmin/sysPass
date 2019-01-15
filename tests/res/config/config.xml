@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <accountCount>12</accountCount>
+  <accountExpireEnabled>0</accountExpireEnabled>
+  <accountExpireTime>10368000</accountExpireTime>
+  <accountFullGroupAccess>0</accountFullGroupAccess>
+  <accountLink>1</accountLink>
+  <accountPassToImage>0</accountPassToImage>
+  <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
+  <authBasicDomain></authBasicDomain>
+  <authBasicEnabled>1</authBasicEnabled>
+  <backup_hash>cfa7b7e1f0ddcf064e54448f900e9958fca308c1</backup_hash>
+  <checkUpdates>0</checkUpdates>
+  <checknotices>0</checknotices>
+  <configDate>1544965203</configDate>
+  <configHash>d13dd5f27bf6112c0665aa586c9581efee6ddbc9</configHash>
+  <configSaver>sysPass</configSaver>
+  <configVersion></configVersion>
+  <databaseVersion></databaseVersion>
+  <dbHost></dbHost>
+  <dbName></dbName>
+  <dbPass></dbPass>
+  <dbPort>3306</dbPort>
+  <dbSocket></dbSocket>
+  <dbUser></dbUser>
+  <debug>0</debug>
+  <demoEnabled>0</demoEnabled>
+  <dokuwikiEnabled>0</dokuwikiEnabled>
+  <dokuwikiNamespace></dokuwikiNamespace>
+  <dokuwikiPass></dokuwikiPass>
+  <dokuwikiUrl></dokuwikiUrl>
+  <dokuwikiUrlBase></dokuwikiUrlBase>
+  <dokuwikiUser></dokuwikiUser>
+  <encryptSession>0</encryptSession>
+  <export_hash>f25c6da263b2b6735b3e10a8ab1dba4d3ba6200a</export_hash>
+  <filesAllowedExts>
+    <item type="filesAllowedExts">PDF</item>
+    <item type="filesAllowedExts">JPG</item>
+    <item type="filesAllowedExts">GIF</item>
+    <item type="filesAllowedExts">PNG</item>
+    <item type="filesAllowedExts">ODT</item>
+    <item type="filesAllowedExts">ODS</item>
+    <item type="filesAllowedExts">DOC</item>
+    <item type="filesAllowedExts">DOCX</item>
+    <item type="filesAllowedExts">XLS</item>
+    <item type="filesAllowedExts">XSL</item>
+    <item type="filesAllowedExts">VSD</item>
+    <item type="filesAllowedExts">TXT</item>
+    <item type="filesAllowedExts">CSV</item>
+    <item type="filesAllowedExts">BAK</item>
+  </filesAllowedExts>
+  <filesAllowedMime></filesAllowedMime>
+  <filesAllowedSize>1024</filesAllowedSize>
+  <filesEnabled>1</filesEnabled>
+  <globalSearch>1</globalSearch>
+  <httpsEnabled>0</httpsEnabled>
+  <installed>0</installed>
+  <ldapAds>0</ldapAds>
+  <ldapBase></ldapBase>
+  <ldapBindPass></ldapBindPass>
+  <ldapBindUser></ldapBindUser>
+  <ldapDefaultGroup>2</ldapDefaultGroup>
+  <ldapDefaultProfile>2</ldapDefaultProfile>
+  <ldapEnabled>0</ldapEnabled>
+  <ldapGroup></ldapGroup>
+  <ldapProxyUser></ldapProxyUser>
+  <ldapServer></ldapServer>
+  <ldapTlsEnabled>0</ldapTlsEnabled>
+  <ldapType></ldapType>
+  <logEnabled>1</logEnabled>
+  <logEvents></logEvents>
+  <mailAuthenabled>0</mailAuthenabled>
+  <mailEnabled>0</mailEnabled>
+  <mailEvents></mailEvents>
+  <mailFrom></mailFrom>
+  <mailPass></mailPass>
+  <mailPort>25</mailPort>
+  <mailRecipients></mailRecipients>
+  <mailRequestsEnabled>0</mailRequestsEnabled>
+  <mailSecurity></mailSecurity>
+  <mailServer></mailServer>
+  <mailUser></mailUser>
+  <maintenance>0</maintenance>
+  <passwordSalt>fd1058ca0bbaf967d08184ed22ee2c8d5675ca0c9d569c1f237f23fefadf</passwordSalt>
+  <proxyEnabled>0</proxyEnabled>
+  <proxyPass></proxyPass>
+  <proxyPort>8080</proxyPort>
+  <proxyServer></proxyServer>
+  <proxyUser></proxyUser>
+  <publinksEnabled>0</publinksEnabled>
+  <publinksImageEnabled>0</publinksImageEnabled>
+  <publinksMaxTime>600</publinksMaxTime>
+  <publinksMaxViews>3</publinksMaxViews>
+  <resultsAsCards>0</resultsAsCards>
+  <sessionTimeout>300</sessionTimeout>
+  <siteLang></siteLang>
+  <siteTheme>material-blue</siteTheme>
+  <ssoDefaultGroup>3</ssoDefaultGroup>
+  <ssoDefaultProfile>3</ssoDefaultProfile>
+  <syslogEnabled>0</syslogEnabled>
+  <syslogPort>514</syslogPort>
+  <syslogRemoteEnabled>0</syslogRemoteEnabled>
+  <syslogServer></syslogServer>
+  <upgradeKey></upgradeKey>
+  <wikiEnabled>0</wikiEnabled>
+  <wikiFilter></wikiFilter>
+  <wikiPageurl></wikiPageurl>
+  <wikiSearchurl></wikiSearchurl>
+</config>

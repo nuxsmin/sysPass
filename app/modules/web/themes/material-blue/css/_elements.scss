@@ -1,0 +1,148 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  background-color: #f5f5f5;
+  color: #555;
+  font-size: 12px;
+  font-weight: normal;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+* {
+  font-family: $font-stack;
+  box-sizing: inherit;
+  &:before, &:after {
+    box-sizing: inherit;
+  }
+}
+
+table {
+  font-size: 11px;
+  border-spacing: 0;
+  th {
+    border-bottom: 2px solid transparent;
+    vertical-align: middle;
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  tr {
+    &.odd {
+      background-color: #f9f9f9;
+    }
+    &.even > td, &.odd > td {
+      border-bottom: 1px solid #d9d9d9 !important;
+    }
+    &.even:hover, &.odd:hover {
+      background-color: #e8ff99;
+    }
+    height: 20px;
+  }
+  td {
+    padding: 3px;
+    &.txtCliente {
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+}
+
+form {
+  font-size: 11px;
+  margin: 0;
+}
+
+input.inputImg, img.inputImg {
+  background-color: transparent !important;
+  width: 24px !important;
+  height: 24px !important;
+  border: 0;
+  vertical-align: middle;
+  margin: 0 0.5em;
+}
+
+input {
+  &.txtFile {
+    width: 200px;
+  }
+  &.txtLong {
+    width: 300px;
+  }
+}
+
+textarea {
+  width: 350px;
+}
+
+select.files {
+  width: 250px;
+}
+
+input.spinner {
+  width: 5em;
+}
+
+img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  &.inputImgMini {
+    background-color: transparent !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 5px 0 5px;
+    border: 0;
+    vertical-align: middle;
+  }
+}
+
+i {
+  cursor: pointer;
+}
+
+form .form-field {
+  display: flex;
+  justify-content: space-between;
+  > {
+    label {
+      min-width: 12em;
+      padding: .5em 0;
+      font-size: 16px;
+      align-self: center;
+    }
+    div {
+      width: 100%;
+      align-self: center;
+    }
+  }
+}
+
+a {
+  text-decoration: none;
+  color: $color-indigo-fg-accent;
+  &:visited {
+    text-decoration: none;
+    color: $color-indigo-fg-accent;
+  }
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+    /*color: rgba(83, 109, 254, .6);*/
+    cursor: pointer;
+  }
+}
+
+pre, code, samp, kbd {
+  font-family: $font-stack-mono;
+  font-size: 1em;
+  direction: ltr;
+  text-align: left;
+  background-color: #fbfaf9;
+  color: #333;
+  box-shadow: inset 0 0 .3em #ccc;
+  border-radius: 2px;
+}
+

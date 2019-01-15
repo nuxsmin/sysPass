@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="./SP/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Core">
+            <directory suffix=".php">./SP</directory>
+            <exclude>./SP/Modules</exclude>
+        </testsuite>
+        <testsuite name="Modules">
+            <directory suffix=".php">./SP/Modules</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../lib/SP</directory>
+            <exclude>
+                <directory suffix=".php">../lib/SP/DataModel</directory>
+                <directory suffix=".php">../lib/SP/Providers</directory>
+                <directory suffix=".php">../lib/SP/Html/Assets</directory>
+                <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+                <file>../lib/SP/Config/ConfigData.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-clover" target="./_output/coverage-clover.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" showOnlySummary="true" />
+    </logging>
+</phpunit>

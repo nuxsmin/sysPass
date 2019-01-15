@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="syspass-test">
+        <table_data name="UserProfile">
+            <row>
+                <field name="id">1</field>
+                <field name="name">Admin</field>
+                <field name="profile" xsi:type="xs:hexBinary">4F3A32343A2253505C446174614D6F64656C5C50726F66696C6544617461223A32393A7B733A31303A22002A0061636356696577223B623A303B733A31343A22002A006163635669657750617373223B623A303B733A31373A22002A0061636356696577486973746F7279223B623A303B733A31303A22002A0061636345646974223B623A303B733A31343A22002A006163634564697450617373223B623A303B733A393A22002A00616363416464223B623A303B733A31323A22002A0061636344656C657465223B623A303B733A31313A22002A0061636346696C6573223B623A303B733A31333A22002A0061636350726976617465223B623A313B733A31383A22002A006163635072697661746547726F7570223B623A313B733A31363A22002A006163635065726D697373696F6E223B623A303B733A31373A22002A006163635075626C69634C696E6B73223B623A303B733A31383A22002A00616363476C6F62616C536561726368223B623A303B733A31363A22002A00636F6E66696747656E6572616C223B623A303B733A31393A22002A00636F6E666967456E6372797074696F6E223B623A303B733A31353A22002A00636F6E6669674261636B7570223B623A303B733A31353A22002A00636F6E666967496D706F7274223B623A303B733A31313A22002A006D676D5573657273223B623A303B733A31323A22002A006D676D47726F757073223B623A303B733A31343A22002A006D676D50726F66696C6573223B623A303B733A31363A22002A006D676D43617465676F72696573223B623A303B733A31353A22002A006D676D437573746F6D657273223B623A303B733A31353A22002A006D676D417069546F6B656E73223B623A303B733A31373A22002A006D676D5075626C69634C696E6B73223B623A303B733A31343A22002A006D676D4163636F756E7473223B623A303B733A31303A22002A006D676D54616773223B623A303B733A31313A22002A006D676D46696C6573223B623A303B733A363A22002A0065766C223B623A303B733A31383A22002A006D676D437573746F6D4669656C6473223B623A303B7D</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">Demo</field>
+                <field name="profile" xsi:type="xs:hexBinary">4F3A32343A2253505C446174614D6F64656C5C50726F66696C6544617461223A32393A7B733A31303A22002A0061636356696577223B623A313B733A31343A22002A006163635669657750617373223B623A313B733A31373A22002A0061636356696577486973746F7279223B623A313B733A31303A22002A0061636345646974223B623A313B733A31343A22002A006163634564697450617373223B623A313B733A393A22002A00616363416464223B623A313B733A31323A22002A0061636344656C657465223B623A313B733A31313A22002A0061636346696C6573223B623A303B733A31333A22002A0061636350726976617465223B623A303B733A31383A22002A006163635072697661746547726F7570223B623A303B733A31363A22002A006163635065726D697373696F6E223B623A303B733A31373A22002A006163635075626C69634C696E6B73223B623A303B733A31383A22002A00616363476C6F62616C536561726368223B623A303B733A31363A22002A00636F6E66696747656E6572616C223B623A303B733A31393A22002A00636F6E666967456E6372797074696F6E223B623A303B733A31353A22002A00636F6E6669674261636B7570223B623A303B733A31353A22002A00636F6E666967496D706F7274223B623A303B733A31313A22002A006D676D5573657273223B623A303B733A31323A22002A006D676D47726F757073223B623A303B733A31343A22002A006D676D50726F66696C6573223B623A303B733A31363A22002A006D676D43617465676F72696573223B623A303B733A31353A22002A006D676D437573746F6D657273223B623A303B733A31353A22002A006D676D417069546F6B656E73223B623A303B733A31373A22002A006D676D5075626C69634C696E6B73223B623A303B733A31343A22002A006D676D4163636F756E7473223B623A303B733A31303A22002A006D676D54616773223B623A303B733A31313A22002A006D676D46696C6573223B623A303B733A363A22002A0065766C223B623A303B733A31383A22002A006D676D437573746F6D4669656C6473223B623A303B7D</field>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="name">Usuarios</field>
+                <field name="profile" xsi:type="xs:hexBinary">4F3A32343A2253505C446174614D6F64656C5C50726F66696C6544617461223A32393A7B733A31303A22002A0061636356696577223B623A313B733A31343A22002A006163635669657750617373223B623A313B733A31373A22002A0061636356696577486973746F7279223B623A313B733A31303A22002A0061636345646974223B623A313B733A31343A22002A006163634564697450617373223B623A313B733A393A22002A00616363416464223B623A313B733A31323A22002A0061636344656C657465223B623A313B733A31313A22002A0061636346696C6573223B623A303B733A31333A22002A0061636350726976617465223B623A303B733A31383A22002A006163635072697661746547726F7570223B623A303B733A31363A22002A006163635065726D697373696F6E223B623A303B733A31373A22002A006163635075626C69634C696E6B73223B623A303B733A31383A22002A00616363476C6F62616C536561726368223B623A303B733A31363A22002A00636F6E66696747656E6572616C223B623A303B733A31393A22002A00636F6E666967456E6372797074696F6E223B623A303B733A31353A22002A00636F6E6669674261636B7570223B623A303B733A31353A22002A00636F6E666967496D706F7274223B623A303B733A31313A22002A006D676D5573657273223B623A303B733A31323A22002A006D676D47726F757073223B623A303B733A31343A22002A006D676D50726F66696C6573223B623A303B733A31363A22002A006D676D43617465676F72696573223B623A303B733A31353A22002A006D676D437573746F6D657273223B623A303B733A31353A22002A006D676D417069546F6B656E73223B623A303B733A31373A22002A006D676D5075626C69634C696E6B73223B623A303B733A31343A22002A006D676D4163636F756E7473223B623A303B733A31303A22002A006D676D54616773223B623A303B733A31313A22002A006D676D46696C6573223B623A303B733A363A22002A0065766C223B623A303B733A31383A22002A006D676D437573746F6D4669656C6473223B623A303B7D</field>
+            </row>
+        </table_data>
+        <table_data name="UserGroup">
+            <row>
+                <field name="id">1</field>
+                <field name="name">Admins</field>
+                <field name="description">sysPass Admins</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">Demo</field>
+                <field name="description"/>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="name">Usuarios</field>
+                <field name="description">Grupo Usuarios</field>
+            </row>
+        </table_data>
+        <table_data name="User">
+            <row>
+                <field name="id">1</field>
+                <field name="name">sysPass Admin</field>
+                <field name="userGroupId">1</field>
+                <field name="login">admin</field>
+                <field name="ssoLogin" xsi:nil="true" />
+                <field name="pass" xsi:type="xs:hexBinary">2432792431302432584B666F627854545234444E4A7956573748365165774153356E5234434E4B7748746A4A614362545333486D72316B37485A4E4F</field>
+                <field name="mPass" xsi:type="xs:hexBinary">64656635303230306339373130623861363837613161346136323261333134613936303034326531646638643662323838326537383264636261653237326662346562386138326665613134386165666637343132663537363035663034363135623633623961616239303266333933613863323439386539613734343061356337333937326131653663333766326532306136643766356266383137653965376465363438633738663034323333386230303666353461643039363437</field>
+                <field name="mKey" xsi:type="xs:hexBinary">6465663130303030646566353032303033633166653138613634613233646466323436333064626636616335306634376539356630653063303335636231353938343362626638363932323138366536613330333839663735333832376532356464333436633035393730316433303539333531376233633434386535303539356666663630326263373037373564363330623439313539363862333263353262643961366564306165336439623764626564653633633163346536613330383936616230303639613139356431333736623231333232663766663765386632623838336432363062353835666430393133323631346239303266646463393061313532376638313639623138356563666438653130303435393864623134643464666263393232336432653833386665313333626138393761643532383139666264396336326333306637343964333564313236386464663365383137643339333036616365343964636130316531376163306432616161646362346263613439333763386564656261396139313962363433363833616163333234316330393734343962613033383962616238303432653339656666666332316264643163636436343464643362646565346335666564316164616132653537666537656166353964306331303865396664626135323735396366353265306430336536</field>
+                <field name="email" xsi:nil="true" />
+                <field name="notes" xsi:nil="true" />
+                <field name="loginCount">100</field>
+                <field name="userProfileId">1</field>
+                <field name="lastLogin">2018-07-22 22:23:11</field>
+                <field name="lastUpdate" xsi:nil="true" />
+                <field name="lastUpdateMPass">1532297701</field>
+                <field name="isAdminApp">1</field>
+                <field name="isAdminAcc">0</field>
+                <field name="isLdap">0</field>
+                <field name="isDisabled">0</field>
+                <field name="hashSalt"></field>
+                <field name="isMigrate">0</field>
+                <field name="isChangePass">0</field>
+                <field name="isChangedPass">0</field>
+                <field name="preferences" xsi:type="xs:hexBinary">4F3A33323A2253505C446174614D6F64656C5C55736572507265666572656E63657344617461223A31303A7B733A373A22757365725F6964223B693A313B733A363A22757365324661223B623A303B733A343A226C616E67223B733A353A2265735F4553223B733A353A227468656D65223B733A31333A226D6174657269616C2D626C7565223B733A31343A22726573756C747350657250616765223B693A363B733A31313A226163636F756E744C696E6B223B623A303B733A393A22736F72745669657773223B623A303B733A393A22746F704E6176626172223B623A303B733A31353A226F7074696F6E616C416374696F6E73223B623A303B733A31343A22726573756C747341734361726473223B623A303B7D</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="name">sysPass demo</field>
+                <field name="userGroupId">2</field>
+                <field name="login">demo</field>
+                <field name="ssoLogin">demo</field>
+                <field name="pass" xsi:type="xs:hexBinary">2432792431302454726E69756C5763754361433635346F76566F35392E766B4C5433414E31624A6D726A79553462696335325069436A6B5572396669</field>
+                <field name="mPass" xsi:type="xs:hexBinary">64656635303230303231616533353730373263373165626239393534353966366236636164373235336534316336633534353036336339326136653730616366333930393165373934613865376662386662326664333931383932363562396466303133333631623063323732323339653465373165343839313030646534326265633737623966343238396635633936613837646531343864313963653663643338613131343932623163313765653630326430623532343564346566</field>
+                <field name="mKey" xsi:type="xs:hexBinary">6465663130303030646566353032303035643534316262633462653032333563313338626561366561333536626436663037353365313035653030333563653166316235336534663364343565366262353335626163396639646538653131316262356334383865336535633637323333666632626365313837626335386135353839373535373034386564353634366361646638623736396132323164363032353435653034306264613135663138323638383665373536313236353361313037306530333261323365636364336339616438323162306363383962643130333035303931653965626332653935313465656631373462663339343664656132393661346262366264343463646333363361643335623032373561356633323430313936346531633131663937313764313139633130633561373161666332356365346534366661623234646663626362326237303964336335316532623834326464303933653230353965373265356638376363366236626239306231346265376264373637663163303937366231313362393630613265636565336633313131663538656131346139353736623332653163303962636435313366383733656664653062373333366238643464646637616237323333373038613264393965633738356139393036306135643262316366306262663739346262663765</field>
+                <field name="email">demo@syspass.org</field>
+                <field name="notes">aaaa</field>
+                <field name="loginCount">12</field>
+                <field name="userProfileId">2</field>
+                <field name="lastLogin">2018-04-01 21:29:47</field>
+                <field name="lastUpdate">2018-04-14 08:47:43</field>
+                <field name="lastUpdateMPass">1522582852</field>
+                <field name="isAdminApp">0</field>
+                <field name="isAdminAcc">0</field>
+                <field name="isLdap">0</field>
+                <field name="isDisabled">0</field>
+                <field name="hashSalt"></field>
+                <field name="isMigrate">0</field>
+                <field name="isChangePass">0</field>
+                <field name="isChangedPass">0</field>
+                <field name="preferences" xsi:nil="true" />
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="name">User A</field>
+                <field name="userGroupId">2</field>
+                <field name="login">user_a</field>
+                <field name="ssoLogin">user_a</field>
+                <field name="pass" xsi:type="xs:hexBinary">2432792431302469444B442E2F4F624D79742E6F43594F5249514D5065624454783966744D636A703034365A435976662E765479597A594F6A4C472E</field>
+                <field name="mPass" xsi:nil="true" />
+                <field name="mKey" xsi:nil="true" />
+                <field name="email">user_a@syspass.org</field>
+                <field name="notes"></field>
+                <field name="loginCount">0</field>
+                <field name="userProfileId">1</field>
+                <field name="lastLogin" xsi:nil="true" />
+                <field name="lastUpdate">2018-04-14 08:48:08</field>
+                <field name="lastUpdateMPass">0</field>
+                <field name="isAdminApp">0</field>
+                <field name="isAdminAcc">0</field>
+                <field name="isLdap">0</field>
+                <field name="isDisabled">0</field>
+                <field name="hashSalt"></field>
+                <field name="isMigrate">0</field>
+                <field name="isChangePass">0</field>
+                <field name="isChangedPass">0</field>
+                <field name="preferences" xsi:nil="true" />
+            </row>
+            <row>
+                <field name="id">4</field>
+                <field name="name">User B</field>
+                <field name="userGroupId">2</field>
+                <field name="login">user_b</field>
+                <field name="ssoLogin" xsi:nil="true" />
+                <field name="pass" xsi:type="xs:hexBinary">243279243130244C37643658736A663955794F6E583662472E6F384E4F713961674B6F64536B4B5674485350462F6861414E657971517065372E6532</field>
+                <field name="mPass" xsi:nil="true" />
+                <field name="mKey" xsi:nil="true" />
+                <field name="email">user_b@syspass.org</field>
+                <field name="notes"></field>
+                <field name="loginCount">0</field>
+                <field name="userProfileId">1</field>
+                <field name="lastLogin" xsi:nil="true" />
+                <field name="lastUpdate">2018-03-30 18:38:32</field>
+                <field name="lastUpdateMPass">0</field>
+                <field name="isAdminApp">0</field>
+                <field name="isAdminAcc">0</field>
+                <field name="isLdap">0</field>
+                <field name="isDisabled">0</field>
+                <field name="hashSalt"></field>
+                <field name="isMigrate">0</field>
+                <field name="isChangePass">0</field>
+                <field name="isChangedPass">0</field>
+                <field name="preferences" xsi:nil="true" />
+            </row>
+        </table_data>
+        <table_data name="ItemPreset">
+            <row>
+                <field name="id">1</field>
+                <field name="userId">1</field>
+                <field name="userGroupId" xsi:nil="true"/>
+                <field name="userProfileId" xsi:nil="true"/>
+                <field name="fixed">0</field>
+                <field name="priority">0</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">284985459df4616aa682a6de4c4994a9fedf164d</field>
+            </row>
+            <row>
+                <field name="id">2</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="userGroupId">1</field>
+                <field name="userProfileId" xsi:nil="true"/>
+                <field name="fixed">0</field>
+                <field name="priority">10</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">ac1de29cfbc9db8c63b3b109c899148e904ccced</field>
+            </row>
+            <row>
+                <field name="id">3</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="userGroupId" xsi:nil="true"/>
+                <field name="userProfileId">1</field>
+                <field name="fixed">0</field>
+                <field name="priority">20</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">3ec16d2bece6de02ed9423f98fcaaba260ffd36b</field>
+            </row>
+            <row>
+                <field name="id">4</field>
+                <field name="userId">2</field>
+                <field name="userGroupId" xsi:nil="true"/>
+                <field name="userProfileId" xsi:nil="true"/>
+                <field name="fixed">0</field>
+                <field name="priority">0</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">8eca5d3518e5531aa968ce0d5a7221f659f5d0ee</field>
+            </row>
+            <row>
+                <field name="id">5</field>
+                <field name="userId" xsi:nil="true"/>
+                <field name="userGroupId" xsi:nil="true"/>
+                <field name="userProfileId">3</field>
+                <field name="fixed">0</field>
+                <field name="priority">10</field>
+                <field name="data" xsi:nil="true"/>
+                <field name="type">permission</field>
+                <field name="hash">fa66da8c08bf2728dfa90bb0682494a763dc0c11</field>
+            </row>
+        </table_data>
+        <table_data name="UserToUserGroup">
+            <row>
+                <field name="userId">1</field>
+                <field name="userGroupId">2</field>
+            </row>
+            <row>
+                <field name="userId">3</field>
+                <field name="userGroupId">2</field>
+            </row>
+            <row>
+                <field name="userId">2</field>
+                <field name="userGroupId">1</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>
