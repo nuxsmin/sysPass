@@ -178,8 +178,9 @@ final class TrackGrid extends GridBase
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
         $gridAction->setIcon($this->icons->getIconRefresh());
-        $gridAction->setOnClickFunction('appMgmt/search');
+        $gridAction->setOnClickFunction('track/refresh');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::TRACK_SEARCH));
+        $gridAction->addData('form', 'frmSearchTrack');
 
         return $gridAction;
     }

@@ -1309,6 +1309,9 @@ sysPass.Actions = function (log) {
                     }
                 }
             });
+        },
+        refresh: function ($obj) {
+            $("#" + $obj.data("form")).submit();
         }
     };
 
@@ -1856,6 +1859,9 @@ sysPass.Actions = function (log) {
                     }
                 }
             });
+        },
+        refresh: function ($obj) {
+            $("#" + $obj.data("form")).submit();
         }
     };
 
