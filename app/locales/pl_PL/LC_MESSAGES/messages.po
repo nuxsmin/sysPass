@@ -78,7 +78,7 @@ msgstr "Account displayed"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:533
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:22
 msgid "Name"
-msgstr "Imię"
+msgstr "Nazwa"
 
 #: app/modules/api/Controllers/AccountController.php:72
 #: app/modules/api/Controllers/AccountController.php:104
