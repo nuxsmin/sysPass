@@ -66,6 +66,10 @@ final class AccountSearchHelper extends HelperBase
      */
     private $isAjax = false;
     /**
+     * @var bool
+     */
+    private $isIndex = false;
+    /**
      * @var  AccountSearchFilter
      */
     private $accountSearchFilter;
@@ -281,6 +285,7 @@ final class AccountSearchHelper extends HelperBase
     {
         $this->queryTimeStart = microtime(true);
         $this->sk = $this->view->get('sk');
+        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(ActionsInterface::ACCOUNT);
         $this->setVars();
     }
 
@@ -298,7 +303,6 @@ final class AccountSearchHelper extends HelperBase
             $this->configData->isGlobalSearch()
             && $this->context->getUserProfile()->isAccGlobalSearch());
 
-        // Obtener el filtro de búsqueda desde la sesión
         $this->accountSearchFilter = $this->getFilters();
 
         $this->view->assign('searchCustomer', $this->accountSearchFilter->getClientId());
@@ -323,13 +327,15 @@ final class AccountSearchHelper extends HelperBase
     {
         $accountSearchFilter = $this->context->getSearchFilters();
 
-        if ($accountSearchFilter !== null && empty($this->request->analyzeString('sk'))) {
-            // Obtener el filtro de búsqueda desde la sesión
+        // Return search filters from session if accessed from menu
+        if ($accountSearchFilter !== null && $this->isIndex) {
             return $accountSearchFilter;
         }
 
         $userPreferences = $this->context->getUserData()->getPreferences();
-        $limitCount = $userPreferences->getResultsPerPage() > 0 ? $userPreferences->getResultsPerPage() : $this->configData->getAccountCount();
+        $limitCount = $userPreferences->getResultsPerPage() > 0
+            ? $userPreferences->getResultsPerPage()
+            : $this->configData->getAccountCount();
 
         $accountSearchFilter = new AccountSearchFilter();
         $accountSearchFilter->setSortKey($this->request->analyzeInt('skey', 0));
