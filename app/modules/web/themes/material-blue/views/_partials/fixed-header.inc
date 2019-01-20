@@ -9,7 +9,7 @@
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-icon">
-                <img class="logo btn-menu" src="<?php echo $_getvar('logonobg'); ?>"
+                <img class="logo btn-menu" src="<?php echo $_getvar('logo_no_bg_color'); ?>"
                      alt="logo"
                      data-route="<?php echo $_getvar('homeRoute'); ?>"
                      data-view="account"

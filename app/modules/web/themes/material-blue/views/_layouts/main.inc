@@ -10,7 +10,7 @@
     <title><?php printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="<?php echo $_getvar('logoIcon'); ?>">
+    <link rel="icon" type="image/png" href="<?php echo $_getvar('logo_icon'); ?>">
     <?php foreach ($_getvar('cssLinks') as $cssLink): ?>
         <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
     <?php endforeach; ?>

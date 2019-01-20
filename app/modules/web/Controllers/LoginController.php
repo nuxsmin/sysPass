@@ -64,7 +64,7 @@ final class LoginController extends ControllerBase
             $this->checkForwarded();
 
             $redirector = function ($route) use ($from) {
-                $uri = new Uri(Bootstrap::$SUBURI);
+                $uri = new Uri(ltrim(Bootstrap::$SUBURI, '/'));
                 $uri->addParam('r', $route);
 
                 if ($from !== null) {
