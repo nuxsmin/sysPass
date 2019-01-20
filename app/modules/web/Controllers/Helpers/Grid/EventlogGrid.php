@@ -181,8 +181,9 @@ final class EventlogGrid extends GridBase
         $gridAction->setName(__('Refresh'));
         $gridAction->setTitle(__('Refresh'));
         $gridAction->setIcon($this->icons->getIconRefresh());
-        $gridAction->setOnClickFunction('appMgmt/search');
+        $gridAction->setOnClickFunction('eventlog/refresh');
         $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
+        $gridAction->addData('action-form', 'frmSearchEvent');
 
         return $gridAction;
     }
