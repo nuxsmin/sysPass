@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,8 +23,6 @@
  */
 
 namespace SP\Plugin;
-
-use SP\DataModel\PluginData;
 
 /**
  * Interface PluginInterface
@@ -88,9 +86,9 @@ interface PluginInterface extends PluginEventReceiver
     public function getData();
 
     /**
-     * @param PluginData $pluginData
+     * @param PluginOperation $pluginOperation
      */
-    public function onLoadData(PluginData $pluginData);
+    public function onLoad(PluginOperation $pluginOperation);
 
     /**
      * @return int
@@ -101,4 +99,11 @@ interface PluginInterface extends PluginEventReceiver
      * @param int $enabled
      */
     public function setEnabled($enabled);
+
+    /**
+     * @param string          $version
+     * @param PluginOperation $pluginOperation
+     * @param mixed           $extra
+     */
+    public function upgrade(string $version, PluginOperation $pluginOperation, $extra = null);
 }

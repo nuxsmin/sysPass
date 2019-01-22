@@ -10,7 +10,7 @@ php:
 branches:
   only:
   - master
-  - 3.0
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 addons:
   mariadb: '10.1'

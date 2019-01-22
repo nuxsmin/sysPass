@@ -29,12 +29,13 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\PluginData;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Plugin\PluginManager;
+use SP\Repositories\Plugin\PluginModel;
+use SP\Services\Plugin\PluginDataService;
 use SP\Services\Plugin\PluginService;
 
 /**
@@ -50,6 +51,10 @@ final class PluginController extends ControllerBase
      * @var PluginService
      */
     protected $pluginService;
+    /**
+     * @var PluginDataService
+     */
+    protected $pluginDataService;
 
     /**
      * indexAction
@@ -165,8 +170,8 @@ final class PluginController extends ControllerBase
     {
         $this->view->addTemplate('plugin');
 
-        $pluginData = $pluginId ? $this->pluginService->getById($pluginId) : new PluginData();
-        $pluginInfo = $this->dic->get(PluginManager::class)->getPluginInfo($pluginData->name);
+        $pluginData = $pluginId ? $this->pluginService->getById($pluginId) : new PluginModel();
+        $pluginInfo = $this->dic->get(PluginManager::class)->getPlugin($pluginData->getName());
 
         $this->view->assign('plugin', $pluginData);
         $this->view->assign('pluginInfo', $pluginInfo);
@@ -252,7 +257,8 @@ final class PluginController extends ControllerBase
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
 
-            $this->pluginService->resetById($id);
+            $pluginModel = $this->pluginService->getById($id);
+            $this->pluginDataService->delete($pluginModel->getName());
 
             $this->eventDispatcher->notifyEvent('edit.plugin.reset',
                 new Event($this,
@@ -317,5 +323,6 @@ final class PluginController extends ControllerBase
         $this->checkLoggedIn();
 
         $this->pluginService = $this->dic->get(PluginService::class);
+        $this->pluginDataService = $this->dic->get(PluginDataService::class);
     }
 }

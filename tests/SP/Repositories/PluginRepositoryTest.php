@@ -28,7 +28,7 @@ use DI\DependencyException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PluginData;
+use SP\Repositories\Plugin\PluginModel;
 use SP\Repositories\Plugin\PluginRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
@@ -70,7 +70,7 @@ class PluginRepositoryTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $data = new PluginData();
+        $data = new PluginModel();
         $data->setId(1);
         $data->setName('Authenticator 2');
         $data->setAvailable(1);
@@ -104,7 +104,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     public function testGetAll()
     {
         $result = self::$repository->getAll();
-        /** @var PluginData[] $data */
+        /** @var \SP\Repositories\Plugin\PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(3, $result->getNumRows());
@@ -126,11 +126,11 @@ class PluginRepositoryTest extends DatabaseTestCase
     public function testGetByName()
     {
         $result = self::$repository->getByName('Authenticator');
-        /** @var PluginData $data */
+        /** @var \SP\Repositories\Plugin\PluginModel $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(PluginData::class, $data);
+        $this->assertInstanceOf(PluginModel::class, $data);
         $this->assertEquals(1, $data->getId());
         $this->assertEquals('Authenticator', $data->getName());
         $this->assertNull($data->getData());
@@ -148,7 +148,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->toggleAvailableByName('Authenticator', 0));
 
-        /** @var PluginData $data */
+        /** @var PluginModel $data */
         $data = self::$repository->getByName('Authenticator')->getData();
 
         $this->assertEquals(0, $data->getAvailable());
@@ -187,11 +187,11 @@ class PluginRepositoryTest extends DatabaseTestCase
     public function testGetById()
     {
         $result = self::$repository->getById(1);
-        /** @var PluginData $data */
+        /** @var \SP\Repositories\Plugin\PluginModel $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(PluginData::class, $data);
+        $this->assertInstanceOf(PluginModel::class, $data);
         $this->assertEquals(1, $data->getId());
         $this->assertEquals('Authenticator', $data->getName());
         $this->assertNull($data->getData());
@@ -238,7 +238,7 @@ class PluginRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $data = new PluginData();
+        $data = new PluginModel();
         $data->setId(4);
         $data->setName('Authenticator 2');
         $data->setAvailable(1);
@@ -266,7 +266,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        self::$repository->create(new PluginData());
+        self::$repository->create(new PluginModel());
     }
 
     /**
@@ -277,7 +277,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->resetById(2));
 
-        /** @var PluginData $data */
+        /** @var \SP\Repositories\Plugin\PluginModel $data */
         $data = self::$repository->getById(2)->getData();
 
         $this->assertNull($data->getData());
@@ -296,7 +296,7 @@ class PluginRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('Auth');
 
         $result = self::$repository->search($itemSearchData);
-        /** @var PluginData[] $data */
+        /** @var PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -325,7 +325,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->toggleEnabledByName('Authenticator', 1));
 
-        /** @var PluginData $data */
+        /** @var \SP\Repositories\Plugin\PluginModel $data */
         $data = self::$repository->getByName('Authenticator')->getData();
 
         $this->assertEquals(1, $data->getEnabled());
@@ -341,7 +341,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->toggleAvailable(1, 0));
 
-        /** @var PluginData $data */
+        /** @var \SP\Repositories\Plugin\PluginModel $data */
         $data = self::$repository->getByName('Authenticator')->getData();
 
         $this->assertEquals(0, $data->getAvailable());
@@ -356,7 +356,7 @@ class PluginRepositoryTest extends DatabaseTestCase
     public function testGetByIdBatch()
     {
         $result = self::$repository->getByIdBatch([1, 2, 4]);
-        /** @var PluginData[] $data */
+        /** @var \SP\Repositories\Plugin\PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(2, $result->getNumRows());

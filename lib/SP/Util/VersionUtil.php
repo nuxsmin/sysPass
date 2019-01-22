@@ -44,12 +44,12 @@ final class VersionUtil
     }
 
     /**
-     * Comprobar si una versión necesita actualización
+     * Compare versions
      *
      * @param string       $currentVersion
      * @param array|string $upgradeableVersion
      *
-     * @return bool True si la versión es menor.
+     * @return bool True if $currentVersion is lower than $upgradeableVersion
      */
     public static function checkVersion($currentVersion, $upgradeableVersion)
     {

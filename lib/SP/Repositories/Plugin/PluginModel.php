@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,35 +22,42 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\DataModel;
+namespace SP\Repositories\Plugin;
+
+use SP\DataModel\DataModelBase;
+use SP\DataModel\DataModelInterface;
 
 /**
  * Class PluginData
  *
  * @package SP\DataModel
  */
-class PluginData extends DataModelBase implements DataModelInterface
+class PluginModel extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
      */
-    public $id;
+    protected $id;
     /**
      * @var string
      */
-    public $name;
+    protected $name;
     /**
      * @var string
      */
-    public $data;
+    protected $data;
     /**
      * @var int
      */
-    public $enabled = 0;
+    protected $enabled = 0;
     /**
      * @var int
      */
-    public $available = 1;
+    protected $available = 1;
+    /**
+     * @var string
+     */
+    protected $versionLevel;
 
     /**
      * @return int
@@ -61,19 +68,19 @@ class PluginData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * @param int $id
      */
     public function setId($id)
     {
         $this->id = (int)$id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -130,5 +137,21 @@ class PluginData extends DataModelBase implements DataModelInterface
     public function setAvailable($available)
     {
         $this->available = (int)$available;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersionLevel()
+    {
+        return $this->versionLevel;
+    }
+
+    /**
+     * @param string $versionLevel
+     */
+    public function setVersionLevel(string $versionLevel)
+    {
+        $this->versionLevel = $versionLevel;
     }
 }

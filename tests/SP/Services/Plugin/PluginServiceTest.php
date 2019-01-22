@@ -27,8 +27,8 @@ namespace SP\Tests\Services\Plugin;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PluginData;
 use SP\Repositories\NoSuchItemException;
+use SP\Repositories\Plugin\PluginModel;
 use SP\Services\Plugin\PluginService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -72,7 +72,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testUpdate()
     {
-        $data = new PluginData();
+        $data = new PluginModel();
         $data->setId(1);
         $data->setName('Authenticator 2');
         $data->setAvailable(1);
@@ -159,7 +159,7 @@ class PluginServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getByName('Authenticator');
 
-        $this->assertInstanceOf(PluginData::class, $data);
+        $this->assertInstanceOf(PluginModel::class, $data);
         $this->assertEquals(1, $data->getId());
         $this->assertEquals('Authenticator', $data->getName());
         $this->assertNull($data->getData());
@@ -201,7 +201,7 @@ class PluginServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
 
-        /** @var PluginData[] $data */
+        /** @var PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertCount(1, $data);
@@ -230,7 +230,7 @@ class PluginServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getById(1);
 
-        $this->assertInstanceOf(PluginData::class, $data);
+        $this->assertInstanceOf(PluginModel::class, $data);
         $this->assertEquals(1, $data->getId());
         $this->assertEquals('Authenticator', $data->getName());
         $this->assertNull($data->getData());
@@ -249,7 +249,7 @@ class PluginServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $data = new PluginData();
+        $data = new PluginModel();
         $data->setId(4);
         $data->setName('Authenticator 2');
         $data->setAvailable(1);
@@ -273,7 +273,7 @@ class PluginServiceTest extends DatabaseTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        self::$service->create(new PluginData());
+        self::$service->create(new PluginModel());
     }
 
     /**

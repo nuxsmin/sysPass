@@ -27,8 +27,8 @@ namespace SP\Services\Plugin;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PluginData;
 use SP\Repositories\NoSuchItemException;
+use SP\Repositories\Plugin\PluginModel;
 use SP\Repositories\Plugin\PluginRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
@@ -49,13 +49,13 @@ final class PluginService extends Service
     /**
      * Creates an item
      *
-     * @param PluginData $itemData
+     * @param \SP\Repositories\Plugin\PluginModel $itemData
      *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create(PluginData $itemData)
+    public function create(PluginModel $itemData)
     {
         return $this->pluginRepository->create($itemData)->getLastId();
     }
@@ -63,13 +63,13 @@ final class PluginService extends Service
     /**
      * Updates an item
      *
-     * @param PluginData $itemData
+     * @param \SP\Repositories\Plugin\PluginModel $itemData
      *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update(PluginData $itemData)
+    public function update(PluginModel $itemData)
     {
         return $this->pluginRepository->update($itemData);
     }
@@ -79,7 +79,7 @@ final class PluginService extends Service
      *
      * @param int $id
      *
-     * @return PluginData
+     * @return \SP\Repositories\Plugin\PluginModel
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws NoSuchItemException
@@ -98,7 +98,7 @@ final class PluginService extends Service
     /**
      * Returns all the items
      *
-     * @return PluginData[]
+     * @return PluginModel[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -112,7 +112,7 @@ final class PluginService extends Service
      *
      * @param array $ids
      *
-     * @return PluginData[]
+     * @return \SP\Repositories\Plugin\PluginModel[]
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -173,7 +173,7 @@ final class PluginService extends Service
      *
      * @param string $name
      *
-     * @return PluginData
+     * @return \SP\Repositories\Plugin\PluginModel
      * @throws NoSuchItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

@@ -24,5 +24,27 @@
 		<field name="available">0</field>
 	</row>
 	</table_data>
+	<table_data name="PluginData">
+		<row>
+			<field name="itemId">1</field>
+			<field name="name">Authenticator</field>
+            <field name="data">data_item1</field>
+		</row>
+		<row>
+			<field name="itemId">2</field>
+			<field name="name">Authenticator</field>
+			<field name="data">plugin_data</field>
+		</row>
+		<row>
+			<field name="itemId">2</field>
+			<field name="name">XML Exporter</field>
+			<field name="data" >data</field>
+		</row>
+		<row>
+			<field name="itemId">3</field>
+			<field name="name">DokuWiki</field>
+            <field name="data">data_item3</field>
+		</row>
+	</table_data>
 </database>
 </mysqldump>

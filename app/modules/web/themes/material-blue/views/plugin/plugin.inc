@@ -1,11 +1,11 @@
 <?php
 /**
- * @var  \SP\DataModel\PluginData   $plugin
- * @var  \SP\Plugin\PluginInterface $pluginInfo
- * @var \SP\Core\UI\ThemeIcons      $icons
- * @var \SP\Config\ConfigData       $configData
- * @var callable                    $_getvar
- * @var \SP\Mvc\View\Template       $this
+ * @var  \SP\Repositories\Plugin\PluginModel $plugin
+ * @var  \SP\Plugin\PluginInterface          $pluginInfo
+ * @var \SP\Core\UI\ThemeIcons               $icons
+ * @var \SP\Config\ConfigData                $configData
+ * @var callable                             $_getvar
+ * @var \SP\Mvc\View\Template                $this
  */
 
 $plugin = $_getvar('plugin');

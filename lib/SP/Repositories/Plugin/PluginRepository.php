@@ -29,7 +29,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PluginData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -48,7 +47,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Creates an item
      *
-     * @param PluginData $itemData
+     * @param PluginModel $itemData
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -75,7 +74,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     /**
      * Updates an item
      *
-     * @param PluginData $itemData
+     * @param PluginModel $itemData
      *
      * @return int
      * @throws ConstraintException
@@ -88,7 +87,8 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
               SET `name` = ?, 
               `data` = ?,
               enabled = ?,
-              available = ?
+              available = ?,
+              versionLevel = ?
               WHERE `name` = ? OR id = ? LIMIT 1';
 
         $queryData = new QueryData();
@@ -98,6 +98,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             $itemData->getData(),
             $itemData->getEnabled(),
             $itemData->getAvailable(),
+            $itemData->getVersionLevel(),
             $itemData->getName(),
             $itemData->getId()
         ]);
@@ -122,12 +123,13 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             `name`,
             `data`,
             enabled,
-            available 
+            available,
+            versionLevel
             FROM Plugin 
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(PluginData::class);
+        $queryData->setMapClassName(PluginModel::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
@@ -147,12 +149,13 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             'SELECT id,
             `name`,
             enabled,
-            available 
+            available,
+            versionLevel
             FROM Plugin 
             ORDER BY `name`';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(PluginData::class);
+        $queryData->setMapClassName(PluginModel::class);
         $queryData->setQuery($query);
 
         return $this->db->doSelect($queryData);
@@ -177,13 +180,14 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             'SELECT id,
             `name`,
             enabled,
-            available 
+            available,
+            versionLevel
             FROM Plugin 
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')
             ORDER BY id';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(PluginData::class);
+        $queryData->setMapClassName(PluginModel::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
@@ -282,8 +286,8 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
     public function search(ItemSearchData $itemSearchData)
     {
         $queryData = new QueryData();
-        $queryData->setMapClassName(PluginData::class);
-        $queryData->setSelect('id, name, enabled, available');
+        $queryData->setMapClassName(PluginModel::class);
+        $queryData->setSelect('id, name, enabled, available, versionLevel');
         $queryData->setFrom('Plugin');
         $queryData->setOrder('name');
 
@@ -318,12 +322,13 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
             `name`,
             `data`,
             enabled,
-            available 
+            available,
+            versionLevel
             FROM Plugin 
             WHERE `name` = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(PluginData::class);
+        $queryData->setMapClassName(PluginModel::class);
         $queryData->setQuery($query);
         $queryData->addParam($name);
 

@@ -417,11 +417,12 @@ DROP TABLE IF EXISTS `Plugin`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Plugin` (
-  `id`        int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name`      varchar(100)     NOT NULL,
-  `data`      mediumblob                DEFAULT NULL,
-  `enabled`   tinyint(1)       NOT NULL DEFAULT 0,
-  `available` tinyint(1)                DEFAULT 0,
+  `id`            int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name`          varchar(100)     NOT NULL,
+  `data`          mediumblob                DEFAULT NULL,
+  `enabled`       tinyint(1)       NOT NULL DEFAULT 0,
+  `available`     tinyint(1)                DEFAULT 0,
+  `versionLevel`  varchar(15)  NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_Plugin_01` (`name`)
 )
@@ -595,6 +596,24 @@ CREATE TABLE `UserToUserGroup` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `PluginData`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+create table PluginData
+(
+  name varchar(100) not null,
+  itemId int not null,
+  data blob not null,
+  primary key (name, itemId),
+  constraint fk_PluginData_name
+    foreign key (name) references Plugin (name)
+      on update cascade
+      on delete cascade
+)
+ ENGINE = InnoDB
+ DEFAULT CHARSET = utf8
+ COLLATE utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `account_data_v`;
 /*!50001 DROP VIEW IF EXISTS `account_data_v`*/;

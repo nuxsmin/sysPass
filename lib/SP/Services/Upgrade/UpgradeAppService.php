@@ -38,7 +38,12 @@ use SP\Util\VersionUtil;
  */
 final class UpgradeAppService extends Service implements UpgradeInterface
 {
-    const UPGRADES = ['300.18010101', '300.18072901', '300.18072902'];
+    const UPGRADES = [
+        '300.18010101',
+        '300.18072901',
+        '300.18072902',
+        '310.19012201'
+    ];
 
     /**
      * @param $version
@@ -55,8 +60,6 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      * @param ConfigData $configData
      *
      * @throws UpgradeException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \SP\Storage\File\FileException
      */
     public function upgrade($version, ConfigData $configData)
@@ -116,6 +119,10 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                 case '300.18072902':
                     $this->dic->get(UpgradeCustomFieldData::class)
                         ->upgrade_300_18072902();
+                    return true;
+                case '310.19012201':
+                    $this->dic->get(UpgradePlugin::class)
+                        ->upgrade_310_19012201();
                     return true;
             }
         } catch (\Exception $e) {

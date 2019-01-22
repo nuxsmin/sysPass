@@ -31,5 +31,21 @@ namespace SP\DataModel;
  */
 abstract class DataModelBase
 {
+    /**
+     * is utilized for reading data from inaccessible members.
+     *
+     * @param $name string
+     *
+     * @return mixed
+     * @link https://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.members
+     */
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->{$name};
+        }
+
+        return null;
+    }
 
 }
