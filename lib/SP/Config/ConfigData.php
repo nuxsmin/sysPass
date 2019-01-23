@@ -226,6 +226,10 @@ final class ConfigData implements JsonSerializable
      */
     private $mailAuthenabled = false;
     /**
+     * @var string
+     */
+    private $mailAuthtype;
+    /**
      * @var bool
      */
     private $mailEnabled = false;
@@ -1277,6 +1281,26 @@ final class ConfigData implements JsonSerializable
     public function setMailAuthenabled($mailAuthenabled)
     {
         $this->mailAuthenabled = (bool)$mailAuthenabled;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailAuthtype()
+    {
+        return $this->mailAuthtype;
+    }
+    
+    /**
+     * @param string $mailAuthtype
+     *
+     * @return $this
+     */
+    public function setMailAuthtype($mailAuthtype)
+    {
+        $this->mailAuthtype = $mailAuthtype;
 
         return $this;
     }

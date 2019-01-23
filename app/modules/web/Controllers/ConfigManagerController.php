@@ -246,6 +246,7 @@ final class ConfigManagerController extends ControllerBase
         $template->addTemplate('mail');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
+        $template->assign('mailAuthTypes', ['PLAIN', 'LOGIN']);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 

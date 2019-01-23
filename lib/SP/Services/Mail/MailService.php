@@ -207,6 +207,7 @@ final class MailService extends Service
         $mailParams->security = $configData->getMailSecurity();
         $mailParams->from = $configData->getMailFrom();
         $mailParams->mailAuthenabled = $configData->isMailAuthenabled();
+        $mailParams->mailAuthtype = $configData->getMailAuthtype();
 
         return $mailParams;
     }

@@ -103,6 +103,22 @@
         </tr>
         <tr>
             <td class="descField">
+                <?php echo __('Auth Type'); ?>
+            </td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Auth Type'); ?></div>
+
+                <select name="mail_authtype" id="sel-mailsecurity" size="1" class="select-box select-box-deselect">
+                    <option value=""><?php echo __('Auth Type'); ?></option>
+                    <?php foreach ($_getvar('mailAuthTypes') as $authtype): ?>
+                        <option
+                                value="<?php echo $authtype; ?>" <?php echo ($configData->getMailAuthType() === $authtype) ? 'selected' : ''; ?>><?php echo $authtype; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField">
                 <?php echo __('User'); ?>
             </td>
             <td class="valField">

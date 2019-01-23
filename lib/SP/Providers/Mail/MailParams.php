@@ -59,4 +59,8 @@ final class MailParams
      * @var bool
      */
     public $mailAuthenabled;
+    /**
+     * @var string
+     */
+    public $mailAuthtype;
 }

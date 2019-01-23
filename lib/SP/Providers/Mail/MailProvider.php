@@ -66,6 +66,7 @@ final class MailProvider extends Provider
 
             if ($mailParams->mailAuthenabled) {
                 $this->mailer->SMTPAuth = true;
+                $this->mailer->AuthType = $mailParams->mailAuthtype;
                 $this->mailer->Username = $mailParams->user;
                 $this->mailer->Password = $mailParams->pass;
             }
