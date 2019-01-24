@@ -81,9 +81,9 @@ final class UpgradeController extends ControllerBase
                     ->upgrade($dbVersion, $this->configData);
             }
 
-            if (UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()))) {
+            if (UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion()))) {
                 $this->dic->get(UpgradeAppService::class)
-                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()), $this->configData);
+                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion()), $this->configData);
             }
 
             $this->configData->setUpgradeKey(null);

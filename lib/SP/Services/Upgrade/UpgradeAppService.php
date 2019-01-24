@@ -47,7 +47,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return VersionUtil::checkVersion($version, self::UPGRADES);
+        return empty($version) || VersionUtil::checkVersion($version, self::UPGRADES);
     }
 
     /**
@@ -78,7 +78,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
 
                 logger('APP Upgrade: ' . $appVersion);
 
-                $configData->setConfigVersion($appVersion);
+                $configData->setAppVersion($appVersion);
 
                 $this->config->saveConfig($configData, false);
             }

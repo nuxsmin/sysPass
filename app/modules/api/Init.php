@@ -143,7 +143,7 @@ final class Init extends ModuleBase
     {
         if ($this->configData->getUpgradeKey()
             || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion())))
+                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion())))
         ) {
             $this->config->generateUpgradeKey();
 

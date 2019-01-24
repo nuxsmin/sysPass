@@ -54,9 +54,9 @@ final class Installer extends Service
     /**
      * sysPass' version and build number
      */
-    const VERSION = [3, 0, 1];
+    const VERSION = [3, 0, 2];
     const VERSION_TEXT = '3.0';
-    const BUILD = 19012002;
+    const BUILD = 19012401;
 
     /**
      * @var DatabaseSetupInterface
@@ -231,9 +231,12 @@ final class Installer extends Service
      */
     private function setupConfig()
     {
+        $version = VersionUtil::getVersionStringNormalized();
+
         // Sets version and remove upgrade key
-        $this->configData->setConfigVersion(VersionUtil::getVersionStringNormalized());
-        $this->configData->setDatabaseVersion(VersionUtil::getVersionStringNormalized());
+        $this->configData->setConfigVersion($version);
+        $this->configData->setAppVersion($version);
+        $this->configData->setDatabaseVersion($version);
         $this->configData->setUpgradeKey(null);
 
         // Set DB connection info

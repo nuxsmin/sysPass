@@ -296,6 +296,10 @@ final class ConfigData implements JsonSerializable
     /**
      * @var string
      */
+    private $appVersion;
+    /**
+     * @var string
+     */
     private $databaseVersion;
     /**
      * @var bool
@@ -2168,5 +2172,21 @@ final class ConfigData implements JsonSerializable
     public function setLdapType(int $ldapType)
     {
         $this->ldapType = $ldapType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+
+    /**
+     * @param string $appVersion
+     */
+    public function setAppVersion(string $appVersion)
+    {
+        $this->appVersion = $appVersion;
     }
 }
