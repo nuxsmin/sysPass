@@ -23,6 +23,12 @@
             <div class="lowres-title"><?php echo __('sysPass version'); ?></div>
 
             <?php printf('%s (%s)', \SP\Services\Install\Installer::VERSION_TEXT, \SP\Html\Html::strongText(VersionUtil::getVersionStringNormalized())); ?>
+            <br>
+            <?php printf('Config: %s', $configData->getConfigVersion()); ?>
+            <br>
+            <?php printf('App: %s', $configData->getAppVersion()); ?>
+            <br>
+            <?php printf('DB: %s', $configData->getDatabaseVersion()); ?>
         </td>
     </tr>
     <tr>
