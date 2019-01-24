@@ -86,6 +86,7 @@ final class UpgradeController extends ControllerBase
             }
 
             $appVersion = $this->configData->getAppVersion();
+            $appVersion = empty($appVersion) ? '0.0' : $appVersion;
 
             if (UpgradeAppService::needsUpgrade($appVersion)) {
                 $this->dic->get(UpgradeAppService::class)
