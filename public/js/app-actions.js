@@ -568,7 +568,6 @@ sysPass.Actions = function (log) {
 
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data("route")});
-            opts.method = "get";
             opts.data = $obj.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
@@ -1860,6 +1859,9 @@ sysPass.Actions = function (log) {
                     }
                 }
             });
+        },
+        refresh: function ($obj) {
+            $('#' + $obj.data("action-form")).submit();
         }
     };
 
