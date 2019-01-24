@@ -30,7 +30,6 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
 
 /**
  * Class UpgradeController
@@ -64,13 +63,18 @@ final class UpgradeController extends ControllerBase
     public function upgradeAction()
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('The updating need to be confirmed'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('The updating need to be confirmed')
+            );
         }
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Wrong security code'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Wrong security code')
+            );
         }
-
 
         try {
             $dbVersion = $this->configData->getDatabaseVersion();
@@ -81,15 +85,21 @@ final class UpgradeController extends ControllerBase
                     ->upgrade($dbVersion, $this->configData);
             }
 
-            if (UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion()))) {
+            $appVersion = $this->configData->getAppVersion();
+
+            if (UpgradeAppService::needsUpgrade($appVersion)) {
                 $this->dic->get(UpgradeAppService::class)
-                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion()), $this->configData);
+                    ->upgrade($appVersion, $this->configData);
             }
 
             $this->configData->setUpgradeKey(null);
             $this->config->saveConfig($this->configData, false);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Application successfully updated'), [__u('You will be redirected to log in within 5 seconds')]);
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Application successfully updated'),
+                [__u('You will be redirected to log in within 5 seconds')]
+            );
         } catch (\Exception $e) {
             processException($e);
 

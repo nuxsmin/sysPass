@@ -280,12 +280,15 @@ final class Init extends ModuleBase
 
     /**
      * Comprobar si es necesario actualizar componentes
+     * @throws \SP\Storage\File\FileException
      */
     private function checkUpgrade()
     {
+        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
+
         return $this->configData->getUpgradeKey()
             || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getAppVersion())));
+                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
     }
 
     /**
