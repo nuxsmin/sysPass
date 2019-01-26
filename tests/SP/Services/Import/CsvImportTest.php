@@ -85,7 +85,7 @@ class CsvImportTest extends DatabaseTestCase
         $import = new CsvImport(self::$dic, FileImport::fromFilesystem($file), $params);
         $import->doImport();
 
-        $this->assertEquals(3, $import->getCounter());
+        $this->assertEquals(4, $import->getCounter());
 
         $this->checkImportedData();
     }
@@ -157,7 +157,7 @@ class CsvImportTest extends DatabaseTestCase
 
         $this->assertEquals('csv_pass3', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
-        $this->assertEquals(5, $this->conn->getRowCount('Account'));
+        $this->assertEquals(6, $this->conn->getRowCount('Account'));
     }
 
     /**

@@ -78,7 +78,7 @@ final class AccountPasswordHelper extends HelperBase
             $this->view->assign('pass', $imageUtil->convertText($pass));
         } else {
             $this->view->assign('login', $accountData->getLogin());
-            $this->view->assign('pass', htmlentities($pass));
+            $this->view->assign('pass', htmlentities($pass, ENT_COMPAT | ENT_HTML5));
         }
 
         return [

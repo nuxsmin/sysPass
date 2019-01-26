@@ -183,7 +183,7 @@ trait ImportTrait
     protected function addWorkingItem($type, $value, $id)
     {
         if (isset($this->items[$type][$value])) {
-            return false;
+            return $this->items[$type][$value];
         }
 
         $this->items[$type][$value] = $id;
