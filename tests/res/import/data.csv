@@ -5,3 +5,4 @@ bla
 car
 "
 "Test CSV 3";"Apple";"SSH";"http://apple.com";"csv_login2";"csv_pass3";"CSV Notes 3"
+"Test CSV 1";"CSV Client 1";"CSV Category 1";"http://test.me";"csv_login1";"csv_pass1";"CSV Notes"

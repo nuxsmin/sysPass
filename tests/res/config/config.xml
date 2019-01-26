@@ -6,14 +6,15 @@
   <accountFullGroupAccess>0</accountFullGroupAccess>
   <accountLink>1</accountLink>
   <accountPassToImage>0</accountPassToImage>
+  <appVersion></appVersion>
   <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
   <authBasicDomain></authBasicDomain>
   <authBasicEnabled>1</authBasicEnabled>
-  <backup_hash>cfa7b7e1f0ddcf064e54448f900e9958fca308c1</backup_hash>
+  <backup_hash>4d7fc39824dba286bd33ae0e68353b75e1181f7f</backup_hash>
   <checkUpdates>0</checkUpdates>
   <checknotices>0</checknotices>
-  <configDate>1544965203</configDate>
-  <configHash>d13dd5f27bf6112c0665aa586c9581efee6ddbc9</configHash>
+  <configDate>1548499643</configDate>
+  <configHash>24275a94c07791c9af1ff211ff6e16c638a900bd</configHash>
   <configSaver>sysPass</configSaver>
   <configVersion></configVersion>
   <databaseVersion></databaseVersion>
@@ -32,7 +33,7 @@
   <dokuwikiUrlBase></dokuwikiUrlBase>
   <dokuwikiUser></dokuwikiUser>
   <encryptSession>0</encryptSession>
-  <export_hash>f25c6da263b2b6735b3e10a8ab1dba4d3ba6200a</export_hash>
+  <export_hash>c82d9a7be95b0c2acb10082b7fdc97c34ed726fc</export_hash>
   <filesAllowedExts>
     <item type="filesAllowedExts">PDF</item>
     <item type="filesAllowedExts">JPG</item>

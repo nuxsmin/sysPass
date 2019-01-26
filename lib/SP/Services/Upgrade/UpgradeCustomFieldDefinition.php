@@ -63,7 +63,6 @@ final class UpgradeCustomFieldDefinition extends Service
 
         try {
             $customFieldTypeService = $this->dic->get(CustomFieldTypeService::class);
-            $customFieldTypeService->getAll();
 
             $customFieldType = [];
 
@@ -88,7 +87,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     $itemData->setHelp($data->getHelp());
                     $itemData->setRequired($data->isRequired());
                     $itemData->setShowInList($data->isShowInItemsList());
-                    $itemData->setTypeId($customFieldType[$data->getType()]);
+                    $itemData->setTypeId($customFieldType[$this->typeMapper((int)$data->getType())]);
 
                     $customFieldDefService->updateRaw($itemData);
 
@@ -135,6 +134,28 @@ final class UpgradeCustomFieldDefinition extends Service
         }
 
         return $moduleId;
+    }
+
+    /**
+     * @param int $typeId
+     * @return string
+     */
+    private function typeMapper(int $typeId)
+    {
+        $types = [
+            1 => 'text',
+            2 => 'password',
+            3 => 'date',
+            4 => 'number',
+            5 => 'email',
+            6 => 'tel',
+            7 => 'url',
+            8 => 'color',
+            9 => 'text',
+            10 => 'textarea'
+        ];
+
+        return isset($types[$typeId]) ? $types[$typeId] : $types[1];
     }
 
     /**

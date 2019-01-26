@@ -141,9 +141,11 @@ final class Init extends ModuleBase
      */
     private function checkUpgrade()
     {
+        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
+
         if ($this->configData->getUpgradeKey()
             || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion())))
+                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
         ) {
             $this->config->generateUpgradeKey();
 

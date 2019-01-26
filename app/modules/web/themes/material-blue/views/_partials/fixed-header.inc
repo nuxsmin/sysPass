@@ -12,7 +12,7 @@
                 <img class="logo btn-menu" src="<?php echo $_getvar('logo_no_bg_color'); ?>"
                      alt="logo"
                      data-route="<?php echo $_getvar('homeRoute'); ?>"
-                     data-view="account"
+                     data-view="search"
                      data-historyReset="1"/>
             </span>
 

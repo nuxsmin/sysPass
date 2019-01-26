@@ -93,4 +93,12 @@ final class InstallController extends ControllerBase
             return $this->returnJsonResponseException($e);
         }
     }
+
+    /**
+     * @return void
+     */
+    protected function initialize()
+    {
+        // TODO: Implement initialize() method.
+    }
 }

@@ -146,4 +146,12 @@ final class StatusController extends SimpleControllerBase
             return $this->returnJsonResponseException($e);
         }
     }
+
+    /**
+     * @return void
+     */
+    protected function initialize()
+    {
+        // TODO: Implement initialize() method.
+    }
 }

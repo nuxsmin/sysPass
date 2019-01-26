@@ -143,30 +143,23 @@ final class Init extends ModuleBase
         // Iniciar la sesión de PHP
         $this->initSession($this->configData->isEncryptSession());
 
+        $isReload = $this->request->checkReload();
+
         // Volver a cargar la configuración si se recarga la página
-        if ($this->request->checkReload() === false) {
-            // Cargar la configuración
-            $this->config->loadConfig();
-
-            // Cargar el lenguaje
-            $this->language->setLanguage();
-
-            // Initialize theme
-            $this->theme->initTheme();
-        } else {
+        if ($isReload) {
             logger('Browser reload');
 
             $this->context->setAppStatus(SessionContext::APP_STATUS_RELOADED);
 
             // Cargar la configuración
             $this->config->loadConfig(true);
-
-            // Restablecer el idioma
-            $this->language->setLanguage(true);
-
-            // Re-Initialize theme
-            $this->theme->initTheme(true);
         }
+
+        // Setup language
+        $this->language->setLanguage($isReload);
+
+        // Setup theme
+        $this->theme->initTheme($isReload);
 
         // Comprobar si es necesario cambiar a HTTPS
         HttpUtil::checkHttps($this->configData, $this->request);
@@ -287,12 +280,15 @@ final class Init extends ModuleBase
 
     /**
      * Comprobar si es necesario actualizar componentes
+     * @throws \SP\Storage\File\FileException
      */
     private function checkUpgrade()
     {
+        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
+
         return $this->configData->getUpgradeKey()
             || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion())));
+                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
     }
 
     /**

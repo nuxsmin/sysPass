@@ -52,4 +52,12 @@ final class IndexController extends ControllerBase
             $this->view();
         }
     }
+
+    /**
+     * @return void
+     */
+    protected function initialize()
+    {
+        // TODO: Implement initialize() method.
+    }
 }

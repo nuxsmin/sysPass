@@ -25,7 +25,9 @@
 namespace SP\Services\Upgrade;
 
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Util\PasswordUtil;
+use SP\Util\VersionUtil;
 
 /**
  * Class UpgradeUtil
@@ -75,5 +77,23 @@ final class UpgradeUtil
 
         $configData->setMaintenance(true);
         $config->saveConfig($configData, false);
+    }
+
+    /**
+     * @param ConfigData $configData
+     * @param Config $config
+     * @throws \SP\Storage\File\FileException
+     */
+    public static function fixAppUpgrade(ConfigData $configData, Config $config)
+    {
+        // Fixes bug in 3.0.X version where some updates weren't applied
+        // when upgrading from v2
+        // $dbVersion is always '' when upgrading from v2
+        if (!empty($configData->getDatabaseVersion())
+            && empty($configData->getAppVersion())
+        ) {
+            $configData->setAppVersion(VersionUtil::getVersionStringNormalized());
+            $config->saveConfig($configData, false);
+        }
     }
 }
