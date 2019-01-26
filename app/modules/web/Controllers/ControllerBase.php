@@ -30,6 +30,7 @@ use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -55,7 +56,6 @@ abstract class ControllerBase
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
     const ERR_EXCEPTION = 5;
-
     /**
      * @var Template Instancia del motor de plantillas a utilizar
      */
@@ -89,6 +89,7 @@ abstract class ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws SessionTimeout
      */
     public final function __construct(Container $container, $actionName)
     {
@@ -112,8 +113,12 @@ abstract class ControllerBase
 
         $this->setViewVars($loggedIn);
 
-        if (method_exists($this, 'initialize')) {
+        try {
             $this->initialize();
+        } catch (SessionTimeout $sessionTimeout) {
+            $this->handleSessionTimeout();
+
+            throw $sessionTimeout;
         }
     }
 
@@ -141,6 +146,27 @@ abstract class ControllerBase
 
         // Pass the action name to the template as a variable
         $this->view->assign($this->actionName, true);
+    }
+
+    /**
+     * @return void
+     */
+    protected abstract function initialize();
+
+    /**
+     * @return void
+     */
+    private function handleSessionTimeout()
+    {
+        $this->sessionLogout(
+            $this->request,
+            $this->configData,
+            function ($redirect) {
+                $this->router->response()
+                    ->redirect($redirect)
+                    ->send(true);
+            }
+        );
     }
 
     /**
@@ -219,11 +245,19 @@ abstract class ControllerBase
      * @throws AuthException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function checkLoggedIn($requireAuthCompleted = true)
     {
+        if ($this->session->isLoggedIn() === false
+            || $this->session->getAuthCompleted() !== $requireAuthCompleted
+        ) {
+            throw new SessionTimeout();
+        }
+
         if ($this->session->isLoggedIn()
             && $this->session->getAuthCompleted() === $requireAuthCompleted
+            && $this->configData->isAuthBasicEnabled()
         ) {
             $browser = $this->dic->get(Browser::class);
 
@@ -234,18 +268,6 @@ abstract class ControllerBase
                 throw new AuthException('Invalid browser auth');
             }
         }
-
-        $this->checkLoggedInSession(
-            $this->session,
-            $this->request,
-            $this->configData,
-            function ($redirect) {
-                $this->router->response()
-                    ->redirect($redirect)
-                    ->send(true);
-            },
-            $requireAuthCompleted
-        );
     }
 
     /**

@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 
 /**
@@ -53,8 +54,7 @@ abstract class SimpleControllerBase
      * @param Container $container
      * @param           $actionName
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws SessionTimeout
      */
     public function __construct(Container $container, $actionName)
     {
@@ -65,18 +65,26 @@ abstract class SimpleControllerBase
 
         $this->previousSk = $this->session->getSecurityKey();
 
-        if (method_exists($this, 'initialize')) {
+        try {
             $this->initialize();
+        } catch (SessionTimeout $sessionTimeout) {
+            $this->handleSessionTimeout();
+
+            throw $sessionTimeout;
         }
     }
 
     /**
-     * Comprobaciones
+     * @return void
      */
-    protected function checks()
+    protected abstract function initialize();
+
+    /**
+     * @return void
+     */
+    public function handleSessionTimeout()
     {
-        $this->checkLoggedInSession(
-            $this->session,
+        $this->sessionLogout(
             $this->request,
             $this->configData,
             function ($redirect) {
@@ -85,6 +93,21 @@ abstract class SimpleControllerBase
                     ->send(true);
             }
         );
+    }
+
+    /**
+     * Comprobaciones
+     *
+     * @throws SessionTimeout
+     */
+    protected function checks()
+    {
+        if ($this->session->isLoggedIn() === false
+            || $this->session->getAuthCompleted() !== true
+        ) {
+            throw new SessionTimeout();
+        }
+
 //        $this->checkSecurityToken($this->session, $this->request);
     }
 

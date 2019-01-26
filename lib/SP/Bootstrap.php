@@ -35,6 +35,7 @@ use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
@@ -203,16 +204,16 @@ final class Bootstrap
                     }
 
 //                    $app = $matches['app'][0] ?: 'web';
-                    $controller = $matches['controller'][0];
-                    $method = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
-                    $params = !empty($matches['params'][0]) ? Filter::getArray(explode('/', trim($matches['params'][0], '/'))) : [];
+                    $controllerName = $matches['controller'][0];
+                    $methodName = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
+                    $methodParams = !empty($matches['params'][0]) ? Filter::getArray(explode('/', trim($matches['params'][0], '/'))) : [];
 
-                    $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
+                    $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controllerName) . 'Controller';
 
                     $this->initializePluginClasses();
 
-                    if (!method_exists($controllerClass, $method)) {
-                        logger($controllerClass . '::' . $method);
+                    if (!method_exists($controllerClass, $methodName)) {
+                        logger($controllerClass . '::' . $methodName);
 
                         /** @var Response $response */
                         $response->code(404);
@@ -225,13 +226,17 @@ final class Bootstrap
                     switch (APP_MODULE) {
                         case 'web':
                             self::$container->get(InitWeb::class)
-                                ->initialize($controller);
+                                ->initialize($controllerName);
                             break;
                     }
 
-                    logger('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
+                    logger('Routing call: ' . $controllerClass . '::' . $methodName . '::' . print_r($methodParams, true));
 
-                    return call_user_func_array([new $controllerClass(self::$container, $method), $method], $params);
+                    $controller = new $controllerClass(self::$container, $methodName);
+
+                    return call_user_func_array([$controller, $methodName], $methodParams);
+                } catch (SessionTimeout $sessionTimeout) {
+                    logger('Session timeout', 'DEBUG');
                 } catch (\Exception $e) {
                     processException($e);
 

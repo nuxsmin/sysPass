@@ -145,4 +145,12 @@ final class BootstrapController extends SimpleControllerBase
             return '';
         }
     }
+
+    /**
+     * @return void
+     */
+    protected function initialize()
+    {
+        // TODO: Implement initialize() method.
+    }
 }

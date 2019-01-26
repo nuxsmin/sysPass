@@ -107,4 +107,12 @@ final class UpgradeController extends ControllerBase
             return $this->returnJsonResponseException($e);
         }
     }
+
+    /**
+     * @return void
+     */
+    protected function initialize()
+    {
+        // TODO: Implement initialize() method.
+    }
 }

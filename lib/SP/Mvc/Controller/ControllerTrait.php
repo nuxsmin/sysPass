@@ -26,7 +26,6 @@ namespace SP\Mvc\Controller;
 
 use SP\Bootstrap;
 use SP\Config\ConfigData;
-use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Http\JsonResponse;
@@ -54,54 +53,44 @@ trait ControllerTrait
     }
 
     /**
-     * Comprobar si la sesión está activa
+     * Logout from current session
      *
-     * @param SessionContext $context
-     * @param Request        $request
-     * @param ConfigData     $configData
-     * @param \Closure       $onRedirect
-     * @param bool           $requireAuthCompleted
+     * @param Request    $request
+     * @param ConfigData $configData
+     * @param \Closure   $onRedirect
      */
-    protected function checkLoggedInSession(SessionContext $context,
-                                            Request $request,
-                                            ConfigData $configData,
-                                            \Closure $onRedirect,
-                                            $requireAuthCompleted = true)
+    protected function sessionLogout(Request $request, ConfigData $configData, \Closure $onRedirect)
     {
-        if ($context->isLoggedIn() === false
-            || $context->getAuthCompleted() !== $requireAuthCompleted
-        ) {
-            if ($request->isJson()) {
-                $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
-                $jsonResponse->setStatus(10);
+        if ($request->isJson()) {
+            $jsonResponse = new JsonResponse(__u('Session not started or timed out'));
+            $jsonResponse->setStatus(10);
 
-                Json::fromDic()->returnJson($jsonResponse);
-            } elseif ($request->isAjax()) {
-                Util::logout();
-            } else {
-                try {
-                    // Analyzes if there is any direct route within the URL
-                    // then it computes the route HMAC to build a signed URI
-                    // which would be used during logging in
-                    $route = $request->analyzeString('r');
-                    $hash = $request->analyzeString('h');
+            Json::fromDic()->returnJson($jsonResponse);
+        } elseif ($request->isAjax()) {
+            Util::logout();
+        } else {
+            try {
+                // Analyzes if there is any direct route within the URL
+                // then it computes the route HMAC to build a signed URI
+                // which would be used during logging in
+                $route = $request->analyzeString('r');
+                $hash = $request->analyzeString('h');
 
-                    $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
-                    $uri->addParam('_r', 'login');
+                $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
+                $uri->addParam('_r', 'login');
 
-                    if ($route && $hash) {
-                        $key = $configData->getPasswordSalt();
-                        $request->verifySignature($key);
+                if ($route && $hash) {
+                    $key = $configData->getPasswordSalt();
+                    $request->verifySignature($key);
 
-                        $uri->addParam('from', $route);
+                    $uri->addParam('from', $route);
 
-                        $onRedirect->call($this, $uri->getUriSigned($key));
-                    } else {
-                        $onRedirect->call($this, $uri->getUri());
-                    }
-                } catch (SPException $e) {
-                    processException($e);
+                    $onRedirect->call($this, $uri->getUriSigned($key));
+                } else {
+                    $onRedirect->call($this, $uri->getUri());
                 }
+            } catch (SPException $e) {
+                processException($e);
             }
         }
     }
