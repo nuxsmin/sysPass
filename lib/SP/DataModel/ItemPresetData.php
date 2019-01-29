@@ -24,9 +24,6 @@
 
 namespace SP\DataModel;
 
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Util\Util;
-
 /**
  * Class ItemPresetData
  *
@@ -34,6 +31,8 @@ use SP\Util\Util;
  */
 class ItemPresetData extends DataModelBase implements HydratableInterface
 {
+    use SerializedModel;
+
     /**
      * @var int
      */
@@ -209,27 +208,6 @@ class ItemPresetData extends DataModelBase implements HydratableInterface
     public function getHash()
     {
         return sha1($this->type . (int)$this->userId . (int)$this->userGroupId . (int)$this->userProfileId . (int)$this->priority);
-    }
-
-    /**
-     * @param string $class
-     *
-     * @param string $property
-     *
-     * @return mixed
-     * @throws NoSuchPropertyException
-     */
-    public function hydrate(string $class = null, string $property = 'data')
-    {
-        if (property_exists($this, $property)) {
-            if ($this->data !== null) {
-                return $class !== null ? Util::unserialize($class, $this->data) : unserialize($this->data);
-            }
-
-            return null;
-        }
-
-        throw new NoSuchPropertyException($property);
     }
 
     /**

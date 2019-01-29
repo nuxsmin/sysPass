@@ -127,8 +127,9 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()

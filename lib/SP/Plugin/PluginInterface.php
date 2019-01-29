@@ -86,9 +86,9 @@ interface PluginInterface extends PluginEventReceiver
     public function getData();
 
     /**
-     * @param PluginOperation $pluginOperation
+     * onLoad
      */
-    public function onLoad(PluginOperation $pluginOperation);
+    public function onLoad();
 
     /**
      * @return int

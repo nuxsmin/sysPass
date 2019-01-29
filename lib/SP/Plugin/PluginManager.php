@@ -135,10 +135,11 @@ final class PluginManager
      * Obtener la información de un plugin
      *
      * @param string $name Nombre del plugin
+     * @param bool   $initialize
      *
      * @return PluginInterface
      */
-    public function getPlugin($name)
+    public function getPlugin($name, bool $initialize = false)
     {
         if (isset(self::$pluginsAvailable[$name])) {
             $plugin = $this->loadPluginClass(
@@ -146,7 +147,10 @@ final class PluginManager
                 self::$pluginsAvailable[$name]['namespace']
             );
 
-            $this->initPluginData($plugin);
+            if ($initialize) {
+                $this->initPlugin($plugin);
+                $plugin->onLoad();
+            }
 
             return $plugin;
         }
@@ -164,10 +168,10 @@ final class PluginManager
      */
     private function loadPluginClass(string $name, string $namespace)
     {
-        $name = ucfirst($name);
+        $pluginName = ucfirst($name);
 
-        if (isset($this->loadedPlugins[$name])) {
-            return $this->loadedPlugins[$name];
+        if (isset($this->loadedPlugins[$pluginName])) {
+            return $this->loadedPlugins[$pluginName];
         }
 
         try {
@@ -175,7 +179,10 @@ final class PluginManager
             $reflectionClass = new ReflectionClass($class);
 
             /** @var PluginInterface $plugin */
-            $plugin = $reflectionClass->newInstance(Bootstrap::getContainer());
+            $plugin = $reflectionClass->newInstance(
+                Bootstrap::getContainer(),
+                new PluginOperation($this->pluginDataService, $pluginName)
+            );
 
             // Do not load plugin's data if not compatible.
             // Just return the plugin instance before disabling it
@@ -185,7 +192,7 @@ final class PluginManager
                         ->addDescription(sprintf(__('Plugin version not compatible (%s)'), implode('.', $plugin->getVersion()))))
                 );
 
-                $this->disabledPlugins[] = $name;
+                $this->disabledPlugins[] = $pluginName;
             }
 
             return $plugin;
@@ -194,9 +201,9 @@ final class PluginManager
 
             $this->eventDispatcher->notifyEvent('exception',
                 new Event($e, EventMessage::factory()
-                    ->addDescription(sprintf(__('Unable to load the "%s" plugin'), $name))
+                    ->addDescription(sprintf(__('Unable to load the "%s" plugin'), $pluginName))
                     ->addDescription($e->getMessage())
-                    ->addDetail(__u('Plugin'), $name))
+                    ->addDetail(__u('Plugin'), $pluginName))
             );
         }
 
@@ -232,17 +239,19 @@ final class PluginManager
 
     /**
      * @param PluginInterface $plugin
+     *
+     * @return bool
      */
-    private function initPluginData(PluginInterface $plugin)
+    private function initPlugin(PluginInterface $plugin)
     {
         try {
-            $pluginData = $this->pluginService->getByName($plugin->getName());
+            $pluginModel = $this->pluginService->getByName($plugin->getName());
 
-            if ($pluginData->getEnabled() === 1) {
-                $plugin->onLoad(new PluginOperation($this->pluginDataService, $plugin->getName()));
-            } else {
+            if ($pluginModel->getEnabled() !== 1) {
                 $this->disabledPlugins[] = $plugin->getName();
             }
+
+            return true;
         } catch (\Exception $e) {
             processException($e);
 
@@ -253,6 +262,8 @@ final class PluginManager
                     ->addDetail(__u('Plugin'), $plugin->getName()))
             );
         }
+
+        return false;
     }
 
     /**
@@ -316,9 +327,9 @@ final class PluginManager
             self::$pluginsAvailable[$pluginName]['namespace']
         );
 
-        if ($plugin !== null) {
-            $this->initPluginData($plugin);
-
+        if ($plugin !== null
+            && $this->initPlugin($plugin)
+        ) {
             logger(sprintf('Plugin loaded: %s', $pluginName));
 
             $this->eventDispatcher->notifyEvent('plugin.load',

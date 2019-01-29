@@ -65,7 +65,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testUpdate()
     {
@@ -76,7 +79,9 @@ class PluginDataServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$service->update($data));
 
-        $this->assertEquals($data, self::$service->getByItemId($data->getName(), $data->getItemId()));
+        $itemData = self::$service->getByItemId($data->getName(), $data->getItemId());
+
+        $this->assertEquals('data_updated', $itemData->getData());
 
         $data = new PluginDataModel();
         $data->setItemId(0);
@@ -87,8 +92,11 @@ class PluginDataServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testUpdateUnkown()
     {
@@ -149,7 +157,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testCreate()
     {
@@ -160,7 +171,10 @@ class PluginDataServiceTest extends DatabaseTestCase
 
         self::$service->create($data);
 
-        $this->assertEquals($data, self::$service->getByItemId($data->getName(), $data->getItemId()));
+        $itemData = self::$service->getByItemId($data->getName(), $data->getItemId());
+
+        $this->assertEquals($data->getName(), $itemData->getName());
+        $this->assertEquals('data', $itemData->getData());
 
         $this->expectException(ConstraintException::class);
 
@@ -169,7 +183,10 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testCreateUnknown()
     {
@@ -186,7 +203,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testGetByItemId()
     {
@@ -201,7 +221,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function testGetByItemIdUnkown()
     {

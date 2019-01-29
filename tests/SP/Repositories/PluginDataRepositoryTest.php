@@ -63,7 +63,9 @@ class PluginDataRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testUpdate()
@@ -73,23 +75,33 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $data->setName('Authenticator');
         $data->setData('data_updated');
 
+        $data->encrypt('12345678900');
+
         $this->assertEquals(1, self::$repository->update($data));
 
         $result = self::$repository->getByItemId($data->getName(), $data->getItemId());
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertEquals($data, $result->getData());
+
+        /** @var PluginDataModel $itemData */
+        $itemData = $result->getData();
+
+        $this->assertEquals($data->getData(), $itemData->getData());
 
         $data = new PluginDataModel();
         $data->setItemId(0);
         $data->setName('Authenticator');
         $data->setData('data_updated');
 
+        $data->encrypt('test');
+
         $this->assertEquals(0, self::$repository->update($data));
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testUpdateUnkown()
@@ -98,6 +110,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $data->setItemId(2);
         $data->setName('Test');
         $data->setData('data');
+
+        $data->encrypt('test');
 
         $this->assertEquals(0, self::$repository->update($data));
     }
@@ -116,7 +130,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $this->assertCount(4, $data);
         $this->assertEquals(1, $data[0]->getItemId());
         $this->assertEquals('Authenticator', $data[0]->getName());
-        $this->assertEquals('data_item1', $data[0]->getData());
+        $this->assertNotEmpty($data[0]->getData());
+        $this->assertNotEmpty($data[0]->getKey());
 
         $this->assertEquals(2, $data[1]->getItemId());
         $this->assertEquals(3, $data[2]->getItemId());
@@ -166,12 +181,14 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $this->assertInstanceOf(PluginDataModel::class, $data[0]);
         $this->assertEquals(1, $data[0]->getItemId());
         $this->assertEquals('Authenticator', $data[0]->getName());
-        $this->assertEquals('data_item1', $data[0]->getData());
+        $this->assertNotEmpty($data[0]->getData());
+        $this->assertNotEmpty($data[0]->getKey());
 
         $this->assertInstanceOf(PluginDataModel::class, $data[1]);
         $this->assertEquals(2, $data[1]->getItemId());
         $this->assertEquals('Authenticator', $data[1]->getName());
-        $this->assertEquals('plugin_data', $data[1]->getData());
+        $this->assertNotEmpty($data[1]->getData());
+        $this->assertNotEmpty($data[1]->getKey());
 
         $this->assertEquals(1, self::$repository->getById('XML Exporter')->getNumRows());
 
@@ -192,7 +209,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $this->assertInstanceOf(PluginDataModel::class, $data);
         $this->assertEquals(1, $data->getItemId());
         $this->assertEquals('Authenticator', $data->getName());
-        $this->assertEquals('data_item1', $data->getData());
+        $this->assertNotEmpty($data->getData());
+        $this->assertNotEmpty($data->getKey());
 
         $this->assertEquals(0, self::$repository->getByItemId('Test', 1)->getNumRows());
     }
@@ -210,6 +228,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testCreate()
@@ -219,12 +239,19 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $data->setName('Authenticator');
         $data->setData('data');
 
+        $data->encrypt('12345678900');
+
         self::$repository->create($data);
 
         $result = self::$repository->getByItemId($data->getName(), $data->getItemId());
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertEquals($data, $result->getData());
+
+        /** @var PluginDataModel $itemData */
+        $itemData = $result->getData();
+
+        $this->assertEquals($data->getName(), $itemData->getName());
+        $this->assertEquals($data->getData(), $itemData->getData());
 
         $this->expectException(ConstraintException::class);
 
@@ -233,6 +260,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function testCreateUnknown()
@@ -243,6 +272,8 @@ class PluginDataRepositoryTest extends DatabaseTestCase
         $data->setItemId(4);
         $data->setName('Test');
         $data->setData('data');
+
+        $data->encrypt('test');
 
         self::$repository->create($data);
     }

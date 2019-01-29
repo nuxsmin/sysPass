@@ -55,6 +55,10 @@ abstract class PluginBase implements PluginInterface
      */
     protected $enabled;
     /**
+     * @var PluginOperation
+     */
+    protected $pluginOperation;
+    /**
      * @var PluginService
      */
     private $pluginService;
@@ -63,10 +67,12 @@ abstract class PluginBase implements PluginInterface
      * PluginBase constructor.
      *
      * @param ContainerInterface $dic
+     * @param PluginOperation    $pluginOperation
      */
-    public final function __construct(ContainerInterface $dic)
+    public final function __construct(ContainerInterface $dic, PluginOperation $pluginOperation)
     {
         $this->pluginService = $dic->get(PluginService::class);
+        $this->pluginOperation = $pluginOperation;
         $this->init($dic);
     }
 
@@ -119,16 +125,24 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
+     * @param int   $id
+     * @param mixed $data
+     *
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Services\ServiceException
      */
-    final public function saveData()
+    final public function saveData(int $id, $data)
     {
-        $pluginData = $this->pluginService->getByName($this->getName());
-        $pluginData->setData(serialize($this->data));
+        if ($this->data === null) {
+            $this->pluginOperation->create($id, $data);
+        } else {
+            $this->pluginOperation->update($id, $data);
+        }
 
-        return $this->pluginService->update($pluginData);
+        $this->data = $data;
     }
 
     /**

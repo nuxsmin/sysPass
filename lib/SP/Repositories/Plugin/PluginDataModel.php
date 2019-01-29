@@ -24,9 +24,9 @@
 
 namespace SP\Repositories\Plugin;
 
-use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\DataModel\EncryptedModel;
 use SP\DataModel\HydratableInterface;
-use SP\Util\Util;
+use SP\DataModel\SerializedModel;
 
 /**
  * Class PluginData
@@ -35,6 +35,9 @@ use SP\Util\Util;
  */
 final class PluginDataModel implements HydratableInterface
 {
+    use SerializedModel;
+    use EncryptedModel;
+
     /**
      * @var string
      */
@@ -94,26 +97,5 @@ final class PluginDataModel implements HydratableInterface
     public function setData(string $data)
     {
         $this->data = $data;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @param string $property
-     *
-     * @return mixed|null
-     * @throws NoSuchPropertyException
-     */
-    public function hydrate(string $class = null, string $property = 'data')
-    {
-        if (property_exists($this, $property)) {
-            if ($this->data !== null) {
-                return $class !== null ? Util::unserialize($class, $this->data) : unserialize($this->data);
-            }
-
-            return null;
-        }
-
-        throw new NoSuchPropertyException($property);
     }
 }

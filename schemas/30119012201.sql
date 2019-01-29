@@ -5,9 +5,10 @@ alter table Plugin
 
 create table PluginData
 (
-  name varchar(100) not null,
-  itemId int null,
-  data blob not null,
+  name   varchar(100)    not null,
+  itemId int             null,
+  `data` blob            not null,
+  `key`  varbinary(2000) not null,
   constraint `PRIMARY`
     primary key (name, itemId),
   constraint fk_PluginData_name

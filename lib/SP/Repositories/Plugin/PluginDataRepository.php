@@ -54,14 +54,15 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     public function create($itemData)
     {
         $query = /** @lang SQL */
-            'INSERT INTO PluginData SET `name` = ?, itemId = ?, `data` = ?';
+            'INSERT INTO PluginData SET `name` = ?, itemId = ?, `data` = ?, `key` = ?';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
             $itemData->getName(),
             $itemData->getItemId(),
-            $itemData->getData()
+            $itemData->getData(),
+            $itemData->getKey()
         ]);
         $queryData->setOnErrorMessage(__u('Error while adding plugin\'s data'));
 
@@ -81,13 +82,14 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
     {
         $query = /** @lang SQL */
             'UPDATE PluginData
-              SET `data` = ?
+              SET `data` = ?, `key` = ?
               WHERE `name` = ? AND itemId = ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
             $itemData->getData(),
+            $itemData->getKey(),
             $itemData->getName(),
             $itemData->getItemId()
         ]);
@@ -149,7 +151,8 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
         $query = /** @lang SQL */
             'SELECT itemId,
             `name`,
-            `data` 
+            `data`,
+            `key`
             FROM PluginData
             WHERE `name` = ?';
 
@@ -173,7 +176,8 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
         $query = /** @lang SQL */
             'SELECT itemId,
             `name`,
-            `data` 
+            `data`,
+            `key` 
             FROM PluginData 
             ORDER BY `name`';
 
@@ -202,7 +206,8 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
         $query = /** @lang SQL */
             'SELECT itemId,
             `name`,
-            `data`
+            `data`,
+            `key`
             FROM PluginData 
             WHERE `name` IN (' . $this->getParamsFromArray($ids) . ')
             ORDER BY `name`';
@@ -301,7 +306,8 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
         $query = /** @lang SQL */
             'SELECT itemId,
             `name`,
-            `data` 
+            `data`,
+            `key` 
             FROM PluginData
             WHERE `name` = ? AND itemId = ? LIMIT 1';
 

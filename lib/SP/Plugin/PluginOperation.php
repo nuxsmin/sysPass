@@ -24,8 +24,14 @@
 
 namespace SP\Plugin;
 
+use Defuse\Crypto\Exception\CryptoException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginDataModel;
 use SP\Services\Plugin\PluginDataService;
+use SP\Services\ServiceException;
 
 /**
  * Class PluginOperation
@@ -41,51 +47,58 @@ final class PluginOperation
     /**
      * @var string
      */
-    private $name;
+    private $pluginName;
 
     /**
      * PluginOperation constructor.
      *
      * @param PluginDataService $pluginDataService
-     * @param string            $name
+     * @param string            $pluginName
      */
-    public function __construct(PluginDataService $pluginDataService, string $name)
+    public function __construct(PluginDataService $pluginDataService, string $pluginName)
     {
         $this->pluginDataService = $pluginDataService;
-        $this->name = $name;
+        $this->pluginName = $pluginName;
     }
 
     /**
-     * @param int    $itemId
-     * @param string $data
-     *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function create(int $itemId, string $data)
-    {
-        $itemData = new PluginDataModel();
-        $itemData->setName($this->name);
-        $itemData->setItemId($itemId);
-        $itemData->setData($data);
-
-        $this->pluginDataService->create($itemData);
-    }
-
-    /**
-     * @param int    $itemId
-     * @param string $data
+     * @param int   $itemId
+     * @param mixed $data
      *
      * @return int
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
-    public function update(int $itemId, string $data)
+    public function create(int $itemId, $data)
     {
         $itemData = new PluginDataModel();
-        $itemData->setName($this->name);
+        $itemData->setName($this->pluginName);
         $itemData->setItemId($itemId);
-        $itemData->setData($data);
+        $itemData->setData(serialize($data));
+
+        return $this->pluginDataService->create($itemData)->getLastId();
+    }
+
+    /**
+     * @param int   $itemId
+     * @param mixed $data
+     *
+     * @return int
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
+     */
+    public function update(int $itemId, $data)
+    {
+        $itemData = new PluginDataModel();
+        $itemData->setName($this->pluginName);
+        $itemData->setItemId($itemId);
+        $itemData->setData(serialize($data));
 
         return $this->pluginDataService->update($itemData);
     }
@@ -99,7 +112,7 @@ final class PluginOperation
      */
     public function delete(int $itemId)
     {
-        $this->pluginDataService->deleteByItemId($this->name, $itemId);
+        $this->pluginDataService->deleteByItemId($this->pluginName, $itemId);
     }
 
     /**
@@ -107,13 +120,18 @@ final class PluginOperation
      * @param string|null $class
      *
      * @return mixed|null
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function get(int $itemId, string $class = null)
     {
-        return $this->pluginDataService->getByItemId($this->name, $itemId)->hydrate($class);
+        try {
+            return $this->pluginDataService->getByItemId($this->pluginName, $itemId)->hydrate($class);
+        } catch (NoSuchItemException $e) {
+            return null;
+        }
     }
 }

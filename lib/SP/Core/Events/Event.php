@@ -64,7 +64,7 @@ final class Event
     /**
      * @param null $type
      *
-     * @return object
+     * @return mixed
      * @throws InvalidClassException
      */
     public function getSource($type = null)

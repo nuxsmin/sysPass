@@ -47,14 +47,15 @@ final class PluginDataService extends Service
      * @param PluginDataModel $itemData
      *
      * @return \SP\Storage\Database\QueryResult
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function create(PluginDataModel $itemData)
     {
-        $itemData->setData(serialize($itemData->getData()));
-
-        return $this->pluginRepository->create($itemData);
+        return $this->pluginRepository->create($itemData->encrypt($this->getMasterKeyFromContext()));
     }
 
     /**
@@ -63,14 +64,15 @@ final class PluginDataService extends Service
      * @param PluginDataModel $itemData
      *
      * @return int
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function update(PluginDataModel $itemData)
     {
-        $itemData->setData(serialize($itemData->getData()));
-
-        return $this->pluginRepository->update($itemData);
+        return $this->pluginRepository->update($itemData->encrypt($this->getMasterKeyFromContext()));
     }
 
     /**
@@ -81,8 +83,11 @@ final class PluginDataService extends Service
      *
      * @return PluginDataModel
      * @throws NoSuchItemException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\NoSuchPropertyException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Services\ServiceException
      */
     public function getByItemId(string $name, int $id)
     {
@@ -92,7 +97,10 @@ final class PluginDataService extends Service
             throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
         }
 
-        return $result->getData();
+        /** @var PluginDataModel $itemData */
+        $itemData = $result->getData();
+
+        return $itemData->decrypt($this->getMasterKeyFromContext());
     }
 
     /**
@@ -113,7 +121,14 @@ final class PluginDataService extends Service
             throw new NoSuchItemException(__u('Plugin\'s data not found'), NoSuchItemException::INFO);
         }
 
-        return $result->getDataAsArray();
+        $data = $result->getDataAsArray();
+
+        array_walk($data, function ($itemData) {
+            /** @var PluginDataModel $itemData */
+            $itemData->decrypt($this->getMasterKeyFromContext());
+        });
+
+        return $data;
     }
 
     /**
@@ -125,7 +140,14 @@ final class PluginDataService extends Service
      */
     public function getAll()
     {
-        return $this->pluginRepository->getAll()->getDataAsArray();
+        $data = $this->pluginRepository->getAll()->getDataAsArray();
+
+        array_walk($data, function ($itemData) {
+            /** @var PluginDataModel $itemData */
+            $itemData->decrypt($this->getMasterKeyFromContext());
+        });
+
+        return $data;
     }
 
     /**
