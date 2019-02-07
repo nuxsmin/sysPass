@@ -142,7 +142,7 @@ trait ImportTrait
     protected function addCategory(CategoryData $categoryData)
     {
         try {
-            if ($categoryId = $this->getWorkingItem('category', $categoryData->getName()) === null) {
+            if (($categoryId = $this->getWorkingItem('category', $categoryData->getName())) === null) {
                 return $this->categoryService->create($categoryData);
             }
 
@@ -203,7 +203,7 @@ trait ImportTrait
     protected function addClient(ClientData $clientData)
     {
         try {
-            if ($clientId = $this->getWorkingItem('client', $clientData->getName()) === null) {
+            if (($clientId = $this->getWorkingItem('client', $clientData->getName())) === null) {
                 return $this->clientService->create($clientData);
             }
 
@@ -230,7 +230,7 @@ trait ImportTrait
     protected function addTag(TagData $tagData)
     {
         try {
-            if ($tagId = $this->getWorkingItem('tag', $tagData->getName()) === null) {
+            if (($tagId = $this->getWorkingItem('tag', $tagData->getName())) === null) {
                 return $this->tagService->create($tagData);
             }
 

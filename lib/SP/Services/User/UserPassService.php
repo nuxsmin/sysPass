@@ -107,6 +107,7 @@ final class UserPassService extends Service
         $configHashMPass = $this->configService->getByParam('masterPwd');
 
         if (empty($configHashMPass)
+            || $userLoginResponse === null
             || empty($userLoginResponse->getMPass())
             || empty($userLoginResponse->getMKey())
         ) {

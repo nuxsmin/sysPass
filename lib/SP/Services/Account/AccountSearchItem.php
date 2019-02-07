@@ -209,7 +209,7 @@ final class AccountSearchItem
      */
     public function isUrlIslink()
     {
-        return preg_match('#^https?://#i', $this->accountSearchVData->getUrl());
+        return preg_match('#^\w+://#i', $this->accountSearchVData->getUrl());
     }
 
     /**
