@@ -154,7 +154,7 @@ sysPass.Main = function () {
             const $target = $(this.dataset.clipboardTarget);
 
             clipboard
-                .copy($target.text().replace(/\r?\n|\r/g))
+                .copy($target.text().replace(/[\r\n]+/g, '')                )
                 .then(
                     function () {
                         $(".dialog-text").removeClass("dialog-clip-copy");
