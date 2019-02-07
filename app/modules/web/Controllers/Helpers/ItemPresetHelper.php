@@ -32,6 +32,7 @@ use SP\DataModel\ItemPresetData;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class ItemPresetHelper
@@ -128,7 +129,7 @@ final class ItemPresetHelper extends HelperBase
     {
         $this->users = SelectItemAdapter::factory(UserService::getItemsBasic());
         $this->userGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
-        $this->userProfiles = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
+        $this->userProfiles = SelectItemAdapter::factory(UserProfileService::getItemsBasic());
 
         $this->view->assign('users', $this->users->getItemsFromModelSelected([$itemPresetData->getUserId()]));
         $this->view->assign('userGroups', $this->userGroups->getItemsFromModelSelected([$itemPresetData->getUserGroupId()]));
