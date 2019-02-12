@@ -65,6 +65,7 @@ final class ConfigMailController extends SimpleControllerBase
         $mailFrom = $this->request->analyzeEmail('mail_from');
         $mailRequests = $this->request->analyzeBool('mail_requests_enabled', false);
         $mailAuth = $this->request->analyzeBool('mail_auth_enabled', false);
+        $mailAuthtype = $this->request->analyzeString('mail_authtype');
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
@@ -89,6 +90,7 @@ final class ConfigMailController extends SimpleControllerBase
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);
                 $configData->setMailUser($mailUser);
+                $configData->setMailAuthtype($mailAuthtype);
 
                 if ($mailPass !== '***') {
                     $configData->setMailPass($mailPass);
@@ -135,6 +137,7 @@ final class ConfigMailController extends SimpleControllerBase
         $mailParams->security = $this->request->analyzeString('mail_security');
         $mailParams->from = $this->request->analyzeEmail('mail_from');
         $mailParams->mailAuthenabled = $this->request->analyzeBool('mail_auth_enabled', false);
+        $mailParams->mailAuthtype = $this->request->analyzeString('mail_authtype');
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
