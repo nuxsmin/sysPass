@@ -69,7 +69,7 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if ($mailEnabled
-            && (empty($mailServer) || empty($mailFrom) || empty($mailRecipients))
+            && (empty($mailServer) || empty($mailFrom))
         ) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
         }
@@ -82,9 +82,12 @@ final class ConfigMailController extends SimpleControllerBase
             $configData->setMailSecurity($mailSecurity);
             $configData->setMailFrom($mailFrom);
             $configData->setMailRecipients($mailRecipients);
-            $configData->setMailEvents($this->request->analyzeArray('mail_events', function ($items) {
-                return ConfigUtil::eventsAdapter($items);
-            }, []));
+            $configData->setMailEvents(
+                $this->request->analyzeArray('mail_events',
+                    function ($items) {
+                        return ConfigUtil::eventsAdapter($items);
+                    }, [])
+            );
 
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);
@@ -139,7 +142,10 @@ final class ConfigMailController extends SimpleControllerBase
 
         // Valores para la configuración del Correo
         if (empty($mailParams->server) || empty($mailParams->from) || empty($mailRecipients)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing Mail parameters'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('Missing Mail parameters')
+            );
         }
 
         if ($mailParams->mailAuthenabled) {
@@ -172,6 +178,7 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected
     function initialize()

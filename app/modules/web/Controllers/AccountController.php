@@ -55,6 +55,7 @@ use SP\Services\Auth\AuthException;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\PublicLink\PublicLinkService;
+use SP\Services\User\UserService;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
 use SP\Util\Util;
@@ -1057,6 +1058,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $deepLink = new Uri(Bootstrap::$WEBURI . Bootstrap::$SUBURI);
             $deepLink->addParam('r', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW) . '/' . $id);
 
+            $usersId = [$accountDetails->userId, $accountDetails->userEditId];
+
+            $userService = $this->dic->get(UserService::class);
+
             $this->eventDispatcher->notifyEvent('request.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Request'))
@@ -1067,7 +1072,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Link'), $deepLink->getUriSigned($this->configData->getPasswordSalt()))
                     ->addExtra('accountId', $id)
                     ->addExtra('whoId', $this->userData->getId())
-                    ->setExtra('userId', [$accountDetails->userId, $accountDetails->userEditId]))
+                    ->setExtra('userId', $usersId)
+                    ->setExtra('email', array_map(function ($value) {
+                        return $value->email;
+                    }, $userService->getUserEmailById($usersId))))
             );
 
             return $this->returnJsonResponseData(
@@ -1095,6 +1103,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws \SP\Core\Exceptions\SessionTimeout
      */
     protected function initialize()
     {

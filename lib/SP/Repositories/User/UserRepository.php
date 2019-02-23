@@ -752,6 +752,33 @@ final class UserRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
+     * Return the email of the given user's id
+     *
+     * @param array $ids
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     * @TODO create unit test
+     */
+    public function getUserEmailById(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT id, login, `name`, email 
+            FROM User
+            WHERE email IS NOT NULL 
+            AND isDisabled = 0
+            AND id IN (' . $this->getParamsFromArray($ids) . ')
+            ORDER BY login';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+
+        return $this->db->doSelect($queryData);
+    }
+
+    /**
      * Returns the usage of the given user's id
      *
      * @param int $id

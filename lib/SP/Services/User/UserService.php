@@ -404,6 +404,22 @@ final class UserService extends Service
         return $this->userRepository->getUserEmail()->getDataAsArray();
     }
 
+
+    /**
+     * Return the email of the given user's id
+     *
+     * @param array $ids
+     *
+     * @return array
+     * @throws ConstraintException
+     * @throws QueryException
+     * @TODO create unit test
+     */
+    public function getUserEmailById(array $ids)
+    {
+        return $this->userRepository->getUserEmailById($ids)->getDataAsArray();
+    }
+
     /**
      * Returns the usage of the given user's id
      *

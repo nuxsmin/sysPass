@@ -43,6 +43,10 @@ final class ConfigUtil
      */
     public static function filesExtsAdapter($filesAllowedExts)
     {
+        if (empty($filesAllowedExts)) {
+            return [];
+        }
+
         return array_map(function ($value) {
             if (preg_match('/[^a-z0-9_-]+/i', $value)) {
                 return null;
@@ -61,6 +65,10 @@ final class ConfigUtil
      */
     public static function mailAddressesAdapter($mailAddresses)
     {
+        if (empty($mailAddresses)) {
+            return [];
+        }
+
         return array_filter(explode(',', $mailAddresses), function ($value) {
             return filter_var($value, FILTER_VALIDATE_EMAIL);
         });
@@ -91,13 +99,13 @@ final class ConfigUtil
         if (!is_dir(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('"/config" directory does not exist.'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('\'/app/config\' directory does not exist.'), ConfigException::CRITICAL);
         }
 
         if (!is_writable(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(__u('Unable to write into "/config" directory'), ConfigException::CRITICAL);
+            throw new ConfigException(__u('Unable to write into \'/app/config\' directory'), ConfigException::CRITICAL);
         }
 
         if (!Checks::checkIsWindows()
@@ -106,7 +114,7 @@ final class ConfigUtil
             clearstatcache();
 
             throw new ConfigException(
-                __u('"/config" directory permissions are wrong'),
+                __u('\'/app/config\' directory permissions are wrong'),
                 ConfigException::ERROR,
                 sprintf(__('Current: %s - Needed: 750'), $configPerms));
         }

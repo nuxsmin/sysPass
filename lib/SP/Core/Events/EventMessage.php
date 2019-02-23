@@ -261,7 +261,9 @@ final class EventMessage implements MessageInterface
      */
     public function addExtra($type, $data)
     {
-        if (isset($this->extra[$type]) && in_array($data, $this->extra[$type])) {
+        if (isset($this->extra[$type])
+            && in_array($data, $this->extra[$type])
+        ) {
             return $this;
         }
 
