@@ -298,12 +298,14 @@ final class PluginManager
                     $this->load($plugin->getName());
                 }
             } else {
-                $this->pluginService->toggleAvailable($plugin->getId(), false);
+                if ($plugin->getAvailable() === 1) {
+                    $this->pluginService->toggleAvailable($plugin->getId(), false);
 
-                $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
-                    new Event($this, EventMessage::factory()
-                        ->addDetail(__u('Plugin unavailable'), $plugin->getName()))
-                );
+                    $this->eventDispatcher->notifyEvent('edit.plugin.unavailable',
+                        new Event($this, EventMessage::factory()
+                            ->addDetail(__u('Plugin unavailable'), $plugin->getName()))
+                    );
+                }
             }
 
             $processed[] = $plugin->getName();

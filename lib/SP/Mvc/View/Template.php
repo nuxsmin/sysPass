@@ -104,10 +104,9 @@ final class Template
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
      * @param string $template Con el nombre del archivo
+     * @param string $base     Directorio base para la plantilla
      *
      * @return string La ruta al archivo de la plantilla
-     *
-     * @param string $base     Directorio base para la plantilla
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
@@ -117,7 +116,9 @@ final class Template
 
         if ($base === null) {
             $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
-        } elseif (is_dir($base)) {
+        } elseif (strpos($base, APP_ROOT) === 0
+            && is_dir($base)
+        ) {
             $templateFile = $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         } else {
             $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;

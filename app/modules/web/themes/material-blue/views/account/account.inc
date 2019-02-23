@@ -27,30 +27,37 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
-            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Account'); ?></a>
+            <a href="#account-panel"
+               class="mdl-tabs__tab is-active"><?php echo __('Account'); ?></a>
 
             <?php if ($showCustomFields): ?>
-                <a href="#customfield-panel" class="mdl-tabs__tab"><?php echo __('Custom Fields'); ?></a>
+                <a href="#customfield-panel"
+                   class="mdl-tabs__tab"><?php echo __('Custom Fields'); ?></a>
             <?php endif; ?>
 
             <?php if ($showPermissions): ?>
-                <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permissions'); ?></a>
+                <a href="#permission-panel"
+                   class="mdl-tabs__tab"><?php echo __('Permissions'); ?></a>
             <?php endif; ?>
 
             <?php if ($showFiles): ?>
-                <a href="#file-panel" class="mdl-tabs__tab"><?php echo __('Files'); ?></a>
+                <a href="#file-panel"
+                   class="mdl-tabs__tab"><?php echo __('Files'); ?></a>
             <?php endif; ?>
 
             <?php if ($showDetails): ?>
-                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
+                <a href="#detail-panel"
+                   class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
             <?php endif; ?>
 
             <?php if ($showLinked): ?>
-                <a href="#linked-panel" class="mdl-tabs__tab"><?php echo __('Links'); ?></a>
+                <a href="#linked-panel"
+                   class="mdl-tabs__tab"><?php echo __('Links'); ?></a>
             <?php endif; ?>
         </div>
 
-        <form method="post" name="frmaccount" id="frmAccount" class="form-action"
+        <form method="post" name="frmaccount" id="frmAccount"
+              class="form-action"
               data-onsubmit="account/save"
               data-action-route="<?php echo $_getvar('formRoute') ?: ''; ?>"
               data-item-id="<?php echo $_getvar('accountId') ?: ''; ?>"
@@ -65,7 +72,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         <td class="descField"><?php echo __('Name'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="name" name="name" type="text" required
+                                <input id="name" name="name" type="text"
+                                       required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php echo $gotData ? htmlentities($accountData->getName()) : ''; ?>"
@@ -80,7 +88,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Client'); ?></div>
 
-                            <select id="client_id" name="client_id" class="select-box"
+                            <select id="client_id" name="client_id"
+                                    class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Client'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $client */
@@ -105,7 +114,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Category'); ?></div>
 
-                            <select id="category_id" name="category_id" class="select-box"
+                            <select id="category_id" name="category_id"
+                                    class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Category'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
@@ -156,7 +166,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="descField"><?php echo __('Password'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="password" name="password" type="password" required
+                                    <input id="password" name="password"
+                                           type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                            maxlength="255"
                                            autocomplete="off">
@@ -169,7 +180,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="descField"><?php echo __('Password (repeat)'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="password_repeat" name="password_repeat" type="password" required
+                                    <input id="password_repeat"
+                                           name="password_repeat"
+                                           type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            maxlength="255" autocomplete="off">
                                     <label class="mdl-textfield__label"
@@ -182,11 +195,15 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <td class="descField"><?php echo __('Password Expiry Date'); ?></td>
                                 <td class="valField">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                        <input id="password_date_expire" name="password_date_expire" type="date"
+                                        <input id="password_date_expire"
+                                               name="password_date_expire"
+                                               type="date"
                                                class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                                value="<?php echo $_getvar('accountPassDateChange'); ?>"
                                                data-dst-unix="password_date_expire_unix" <?php echo $_getvar('readonly'); ?>>
-                                        <input type='hidden' name='password_date_expire_unix' value=""/>
+                                        <input type='hidden'
+                                               name='password_date_expire_unix'
+                                               value=""/>
                                         <label class="mdl-textfield__label"
                                                for="password_date_expire"><?php echo __('Date'); ?></label>
                                     </div>
@@ -201,9 +218,11 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         <td class="descField"><?php echo __('Notes'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
-                                  name="notes"
-                                  maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlentities($accountData->getNotes()) : ''; ?></textarea>
+                        <textarea
+                                class="mdl-textfield__input mdl-color-text--indigo-400"
+                                rows="3" id="notes"
+                                name="notes"
+                                maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlentities($accountData->getNotes()) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>
@@ -214,7 +233,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <div class="lowres-title"><?php echo __('Tags'); ?></div>
 
                             <?php if (!$_getvar('isView')): ?>
-                                <select id="tags" name="tags[]" multiple="multiple"
+                                <select id="tags" name="tags[]"
+                                        multiple="multiple"
                                         class="select-box-tags">
                                     <option value=""><?php echo __('Select Tags'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem $tag */
@@ -230,6 +250,10 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        data-item-dst="tags"
                                        data-item-id="0"
                                        data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
+                                <?php endif; ?>
+                                <?php if ($_getvar('copyAction')): ?>
+                                    <input type="hidden" name="tags_update"
+                                           value="1">
                                 <?php endif; ?>
                             <?php else: ?>
                                 <div class="tag-list-box">
@@ -254,7 +278,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Linked Account'); ?></div>
 
-                                <select id="parent_account_id" name="parent_account_id"
+                                <select id="parent_account_id"
+                                        name="parent_account_id"
                                         class="select-box select-box-deselect" <?php echo $_getvar('disabled'); ?>
                                         data-sk="<?php echo $_getvar('sk'); ?>"
                                         data-action-route="items/accountsUser"
@@ -273,7 +298,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('History'); ?></div>
 
-                                <select id="history_id" name="history_id" class="select-box"
+                                <select id="history_id" name="history_id"
+                                        class="select-box"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Select date'); ?></option>
@@ -303,7 +329,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Public Link'); ?></div>
 
-                                <a href="<?php echo $_getvar('publicLinkUrl'); ?>" target="_blank"
+                                <a href="<?php echo $_getvar('publicLinkUrl'); ?>"
+                                   target="_blank"
                                    title="<?php echo __('Public Link'); ?>">
                                     <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
                                 </a>
@@ -316,7 +343,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Direct Link'); ?></div>
 
-                            <a href="<?php echo $_getvar('deepLink'); ?>" target="_blank"
+                            <a href="<?php echo $_getvar('deepLink'); ?>"
+                               target="_blank"
                                title="<?php echo __('Direct Link'); ?>">
                                 <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
                             </a>
