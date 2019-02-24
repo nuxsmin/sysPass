@@ -425,16 +425,27 @@ final class AccountService extends Service implements AccountServiceInterface
     {
         $this->transactionAware(function () use ($accountRequest) {
             $userData = $this->context->getUserData();
+            $userProfile = $this->context->getUserProfile();
 
-            $accountRequest->changePermissions = AccountAclService::getShowPermission(
-                $userData,
-                $this->context->getUserProfile());
+            $accountRequest->changePermissions =
+                AccountAclService::getShowPermission($userData, $userProfile);
 
-            $accountRequest->changeOwner = $accountRequest->userId > 0
-                && ($userData->getIsAdminApp() || $userData->getIsAdminAcc());
+            if ($accountRequest->changePermissions) {
+                $account = $this->getById($accountRequest->id)->getAccountVData();
 
-            $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
-                && $accountRequest->changePermissions;
+                $accountRequest->changeOwner = $accountRequest->userId > 0
+                    && ($userData->getIsAdminApp()
+                        || $userData->getIsAdminAcc()
+                        || ($userProfile->isAccPermission()
+                            && $userData->getId() === $account->getUserId()));
+
+                $accountRequest->changeUserGroup = $accountRequest->userGroupId > 0
+                    && ($userData->getIsAdminApp()
+                        || $userData->getIsAdminAcc()
+                        || ($userProfile->isAccPermission()
+                            && ($userData->getUserGroupId() === $account->getUserGroupId())
+                            || $userData->getId() === $account->getUserId()));
+            }
 
             $this->addHistory($accountRequest->id);
 
