@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -150,7 +151,9 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
-            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink->getHash()));
+            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+
+            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($baseUrl, $publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

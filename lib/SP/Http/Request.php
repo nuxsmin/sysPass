@@ -46,7 +46,7 @@ final class Request
     /**
      * @var \Klein\DataCollection\HeaderDataCollection
      */
-    protected $headers;
+    private $headers;
     /**
      * @var \Klein\Request
      */

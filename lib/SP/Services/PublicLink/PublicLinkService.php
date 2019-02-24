@@ -24,7 +24,6 @@
 
 namespace SP\Services\PublicLink;
 
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
@@ -33,6 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\Request;
+use SP\Http\Uri;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountService;
@@ -66,13 +66,14 @@ final class PublicLinkService extends Service
     /**
      * Returns an HTTP URL for given hash
      *
+     * @param $baseUrl
      * @param $hash
      *
      * @return string
      */
-    public static function getLinkForHash($hash)
+    public static function getLinkForHash($baseUrl, $hash)
     {
-        return Bootstrap::$WEBURI . '/index.php?r=account/viewLink/' . $hash;
+        return (new Uri($baseUrl))->addParam('r', 'account/viewLink/' . $hash)->getUri();
     }
 
     /**

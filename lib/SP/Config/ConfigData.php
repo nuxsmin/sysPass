@@ -401,6 +401,10 @@ final class ConfigData implements JsonSerializable
      * @var bool
      */
     private $ldapTlsEnabled = false;
+    /**
+     * @var string
+     */
+    private $applicationUrl;
 
     /**
      * @return array
@@ -2188,5 +2192,21 @@ final class ConfigData implements JsonSerializable
     public function setAppVersion(string $appVersion)
     {
         $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApplicationUrl()
+    {
+        return $this->applicationUrl;
+    }
+
+    /**
+     * @param string $applicationUrl
+     */
+    public function setApplicationUrl(string $applicationUrl = null)
+    {
+        $this->applicationUrl = $applicationUrl ? rtrim($applicationUrl, '/') : null;
     }
 }

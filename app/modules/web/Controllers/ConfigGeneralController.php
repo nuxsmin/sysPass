@@ -61,6 +61,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $siteLang = $this->request->analyzeString('sitelang');
         $siteTheme = $this->request->analyzeString('sitetheme', 'material-blue');
         $sessionTimeout = $this->request->analyzeInt('session_timeout', 300);
+        $applicationUrl = $this->request->analyzeString('app_url');
         $httpsEnabled = $this->request->analyzeBool('https_enabled', false);
         $debugEnabled = $this->request->analyzeBool('debug_enabled', false);
         $maintenanceEnabled = $this->request->analyzeBool('maintenance_enabled', false);
@@ -71,6 +72,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);
         $configData->setSessionTimeout($sessionTimeout);
+        $configData->setApplicationUrl($applicationUrl);
         $configData->setHttpsEnabled($httpsEnabled);
         $configData->setDebug($debugEnabled);
         $configData->setMaintenance($maintenanceEnabled);

@@ -372,8 +372,10 @@ final class Template
             return $this->vars->get($key, $default);
         };
 
-        $_getRoute = function ($path) use ($sk) {
-            $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
+        $_getRoute = function ($path) use ($sk, $configData) {
+            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+
+            $uri = new Uri($baseUrl);
             $uri->addParam('r', $path);
             $uri->addParam('sk', $sk);
 

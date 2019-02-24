@@ -133,9 +133,9 @@ final class LayoutHelper extends HelperBase
     protected function getResourcesLinks()
     {
         $version = VersionUtil::getVersionStringNormalized();
-        $uri = Bootstrap::$WEBROOT . Bootstrap::$SUBURI;
+        $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
-        $jsUri = new Uri($uri);
+        $jsUri = new Uri($baseUrl);
         $jsUri->addParam('_r', 'resource/js');
         $jsUri->addParam('_v', md5($version));
 
@@ -164,7 +164,7 @@ final class LayoutHelper extends HelperBase
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
-        $cssUri = new Uri($uri);
+        $cssUri = new Uri($baseUrl);
         $cssUri->addParam('_r', 'resource/css');
         $cssUri->addParam('_v', md5($version . $resultsAsCards));
 

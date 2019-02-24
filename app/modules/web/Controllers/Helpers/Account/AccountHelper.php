@@ -174,7 +174,9 @@ final class AccountHelper extends HelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
 
-                $this->view->assign('publicLinkUrl', PublicLinkService::getLinkForHash($publicLinkData->getHash()));
+                $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+
+                $this->view->assign('publicLinkUrl', PublicLinkService::getLinkForHash($baseUrl, $publicLinkData->getHash()));
                 $this->view->assign('publicLinkId', $publicLinkData->getId());
             } catch (NoSuchItemException $e) {
                 $this->view->assign('publicLinkId', 0);
@@ -323,7 +325,9 @@ final class AccountHelper extends HelperBase
     {
         $route = Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : '');
 
-        $uri = new Uri(Bootstrap::$WEBROOT . Bootstrap::$SUBURI);
+        $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+
+        $uri = new Uri($baseUrl);
         $uri->addParam('r', $route);
 
         return $uri->getUriSigned($this->configData->getPasswordSalt());

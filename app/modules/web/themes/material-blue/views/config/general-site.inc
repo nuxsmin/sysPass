@@ -10,7 +10,8 @@
 <?php if (!$_getvar('curlIsAvailable')): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('The \'%s\' extension is unavailable'), 'curl'); ?>
-        <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <i id="help-curl"
+           class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-curl">
             <p>
                 <?php echo __('This extension is needed to check for sysPass updates and notices'); ?>
@@ -43,7 +44,8 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Language'); ?></div>
 
-            <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
+            <select name="sitelang" id="sel-sitelang" size="1"
+                    class="select-box sel-chosen-ns">
                 <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
                 foreach ($_getvar('langs') as $lang): ?>
                     <option
@@ -82,11 +84,37 @@
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="session_timeout" name="session_timeout" type="number" step="300"
-                       pattern="[0-9]{2,4}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                       value="<?php echo $configData->getSessionTimeout(); ?>" required/>
+                <input id="session_timeout" name="session_timeout" type="number"
+                       min="0" step="300"
+                       pattern="[0-9]{2,4}"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       maxlength="5"
+                       value="<?php echo $configData->getSessionTimeout(); ?>"
+                       required/>
                 <label class="mdl-textfield__label"
                        for="session_timeout"><?php echo __('Session timeout (s)'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo __('Application URL'); ?>
+            <div id="help-app_url"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+            <div class="mdl-tooltip mdl-tooltip--large" for="help-app_url">
+                <p>
+                    <?php echo __('Sets the application URL when accessing through a reverse proxy or load balancer.'); ?>
+                </p>
+            </div>
+        </td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="app_url" name="app_url" type="url"
+                       pattern="^https?://.*"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       value="<?php echo $configData->getApplicationUrl(); ?>"/>
+                <label class="mdl-textfield__label"
+                       for="app_url"><?php echo __('Application URL'); ?></label>
             </div>
         </td>
     </tr>
@@ -96,7 +124,8 @@
             <ul class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="https_enabled">
                             <input type="checkbox" id="https_enabled"
                                    class="mdl-switch__input"
                                    name="https_enabled" <?php echo $configData->isHttpsEnabled() ? 'checked' : ''; ?>/>
@@ -111,7 +140,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="debug_enabled">
                             <input type="checkbox" id="debug_enabled"
                                    class="mdl-switch__input"
                                    name="debug_enabled" <?php echo $configData->isDebug() ? 'checked' : ''; ?>/>
@@ -126,7 +156,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="maintenance_enabled">
                             <input type="checkbox" id="maintenance_enabled"
                                    class="mdl-switch__input"
                                    name="maintenance_enabled" <?php echo $configData->isMaintenance() ? 'checked' : ''; ?>/>
@@ -141,7 +172,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="check_updates_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="check_updates_enabled">
                             <input type="checkbox" id="check_updates_enabled"
                                    class="mdl-switch__input"
                                    name="check_updates_enabled" <?php echo $configData->isCheckUpdates() ? 'checked' : ''; ?>/>
@@ -156,7 +188,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="check_notices_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="check_notices_enabled">
                             <input type="checkbox" id="check_notices_enabled"
                                    class="mdl-switch__input"
                                    name="check_notices_enabled" <?php echo $configData->isChecknotices() ? 'checked' : ''; ?>/>
@@ -171,7 +204,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encrypt_session_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="encrypt_session_enabled">
                             <input type="checkbox" id="encrypt_session_enabled"
                                    class="mdl-switch__input"
                                    name="encrypt_session_enabled" <?php echo $configData->isEncryptSession() ? 'checked' : ''; ?>/>

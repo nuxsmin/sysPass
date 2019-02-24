@@ -26,6 +26,7 @@ namespace SP\Services\Account;
 
 defined('APP_ROOT') || die();
 
+use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
@@ -241,8 +242,15 @@ final class AccountSearchItem
      */
     public function getPublicLink()
     {
-        return self::$publicLinkEnabled
-        && $this->accountSearchVData->getPublicLinkHash() !== null ? PublicLinkService::getLinkForHash($this->accountSearchVData->getPublicLinkHash()) : null;
+        if (self::$publicLinkEnabled
+            && $this->accountSearchVData->getPublicLinkHash() !== null
+        ) {
+            $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+
+            return PublicLinkService::getLinkForHash($baseUrl, $this->accountSearchVData->getPublicLinkHash());
+        }
+
+        return null;
     }
 
     /**
