@@ -231,7 +231,7 @@ sysPass.Util = function (log) {
             if (mimeType === '') {
                 return true;
             }
-            
+
             for (let mime in options.allowedMime) {
                 if (mimeType.indexOf(options.allowedMime[mime]) !== -1) {
                     return true;
@@ -350,13 +350,18 @@ sysPass.Util = function (log) {
     const password = {
         config: {
             passLength: 0,
-            minPasswordLength: 8,
+            minPasswordLength: 12,
             complexity: {
                 chars: true,
                 numbers: true,
                 symbols: true,
                 uppercase: true,
                 numlength: 12
+            },
+            charset: {
+                special: "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>",
+                number: "1234567890",
+                char: "abcdefghijklmnopqrstuvwxyz"
             }
         },
         /**
@@ -368,38 +373,102 @@ sysPass.Util = function (log) {
         random: function (callback) {
             log.info("password:random");
 
-            let i = 0;
             let chars = "";
-            let password = "";
+
+            if (this.config.complexity.symbols) {
+                chars += this.config.charset.special;
+            }
+
+            if (this.config.complexity.numbers) {
+                chars += this.config.charset.number;
+            }
+
+            if (this.config.complexity.chars) {
+                chars += this.config.charset.char;
+
+                if (this.config.complexity.uppercase) {
+                    chars += this.config.charset.char.toUpperCase();
+                }
+            }
 
             const getRandomChar = function (min, max) {
                 return chars.charAt(Math.floor((Math.random() * max) + min));
             };
 
-            if (this.config.complexity.symbols) {
-                chars += "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>";
-            }
+            const generateRandom = function () {
+                let out = "";
+                let i = 0;
 
-            if (this.config.complexity.numbers) {
-                chars += "1234567890";
-            }
-
-            if (this.config.complexity.chars) {
-                chars += "abcdefghijklmnopqrstuvwxyz";
-
-                if (this.config.complexity.uppercase) {
-                    chars += String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
+                for (; i++ < password.config.complexity.numlength;) {
+                    out += getRandomChar(0, chars.length - 1);
                 }
-            }
 
-            for (; i++ < this.config.complexity.numlength;) {
-                password += getRandomChar(0, chars.length - 1);
-            }
+                return out;
+            };
 
-            this.config.passLength = password.length;
+            const checkComplexity = function (inPass) {
+                log.info("password:random:checkComplexity");
+
+                const inPassArray = inPass.split("");
+
+                if (password.config.complexity.symbols) {
+                    const res = inPassArray.some(
+                        function (el) {
+                            return password.config.charset.special.indexOf(el) > 0;
+                        });
+
+                    if (res === false) {
+                        return res;
+                    }
+                }
+
+                if (password.config.complexity.numbers) {
+                    const res = inPassArray.some(
+                        function (el) {
+                            return password.config.charset.number.indexOf(el) > 0;
+                        });
+
+                    if (res === false) {
+                        return res;
+                    }
+                }
+
+                if (password.config.complexity.chars) {
+                    const res = inPassArray.some(
+                        function (el) {
+                            return password.config.charset.char.indexOf(el) > 0;
+                        });
+
+                    if (res === false) {
+                        return res;
+                    }
+                }
+
+                if (password.config.complexity.uppercase) {
+                    const chars = password.config.charset.char.toUpperCase();
+                    const res = inPassArray.some(
+                        function (el) {
+                            return chars.indexOf(el) > 0;
+                        });
+
+                    if (res === false) {
+                        return res;
+                    }
+                }
+
+                return true;
+            };
+
+            let outPassword = "";
+
+            do {
+                outPassword = generateRandom();
+            } while (!checkComplexity(outPassword));
+
+            this.config.passLength = outPassword.length;
 
             if (typeof callback === "function") {
-                callback(password, zxcvbn(password));
+                callback(outPassword, zxcvbn(outPassword));
             }
         },
         output: function (level, $target) {
