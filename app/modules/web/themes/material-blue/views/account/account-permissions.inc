@@ -157,7 +157,9 @@
             <?php endif; ?>
         <?php endif; ?>
 
-        <?php if ($_getvar('editAction')
+        <?php if (($_getvar('editAction')
+                || $_getvar('createAction')
+                || $_getvar('copyAction'))
             && ($_getvar('ctx_userIsAdminApp')
                 || $_getvar('ctx_userIsAdminAcc')
                 || $_getvar('ctx_userId') === $accountData->getUserId())): ?>

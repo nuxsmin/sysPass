@@ -177,10 +177,23 @@ final class AccountService extends Service implements AccountServiceInterface
      */
     public function create(AccountRequest $accountRequest)
     {
+        $userData = $this->context->getUserData();
+
         $accountRequest->changePermissions = AccountAclService::getShowPermission(
-            $this->context->getUserData(),
+            $userData,
             $this->context->getUserProfile());
-        $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->context->getUserData()->getUserGroupId();
+
+        if (empty($accountRequest->userGroupId)
+            || !$accountRequest->changePermissions
+        ) {
+            $accountRequest->userGroupId = $userData->getUserGroupId();
+        }
+
+        if (empty($accountRequest->userId)
+            || !$accountRequest->changePermissions
+        ) {
+            $accountRequest->userId = $userData->getId();
+        }
 
         if (empty($accountRequest->key)) {
             $pass = $this->getPasswordEncrypted($accountRequest->pass);

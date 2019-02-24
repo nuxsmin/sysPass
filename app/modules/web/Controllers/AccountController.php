@@ -820,10 +820,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $form = new AccountForm($this->dic);
             $form->validate(Acl::ACCOUNT_CREATE);
 
-            $itemData = $form->getItemData();
-            $itemData->userId = $this->userData->getId();
-
-            $accountId = $this->accountService->create($itemData);
+            $accountId = $this->accountService->create($form->getItemData());
 
             $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId, $this->request);
 
