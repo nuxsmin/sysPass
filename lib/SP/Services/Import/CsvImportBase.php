@@ -137,6 +137,10 @@ abstract class CsvImportBase
             list($accountName, $clientName, $categoryName, $url, $login, $password, $notes) = $fields;
 
             try {
+                if (empty($clientName) || empty($categoryName)) {
+                    throw new ImportException('Either client or category name not set');
+                }
+
                 // Obtener los ids de cliente y categoría
                 $clientId = $this->addClient(new ClientData(null, $clientName));
                 $categoryId = $this->addCategory(new CategoryData(null, $categoryName));

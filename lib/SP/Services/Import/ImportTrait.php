@@ -136,13 +136,15 @@ trait ImportTrait
      * @param CategoryData $categoryData
      *
      * @return int
-     * @throws SPException
      * @throws DuplicatedItemException
+     * @throws SPException
      */
     protected function addCategory(CategoryData $categoryData)
     {
         try {
-            if (($categoryId = $this->getWorkingItem('category', $categoryData->getName())) === null) {
+            $categoryId = $this->getWorkingItem('category', $categoryData->getName());
+
+            if ($categoryId === null) {
                 return $this->categoryService->create($categoryData);
             }
 
@@ -203,7 +205,9 @@ trait ImportTrait
     protected function addClient(ClientData $clientData)
     {
         try {
-            if (($clientId = $this->getWorkingItem('client', $clientData->getName())) === null) {
+            $clientId = $this->getWorkingItem('client', $clientData->getName());
+
+            if ($clientId === null) {
                 return $this->clientService->create($clientData);
             }
 
@@ -230,7 +234,9 @@ trait ImportTrait
     protected function addTag(TagData $tagData)
     {
         try {
-            if (($tagId = $this->getWorkingItem('tag', $tagData->getName())) === null) {
+            $tagId = $this->getWorkingItem('tag', $tagData->getName());
+
+            if ($tagId === null) {
                 return $this->tagService->create($tagData);
             }
 
