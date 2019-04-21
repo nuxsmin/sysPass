@@ -77,6 +77,7 @@ final class Language
         'ru_RU' => 'русский',
         'nl_NL' => 'Nederlands',
         'pt_BR' => 'Português',
+        'it_IT' => 'Italiano',
         'da' => 'Dansk',
         'fo' => 'Føroyskt mál'
     ];

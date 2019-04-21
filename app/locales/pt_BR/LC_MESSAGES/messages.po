@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-12-16 13:15+0100\n"
-"PO-Revision-Date: 2018-12-16 13:15+0100\n"
+"POT-Creation-Date: 2019-04-21 15:47+0200\n"
+"PO-Revision-Date: 2019-04-21 15:48+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
-"X-Poedit-SearchPath-2: app/config\n"
+"X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
@@ -47,7 +47,7 @@ msgstr "Conta exibida"
 #: app/modules/api/Controllers/UserGroupController.php:92
 #: app/modules/api/Controllers/UserGroupController.php:123
 #: app/modules/api/Controllers/UserGroupController.php:153
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:240
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:244
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:113
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:106
@@ -62,14 +62,15 @@ msgstr "Conta exibida"
 #: app/modules/web/Controllers/UserGroupController.php:324
 #: app/modules/web/Controllers/UserProfileController.php:272
 #: app/modules/web/Controllers/UserProfileController.php:315
-#: lib/SP/Plugin/PluginManager.php:320
+#: lib/SP/Plugin/PluginManager.php:365 lib/SP/Plugin/PluginManager.php:393
+#: lib/SP/Plugin/PluginManager.php:410
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:30
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:43
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:22
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:24
-#: app/modules/web/themes/material-blue/views/account/account.inc:65
+#: app/modules/web/themes/material-blue/views/account/account.inc:72
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:54
-#: app/modules/web/themes/material-blue/views/config/info.inc:39
+#: app/modules/web/themes/material-blue/views/config/info.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:22
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:23
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:23
@@ -88,13 +89,13 @@ msgstr "Nome"
 #: app/modules/api/Controllers/AccountController.php:190
 #: app/modules/api/Controllers/AccountController.php:241
 #: app/modules/api/Controllers/AccountController.php:316
-#: app/modules/web/Controllers/AccountController.php:250
+#: app/modules/web/Controllers/AccountController.php:253
 #: app/modules/web/Controllers/AccountController.php:833
 #: app/modules/web/Controllers/AccountController.php:882
 #: app/modules/web/Controllers/AccountController.php:927
 #: app/modules/web/Controllers/AccountController.php:970
 #: app/modules/web/Controllers/AccountController.php:1024
-#: app/modules/web/Controllers/AccountController.php:1065
+#: app/modules/web/Controllers/AccountController.php:1071
 #: app/modules/web/Controllers/AccountFileController.php:246
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:121
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:160
@@ -102,12 +103,12 @@ msgstr "Nome"
 #: app/modules/web/Controllers/ClientController.php:229
 #: app/modules/web/Controllers/ClientController.php:265
 #: app/modules/web/Controllers/ClientController.php:305
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:237
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:109
-#: lib/SP/Services/Import/CsvImportBase.php:159
+#: lib/SP/Services/Import/CsvImportBase.php:163
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:41
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:47
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:57
@@ -116,8 +117,8 @@ msgstr "Nome"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:40
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:35
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:41
-#: app/modules/web/themes/material-blue/views/account/account.inc:79
-#: app/modules/web/themes/material-blue/views/account/account.inc:81
+#: app/modules/web/themes/material-blue/views/account/account.inc:87
+#: app/modules/web/themes/material-blue/views/account/account.inc:89
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
@@ -125,8 +126,8 @@ msgid "Client"
 msgstr "Cliente"
 
 #: app/modules/api/Controllers/AccountController.php:102
-#: app/modules/web/Controllers/AccountController.php:653
-#: app/modules/web/Controllers/AccountController.php:713
+#: app/modules/web/Controllers/AccountController.php:656
+#: app/modules/web/Controllers/AccountController.php:716
 msgid "Password viewed"
 msgstr "Senha visualizada"
 
@@ -278,11 +279,11 @@ msgstr "Enviar detalhes na resposta"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:89
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:92
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:101
-#: app/modules/web/themes/material-blue/views/account/account.inc:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:164
+#: app/modules/web/themes/material-blue/views/account/account.inc:166
+#: app/modules/web/themes/material-blue/views/account/account.inc:175
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:42
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:313
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:316
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:81
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:169
 #: app/modules/web/themes/material-blue/views/config/mail.inc:119
@@ -307,7 +308,7 @@ msgstr "Senha"
 #: app/modules/api/Controllers/Help/AccountHelp.php:114
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:97
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:114
-#: app/modules/web/themes/material-blue/views/account/account.inc:182
+#: app/modules/web/themes/material-blue/views/account/account.inc:195
 #: app/modules/web/themes/material-blue/views/account/details.inc:88
 #: app/modules/web/themes/material-blue/views/account/details.inc:90
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:243
@@ -320,7 +321,7 @@ msgstr "Data de Expiração da Senha"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:29
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:30
-#: app/modules/web/themes/material-blue/views/account/account.inc:74
+#: app/modules/web/themes/material-blue/views/account/account.inc:82
 msgid "Account name"
 msgstr "Nome da conta"
 
@@ -343,14 +344,14 @@ msgstr "ID do Cliente"
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:109
-#: app/modules/web/themes/material-blue/views/account/account.inc:150
+#: app/modules/web/themes/material-blue/views/account/account.inc:160
 msgid "Access user"
 msgstr "Usuário"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:137
+#: app/modules/web/themes/material-blue/views/account/account.inc:147
 msgid "Access URL or IP"
 msgstr "URL ou IP de acesso"
 
@@ -358,13 +359,13 @@ msgstr "URL ou IP de acesso"
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:134
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:208
+#: app/modules/web/themes/material-blue/views/account/account.inc:227
 msgid "Notes about the account"
 msgstr "Observações"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:202
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:220
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
 msgid "Private Account"
@@ -372,15 +373,15 @@ msgstr "Conta Privada"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:218
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:238
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
 msgid "Private Account for Group"
 msgstr "Conta Privada para Grupo"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
-#: app/modules/web/themes/material-blue/views/account/account.inc:253
-#: app/modules/web/themes/material-blue/views/account/account.inc:255
+#: app/modules/web/themes/material-blue/views/account/account.inc:277
+#: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
 msgid "Linked Account"
 msgstr "Conta Vinculada"
@@ -540,13 +541,13 @@ msgstr "Grupo actualizado"
 msgid "Group deleted"
 msgstr "Grupo eliminado"
 
-#: app/modules/api/Init.php:150
+#: app/modules/api/Init.php:152
 msgid "Updating needed"
 msgstr "Updating needed"
 
-#: app/modules/web/Controllers/AccountController.php:157
-#: app/modules/web/Controllers/AccountController.php:224
-#: app/modules/web/Controllers/AccountController.php:553
+#: app/modules/web/Controllers/AccountController.php:158
+#: app/modules/web/Controllers/AccountController.php:225
+#: app/modules/web/Controllers/AccountController.php:556
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:164
@@ -556,21 +557,21 @@ msgstr "Updating needed"
 msgid "Account Details"
 msgstr "Account Details"
 
-#: app/modules/web/Controllers/AccountController.php:248
+#: app/modules/web/Controllers/AccountController.php:251
 msgid "Link viewed"
 msgstr "Link viewed"
 
-#: app/modules/web/Controllers/AccountController.php:249
-#: app/modules/web/Controllers/AccountController.php:654
-#: app/modules/web/Controllers/AccountController.php:714
-#: app/modules/web/Controllers/AccountController.php:758
-#: app/modules/web/Controllers/AccountController.php:795
+#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:657
+#: app/modules/web/Controllers/AccountController.php:717
+#: app/modules/web/Controllers/AccountController.php:761
+#: app/modules/web/Controllers/AccountController.php:798
 #: app/modules/web/Controllers/AccountController.php:832
 #: app/modules/web/Controllers/AccountController.php:881
 #: app/modules/web/Controllers/AccountController.php:926
 #: app/modules/web/Controllers/AccountController.php:969
 #: app/modules/web/Controllers/AccountController.php:1023
-#: app/modules/web/Controllers/AccountController.php:1064
+#: app/modules/web/Controllers/AccountController.php:1070
 #: app/modules/web/Controllers/AccountFileController.php:245
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:120
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:159
@@ -578,84 +579,74 @@ msgstr "Link viewed"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:25
-#: app/modules/web/themes/material-blue/views/account/account.inc:30
+#: app/modules/web/themes/material-blue/views/account/account.inc:31
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:23
 msgid "Account"
 msgstr "Account"
 
-#: app/modules/web/Controllers/AccountController.php:251
+#: app/modules/web/Controllers/AccountController.php:254
 msgid "Agent"
 msgstr "Agent"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
 msgstr "ON"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 msgid "OFF"
 msgstr "OFF"
 
-#: app/modules/web/Controllers/AccountController.php:253
+#: app/modules/web/Controllers/AccountController.php:256
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
-#. (itstool) path: strings/text
-#: app/modules/web/Controllers/AccountController.php:254
-#: app/modules/web/Controllers/AccountController.php:1067
-#: app/modules/web/Controllers/PublicLinkController.php:261
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
+#: app/modules/web/Controllers/AccountController.php:257
+#: app/modules/web/Controllers/AccountController.php:1073
+#: app/modules/web/Controllers/PublicLinkController.php:264
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
 msgid "Link"
 msgstr "Link"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:287
-#: app/modules/web/Controllers/AccountController.php:339
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:275
-#: app/config/actions.xml:157
+#: app/modules/web/Controllers/AccountController.php:290
+#: app/modules/web/Controllers/AccountController.php:342
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:274
 msgid "New Account"
 msgstr "New Account"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:393
+#: app/modules/web/Controllers/AccountController.php:396
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:20
-#: app/config/actions.xml:163
 msgid "Edit Account"
 msgstr "Edit Account"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:448
+#: app/modules/web/Controllers/AccountController.php:451
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
-#: app/config/actions.xml:169 app/config/actions.xml:487
-#: app/config/actions.xml:799
 msgid "Remove Account"
 msgstr "Remove Account"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:501
+#: app/modules/web/Controllers/AccountController.php:504
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
-#: app/config/actions.xml:181
 msgid "Edit Account Password"
 msgstr "Edit Account Password"
 
-#: app/modules/web/Controllers/AccountController.php:757
-#: app/modules/web/Controllers/AccountController.php:794
+#: app/modules/web/Controllers/AccountController.php:760
+#: app/modules/web/Controllers/AccountController.php:797
 msgid "Password copied"
 msgstr "Password copied"
 
@@ -680,7 +671,7 @@ msgstr "Accounts removed"
 msgid "A description is needed"
 msgstr "A description is needed"
 
-#: app/modules/web/Controllers/AccountController.php:1062
+#: app/modules/web/Controllers/AccountController.php:1068
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:47
@@ -688,11 +679,11 @@ msgstr "A description is needed"
 msgid "Request"
 msgstr "Request"
 
-#: app/modules/web/Controllers/AccountController.php:1063
+#: app/modules/web/Controllers/AccountController.php:1069
 msgid "Requester"
 msgstr "Requester"
 
-#: app/modules/web/Controllers/AccountController.php:1066
+#: app/modules/web/Controllers/AccountController.php:1072
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -706,7 +697,7 @@ msgstr "Requester"
 msgid "Description"
 msgstr "Description"
 
-#: app/modules/web/Controllers/AccountController.php:1079
+#: app/modules/web/Controllers/AccountController.php:1088
 msgid "Request done"
 msgstr "Request done"
 
@@ -736,15 +727,14 @@ msgstr "File viewed"
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
-#: app/modules/web/Controllers/ConfigGeneralController.php:207
-#: app/modules/web/Controllers/ConfigGeneralController.php:248
+#: app/modules/web/Controllers/ConfigGeneralController.php:209
+#: app/modules/web/Controllers/ConfigGeneralController.php:250
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "File"
 
 #: app/modules/web/Controllers/AccountFileController.php:117
-#: app/config/strings.js.inc:40
 msgid "File not supported for preview"
 msgstr "File not supported for preview"
 
@@ -752,9 +742,8 @@ msgstr "File not supported for preview"
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
-#: app/modules/web/Controllers/ConfigGeneralController.php:206
-#: app/modules/web/Controllers/ConfigGeneralController.php:247
-#: app/config/strings.js.inc:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:208
+#: app/modules/web/Controllers/ConfigGeneralController.php:249
 msgid "File downloaded"
 msgstr "File downloaded"
 
@@ -875,17 +864,17 @@ msgstr "MIME type: %s"
 #: app/modules/web/Controllers/NotificationController.php:312
 #: app/modules/web/Controllers/NotificationController.php:343
 #: app/modules/web/Controllers/NotificationController.php:380
-#: app/modules/web/Controllers/PluginController.php:111
-#: app/modules/web/Controllers/PluginController.php:133
-#: app/modules/web/Controllers/PluginController.php:285
-#: app/modules/web/Controllers/PublicLinkController.php:74
-#: app/modules/web/Controllers/PublicLinkController.php:111
-#: app/modules/web/Controllers/PublicLinkController.php:175
-#: app/modules/web/Controllers/PublicLinkController.php:205
-#: app/modules/web/Controllers/PublicLinkController.php:239
-#: app/modules/web/Controllers/PublicLinkController.php:284
-#: app/modules/web/Controllers/PublicLinkController.php:320
-#: app/modules/web/Controllers/PublicLinkController.php:366
+#: app/modules/web/Controllers/PluginController.php:116
+#: app/modules/web/Controllers/PluginController.php:138
+#: app/modules/web/Controllers/PluginController.php:291
+#: app/modules/web/Controllers/PublicLinkController.php:75
+#: app/modules/web/Controllers/PublicLinkController.php:112
+#: app/modules/web/Controllers/PublicLinkController.php:178
+#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:242
+#: app/modules/web/Controllers/PublicLinkController.php:287
+#: app/modules/web/Controllers/PublicLinkController.php:323
+#: app/modules/web/Controllers/PublicLinkController.php:369
 #: app/modules/web/Controllers/TagController.php:68
 #: app/modules/web/Controllers/TagController.php:105
 #: app/modules/web/Controllers/TagController.php:167
@@ -948,11 +937,9 @@ msgstr "There are no linked files for the account"
 msgid "Accounts updated"
 msgstr "Accounts updated"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/AccountManagerController.php:216
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:199
-#: app/config/actions.xml:493
 msgid "Bulk Update"
 msgstr "Bulk Update"
 
@@ -1005,20 +992,16 @@ msgstr "Ver Autorização"
 msgid "Authorization viewed"
 msgstr "Authorization viewed"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:109
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
-#: app/modules/web/themes/material-blue/views/account/account.inc:119
-#: app/config/actions.xml:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:129
 msgid "New Category"
 msgstr "Nova Categoria"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
-#: app/config/actions.xml:313
 msgid "Edit Category"
 msgstr "Editar Categoria"
 
@@ -1030,7 +1013,7 @@ msgstr "Categories deleted"
 #: app/modules/web/Controllers/CategoryController.php:232
 #: app/modules/web/Controllers/CategoryController.php:270
 #: app/modules/web/Controllers/CategoryController.php:314
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:251
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:115
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
 #: lib/SP/Services/Import/KeepassImport.php:104
@@ -1038,34 +1021,28 @@ msgstr "Categories deleted"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:74
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:45
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:51
-#: app/modules/web/themes/material-blue/views/account/account.inc:104
-#: app/modules/web/themes/material-blue/views/account/account.inc:106
+#: app/modules/web/themes/material-blue/views/account/account.inc:113
+#: app/modules/web/themes/material-blue/views/account/account.inc:115
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:70
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
 msgid "Category"
 msgstr "Category"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:345
-#: app/config/actions.xml:301
 msgid "View Category"
 msgstr "Ver Categoria"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:110
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:94
-#: app/config/actions.xml:337
+#: app/modules/web/themes/material-blue/views/account/account.inc:103
 msgid "New Client"
 msgstr "Novo Cliente"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:176
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
-#: app/config/actions.xml:343
 msgid "Edit Client"
 msgstr "Editar Cliente"
 
@@ -1074,9 +1051,7 @@ msgstr "Editar Cliente"
 msgid "Clients deleted"
 msgstr "Clients deleted"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:336
-#: app/config/actions.xml:331
 msgid "View Client"
 msgstr "Ver Cliente"
 
@@ -1105,8 +1080,8 @@ msgstr "Public links disabled"
 #: app/modules/web/Controllers/ConfigBackupController.php:241
 #: app/modules/web/Controllers/ConfigEncryptionController.php:125
 #: app/modules/web/Controllers/ConfigEncryptionController.php:188
-#: app/modules/web/Controllers/ConfigGeneralController.php:195
-#: app/modules/web/Controllers/ConfigGeneralController.php:241
+#: app/modules/web/Controllers/ConfigGeneralController.php:197
+#: app/modules/web/Controllers/ConfigGeneralController.php:243
 #: app/modules/web/Controllers/ConfigImportController.php:59
 #: app/modules/web/Controllers/ConfigLdapController.php:233
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
@@ -1133,7 +1108,7 @@ msgstr "Verification of exported data finished"
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:309
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:334
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:166
-#: app/modules/web/themes/material-blue/views/config/info.inc:49
+#: app/modules/web/themes/material-blue/views/config/info.inc:55
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
 msgid "Version"
 msgstr "Version"
@@ -1146,16 +1121,15 @@ msgid "Encrypted"
 msgstr "Encrypted"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "Yes"
 msgstr "Yes"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "No"
 msgstr "No"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigBackupController.php:124
 #: app/modules/web/Controllers/ConfigManagerController.php:192
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:101
@@ -1164,7 +1138,6 @@ msgstr "No"
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:25
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:394
-#: app/config/actions.xml:13
 msgid "Accounts"
 msgstr "Contas"
 
@@ -1184,8 +1157,8 @@ msgstr "Categories"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:212
-#: app/modules/web/themes/material-blue/views/account/account.inc:214
+#: app/modules/web/themes/material-blue/views/account/account.inc:231
+#: app/modules/web/themes/material-blue/views/account/account.inc:233
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
@@ -1242,10 +1215,12 @@ msgid "The current master password does not match"
 msgstr "The current master password does not match"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
 msgstr ""
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
 
@@ -1269,8 +1244,8 @@ msgid "Temporary password generated"
 msgstr "Temporary password generated"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:234
-#: app/modules/web/Controllers/ConfigMailController.php:155
 #: app/modules/web/Controllers/ConfigMailController.php:161
+#: app/modules/web/Controllers/ConfigMailController.php:167
 #: lib/SP/Services/Mail/MailService.php:149
 msgid "Email sent"
 msgstr "Email sent"
@@ -1281,35 +1256,35 @@ msgstr "Email sent"
 msgid "Error while sending the email"
 msgstr "Error while sending the email"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:99
 msgid "Missing remote syslog parameters"
 msgstr "Missing remote syslog parameters"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:105
+#: app/modules/web/Controllers/ConfigGeneralController.php:107
 msgid "Remote syslog enabled"
 msgstr "Remote syslog enabled"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:110
+#: app/modules/web/Controllers/ConfigGeneralController.php:112
 msgid "Remote syslog disabled"
 msgstr "Remote syslog disabled"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:123
+#: app/modules/web/Controllers/ConfigGeneralController.php:125
 msgid "Missing Proxy parameters "
 msgstr "Faltam parâmetros do Proxy"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:137
+#: app/modules/web/Controllers/ConfigGeneralController.php:139
 msgid "Proxy enabled"
 msgstr "Proxy activado"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:142
+#: app/modules/web/Controllers/ConfigGeneralController.php:144
 msgid "Proxy disabled"
 msgstr "Proxy desactivado"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:161
+#: app/modules/web/Controllers/ConfigGeneralController.php:163
 msgid "Auth Basic enabled"
 msgstr "Auth Basic enabled"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:167
+#: app/modules/web/Controllers/ConfigGeneralController.php:169
 msgid "Auth Basic disabled"
 msgstr "Auth Basic disabled"
 
@@ -1348,8 +1323,7 @@ msgid "LDAP disabled"
 msgstr "LDAP desactivado"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:98
-#: app/modules/web/Controllers/ConfigMailController.php:108
-#: app/config/strings.js.inc:80
+#: app/modules/web/Controllers/ConfigMailController.php:111
 msgid "No changes"
 msgstr "Sem modificações"
 
@@ -1398,24 +1372,24 @@ msgid "Errors: %d"
 msgstr "Errors: %d"
 
 #: app/modules/web/Controllers/ConfigMailController.php:74
-#: app/modules/web/Controllers/ConfigMailController.php:142
+#: app/modules/web/Controllers/ConfigMailController.php:147
 msgid "Missing Mail parameters"
 msgstr "Faltam parâmetros de Correio"
 
-#: app/modules/web/Controllers/ConfigMailController.php:99
+#: app/modules/web/Controllers/ConfigMailController.php:102
 msgid "Mail enabled"
 msgstr "Correio activado"
 
-#: app/modules/web/Controllers/ConfigMailController.php:106
+#: app/modules/web/Controllers/ConfigMailController.php:109
 msgid "Mail disabled"
 msgstr "Correio desactivado"
 
-#: app/modules/web/Controllers/ConfigMailController.php:156
+#: app/modules/web/Controllers/ConfigMailController.php:162
 #: lib/SP/Services/Mail/MailService.php:150
 msgid "Recipient"
 msgstr "Recipient"
 
-#: app/modules/web/Controllers/ConfigMailController.php:162
+#: app/modules/web/Controllers/ConfigMailController.php:168
 msgid "Please, check your inbox"
 msgstr "Please, check your inbox"
 
@@ -1427,10 +1401,8 @@ msgstr "Please, check your inbox"
 msgid "General"
 msgstr "Geral"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigManagerController.php:207
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:17
-#: app/config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -1458,12 +1430,10 @@ msgstr "There aren't any backups available"
 msgid "No export file found"
 msgstr "No export file found"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigManagerController.php:342
 #: app/modules/web/themes/material-blue/views/config/backup.inc:25
 #: app/modules/web/themes/material-blue/views/config/backup.inc:79
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
-#: app/config/actions.xml:739
 msgid "Backup"
 msgstr "Backup"
 
@@ -1520,16 +1490,16 @@ msgstr "Campo criado"
 
 #: app/modules/web/Controllers/CustomFieldController.php:255
 #: app/modules/web/Controllers/CustomFieldController.php:296
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:157
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:97
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:188
 msgid "Field"
 msgstr "Field"
 
 #: app/modules/web/Controllers/CustomFieldController.php:295
 #: app/modules/web/Controllers/CustomFieldController.php:299
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:87
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:156
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:96
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:187
 msgid "Field updated"
 msgstr "Campo actualizado"
 
@@ -1591,10 +1561,10 @@ msgstr "View Current"
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:366
 #: app/modules/web/themes/material-blue/views/config/backup.inc:174
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:310
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:330
 #: app/modules/web/themes/material-blue/views/config/general.inc:27
 #: app/modules/web/themes/material-blue/views/config/import.inc:91
-#: app/modules/web/themes/material-blue/views/config/info.inc:193
+#: app/modules/web/themes/material-blue/views/config/info.inc:199
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:304
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:449
 #: app/modules/web/themes/material-blue/views/config/mail.inc:206
@@ -1627,35 +1597,27 @@ msgstr "Restore account from this point"
 msgid "Save"
 msgstr "Save"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:354
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:355
-#: app/config/actions.xml:439
 msgid "Update Public Link"
 msgstr "Update Public Link"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:377
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:378
-#: app/config/actions.xml:433
 msgid "Delete Public Link"
 msgstr "Delete Public Link"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:397
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:398
-#: app/config/actions.xml:421
 msgid "Create Public Link"
 msgstr "Create Public Link"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:418
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:419
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:463
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:464
 #: app/modules/web/themes/material-blue/inc/Icons.php:34
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:69
-#: app/config/actions.xml:175 app/config/actions.xml:265
 msgid "View password"
 msgstr "View password"
 
@@ -1666,15 +1628,12 @@ msgstr "View password"
 msgid "Copy Password to Clipboard"
 msgstr "Copy Password to Clipboard"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:508
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:509
-#: app/config/actions.xml:193
 msgid "Copy Account"
 msgstr "Copy Account"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:69
-#: app/config/strings.js.inc:72
 msgid "Account Password"
 msgstr "Account Password"
 
@@ -1684,24 +1643,24 @@ msgstr "Account Password"
 msgid "You don't have permission to access this account"
 msgstr "You don't have permission to access this account"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:177
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:178
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:181
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:182
 msgid "More Actions"
 msgstr "More Actions"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:234
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:238
 msgid "Sort by Client"
 msgstr "Sort by Client"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:241
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:245
 msgid "Sort by Name"
 msgstr "Sort by Name"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:248
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:252
 msgid "Sort by Category"
 msgstr "Sort by Category"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:254
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:258
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:112
@@ -1713,11 +1672,11 @@ msgstr "Sort by Category"
 #: app/modules/web/Controllers/UserController.php:446
 #: app/modules/web/Controllers/UserPassResetController.php:215
 #: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:144
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
 #: lib/SP/Services/Auth/LoginService.php:230
@@ -1732,11 +1691,11 @@ msgstr "Sort by Category"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:101
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:67
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:73
-#: app/modules/web/themes/material-blue/views/account/account.inc:142
+#: app/modules/web/themes/material-blue/views/account/account.inc:152
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:76
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:25
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:67
-#: app/modules/web/themes/material-blue/views/config/info.inc:61
+#: app/modules/web/themes/material-blue/views/config/info.inc:67
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:106
 #: app/modules/web/themes/material-blue/views/config/mail.inc:113
@@ -1759,22 +1718,22 @@ msgstr "Sort by Category"
 msgid "User"
 msgstr "User"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:255
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:259
 msgid "Sort by Username"
 msgstr "Sort by Username"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:261
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:265
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:58
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:88
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:56
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:62
-#: app/modules/web/themes/material-blue/views/account/account.inc:129
+#: app/modules/web/themes/material-blue/views/account/account.inc:139
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:81
 msgid "URL / IP"
 msgstr "URL / IP"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:262
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:266
 msgid "Sort by URL / IP"
 msgstr "Sort by URL / IP"
 
@@ -1812,14 +1771,14 @@ msgid "Delete Selected"
 msgstr "Delete Selected"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:116
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:165
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:176
 #: app/modules/web/themes/material-blue/views/account/details.inc:42
 #: app/modules/web/themes/material-blue/views/account/details.inc:44
 msgid "Owner"
 msgstr "Owner"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:117
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:182
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:200
 #: app/modules/web/themes/material-blue/views/account/details.inc:50
 #: app/modules/web/themes/material-blue/views/account/details.inc:52
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:79
@@ -1827,10 +1786,8 @@ msgstr "Owner"
 msgid "Main Group"
 msgstr "Main Group"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:149
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:145
-#: app/config/actions.xml:499 app/config/actions.xml:805
 msgid "Search for Account"
 msgstr "Search for Account"
 
@@ -1843,7 +1800,7 @@ msgstr "Accounts (H)"
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:106
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:122
-#: app/modules/web/themes/material-blue/views/account/account.inc:191
+#: app/modules/web/themes/material-blue/views/account/account.inc:208
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:251
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
@@ -1865,10 +1822,8 @@ msgstr "Modified"
 msgid "Removed"
 msgstr "Removed"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:161
-#: app/config/actions.xml:187 app/config/actions.xml:811
 msgid "Account Restore"
 msgstr "Account Restore"
 
@@ -1898,44 +1853,34 @@ msgstr "View Authorization token"
 msgid "Delete Authorization"
 msgstr "Delete Authorization"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:137
-#: app/config/actions.xml:325
 msgid "Search for Category"
 msgstr "Search for Category"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:187
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:188
-#: app/config/actions.xml:319
 msgid "Delete Category"
 msgstr "Delete Category"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:66
 msgid "YES"
 msgstr "YES"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:67
 msgid "NO"
 msgstr "NO"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:140
-#: app/config/actions.xml:355
 msgid "Search for Client"
 msgstr "Search for Client"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:191
-#: app/config/actions.xml:349
 msgid "Delete Client"
 msgstr "Delete Client"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:95
-#: app/modules/web/themes/material-blue/views/account/account.inc:33
+#: app/modules/web/themes/material-blue/views/account/account.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:346
 msgid "Custom Fields"
 msgstr "Custom Fields"
@@ -1960,11 +1905,9 @@ msgstr "Search for Field"
 msgid "Delete Field"
 msgstr "Delete Field"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
 #: app/modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:514
-#: app/config/actions.xml:133
 msgid "Event Log"
 msgstr "Event Log"
 
@@ -1996,9 +1939,7 @@ msgstr "Event"
 msgid "Login"
 msgstr "Login"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:165
-#: app/config/actions.xml:139
 msgid "Search for Events"
 msgstr "Search for Events"
 
@@ -2009,48 +1950,38 @@ msgstr "Search for Events"
 msgid "Refresh"
 msgstr "Refresh"
 
-#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:199
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
+#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
 msgid "Clear the event log out"
 msgstr "Clear the event log out"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:41
+#: app/modules/web/themes/material-blue/views/account/account.inc:45
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:410
-#: app/config/actions.xml:19
 msgid "Files"
 msgstr "Files"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:145
-#: app/config/actions.xml:475
 msgid "Search for File"
 msgstr "Search for File"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:161
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:51
-#: app/config/actions.xml:205 app/config/actions.xml:451
 msgid "View File"
 msgstr "View File"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:178
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:179
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:42
-#: app/config/actions.xml:217 app/config/actions.xml:457
 msgid "Download File"
 msgstr "Download File"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:199
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:34
-#: app/config/actions.xml:223 app/config/actions.xml:463
 msgid "Delete File"
 msgstr "Delete File"
 
@@ -2063,18 +1994,18 @@ msgstr "Preset Values"
 #: app/modules/web/Controllers/UserGroupController.php:242
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:122
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:112
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:144
 #: lib/SP/Services/Ldap/LdapImportService.php:138
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:133
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:25
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:274
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:277
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:215
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:242
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
@@ -2106,14 +2037,12 @@ msgstr "Priority"
 msgid "Forced"
 msgstr "Forced"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:148
-#: app/config/actions.xml:859
 msgid "Search for Value"
 msgstr "Search for Value"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:163
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:66
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:67
 msgid "Permission Preset"
 msgstr "Permission Preset"
 
@@ -2122,7 +2051,7 @@ msgid "New Permission Preset"
 msgstr "New Permission Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:187
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:86
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:87
 msgid "Private Account Preset"
 msgstr "Private Account Preset"
 
@@ -2131,7 +2060,7 @@ msgid "New Private Account Preset"
 msgstr "New Private Account Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:211
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:102
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:103
 msgid "Session Timeout Preset"
 msgstr "Session Timeout Preset"
 
@@ -2140,7 +2069,7 @@ msgid "New Session Timeout Preset"
 msgstr "New Session Timeout Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:235
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:117
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:118
 msgid "Account Password Preset"
 msgstr "Account Password Preset"
 
@@ -2148,27 +2077,21 @@ msgstr "Account Password Preset"
 msgid "New Account Password Preset"
 msgstr "New Account Password Preset"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
 #: app/modules/web/Controllers/ItemPresetController.php:243
-#: app/config/actions.xml:877
 msgid "Edit Value"
 msgstr "Edit Value"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:276
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:277
-#: app/config/actions.xml:883
 msgid "Delete Value"
 msgstr "Delete Value"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:114
 #: app/modules/web/themes/material-blue/inc/Icons.php:65
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:106
 #: app/modules/web/themes/material-blue/views/notification/index.inc:1
-#: app/config/actions.xml:685
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -2189,9 +2112,7 @@ msgstr "Read"
 msgid "Only Admins"
 msgstr "Only Admins"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:171
-#: app/config/actions.xml:847
 msgid "Search for Notification"
 msgstr "Search for Notification"
 
@@ -2201,44 +2122,37 @@ msgstr "Search for Notification"
 msgid "New Notification"
 msgstr "New Notification"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:204
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:205
 #: app/modules/web/Controllers/NotificationController.php:113
-#: app/config/actions.xml:817
 msgid "View Notification"
 msgstr "View Notification"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:234
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
-#: app/config/actions.xml:841
 msgid "Checkout Notification"
 msgstr "Checkout Notification"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:253
 #: app/modules/web/Controllers/NotificationController.php:230
-#: app/config/actions.xml:829
 msgid "Edit Notification"
 msgstr "Edit Notification"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:269
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:270
-#: app/config/actions.xml:835
 msgid "Delete Notification"
 msgstr "Delete Notification"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:96
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:331
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:330
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Plugins"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:108
-#: lib/SP/Plugin/PluginManager.php:194
+#: lib/SP/Plugin/PluginManager.php:206 lib/SP/Plugin/PluginManager.php:262
+#: lib/SP/Plugin/PluginManager.php:420
 msgid "Plugin"
 msgstr "Plugin"
 
@@ -2246,17 +2160,13 @@ msgstr "Plugin"
 msgid "Unavailable"
 msgstr "Unavailable"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:141
-#: app/config/actions.xml:547
 msgid "Search for Plugin"
 msgstr "Search for Plugin"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:156
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:157
-#: app/modules/web/Controllers/PluginController.php:136
-#: app/config/actions.xml:541
+#: app/modules/web/Controllers/PluginController.php:141
 msgid "View Plugin"
 msgstr "View Plugin"
 
@@ -2275,15 +2185,13 @@ msgstr "Disable"
 msgid "Reset Data"
 msgstr "Reset Data"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:231
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:232
-#: app/config/actions.xml:571
 msgid "Delete Plugin"
 msgstr "Delete Plugin"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:49
+#: app/modules/web/themes/material-blue/views/account/account.inc:55
 msgid "Links"
 msgstr "Links"
 
@@ -2327,7 +2235,7 @@ msgstr "New Link"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:184
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:185
-#: app/modules/web/Controllers/PublicLinkController.php:369
+#: app/modules/web/Controllers/PublicLinkController.php:372
 msgid "View Link"
 msgstr "View Link"
 
@@ -2341,32 +2249,25 @@ msgstr "Renew Link"
 msgid "Delete Link"
 msgstr "Delete Link"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:135
-#: app/config/actions.xml:529
 msgid "Search for Tag"
 msgstr "Search for Tag"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:108
-#: app/modules/web/themes/material-blue/views/account/account.inc:227
-#: app/config/actions.xml:505
+#: app/modules/web/themes/material-blue/views/account/account.inc:247
 msgid "New Tag"
 msgstr "New Tag"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
-#: app/modules/web/Controllers/TagController.php:170 app/config/actions.xml:517
+#: app/modules/web/Controllers/TagController.php:170
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:185
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:186
-#: app/config/actions.xml:523
 msgid "Delete Tag"
 msgstr "Delete Tag"
 
@@ -2382,9 +2283,7 @@ msgstr "Date Unlocked"
 msgid "Source"
 msgstr "Source"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
-#: app/config/actions.xml:895
 msgid "Search for track"
 msgstr "Search for track"
 
@@ -2400,32 +2299,24 @@ msgstr "Search for track"
 msgid "Users"
 msgstr "Utilizadores"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
-#: app/config/actions.xml:607
 msgid "Search for User"
 msgstr "Search for User"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:163
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:164
 #: app/modules/web/Controllers/UserController.php:115
-#: app/config/actions.xml:583
 msgid "New User"
 msgstr "Novo Utilizador"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:182
 #: app/modules/web/Controllers/UserController.php:202
-#: app/config/actions.xml:589
 msgid "Edit User"
 msgstr "Editar Utilizador"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:199
-#: app/config/actions.xml:595
 msgid "Delete User"
 msgstr "Delete User"
 
@@ -2444,47 +2335,37 @@ msgstr "Change User's Password"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:95
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:78
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:84
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:88
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:162
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:53
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:266
 msgid "Groups"
 msgstr "Groups"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:138
-#: app/config/actions.xml:637
 msgid "Search for Group"
 msgstr "Search for Group"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:153
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:154
 #: app/modules/web/Controllers/UserGroupController.php:117
-#: app/config/actions.xml:619
 msgid "New Group"
 msgstr "Novo Grupo"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
 #: app/modules/web/Controllers/UserGroupController.php:356
-#: app/config/actions.xml:613
 msgid "View Group"
 msgstr "Ver Grupo"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
 #: app/modules/web/Controllers/UserGroupController.php:190
-#: app/config/actions.xml:625
 msgid "Edit Group"
 msgstr "Editar Grupo"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:205
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:206
-#: app/config/actions.xml:631
 msgid "Delete Group"
 msgstr "Delete Group"
 
@@ -2493,17 +2374,13 @@ msgstr "Delete Group"
 msgid "Profiles"
 msgstr "Profiles"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:136
-#: app/config/actions.xml:667
 msgid "Search for Profile"
 msgstr "Search for Profile"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:151
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:152
 #: app/modules/web/Controllers/UserProfileController.php:110
-#: app/config/actions.xml:649
 msgid "New Profile"
 msgstr "Novo Perfil"
 
@@ -2512,32 +2389,26 @@ msgstr "Novo Perfil"
 msgid "View Profile Details"
 msgstr "View Profile Details"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
 #: app/modules/web/Controllers/UserProfileController.php:179
-#: app/config/actions.xml:655
 msgid "Edit Profile"
 msgstr "Editar Perfil"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:203
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:204
-#: app/config/actions.xml:661
 msgid "Delete Profile"
 msgstr "Delete Profile"
 
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:262
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:261
 #: app/modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Search"
 msgstr "Search"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:345
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:344
 #: app/modules/web/themes/material-blue/inc/Icons.php:61
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:24
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:27
-#: app/config/actions.xml:691
 msgid "Configuration"
 msgstr "Configuration"
 
@@ -2553,15 +2424,11 @@ msgstr "Without this module the application could not run correctly"
 msgid "Installation finished"
 msgstr "Installation finished"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:73
-#: app/config/actions.xml:865
 msgid "Display Value"
 msgstr "Display Value"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:209
-#: app/config/actions.xml:871
 msgid "New Value"
 msgstr "New Value"
 
@@ -2637,55 +2504,55 @@ msgstr "Notification created"
 msgid "Notification updated"
 msgstr "Notification updated"
 
-#: app/modules/web/Controllers/PluginController.php:201
-#: app/modules/web/Controllers/PluginController.php:204
+#: app/modules/web/Controllers/PluginController.php:206
+#: app/modules/web/Controllers/PluginController.php:209
 msgid "Plugin enabled"
 msgstr "Plugin enabled"
 
-#: app/modules/web/Controllers/PluginController.php:230
-#: app/modules/web/Controllers/PluginController.php:233
-#: lib/SP/Plugin/PluginManager.php:219 lib/SP/Plugin/PluginManager.php:339
+#: app/modules/web/Controllers/PluginController.php:235
+#: app/modules/web/Controllers/PluginController.php:238
+#: lib/SP/Plugin/PluginManager.php:231 lib/SP/Plugin/PluginManager.php:439
 msgid "Plugin disabled"
 msgstr "Plugin disabled"
 
-#: app/modules/web/Controllers/PluginController.php:259
-#: app/modules/web/Controllers/PluginController.php:262
+#: app/modules/web/Controllers/PluginController.php:265
+#: app/modules/web/Controllers/PluginController.php:268
 msgid "Plugin reset"
 msgstr "Plugin reset"
 
-#: app/modules/web/Controllers/PluginController.php:293
+#: app/modules/web/Controllers/PluginController.php:299
 msgid "Plugins deleted"
 msgstr "Plugins deleted"
 
-#: app/modules/web/Controllers/PluginController.php:299
+#: app/modules/web/Controllers/PluginController.php:305
 msgid "Plugin deleted"
 msgstr "Plugin deleted"
 
-#: app/modules/web/Controllers/PublicLinkController.php:114
+#: app/modules/web/Controllers/PublicLinkController.php:115
 msgid "New Public Link"
 msgstr "New Public Link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:182
+#: app/modules/web/Controllers/PublicLinkController.php:185
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
 msgid "Link updated"
 msgstr "Link updated"
 
-#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:211
 msgid "Edit Public Link"
 msgstr "Edit Public Link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:249
 #: app/modules/web/Controllers/PublicLinkController.php:252
+#: app/modules/web/Controllers/PublicLinkController.php:255
 msgid "Links deleted"
 msgstr "Links deleted"
 
-#: app/modules/web/Controllers/PublicLinkController.php:260
-#: app/modules/web/Controllers/PublicLinkController.php:264
+#: app/modules/web/Controllers/PublicLinkController.php:263
+#: app/modules/web/Controllers/PublicLinkController.php:267
 msgid "Link deleted"
 msgstr "Link deleted"
 
-#: app/modules/web/Controllers/PublicLinkController.php:294
-#: app/modules/web/Controllers/PublicLinkController.php:333
+#: app/modules/web/Controllers/PublicLinkController.php:297
+#: app/modules/web/Controllers/PublicLinkController.php:336
 msgid "Link created"
 msgstr "Link created"
 
@@ -2701,8 +2568,7 @@ msgstr "Notifications not available"
 msgid "Tags deleted"
 msgstr "Tags deleted"
 
-#. (itstool) path: action/text
-#: app/modules/web/Controllers/TagController.php:312 app/config/actions.xml:511
+#: app/modules/web/Controllers/TagController.php:312
 msgid "View Tag"
 msgstr "View Tag"
 
@@ -2722,8 +2588,8 @@ msgstr "Configuração actualizada"
 msgid "Error while saving the configuration"
 msgstr "Error while saving the configuration"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:122
-#: app/modules/web/Controllers/Traits/ItemTrait.php:177
+#: app/modules/web/Controllers/Traits/ItemTrait.php:129
+#: app/modules/web/Controllers/Traits/ItemTrait.php:190
 #: lib/SP/Core/Crypt/OldCrypt.php:176 lib/SP/Core/Crypt/OldCrypt.php:188
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:59
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:154
@@ -2731,8 +2597,8 @@ msgstr "Error while saving the configuration"
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:334
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:389
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:417
-#: lib/SP/Services/Account/AccountService.php:227
-#: lib/SP/Services/Account/AccountService.php:232
+#: lib/SP/Services/Account/AccountService.php:240
+#: lib/SP/Services/Account/AccountService.php:245
 #: lib/SP/Services/Api/ApiService.php:129
 #: lib/SP/Services/Api/ApiService.php:229
 #: lib/SP/Services/Api/ApiService.php:237
@@ -2746,28 +2612,28 @@ msgstr "Error while saving the configuration"
 #: lib/SP/Services/CustomField/CustomFieldService.php:203
 #: lib/SP/Services/Export/XmlVerifyService.php:108
 #: lib/SP/Services/Import/XmlFileImport.php:79
-#: lib/SP/Services/User/UserPassService.php:232
+#: lib/SP/Services/User/UserPassService.php:233
 msgid "Internal error"
 msgstr "Internal error"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:173
+#: app/modules/web/Controllers/Traits/ItemTrait.php:186
 msgid "Error while updating custom field's data"
 msgstr "Error while updating custom field's data"
 
-#: app/modules/web/Controllers/UpgradeController.php:67
+#: app/modules/web/Controllers/UpgradeController.php:68
 msgid "The updating need to be confirmed"
 msgstr "The updating need to be confirmed"
 
-#: app/modules/web/Controllers/UpgradeController.php:71
+#: app/modules/web/Controllers/UpgradeController.php:75
 msgid "Wrong security code"
 msgstr "Wrong security code"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:101
 #: app/modules/web/themes/material-blue/views/login/index.inc:88
 msgid "Application successfully updated"
 msgstr "Application successfully updated"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:102
 msgid "You will be redirected to log in within 5 seconds"
 msgstr "You will be redirected to log in within 5 seconds"
 
@@ -2799,9 +2665,7 @@ msgstr "Utilizador criado"
 msgid "User updated"
 msgstr "Utilizador actualizado"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/UserController.php:477
-#: app/config/actions.xml:577
 msgid "View User"
 msgstr "Ver Utilizador"
 
@@ -2867,9 +2731,7 @@ msgstr "Perfil criado"
 msgid "Profile updated"
 msgstr "Perfil actualizado"
 
-#. (itstool) path: action/text
 #: app/modules/web/Controllers/UserProfileController.php:347
-#: app/config/actions.xml:643
 msgid "View Profile"
 msgstr "Ver Perfil"
 
@@ -3000,10 +2862,10 @@ msgid "View Details"
 msgstr "View Details"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:35
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:64
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:68
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:132
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:136
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:72
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:140
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:144
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:148
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:198
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:46
@@ -3070,7 +2932,6 @@ msgid "Restore"
 msgstr "Restore"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
-#: app/config/strings.js.inc:79
 msgid "Help"
 msgstr "Help"
 
@@ -3087,7 +2948,6 @@ msgid "Download"
 msgstr "Download"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:56
-#: app/config/strings.js.inc:85
 msgid "Warning"
 msgstr "Warning"
 
@@ -3115,28 +2975,28 @@ msgstr "First page"
 msgid "Last page"
 msgstr "Last page"
 
-#: lib/SP/Bootstrap.php:285
+#: lib/SP/Bootstrap.php:290
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Required PHP version >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:287
+#: lib/SP/Bootstrap.php:292
 msgid "Please update the PHP version to run sysPass"
 msgstr "Please update the PHP version to run sysPass"
 
-#: lib/SP/Config/ConfigUtil.php:94
-msgid "\"/config\" directory does not exist."
-msgstr "\"/config\" directory does not exist."
+#: lib/SP/Config/ConfigUtil.php:102
+msgid "'/app/config' directory does not exist."
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:100
-msgid "Unable to write into \"/config\" directory"
-msgstr "Unable to write into \"/config\" directory"
+#: lib/SP/Config/ConfigUtil.php:108
+msgid "Unable to write into '/app/config' directory"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:109
-msgid "\"/config\" directory permissions are wrong"
-msgstr "\"/config\" directory permissions are wrong"
+#: lib/SP/Config/ConfigUtil.php:117
+msgid "'/app/config' directory permissions are wrong"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:111
+#: lib/SP/Config/ConfigUtil.php:119
 #, php-format
 msgid "Current: %s - Needed: 750"
 msgstr "Current: %s - Needed: 750"
@@ -3199,7 +3059,7 @@ msgstr "Observer not initialized"
 msgid "Invalid icons class"
 msgstr "Invalid icons class"
 
-#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:127
+#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
 #, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Unable to retrieve \"%s\" template: %s"
@@ -3218,12 +3078,12 @@ msgstr "Encoding error"
 msgid "Invalid XML-RPC response"
 msgstr "Invalid XML-RPC response"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:75
+#: lib/SP/Mvc/Controller/ControllerTrait.php:65
 msgid "Session not started or timed out"
 msgstr "A sessão não se iniciou ou caducou"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:127
-#: lib/SP/Mvc/Controller/ControllerTrait.php:141
+#: lib/SP/Mvc/Controller/ControllerTrait.php:116
+#: lib/SP/Mvc/Controller/ControllerTrait.php:130
 msgid "Invalid Action"
 msgstr "Acção Inválida"
 
@@ -3265,46 +3125,58 @@ msgstr "Invalid filter type"
 msgid "Wrong object type"
 msgstr "Wrong object type"
 
-#: lib/SP/Mvc/View/Template.php:302 lib/SP/Mvc/View/Template.php:366
+#: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
 #, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Unable to retrieve \"%s\" variable"
 
-#: lib/SP/Mvc/View/Template.php:335
+#: lib/SP/Mvc/View/Template.php:336
 #, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Unable to unset \"%s\" variable"
 
-#: lib/SP/Mvc/View/Template.php:356
+#: lib/SP/Mvc/View/Template.php:357
 msgid "Template does not contain files"
 msgstr "Template does not contain files"
 
-#: lib/SP/Plugin/PluginManager.php:170
+#: lib/SP/Plugin/PluginManager.php:192
 #, php-format
 msgid "Plugin version not compatible (%s)"
 msgstr "Plugin version not compatible (%s)"
 
-#: lib/SP/Plugin/PluginManager.php:192
+#: lib/SP/Plugin/PluginManager.php:204 lib/SP/Plugin/PluginManager.php:260
 #, php-format
 msgid "Unable to load the \"%s\" plugin"
 msgstr "Unable to load the \"%s\" plugin"
 
-#: lib/SP/Plugin/PluginManager.php:254
+#: lib/SP/Plugin/PluginManager.php:295
 msgid "Plugin available"
 msgstr "Plugin available"
 
-#: lib/SP/Plugin/PluginManager.php:264
+#: lib/SP/Plugin/PluginManager.php:306
 msgid "Plugin unavailable"
 msgstr "Plugin unavailable"
 
-#: lib/SP/Plugin/PluginManager.php:294
+#: lib/SP/Plugin/PluginManager.php:339
 msgid "Plugin loaded"
 msgstr "Plugin loaded"
 
-#. (itstool) path: action/text
-#: lib/SP/Plugin/PluginManager.php:319 app/config/actions.xml:535
+#: lib/SP/Plugin/PluginManager.php:364
 msgid "New Plugin"
 msgstr "New Plugin"
+
+#: lib/SP/Plugin/PluginManager.php:392
+msgid "Upgrading plugin"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:409
+msgid "Plugin upgraded"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:418
+#, php-format
+msgid "Unable to upgrade the \"%s\" plugin"
+msgstr ""
 
 #: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
@@ -3323,13 +3195,13 @@ msgstr "Tipo LDAP não configurado"
 msgid "Error while searching the group RDN"
 msgstr "Error while searching the group RDN"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:221
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:231
 msgid "Error while searching the user on LDAP"
 msgstr "Error while searching the user on LDAP"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:275
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:287
 msgid "Error while searching objects in base DN"
 msgstr "Error while searching objects in base DN"
 
@@ -3344,8 +3216,8 @@ msgstr "Unable to connect to LDAP server"
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:214
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:70
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:39
-#: app/modules/web/themes/material-blue/views/config/info.inc:75
-#: app/modules/web/themes/material-blue/views/config/info.inc:78
+#: app/modules/web/themes/material-blue/views/config/info.inc:81
+#: app/modules/web/themes/material-blue/views/config/info.inc:84
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:93
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:118
 #: app/modules/web/themes/material-blue/views/config/mail.inc:59
@@ -3368,31 +3240,31 @@ msgid "Error while disconnecting from LDAP server"
 msgstr "Error while disconnecting from LDAP server"
 
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:153
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
 msgid "User in group verified"
 msgstr "User in group verified"
 
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:143
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:144
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
 msgid "User does not belong to the group"
 msgstr "User does not belong to the group"
 
-#: lib/SP/Providers/Mail/MailHandler.php:136
+#: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
 msgstr ""
 
-#: lib/SP/Providers/Mail/MailHandler.php:144
-#: lib/SP/Providers/Mail/MailHandler.php:146
+#: lib/SP/Providers/Mail/MailHandler.php:157
+#: lib/SP/Providers/Mail/MailHandler.php:159
 #, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Performed by: %s (%s)"
 
-#: lib/SP/Providers/Mail/MailHandler.php:149
+#: lib/SP/Providers/Mail/MailHandler.php:162
 #, php-format
 msgid "IP Address: %s"
 msgstr "IP Address: %s"
@@ -3427,7 +3299,7 @@ msgstr "Erro ao eliminar a conta"
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:292
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:315
 #: lib/SP/Repositories/Account/AccountRepository.php:501
-#: lib/SP/Services/Account/AccountService.php:616
+#: lib/SP/Services/Account/AccountService.php:640
 msgid "Error while deleting the accounts"
 msgstr "Error while deleting the accounts"
 
@@ -3445,7 +3317,7 @@ msgid "Error while creating the account"
 msgstr "Erro ao criar a conta"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:301
-#: lib/SP/Services/Account/AccountService.php:582
+#: lib/SP/Services/Account/AccountService.php:606
 msgid "Error on restoring the account"
 msgstr "Erro ao restaurar a conta"
 
@@ -3638,25 +3510,39 @@ msgstr "Error while retrieving notification"
 msgid "Error while retrieving the notifications"
 msgstr "Error while retrieving the notifications"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:70
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
+msgid "Error while adding plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
+msgid "Error while updating plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
+msgid "Error while deleting plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
 msgstr "Error while adding the plugin"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:104
-#: lib/SP/Repositories/Plugin/PluginRepository.php:348
-#: lib/SP/Repositories/Plugin/PluginRepository.php:368
-#: lib/SP/Repositories/Plugin/PluginRepository.php:388
-#: lib/SP/Repositories/Plugin/PluginRepository.php:408
-#: lib/SP/Repositories/Plugin/PluginRepository.php:427
+#: lib/SP/Repositories/Plugin/PluginRepository.php:105
+#: lib/SP/Repositories/Plugin/PluginRepository.php:353
+#: lib/SP/Repositories/Plugin/PluginRepository.php:373
+#: lib/SP/Repositories/Plugin/PluginRepository.php:393
+#: lib/SP/Repositories/Plugin/PluginRepository.php:413
+#: lib/SP/Repositories/Plugin/PluginRepository.php:432
 msgid "Error while updating the plugin"
 msgstr "Error while updating the plugin"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:212
+#: lib/SP/Repositories/Plugin/PluginRepository.php:216
 #: lib/SP/Services/Plugin/PluginService.php:137
 msgid "Error while deleting the plugins"
 msgstr "Error while deleting the plugins"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:232
+#: lib/SP/Repositories/Plugin/PluginRepository.php:236
 msgid "Error while deleting the plugin"
 msgstr "Error while deleting the plugin"
 
@@ -3878,17 +3764,17 @@ msgid "File not found"
 msgstr "File not found"
 
 #: lib/SP/Services/Account/AccountService.php:163
-#: lib/SP/Services/Account/AccountService.php:599
+#: lib/SP/Services/Account/AccountService.php:623
 msgid "Account not found"
 msgstr "Account not found"
 
-#: lib/SP/Services/Account/AccountService.php:220
+#: lib/SP/Services/Account/AccountService.php:233
 msgid "Master password not set"
 msgstr "Master password not set"
 
-#: lib/SP/Services/Account/AccountService.php:283
-#: lib/SP/Services/Account/AccountService.php:672
-#: lib/SP/Services/Account/AccountService.php:727
+#: lib/SP/Services/Account/AccountService.php:296
+#: lib/SP/Services/Account/AccountService.php:696
+#: lib/SP/Services/Account/AccountService.php:751
 msgid "The account doesn't exist"
 msgstr "The account doesn't exist"
 
@@ -4144,14 +4030,14 @@ msgid "Unable to process the XML file"
 msgstr "Unable to process the XML file"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:181
-#: lib/SP/Services/Import/SyspassImport.php:176
+#: lib/SP/Services/Import/SyspassImport.php:177
 msgid "Error while checking integrity hash"
 msgstr "Error while checking integrity hash"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:198
 #: lib/SP/Services/Export/XmlVerifyService.php:228
-#: lib/SP/Services/Import/SyspassImport.php:124
-#: lib/SP/Services/Import/SyspassImport.php:148
+#: lib/SP/Services/Import/SyspassImport.php:125
+#: lib/SP/Services/Import/SyspassImport.php:149
 msgid "Wrong encryption password"
 msgstr "Wrong encryption password"
 
@@ -4161,28 +4047,28 @@ msgid "Detected format: %s"
 msgstr "Detected format: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
-#: lib/SP/Services/Import/CsvImportBase.php:176
+#: lib/SP/Services/Import/CsvImportBase.php:180
 #, php-format
 msgid "Wrong number of fields (%d)"
 msgstr "Wrong number of fields (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
-#: lib/SP/Services/Import/CsvImportBase.php:178
+#: lib/SP/Services/Import/CsvImportBase.php:182
 #, php-format
 msgid "Please, check the CSV file format in line %s"
 msgstr "Please, check the CSV file format in line %s"
 
-#: lib/SP/Services/Import/CsvImportBase.php:158
+#: lib/SP/Services/Import/CsvImportBase.php:162
 #: lib/SP/Services/Import/KeepassImport.php:103
-#: lib/SP/Services/Import/SyspassImport.php:387
+#: lib/SP/Services/Import/SyspassImport.php:388
 msgid "Account imported"
 msgstr "Account imported"
 
-#: lib/SP/Services/Import/CsvImportBase.php:166
+#: lib/SP/Services/Import/CsvImportBase.php:170
 msgid "Error while importing the account"
 msgstr "Error while importing the account"
 
-#: lib/SP/Services/Import/CsvImportBase.php:167
+#: lib/SP/Services/Import/CsvImportBase.php:171
 msgid "Error while processing line"
 msgstr "Error while processing line"
 
@@ -4220,23 +4106,23 @@ msgid "KeePass XML Import"
 msgstr "KeePass XML Import"
 
 #: lib/SP/Services/Import/KeepassImport.php:91
-#: lib/SP/Services/Import/SyspassImport.php:211
+#: lib/SP/Services/Import/SyspassImport.php:212
 msgid "Category imported"
 msgstr "Category imported"
 
-#: lib/SP/Services/Import/SyspassImport.php:58
+#: lib/SP/Services/Import/SyspassImport.php:59
 msgid "sysPass XML Import"
 msgstr "sysPass XML Import"
 
-#: lib/SP/Services/Import/SyspassImport.php:69
+#: lib/SP/Services/Import/SyspassImport.php:70
 msgid "Encryption password not set"
 msgstr "Encryption password not set"
 
-#: lib/SP/Services/Import/SyspassImport.php:162
+#: lib/SP/Services/Import/SyspassImport.php:163
 msgid "Data unencrypted"
 msgstr "Data unencrypted"
 
-#: lib/SP/Services/Import/SyspassImport.php:177
+#: lib/SP/Services/Import/SyspassImport.php:178
 msgid ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
@@ -4244,12 +4130,12 @@ msgstr ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
 
-#: lib/SP/Services/Import/SyspassImport.php:250
-#: lib/SP/Services/Import/SyspassImport.php:290
+#: lib/SP/Services/Import/SyspassImport.php:251
+#: lib/SP/Services/Import/SyspassImport.php:291
 msgid "Client imported"
 msgstr "Client imported"
 
-#: lib/SP/Services/Import/SyspassImport.php:326
+#: lib/SP/Services/Import/SyspassImport.php:327
 msgid "Tag imported"
 msgstr "Tag imported"
 
@@ -4470,6 +4356,13 @@ msgstr ""
 msgid "Notification not found"
 msgstr "Notification not found"
 
+#: lib/SP/Services/Plugin/PluginDataService.php:97
+#: lib/SP/Services/Plugin/PluginDataService.php:121
+#: lib/SP/Services/Plugin/PluginDataService.php:165
+#: lib/SP/Services/Plugin/PluginDataService.php:183
+msgid "Plugin's data not found"
+msgstr ""
+
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
 #: lib/SP/Services/Plugin/PluginService.php:186
@@ -4481,16 +4374,16 @@ msgstr "Notification not found"
 msgid "Plugin not found"
 msgstr "Plugin not found"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:122
-#: lib/SP/Services/PublicLink/PublicLinkService.php:145
-#: lib/SP/Services/PublicLink/PublicLinkService.php:219
-#: lib/SP/Services/PublicLink/PublicLinkService.php:297
-#: lib/SP/Services/PublicLink/PublicLinkService.php:332
-#: lib/SP/Services/PublicLink/PublicLinkService.php:353
+#: lib/SP/Services/PublicLink/PublicLinkService.php:123
+#: lib/SP/Services/PublicLink/PublicLinkService.php:146
+#: lib/SP/Services/PublicLink/PublicLinkService.php:220
+#: lib/SP/Services/PublicLink/PublicLinkService.php:298
+#: lib/SP/Services/PublicLink/PublicLinkService.php:333
+#: lib/SP/Services/PublicLink/PublicLinkService.php:354
 msgid "Link not found"
 msgstr "Link not found"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:238
+#: lib/SP/Services/PublicLink/PublicLinkService.php:239
 msgid "Error while removing the links"
 msgstr "Error while removing the links"
 
@@ -4546,16 +4439,16 @@ msgstr "Seconds"
 msgid "IP address not set"
 msgstr "IP address not set"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:66
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:89
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:69
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:92
 msgid "Update Application"
 msgstr "Update Application"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:73
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:76
 msgid "Error while applying the application update"
 msgstr "Error while applying the application update"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:75
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:78
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:111
 msgid "Please, check the event log for more details"
@@ -4602,10 +4495,10 @@ msgstr "MIME type não encontrado para essa extensão"
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:57
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:59
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:102
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:139
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:171
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:60
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:111
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:170
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:202
 msgid "Custom fields update"
 msgstr "Custom fields update"
 
@@ -4633,12 +4526,17 @@ msgstr "Update file does not contain data"
 msgid "Database updating was completed successfully."
 msgstr "Database updating was completed successfully."
 
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
+msgid "Plugins upgrade"
+msgstr ""
+
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:56
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:102
 msgid "Public links update"
 msgstr "Public links update"
 
-#: lib/SP/Services/User/UserPassService.php:256
+#: lib/SP/Services/User/UserPassService.php:257
 #: lib/SP/Services/User/UserService.php:123
 #: lib/SP/Services/User/UserService.php:154
 #: lib/SP/Services/User/UserService.php:173
@@ -4707,7 +4605,7 @@ msgstr "Integrity constraint"
 msgid "Please, check the connection parameters"
 msgstr "Please, check the connection parameters"
 
-#: lib/SP/Storage/Database/QueryData.php:338 app/config/strings.js.inc:26
+#: lib/SP/Storage/Database/QueryData.php:338
 msgid "Error while querying"
 msgstr "Error while querying"
 
@@ -4800,306 +4698,6 @@ msgstr "An exception occured"
 #: lib/SP/Util/ImageUtil.php:65
 msgid "Invalid image"
 msgstr "Invalid image"
-
-#: app/config/strings.js.inc:27
-msgid "There was an error"
-msgstr "There was an error"
-
-#: app/config/strings.js.inc:28 app/config/strings.js.inc:86
-msgid "Session finished"
-msgstr "Session finished"
-
-#: app/config/strings.js.inc:29
-msgid "Delete account?"
-msgstr "Delete account?"
-
-#: app/config/strings.js.inc:30
-msgid "Delete user?"
-msgstr "Delete user?"
-
-#: app/config/strings.js.inc:31
-msgid "You should save configuration in order to take effect"
-msgstr "You should save configuration in order to take effect"
-
-#: app/config/strings.js.inc:32
-msgid "Generated Password"
-msgstr "Generated Password"
-
-#: app/config/strings.js.inc:33
-msgid "High level"
-msgstr "High level"
-
-#: app/config/strings.js.inc:34
-msgid "Average level"
-msgstr "Average level"
-
-#: app/config/strings.js.inc:35
-msgid "Low level"
-msgstr "Low level"
-
-#: app/config/strings.js.inc:36
-msgid "Very High level"
-msgstr "Very High level"
-
-#: app/config/strings.js.inc:37
-msgid "You should use at least 8 characters"
-msgstr "You should use at least 8 characters"
-
-#: app/config/strings.js.inc:38
-msgid "Delete item?"
-msgstr "Delete item?"
-
-#: app/config/strings.js.inc:39
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
-msgid "Page not found"
-msgstr "Page not found"
-
-#: app/config/strings.js.inc:41
-msgid "Delete file?"
-msgstr "Delete file?"
-
-#: app/config/strings.js.inc:42
-msgid "Your browser does not support HTML5 file uploads"
-msgstr "Your browser does not support HTML5 file uploads"
-
-#: app/config/strings.js.inc:43
-msgid "Too many files"
-msgstr "Too many files"
-
-#: app/config/strings.js.inc:44
-msgid "File size not allowed"
-msgstr "File size not allowed"
-
-#: app/config/strings.js.inc:45
-msgid "MIME type not allowed"
-msgstr "MIME type não permitido"
-
-#: app/config/strings.js.inc:46
-msgid "Clear the event log out?"
-msgstr "Clear the event log out?"
-
-#: app/config/strings.js.inc:47
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:186
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:281
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
-#: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
-msgid "Select Group"
-msgstr "Select Group"
-
-#: app/config/strings.js.inc:48
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:168
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
-#: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
-msgid "Select User"
-msgstr "Select User"
-
-#: app/config/strings.js.inc:49
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
-msgid "Select Profile"
-msgstr "Select Profile"
-
-#: app/config/strings.js.inc:50
-#: app/modules/web/themes/material-blue/views/account/account.inc:85
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
-msgid "Select Client"
-msgstr "Select Client"
-
-#: app/config/strings.js.inc:51
-#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:110
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
-msgid "Select Category"
-msgstr "Select Category"
-
-#: app/config/strings.js.inc:52
-msgid "No results"
-msgstr "No results"
-
-#: app/config/strings.js.inc:53
-msgid "Password options"
-msgstr "Password options"
-
-#: app/config/strings.js.inc:54
-msgid "Generate random password"
-msgstr "Generate random password"
-
-#: app/config/strings.js.inc:55
-msgid "Complexity"
-msgstr "Complexity"
-
-#: app/config/strings.js.inc:56
-msgid "Reset"
-msgstr "Reset"
-
-#: app/config/strings.js.inc:57
-msgid "Password strength level"
-msgstr "Password strength level"
-
-#: app/config/strings.js.inc:58
-msgid "Show Password"
-msgstr "Show Password"
-
-#: app/config/strings.js.inc:59
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
-msgid "Copy Username"
-msgstr "Copy Username"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:60
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
-#: app/config/actions.xml:199 app/config/actions.xml:271
-msgid "Copy Password"
-msgstr "Copy Password"
-
-#: app/config/strings.js.inc:61
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
-msgid "Include Numbers"
-msgstr "Include Numbers"
-
-#: app/config/strings.js.inc:62
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
-msgid "Include Uppercase"
-msgstr "Include Uppercase"
-
-#: app/config/strings.js.inc:63
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
-msgid "Include Symbols"
-msgstr "Include Symbols"
-
-#: app/config/strings.js.inc:64
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
-msgid "Length"
-msgstr "Length"
-
-#: app/config/strings.js.inc:65
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
-msgid "Select Action"
-msgstr "Select Action"
-
-#: app/config/strings.js.inc:68
-msgid "Accept"
-msgstr "Accept"
-
-#: app/config/strings.js.inc:69
-msgid "Cancel"
-msgstr "Cancel"
-
-#: app/config/strings.js.inc:70
-msgid "Password Copied into Clipboard"
-msgstr "Password Copied into Clipboard"
-
-#: app/config/strings.js.inc:71
-msgid "Error while copying to clipboard"
-msgstr "Error while copying to clipboard"
-
-#: app/config/strings.js.inc:73
-msgid "Send notifies?"
-msgstr "Send notifies?"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:74
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
-#: app/config/actions.xml:247
-msgid "Mark as Favorite"
-msgstr "Mark as Favorite"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:75
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
-#: app/config/actions.xml:253
-msgid "Delete Favorite"
-msgstr "Delete Favorite"
-
-#: app/config/strings.js.inc:76
-msgid "Clear Selection"
-msgstr "Clear Selection"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:77
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
-#: app/config/actions.xml:241
-msgid "Show Favorites"
-msgstr "Show Favorites"
-
-#: app/config/strings.js.inc:78
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
-msgid "Display All"
-msgstr "Display All"
-
-#: app/config/strings.js.inc:81
-msgid "Now"
-msgstr "Now"
-
-#: app/config/strings.js.inc:82
-msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr ""
-"This process will import the detected LDAP users. Would you like to continue?"
-
-#: app/config/strings.js.inc:83
-msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr "This action will reset all plugin data. Do you want to continue?"
-
-#: app/config/strings.js.inc:84
-msgid "This process could take some time long. Do you wish to continue?"
-msgstr "This process could take some time long. Do you wish to continue?"
-
-#: app/config/strings.js.inc:87
-msgid "Performing task. Please, do not close browser's window/tab."
-msgstr "Performing task. Please, do not close browser's window/tab."
-
-#: app/config/strings.js.inc:88
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
-msgid "Include Letters"
-msgstr "Include Letters"
-
-#: app/config/strings.js.inc:89
-msgid "Cookies disabled. Application won't work properly."
-msgstr "Cookies disabled. Application won't work properly."
-
-#: app/config/strings.js.inc:90
-msgid "Clipboard not supported by your browser."
-msgstr "Clipboard not supported by your browser."
-
-#: app/config/strings.js.inc:91
-msgid "Performing auto-login"
-msgstr "Performing auto-login"
-
-#: app/config/strings.js.inc:92
-msgid "There is a more recent version of {0} plugin ({1})"
-msgstr "There is a more recent version of {0} plugin ({1})"
-
-#: app/config/strings.js.inc:93
-#: app/modules/web/themes/material-blue/views/main/update.inc:30
-msgid "Updated"
-msgstr "Updated"
-
-#: app/config/strings.js.inc:94
-#: app/modules/web/themes/material-blue/views/main/update.inc:36
-msgid "Error while checking for updates"
-msgstr "Error while checking for updates"
-
-#: app/config/strings.js.inc:95
-msgid "sysPass Notices"
-msgstr "sysPass Notices"
-
-#: app/config/strings.js.inc:96
-msgid "Clear the tracks out?"
-msgstr "Clear the tracks out?"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
@@ -5203,8 +4801,8 @@ msgid "No records found"
 msgstr "No records found"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:169
-#: app/modules/web/themes/material-blue/views/account/account.inc:176
+#: app/modules/web/themes/material-blue/views/account/account.inc:180
+#: app/modules/web/themes/material-blue/views/account/account.inc:189
 #: app/modules/web/themes/material-blue/views/install/index.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:115
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
@@ -5216,8 +4814,8 @@ msgstr "Password (repeat)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
-#: app/modules/web/themes/material-blue/views/account/account.inc:195
-#: app/modules/web/themes/material-blue/views/account/account.inc:279
+#: app/modules/web/themes/material-blue/views/account/account.inc:212
+#: app/modules/web/themes/material-blue/views/account/account.inc:305
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
 msgstr "Select date"
@@ -5225,20 +4823,27 @@ msgstr "Select date"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:142
-#: app/modules/web/themes/material-blue/views/account/account.inc:272
-#: app/modules/web/themes/material-blue/views/account/account.inc:274
+#: app/modules/web/themes/material-blue/views/account/account.inc:297
+#: app/modules/web/themes/material-blue/views/account/account.inc:299
 msgid "History"
 msgstr "History"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:28
-#: app/modules/web/themes/material-blue/views/account/account.inc:45
+#: app/modules/web/themes/material-blue/views/account/account.inc:50
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:22
 msgid "Details"
 msgstr "Details"
 
+#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
+#: app/modules/web/themes/material-blue/views/account/account.inc:120
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
+msgid "Select Category"
+msgstr "Select Category"
+
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:201
+#: app/modules/web/themes/material-blue/views/account/account.inc:218
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:163
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:169
@@ -5246,7 +4851,7 @@ msgid "Notes"
 msgstr "Notes"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
-#: app/modules/web/themes/material-blue/views/account/account.inc:294
+#: app/modules/web/themes/material-blue/views/account/account.inc:320
 #: app/modules/web/themes/material-blue/views/account/details.inc:32
 #: app/modules/web/themes/material-blue/views/account/details.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:291
@@ -5254,8 +4859,8 @@ msgstr "Notes"
 msgid "Last Modification"
 msgstr "Last Modification"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:23
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:54
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:25
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:58
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:140
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:18
@@ -5264,10 +4869,10 @@ msgstr "Last Modification"
 msgid "Select Users"
 msgstr "Select Users"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:33
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:37
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:101
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:105
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:35
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:39
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:107
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:111
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:127
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:176
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:29
@@ -5276,8 +4881,8 @@ msgstr "Select Users"
 msgid "View"
 msgstr "View"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:91
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:122
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:97
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:130
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:190
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:59
@@ -5285,12 +4890,34 @@ msgstr "View"
 msgid "Select Groups"
 msgstr "Select Groups"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:208
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
+#: app/modules/web/themes/material-blue/views/config/import.inc:32
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
+msgid "Select User"
+msgstr "Select User"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
+#: app/modules/web/themes/material-blue/views/config/import.inc:59
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
+msgid "Select Group"
+msgstr "Select Group"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:228
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
 msgstr "Private"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:224
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:246
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:198
 msgid "Private for Group"
 msgstr "Private for Group"
@@ -5307,33 +4934,39 @@ msgstr "Request description"
 msgid "Send"
 msgstr "Send"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:37
+#: app/modules/web/themes/material-blue/views/account/account.inc:40
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:133
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:214
 msgid "Permissions"
 msgstr "Permissions"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:219
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
+msgid "Select Client"
+msgstr "Select Client"
+
+#: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
 msgid "Select Tags"
 msgstr "Select Tags"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:263
+#: app/modules/web/themes/material-blue/views/account/account.inc:288
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:26
 msgid "Select Account"
 msgstr "Select Account"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:302
-#: app/modules/web/themes/material-blue/views/account/account.inc:304
-#: app/modules/web/themes/material-blue/views/account/account.inc:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:328
+#: app/modules/web/themes/material-blue/views/account/account.inc:330
+#: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:193
 msgid "Public Link"
 msgstr "Public Link"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:315
-#: app/modules/web/themes/material-blue/views/account/account.inc:317
-#: app/modules/web/themes/material-blue/views/account/account.inc:320
+#: app/modules/web/themes/material-blue/views/account/account.inc:342
+#: app/modules/web/themes/material-blue/views/account/account.inc:344
+#: app/modules/web/themes/material-blue/views/account/account.inc:348
 msgid "Direct Link"
 msgstr "Direct Link"
 
@@ -5383,6 +5016,14 @@ msgstr "Password Expired"
 msgid "Private Account (Group)"
 msgstr "Private Account (Group)"
 
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
+msgid "Delete Favorite"
+msgstr "Delete Favorite"
+
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
+msgid "Mark as Favorite"
+msgstr "Mark as Favorite"
+
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
 msgstr "Attachments"
@@ -5403,6 +5044,14 @@ msgstr "View at Wiki"
 msgid "Global search"
 msgstr "Global search"
 
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
+msgid "Display All"
+msgstr "Display All"
+
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
+msgid "Show Favorites"
+msgstr "Show Favorites"
+
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
 msgstr "Favorites Filtering"
@@ -5418,6 +5067,14 @@ msgstr "More Filters"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:114
 msgid "Select Tag"
 msgstr "Select Tag"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
+msgid "Copy Username"
+msgstr "Copy Username"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
+msgid "Copy Password"
+msgstr "Copy Password"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
@@ -5545,10 +5202,8 @@ msgstr ""
 "By default, user in a secondary group is granted if the secondary group is "
 "set as user's main group."
 
-#. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:196
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
-#: app/config/actions.xml:73
 msgid "Public Links"
 msgstr "Public Links"
 
@@ -5719,8 +5374,8 @@ msgstr ""
 "It's possible to set an export password to save all the encrypted data in "
 "the XML file."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:17
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:153
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:19
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:168
 #: app/modules/web/themes/material-blue/views/config/import.inc:152
 #: app/modules/web/themes/material-blue/views/config/import.inc:167
 #: app/modules/web/themes/material-blue/views/install/index.inc:50
@@ -5730,61 +5385,61 @@ msgstr ""
 msgid "Master Password"
 msgstr "Master Password"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:24
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:27
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:198
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:201
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:26
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:29
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:214
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:217
 msgid "Last change"
 msgstr "Last change"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:35
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:43
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:37
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:46
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:142
 msgid "Current Master Password"
 msgstr "Current Master Password"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:49
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:57
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:52
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:61
 msgid "New Master Password"
 msgstr "New Master Password"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:63
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:71
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:67
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:76
 msgid "New Master Password (repeat)"
 msgstr "New Master Password (repeat)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:80
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "You should save the new password on a secure place"
 msgstr "You should save the new password on a secure place"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:84
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:95
 msgid "All accounts passwords will be encrypted again."
 msgstr "All accounts passwords will be encrypted again."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:88
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:99
 msgid "Users will need to enter the new Master Password."
 msgstr "Users will need to enter the new Master Password."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:92
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr ""
 "It will be updated %s accounts. This process could take some time long."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:109
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
 msgstr "Do not modify accounts"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:111
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:123
 msgid "Sets a new Master Password without re-encrypting the accounts."
 msgstr "Sets a new Master Password without re-encrypting the accounts."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:127
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:140
 msgid "Confirm change"
 msgstr "Confirm change"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:129
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:142
 msgid ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
@@ -5792,7 +5447,7 @@ msgstr ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:155
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:170
 msgid ""
 "The Master Password is used to encrypt sysPass accounts passwords and keep "
 "them safe."
@@ -5800,7 +5455,7 @@ msgstr ""
 "The Master Password is used to encrypt sysPass accounts passwords and keep "
 "them safe."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:157
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:172
 msgid ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
@@ -5808,50 +5463,50 @@ msgstr ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:159
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:174
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:132
 #, php-format
 msgid "You could get more info on: %s"
 msgstr "You could get more info on: %s"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:169
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:184
 msgid "Update master password hash"
 msgstr "Update master password hash"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:189
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:323
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:344
 msgid "Temporary Password"
 msgstr "Temporary Password"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:203
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:218
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:219
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
 msgid "Not generated"
 msgstr "Not generated"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:208
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:211
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
 msgid "Valid until"
 msgstr "Valid until"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:240
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:243
 msgid "Attempts"
 msgstr "Attempts"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:244
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:250
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:262
 msgid "Life (s)"
 msgstr "Life (s)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:263
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:282
 msgid "Send email"
 msgstr "Send email"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:265
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:284
 msgid "Sends an email to all users or only to those whose group is selected."
 msgstr "Sends an email to all users or only to those whose group is selected."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:325
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
 "to enter it during login. By this way there is no need to tell them the real "
@@ -5861,7 +5516,7 @@ msgstr ""
 "to enter it during login. By this way there is no need to tell them the real "
 "Master Password."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:332
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
 msgstr "Generate"
 
@@ -5987,19 +5642,19 @@ msgstr "Proxy server user"
 msgid "Proxy server password"
 msgstr "Proxy server password"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:16
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:17
 msgid "This extension is needed to check for sysPass updates and notices"
 msgstr "This extension is needed to check for sysPass updates and notices"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:24
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:25
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:15
 msgid "Site"
 msgstr "Site"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:30
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:107
-#: app/modules/web/themes/material-blue/views/config/info.inc:121
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:31
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:45
+#: app/modules/web/themes/material-blue/views/config/info.inc:113
+#: app/modules/web/themes/material-blue/views/config/info.inc:127
 #: app/modules/web/themes/material-blue/views/install/index.inc:137
 #: app/modules/web/themes/material-blue/views/install/index.inc:139
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:26
@@ -6007,13 +5662,13 @@ msgstr "Site"
 msgid "Language"
 msgstr "Language"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:35
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
 "Sets the global app language. You can set a per user language on preferences."
 msgstr ""
 "Sets the global app language. You can set a per user language on preferences."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:39
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
 "join/project/fmlsBuugyv"
@@ -6021,14 +5676,14 @@ msgstr ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
 "join/project/fmlsBuugyv"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:57
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:67
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:59
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:69
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:42
 msgid "Visual Theme"
 msgstr "Visual Theme"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:62
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:64
 msgid ""
 "Sets the global application visual theme. You can set a per user visual "
 "theme on preferences."
@@ -6036,34 +5691,45 @@ msgstr ""
 "Sets the global application visual theme. You can set a per user visual "
 "theme on preferences."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:81
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:89
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:83
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:95
 msgid "Session timeout (s)"
 msgstr "Session timeout (s)"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:107
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
+msgid "Application URL"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
+msgid ""
+"Sets the application URL when accessing through a reverse proxy or load "
+"balancer."
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:136
 msgid "Force HTTPS"
 msgstr "Force HTTPS"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:108
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
 msgid "It forces the use of HTTPS on all the connections"
 msgstr "It forces the use of HTTPS on all the connections"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:122
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
 msgid "Enable debug"
 msgstr "Enable debug"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:123
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
 msgid ""
 "Displays some information about application configuration and performance."
 msgstr ""
 "Displays some information about application configuration and performance."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
 msgid "Maintenance mode"
 msgstr "Maintenance mode"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:138
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
 "In this mode nobody can log into the application. To disable it, you need to "
 "either modify the configuration file or unset on the site tab."
@@ -6071,19 +5737,19 @@ msgstr ""
 "In this mode nobody can log into the application. To disable it, you need to "
 "either modify the configuration file or unset on the site tab."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
 msgid "Check for updates"
 msgstr "Check for updates"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
 msgid "Check for application updates (only for administrators)."
 msgstr "Check for application updates (only for administrators)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:167
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:200
 msgid "Check for notifications"
 msgstr "Check for notifications"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:201
 msgid ""
 "Check if there are either sysPass security or warning notices (only for "
 "administrators)."
@@ -6091,15 +5757,15 @@ msgstr ""
 "Check if there are either sysPass security or warning notices (only for "
 "administrators)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:182
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:216
 msgid "Encrypt Session"
 msgstr "Encrypt Session"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:218
 msgid "Encrypt PHP session data"
 msgstr "Encrypt PHP session data"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:219
 msgid ""
 "This feature increases the PHP sessions security, because the stored data "
 "won't be readable."
@@ -6214,52 +5880,52 @@ msgstr "Application Information"
 msgid "sysPass version"
 msgstr "sysPass version"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:30
-#: app/modules/web/themes/material-blue/views/config/info.inc:33
+#: app/modules/web/themes/material-blue/views/config/info.inc:36
+#: app/modules/web/themes/material-blue/views/config/info.inc:39
 msgid "Database"
 msgstr "Database"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:47
+#: app/modules/web/themes/material-blue/views/config/info.inc:50
+#: app/modules/web/themes/material-blue/views/config/info.inc:53
 msgid "PHP"
 msgstr "PHP"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:51
+#: app/modules/web/themes/material-blue/views/config/info.inc:57
 msgid "Extensions"
 msgstr "Extensions"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:55
+#: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
 msgstr "Unavailable extensions"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:59
+#: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
 msgstr "Used Memory"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:63
+#: app/modules/web/themes/material-blue/views/config/info.inc:69
 msgid "Download rate"
 msgstr "Download rate"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:66
+#: app/modules/web/themes/material-blue/views/config/info.inc:72
 msgid "OP Cache"
 msgstr "OP Cache"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:85
-#: app/modules/web/themes/material-blue/views/config/info.inc:88
+#: app/modules/web/themes/material-blue/views/config/info.inc:91
+#: app/modules/web/themes/material-blue/views/config/info.inc:94
 msgid "Configuration Backup"
 msgstr "Configuration Backup"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:98
-#: app/modules/web/themes/material-blue/views/config/info.inc:180
+#: app/modules/web/themes/material-blue/views/config/info.inc:104
+#: app/modules/web/themes/material-blue/views/config/info.inc:186
 #, php-format
 msgid "Download %s"
 msgstr "Download %s"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:112
+#: app/modules/web/themes/material-blue/views/config/info.inc:118
 msgid "Tells whether the language is available or not."
 msgstr "Tells whether the language is available or not."
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:116
+#: app/modules/web/themes/material-blue/views/config/info.inc:122
 msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
@@ -6267,22 +5933,22 @@ msgstr ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:128
-#: app/modules/web/themes/material-blue/views/config/info.inc:138
+#: app/modules/web/themes/material-blue/views/config/info.inc:134
+#: app/modules/web/themes/material-blue/views/config/info.inc:144
 msgid "Encrypted Session"
 msgstr "Encrypted Session"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:133
+#: app/modules/web/themes/material-blue/views/config/info.inc:139
 msgid "Tells whether the session data are encrypted in the server side or not"
 msgstr "Tells whether the session data are encrypted in the server side or not"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:145
-#: app/modules/web/themes/material-blue/views/config/info.inc:148
+#: app/modules/web/themes/material-blue/views/config/info.inc:151
+#: app/modules/web/themes/material-blue/views/config/info.inc:154
 msgid "Loaded Plugins"
 msgstr "Loaded Plugins"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:171
-#: app/modules/web/themes/material-blue/views/config/info.inc:174
+#: app/modules/web/themes/material-blue/views/config/info.inc:177
+#: app/modules/web/themes/material-blue/views/config/info.inc:180
 msgid "Log file"
 msgstr "Log file"
 
@@ -6645,6 +6311,10 @@ msgstr "Creator"
 msgid "Delete History"
 msgstr "Delete History"
 
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
+msgid "Select Action"
+msgstr "Select Action"
+
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:98
@@ -6689,6 +6359,11 @@ msgstr "Field's help"
 msgid "Required"
 msgstr "Required"
 
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
+msgid "Length"
+msgstr "Length"
+
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
 msgid "Score"
@@ -6698,6 +6373,22 @@ msgstr "Score"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:65
 msgid "Regular Expression"
 msgstr "Regular Expression"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
+msgid "Include Numbers"
+msgstr "Include Numbers"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
+msgid "Include Letters"
+msgstr "Include Letters"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
+msgid "Include Symbols"
+msgstr "Include Symbols"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
+msgid "Include Uppercase"
+msgstr "Include Uppercase"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:140
 msgid "Include Lowercase"
@@ -6729,6 +6420,11 @@ msgstr "IP Address"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:37
 msgid "Timeout"
 msgstr "Timeout"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
+msgid "Select Profile"
+msgstr "Select Profile"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:89
 msgid ""
@@ -6844,9 +6540,7 @@ msgstr "View account details"
 msgid "View account password"
 msgstr "View account password"
 
-#. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:86
-#: app/config/actions.xml:259
 msgid "View History"
 msgstr "View History"
 
@@ -6942,9 +6636,7 @@ msgstr "Default Values"
 msgid "Default Values Management"
 msgstr "Default Values Management"
 
-#. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
-#: app/config/actions.xml:697
 msgid "General Configuration"
 msgstr "General Configuration"
 
@@ -6979,6 +6671,14 @@ msgstr "Sign in"
 #: app/modules/web/themes/material-blue/views/login/index.inc:82
 msgid "Forgot password?"
 msgstr "Forgot password?"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:30
+msgid "Updated"
+msgstr "Updated"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:36
+msgid "Error while checking for updates"
+msgstr "Error while checking for updates"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
 #, php-format
@@ -7163,11 +6863,14 @@ msgstr "Show Filters"
 msgid "Displays the additional filters selection on the accounts search."
 msgstr "Displays the additional filters selection on the accounts search."
 
-#. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:16
-#: app/config/actions.xml:277
 msgid "View Wiki"
 msgstr "View Wiki"
+
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
+msgid "Page not found"
+msgstr "Page not found"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
 #, php-format
@@ -7179,342 +6882,394 @@ msgstr "Search results of '%s'"
 msgid "Page"
 msgstr "Page"
 
-#. (itstool) path: action/text
-#: app/config/actions.xml:7
-msgid "Search for Accounts"
-msgstr "Search for Accounts"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:25
-msgid "Requests"
-msgstr "Requests"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:31
-msgid "Favorites"
-msgstr "Favorites"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:43
-msgid "Items and Customizations"
-msgstr "Items and Customizations"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:49
-msgid "Categories Management"
-msgstr "Categories Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:55
-msgid "Customers Management"
-msgstr "Customers Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:61
-msgid "API Authorizations Management"
-msgstr "API Authorizations Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:67
-msgid "Custom Fields Management"
-msgstr "Custom Fields Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:79
-msgid "Files Management"
-msgstr "Files Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:85
-msgid "Accounts Management"
-msgstr "Accounts Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:91
-msgid "Tags Management"
-msgstr "Tags Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:97
-msgid "Plugins Management"
-msgstr "Plugins Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:103
-msgid "Users and Accesses"
-msgstr "Users and Accesses"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:109
-msgid "Security and Audit"
-msgstr "Security and Audit"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:115
-msgid "Users Management"
-msgstr "Users Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:121
-msgid "Groups Management"
-msgstr "Groups Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:127
-msgid "Profiles Management"
-msgstr "Profiles Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:145
-msgid "Clear Events"
-msgstr "Clear Events"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:151 app/config/actions.xml:481
-msgid "View Account"
-msgstr "View Account"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:211 app/config/actions.xml:469
-msgid "Upload File"
-msgstr "Upload File"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:229
-msgid "Search for Files"
-msgstr "Search for Files"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:235
-msgid "List Files"
-msgstr "List Files"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:283
-msgid "Add Wiki"
-msgstr "Add Wiki"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:289
-msgid "Edit Wiki"
-msgstr "Edit Wiki"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:295
-msgid "Delete Wiki"
-msgstr "Delete Wiki"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:361
-msgid "New API Token"
-msgstr "New API Token"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:367
-msgid "View API Token"
-msgstr "View API Token"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:373
-msgid "Edit API Token"
-msgstr "Edit API Token"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:379
-msgid "Delete API Token"
-msgstr "Delete API Token"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:385
-msgid "Search for API Token"
-msgstr "Search for API Token"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:391
-msgid "New Custom Field"
-msgstr "New Custom Field"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:397
-msgid "Show Custom Field"
-msgstr "Show Custom Field"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:403
-msgid "Edit Custom Field"
-msgstr "Edit Custom Field"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:409
-msgid "Delete Custom Field"
-msgstr "Delete Custom Field"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:415
-msgid "Search for Custom Field"
-msgstr "Search for Custom Field"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:427
-msgid "Show Public Link"
-msgstr "Show Public Link"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:445
-msgid "Search for Public Link"
-msgstr "Search for Public Link"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:553
-msgid "Enable Plugin"
-msgstr "Enable Plugin"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:559
-msgid "Disable Plugin"
-msgstr "Disable Plugin"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:565
-msgid "Reset Plugin"
-msgstr "Reset Plugin"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:601
-msgid "Edit User Password"
-msgstr "Edit User Password"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:673
-msgid "User Configuration"
-msgstr "User Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:679
-msgid "General Preferences"
-msgstr "General Preferences"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:703
-msgid "Accounts Configuration"
-msgstr "Accounts Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:709
-msgid "Wiki Configuration"
-msgstr "Wiki Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:715
-msgid "Encryption Configuration"
-msgstr "Encryption Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:721
-msgid "Update Hash"
-msgstr "Update Hash"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:727
-msgid "Temporary Master Password"
-msgstr "Temporary Master Password"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:733
-msgid "Backup Configuration"
-msgstr "Backup Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:745
-msgid "Import Configuration"
-msgstr "Import Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:751
-msgid "CSV Import"
-msgstr "CSV Import"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:757
-msgid "XML Import"
-msgstr "XML Import"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:763
-msgid "Export Configuration"
-msgstr "Export Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:769
-msgid "Export"
-msgstr "Export"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:775
-msgid "Email Configuration"
-msgstr "Email Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:781
-msgid "LDAP Configuration"
-msgstr "LDAP Configuration"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:787
-msgid "LDAP synchronization"
-msgstr "LDAP synchronization"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:793
-msgid "Account Management (H)"
-msgstr "Account Management (H)"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:823
-msgid "Create Notification"
-msgstr "Create Notification"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:853
-msgid "Preset Values Management"
-msgstr "Preset Values Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:889
-msgid "Tracks Management"
-msgstr "Tracks Management"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:901
-msgid "Unlock track"
-msgstr "Unlock track"
-
-#. (itstool) path: action/text
-#: app/config/actions.xml:907
-msgid "Clear the tracks out"
-msgstr "Clear the tracks out"
-
-#. (itstool) path: strings/text
-#: app/config/strings.xml:4
-msgid "Color"
-msgstr "Color"
-
-#. (itstool) path: strings/text
-#: app/config/strings.xml:5
-msgid "Number"
-msgstr "Number"
-
-#. (itstool) path: strings/text
-#: app/config/strings.xml:6
-msgid "Phone"
-msgstr "Phone"
-
-#. (itstool) path: strings/text
-#: app/config/strings.xml:7
-msgid "Text Area"
-msgstr "Text Area"
-
-#. (itstool) path: strings/text
-#: app/config/strings.xml:8
-msgid "Text"
-msgstr "Text"
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "\"/config\" directory does not exist."
+
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Unable to write into \"/config\" directory"
+
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "\"/config\" directory permissions are wrong"
+
+#~ msgid "Master Password %s"
+#~ msgstr "Master Password %s"
+
+#~ msgid "Mail service unavailable"
+#~ msgstr "Mail service unavailable"
+
+#~ msgid "There was an error"
+#~ msgstr "There was an error"
+
+#~ msgid "Session finished"
+#~ msgstr "Session finished"
+
+#~ msgid "Delete account?"
+#~ msgstr "Delete account?"
+
+#~ msgid "Delete user?"
+#~ msgstr "Delete user?"
+
+#~ msgid "You should save configuration in order to take effect"
+#~ msgstr "You should save configuration in order to take effect"
+
+#~ msgid "Generated Password"
+#~ msgstr "Generated Password"
+
+#~ msgid "High level"
+#~ msgstr "High level"
+
+#~ msgid "Average level"
+#~ msgstr "Average level"
+
+#~ msgid "Low level"
+#~ msgstr "Low level"
+
+#~ msgid "Very High level"
+#~ msgstr "Very High level"
+
+#~ msgid "You should use at least 8 characters"
+#~ msgstr "You should use at least 8 characters"
+
+#~ msgid "Delete item?"
+#~ msgstr "Delete item?"
+
+#~ msgid "Delete file?"
+#~ msgstr "Delete file?"
+
+#~ msgid "Your browser does not support HTML5 file uploads"
+#~ msgstr "Your browser does not support HTML5 file uploads"
+
+#~ msgid "Too many files"
+#~ msgstr "Too many files"
+
+#~ msgid "File size not allowed"
+#~ msgstr "File size not allowed"
+
+#~ msgid "MIME type not allowed"
+#~ msgstr "MIME type não permitido"
+
+#~ msgid "Clear the event log out?"
+#~ msgstr "Clear the event log out?"
+
+#~ msgid "No results"
+#~ msgstr "No results"
+
+#~ msgid "Password options"
+#~ msgstr "Password options"
+
+#~ msgid "Generate random password"
+#~ msgstr "Generate random password"
+
+#~ msgid "Complexity"
+#~ msgstr "Complexity"
+
+#~ msgid "Reset"
+#~ msgstr "Reset"
+
+#~ msgid "Password strength level"
+#~ msgstr "Password strength level"
+
+#~ msgid "Show Password"
+#~ msgstr "Show Password"
+
+#~ msgid "Accept"
+#~ msgstr "Accept"
+
+#~ msgid "Cancel"
+#~ msgstr "Cancel"
+
+#~ msgid "Password Copied into Clipboard"
+#~ msgstr "Password Copied into Clipboard"
+
+#~ msgid "Error while copying to clipboard"
+#~ msgstr "Error while copying to clipboard"
+
+#~ msgid "Send notifies?"
+#~ msgstr "Send notifies?"
+
+#~ msgid "Clear Selection"
+#~ msgstr "Clear Selection"
+
+#~ msgid "Now"
+#~ msgstr "Now"
+
+#~ msgid ""
+#~ "This process will import the detected LDAP users. Would you like to "
+#~ "continue?"
+#~ msgstr ""
+#~ "This process will import the detected LDAP users. Would you like to "
+#~ "continue?"
+
+#~ msgid "This action will reset all plugin data. Do you want to continue?"
+#~ msgstr "This action will reset all plugin data. Do you want to continue?"
+
+#~ msgid "This process could take some time long. Do you wish to continue?"
+#~ msgstr "This process could take some time long. Do you wish to continue?"
+
+#~ msgid "Performing task. Please, do not close browser's window/tab."
+#~ msgstr "Performing task. Please, do not close browser's window/tab."
+
+#~ msgid "Cookies disabled. Application won't work properly."
+#~ msgstr "Cookies disabled. Application won't work properly."
+
+#~ msgid "Clipboard not supported by your browser."
+#~ msgstr "Clipboard not supported by your browser."
+
+#~ msgid "Performing auto-login"
+#~ msgstr "Performing auto-login"
+
+#~ msgid "There is a more recent version of {0} plugin ({1})"
+#~ msgstr "There is a more recent version of {0} plugin ({1})"
+
+#~ msgid "sysPass Notices"
+#~ msgstr "sysPass Notices"
+
+#~ msgid "Clear the tracks out?"
+#~ msgstr "Clear the tracks out?"
+
+#~ msgid "Active Directory"
+#~ msgstr "Active Directory"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Enables Active Directory LDAP connection mode."
+
+#~ msgid "Recipient email address"
+#~ msgstr "Recipient email address"
+
+#~ msgid "Dysplays a navigation bar on top of the search results."
+#~ msgstr "Dysplays a navigation bar on top of the search results."
+
+#~ msgid "Search for Accounts"
+#~ msgstr "Search for Accounts"
+
+#~ msgid "Requests"
+#~ msgstr "Requests"
+
+#~ msgid "Favorites"
+#~ msgstr "Favorites"
+
+#~ msgid "Items and Customizations"
+#~ msgstr "Items and Customizations"
+
+#~ msgid "Categories Management"
+#~ msgstr "Categories Management"
+
+#~ msgid "Customers Management"
+#~ msgstr "Customers Management"
+
+#~ msgid "API Authorizations Management"
+#~ msgstr "API Authorizations Management"
+
+#~ msgid "Custom Fields Management"
+#~ msgstr "Custom Fields Management"
+
+#~ msgid "Files Management"
+#~ msgstr "Files Management"
+
+#~ msgid "Accounts Management"
+#~ msgstr "Accounts Management"
+
+#~ msgid "Tags Management"
+#~ msgstr "Tags Management"
+
+#~ msgid "Plugins Management"
+#~ msgstr "Plugins Management"
+
+#~ msgid "Users and Accesses"
+#~ msgstr "Users and Accesses"
+
+#~ msgid "Security and Audit"
+#~ msgstr "Security and Audit"
+
+#~ msgid "Users Management"
+#~ msgstr "Users Management"
+
+#~ msgid "Groups Management"
+#~ msgstr "Groups Management"
+
+#~ msgid "Profiles Management"
+#~ msgstr "Profiles Management"
+
+#~ msgid "Clear Events"
+#~ msgstr "Clear Events"
+
+#~ msgid "View Account"
+#~ msgstr "View Account"
+
+#~ msgid "Upload File"
+#~ msgstr "Upload File"
+
+#~ msgid "Search for Files"
+#~ msgstr "Search for Files"
+
+#~ msgid "List Files"
+#~ msgstr "List Files"
+
+#~ msgid "Add Wiki"
+#~ msgstr "Add Wiki"
+
+#~ msgid "Edit Wiki"
+#~ msgstr "Edit Wiki"
+
+#~ msgid "Delete Wiki"
+#~ msgstr "Delete Wiki"
+
+#~ msgid "New API Token"
+#~ msgstr "New API Token"
+
+#~ msgid "View API Token"
+#~ msgstr "View API Token"
+
+#~ msgid "Edit API Token"
+#~ msgstr "Edit API Token"
+
+#~ msgid "Delete API Token"
+#~ msgstr "Delete API Token"
+
+#~ msgid "Search for API Token"
+#~ msgstr "Search for API Token"
+
+#~ msgid "New Custom Field"
+#~ msgstr "New Custom Field"
+
+#~ msgid "Show Custom Field"
+#~ msgstr "Show Custom Field"
+
+#~ msgid "Edit Custom Field"
+#~ msgstr "Edit Custom Field"
+
+#~ msgid "Delete Custom Field"
+#~ msgstr "Delete Custom Field"
+
+#~ msgid "Search for Custom Field"
+#~ msgstr "Search for Custom Field"
+
+#~ msgid "Show Public Link"
+#~ msgstr "Show Public Link"
+
+#~ msgid "Search for Public Link"
+#~ msgstr "Search for Public Link"
+
+#~ msgid "Enable Plugin"
+#~ msgstr "Enable Plugin"
+
+#~ msgid "Disable Plugin"
+#~ msgstr "Disable Plugin"
+
+#~ msgid "Reset Plugin"
+#~ msgstr "Reset Plugin"
+
+#~ msgid "Edit User Password"
+#~ msgstr "Edit User Password"
+
+#~ msgid "User Configuration"
+#~ msgstr "User Configuration"
+
+#~ msgid "General Preferences"
+#~ msgstr "General Preferences"
+
+#~ msgid "Accounts Configuration"
+#~ msgstr "Accounts Configuration"
+
+#~ msgid "Wiki Configuration"
+#~ msgstr "Wiki Configuration"
+
+#~ msgid "Encryption Configuration"
+#~ msgstr "Encryption Configuration"
+
+#~ msgid "Update Hash"
+#~ msgstr "Update Hash"
+
+#~ msgid "Temporary Master Password"
+#~ msgstr "Temporary Master Password"
+
+#~ msgid "Backup Configuration"
+#~ msgstr "Backup Configuration"
+
+#~ msgid "Import Configuration"
+#~ msgstr "Import Configuration"
+
+#~ msgid "CSV Import"
+#~ msgstr "CSV Import"
+
+#~ msgid "XML Import"
+#~ msgstr "XML Import"
+
+#~ msgid "Export Configuration"
+#~ msgstr "Export Configuration"
+
+#~ msgid "Export"
+#~ msgstr "Export"
+
+#~ msgid "Email Configuration"
+#~ msgstr "Email Configuration"
+
+#~ msgid "LDAP Configuration"
+#~ msgstr "LDAP Configuration"
+
+#~ msgid "LDAP synchronization"
+#~ msgstr "LDAP synchronization"
+
+#~ msgid "Account Management (H)"
+#~ msgstr "Account Management (H)"
+
+#~ msgid "Create Notification"
+#~ msgstr "Create Notification"
+
+#~ msgid "Preset Values Management"
+#~ msgstr "Preset Values Management"
+
+#~ msgid "Tracks Management"
+#~ msgstr "Tracks Management"
+
+#~ msgid "Unlock track"
+#~ msgstr "Unlock track"
+
+#~ msgid "Clear the tracks out"
+#~ msgstr "Clear the tracks out"
+
+#~ msgid "Color"
+#~ msgstr "Color"
+
+#~ msgid "Number"
+#~ msgstr "Number"
+
+#~ msgid "Phone"
+#~ msgstr "Phone"
+
+#~ msgid "Text Area"
+#~ msgstr "Text Area"
+
+#~ msgid "Text"
+#~ msgstr "Text"
+
+#~ msgid "There aren't any allowed extensions"
+#~ msgstr "There aren't any allowed extensions"
+
+#~ msgid "Extension: %s"
+#~ msgstr "Extension: %s"
+
+#~ msgid "Maximum size: %s"
+#~ msgstr "Maximum size: %s"
+
+#~ msgid "Please, check the file extension"
+#~ msgstr "Please, check the file extension"
+
+#~ msgid "Data not loaded"
+#~ msgstr "Data not loaded"
+
+#~ msgid "Extension not allowed"
+#~ msgstr "Extensão não permitida"
+
+#~ msgid "Allowed file extensions"
+#~ msgstr "Allowed file extensions"
+
+#~ msgid "Allowed file extensions for uploading."
+#~ msgstr "Allowed file extensions for uploading."
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-12-16 13:15+0100\n"
+"POT-Creation-Date: 2019-04-21 16:02+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: Alexander Titov,Alex Us\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
-"X-Poedit-SearchPath-2: app/config\n"
+"X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
@@ -45,7 +45,7 @@ msgstr "Account displayed"
 #: app/modules/api/Controllers/UserGroupController.php:92
 #: app/modules/api/Controllers/UserGroupController.php:123
 #: app/modules/api/Controllers/UserGroupController.php:153
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:240
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:244
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:113
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:106
@@ -60,14 +60,15 @@ msgstr "Account displayed"
 #: app/modules/web/Controllers/UserGroupController.php:324
 #: app/modules/web/Controllers/UserProfileController.php:272
 #: app/modules/web/Controllers/UserProfileController.php:315
-#: lib/SP/Plugin/PluginManager.php:320
+#: lib/SP/Plugin/PluginManager.php:365 lib/SP/Plugin/PluginManager.php:393
+#: lib/SP/Plugin/PluginManager.php:410
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:30
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:43
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:22
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:24
-#: app/modules/web/themes/material-blue/views/account/account.inc:65
+#: app/modules/web/themes/material-blue/views/account/account.inc:72
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:54
-#: app/modules/web/themes/material-blue/views/config/info.inc:39
+#: app/modules/web/themes/material-blue/views/config/info.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:22
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:23
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:23
@@ -86,13 +87,13 @@ msgstr "Имя"
 #: app/modules/api/Controllers/AccountController.php:190
 #: app/modules/api/Controllers/AccountController.php:241
 #: app/modules/api/Controllers/AccountController.php:316
-#: app/modules/web/Controllers/AccountController.php:250
+#: app/modules/web/Controllers/AccountController.php:253
 #: app/modules/web/Controllers/AccountController.php:833
 #: app/modules/web/Controllers/AccountController.php:882
 #: app/modules/web/Controllers/AccountController.php:927
 #: app/modules/web/Controllers/AccountController.php:970
 #: app/modules/web/Controllers/AccountController.php:1024
-#: app/modules/web/Controllers/AccountController.php:1065
+#: app/modules/web/Controllers/AccountController.php:1071
 #: app/modules/web/Controllers/AccountFileController.php:246
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:121
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:160
@@ -100,12 +101,12 @@ msgstr "Имя"
 #: app/modules/web/Controllers/ClientController.php:229
 #: app/modules/web/Controllers/ClientController.php:265
 #: app/modules/web/Controllers/ClientController.php:305
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:237
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:109
-#: lib/SP/Services/Import/CsvImportBase.php:159
+#: lib/SP/Services/Import/CsvImportBase.php:163
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:41
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:47
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:57
@@ -114,8 +115,8 @@ msgstr "Имя"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:40
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:35
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:41
-#: app/modules/web/themes/material-blue/views/account/account.inc:79
-#: app/modules/web/themes/material-blue/views/account/account.inc:81
+#: app/modules/web/themes/material-blue/views/account/account.inc:87
+#: app/modules/web/themes/material-blue/views/account/account.inc:89
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
@@ -124,8 +125,8 @@ msgid "Client"
 msgstr "Заказчик"
 
 #: app/modules/api/Controllers/AccountController.php:102
-#: app/modules/web/Controllers/AccountController.php:653
-#: app/modules/web/Controllers/AccountController.php:713
+#: app/modules/web/Controllers/AccountController.php:656
+#: app/modules/web/Controllers/AccountController.php:716
 msgid "Password viewed"
 msgstr "Password viewed"
 
@@ -284,11 +285,11 @@ msgstr "Отправлены детали по запросу"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:89
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:92
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:101
-#: app/modules/web/themes/material-blue/views/account/account.inc:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:164
+#: app/modules/web/themes/material-blue/views/account/account.inc:166
+#: app/modules/web/themes/material-blue/views/account/account.inc:175
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:42
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:313
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:316
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:81
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:169
 #: app/modules/web/themes/material-blue/views/config/mail.inc:119
@@ -313,7 +314,7 @@ msgstr "Пароль"
 #: app/modules/api/Controllers/Help/AccountHelp.php:114
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:97
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:114
-#: app/modules/web/themes/material-blue/views/account/account.inc:182
+#: app/modules/web/themes/material-blue/views/account/account.inc:195
 #: app/modules/web/themes/material-blue/views/account/details.inc:88
 #: app/modules/web/themes/material-blue/views/account/details.inc:90
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:243
@@ -326,7 +327,7 @@ msgstr "Срок действия пароля"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:29
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:30
-#: app/modules/web/themes/material-blue/views/account/account.inc:74
+#: app/modules/web/themes/material-blue/views/account/account.inc:82
 msgid "Account name"
 msgstr "Имя учетной записи"
 
@@ -350,14 +351,14 @@ msgstr "ID заказчика"
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:109
-#: app/modules/web/themes/material-blue/views/account/account.inc:150
+#: app/modules/web/themes/material-blue/views/account/account.inc:160
 msgid "Access user"
 msgstr "Пользователь доступа"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:137
+#: app/modules/web/themes/material-blue/views/account/account.inc:147
 msgid "Access URL or IP"
 msgstr "URL или IP доступа"
 
@@ -365,13 +366,13 @@ msgstr "URL или IP доступа"
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:134
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:208
+#: app/modules/web/themes/material-blue/views/account/account.inc:227
 msgid "Notes about the account"
 msgstr "Заметки по учетной записи"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:202
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:220
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
 msgid "Private Account"
@@ -379,15 +380,15 @@ msgstr "Приватная учетная запись"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:218
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:238
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
 msgid "Private Account for Group"
 msgstr "Приватный аккаунт для группы"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
-#: app/modules/web/themes/material-blue/views/account/account.inc:253
-#: app/modules/web/themes/material-blue/views/account/account.inc:255
+#: app/modules/web/themes/material-blue/views/account/account.inc:277
+#: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
 msgid "Linked Account"
 msgstr "Связанная учетная запись"
@@ -552,13 +553,13 @@ msgstr "Группа обновлена"
 msgid "Group deleted"
 msgstr "Группа удалена"
 
-#: app/modules/api/Init.php:150
+#: app/modules/api/Init.php:152
 msgid "Updating needed"
 msgstr "Updating needed"
 
-#: app/modules/web/Controllers/AccountController.php:157
-#: app/modules/web/Controllers/AccountController.php:224
-#: app/modules/web/Controllers/AccountController.php:553
+#: app/modules/web/Controllers/AccountController.php:158
+#: app/modules/web/Controllers/AccountController.php:225
+#: app/modules/web/Controllers/AccountController.php:556
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:164
@@ -568,21 +569,21 @@ msgstr "Updating needed"
 msgid "Account Details"
 msgstr "Детали учетной записи"
 
-#: app/modules/web/Controllers/AccountController.php:248
+#: app/modules/web/Controllers/AccountController.php:251
 msgid "Link viewed"
 msgstr "Ссылка показана"
 
-#: app/modules/web/Controllers/AccountController.php:249
-#: app/modules/web/Controllers/AccountController.php:654
-#: app/modules/web/Controllers/AccountController.php:714
-#: app/modules/web/Controllers/AccountController.php:758
-#: app/modules/web/Controllers/AccountController.php:795
+#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:657
+#: app/modules/web/Controllers/AccountController.php:717
+#: app/modules/web/Controllers/AccountController.php:761
+#: app/modules/web/Controllers/AccountController.php:798
 #: app/modules/web/Controllers/AccountController.php:832
 #: app/modules/web/Controllers/AccountController.php:881
 #: app/modules/web/Controllers/AccountController.php:926
 #: app/modules/web/Controllers/AccountController.php:969
 #: app/modules/web/Controllers/AccountController.php:1023
-#: app/modules/web/Controllers/AccountController.php:1064
+#: app/modules/web/Controllers/AccountController.php:1070
 #: app/modules/web/Controllers/AccountFileController.php:245
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:120
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:159
@@ -590,85 +591,84 @@ msgstr "Ссылка показана"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:25
-#: app/modules/web/themes/material-blue/views/account/account.inc:30
+#: app/modules/web/themes/material-blue/views/account/account.inc:31
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:23
 msgid "Account"
 msgstr "Учетная запись"
 
-#: app/modules/web/Controllers/AccountController.php:251
+#: app/modules/web/Controllers/AccountController.php:254
 msgid "Agent"
 msgstr "Агент"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
 msgstr "Включить"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 msgid "OFF"
 msgstr "Выключить"
 
-#: app/modules/web/Controllers/AccountController.php:253
+#: app/modules/web/Controllers/AccountController.php:256
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
-#. (itstool) path: strings/text
-#: app/modules/web/Controllers/AccountController.php:254
-#: app/modules/web/Controllers/AccountController.php:1067
-#: app/modules/web/Controllers/PublicLinkController.php:261
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
+#: app/modules/web/Controllers/AccountController.php:257
+#: app/modules/web/Controllers/AccountController.php:1073
+#: app/modules/web/Controllers/PublicLinkController.php:264
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
 msgid "Link"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:287
-#: app/modules/web/Controllers/AccountController.php:339
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:275
-#: app/config/actions.xml:157
+#: app/modules/web/Controllers/AccountController.php:290
+#: app/modules/web/Controllers/AccountController.php:342
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:274
+#: app/resources/actions.xml:157
 msgid "New Account"
 msgstr "Новая учетная запись"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:393
+#: app/modules/web/Controllers/AccountController.php:396
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:20
-#: app/config/actions.xml:163
+#: app/resources/actions.xml:163
 msgid "Edit Account"
 msgstr "Изменить учетную запись"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:448
+#: app/modules/web/Controllers/AccountController.php:451
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
-#: app/config/actions.xml:169 app/config/actions.xml:487
-#: app/config/actions.xml:799
+#: app/resources/actions.xml:169 app/resources/actions.xml:487
+#: app/resources/actions.xml:799
 #, fuzzy
 msgid "Remove Account"
 msgstr "Удалить учетную запись"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:501
+#: app/modules/web/Controllers/AccountController.php:504
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
-#: app/config/actions.xml:181
+#: app/resources/actions.xml:181
 msgid "Edit Account Password"
 msgstr "Изменить пароль учетной записи"
 
-#: app/modules/web/Controllers/AccountController.php:757
-#: app/modules/web/Controllers/AccountController.php:794
+#: app/modules/web/Controllers/AccountController.php:760
+#: app/modules/web/Controllers/AccountController.php:797
 msgid "Password copied"
 msgstr "Password copied"
 
@@ -693,7 +693,7 @@ msgstr "Учетные записи удалены"
 msgid "A description is needed"
 msgstr "Необходимо описание"
 
-#: app/modules/web/Controllers/AccountController.php:1062
+#: app/modules/web/Controllers/AccountController.php:1068
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:47
@@ -701,11 +701,11 @@ msgstr "Необходимо описание"
 msgid "Request"
 msgstr "Запрос"
 
-#: app/modules/web/Controllers/AccountController.php:1063
+#: app/modules/web/Controllers/AccountController.php:1069
 msgid "Requester"
 msgstr "Запросил"
 
-#: app/modules/web/Controllers/AccountController.php:1066
+#: app/modules/web/Controllers/AccountController.php:1072
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -719,7 +719,7 @@ msgstr "Запросил"
 msgid "Description"
 msgstr "Описание"
 
-#: app/modules/web/Controllers/AccountController.php:1079
+#: app/modules/web/Controllers/AccountController.php:1088
 msgid "Request done"
 msgstr "Запрос выполнен"
 
@@ -750,15 +750,15 @@ msgstr "File viewed"
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
-#: app/modules/web/Controllers/ConfigGeneralController.php:207
-#: app/modules/web/Controllers/ConfigGeneralController.php:248
+#: app/modules/web/Controllers/ConfigGeneralController.php:209
+#: app/modules/web/Controllers/ConfigGeneralController.php:250
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "Файл"
 
 #: app/modules/web/Controllers/AccountFileController.php:117
-#: app/config/strings.js.inc:40
+#: app/resources/strings.js.inc:40
 msgid "File not supported for preview"
 msgstr "Предпросмотр файла недоступен"
 
@@ -766,9 +766,9 @@ msgstr "Предпросмотр файла недоступен"
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
-#: app/modules/web/Controllers/ConfigGeneralController.php:206
-#: app/modules/web/Controllers/ConfigGeneralController.php:247
-#: app/config/strings.js.inc:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:208
+#: app/modules/web/Controllers/ConfigGeneralController.php:249
+#: app/resources/strings.js.inc:97
 msgid "File downloaded"
 msgstr "File downloaded"
 
@@ -890,17 +890,17 @@ msgstr ""
 #: app/modules/web/Controllers/NotificationController.php:312
 #: app/modules/web/Controllers/NotificationController.php:343
 #: app/modules/web/Controllers/NotificationController.php:380
-#: app/modules/web/Controllers/PluginController.php:111
-#: app/modules/web/Controllers/PluginController.php:133
-#: app/modules/web/Controllers/PluginController.php:285
-#: app/modules/web/Controllers/PublicLinkController.php:74
-#: app/modules/web/Controllers/PublicLinkController.php:111
-#: app/modules/web/Controllers/PublicLinkController.php:175
-#: app/modules/web/Controllers/PublicLinkController.php:205
-#: app/modules/web/Controllers/PublicLinkController.php:239
-#: app/modules/web/Controllers/PublicLinkController.php:284
-#: app/modules/web/Controllers/PublicLinkController.php:320
-#: app/modules/web/Controllers/PublicLinkController.php:366
+#: app/modules/web/Controllers/PluginController.php:116
+#: app/modules/web/Controllers/PluginController.php:138
+#: app/modules/web/Controllers/PluginController.php:291
+#: app/modules/web/Controllers/PublicLinkController.php:75
+#: app/modules/web/Controllers/PublicLinkController.php:112
+#: app/modules/web/Controllers/PublicLinkController.php:178
+#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:242
+#: app/modules/web/Controllers/PublicLinkController.php:287
+#: app/modules/web/Controllers/PublicLinkController.php:323
+#: app/modules/web/Controllers/PublicLinkController.php:369
 #: app/modules/web/Controllers/TagController.php:68
 #: app/modules/web/Controllers/TagController.php:105
 #: app/modules/web/Controllers/TagController.php:167
@@ -967,7 +967,7 @@ msgstr "Обновлены учетные записи"
 #: app/modules/web/Controllers/AccountManagerController.php:216
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:199
-#: app/config/actions.xml:493
+#: app/resources/actions.xml:493
 msgid "Bulk Update"
 msgstr "Bulk Update"
 
@@ -1024,8 +1024,8 @@ msgstr "Authorization viewed"
 #: app/modules/web/Controllers/CategoryController.php:109
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
-#: app/modules/web/themes/material-blue/views/account/account.inc:119
-#: app/config/actions.xml:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:129
+#: app/resources/actions.xml:307
 msgid "New Category"
 msgstr "Создать категорию"
 
@@ -1033,7 +1033,7 @@ msgstr "Создать категорию"
 #: app/modules/web/Controllers/CategoryController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
-#: app/config/actions.xml:313
+#: app/resources/actions.xml:313
 msgid "Edit Category"
 msgstr "Редактировать категорию"
 
@@ -1045,7 +1045,7 @@ msgstr "Категории удалены"
 #: app/modules/web/Controllers/CategoryController.php:232
 #: app/modules/web/Controllers/CategoryController.php:270
 #: app/modules/web/Controllers/CategoryController.php:314
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:251
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:115
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
 #: lib/SP/Services/Import/KeepassImport.php:104
@@ -1053,8 +1053,8 @@ msgstr "Категории удалены"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:74
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:45
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:51
-#: app/modules/web/themes/material-blue/views/account/account.inc:104
-#: app/modules/web/themes/material-blue/views/account/account.inc:106
+#: app/modules/web/themes/material-blue/views/account/account.inc:113
+#: app/modules/web/themes/material-blue/views/account/account.inc:115
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:70
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
@@ -1063,7 +1063,7 @@ msgstr "Категория"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:345
-#: app/config/actions.xml:301
+#: app/resources/actions.xml:301
 msgid "View Category"
 msgstr "Показать категорию"
 
@@ -1071,8 +1071,8 @@ msgstr "Показать категорию"
 #: app/modules/web/Controllers/ClientController.php:110
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:94
-#: app/config/actions.xml:337
+#: app/modules/web/themes/material-blue/views/account/account.inc:103
+#: app/resources/actions.xml:337
 #, fuzzy
 msgid "New Client"
 msgstr "Новый заказчик"
@@ -1081,7 +1081,7 @@ msgstr "Новый заказчик"
 #: app/modules/web/Controllers/ClientController.php:176
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
-#: app/config/actions.xml:343
+#: app/resources/actions.xml:343
 #, fuzzy
 msgid "Edit Client"
 msgstr "Редактировать заказчика"
@@ -1094,7 +1094,7 @@ msgstr "Заказчики удалены"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:336
-#: app/config/actions.xml:331
+#: app/resources/actions.xml:331
 #, fuzzy
 msgid "View Client"
 msgstr "Показать заказчика"
@@ -1125,8 +1125,8 @@ msgstr "Public links disabled"
 #: app/modules/web/Controllers/ConfigBackupController.php:241
 #: app/modules/web/Controllers/ConfigEncryptionController.php:125
 #: app/modules/web/Controllers/ConfigEncryptionController.php:188
-#: app/modules/web/Controllers/ConfigGeneralController.php:195
-#: app/modules/web/Controllers/ConfigGeneralController.php:241
+#: app/modules/web/Controllers/ConfigGeneralController.php:197
+#: app/modules/web/Controllers/ConfigGeneralController.php:243
 #: app/modules/web/Controllers/ConfigImportController.php:59
 #: app/modules/web/Controllers/ConfigLdapController.php:233
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
@@ -1154,7 +1154,7 @@ msgstr "Verification of exported data finished"
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:309
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:334
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:166
-#: app/modules/web/themes/material-blue/views/config/info.inc:49
+#: app/modules/web/themes/material-blue/views/config/info.inc:55
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
 msgid "Version"
 msgstr "Версия"
@@ -1167,12 +1167,12 @@ msgid "Encrypted"
 msgstr "Encrypted"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "Yes"
 msgstr "Да"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "No"
 msgstr "Нет"
 
@@ -1185,7 +1185,7 @@ msgstr "Нет"
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:25
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:394
-#: app/config/actions.xml:13
+#: app/resources/actions.xml:13
 msgid "Accounts"
 msgstr "Учетные записи"
 
@@ -1206,8 +1206,8 @@ msgstr "Категории"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:212
-#: app/modules/web/themes/material-blue/views/account/account.inc:214
+#: app/modules/web/themes/material-blue/views/account/account.inc:231
+#: app/modules/web/themes/material-blue/views/account/account.inc:233
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
@@ -1269,10 +1269,12 @@ msgid "The current master password does not match"
 msgstr "Текущий мастер-пароль ошибочен"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
 msgstr ""
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
 
@@ -1297,8 +1299,8 @@ msgid "Temporary password generated"
 msgstr "Temporary password generated"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:234
-#: app/modules/web/Controllers/ConfigMailController.php:155
 #: app/modules/web/Controllers/ConfigMailController.php:161
+#: app/modules/web/Controllers/ConfigMailController.php:167
 #: lib/SP/Services/Mail/MailService.php:149
 msgid "Email sent"
 msgstr ""
@@ -1309,36 +1311,36 @@ msgstr ""
 msgid "Error while sending the email"
 msgstr "Error while sending the email"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:99
 msgid "Missing remote syslog parameters"
 msgstr "Пропущены параметры удаленного syslog"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:105
+#: app/modules/web/Controllers/ConfigGeneralController.php:107
 msgid "Remote syslog enabled"
 msgstr "Remote syslog enabled"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:110
+#: app/modules/web/Controllers/ConfigGeneralController.php:112
 msgid "Remote syslog disabled"
 msgstr "Удаленный syslog отключен"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:123
+#: app/modules/web/Controllers/ConfigGeneralController.php:125
 #, fuzzy
 msgid "Missing Proxy parameters "
 msgstr "Не указаны все параметры прокси"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:137
+#: app/modules/web/Controllers/ConfigGeneralController.php:139
 msgid "Proxy enabled"
 msgstr "Прокси включен"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:142
+#: app/modules/web/Controllers/ConfigGeneralController.php:144
 msgid "Proxy disabled"
 msgstr "Прокси выключен"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:161
+#: app/modules/web/Controllers/ConfigGeneralController.php:163
 msgid "Auth Basic enabled"
 msgstr "Auth Basic enabled"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:167
+#: app/modules/web/Controllers/ConfigGeneralController.php:169
 msgid "Auth Basic disabled"
 msgstr "Auth Basic disabled"
 
@@ -1378,8 +1380,8 @@ msgid "LDAP disabled"
 msgstr "LDAP выключен"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:98
-#: app/modules/web/Controllers/ConfigMailController.php:108
-#: app/config/strings.js.inc:80
+#: app/modules/web/Controllers/ConfigMailController.php:111
+#: app/resources/strings.js.inc:80
 msgid "No changes"
 msgstr "Нет изменений"
 
@@ -1429,24 +1431,24 @@ msgid "Errors: %d"
 msgstr "Errors: %d"
 
 #: app/modules/web/Controllers/ConfigMailController.php:74
-#: app/modules/web/Controllers/ConfigMailController.php:142
+#: app/modules/web/Controllers/ConfigMailController.php:147
 msgid "Missing Mail parameters"
 msgstr "Пропущены настройки почты"
 
-#: app/modules/web/Controllers/ConfigMailController.php:99
+#: app/modules/web/Controllers/ConfigMailController.php:102
 msgid "Mail enabled"
 msgstr "Email включен"
 
-#: app/modules/web/Controllers/ConfigMailController.php:106
+#: app/modules/web/Controllers/ConfigMailController.php:109
 msgid "Mail disabled"
 msgstr "Email выключен"
 
-#: app/modules/web/Controllers/ConfigMailController.php:156
+#: app/modules/web/Controllers/ConfigMailController.php:162
 #: lib/SP/Services/Mail/MailService.php:150
 msgid "Recipient"
 msgstr "Получатель"
 
-#: app/modules/web/Controllers/ConfigMailController.php:162
+#: app/modules/web/Controllers/ConfigMailController.php:168
 msgid "Please, check your inbox"
 msgstr "Please, check your inbox"
 
@@ -1461,7 +1463,7 @@ msgstr "Основное"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigManagerController.php:207
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:17
-#: app/config/actions.xml:37
+#: app/resources/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -1495,7 +1497,7 @@ msgstr "Файл экспорта не найден"
 #: app/modules/web/themes/material-blue/views/config/backup.inc:25
 #: app/modules/web/themes/material-blue/views/config/backup.inc:79
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
-#: app/config/actions.xml:739
+#: app/resources/actions.xml:739
 msgid "Backup"
 msgstr ""
 
@@ -1552,16 +1554,16 @@ msgstr "Поле создано"
 
 #: app/modules/web/Controllers/CustomFieldController.php:255
 #: app/modules/web/Controllers/CustomFieldController.php:296
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:157
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:97
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:188
 msgid "Field"
 msgstr "Field"
 
 #: app/modules/web/Controllers/CustomFieldController.php:295
 #: app/modules/web/Controllers/CustomFieldController.php:299
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:87
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:156
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:96
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:187
 msgid "Field updated"
 msgstr "Поле обновлено"
 
@@ -1625,10 +1627,10 @@ msgstr "Просмотр текущей версии"
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:366
 #: app/modules/web/themes/material-blue/views/config/backup.inc:174
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:310
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:330
 #: app/modules/web/themes/material-blue/views/config/general.inc:27
 #: app/modules/web/themes/material-blue/views/config/import.inc:91
-#: app/modules/web/themes/material-blue/views/config/info.inc:193
+#: app/modules/web/themes/material-blue/views/config/info.inc:199
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:304
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:449
 #: app/modules/web/themes/material-blue/views/config/mail.inc:206
@@ -1664,21 +1666,21 @@ msgstr "Сохранить"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:354
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:355
-#: app/config/actions.xml:439
+#: app/resources/actions.xml:439
 msgid "Update Public Link"
 msgstr "Update Public Link"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:377
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:378
-#: app/config/actions.xml:433
+#: app/resources/actions.xml:433
 msgid "Delete Public Link"
 msgstr "Delete Public Link"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:397
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:398
-#: app/config/actions.xml:421
+#: app/resources/actions.xml:421
 msgid "Create Public Link"
 msgstr "Создать публичную ссылку"
 
@@ -1689,7 +1691,7 @@ msgstr "Создать публичную ссылку"
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:464
 #: app/modules/web/themes/material-blue/inc/Icons.php:34
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:69
-#: app/config/actions.xml:175 app/config/actions.xml:265
+#: app/resources/actions.xml:175 app/resources/actions.xml:265
 msgid "View password"
 msgstr "Показать пароль"
 
@@ -1703,12 +1705,12 @@ msgstr "Копировать пароль в буфер"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:508
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:509
-#: app/config/actions.xml:193
+#: app/resources/actions.xml:193
 msgid "Copy Account"
 msgstr "Скопировать учетную запись"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:69
-#: app/config/strings.js.inc:72
+#: app/resources/strings.js.inc:72
 msgid "Account Password"
 msgstr "Пароль учетной записи"
 
@@ -1719,25 +1721,25 @@ msgstr "Пароль учетной записи"
 msgid "You don't have permission to access this account"
 msgstr "Нет прав для доступа к данной учетной записи"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:177
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:178
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:181
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:182
 msgid "More Actions"
 msgstr "Другие действия"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:234
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:238
 #, fuzzy
 msgid "Sort by Client"
 msgstr "Сортировать по заказчику"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:241
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:245
 msgid "Sort by Name"
 msgstr "Сортировать по имени"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:248
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:252
 msgid "Sort by Category"
 msgstr "Сортировать по категории"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:254
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:258
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:112
@@ -1749,11 +1751,11 @@ msgstr "Сортировать по категории"
 #: app/modules/web/Controllers/UserController.php:446
 #: app/modules/web/Controllers/UserPassResetController.php:215
 #: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:144
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
 #: lib/SP/Services/Auth/LoginService.php:230
@@ -1768,11 +1770,11 @@ msgstr "Сортировать по категории"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:101
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:67
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:73
-#: app/modules/web/themes/material-blue/views/account/account.inc:142
+#: app/modules/web/themes/material-blue/views/account/account.inc:152
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:76
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:25
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:67
-#: app/modules/web/themes/material-blue/views/config/info.inc:61
+#: app/modules/web/themes/material-blue/views/config/info.inc:67
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:106
 #: app/modules/web/themes/material-blue/views/config/mail.inc:113
@@ -1795,22 +1797,22 @@ msgstr "Сортировать по категории"
 msgid "User"
 msgstr "Пользователь"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:255
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:259
 msgid "Sort by Username"
 msgstr "Сортировать по имени пользователя"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:261
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:265
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:58
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:88
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:56
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:62
-#: app/modules/web/themes/material-blue/views/account/account.inc:129
+#: app/modules/web/themes/material-blue/views/account/account.inc:139
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:81
 msgid "URL / IP"
 msgstr "URL / IP"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:262
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:266
 msgid "Sort by URL / IP"
 msgstr "Сортировать по URL / IP"
 
@@ -1848,14 +1850,14 @@ msgid "Delete Selected"
 msgstr "Удалить выбранные"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:116
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:165
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:176
 #: app/modules/web/themes/material-blue/views/account/details.inc:42
 #: app/modules/web/themes/material-blue/views/account/details.inc:44
 msgid "Owner"
 msgstr "Owner"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:117
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:182
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:200
 #: app/modules/web/themes/material-blue/views/account/details.inc:50
 #: app/modules/web/themes/material-blue/views/account/details.inc:52
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:79
@@ -1866,7 +1868,7 @@ msgstr "Основная группа"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:149
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:145
-#: app/config/actions.xml:499 app/config/actions.xml:805
+#: app/resources/actions.xml:499 app/resources/actions.xml:805
 msgid "Search for Account"
 msgstr "Поиск учетной записи"
 
@@ -1879,7 +1881,7 @@ msgstr "Группы"
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:106
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:122
-#: app/modules/web/themes/material-blue/views/account/account.inc:191
+#: app/modules/web/themes/material-blue/views/account/account.inc:208
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:251
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
@@ -1904,7 +1906,7 @@ msgstr "Удалено"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:161
-#: app/config/actions.xml:187 app/config/actions.xml:811
+#: app/resources/actions.xml:187 app/resources/actions.xml:811
 msgid "Account Restore"
 msgstr "Восстановление учетной записи"
 
@@ -1936,30 +1938,30 @@ msgstr "Удалить авторизацию"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:137
-#: app/config/actions.xml:325
+#: app/resources/actions.xml:325
 msgid "Search for Category"
 msgstr "Поиск категории"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:187
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:188
-#: app/config/actions.xml:319
+#: app/resources/actions.xml:319
 msgid "Delete Category"
 msgstr "Удалить категорию"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:66
+#: app/resources/strings.js.inc:66
 msgid "YES"
 msgstr "ДА"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:67
+#: app/resources/strings.js.inc:67
 msgid "NO"
 msgstr "НЕТ"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:140
-#: app/config/actions.xml:355
+#: app/resources/actions.xml:355
 #, fuzzy
 msgid "Search for Client"
 msgstr "Поиск заказчика"
@@ -1967,13 +1969,13 @@ msgstr "Поиск заказчика"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:191
-#: app/config/actions.xml:349
+#: app/resources/actions.xml:349
 #, fuzzy
 msgid "Delete Client"
 msgstr "Удалить заказчика"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:95
-#: app/modules/web/themes/material-blue/views/account/account.inc:33
+#: app/modules/web/themes/material-blue/views/account/account.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:346
 msgid "Custom Fields"
 msgstr "Дополнительные поля"
@@ -2002,7 +2004,7 @@ msgstr "Удалить поле"
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
 #: app/modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:514
-#: app/config/actions.xml:133
+#: app/resources/actions.xml:133
 msgid "Event Log"
 msgstr "Журнал событий"
 
@@ -2036,7 +2038,7 @@ msgstr "Логин"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:165
-#: app/config/actions.xml:139
+#: app/resources/actions.xml:139
 msgid "Search for Events"
 msgstr ""
 
@@ -2047,25 +2049,25 @@ msgstr ""
 msgid "Refresh"
 msgstr "Refresh"
 
-#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:199
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
+#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
 #, fuzzy
 msgid "Clear the event log out"
 msgstr "Очистить журнал событий"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:41
+#: app/modules/web/themes/material-blue/views/account/account.inc:45
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:410
-#: app/config/actions.xml:19
+#: app/resources/actions.xml:19
 msgid "Files"
 msgstr "Файлы"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:145
-#: app/config/actions.xml:475
+#: app/resources/actions.xml:475
 msgid "Search for File"
 msgstr "Поиск файла"
 
@@ -2073,7 +2075,7 @@ msgstr "Поиск файла"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:161
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:51
-#: app/config/actions.xml:205 app/config/actions.xml:451
+#: app/resources/actions.xml:205 app/resources/actions.xml:451
 msgid "View File"
 msgstr "Показать файл"
 
@@ -2081,7 +2083,7 @@ msgstr "Показать файл"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:178
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:179
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:42
-#: app/config/actions.xml:217 app/config/actions.xml:457
+#: app/resources/actions.xml:217 app/resources/actions.xml:457
 msgid "Download File"
 msgstr "Скачать файл"
 
@@ -2089,7 +2091,7 @@ msgstr "Скачать файл"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:199
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:34
-#: app/config/actions.xml:223 app/config/actions.xml:463
+#: app/resources/actions.xml:223 app/resources/actions.xml:463
 msgid "Delete File"
 msgstr "Удалить файл"
 
@@ -2102,18 +2104,18 @@ msgstr "Preset Values"
 #: app/modules/web/Controllers/UserGroupController.php:242
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:122
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:112
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:144
 #: lib/SP/Services/Ldap/LdapImportService.php:138
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:133
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:25
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:274
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:277
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:215
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:242
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
@@ -2147,12 +2149,12 @@ msgstr "Forced"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:148
-#: app/config/actions.xml:859
+#: app/resources/actions.xml:859
 msgid "Search for Value"
 msgstr "Search for Value"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:163
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:66
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:67
 msgid "Permission Preset"
 msgstr "Permission Preset"
 
@@ -2161,7 +2163,7 @@ msgid "New Permission Preset"
 msgstr "New Permission Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:187
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:86
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:87
 msgid "Private Account Preset"
 msgstr "Private Account Preset"
 
@@ -2170,7 +2172,7 @@ msgid "New Private Account Preset"
 msgstr "New Private Account Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:211
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:102
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:103
 msgid "Session Timeout Preset"
 msgstr "Session Timeout Preset"
 
@@ -2179,7 +2181,7 @@ msgid "New Session Timeout Preset"
 msgstr "New Session Timeout Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:235
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:117
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:118
 msgid "Account Password Preset"
 msgstr "Account Password Preset"
 
@@ -2191,14 +2193,14 @@ msgstr "New Account Password Preset"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
 #: app/modules/web/Controllers/ItemPresetController.php:243
-#: app/config/actions.xml:877
+#: app/resources/actions.xml:877
 msgid "Edit Value"
 msgstr "Edit Value"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:276
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:277
-#: app/config/actions.xml:883
+#: app/resources/actions.xml:883
 msgid "Delete Value"
 msgstr "Delete Value"
 
@@ -2207,7 +2209,7 @@ msgstr "Delete Value"
 #: app/modules/web/themes/material-blue/inc/Icons.php:65
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:106
 #: app/modules/web/themes/material-blue/views/notification/index.inc:1
-#: app/config/actions.xml:685
+#: app/resources/actions.xml:685
 msgid "Notifications"
 msgstr "Уведомления"
 
@@ -2230,7 +2232,7 @@ msgstr "Only Admins"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:171
-#: app/config/actions.xml:847
+#: app/resources/actions.xml:847
 msgid "Search for Notification"
 msgstr "Поиск уведомления"
 
@@ -2244,14 +2246,14 @@ msgstr "Новое уведомление"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:204
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:205
 #: app/modules/web/Controllers/NotificationController.php:113
-#: app/config/actions.xml:817
+#: app/resources/actions.xml:817
 msgid "View Notification"
 msgstr "Показать уведомление"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:234
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
-#: app/config/actions.xml:841
+#: app/resources/actions.xml:841
 msgid "Checkout Notification"
 msgstr "Проверить уведомление"
 
@@ -2259,25 +2261,26 @@ msgstr "Проверить уведомление"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:253
 #: app/modules/web/Controllers/NotificationController.php:230
-#: app/config/actions.xml:829
+#: app/resources/actions.xml:829
 msgid "Edit Notification"
 msgstr "Редактировать уведомление"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:269
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:270
-#: app/config/actions.xml:835
+#: app/resources/actions.xml:835
 msgid "Delete Notification"
 msgstr "Удалить уведомление"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:96
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:331
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:330
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Плагины"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:108
-#: lib/SP/Plugin/PluginManager.php:194
+#: lib/SP/Plugin/PluginManager.php:206 lib/SP/Plugin/PluginManager.php:262
+#: lib/SP/Plugin/PluginManager.php:420
 msgid "Plugin"
 msgstr "Плагин"
 
@@ -2287,15 +2290,15 @@ msgstr "Unavailable"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:141
-#: app/config/actions.xml:547
+#: app/resources/actions.xml:547
 msgid "Search for Plugin"
 msgstr "Поиск плагинов"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:156
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:157
-#: app/modules/web/Controllers/PluginController.php:136
-#: app/config/actions.xml:541
+#: app/modules/web/Controllers/PluginController.php:141
+#: app/resources/actions.xml:541
 msgid "View Plugin"
 msgstr "Показать плагин"
 
@@ -2317,12 +2320,12 @@ msgstr "Сбросить данные"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:231
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:232
-#: app/config/actions.xml:571
+#: app/resources/actions.xml:571
 msgid "Delete Plugin"
 msgstr "Delete Plugin"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:49
+#: app/modules/web/themes/material-blue/views/account/account.inc:55
 msgid "Links"
 msgstr "Ссылки"
 
@@ -2366,7 +2369,7 @@ msgstr "New Link"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:184
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:185
-#: app/modules/web/Controllers/PublicLinkController.php:369
+#: app/modules/web/Controllers/PublicLinkController.php:372
 msgid "View Link"
 msgstr "Показать ссылку"
 
@@ -2382,7 +2385,7 @@ msgstr "Удалить ссылку"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:135
-#: app/config/actions.xml:529
+#: app/resources/actions.xml:529
 msgid "Search for Tag"
 msgstr "Поиск тегов"
 
@@ -2390,22 +2393,23 @@ msgstr "Поиск тегов"
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:108
-#: app/modules/web/themes/material-blue/views/account/account.inc:227
-#: app/config/actions.xml:505
+#: app/modules/web/themes/material-blue/views/account/account.inc:247
+#: app/resources/actions.xml:505
 msgid "New Tag"
 msgstr "Новый тег"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
-#: app/modules/web/Controllers/TagController.php:170 app/config/actions.xml:517
+#: app/modules/web/Controllers/TagController.php:170
+#: app/resources/actions.xml:517
 msgid "Edit Tag"
 msgstr "Редактировать тег"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:185
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:186
-#: app/config/actions.xml:523
+#: app/resources/actions.xml:523
 msgid "Delete Tag"
 msgstr "Удалить тег"
 
@@ -2423,7 +2427,7 @@ msgstr "Источник"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
-#: app/config/actions.xml:895
+#: app/resources/actions.xml:895
 msgid "Search for track"
 msgstr "Search for track"
 
@@ -2441,7 +2445,7 @@ msgstr "Пользователи"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
-#: app/config/actions.xml:607
+#: app/resources/actions.xml:607
 msgid "Search for User"
 msgstr "Поиск пользователя"
 
@@ -2449,7 +2453,7 @@ msgstr "Поиск пользователя"
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:163
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:164
 #: app/modules/web/Controllers/UserController.php:115
-#: app/config/actions.xml:583
+#: app/resources/actions.xml:583
 msgid "New User"
 msgstr "Создать пользователя"
 
@@ -2457,14 +2461,14 @@ msgstr "Создать пользователя"
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:182
 #: app/modules/web/Controllers/UserController.php:202
-#: app/config/actions.xml:589
+#: app/resources/actions.xml:589
 msgid "Edit User"
 msgstr "Редактировать пользователя"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:199
-#: app/config/actions.xml:595
+#: app/resources/actions.xml:595
 msgid "Delete User"
 msgstr "Удалить пользователя"
 
@@ -2483,7 +2487,7 @@ msgstr "Изменить пароль пользователя"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:95
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:78
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:84
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:88
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:162
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:53
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:266
@@ -2492,7 +2496,7 @@ msgstr "Группы"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:138
-#: app/config/actions.xml:637
+#: app/resources/actions.xml:637
 msgid "Search for Group"
 msgstr "Поиск группы"
 
@@ -2500,7 +2504,7 @@ msgstr "Поиск группы"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:153
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:154
 #: app/modules/web/Controllers/UserGroupController.php:117
-#: app/config/actions.xml:619
+#: app/resources/actions.xml:619
 msgid "New Group"
 msgstr "Создать группу"
 
@@ -2508,7 +2512,7 @@ msgstr "Создать группу"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
 #: app/modules/web/Controllers/UserGroupController.php:356
-#: app/config/actions.xml:613
+#: app/resources/actions.xml:613
 msgid "View Group"
 msgstr "Показать группу"
 
@@ -2516,14 +2520,14 @@ msgstr "Показать группу"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
 #: app/modules/web/Controllers/UserGroupController.php:190
-#: app/config/actions.xml:625
+#: app/resources/actions.xml:625
 msgid "Edit Group"
 msgstr "Редактировать группу"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:205
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:206
-#: app/config/actions.xml:631
+#: app/resources/actions.xml:631
 msgid "Delete Group"
 msgstr "Удалить группу"
 
@@ -2534,7 +2538,7 @@ msgstr "Профили"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:136
-#: app/config/actions.xml:667
+#: app/resources/actions.xml:667
 msgid "Search for Profile"
 msgstr "Поиск профиля"
 
@@ -2542,7 +2546,7 @@ msgstr "Поиск профиля"
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:151
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:152
 #: app/modules/web/Controllers/UserProfileController.php:110
-#: app/config/actions.xml:649
+#: app/resources/actions.xml:649
 msgid "New Profile"
 msgstr "Создать профиль"
 
@@ -2555,28 +2559,28 @@ msgstr "Просмотр информации о профиле"
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
 #: app/modules/web/Controllers/UserProfileController.php:179
-#: app/config/actions.xml:655
+#: app/resources/actions.xml:655
 msgid "Edit Profile"
 msgstr "Редактировать профиль"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:203
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:204
-#: app/config/actions.xml:661
+#: app/resources/actions.xml:661
 msgid "Delete Profile"
 msgstr "Удалить профиль"
 
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:262
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:261
 #: app/modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Search"
 msgstr "Поиск"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:345
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:344
 #: app/modules/web/themes/material-blue/inc/Icons.php:61
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:24
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:27
-#: app/config/actions.xml:691
+#: app/resources/actions.xml:691
 msgid "Configuration"
 msgstr "Конфигурация"
 
@@ -2594,13 +2598,13 @@ msgstr "Установка завершена"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:73
-#: app/config/actions.xml:865
+#: app/resources/actions.xml:865
 msgid "Display Value"
 msgstr "Display Value"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:209
-#: app/config/actions.xml:871
+#: app/resources/actions.xml:871
 msgid "New Value"
 msgstr "New Value"
 
@@ -2677,55 +2681,55 @@ msgstr "Создано уведомление"
 msgid "Notification updated"
 msgstr "Уведомление обновлено"
 
-#: app/modules/web/Controllers/PluginController.php:201
-#: app/modules/web/Controllers/PluginController.php:204
+#: app/modules/web/Controllers/PluginController.php:206
+#: app/modules/web/Controllers/PluginController.php:209
 msgid "Plugin enabled"
 msgstr "Плагин включен"
 
-#: app/modules/web/Controllers/PluginController.php:230
-#: app/modules/web/Controllers/PluginController.php:233
-#: lib/SP/Plugin/PluginManager.php:219 lib/SP/Plugin/PluginManager.php:339
+#: app/modules/web/Controllers/PluginController.php:235
+#: app/modules/web/Controllers/PluginController.php:238
+#: lib/SP/Plugin/PluginManager.php:231 lib/SP/Plugin/PluginManager.php:439
 msgid "Plugin disabled"
 msgstr "Плагин отключен"
 
-#: app/modules/web/Controllers/PluginController.php:259
-#: app/modules/web/Controllers/PluginController.php:262
+#: app/modules/web/Controllers/PluginController.php:265
+#: app/modules/web/Controllers/PluginController.php:268
 msgid "Plugin reset"
 msgstr "Плагин сброшен"
 
-#: app/modules/web/Controllers/PluginController.php:293
+#: app/modules/web/Controllers/PluginController.php:299
 msgid "Plugins deleted"
 msgstr "Plugins deleted"
 
-#: app/modules/web/Controllers/PluginController.php:299
+#: app/modules/web/Controllers/PluginController.php:305
 msgid "Plugin deleted"
 msgstr "Plugin deleted"
 
-#: app/modules/web/Controllers/PublicLinkController.php:114
+#: app/modules/web/Controllers/PublicLinkController.php:115
 msgid "New Public Link"
 msgstr "New Public Link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:182
+#: app/modules/web/Controllers/PublicLinkController.php:185
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
 msgid "Link updated"
 msgstr "Ссылка обновлена"
 
-#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:211
 msgid "Edit Public Link"
 msgstr "Edit Public Link"
 
-#: app/modules/web/Controllers/PublicLinkController.php:249
 #: app/modules/web/Controllers/PublicLinkController.php:252
+#: app/modules/web/Controllers/PublicLinkController.php:255
 msgid "Links deleted"
 msgstr "Ссылки удалены"
 
-#: app/modules/web/Controllers/PublicLinkController.php:260
-#: app/modules/web/Controllers/PublicLinkController.php:264
+#: app/modules/web/Controllers/PublicLinkController.php:263
+#: app/modules/web/Controllers/PublicLinkController.php:267
 msgid "Link deleted"
 msgstr "Ссылка удалена"
 
-#: app/modules/web/Controllers/PublicLinkController.php:294
-#: app/modules/web/Controllers/PublicLinkController.php:333
+#: app/modules/web/Controllers/PublicLinkController.php:297
+#: app/modules/web/Controllers/PublicLinkController.php:336
 msgid "Link created"
 msgstr "Ссылка создана"
 
@@ -2742,7 +2746,8 @@ msgid "Tags deleted"
 msgstr "Тэги удалены"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/TagController.php:312 app/config/actions.xml:511
+#: app/modules/web/Controllers/TagController.php:312
+#: app/resources/actions.xml:511
 msgid "View Tag"
 msgstr "View Tag"
 
@@ -2763,8 +2768,8 @@ msgstr "Конфигурация изменена"
 msgid "Error while saving the configuration"
 msgstr "Ошибка при сохранении конфигурации"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:122
-#: app/modules/web/Controllers/Traits/ItemTrait.php:177
+#: app/modules/web/Controllers/Traits/ItemTrait.php:129
+#: app/modules/web/Controllers/Traits/ItemTrait.php:190
 #: lib/SP/Core/Crypt/OldCrypt.php:176 lib/SP/Core/Crypt/OldCrypt.php:188
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:59
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:154
@@ -2772,8 +2777,8 @@ msgstr "Ошибка при сохранении конфигурации"
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:334
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:389
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:417
-#: lib/SP/Services/Account/AccountService.php:227
-#: lib/SP/Services/Account/AccountService.php:232
+#: lib/SP/Services/Account/AccountService.php:240
+#: lib/SP/Services/Account/AccountService.php:245
 #: lib/SP/Services/Api/ApiService.php:129
 #: lib/SP/Services/Api/ApiService.php:229
 #: lib/SP/Services/Api/ApiService.php:237
@@ -2787,28 +2792,28 @@ msgstr "Ошибка при сохранении конфигурации"
 #: lib/SP/Services/CustomField/CustomFieldService.php:203
 #: lib/SP/Services/Export/XmlVerifyService.php:108
 #: lib/SP/Services/Import/XmlFileImport.php:79
-#: lib/SP/Services/User/UserPassService.php:232
+#: lib/SP/Services/User/UserPassService.php:233
 msgid "Internal error"
 msgstr "Внутренняя ошибка"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:173
+#: app/modules/web/Controllers/Traits/ItemTrait.php:186
 msgid "Error while updating custom field's data"
 msgstr "Error while updating custom field's data"
 
-#: app/modules/web/Controllers/UpgradeController.php:67
+#: app/modules/web/Controllers/UpgradeController.php:68
 msgid "The updating need to be confirmed"
 msgstr "Нужно подтверждение для обновления"
 
-#: app/modules/web/Controllers/UpgradeController.php:71
+#: app/modules/web/Controllers/UpgradeController.php:75
 msgid "Wrong security code"
 msgstr "Неверный секретный код"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:101
 #: app/modules/web/themes/material-blue/views/login/index.inc:88
 msgid "Application successfully updated"
 msgstr "Программа успешно обновлена"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:102
 msgid "You will be redirected to log in within 5 seconds"
 msgstr "Вы будете перенаправлены на вход в течение 5 секунд"
 
@@ -2842,7 +2847,7 @@ msgstr "Данные пользователя обновлены"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserController.php:477
-#: app/config/actions.xml:577
+#: app/resources/actions.xml:577
 msgid "View User"
 msgstr "Показать пользователя"
 
@@ -2910,7 +2915,7 @@ msgstr "Профиль изменен"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserProfileController.php:347
-#: app/config/actions.xml:643
+#: app/resources/actions.xml:643
 msgid "View Profile"
 msgstr "Показать профиль"
 
@@ -3043,10 +3048,10 @@ msgid "View Details"
 msgstr "Показать детали"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:35
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:64
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:68
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:132
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:136
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:72
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:140
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:144
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:148
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:198
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:46
@@ -3115,7 +3120,7 @@ msgid "Restore"
 msgstr "Восстановить"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
-#: app/config/strings.js.inc:79
+#: app/resources/strings.js.inc:79
 msgid "Help"
 msgstr "Помощь"
 
@@ -3132,7 +3137,7 @@ msgid "Download"
 msgstr "Скачать"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:56
-#: app/config/strings.js.inc:85
+#: app/resources/strings.js.inc:85
 msgid "Warning"
 msgstr "Предупреждение"
 
@@ -3160,31 +3165,28 @@ msgstr "Первая страница"
 msgid "Last page"
 msgstr "Последняя страница"
 
-#: lib/SP/Bootstrap.php:285
+#: lib/SP/Bootstrap.php:290
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Required PHP version >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:287
+#: lib/SP/Bootstrap.php:292
 msgid "Please update the PHP version to run sysPass"
 msgstr "Пожалуйста, обновите PHP для использования sysPass"
 
-#: lib/SP/Config/ConfigUtil.php:94
-#, fuzzy
-msgid "\"/config\" directory does not exist."
-msgstr "Папка \"/config\" не существует."
+#: lib/SP/Config/ConfigUtil.php:102
+msgid "'/app/config' directory does not exist."
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:100
-#, fuzzy
-msgid "Unable to write into \"/config\" directory"
-msgstr "Невозможно произвести запись в папку \"/config\""
+#: lib/SP/Config/ConfigUtil.php:108
+msgid "Unable to write into '/app/config' directory"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:109
-#, fuzzy
-msgid "\"/config\" directory permissions are wrong"
-msgstr "Права для папки \"/config\" заданы неверно"
+#: lib/SP/Config/ConfigUtil.php:117
+msgid "'/app/config' directory permissions are wrong"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:111
+#: lib/SP/Config/ConfigUtil.php:119
 #, php-format
 msgid "Current: %s - Needed: 750"
 msgstr "Current: %s - Needed: 750"
@@ -3248,7 +3250,7 @@ msgstr "Наблюдатель не инициализирован"
 msgid "Invalid icons class"
 msgstr "Invalid icons class"
 
-#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:127
+#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
 #, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Не могу получить шаблон \"%s\" : %s"
@@ -3267,12 +3269,12 @@ msgstr "Ошибка кодирования"
 msgid "Invalid XML-RPC response"
 msgstr "Ошибочный XML-RPC ответ"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:75
+#: lib/SP/Mvc/Controller/ControllerTrait.php:65
 msgid "Session not started or timed out"
 msgstr "Сессия истекла или ошибка сессии"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:127
-#: lib/SP/Mvc/Controller/ControllerTrait.php:141
+#: lib/SP/Mvc/Controller/ControllerTrait.php:116
+#: lib/SP/Mvc/Controller/ControllerTrait.php:130
 msgid "Invalid Action"
 msgstr "Ошибочное действие"
 
@@ -3314,46 +3316,59 @@ msgstr "Invalid filter type"
 msgid "Wrong object type"
 msgstr "Wrong object type"
 
-#: lib/SP/Mvc/View/Template.php:302 lib/SP/Mvc/View/Template.php:366
+#: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
 #, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Не могу получить переменную \"%s\""
 
-#: lib/SP/Mvc/View/Template.php:335
+#: lib/SP/Mvc/View/Template.php:336
 #, fuzzy, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Нельзя удалить переменную \"%s\""
 
-#: lib/SP/Mvc/View/Template.php:356
+#: lib/SP/Mvc/View/Template.php:357
 msgid "Template does not contain files"
 msgstr "Шаблон не содержит файлов"
 
-#: lib/SP/Plugin/PluginManager.php:170
+#: lib/SP/Plugin/PluginManager.php:192
 #, php-format
 msgid "Plugin version not compatible (%s)"
 msgstr "Plugin version not compatible (%s)"
 
-#: lib/SP/Plugin/PluginManager.php:192
+#: lib/SP/Plugin/PluginManager.php:204 lib/SP/Plugin/PluginManager.php:260
 #, fuzzy, php-format
 msgid "Unable to load the \"%s\" plugin"
 msgstr "Невозможно загрузить плагин \"%s\""
 
-#: lib/SP/Plugin/PluginManager.php:254
+#: lib/SP/Plugin/PluginManager.php:295
 msgid "Plugin available"
 msgstr "Plugin available"
 
-#: lib/SP/Plugin/PluginManager.php:264
+#: lib/SP/Plugin/PluginManager.php:306
 msgid "Plugin unavailable"
 msgstr "Plugin unavailable"
 
-#: lib/SP/Plugin/PluginManager.php:294
+#: lib/SP/Plugin/PluginManager.php:339
 msgid "Plugin loaded"
 msgstr "Plugin loaded"
 
 #. (itstool) path: action/text
-#: lib/SP/Plugin/PluginManager.php:319 app/config/actions.xml:535
+#: lib/SP/Plugin/PluginManager.php:364 app/resources/actions.xml:535
 msgid "New Plugin"
 msgstr "Новый плагин"
+
+#: lib/SP/Plugin/PluginManager.php:392
+msgid "Upgrading plugin"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:409
+msgid "Plugin upgraded"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:418
+#, php-format
+msgid "Unable to upgrade the \"%s\" plugin"
+msgstr ""
 
 #: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
@@ -3373,14 +3388,14 @@ msgstr ""
 msgid "Error while searching the group RDN"
 msgstr "Ошибка поиска группы в RDN"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:221
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:231
 #, fuzzy
 msgid "Error while searching the user on LDAP"
 msgstr "Ошибка поиска пользователя в LDAP"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:275
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:287
 msgid "Error while searching objects in base DN"
 msgstr "Ошибка поиска объектов в DN"
 
@@ -3396,8 +3411,8 @@ msgstr "Невозможно подключиться к серверу LDAP"
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:214
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:70
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:39
-#: app/modules/web/themes/material-blue/views/config/info.inc:75
-#: app/modules/web/themes/material-blue/views/config/info.inc:78
+#: app/modules/web/themes/material-blue/views/config/info.inc:81
+#: app/modules/web/themes/material-blue/views/config/info.inc:84
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:93
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:118
 #: app/modules/web/themes/material-blue/views/config/mail.inc:59
@@ -3421,32 +3436,32 @@ msgid "Error while disconnecting from LDAP server"
 msgstr "Error while disconnecting from LDAP server"
 
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:153
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
 msgid "User in group verified"
 msgstr "Членство пользователя в группе проверено"
 
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:143
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:144
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
 #, fuzzy
 msgid "User does not belong to the group"
 msgstr "Пользователь не состоит в группе"
 
-#: lib/SP/Providers/Mail/MailHandler.php:136
+#: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
 msgstr ""
 
-#: lib/SP/Providers/Mail/MailHandler.php:144
-#: lib/SP/Providers/Mail/MailHandler.php:146
+#: lib/SP/Providers/Mail/MailHandler.php:157
+#: lib/SP/Providers/Mail/MailHandler.php:159
 #, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Performed by: %s (%s)"
 
-#: lib/SP/Providers/Mail/MailHandler.php:149
+#: lib/SP/Providers/Mail/MailHandler.php:162
 #, php-format
 msgid "IP Address: %s"
 msgstr "IP Address: %s"
@@ -3483,7 +3498,7 @@ msgstr "Ошибка при удалении учетной записи"
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:292
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:315
 #: lib/SP/Repositories/Account/AccountRepository.php:501
-#: lib/SP/Services/Account/AccountService.php:616
+#: lib/SP/Services/Account/AccountService.php:640
 msgid "Error while deleting the accounts"
 msgstr "Error while deleting the accounts"
 
@@ -3502,7 +3517,7 @@ msgid "Error while creating the account"
 msgstr "Ошибка при создании учетной записи"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:301
-#: lib/SP/Services/Account/AccountService.php:582
+#: lib/SP/Services/Account/AccountService.php:606
 #, fuzzy
 msgid "Error on restoring the account"
 msgstr "Ошибка восстановления учетной записи"
@@ -3719,27 +3734,41 @@ msgstr "Ошибка при получении уведомления"
 msgid "Error while retrieving the notifications"
 msgstr "Ошибка при получении уведомлений"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:70
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
+msgid "Error while adding plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
+msgid "Error while updating plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
+msgid "Error while deleting plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginRepository.php:69
 #, fuzzy
 msgid "Error while adding the plugin"
 msgstr "Ошибка при добавлении плагина"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:104
-#: lib/SP/Repositories/Plugin/PluginRepository.php:348
-#: lib/SP/Repositories/Plugin/PluginRepository.php:368
-#: lib/SP/Repositories/Plugin/PluginRepository.php:388
-#: lib/SP/Repositories/Plugin/PluginRepository.php:408
-#: lib/SP/Repositories/Plugin/PluginRepository.php:427
+#: lib/SP/Repositories/Plugin/PluginRepository.php:105
+#: lib/SP/Repositories/Plugin/PluginRepository.php:353
+#: lib/SP/Repositories/Plugin/PluginRepository.php:373
+#: lib/SP/Repositories/Plugin/PluginRepository.php:393
+#: lib/SP/Repositories/Plugin/PluginRepository.php:413
+#: lib/SP/Repositories/Plugin/PluginRepository.php:432
 #, fuzzy
 msgid "Error while updating the plugin"
 msgstr "Ошибка при обновлении плагина"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:212
+#: lib/SP/Repositories/Plugin/PluginRepository.php:216
 #: lib/SP/Services/Plugin/PluginService.php:137
 msgid "Error while deleting the plugins"
 msgstr "Error while deleting the plugins"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:232
+#: lib/SP/Repositories/Plugin/PluginRepository.php:236
 #, fuzzy
 msgid "Error while deleting the plugin"
 msgstr "Ошибка при удалении плагина"
@@ -3986,17 +4015,17 @@ msgid "File not found"
 msgstr "Файл не найден"
 
 #: lib/SP/Services/Account/AccountService.php:163
-#: lib/SP/Services/Account/AccountService.php:599
+#: lib/SP/Services/Account/AccountService.php:623
 msgid "Account not found"
 msgstr "У"
 
-#: lib/SP/Services/Account/AccountService.php:220
+#: lib/SP/Services/Account/AccountService.php:233
 msgid "Master password not set"
 msgstr "Master password not set"
 
-#: lib/SP/Services/Account/AccountService.php:283
-#: lib/SP/Services/Account/AccountService.php:672
-#: lib/SP/Services/Account/AccountService.php:727
+#: lib/SP/Services/Account/AccountService.php:296
+#: lib/SP/Services/Account/AccountService.php:696
+#: lib/SP/Services/Account/AccountService.php:751
 #, fuzzy
 msgid "The account doesn't exist"
 msgstr "Учетная запись не существует"
@@ -4268,14 +4297,14 @@ msgid "Unable to process the XML file"
 msgstr "Невозможно обработать файл XML"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:181
-#: lib/SP/Services/Import/SyspassImport.php:176
+#: lib/SP/Services/Import/SyspassImport.php:177
 msgid "Error while checking integrity hash"
 msgstr "Error while checking integrity hash"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:198
 #: lib/SP/Services/Export/XmlVerifyService.php:228
-#: lib/SP/Services/Import/SyspassImport.php:124
-#: lib/SP/Services/Import/SyspassImport.php:148
+#: lib/SP/Services/Import/SyspassImport.php:125
+#: lib/SP/Services/Import/SyspassImport.php:149
 msgid "Wrong encryption password"
 msgstr "Неверный пароль шифрования"
 
@@ -4285,29 +4314,29 @@ msgid "Detected format: %s"
 msgstr "Определен формат: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
-#: lib/SP/Services/Import/CsvImportBase.php:176
+#: lib/SP/Services/Import/CsvImportBase.php:180
 #, php-format
 msgid "Wrong number of fields (%d)"
 msgstr "Неправильное количество полей (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
-#: lib/SP/Services/Import/CsvImportBase.php:178
+#: lib/SP/Services/Import/CsvImportBase.php:182
 #, fuzzy, php-format
 msgid "Please, check the CSV file format in line %s"
 msgstr "Пожалуйста, проверьте формат файла CSV в строке %s"
 
-#: lib/SP/Services/Import/CsvImportBase.php:158
+#: lib/SP/Services/Import/CsvImportBase.php:162
 #: lib/SP/Services/Import/KeepassImport.php:103
-#: lib/SP/Services/Import/SyspassImport.php:387
+#: lib/SP/Services/Import/SyspassImport.php:388
 msgid "Account imported"
 msgstr "Account imported"
 
-#: lib/SP/Services/Import/CsvImportBase.php:166
+#: lib/SP/Services/Import/CsvImportBase.php:170
 #, fuzzy
 msgid "Error while importing the account"
 msgstr "Ошибка импорта учетной записи"
 
-#: lib/SP/Services/Import/CsvImportBase.php:167
+#: lib/SP/Services/Import/CsvImportBase.php:171
 msgid "Error while processing line"
 msgstr "Ошибка при обработке линии"
 
@@ -4348,23 +4377,23 @@ msgid "KeePass XML Import"
 msgstr "KeePass XML Import"
 
 #: lib/SP/Services/Import/KeepassImport.php:91
-#: lib/SP/Services/Import/SyspassImport.php:211
+#: lib/SP/Services/Import/SyspassImport.php:212
 msgid "Category imported"
 msgstr "Category imported"
 
-#: lib/SP/Services/Import/SyspassImport.php:58
+#: lib/SP/Services/Import/SyspassImport.php:59
 msgid "sysPass XML Import"
 msgstr "sysPass XML Import"
 
-#: lib/SP/Services/Import/SyspassImport.php:69
+#: lib/SP/Services/Import/SyspassImport.php:70
 msgid "Encryption password not set"
 msgstr "Пароль шифрования не задан"
 
-#: lib/SP/Services/Import/SyspassImport.php:162
+#: lib/SP/Services/Import/SyspassImport.php:163
 msgid "Data unencrypted"
 msgstr "Data unencrypted"
 
-#: lib/SP/Services/Import/SyspassImport.php:177
+#: lib/SP/Services/Import/SyspassImport.php:178
 msgid ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
@@ -4372,12 +4401,12 @@ msgstr ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
 
-#: lib/SP/Services/Import/SyspassImport.php:250
-#: lib/SP/Services/Import/SyspassImport.php:290
+#: lib/SP/Services/Import/SyspassImport.php:251
+#: lib/SP/Services/Import/SyspassImport.php:291
 msgid "Client imported"
 msgstr "Client imported"
 
-#: lib/SP/Services/Import/SyspassImport.php:326
+#: lib/SP/Services/Import/SyspassImport.php:327
 msgid "Tag imported"
 msgstr "Tag imported"
 
@@ -4615,6 +4644,13 @@ msgstr ""
 msgid "Notification not found"
 msgstr "Уведомление не найдено"
 
+#: lib/SP/Services/Plugin/PluginDataService.php:97
+#: lib/SP/Services/Plugin/PluginDataService.php:121
+#: lib/SP/Services/Plugin/PluginDataService.php:165
+#: lib/SP/Services/Plugin/PluginDataService.php:183
+msgid "Plugin's data not found"
+msgstr ""
+
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
 #: lib/SP/Services/Plugin/PluginService.php:186
@@ -4626,16 +4662,16 @@ msgstr "Уведомление не найдено"
 msgid "Plugin not found"
 msgstr "Плагин не найден"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:122
-#: lib/SP/Services/PublicLink/PublicLinkService.php:145
-#: lib/SP/Services/PublicLink/PublicLinkService.php:219
-#: lib/SP/Services/PublicLink/PublicLinkService.php:297
-#: lib/SP/Services/PublicLink/PublicLinkService.php:332
-#: lib/SP/Services/PublicLink/PublicLinkService.php:353
+#: lib/SP/Services/PublicLink/PublicLinkService.php:123
+#: lib/SP/Services/PublicLink/PublicLinkService.php:146
+#: lib/SP/Services/PublicLink/PublicLinkService.php:220
+#: lib/SP/Services/PublicLink/PublicLinkService.php:298
+#: lib/SP/Services/PublicLink/PublicLinkService.php:333
+#: lib/SP/Services/PublicLink/PublicLinkService.php:354
 msgid "Link not found"
 msgstr "Ссылка не найдена"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:238
+#: lib/SP/Services/PublicLink/PublicLinkService.php:239
 msgid "Error while removing the links"
 msgstr "Error while removing the links"
 
@@ -4691,16 +4727,16 @@ msgstr "Seconds"
 msgid "IP address not set"
 msgstr "IP address not set"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:66
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:89
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:69
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:92
 msgid "Update Application"
 msgstr "Update Application"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:73
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:76
 msgid "Error while applying the application update"
 msgstr "Ошибка при применении обновления"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:75
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:78
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:111
 msgid "Please, check the event log for more details"
@@ -4747,10 +4783,10 @@ msgstr ""
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:57
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:59
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:102
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:139
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:171
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:60
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:111
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:170
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:202
 msgid "Custom fields update"
 msgstr "Custom fields update"
 
@@ -4780,12 +4816,17 @@ msgstr "Update file does not contain data"
 msgid "Database updating was completed successfully."
 msgstr "Обновление базы данных завершено успешно."
 
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
+msgid "Plugins upgrade"
+msgstr ""
+
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:56
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:102
 msgid "Public links update"
 msgstr "Public links update"
 
-#: lib/SP/Services/User/UserPassService.php:256
+#: lib/SP/Services/User/UserPassService.php:257
 #: lib/SP/Services/User/UserService.php:123
 #: lib/SP/Services/User/UserService.php:154
 #: lib/SP/Services/User/UserService.php:173
@@ -4859,7 +4900,7 @@ msgstr "Ограничение целостности"
 msgid "Please, check the connection parameters"
 msgstr "Пожалуйста, проверьте параметры подключения"
 
-#: lib/SP/Storage/Database/QueryData.php:338 app/config/strings.js.inc:26
+#: lib/SP/Storage/Database/QueryData.php:338 app/resources/strings.js.inc:26
 msgid "Error while querying"
 msgstr "Ошибка при запросе"
 
@@ -4955,314 +4996,6 @@ msgstr "Произошла ошибка"
 #: lib/SP/Util/ImageUtil.php:65
 msgid "Invalid image"
 msgstr "Invalid image"
-
-#: app/config/strings.js.inc:27
-msgid "There was an error"
-msgstr "Произошла ошибка"
-
-#: app/config/strings.js.inc:28 app/config/strings.js.inc:86
-msgid "Session finished"
-msgstr "Сессия завершена"
-
-#: app/config/strings.js.inc:29
-msgid "Delete account?"
-msgstr "Удалить учетную запись?"
-
-#: app/config/strings.js.inc:30
-msgid "Delete user?"
-msgstr "Удалить пользователя?"
-
-#: app/config/strings.js.inc:31
-msgid "You should save configuration in order to take effect"
-msgstr "Необходимо сохранить конфигурацию для вступления изменений в силу"
-
-#: app/config/strings.js.inc:32
-msgid "Generated Password"
-msgstr "Сгенерированный пароль"
-
-#: app/config/strings.js.inc:33
-msgid "High level"
-msgstr "Высокий уровень"
-
-#: app/config/strings.js.inc:34
-msgid "Average level"
-msgstr "Средний уровень"
-
-#: app/config/strings.js.inc:35
-msgid "Low level"
-msgstr "Низкий уровень"
-
-#: app/config/strings.js.inc:36
-msgid "Very High level"
-msgstr "Очень высокий уровень"
-
-#: app/config/strings.js.inc:37
-msgid "You should use at least 8 characters"
-msgstr "Необходимо использовать минимум 8 символов"
-
-#: app/config/strings.js.inc:38
-msgid "Delete item?"
-msgstr "Удалить элемент?"
-
-#: app/config/strings.js.inc:39
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
-msgid "Page not found"
-msgstr "Страница не найдена"
-
-#: app/config/strings.js.inc:41
-msgid "Delete file?"
-msgstr "Удалить файл?"
-
-#: app/config/strings.js.inc:42
-msgid "Your browser does not support HTML5 file uploads"
-msgstr "Ваш браузер не поддерживает загрузку файлов с HTML5"
-
-#: app/config/strings.js.inc:43
-msgid "Too many files"
-msgstr "Слишком много файлов"
-
-#: app/config/strings.js.inc:44
-msgid "File size not allowed"
-msgstr "Размер файла вне разрешений"
-
-#: app/config/strings.js.inc:45
-msgid "MIME type not allowed"
-msgstr ""
-
-#: app/config/strings.js.inc:46
-#, fuzzy
-msgid "Clear the event log out?"
-msgstr "Очистить журнал событий?"
-
-#: app/config/strings.js.inc:47
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:186
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:281
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
-#: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
-msgid "Select Group"
-msgstr "Выбрать группу"
-
-#: app/config/strings.js.inc:48
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:168
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
-#: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
-msgid "Select User"
-msgstr "Выбрать пользователя"
-
-#: app/config/strings.js.inc:49
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
-msgid "Select Profile"
-msgstr "Выбрать профиль"
-
-#: app/config/strings.js.inc:50
-#: app/modules/web/themes/material-blue/views/account/account.inc:85
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
-#, fuzzy
-msgid "Select Client"
-msgstr "Выбрать заказчика"
-
-#: app/config/strings.js.inc:51
-#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:110
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
-msgid "Select Category"
-msgstr "Выбрать категорию"
-
-#: app/config/strings.js.inc:52
-msgid "No results"
-msgstr "Нет результатов"
-
-#: app/config/strings.js.inc:53
-msgid "Password options"
-msgstr "Опции пароля"
-
-#: app/config/strings.js.inc:54
-msgid "Generate random password"
-msgstr "Сгенерировать пароль"
-
-#: app/config/strings.js.inc:55
-msgid "Complexity"
-msgstr "Сложность"
-
-#: app/config/strings.js.inc:56
-msgid "Reset"
-msgstr "Сбросить"
-
-#: app/config/strings.js.inc:57
-msgid "Password strength level"
-msgstr "Уровень надежности пароля"
-
-#: app/config/strings.js.inc:58
-msgid "Show Password"
-msgstr "Показать пароль"
-
-#: app/config/strings.js.inc:59
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
-msgid "Copy Username"
-msgstr "Скопировать пользователя"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:60
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
-#: app/config/actions.xml:199 app/config/actions.xml:271
-msgid "Copy Password"
-msgstr "Скопировать пароль"
-
-#: app/config/strings.js.inc:61
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
-msgid "Include Numbers"
-msgstr "Использовать цифры"
-
-#: app/config/strings.js.inc:62
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
-msgid "Include Uppercase"
-msgstr "Использовать заглавные буквы"
-
-#: app/config/strings.js.inc:63
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
-#, fuzzy
-msgid "Include Symbols"
-msgstr "Использовать символы"
-
-#: app/config/strings.js.inc:64
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
-msgid "Length"
-msgstr "Длина"
-
-#: app/config/strings.js.inc:65
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
-msgid "Select Action"
-msgstr "Действие"
-
-#: app/config/strings.js.inc:68
-msgid "Accept"
-msgstr "Принять"
-
-#: app/config/strings.js.inc:69
-msgid "Cancel"
-msgstr "Отклонить"
-
-#: app/config/strings.js.inc:70
-#, fuzzy
-msgid "Password Copied into Clipboard"
-msgstr "Пароль скопирован в буфер"
-
-#: app/config/strings.js.inc:71
-msgid "Error while copying to clipboard"
-msgstr "Ошибка копирования в буфер"
-
-#: app/config/strings.js.inc:73
-#, fuzzy
-msgid "Send notifies?"
-msgstr "Отправить уведомления?"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:74
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
-#: app/config/actions.xml:247
-msgid "Mark as Favorite"
-msgstr ""
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:75
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
-#: app/config/actions.xml:253
-msgid "Delete Favorite"
-msgstr "Удалить избранное"
-
-#: app/config/strings.js.inc:76
-msgid "Clear Selection"
-msgstr "Очистить выбор"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:77
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
-#: app/config/actions.xml:241
-msgid "Show Favorites"
-msgstr ""
-
-#: app/config/strings.js.inc:78
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
-#, fuzzy
-msgid "Display All"
-msgstr "Показать все"
-
-#: app/config/strings.js.inc:81
-msgid "Now"
-msgstr "Сейчас"
-
-#: app/config/strings.js.inc:82
-msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr "Этот процесс импортирует найденных пользователей из LDAP. Продолжить?"
-
-#: app/config/strings.js.inc:83
-msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr "Это действие сбросит все данные плагина. Продолжить?"
-
-#: app/config/strings.js.inc:84
-#, fuzzy
-msgid "This process could take some time long. Do you wish to continue?"
-msgstr "Это длительный процесс. Продолжить?"
-
-#: app/config/strings.js.inc:87
-#, fuzzy
-msgid "Performing task. Please, do not close browser's window/tab."
-msgstr "Выполнение задачи. Не закрывайте окно браузера / вкладку."
-
-#: app/config/strings.js.inc:88
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
-msgid "Include Letters"
-msgstr "Использовать буквы"
-
-#: app/config/strings.js.inc:89
-#, fuzzy
-msgid "Cookies disabled. Application won't work properly."
-msgstr "Куки отключены. Приложение не будет работать должным образом."
-
-#: app/config/strings.js.inc:90
-msgid "Clipboard not supported by your browser."
-msgstr "Буфер обмена не поддерживается вашим браузером."
-
-#: app/config/strings.js.inc:91
-msgid "Performing auto-login"
-msgstr "Performing auto-login"
-
-#: app/config/strings.js.inc:92
-msgid "There is a more recent version of {0} plugin ({1})"
-msgstr "There is a more recent version of {0} plugin ({1})"
-
-#: app/config/strings.js.inc:93
-#: app/modules/web/themes/material-blue/views/main/update.inc:30
-msgid "Updated"
-msgstr "Обновлено"
-
-#: app/config/strings.js.inc:94
-#: app/modules/web/themes/material-blue/views/main/update.inc:36
-msgid "Error while checking for updates"
-msgstr "Ошибка проверки обновлений"
-
-#: app/config/strings.js.inc:95
-msgid "sysPass Notices"
-msgstr "Уведомления sysPass"
-
-#: app/config/strings.js.inc:96
-msgid "Clear the tracks out?"
-msgstr "Clear the tracks out?"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 #, fuzzy
@@ -5376,8 +5109,8 @@ msgid "No records found"
 msgstr "Записи не найдены"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:169
-#: app/modules/web/themes/material-blue/views/account/account.inc:176
+#: app/modules/web/themes/material-blue/views/account/account.inc:180
+#: app/modules/web/themes/material-blue/views/account/account.inc:189
 #: app/modules/web/themes/material-blue/views/install/index.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:115
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
@@ -5389,8 +5122,8 @@ msgstr "Подтверждение пароля"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
-#: app/modules/web/themes/material-blue/views/account/account.inc:195
-#: app/modules/web/themes/material-blue/views/account/account.inc:279
+#: app/modules/web/themes/material-blue/views/account/account.inc:212
+#: app/modules/web/themes/material-blue/views/account/account.inc:305
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
 msgstr "Выберите дату"
@@ -5398,20 +5131,28 @@ msgstr "Выберите дату"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:142
-#: app/modules/web/themes/material-blue/views/account/account.inc:272
-#: app/modules/web/themes/material-blue/views/account/account.inc:274
+#: app/modules/web/themes/material-blue/views/account/account.inc:297
+#: app/modules/web/themes/material-blue/views/account/account.inc:299
 msgid "History"
 msgstr "История"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:28
-#: app/modules/web/themes/material-blue/views/account/account.inc:45
+#: app/modules/web/themes/material-blue/views/account/account.inc:50
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:22
 msgid "Details"
 msgstr "Детали"
 
+#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
+#: app/modules/web/themes/material-blue/views/account/account.inc:120
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
+#: app/resources/strings.js.inc:51
+msgid "Select Category"
+msgstr "Выбрать категорию"
+
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:201
+#: app/modules/web/themes/material-blue/views/account/account.inc:218
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:163
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:169
@@ -5419,7 +5160,7 @@ msgid "Notes"
 msgstr ""
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
-#: app/modules/web/themes/material-blue/views/account/account.inc:294
+#: app/modules/web/themes/material-blue/views/account/account.inc:320
 #: app/modules/web/themes/material-blue/views/account/details.inc:32
 #: app/modules/web/themes/material-blue/views/account/details.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:291
@@ -5427,8 +5168,8 @@ msgstr ""
 msgid "Last Modification"
 msgstr "Последнее изменение"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:23
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:54
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:25
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:58
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:140
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:18
@@ -5437,10 +5178,10 @@ msgstr "Последнее изменение"
 msgid "Select Users"
 msgstr "Выберите пользователей"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:33
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:37
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:101
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:105
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:35
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:39
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:107
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:111
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:127
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:176
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:29
@@ -5449,8 +5190,8 @@ msgstr "Выберите пользователей"
 msgid "View"
 msgstr "Показать"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:91
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:122
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:97
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:130
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:190
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:59
@@ -5458,12 +5199,36 @@ msgstr "Показать"
 msgid "Select Groups"
 msgstr "Выберите группы"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:208
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
+#: app/modules/web/themes/material-blue/views/config/import.inc:32
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
+#: app/resources/strings.js.inc:48
+msgid "Select User"
+msgstr "Выбрать пользователя"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
+#: app/modules/web/themes/material-blue/views/config/import.inc:59
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
+#: app/resources/strings.js.inc:47
+msgid "Select Group"
+msgstr "Выбрать группу"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:228
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
 msgstr "Приват"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:224
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:246
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:198
 msgid "Private for Group"
 msgstr "Приват для группы"
@@ -5481,33 +5246,41 @@ msgstr "Описание запроса"
 msgid "Send"
 msgstr "Отправить"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:37
+#: app/modules/web/themes/material-blue/views/account/account.inc:40
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:133
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:214
 msgid "Permissions"
 msgstr "Разрешения"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:219
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
+#: app/resources/strings.js.inc:50
+#, fuzzy
+msgid "Select Client"
+msgstr "Выбрать заказчика"
+
+#: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
 msgid "Select Tags"
 msgstr "Выберите теги"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:263
+#: app/modules/web/themes/material-blue/views/account/account.inc:288
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:26
 msgid "Select Account"
 msgstr "Выберите учетную запись"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:302
-#: app/modules/web/themes/material-blue/views/account/account.inc:304
-#: app/modules/web/themes/material-blue/views/account/account.inc:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:328
+#: app/modules/web/themes/material-blue/views/account/account.inc:330
+#: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:193
 msgid "Public Link"
 msgstr "Публичная ссылка"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:315
-#: app/modules/web/themes/material-blue/views/account/account.inc:317
-#: app/modules/web/themes/material-blue/views/account/account.inc:320
+#: app/modules/web/themes/material-blue/views/account/account.inc:342
+#: app/modules/web/themes/material-blue/views/account/account.inc:344
+#: app/modules/web/themes/material-blue/views/account/account.inc:348
 msgid "Direct Link"
 msgstr "Direct Link"
 
@@ -5557,6 +5330,18 @@ msgstr "Пароль просрочен"
 msgid "Private Account (Group)"
 msgstr "Private Account (Group)"
 
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
+#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
+msgid "Delete Favorite"
+msgstr "Удалить избранное"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
+#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
+msgid "Mark as Favorite"
+msgstr ""
+
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
 msgstr "Вложения"
@@ -5578,6 +5363,18 @@ msgstr "Посмотреть в WiKi"
 msgid "Global search"
 msgstr "Глобальный поиск"
 
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
+#: app/resources/strings.js.inc:78
+#, fuzzy
+msgid "Display All"
+msgstr "Показать все"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
+#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
+msgid "Show Favorites"
+msgstr ""
+
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
 msgstr "Фильтр избранного"
@@ -5593,6 +5390,18 @@ msgstr "Больше фильтров"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:114
 msgid "Select Tag"
 msgstr "Выберите теги"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
+#: app/resources/strings.js.inc:59
+msgid "Copy Username"
+msgstr "Скопировать пользователя"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
+#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
+#: app/resources/actions.xml:271
+msgid "Copy Password"
+msgstr "Скопировать пароль"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
@@ -5728,7 +5537,7 @@ msgstr ""
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:196
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
-#: app/config/actions.xml:73
+#: app/resources/actions.xml:73
 msgid "Public Links"
 msgstr "Публичные ссылки"
 
@@ -5911,8 +5720,8 @@ msgstr ""
 "Можно задать пароль для экспорта, которым будет зашифрована вся информация в "
 "файле XML."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:17
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:153
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:19
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:168
 #: app/modules/web/themes/material-blue/views/config/import.inc:152
 #: app/modules/web/themes/material-blue/views/config/import.inc:167
 #: app/modules/web/themes/material-blue/views/install/index.inc:50
@@ -5922,62 +5731,62 @@ msgstr ""
 msgid "Master Password"
 msgstr "Мастер-пароль"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:24
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:27
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:198
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:201
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:26
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:29
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:214
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:217
 #, fuzzy
 msgid "Last change"
 msgstr "Последнее изменение"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:35
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:43
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:37
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:46
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:142
 msgid "Current Master Password"
 msgstr "Текущий мастер-пароль"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:49
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:57
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:52
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:61
 msgid "New Master Password"
 msgstr "Новый мастер-пароль"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:63
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:71
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:67
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:76
 msgid "New Master Password (repeat)"
 msgstr "Новый мастер-пароль (подтверждение)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:80
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "You should save the new password on a secure place"
 msgstr "Необходимо сохранить новый пароль в надежном месте"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:84
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:95
 msgid "All accounts passwords will be encrypted again."
 msgstr "Все пароли учетных записей будут зашифрованы вновь."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:88
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:99
 msgid "Users will need to enter the new Master Password."
 msgstr "Пользователям потребуется ввести новый мастер-пароль."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:92
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, fuzzy, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr "Будет обновлено %s записей. Этот процесс может занять некоторое время."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:109
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
 msgstr "Не изменять учетные записи"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:111
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:123
 msgid "Sets a new Master Password without re-encrypting the accounts."
 msgstr "Устанавливает мастер-пароль без повторного шифрования учетных записей."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:127
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:140
 #, fuzzy
 msgid "Confirm change"
 msgstr "Подтвердите изменение"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:129
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:142
 msgid ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
@@ -5985,7 +5794,7 @@ msgstr ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:155
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:170
 #, fuzzy
 msgid ""
 "The Master Password is used to encrypt sysPass accounts passwords and keep "
@@ -5994,7 +5803,7 @@ msgstr ""
 "Мастер-пароль используется для шифрования паролей учетных записей в целях "
 "повышения безопасности."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:157
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:172
 #, fuzzy
 msgid ""
 "It's advisable to change it from time to time and use a complex password "
@@ -6003,50 +5812,50 @@ msgstr ""
 "Рекомендуется регулярная смена и одновременное использование цифр, букв и "
 "символов."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:159
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:174
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:132
 #, php-format
 msgid "You could get more info on: %s"
 msgstr "Вы можете получить дополнительную информацию: %s"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:169
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:184
 msgid "Update master password hash"
 msgstr "Обновить хэш мастер-пароля"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:189
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:323
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:344
 msgid "Temporary Password"
 msgstr "Временный пароль"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:203
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:218
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:219
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
 msgid "Not generated"
 msgstr "Не сгенерирован"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:208
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:211
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
 msgid "Valid until"
 msgstr "Действителен до"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:240
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:243
 msgid "Attempts"
 msgstr "Попыток"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:244
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:250
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:262
 msgid "Life (s)"
 msgstr "Срок действия (секунды)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:263
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:282
 msgid "Send email"
 msgstr "Отправить письмо"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:265
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:284
 msgid "Sends an email to all users or only to those whose group is selected."
 msgstr "Отправить письмо всем пользователям или выбранным группам"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:325
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 #, fuzzy
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
@@ -6056,7 +5865,7 @@ msgstr ""
 "Временный пароль используется как мастер-пароль для пользователей, которым "
 "необходимо войти и которым не предоставляется мастер-пароль."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:332
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
 msgstr "Сгенерировать пароль"
 
@@ -6182,19 +5991,19 @@ msgstr "Пользователь для прокси-сервера"
 msgid "Proxy server password"
 msgstr "Пароль для прокси-сервера"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:16
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:17
 msgid "This extension is needed to check for sysPass updates and notices"
 msgstr "This extension is needed to check for sysPass updates and notices"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:24
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:25
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:15
 msgid "Site"
 msgstr "Сайт"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:30
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:107
-#: app/modules/web/themes/material-blue/views/config/info.inc:121
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:31
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:45
+#: app/modules/web/themes/material-blue/views/config/info.inc:113
+#: app/modules/web/themes/material-blue/views/config/info.inc:127
 #: app/modules/web/themes/material-blue/views/install/index.inc:137
 #: app/modules/web/themes/material-blue/views/install/index.inc:139
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:26
@@ -6202,7 +6011,7 @@ msgstr "Сайт"
 msgid "Language"
 msgstr "Язык"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:35
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 #, fuzzy
 msgid ""
 "Sets the global app language. You can set a per user language on preferences."
@@ -6210,7 +6019,7 @@ msgstr ""
 "Устанавливает глобальную настройку языка программы. Каждый пользователь "
 "может изменить язык в своих настройках."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:39
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 #, fuzzy
 msgid ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
@@ -6219,14 +6028,14 @@ msgstr ""
 "Для улучшения/добавления переводов Вы можете перейти по ссылке https://"
 "poeditor.com/join/project/fmlsBuugyv"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:57
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:67
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:59
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:69
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:42
 msgid "Visual Theme"
 msgstr "Тема"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:62
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:64
 #, fuzzy
 msgid ""
 "Sets the global application visual theme. You can set a per user visual "
@@ -6235,34 +6044,45 @@ msgstr ""
 "Устанавливает тему визуального оформления приложения. Каждый пользователь "
 "может изменить тему в своих настройках."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:81
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:89
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:83
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:95
 msgid "Session timeout (s)"
 msgstr "Таймаут сессии (секунды)"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:107
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
+msgid "Application URL"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
+msgid ""
+"Sets the application URL when accessing through a reverse proxy or load "
+"balancer."
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:136
 msgid "Force HTTPS"
 msgstr "Форсировать HTTPS"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:108
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
 msgid "It forces the use of HTTPS on all the connections"
 msgstr "Форсировать все соединения через HTTPS."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:122
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
 msgid "Enable debug"
 msgstr "Включить отладку"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:123
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
 #, fuzzy
 msgid ""
 "Displays some information about application configuration and performance."
 msgstr "Показывает информацию о программе и производительности."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
 msgid "Maintenance mode"
 msgstr "Режим обслуживания"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:138
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 #, fuzzy
 msgid ""
 "In this mode nobody can log into the application. To disable it, you need to "
@@ -6271,20 +6091,20 @@ msgstr ""
 "В данном режиме войти в программу невозможно. Для его отключения необходимо "
 "редактировать файл конфигурации."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
 msgid "Check for updates"
 msgstr "Проверка обновлений"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
 msgid "Check for application updates (only for administrators)."
 msgstr "Проверяет обновления программы (только для администраторов)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:167
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:200
 #, fuzzy
 msgid "Check for notifications"
 msgstr "Проверка уведомлений"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:201
 #, fuzzy
 msgid ""
 "Check if there are either sysPass security or warning notices (only for "
@@ -6292,15 +6112,15 @@ msgid ""
 msgstr ""
 "Проверяет на наличие уведомлений безопасности (только для администраторов)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:182
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:216
 msgid "Encrypt Session"
 msgstr "Зашифровать сеанс"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:218
 msgid "Encrypt PHP session data"
 msgstr "Шифрование данных сеанса PHP"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:219
 msgid ""
 "This feature increases the PHP sessions security, because the stored data "
 "won't be readable."
@@ -6423,52 +6243,52 @@ msgstr "О программе"
 msgid "sysPass version"
 msgstr "Версия sysPass"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:30
-#: app/modules/web/themes/material-blue/views/config/info.inc:33
+#: app/modules/web/themes/material-blue/views/config/info.inc:36
+#: app/modules/web/themes/material-blue/views/config/info.inc:39
 msgid "Database"
 msgstr "База данных"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:47
+#: app/modules/web/themes/material-blue/views/config/info.inc:50
+#: app/modules/web/themes/material-blue/views/config/info.inc:53
 msgid "PHP"
 msgstr "PHP"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:51
+#: app/modules/web/themes/material-blue/views/config/info.inc:57
 msgid "Extensions"
 msgstr "Расширения"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:55
+#: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
 msgstr "Unavailable extensions"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:59
+#: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
 msgstr "Используемая память"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:63
+#: app/modules/web/themes/material-blue/views/config/info.inc:69
 msgid "Download rate"
 msgstr "Download rate"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:66
+#: app/modules/web/themes/material-blue/views/config/info.inc:72
 msgid "OP Cache"
 msgstr "OP кеш"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:85
-#: app/modules/web/themes/material-blue/views/config/info.inc:88
+#: app/modules/web/themes/material-blue/views/config/info.inc:91
+#: app/modules/web/themes/material-blue/views/config/info.inc:94
 msgid "Configuration Backup"
 msgstr "Резервная копия конфигурации"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:98
-#: app/modules/web/themes/material-blue/views/config/info.inc:180
+#: app/modules/web/themes/material-blue/views/config/info.inc:104
+#: app/modules/web/themes/material-blue/views/config/info.inc:186
 #, php-format
 msgid "Download %s"
 msgstr "Download %s"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:112
+#: app/modules/web/themes/material-blue/views/config/info.inc:118
 msgid "Tells whether the language is available or not."
 msgstr "Сообщает доступен язык или нет."
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:116
+#: app/modules/web/themes/material-blue/views/config/info.inc:122
 msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
@@ -6476,23 +6296,23 @@ msgstr ""
 "Если не установлено, то необходимо установить правильные локали в ОС. "
 "Подробности в WiKi."
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:128
-#: app/modules/web/themes/material-blue/views/config/info.inc:138
+#: app/modules/web/themes/material-blue/views/config/info.inc:134
+#: app/modules/web/themes/material-blue/views/config/info.inc:144
 msgid "Encrypted Session"
 msgstr "Зашифрованная сессия"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:133
+#: app/modules/web/themes/material-blue/views/config/info.inc:139
 #, fuzzy
 msgid "Tells whether the session data are encrypted in the server side or not"
 msgstr "Сообщает, зашифрованы ли данные сеанса на сервере или нет"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:145
-#: app/modules/web/themes/material-blue/views/config/info.inc:148
+#: app/modules/web/themes/material-blue/views/config/info.inc:151
+#: app/modules/web/themes/material-blue/views/config/info.inc:154
 msgid "Loaded Plugins"
 msgstr "Загруженные плагины"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:171
-#: app/modules/web/themes/material-blue/views/config/info.inc:174
+#: app/modules/web/themes/material-blue/views/config/info.inc:177
+#: app/modules/web/themes/material-blue/views/config/info.inc:180
 msgid "Log file"
 msgstr "Log file"
 
@@ -6875,6 +6695,11 @@ msgstr "Создатель"
 msgid "Delete History"
 msgstr "Delete History"
 
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
+#: app/resources/strings.js.inc:65
+msgid "Select Action"
+msgstr "Действие"
+
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:98
@@ -6920,6 +6745,12 @@ msgstr "Подсказка"
 msgid "Required"
 msgstr "Обязательно"
 
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
+#: app/resources/strings.js.inc:64
+msgid "Length"
+msgstr "Длина"
+
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
 msgid "Score"
@@ -6929,6 +6760,27 @@ msgstr "Score"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:65
 msgid "Regular Expression"
 msgstr "Regular Expression"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
+#: app/resources/strings.js.inc:61
+msgid "Include Numbers"
+msgstr "Использовать цифры"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
+#: app/resources/strings.js.inc:88
+msgid "Include Letters"
+msgstr "Использовать буквы"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
+#: app/resources/strings.js.inc:63
+#, fuzzy
+msgid "Include Symbols"
+msgstr "Использовать символы"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
+#: app/resources/strings.js.inc:62
+msgid "Include Uppercase"
+msgstr "Использовать заглавные буквы"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:140
 msgid "Include Lowercase"
@@ -6960,6 +6812,12 @@ msgstr "IP Address"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:37
 msgid "Timeout"
 msgstr "Timeout"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
+#: app/resources/strings.js.inc:49
+msgid "Select Profile"
+msgstr "Выбрать профиль"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:89
 msgid ""
@@ -7078,7 +6936,7 @@ msgstr "Показать пароль учетной записи"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:86
-#: app/config/actions.xml:259
+#: app/resources/actions.xml:259
 msgid "View History"
 msgstr "Показать историю"
 
@@ -7178,7 +7036,7 @@ msgstr "Default Values Management"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
-#: app/config/actions.xml:697
+#: app/resources/actions.xml:697
 msgid "General Configuration"
 msgstr "Основная конфигурация"
 
@@ -7214,6 +7072,16 @@ msgstr "Войти"
 #, fuzzy
 msgid "Forgot password?"
 msgstr "Забыли пароль?"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:30
+#: app/resources/strings.js.inc:93
+msgid "Updated"
+msgstr "Обновлено"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:36
+#: app/resources/strings.js.inc:94
+msgid "Error while checking for updates"
+msgstr "Ошибка проверки обновлений"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
 #, php-format
@@ -7411,9 +7279,15 @@ msgstr "Displays the additional filters selection on the accounts search."
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:16
-#: app/config/actions.xml:277
+#: app/resources/actions.xml:277
 msgid "View Wiki"
 msgstr "Показать WiKi"
+
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
+#: app/resources/strings.js.inc:39
+msgid "Page not found"
+msgstr "Страница не найдена"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
 #, php-format
@@ -7425,345 +7299,574 @@ msgstr "Результаты поиска '%s'"
 msgid "Page"
 msgstr "Страница"
 
+#: app/resources/strings.js.inc:27
+msgid "There was an error"
+msgstr "Произошла ошибка"
+
+#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
+msgid "Session finished"
+msgstr "Сессия завершена"
+
+#: app/resources/strings.js.inc:29
+msgid "Delete account?"
+msgstr "Удалить учетную запись?"
+
+#: app/resources/strings.js.inc:30
+msgid "Delete user?"
+msgstr "Удалить пользователя?"
+
+#: app/resources/strings.js.inc:31
+msgid "You should save configuration in order to take effect"
+msgstr "Необходимо сохранить конфигурацию для вступления изменений в силу"
+
+#: app/resources/strings.js.inc:32
+msgid "Generated Password"
+msgstr "Сгенерированный пароль"
+
+#: app/resources/strings.js.inc:33
+msgid "High level"
+msgstr "Высокий уровень"
+
+#: app/resources/strings.js.inc:34
+msgid "Average level"
+msgstr "Средний уровень"
+
+#: app/resources/strings.js.inc:35
+msgid "Low level"
+msgstr "Низкий уровень"
+
+#: app/resources/strings.js.inc:36
+msgid "Very High level"
+msgstr "Очень высокий уровень"
+
+#: app/resources/strings.js.inc:37
+msgid "You should use at least 8 characters"
+msgstr "Необходимо использовать минимум 8 символов"
+
+#: app/resources/strings.js.inc:38
+msgid "Delete item?"
+msgstr "Удалить элемент?"
+
+#: app/resources/strings.js.inc:41
+msgid "Delete file?"
+msgstr "Удалить файл?"
+
+#: app/resources/strings.js.inc:42
+msgid "Your browser does not support HTML5 file uploads"
+msgstr "Ваш браузер не поддерживает загрузку файлов с HTML5"
+
+#: app/resources/strings.js.inc:43
+msgid "Too many files"
+msgstr "Слишком много файлов"
+
+#: app/resources/strings.js.inc:44
+msgid "File size not allowed"
+msgstr "Размер файла вне разрешений"
+
+#: app/resources/strings.js.inc:45
+msgid "MIME type not allowed"
+msgstr ""
+
+#: app/resources/strings.js.inc:46
+#, fuzzy
+msgid "Clear the event log out?"
+msgstr "Очистить журнал событий?"
+
+#: app/resources/strings.js.inc:52
+msgid "No results"
+msgstr "Нет результатов"
+
+#: app/resources/strings.js.inc:53
+msgid "Password options"
+msgstr "Опции пароля"
+
+#: app/resources/strings.js.inc:54
+msgid "Generate random password"
+msgstr "Сгенерировать пароль"
+
+#: app/resources/strings.js.inc:55
+msgid "Complexity"
+msgstr "Сложность"
+
+#: app/resources/strings.js.inc:56
+msgid "Reset"
+msgstr "Сбросить"
+
+#: app/resources/strings.js.inc:57
+msgid "Password strength level"
+msgstr "Уровень надежности пароля"
+
+#: app/resources/strings.js.inc:58
+msgid "Show Password"
+msgstr "Показать пароль"
+
+#: app/resources/strings.js.inc:68
+msgid "Accept"
+msgstr "Принять"
+
+#: app/resources/strings.js.inc:69
+msgid "Cancel"
+msgstr "Отклонить"
+
+#: app/resources/strings.js.inc:70
+#, fuzzy
+msgid "Password Copied into Clipboard"
+msgstr "Пароль скопирован в буфер"
+
+#: app/resources/strings.js.inc:71
+msgid "Error while copying to clipboard"
+msgstr "Ошибка копирования в буфер"
+
+#: app/resources/strings.js.inc:73
+#, fuzzy
+msgid "Send notifies?"
+msgstr "Отправить уведомления?"
+
+#: app/resources/strings.js.inc:76
+msgid "Clear Selection"
+msgstr "Очистить выбор"
+
+#: app/resources/strings.js.inc:81
+msgid "Now"
+msgstr "Сейчас"
+
+#: app/resources/strings.js.inc:82
+msgid ""
+"This process will import the detected LDAP users. Would you like to continue?"
+msgstr "Этот процесс импортирует найденных пользователей из LDAP. Продолжить?"
+
+#: app/resources/strings.js.inc:83
+msgid "This action will reset all plugin data. Do you want to continue?"
+msgstr "Это действие сбросит все данные плагина. Продолжить?"
+
+#: app/resources/strings.js.inc:84
+#, fuzzy
+msgid "This process could take some time long. Do you wish to continue?"
+msgstr "Это длительный процесс. Продолжить?"
+
+#: app/resources/strings.js.inc:87
+#, fuzzy
+msgid "Performing task. Please, do not close browser's window/tab."
+msgstr "Выполнение задачи. Не закрывайте окно браузера / вкладку."
+
+#: app/resources/strings.js.inc:89
+#, fuzzy
+msgid "Cookies disabled. Application won't work properly."
+msgstr "Куки отключены. Приложение не будет работать должным образом."
+
+#: app/resources/strings.js.inc:90
+msgid "Clipboard not supported by your browser."
+msgstr "Буфер обмена не поддерживается вашим браузером."
+
+#: app/resources/strings.js.inc:91
+msgid "Performing auto-login"
+msgstr "Performing auto-login"
+
+#: app/resources/strings.js.inc:92
+msgid "There is a more recent version of {0} plugin ({1})"
+msgstr "There is a more recent version of {0} plugin ({1})"
+
+#: app/resources/strings.js.inc:95
+msgid "sysPass Notices"
+msgstr "Уведомления sysPass"
+
+#: app/resources/strings.js.inc:96
+msgid "Clear the tracks out?"
+msgstr "Clear the tracks out?"
+
 #. (itstool) path: action/text
-#: app/config/actions.xml:7
+#: app/resources/actions.xml:7
 #, fuzzy
 msgid "Search for Accounts"
 msgstr "Поиск учетных записей"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:25
+#: app/resources/actions.xml:25
 msgid "Requests"
 msgstr "Включить запросы по email"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:31
+#: app/resources/actions.xml:31
 msgid "Favorites"
 msgstr "Favorites"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:43
+#: app/resources/actions.xml:43
 msgid "Items and Customizations"
 msgstr "Элементы персонализации"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:49
+#: app/resources/actions.xml:49
 msgid "Categories Management"
 msgstr "Управление категориями"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:55
+#: app/resources/actions.xml:55
 #, fuzzy
 msgid "Customers Management"
 msgstr "Управление заказчиками"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:61
+#: app/resources/actions.xml:61
 msgid "API Authorizations Management"
 msgstr "Управление API авторизации"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:67
+#: app/resources/actions.xml:67
 msgid "Custom Fields Management"
 msgstr "Управление свободными полями"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:79
+#: app/resources/actions.xml:79
 msgid "Files Management"
 msgstr "Управление файлами"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:85
+#: app/resources/actions.xml:85
 msgid "Accounts Management"
 msgstr "Управление учетными записями"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:91
+#: app/resources/actions.xml:91
 msgid "Tags Management"
 msgstr "Управление тегами"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:97
+#: app/resources/actions.xml:97
 msgid "Plugins Management"
 msgstr "Plugins Management"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:103
+#: app/resources/actions.xml:103
 msgid "Users and Accesses"
 msgstr "Пользователи и доступы"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:109
+#: app/resources/actions.xml:109
 msgid "Security and Audit"
 msgstr "Security and Audit"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:115
+#: app/resources/actions.xml:115
 msgid "Users Management"
 msgstr "Управление пользователями"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:121
+#: app/resources/actions.xml:121
 msgid "Groups Management"
 msgstr "Управление группами"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:127
+#: app/resources/actions.xml:127
 msgid "Profiles Management"
 msgstr "Управление профилями"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:145
+#: app/resources/actions.xml:145
 msgid "Clear Events"
 msgstr "Clear Events"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:151 app/config/actions.xml:481
+#: app/resources/actions.xml:151 app/resources/actions.xml:481
 msgid "View Account"
 msgstr "Просмотр деталей учетной записи"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:211 app/config/actions.xml:469
+#: app/resources/actions.xml:211 app/resources/actions.xml:469
 msgid "Upload File"
 msgstr "Загрузить файл"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:229
+#: app/resources/actions.xml:229
 msgid "Search for Files"
 msgstr "Search for Files"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:235
+#: app/resources/actions.xml:235
 msgid "List Files"
 msgstr "List Files"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:283
+#: app/resources/actions.xml:283
 msgid "Add Wiki"
 msgstr "Add Wiki"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:289
+#: app/resources/actions.xml:289
 msgid "Edit Wiki"
 msgstr "Edit Wiki"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:295
+#: app/resources/actions.xml:295
 msgid "Delete Wiki"
 msgstr "Delete Wiki"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:361
+#: app/resources/actions.xml:361
 msgid "New API Token"
 msgstr "New API Token"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:367
+#: app/resources/actions.xml:367
 msgid "View API Token"
 msgstr "View API Token"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:373
+#: app/resources/actions.xml:373
 msgid "Edit API Token"
 msgstr "Edit API Token"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:379
+#: app/resources/actions.xml:379
 msgid "Delete API Token"
 msgstr "Delete API Token"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:385
+#: app/resources/actions.xml:385
 msgid "Search for API Token"
 msgstr "Search for API Token"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:391
+#: app/resources/actions.xml:391
 msgid "New Custom Field"
 msgstr "New Custom Field"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:397
+#: app/resources/actions.xml:397
 msgid "Show Custom Field"
 msgstr "Show Custom Field"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:403
+#: app/resources/actions.xml:403
 msgid "Edit Custom Field"
 msgstr "Edit Custom Field"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:409
+#: app/resources/actions.xml:409
 msgid "Delete Custom Field"
 msgstr "Delete Custom Field"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:415
+#: app/resources/actions.xml:415
 msgid "Search for Custom Field"
 msgstr "Search for Custom Field"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:427
+#: app/resources/actions.xml:427
 #, fuzzy
 msgid "Show Public Link"
 msgstr "Показать публичную ссылку"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:445
+#: app/resources/actions.xml:445
 msgid "Search for Public Link"
 msgstr "Search for Public Link"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:553
+#: app/resources/actions.xml:553
 msgid "Enable Plugin"
 msgstr "Enable Plugin"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:559
+#: app/resources/actions.xml:559
 msgid "Disable Plugin"
 msgstr "Disable Plugin"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:565
+#: app/resources/actions.xml:565
 msgid "Reset Plugin"
 msgstr "Reset Plugin"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:601
+#: app/resources/actions.xml:601
 msgid "Edit User Password"
 msgstr "Edit User Password"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:673
+#: app/resources/actions.xml:673
 msgid "User Configuration"
 msgstr "User Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:679
+#: app/resources/actions.xml:679
 msgid "General Preferences"
 msgstr "General Preferences"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:703
+#: app/resources/actions.xml:703
 msgid "Accounts Configuration"
 msgstr "Accounts Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:709
+#: app/resources/actions.xml:709
 msgid "Wiki Configuration"
 msgstr "Wiki Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:715
+#: app/resources/actions.xml:715
 msgid "Encryption Configuration"
 msgstr "Encryption Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:721
+#: app/resources/actions.xml:721
 msgid "Update Hash"
 msgstr "Update Hash"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:727
+#: app/resources/actions.xml:727
 msgid "Temporary Master Password"
 msgstr "Temporary Master Password"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:733
+#: app/resources/actions.xml:733
 msgid "Backup Configuration"
 msgstr "Backup Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:745
+#: app/resources/actions.xml:745
 msgid "Import Configuration"
 msgstr "Import Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:751
+#: app/resources/actions.xml:751
 msgid "CSV Import"
 msgstr "CSV Import"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:757
+#: app/resources/actions.xml:757
 msgid "XML Import"
 msgstr "XML Import"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:763
+#: app/resources/actions.xml:763
 msgid "Export Configuration"
 msgstr "Export Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:769
+#: app/resources/actions.xml:769
 msgid "Export"
 msgstr "Export"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:775
+#: app/resources/actions.xml:775
 msgid "Email Configuration"
 msgstr "Email Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:781
+#: app/resources/actions.xml:781
 msgid "LDAP Configuration"
 msgstr "LDAP Configuration"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:787
+#: app/resources/actions.xml:787
 msgid "LDAP synchronization"
 msgstr "Синхронизация LDAP"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:793
+#: app/resources/actions.xml:793
 msgid "Account Management (H)"
 msgstr "Account Management (H)"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:823
+#: app/resources/actions.xml:823
 msgid "Create Notification"
 msgstr "Create Notification"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:853
+#: app/resources/actions.xml:853
 msgid "Preset Values Management"
 msgstr "Preset Values Management"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:889
+#: app/resources/actions.xml:889
 msgid "Tracks Management"
 msgstr "Tracks Management"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:901
+#: app/resources/actions.xml:901
 msgid "Unlock track"
 msgstr "Unlock track"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:907
+#: app/resources/actions.xml:907
 msgid "Clear the tracks out"
 msgstr "Clear the tracks out"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:4
-msgid "Color"
-msgstr "Цвет"
+#, fuzzy
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "Папка \"/config\" не существует."
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:5
-msgid "Number"
-msgstr "Цифры"
+#, fuzzy
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Невозможно произвести запись в папку \"/config\""
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:6
-msgid "Phone"
-msgstr "Телефон"
+#, fuzzy
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "Права для папки \"/config\" заданы неверно"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:7
-msgid "Text Area"
-msgstr "Текстовое поле"
+#~ msgid "Master Password %s"
+#~ msgstr "Мастер пароль %s"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:8
-msgid "Text"
-msgstr "Текст"
+#~ msgid "Mail service unavailable"
+#~ msgstr "Mail service unavailable"
+
+#~ msgid "Active Directory"
+#~ msgstr "Active Directory"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Включает режим подключения Active Directory к серверу LDAP."
+
+#, fuzzy
+#~ msgid "Recipient email address"
+#~ msgstr "Email получателя"
+
+#, fuzzy
+#~ msgid "Dysplays a navigation bar on top of the search results."
+#~ msgstr "Закрепить панель навигации в верху страницы."
+
+#~ msgid "Color"
+#~ msgstr "Цвет"
+
+#~ msgid "Number"
+#~ msgstr "Цифры"
+
+#~ msgid "Phone"
+#~ msgstr "Телефон"
+
+#~ msgid "Text Area"
+#~ msgstr "Текстовое поле"
+
+#~ msgid "Text"
+#~ msgstr "Текст"
+
+#~ msgid "There aren't any allowed extensions"
+#~ msgstr "Нет доступных расширений"
+
+#~ msgid "Extension: %s"
+#~ msgstr "Extension: %s"
+
+#~ msgid "Maximum size: %s"
+#~ msgstr "Maximum size: %s"
+
+#, fuzzy
+#~ msgid "Please, check the file extension"
+#~ msgstr "Пожалуйста, проверьте расширение файла"
+
+#~ msgid "Data not loaded"
+#~ msgstr "Data not loaded"
+
+#~ msgid "Extension not allowed"
+#~ msgstr "Данный тип файла заблокирован"
+
+#~ msgid "Allowed file extensions"
+#~ msgstr "Разрешенные расширения файлов"
+
+#~ msgid "Allowed file extensions for uploading."
+#~ msgstr "Разрешенные расширения файлов для загрузки."
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Введите расширение и нажмите Enter для добавления. Не забудьте сохранить "
+#~ "настройки."

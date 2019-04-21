@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2018-12-16 13:09+0100\n"
+"POT-Creation-Date: 2019-04-21 16:05+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: \n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
-"X-Poedit-SearchPath-2: app/config\n"
+"X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
@@ -46,7 +46,7 @@ msgstr "Konta víst"
 #: app/modules/api/Controllers/UserGroupController.php:92
 #: app/modules/api/Controllers/UserGroupController.php:123
 #: app/modules/api/Controllers/UserGroupController.php:153
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:240
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:244
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:113
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:104
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:106
@@ -61,14 +61,15 @@ msgstr "Konta víst"
 #: app/modules/web/Controllers/UserGroupController.php:324
 #: app/modules/web/Controllers/UserProfileController.php:272
 #: app/modules/web/Controllers/UserProfileController.php:315
-#: lib/SP/Plugin/PluginManager.php:320
+#: lib/SP/Plugin/PluginManager.php:365 lib/SP/Plugin/PluginManager.php:393
+#: lib/SP/Plugin/PluginManager.php:410
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:30
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:43
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:22
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:24
-#: app/modules/web/themes/material-blue/views/account/account.inc:65
+#: app/modules/web/themes/material-blue/views/account/account.inc:72
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:54
-#: app/modules/web/themes/material-blue/views/config/info.inc:39
+#: app/modules/web/themes/material-blue/views/config/info.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:22
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:23
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:23
@@ -87,13 +88,13 @@ msgstr "Navn"
 #: app/modules/api/Controllers/AccountController.php:190
 #: app/modules/api/Controllers/AccountController.php:241
 #: app/modules/api/Controllers/AccountController.php:316
-#: app/modules/web/Controllers/AccountController.php:250
+#: app/modules/web/Controllers/AccountController.php:253
 #: app/modules/web/Controllers/AccountController.php:833
 #: app/modules/web/Controllers/AccountController.php:882
 #: app/modules/web/Controllers/AccountController.php:927
 #: app/modules/web/Controllers/AccountController.php:970
 #: app/modules/web/Controllers/AccountController.php:1024
-#: app/modules/web/Controllers/AccountController.php:1065
+#: app/modules/web/Controllers/AccountController.php:1071
 #: app/modules/web/Controllers/AccountFileController.php:246
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:121
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:160
@@ -101,12 +102,12 @@ msgstr "Navn"
 #: app/modules/web/Controllers/ClientController.php:229
 #: app/modules/web/Controllers/ClientController.php:265
 #: app/modules/web/Controllers/ClientController.php:305
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:233
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:237
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:105
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:109
-#: lib/SP/Services/Import/CsvImportBase.php:159
+#: lib/SP/Services/Import/CsvImportBase.php:163
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:41
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:47
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:57
@@ -115,8 +116,8 @@ msgstr "Navn"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:40
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:35
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:41
-#: app/modules/web/themes/material-blue/views/account/account.inc:79
-#: app/modules/web/themes/material-blue/views/account/account.inc:81
+#: app/modules/web/themes/material-blue/views/account/account.inc:87
+#: app/modules/web/themes/material-blue/views/account/account.inc:89
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
@@ -124,8 +125,8 @@ msgid "Client"
 msgstr "Viðskifti"
 
 #: app/modules/api/Controllers/AccountController.php:102
-#: app/modules/web/Controllers/AccountController.php:653
-#: app/modules/web/Controllers/AccountController.php:713
+#: app/modules/web/Controllers/AccountController.php:656
+#: app/modules/web/Controllers/AccountController.php:716
 msgid "Password viewed"
 msgstr "Loyniorð víst"
 
@@ -277,11 +278,11 @@ msgstr "Send frágreiðing í svarinum"
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:89
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:92
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:101
-#: app/modules/web/themes/material-blue/views/account/account.inc:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:164
+#: app/modules/web/themes/material-blue/views/account/account.inc:166
+#: app/modules/web/themes/material-blue/views/account/account.inc:175
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:42
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:313
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:316
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:81
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:169
 #: app/modules/web/themes/material-blue/views/config/mail.inc:119
@@ -306,7 +307,7 @@ msgstr "Loyniorð"
 #: app/modules/api/Controllers/Help/AccountHelp.php:114
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:97
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:114
-#: app/modules/web/themes/material-blue/views/account/account.inc:182
+#: app/modules/web/themes/material-blue/views/account/account.inc:195
 #: app/modules/web/themes/material-blue/views/account/details.inc:88
 #: app/modules/web/themes/material-blue/views/account/details.inc:90
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:243
@@ -319,7 +320,7 @@ msgstr "Loyniorðsógildardato"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:29
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:30
-#: app/modules/web/themes/material-blue/views/account/account.inc:74
+#: app/modules/web/themes/material-blue/views/account/account.inc:82
 msgid "Account name"
 msgstr "Kontunavn"
 
@@ -342,14 +343,14 @@ msgstr "Viðskiftaeyðmerki"
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:109
-#: app/modules/web/themes/material-blue/views/account/account.inc:150
+#: app/modules/web/themes/material-blue/views/account/account.inc:160
 msgid "Access user"
-msgstr "Atgongdbrúkari"
+msgstr "Atgongdsbrúkari"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:137
+#: app/modules/web/themes/material-blue/views/account/account.inc:147
 msgid "Access URL or IP"
 msgstr "Atkongd-URL ella -IP"
 
@@ -357,13 +358,13 @@ msgstr "Atkongd-URL ella -IP"
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:134
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:208
+#: app/modules/web/themes/material-blue/views/account/account.inc:227
 msgid "Notes about the account"
 msgstr "Nakað serligt við kontuna"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:202
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:220
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
 msgid "Private Account"
@@ -371,15 +372,15 @@ msgstr "Privatkonta"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:218
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:238
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
 msgid "Private Account for Group"
 msgstr "Privatkonta fyri einari deild"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
-#: app/modules/web/themes/material-blue/views/account/account.inc:253
-#: app/modules/web/themes/material-blue/views/account/account.inc:255
+#: app/modules/web/themes/material-blue/views/account/account.inc:277
+#: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
 msgid "Linked Account"
 msgstr "Leinkjað konta"
@@ -539,13 +540,13 @@ msgstr "Bólkur dagførdur"
 msgid "Group deleted"
 msgstr "Bólkur strikaður"
 
-#: app/modules/api/Init.php:150
+#: app/modules/api/Init.php:152
 msgid "Updating needed"
 msgstr "Tørvur á dagføring"
 
-#: app/modules/web/Controllers/AccountController.php:157
-#: app/modules/web/Controllers/AccountController.php:224
-#: app/modules/web/Controllers/AccountController.php:553
+#: app/modules/web/Controllers/AccountController.php:158
+#: app/modules/web/Controllers/AccountController.php:225
+#: app/modules/web/Controllers/AccountController.php:556
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:60
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:61
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:164
@@ -555,21 +556,21 @@ msgstr "Tørvur á dagføring"
 msgid "Account Details"
 msgstr "Kontufrágreiðing"
 
-#: app/modules/web/Controllers/AccountController.php:248
+#: app/modules/web/Controllers/AccountController.php:251
 msgid "Link viewed"
 msgstr "Leinkja víst"
 
-#: app/modules/web/Controllers/AccountController.php:249
-#: app/modules/web/Controllers/AccountController.php:654
-#: app/modules/web/Controllers/AccountController.php:714
-#: app/modules/web/Controllers/AccountController.php:758
-#: app/modules/web/Controllers/AccountController.php:795
+#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:657
+#: app/modules/web/Controllers/AccountController.php:717
+#: app/modules/web/Controllers/AccountController.php:761
+#: app/modules/web/Controllers/AccountController.php:798
 #: app/modules/web/Controllers/AccountController.php:832
 #: app/modules/web/Controllers/AccountController.php:881
 #: app/modules/web/Controllers/AccountController.php:926
 #: app/modules/web/Controllers/AccountController.php:969
 #: app/modules/web/Controllers/AccountController.php:1023
-#: app/modules/web/Controllers/AccountController.php:1064
+#: app/modules/web/Controllers/AccountController.php:1070
 #: app/modules/web/Controllers/AccountFileController.php:245
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:120
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:159
@@ -577,84 +578,83 @@ msgstr "Leinkja víst"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:108
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:25
-#: app/modules/web/themes/material-blue/views/account/account.inc:30
+#: app/modules/web/themes/material-blue/views/account/account.inc:31
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:23
 msgid "Account"
 msgstr "Konta"
 
-#: app/modules/web/Controllers/AccountController.php:251
+#: app/modules/web/Controllers/AccountController.php:254
 msgid "Agent"
 msgstr "Agentur"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 msgid "HTTPS"
 msgstr "HTTPS"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
 msgstr "TENDRAÐ"
 
-#: app/modules/web/Controllers/AccountController.php:252
+#: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 msgid "OFF"
 msgstr "SLØKT"
 
-#: app/modules/web/Controllers/AccountController.php:253
+#: app/modules/web/Controllers/AccountController.php:256
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
 msgstr "IP"
 
-#. (itstool) path: strings/text
-#: app/modules/web/Controllers/AccountController.php:254
-#: app/modules/web/Controllers/AccountController.php:1067
-#: app/modules/web/Controllers/PublicLinkController.php:261
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90 app/config/strings.xml:9
+#: app/modules/web/Controllers/AccountController.php:257
+#: app/modules/web/Controllers/AccountController.php:1073
+#: app/modules/web/Controllers/PublicLinkController.php:264
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
 msgid "Link"
 msgstr "Leinkja"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:287
-#: app/modules/web/Controllers/AccountController.php:339
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:275
-#: app/config/actions.xml:157
+#: app/modules/web/Controllers/AccountController.php:290
+#: app/modules/web/Controllers/AccountController.php:342
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:274
+#: app/resources/actions.xml:157
 msgid "New Account"
 msgstr "Nýggj konta"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:393
+#: app/modules/web/Controllers/AccountController.php:396
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:20
-#: app/config/actions.xml:163
+#: app/resources/actions.xml:163
 msgid "Edit Account"
 msgstr "Ritstjórna kontu"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:448
+#: app/modules/web/Controllers/AccountController.php:451
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:335
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
-#: app/config/actions.xml:169 app/config/actions.xml:487
-#: app/config/actions.xml:799
+#: app/resources/actions.xml:169 app/resources/actions.xml:487
+#: app/resources/actions.xml:799
 msgid "Remove Account"
 msgstr "Strika kontu"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/AccountController.php:501
+#: app/modules/web/Controllers/AccountController.php:504
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
-#: app/config/actions.xml:181
+#: app/resources/actions.xml:181
 msgid "Edit Account Password"
 msgstr "Broyt kontuloyniorð"
 
-#: app/modules/web/Controllers/AccountController.php:757
-#: app/modules/web/Controllers/AccountController.php:794
+#: app/modules/web/Controllers/AccountController.php:760
+#: app/modules/web/Controllers/AccountController.php:797
 msgid "Password copied"
 msgstr "Loyniorð avritað"
 
@@ -679,7 +679,7 @@ msgstr "Kontur strikaðir"
 msgid "A description is needed"
 msgstr "Ein frágreiðing krevst"
 
-#: app/modules/web/Controllers/AccountController.php:1062
+#: app/modules/web/Controllers/AccountController.php:1068
 #: lib/SP/Providers/Notification/NotificationHandler.php:124
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:46
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:47
@@ -687,11 +687,11 @@ msgstr "Ein frágreiðing krevst"
 msgid "Request"
 msgstr "Umbøn"
 
-#: app/modules/web/Controllers/AccountController.php:1063
+#: app/modules/web/Controllers/AccountController.php:1069
 msgid "Requester"
 msgstr "Umboðari"
 
-#: app/modules/web/Controllers/AccountController.php:1066
+#: app/modules/web/Controllers/AccountController.php:1072
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:106
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:105
@@ -705,7 +705,7 @@ msgstr "Umboðari"
 msgid "Description"
 msgstr "Frágreiðing"
 
-#: app/modules/web/Controllers/AccountController.php:1079
+#: app/modules/web/Controllers/AccountController.php:1088
 msgid "Request done"
 msgstr "Umbøn liðug"
 
@@ -735,15 +735,15 @@ msgstr "Fílan víst"
 #: app/modules/web/Controllers/ConfigBackupController.php:163
 #: app/modules/web/Controllers/ConfigBackupController.php:209
 #: app/modules/web/Controllers/ConfigBackupController.php:255
-#: app/modules/web/Controllers/ConfigGeneralController.php:207
-#: app/modules/web/Controllers/ConfigGeneralController.php:248
+#: app/modules/web/Controllers/ConfigGeneralController.php:209
+#: app/modules/web/Controllers/ConfigGeneralController.php:250
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:72
 msgid "File"
 msgstr "Fíla"
 
 #: app/modules/web/Controllers/AccountFileController.php:117
-#: app/config/strings.js.inc:40
+#: app/resources/strings.js.inc:40
 msgid "File not supported for preview"
 msgstr "Fílan stuðlar ikki undansýning"
 
@@ -751,9 +751,9 @@ msgstr "Fílan stuðlar ikki undansýning"
 #: app/modules/web/Controllers/ConfigBackupController.php:162
 #: app/modules/web/Controllers/ConfigBackupController.php:208
 #: app/modules/web/Controllers/ConfigBackupController.php:254
-#: app/modules/web/Controllers/ConfigGeneralController.php:206
-#: app/modules/web/Controllers/ConfigGeneralController.php:247
-#: app/config/strings.js.inc:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:208
+#: app/modules/web/Controllers/ConfigGeneralController.php:249
+#: app/resources/strings.js.inc:97
 msgid "File downloaded"
 msgstr "Fíla tikin niður"
 
@@ -874,17 +874,17 @@ msgstr "MIME-slag: %s"
 #: app/modules/web/Controllers/NotificationController.php:312
 #: app/modules/web/Controllers/NotificationController.php:343
 #: app/modules/web/Controllers/NotificationController.php:380
-#: app/modules/web/Controllers/PluginController.php:111
-#: app/modules/web/Controllers/PluginController.php:133
-#: app/modules/web/Controllers/PluginController.php:285
-#: app/modules/web/Controllers/PublicLinkController.php:74
-#: app/modules/web/Controllers/PublicLinkController.php:111
-#: app/modules/web/Controllers/PublicLinkController.php:175
-#: app/modules/web/Controllers/PublicLinkController.php:205
-#: app/modules/web/Controllers/PublicLinkController.php:239
-#: app/modules/web/Controllers/PublicLinkController.php:284
-#: app/modules/web/Controllers/PublicLinkController.php:320
-#: app/modules/web/Controllers/PublicLinkController.php:366
+#: app/modules/web/Controllers/PluginController.php:116
+#: app/modules/web/Controllers/PluginController.php:138
+#: app/modules/web/Controllers/PluginController.php:291
+#: app/modules/web/Controllers/PublicLinkController.php:75
+#: app/modules/web/Controllers/PublicLinkController.php:112
+#: app/modules/web/Controllers/PublicLinkController.php:178
+#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:242
+#: app/modules/web/Controllers/PublicLinkController.php:287
+#: app/modules/web/Controllers/PublicLinkController.php:323
+#: app/modules/web/Controllers/PublicLinkController.php:369
 #: app/modules/web/Controllers/TagController.php:68
 #: app/modules/web/Controllers/TagController.php:105
 #: app/modules/web/Controllers/TagController.php:167
@@ -951,7 +951,7 @@ msgstr "Kontur dagførdar"
 #: app/modules/web/Controllers/AccountManagerController.php:216
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:199
-#: app/config/actions.xml:493
+#: app/resources/actions.xml:493
 msgid "Bulk Update"
 msgstr "Stórdagføring"
 
@@ -1008,8 +1008,8 @@ msgstr "Heimild víst"
 #: app/modules/web/Controllers/CategoryController.php:109
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
-#: app/modules/web/themes/material-blue/views/account/account.inc:119
-#: app/config/actions.xml:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:129
+#: app/resources/actions.xml:307
 msgid "New Category"
 msgstr "Nýggjur bólkur"
 
@@ -1017,7 +1017,7 @@ msgstr "Nýggjur bólkur"
 #: app/modules/web/Controllers/CategoryController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
-#: app/config/actions.xml:313
+#: app/resources/actions.xml:313
 msgid "Edit Category"
 msgstr "Ritstjórna bólk"
 
@@ -1029,7 +1029,7 @@ msgstr "Bólkar strikaðir"
 #: app/modules/web/Controllers/CategoryController.php:232
 #: app/modules/web/Controllers/CategoryController.php:270
 #: app/modules/web/Controllers/CategoryController.php:314
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:247
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:251
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:115
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:106
 #: lib/SP/Services/Import/KeepassImport.php:104
@@ -1037,8 +1037,8 @@ msgstr "Bólkar strikaðir"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:74
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:45
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:51
-#: app/modules/web/themes/material-blue/views/account/account.inc:104
-#: app/modules/web/themes/material-blue/views/account/account.inc:106
+#: app/modules/web/themes/material-blue/views/account/account.inc:113
+#: app/modules/web/themes/material-blue/views/account/account.inc:115
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:70
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
@@ -1047,7 +1047,7 @@ msgstr "Bólkur"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:345
-#: app/config/actions.xml:301
+#: app/resources/actions.xml:301
 msgid "View Category"
 msgstr "Vís bólkin"
 
@@ -1055,8 +1055,8 @@ msgstr "Vís bólkin"
 #: app/modules/web/Controllers/ClientController.php:110
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
-#: app/modules/web/themes/material-blue/views/account/account.inc:94
-#: app/config/actions.xml:337
+#: app/modules/web/themes/material-blue/views/account/account.inc:103
+#: app/resources/actions.xml:337
 msgid "New Client"
 msgstr "Nýggjur viðskifti"
 
@@ -1064,7 +1064,7 @@ msgstr "Nýggjur viðskifti"
 #: app/modules/web/Controllers/ClientController.php:176
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
-#: app/config/actions.xml:343
+#: app/resources/actions.xml:343
 msgid "Edit Client"
 msgstr "Ritstjórna viðskifan"
 
@@ -1075,7 +1075,7 @@ msgstr "Viðskiftar strikaðir"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:336
-#: app/config/actions.xml:331
+#: app/resources/actions.xml:331
 msgid "View Client"
 msgstr "Vís viðskiftan"
 
@@ -1104,8 +1104,8 @@ msgstr "Almannaleinkjur óvirknar"
 #: app/modules/web/Controllers/ConfigBackupController.php:241
 #: app/modules/web/Controllers/ConfigEncryptionController.php:125
 #: app/modules/web/Controllers/ConfigEncryptionController.php:188
-#: app/modules/web/Controllers/ConfigGeneralController.php:195
-#: app/modules/web/Controllers/ConfigGeneralController.php:241
+#: app/modules/web/Controllers/ConfigGeneralController.php:197
+#: app/modules/web/Controllers/ConfigGeneralController.php:243
 #: app/modules/web/Controllers/ConfigImportController.php:59
 #: app/modules/web/Controllers/ConfigLdapController.php:233
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:55
@@ -1132,7 +1132,7 @@ msgstr "Dátuútflytingarváttan liðug"
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:309
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:334
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:166
-#: app/modules/web/themes/material-blue/views/config/info.inc:49
+#: app/modules/web/themes/material-blue/views/config/info.inc:55
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:34
 msgid "Version"
 msgstr "Útgáva"
@@ -1145,12 +1145,12 @@ msgid "Encrypted"
 msgstr "Bronglað"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "Yes"
 msgstr "Ja"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
-#: app/modules/web/themes/material-blue/views/config/info.inc:140
+#: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "No"
 msgstr "Nei"
 
@@ -1163,7 +1163,7 @@ msgstr "Nei"
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:74
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:25
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:394
-#: app/config/actions.xml:13
+#: app/resources/actions.xml:13
 msgid "Accounts"
 msgstr "Kontur"
 
@@ -1183,8 +1183,8 @@ msgstr "Bólkar"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:212
-#: app/modules/web/themes/material-blue/views/account/account.inc:214
+#: app/modules/web/themes/material-blue/views/account/account.inc:231
+#: app/modules/web/themes/material-blue/views/account/account.inc:233
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
@@ -1241,10 +1241,12 @@ msgid "The current master password does not match"
 msgstr "Núverandi yvirloyniorðið samsvarar ikki"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
 msgstr ""
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
 
@@ -1268,8 +1270,8 @@ msgid "Temporary password generated"
 msgstr "Fyribilsloyniorð gjørd"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:234
-#: app/modules/web/Controllers/ConfigMailController.php:155
 #: app/modules/web/Controllers/ConfigMailController.php:161
+#: app/modules/web/Controllers/ConfigMailController.php:167
 #: lib/SP/Services/Mail/MailService.php:149
 msgid "Email sent"
 msgstr "Teldupostur sendur"
@@ -1280,35 +1282,35 @@ msgstr "Teldupostur sendur"
 msgid "Error while sending the email"
 msgstr "Ein feilur hendi ímeðan telduposturin var sendur"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:97
+#: app/modules/web/Controllers/ConfigGeneralController.php:99
 msgid "Missing remote syslog parameters"
 msgstr "Fjarløgdu kervisskráarviðurskiftini mangla"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:105
+#: app/modules/web/Controllers/ConfigGeneralController.php:107
 msgid "Remote syslog enabled"
 msgstr "Fjarløgd kervisskrá virking"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:110
+#: app/modules/web/Controllers/ConfigGeneralController.php:112
 msgid "Remote syslog disabled"
 msgstr "Fjarløgd kervisskrá óvirking"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:123
+#: app/modules/web/Controllers/ConfigGeneralController.php:125
 msgid "Missing Proxy parameters "
 msgstr "Fulltrúarviðurskiftini mangla "
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:137
+#: app/modules/web/Controllers/ConfigGeneralController.php:139
 msgid "Proxy enabled"
 msgstr "Fulltrúi virkin"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:142
+#: app/modules/web/Controllers/ConfigGeneralController.php:144
 msgid "Proxy disabled"
 msgstr "Fulltrúi óvirkin"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:161
+#: app/modules/web/Controllers/ConfigGeneralController.php:163
 msgid "Auth Basic enabled"
 msgstr "Auth Basic virkin"
 
-#: app/modules/web/Controllers/ConfigGeneralController.php:167
+#: app/modules/web/Controllers/ConfigGeneralController.php:169
 msgid "Auth Basic disabled"
 msgstr "Auth Basic óvirkin"
 
@@ -1347,8 +1349,8 @@ msgid "LDAP disabled"
 msgstr "LDAP óvirki"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:98
-#: app/modules/web/Controllers/ConfigMailController.php:108
-#: app/config/strings.js.inc:80
+#: app/modules/web/Controllers/ConfigMailController.php:111
+#: app/resources/strings.js.inc:80
 msgid "No changes"
 msgstr "Ongar broytingar"
 
@@ -1397,24 +1399,24 @@ msgid "Errors: %d"
 msgstr "Feilir: %d"
 
 #: app/modules/web/Controllers/ConfigMailController.php:74
-#: app/modules/web/Controllers/ConfigMailController.php:142
+#: app/modules/web/Controllers/ConfigMailController.php:147
 msgid "Missing Mail parameters"
 msgstr "Teldupostviðurskifti mangla"
 
-#: app/modules/web/Controllers/ConfigMailController.php:99
+#: app/modules/web/Controllers/ConfigMailController.php:102
 msgid "Mail enabled"
 msgstr "Teldupost virkin"
 
-#: app/modules/web/Controllers/ConfigMailController.php:106
+#: app/modules/web/Controllers/ConfigMailController.php:109
 msgid "Mail disabled"
 msgstr "Teldupost óvirkin"
 
-#: app/modules/web/Controllers/ConfigMailController.php:156
+#: app/modules/web/Controllers/ConfigMailController.php:162
 #: lib/SP/Services/Mail/MailService.php:150
 msgid "Recipient"
 msgstr "Móttakari"
 
-#: app/modules/web/Controllers/ConfigMailController.php:162
+#: app/modules/web/Controllers/ConfigMailController.php:168
 msgid "Please, check your inbox"
 msgstr "Vinarliga kanna tín boðkliva"
 
@@ -1429,7 +1431,7 @@ msgstr "Alment"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigManagerController.php:207
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:17
-#: app/config/actions.xml:37
+#: app/resources/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -1462,7 +1464,7 @@ msgstr "Eingin útflutningsfíla funnin"
 #: app/modules/web/themes/material-blue/views/config/backup.inc:25
 #: app/modules/web/themes/material-blue/views/config/backup.inc:79
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
-#: app/config/actions.xml:739
+#: app/resources/actions.xml:739
 msgid "Backup"
 msgstr "Trygdardavrit"
 
@@ -1519,16 +1521,16 @@ msgstr "Rein gjørd"
 
 #: app/modules/web/Controllers/CustomFieldController.php:255
 #: app/modules/web/Controllers/CustomFieldController.php:296
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:157
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:97
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:188
 msgid "Field"
 msgstr "Rein"
 
 #: app/modules/web/Controllers/CustomFieldController.php:295
 #: app/modules/web/Controllers/CustomFieldController.php:299
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:87
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:156
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:96
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:187
 msgid "Field updated"
 msgstr "Rein dagførd"
 
@@ -1590,10 +1592,10 @@ msgstr "Vís núverandi"
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:67
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:366
 #: app/modules/web/themes/material-blue/views/config/backup.inc:174
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:310
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:330
 #: app/modules/web/themes/material-blue/views/config/general.inc:27
 #: app/modules/web/themes/material-blue/views/config/import.inc:91
-#: app/modules/web/themes/material-blue/views/config/info.inc:193
+#: app/modules/web/themes/material-blue/views/config/info.inc:199
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:304
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:449
 #: app/modules/web/themes/material-blue/views/config/mail.inc:206
@@ -1629,21 +1631,21 @@ msgstr "Goym"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:354
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:355
-#: app/config/actions.xml:439
+#: app/resources/actions.xml:439
 msgid "Update Public Link"
 msgstr "Dagfør almenna leinkju"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:377
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:378
-#: app/config/actions.xml:433
+#: app/resources/actions.xml:433
 msgid "Delete Public Link"
 msgstr "Strika almenna leinkju"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:397
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:398
-#: app/config/actions.xml:421
+#: app/resources/actions.xml:421
 msgid "Create Public Link"
 msgstr "Ger almenna leinkju"
 
@@ -1654,7 +1656,7 @@ msgstr "Ger almenna leinkju"
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:464
 #: app/modules/web/themes/material-blue/inc/Icons.php:34
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:69
-#: app/config/actions.xml:175 app/config/actions.xml:265
+#: app/resources/actions.xml:175 app/resources/actions.xml:265
 msgid "View password"
 msgstr "Vís loyniorð"
 
@@ -1668,12 +1670,12 @@ msgstr "Avrita loyniorð til setiborðið"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:508
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:509
-#: app/config/actions.xml:193
+#: app/resources/actions.xml:193
 msgid "Copy Account"
 msgstr "Avrita kontu"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:69
-#: app/config/strings.js.inc:72
+#: app/resources/strings.js.inc:72
 msgid "Account Password"
 msgstr "Kontuloyniorð"
 
@@ -1683,24 +1685,24 @@ msgstr "Kontuloyniorð"
 msgid "You don't have permission to access this account"
 msgstr "Tú hevur ikki loyvi til at síggja kontuna"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:177
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:178
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:181
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:182
 msgid "More Actions"
 msgstr "Fleiri gerningar"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:234
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:238
 msgid "Sort by Client"
 msgstr "Raða eftir viðskifta"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:241
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:245
 msgid "Sort by Name"
 msgstr "Raða eftir navni"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:248
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:252
 msgid "Sort by Category"
 msgstr "Raða eftir bólki"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:254
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:258
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:112
@@ -1712,11 +1714,11 @@ msgstr "Raða eftir bólki"
 #: app/modules/web/Controllers/UserController.php:446
 #: app/modules/web/Controllers/UserPassResetController.php:215
 #: lib/SP/Core/Acl/Acl.php:301 lib/SP/Providers/Auth/Ldap/LdapMsAds.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:144
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:113
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:111
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:143
 #: lib/SP/Services/Auth/LoginService.php:230
@@ -1731,11 +1733,11 @@ msgstr "Raða eftir bólki"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:101
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:67
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:73
-#: app/modules/web/themes/material-blue/views/account/account.inc:142
+#: app/modules/web/themes/material-blue/views/account/account.inc:152
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:76
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:25
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:67
-#: app/modules/web/themes/material-blue/views/config/info.inc:61
+#: app/modules/web/themes/material-blue/views/config/info.inc:67
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:106
 #: app/modules/web/themes/material-blue/views/config/mail.inc:113
@@ -1758,22 +1760,22 @@ msgstr "Raða eftir bólki"
 msgid "User"
 msgstr "Brúkari"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:255
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:259
 msgid "Sort by Username"
 msgstr "Raða eftir brúkara"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:261
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:265
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:52
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:58
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:88
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:56
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:62
-#: app/modules/web/themes/material-blue/views/account/account.inc:129
+#: app/modules/web/themes/material-blue/views/account/account.inc:139
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:81
 msgid "URL / IP"
 msgstr "URL / IP"
 
-#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:262
+#: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:266
 msgid "Sort by URL / IP"
 msgstr "Raða eftir URL / IP"
 
@@ -1811,14 +1813,14 @@ msgid "Delete Selected"
 msgstr "Strika valdu"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:116
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:165
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:176
 #: app/modules/web/themes/material-blue/views/account/details.inc:42
 #: app/modules/web/themes/material-blue/views/account/details.inc:44
 msgid "Owner"
 msgstr "Eigari"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:117
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:182
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:200
 #: app/modules/web/themes/material-blue/views/account/details.inc:50
 #: app/modules/web/themes/material-blue/views/account/details.inc:52
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:79
@@ -1829,7 +1831,7 @@ msgstr "Yvirdeild"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:149
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:145
-#: app/config/actions.xml:499 app/config/actions.xml:805
+#: app/resources/actions.xml:499 app/resources/actions.xml:805
 msgid "Search for Account"
 msgstr "Leita eftir kontu"
 
@@ -1842,7 +1844,7 @@ msgstr "Kontur (H)"
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:100
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:106
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:122
-#: app/modules/web/themes/material-blue/views/account/account.inc:191
+#: app/modules/web/themes/material-blue/views/account/account.inc:208
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:251
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
@@ -1867,7 +1869,7 @@ msgstr "Strikað"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:161
-#: app/config/actions.xml:187 app/config/actions.xml:811
+#: app/resources/actions.xml:187 app/resources/actions.xml:811
 msgid "Account Restore"
 msgstr "Kontuendurgerðing"
 
@@ -1899,42 +1901,42 @@ msgstr "Strika heimild"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:137
-#: app/config/actions.xml:325
+#: app/resources/actions.xml:325
 msgid "Search for Category"
 msgstr "Leita eftir bólki"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:187
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:188
-#: app/config/actions.xml:319
+#: app/resources/actions.xml:319
 msgid "Delete Category"
 msgstr "Strika bólkin"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:66
+#: app/resources/strings.js.inc:66
 msgid "YES"
 msgstr "JA"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
-#: app/config/strings.js.inc:67
+#: app/resources/strings.js.inc:67
 msgid "NO"
 msgstr "NEI"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:140
-#: app/config/actions.xml:355
+#: app/resources/actions.xml:355
 msgid "Search for Client"
 msgstr "Leita eftir viðskifta"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:191
-#: app/config/actions.xml:349
+#: app/resources/actions.xml:349
 msgid "Delete Client"
 msgstr "Strika viðskiftan"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:95
-#: app/modules/web/themes/material-blue/views/account/account.inc:33
+#: app/modules/web/themes/material-blue/views/account/account.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:346
 msgid "Custom Fields"
 msgstr "Tillagaðir reinir"
@@ -1963,7 +1965,7 @@ msgstr "Strika rein"
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
 #: app/modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:514
-#: app/config/actions.xml:133
+#: app/resources/actions.xml:133
 msgid "Event Log"
 msgstr "Hendingarskrá"
 
@@ -1997,7 +1999,7 @@ msgstr "Rita inn"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:165
-#: app/config/actions.xml:139
+#: app/resources/actions.xml:139
 msgid "Search for Events"
 msgstr "Leita eftir hendingar"
 
@@ -2008,24 +2010,24 @@ msgstr "Leita eftir hendingar"
 msgid "Refresh"
 msgstr "Endurskapa"
 
-#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:199
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
+#: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
 msgid "Clear the event log out"
 msgstr "Tváa hendingarskráina"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
-#: app/modules/web/themes/material-blue/views/account/account.inc:41
+#: app/modules/web/themes/material-blue/views/account/account.inc:45
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:279
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:410
-#: app/config/actions.xml:19
+#: app/resources/actions.xml:19
 msgid "Files"
 msgstr "Fílur"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:145
-#: app/config/actions.xml:475
+#: app/resources/actions.xml:475
 msgid "Search for File"
 msgstr "Leita eftir fílu"
 
@@ -2033,7 +2035,7 @@ msgstr "Leita eftir fílu"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:161
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:51
-#: app/config/actions.xml:205 app/config/actions.xml:451
+#: app/resources/actions.xml:205 app/resources/actions.xml:451
 msgid "View File"
 msgstr "Vís fílu"
 
@@ -2041,7 +2043,7 @@ msgstr "Vís fílu"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:178
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:179
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:42
-#: app/config/actions.xml:217 app/config/actions.xml:457
+#: app/resources/actions.xml:217 app/resources/actions.xml:457
 msgid "Download File"
 msgstr "Tak fílu niður"
 
@@ -2049,7 +2051,7 @@ msgstr "Tak fílu niður"
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:199
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:34
-#: app/config/actions.xml:223 app/config/actions.xml:463
+#: app/resources/actions.xml:223 app/resources/actions.xml:463
 msgid "Delete File"
 msgstr "Strika fílu"
 
@@ -2062,18 +2064,18 @@ msgstr "Føst virði"
 #: app/modules/web/Controllers/UserGroupController.php:242
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:122
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:114
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:147
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:157
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:146
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:156
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:112
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:144
 #: lib/SP/Services/Ldap/LdapImportService.php:138
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:133
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:25
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:274
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:277
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:293
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:296
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:215
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:242
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
@@ -2107,12 +2109,12 @@ msgstr "Noytt"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:148
-#: app/config/actions.xml:859
+#: app/resources/actions.xml:859
 msgid "Search for Value"
 msgstr "Leita eftir virði"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:163
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:66
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:67
 msgid "Permission Preset"
 msgstr "Loyvisfyristillingur"
 
@@ -2121,7 +2123,7 @@ msgid "New Permission Preset"
 msgstr "Nýggjur loyvisfyristillingur"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:187
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:86
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:87
 msgid "Private Account Preset"
 msgstr "Privatkontufyristillingur"
 
@@ -2130,7 +2132,7 @@ msgid "New Private Account Preset"
 msgstr "Nýggjur privatkontufyristillingur"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:211
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:102
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:103
 msgid "Session Timeout Preset"
 msgstr "Setusavbrótingarfyristillingur"
 
@@ -2139,7 +2141,7 @@ msgid "New Session Timeout Preset"
 msgstr "Nýggjur setusavbrótingarfyristillingur"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:235
-#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:117
+#: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:118
 msgid "Account Password Preset"
 msgstr "Kontuloyniorðsfyristillingur"
 
@@ -2151,14 +2153,14 @@ msgstr "Nýggjur kontuloyniorðsfyristillingur"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
 #: app/modules/web/Controllers/ItemPresetController.php:243
-#: app/config/actions.xml:877
+#: app/resources/actions.xml:877
 msgid "Edit Value"
 msgstr "Ritstjórna virði"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:276
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:277
-#: app/config/actions.xml:883
+#: app/resources/actions.xml:883
 msgid "Delete Value"
 msgstr "Strika virði"
 
@@ -2167,7 +2169,7 @@ msgstr "Strika virði"
 #: app/modules/web/themes/material-blue/inc/Icons.php:65
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:106
 #: app/modules/web/themes/material-blue/views/notification/index.inc:1
-#: app/config/actions.xml:685
+#: app/resources/actions.xml:685
 msgid "Notifications"
 msgstr "Fráboðanir"
 
@@ -2190,7 +2192,7 @@ msgstr "Bara fyrisitarir"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:171
-#: app/config/actions.xml:847
+#: app/resources/actions.xml:847
 msgid "Search for Notification"
 msgstr "Leita eftir fráboðan"
 
@@ -2204,14 +2206,14 @@ msgstr "Nýggj fráboðan"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:204
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:205
 #: app/modules/web/Controllers/NotificationController.php:113
-#: app/config/actions.xml:817
+#: app/resources/actions.xml:817
 msgid "View Notification"
 msgstr "Vís fráboðan"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:234
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
-#: app/config/actions.xml:841
+#: app/resources/actions.xml:841
 msgid "Checkout Notification"
 msgstr "Fráfar fráboðan"
 
@@ -2219,25 +2221,26 @@ msgstr "Fráfar fráboðan"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:253
 #: app/modules/web/Controllers/NotificationController.php:230
-#: app/config/actions.xml:829
+#: app/resources/actions.xml:829
 msgid "Edit Notification"
 msgstr "Ritstjórna fráboðan"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:269
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:270
-#: app/config/actions.xml:835
+#: app/resources/actions.xml:835
 msgid "Delete Notification"
 msgstr "Strika fráboðan"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:96
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:331
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:330
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
 msgstr "Ískoytisforrit"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:108
-#: lib/SP/Plugin/PluginManager.php:194
+#: lib/SP/Plugin/PluginManager.php:206 lib/SP/Plugin/PluginManager.php:262
+#: lib/SP/Plugin/PluginManager.php:420
 msgid "Plugin"
 msgstr "Ískoytisforrit"
 
@@ -2247,15 +2250,15 @@ msgstr "Ikk til taks"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:141
-#: app/config/actions.xml:547
+#: app/resources/actions.xml:547
 msgid "Search for Plugin"
 msgstr "Leita eftir ískoytisforrit"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:156
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:157
-#: app/modules/web/Controllers/PluginController.php:136
-#: app/config/actions.xml:541
+#: app/modules/web/Controllers/PluginController.php:141
+#: app/resources/actions.xml:541
 msgid "View Plugin"
 msgstr "Vís ískoytisforrit"
 
@@ -2277,12 +2280,12 @@ msgstr "Endurset dáta"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:231
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:232
-#: app/config/actions.xml:571
+#: app/resources/actions.xml:571
 msgid "Delete Plugin"
 msgstr "Strika ískoytisforrit"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:96
-#: app/modules/web/themes/material-blue/views/account/account.inc:49
+#: app/modules/web/themes/material-blue/views/account/account.inc:55
 msgid "Links"
 msgstr "Leinkjur"
 
@@ -2326,7 +2329,7 @@ msgstr "Nýggja leinkju"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:184
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:185
-#: app/modules/web/Controllers/PublicLinkController.php:369
+#: app/modules/web/Controllers/PublicLinkController.php:372
 msgid "View Link"
 msgstr "Vís leinkju"
 
@@ -2342,7 +2345,7 @@ msgstr "Strika leinkju"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:135
-#: app/config/actions.xml:529
+#: app/resources/actions.xml:529
 msgid "Search for Tag"
 msgstr "Leita eftir merki"
 
@@ -2350,22 +2353,23 @@ msgstr "Leita eftir merki"
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:108
-#: app/modules/web/themes/material-blue/views/account/account.inc:227
-#: app/config/actions.xml:505
+#: app/modules/web/themes/material-blue/views/account/account.inc:247
+#: app/resources/actions.xml:505
 msgid "New Tag"
 msgstr "Nýtt merki"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
-#: app/modules/web/Controllers/TagController.php:170 app/config/actions.xml:517
+#: app/modules/web/Controllers/TagController.php:170
+#: app/resources/actions.xml:517
 msgid "Edit Tag"
 msgstr "Ritstjórna merki"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:185
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:186
-#: app/config/actions.xml:523
+#: app/resources/actions.xml:523
 msgid "Delete Tag"
 msgstr "Strika merki"
 
@@ -2383,7 +2387,7 @@ msgstr "Kelda"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
-#: app/config/actions.xml:895
+#: app/resources/actions.xml:895
 msgid "Search for track"
 msgstr "Leita eftir spori"
 
@@ -2401,7 +2405,7 @@ msgstr "Brúkarir"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
-#: app/config/actions.xml:607
+#: app/resources/actions.xml:607
 msgid "Search for User"
 msgstr "Leita eftir brúkara"
 
@@ -2409,7 +2413,7 @@ msgstr "Leita eftir brúkara"
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:163
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:164
 #: app/modules/web/Controllers/UserController.php:115
-#: app/config/actions.xml:583
+#: app/resources/actions.xml:583
 msgid "New User"
 msgstr "Nýggjur brúkari"
 
@@ -2417,14 +2421,14 @@ msgstr "Nýggjur brúkari"
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:182
 #: app/modules/web/Controllers/UserController.php:202
-#: app/config/actions.xml:589
+#: app/resources/actions.xml:589
 msgid "Edit User"
 msgstr "Ritstjórna brúkara"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:199
-#: app/config/actions.xml:595
+#: app/resources/actions.xml:595
 msgid "Delete User"
 msgstr "Strika brúkaran"
 
@@ -2443,7 +2447,7 @@ msgstr "Broyt loyniorð brúkarans"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:95
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:78
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:84
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:88
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:162
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:53
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:266
@@ -2452,7 +2456,7 @@ msgstr "Deildir"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:138
-#: app/config/actions.xml:637
+#: app/resources/actions.xml:637
 msgid "Search for Group"
 msgstr "Leita eftir deild"
 
@@ -2460,7 +2464,7 @@ msgstr "Leita eftir deild"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:153
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:154
 #: app/modules/web/Controllers/UserGroupController.php:117
-#: app/config/actions.xml:619
+#: app/resources/actions.xml:619
 msgid "New Group"
 msgstr "Nýggj deild"
 
@@ -2468,7 +2472,7 @@ msgstr "Nýggj deild"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
 #: app/modules/web/Controllers/UserGroupController.php:356
-#: app/config/actions.xml:613
+#: app/resources/actions.xml:613
 msgid "View Group"
 msgstr "Vís deild"
 
@@ -2476,14 +2480,14 @@ msgstr "Vís deild"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
 #: app/modules/web/Controllers/UserGroupController.php:190
-#: app/config/actions.xml:625
+#: app/resources/actions.xml:625
 msgid "Edit Group"
 msgstr "Ritstjórna deild"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:205
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:206
-#: app/config/actions.xml:631
+#: app/resources/actions.xml:631
 msgid "Delete Group"
 msgstr "Strika deild"
 
@@ -2494,7 +2498,7 @@ msgstr "Vangar"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:136
-#: app/config/actions.xml:667
+#: app/resources/actions.xml:667
 msgid "Search for Profile"
 msgstr "Leita eftir vanga"
 
@@ -2502,7 +2506,7 @@ msgstr "Leita eftir vanga"
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:151
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:152
 #: app/modules/web/Controllers/UserProfileController.php:110
-#: app/config/actions.xml:649
+#: app/resources/actions.xml:649
 msgid "New Profile"
 msgstr "Nýggjur vangi"
 
@@ -2515,28 +2519,28 @@ msgstr "Vís vangafrágreiðingar"
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
 #: app/modules/web/Controllers/UserProfileController.php:179
-#: app/config/actions.xml:655
+#: app/resources/actions.xml:655
 msgid "Edit Profile"
 msgstr "Ritstjórna vanga"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:203
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:204
-#: app/config/actions.xml:661
+#: app/resources/actions.xml:661
 msgid "Delete Profile"
 msgstr "Strika vanga"
 
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:262
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:261
 #: app/modules/web/themes/material-blue/inc/Icons.php:58
 msgid "Search"
 msgstr "Leita"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/Helpers/LayoutHelper.php:345
+#: app/modules/web/Controllers/Helpers/LayoutHelper.php:344
 #: app/modules/web/themes/material-blue/inc/Icons.php:61
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:24
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:27
-#: app/config/actions.xml:691
+#: app/resources/actions.xml:691
 msgid "Configuration"
 msgstr "Uppseting"
 
@@ -2554,13 +2558,13 @@ msgstr "Innsetan liðug"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:73
-#: app/config/actions.xml:865
+#: app/resources/actions.xml:865
 msgid "Display Value"
 msgstr "Vís virði"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ItemPresetController.php:209
-#: app/config/actions.xml:871
+#: app/resources/actions.xml:871
 msgid "New Value"
 msgstr "Nýtt virði"
 
@@ -2636,55 +2640,55 @@ msgstr "Fráboðanin gjørd"
 msgid "Notification updated"
 msgstr "Fráboðanin dagførd"
 
-#: app/modules/web/Controllers/PluginController.php:201
-#: app/modules/web/Controllers/PluginController.php:204
+#: app/modules/web/Controllers/PluginController.php:206
+#: app/modules/web/Controllers/PluginController.php:209
 msgid "Plugin enabled"
 msgstr "Ískoytisforrit virkað"
 
-#: app/modules/web/Controllers/PluginController.php:230
-#: app/modules/web/Controllers/PluginController.php:233
-#: lib/SP/Plugin/PluginManager.php:219 lib/SP/Plugin/PluginManager.php:339
+#: app/modules/web/Controllers/PluginController.php:235
+#: app/modules/web/Controllers/PluginController.php:238
+#: lib/SP/Plugin/PluginManager.php:231 lib/SP/Plugin/PluginManager.php:439
 msgid "Plugin disabled"
 msgstr "Ískoytisforrit óvirkað"
 
-#: app/modules/web/Controllers/PluginController.php:259
-#: app/modules/web/Controllers/PluginController.php:262
+#: app/modules/web/Controllers/PluginController.php:265
+#: app/modules/web/Controllers/PluginController.php:268
 msgid "Plugin reset"
 msgstr "Ískoytisforrit endursett"
 
-#: app/modules/web/Controllers/PluginController.php:293
+#: app/modules/web/Controllers/PluginController.php:299
 msgid "Plugins deleted"
 msgstr "Ískoytisforrit strikað"
 
-#: app/modules/web/Controllers/PluginController.php:299
+#: app/modules/web/Controllers/PluginController.php:305
 msgid "Plugin deleted"
 msgstr "Ískoytisforrit strikað"
 
-#: app/modules/web/Controllers/PublicLinkController.php:114
+#: app/modules/web/Controllers/PublicLinkController.php:115
 msgid "New Public Link"
 msgstr "Nýggja almenna leinkju"
 
-#: app/modules/web/Controllers/PublicLinkController.php:182
+#: app/modules/web/Controllers/PublicLinkController.php:185
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
 msgid "Link updated"
 msgstr "Leinkja dagførd"
 
-#: app/modules/web/Controllers/PublicLinkController.php:208
+#: app/modules/web/Controllers/PublicLinkController.php:211
 msgid "Edit Public Link"
 msgstr "Ritstjórna almenna leinkju"
 
-#: app/modules/web/Controllers/PublicLinkController.php:249
 #: app/modules/web/Controllers/PublicLinkController.php:252
+#: app/modules/web/Controllers/PublicLinkController.php:255
 msgid "Links deleted"
 msgstr "Leinkjur strikaðar"
 
-#: app/modules/web/Controllers/PublicLinkController.php:260
-#: app/modules/web/Controllers/PublicLinkController.php:264
+#: app/modules/web/Controllers/PublicLinkController.php:263
+#: app/modules/web/Controllers/PublicLinkController.php:267
 msgid "Link deleted"
 msgstr "Leinkja strikað"
 
-#: app/modules/web/Controllers/PublicLinkController.php:294
-#: app/modules/web/Controllers/PublicLinkController.php:333
+#: app/modules/web/Controllers/PublicLinkController.php:297
+#: app/modules/web/Controllers/PublicLinkController.php:336
 msgid "Link created"
 msgstr "Leinkja gjørd"
 
@@ -2701,7 +2705,8 @@ msgid "Tags deleted"
 msgstr "Merkir strikað"
 
 #. (itstool) path: action/text
-#: app/modules/web/Controllers/TagController.php:312 app/config/actions.xml:511
+#: app/modules/web/Controllers/TagController.php:312
+#: app/resources/actions.xml:511
 msgid "View Tag"
 msgstr "Vís merki"
 
@@ -2721,8 +2726,8 @@ msgstr "Uppseting dagførd"
 msgid "Error while saving the configuration"
 msgstr "Feilur hendi ímeðan uppsetanin varð dagførd"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:122
-#: app/modules/web/Controllers/Traits/ItemTrait.php:177
+#: app/modules/web/Controllers/Traits/ItemTrait.php:129
+#: app/modules/web/Controllers/Traits/ItemTrait.php:190
 #: lib/SP/Core/Crypt/OldCrypt.php:176 lib/SP/Core/Crypt/OldCrypt.php:188
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:59
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:154
@@ -2730,8 +2735,8 @@ msgstr "Feilur hendi ímeðan uppsetanin varð dagførd"
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:334
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:389
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:417
-#: lib/SP/Services/Account/AccountService.php:227
-#: lib/SP/Services/Account/AccountService.php:232
+#: lib/SP/Services/Account/AccountService.php:240
+#: lib/SP/Services/Account/AccountService.php:245
 #: lib/SP/Services/Api/ApiService.php:129
 #: lib/SP/Services/Api/ApiService.php:229
 #: lib/SP/Services/Api/ApiService.php:237
@@ -2745,28 +2750,28 @@ msgstr "Feilur hendi ímeðan uppsetanin varð dagførd"
 #: lib/SP/Services/CustomField/CustomFieldService.php:203
 #: lib/SP/Services/Export/XmlVerifyService.php:108
 #: lib/SP/Services/Import/XmlFileImport.php:79
-#: lib/SP/Services/User/UserPassService.php:232
+#: lib/SP/Services/User/UserPassService.php:233
 msgid "Internal error"
 msgstr "Innanvortis feilur"
 
-#: app/modules/web/Controllers/Traits/ItemTrait.php:173
+#: app/modules/web/Controllers/Traits/ItemTrait.php:186
 msgid "Error while updating custom field's data"
 msgstr "Feilur hendi ímeðan dátan í tillagaða reinini varð dagførd"
 
-#: app/modules/web/Controllers/UpgradeController.php:67
+#: app/modules/web/Controllers/UpgradeController.php:68
 msgid "The updating need to be confirmed"
 msgstr "Dagføringin skal góðkennast"
 
-#: app/modules/web/Controllers/UpgradeController.php:71
+#: app/modules/web/Controllers/UpgradeController.php:75
 msgid "Wrong security code"
 msgstr "Skeiv trygdarkota"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:101
 #: app/modules/web/themes/material-blue/views/login/index.inc:88
 msgid "Application successfully updated"
 msgstr "Hepnaðist at dagføra forritið"
 
-#: app/modules/web/Controllers/UpgradeController.php:92
+#: app/modules/web/Controllers/UpgradeController.php:102
 msgid "You will be redirected to log in within 5 seconds"
 msgstr "Tú verður sendur aftir til innritingina innan fimm sekund"
 
@@ -2800,7 +2805,7 @@ msgstr "Brúkari dagførdur"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserController.php:477
-#: app/config/actions.xml:577
+#: app/resources/actions.xml:577
 msgid "View User"
 msgstr "Vís brúkaran"
 
@@ -2868,7 +2873,7 @@ msgstr "Vangi dagførdur"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserProfileController.php:347
-#: app/config/actions.xml:643
+#: app/resources/actions.xml:643
 msgid "View Profile"
 msgstr "Vís vanga"
 
@@ -2999,10 +3004,10 @@ msgid "View Details"
 msgstr "Vís frágreiðingar"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:35
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:64
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:68
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:132
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:136
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:72
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:140
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:144
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:148
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:198
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:46
@@ -3069,7 +3074,7 @@ msgid "Restore"
 msgstr "Endurgerð"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
-#: app/config/strings.js.inc:79
+#: app/resources/strings.js.inc:79
 msgid "Help"
 msgstr "Hjálp"
 
@@ -3086,7 +3091,7 @@ msgid "Download"
 msgstr "Tak niður"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:56
-#: app/config/strings.js.inc:85
+#: app/resources/strings.js.inc:85
 msgid "Warning"
 msgstr "Ávaring"
 
@@ -3114,28 +3119,28 @@ msgstr "Fyrsta síðan"
 msgid "Last page"
 msgstr "Síðsta síðan"
 
-#: lib/SP/Bootstrap.php:285
+#: lib/SP/Bootstrap.php:290
 #, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Kravda PHP-útgávan >= %s <= %s"
 
-#: lib/SP/Bootstrap.php:287
+#: lib/SP/Bootstrap.php:292
 msgid "Please update the PHP version to run sysPass"
 msgstr "Vinarliga dagfør PHP-útgávuna fyri at koyra sysPass"
 
-#: lib/SP/Config/ConfigUtil.php:94
-msgid "\"/config\" directory does not exist."
-msgstr "\"/config\" mappan er ikki til."
+#: lib/SP/Config/ConfigUtil.php:102
+msgid "'/app/config' directory does not exist."
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:100
-msgid "Unable to write into \"/config\" directory"
-msgstr "Kann ikki skriva inni í \"/config\" mappuna"
+#: lib/SP/Config/ConfigUtil.php:108
+msgid "Unable to write into '/app/config' directory"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:109
-msgid "\"/config\" directory permissions are wrong"
-msgstr "Loyvisstillingarnar eru skeivar í \"/config\" mappuna"
+#: lib/SP/Config/ConfigUtil.php:117
+msgid "'/app/config' directory permissions are wrong"
+msgstr ""
 
-#: lib/SP/Config/ConfigUtil.php:111
+#: lib/SP/Config/ConfigUtil.php:119
 #, php-format
 msgid "Current: %s - Needed: 750"
 msgstr "Núverandi: %s - Skal vera: 750"
@@ -3198,7 +3203,7 @@ msgstr "Áskoðari ikki innleiðaður"
 msgid "Invalid icons class"
 msgstr "Ógildigur ímyndaflokkur"
 
-#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:127
+#: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
 #, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Kann ikki heinta \"%s\"-formin: %s"
@@ -3217,12 +3222,12 @@ msgstr "Kotumálsfeilur"
 msgid "Invalid XML-RPC response"
 msgstr "Ógildugt XML-RPC-aftursvar"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:75
+#: lib/SP/Mvc/Controller/ControllerTrait.php:65
 msgid "Session not started or timed out"
 msgstr "Setan byrjaði ikki ella breyt av"
 
-#: lib/SP/Mvc/Controller/ControllerTrait.php:127
-#: lib/SP/Mvc/Controller/ControllerTrait.php:141
+#: lib/SP/Mvc/Controller/ControllerTrait.php:116
+#: lib/SP/Mvc/Controller/ControllerTrait.php:130
 msgid "Invalid Action"
 msgstr "Ógyldigur gerningur"
 
@@ -3264,46 +3269,59 @@ msgstr "Ógildugt síluslag"
 msgid "Wrong object type"
 msgstr "Skeivt lutaslag"
 
-#: lib/SP/Mvc/View/Template.php:302 lib/SP/Mvc/View/Template.php:366
+#: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
 #, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Kann ikki heinta \"%s\"-brygdilin"
 
-#: lib/SP/Mvc/View/Template.php:335
+#: lib/SP/Mvc/View/Template.php:336
 #, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Kann ikki at óseta \"%s\"-brigdilin"
 
-#: lib/SP/Mvc/View/Template.php:356
+#: lib/SP/Mvc/View/Template.php:357
 msgid "Template does not contain files"
 msgstr "Formurin inniheldur ongar fílur"
 
-#: lib/SP/Plugin/PluginManager.php:170
+#: lib/SP/Plugin/PluginManager.php:192
 #, php-format
 msgid "Plugin version not compatible (%s)"
 msgstr "Ískoytistforritarútgávan samsvarar ikki (%s)"
 
-#: lib/SP/Plugin/PluginManager.php:192
+#: lib/SP/Plugin/PluginManager.php:204 lib/SP/Plugin/PluginManager.php:260
 #, php-format
 msgid "Unable to load the \"%s\" plugin"
 msgstr "Kann ikki at løða \"%s\"-ístkoytisforritið"
 
-#: lib/SP/Plugin/PluginManager.php:254
+#: lib/SP/Plugin/PluginManager.php:295
 msgid "Plugin available"
 msgstr "Ískoytisforrit til taks"
 
-#: lib/SP/Plugin/PluginManager.php:264
+#: lib/SP/Plugin/PluginManager.php:306
 msgid "Plugin unavailable"
 msgstr "Ískoytisforrit ikki til taks"
 
-#: lib/SP/Plugin/PluginManager.php:294
+#: lib/SP/Plugin/PluginManager.php:339
 msgid "Plugin loaded"
 msgstr "Ískoytisforrita løðað"
 
 #. (itstool) path: action/text
-#: lib/SP/Plugin/PluginManager.php:319 app/config/actions.xml:535
+#: lib/SP/Plugin/PluginManager.php:364 app/resources/actions.xml:535
 msgid "New Plugin"
 msgstr "Nýtt ískoytisforrit"
+
+#: lib/SP/Plugin/PluginManager.php:392
+msgid "Upgrading plugin"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:409
+msgid "Plugin upgraded"
+msgstr ""
+
+#: lib/SP/Plugin/PluginManager.php:418
+#, php-format
+msgid "Unable to upgrade the \"%s\" plugin"
+msgstr ""
 
 #: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
@@ -3322,13 +3340,13 @@ msgstr ""
 msgid "Error while searching the group RDN"
 msgstr "Feilur hendi ímeðan leitað varð í bólka-RDN"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:221
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:231
 msgid "Error while searching the user on LDAP"
 msgstr "Feilur hendi ímeðan leitað varð eftir brúkaranum á LDAP"
 
-#: lib/SP/Providers/Auth/Ldap/LdapActions.php:275
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
+#: lib/SP/Providers/Auth/Ldap/LdapActions.php:287
 msgid "Error while searching objects in base DN"
 msgstr "Feilur hendi ímeðan leitað varð eftir lutum í grundar-DN"
 
@@ -3343,8 +3361,8 @@ msgstr "Kann ikki at sambinda til LDAP-ambætaran"
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:214
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:70
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:39
-#: app/modules/web/themes/material-blue/views/config/info.inc:75
-#: app/modules/web/themes/material-blue/views/config/info.inc:78
+#: app/modules/web/themes/material-blue/views/config/info.inc:81
+#: app/modules/web/themes/material-blue/views/config/info.inc:84
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:93
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:118
 #: app/modules/web/themes/material-blue/views/config/mail.inc:59
@@ -3367,31 +3385,31 @@ msgid "Error while disconnecting from LDAP server"
 msgstr "Feilur hendi ímeðan sambandið skuldi slítast frá LDAP-ambætaran"
 
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:153
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:112
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:155
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
 msgid "User in group verified"
 msgstr "Brúkari í deild góðtikin"
 
-#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:145
-#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:145
+#: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:143
+#: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:144
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
 msgid "User does not belong to the group"
 msgstr "Brúkarin eigur ikki at verða í deildini"
 
-#: lib/SP/Providers/Mail/MailHandler.php:136
+#: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
 msgstr ""
 
-#: lib/SP/Providers/Mail/MailHandler.php:144
-#: lib/SP/Providers/Mail/MailHandler.php:146
+#: lib/SP/Providers/Mail/MailHandler.php:157
+#: lib/SP/Providers/Mail/MailHandler.php:159
 #, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Avrikað av: %s (%s)"
 
-#: lib/SP/Providers/Mail/MailHandler.php:149
+#: lib/SP/Providers/Mail/MailHandler.php:162
 #, php-format
 msgid "IP Address: %s"
 msgstr "IP-atsetur: %s"
@@ -3426,7 +3444,7 @@ msgstr "Feilur hendi ímeðan kontan varð strikað"
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:292
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:315
 #: lib/SP/Repositories/Account/AccountRepository.php:501
-#: lib/SP/Services/Account/AccountService.php:616
+#: lib/SP/Services/Account/AccountService.php:640
 msgid "Error while deleting the accounts"
 msgstr "Feilur hendi ímeðan konturnar vórður strikaðar"
 
@@ -3444,7 +3462,7 @@ msgid "Error while creating the account"
 msgstr "Feilur hendi ímeðan kontan varð gjørd"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:301
-#: lib/SP/Services/Account/AccountService.php:582
+#: lib/SP/Services/Account/AccountService.php:606
 msgid "Error on restoring the account"
 msgstr "Feilur hendi ímeðan kontan varð endurgjørd"
 
@@ -3637,25 +3655,39 @@ msgstr "Feilur hendi ímeðan fráboðanin varð heintað"
 msgid "Error while retrieving the notifications"
 msgstr "Feilur hendi ímeðan fráboðanirnar vórðu heintaðar"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:70
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
+msgid "Error while adding plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
+msgid "Error while updating plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
+msgid "Error while deleting plugin's data"
+msgstr ""
+
+#: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
 msgstr "Feilur hendi ímeðan ískoytistforritið varð skoyt uppí"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:104
-#: lib/SP/Repositories/Plugin/PluginRepository.php:348
-#: lib/SP/Repositories/Plugin/PluginRepository.php:368
-#: lib/SP/Repositories/Plugin/PluginRepository.php:388
-#: lib/SP/Repositories/Plugin/PluginRepository.php:408
-#: lib/SP/Repositories/Plugin/PluginRepository.php:427
+#: lib/SP/Repositories/Plugin/PluginRepository.php:105
+#: lib/SP/Repositories/Plugin/PluginRepository.php:353
+#: lib/SP/Repositories/Plugin/PluginRepository.php:373
+#: lib/SP/Repositories/Plugin/PluginRepository.php:393
+#: lib/SP/Repositories/Plugin/PluginRepository.php:413
+#: lib/SP/Repositories/Plugin/PluginRepository.php:432
 msgid "Error while updating the plugin"
 msgstr "Feilur hendi ímeðan ískoytisforritið varð dagført"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:212
+#: lib/SP/Repositories/Plugin/PluginRepository.php:216
 #: lib/SP/Services/Plugin/PluginService.php:137
 msgid "Error while deleting the plugins"
 msgstr "Feilur hendi ímeðan ískoytisforritini vórðu strikaði"
 
-#: lib/SP/Repositories/Plugin/PluginRepository.php:232
+#: lib/SP/Repositories/Plugin/PluginRepository.php:236
 msgid "Error while deleting the plugin"
 msgstr "Feilur hendi ímeðan ískoytisforriti varð strikað"
 
@@ -3877,17 +3909,17 @@ msgid "File not found"
 msgstr "Fíla ikki funnin"
 
 #: lib/SP/Services/Account/AccountService.php:163
-#: lib/SP/Services/Account/AccountService.php:599
+#: lib/SP/Services/Account/AccountService.php:623
 msgid "Account not found"
 msgstr "Konta ikki funnin"
 
-#: lib/SP/Services/Account/AccountService.php:220
+#: lib/SP/Services/Account/AccountService.php:233
 msgid "Master password not set"
 msgstr "Yvirloyniorð ikki sett"
 
-#: lib/SP/Services/Account/AccountService.php:283
-#: lib/SP/Services/Account/AccountService.php:672
-#: lib/SP/Services/Account/AccountService.php:727
+#: lib/SP/Services/Account/AccountService.php:296
+#: lib/SP/Services/Account/AccountService.php:696
+#: lib/SP/Services/Account/AccountService.php:751
 msgid "The account doesn't exist"
 msgstr "Kontan er ikki til"
 
@@ -4144,14 +4176,14 @@ msgid "Unable to process the XML file"
 msgstr "Kann ikki tilganga XML-fíluna"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:181
-#: lib/SP/Services/Import/SyspassImport.php:176
+#: lib/SP/Services/Import/SyspassImport.php:177
 msgid "Error while checking integrity hash"
 msgstr "Feilur hendi ímeðan heilskaparbronglan varð kannað"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:198
 #: lib/SP/Services/Export/XmlVerifyService.php:228
-#: lib/SP/Services/Import/SyspassImport.php:124
-#: lib/SP/Services/Import/SyspassImport.php:148
+#: lib/SP/Services/Import/SyspassImport.php:125
+#: lib/SP/Services/Import/SyspassImport.php:149
 msgid "Wrong encryption password"
 msgstr "Skeivt brongluloyniorð"
 
@@ -4161,28 +4193,28 @@ msgid "Detected format: %s"
 msgstr "Uppdagað snið: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
-#: lib/SP/Services/Import/CsvImportBase.php:176
+#: lib/SP/Services/Import/CsvImportBase.php:180
 #, php-format
 msgid "Wrong number of fields (%d)"
 msgstr "Skeivt tal av reinum (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
-#: lib/SP/Services/Import/CsvImportBase.php:178
+#: lib/SP/Services/Import/CsvImportBase.php:182
 #, php-format
 msgid "Please, check the CSV file format in line %s"
 msgstr "Vinarliga kanna CSV-fílusniðið á linju %s"
 
-#: lib/SP/Services/Import/CsvImportBase.php:158
+#: lib/SP/Services/Import/CsvImportBase.php:162
 #: lib/SP/Services/Import/KeepassImport.php:103
-#: lib/SP/Services/Import/SyspassImport.php:387
+#: lib/SP/Services/Import/SyspassImport.php:388
 msgid "Account imported"
 msgstr "Kontur innfluttar"
 
-#: lib/SP/Services/Import/CsvImportBase.php:166
+#: lib/SP/Services/Import/CsvImportBase.php:170
 msgid "Error while importing the account"
 msgstr "Feilur hendi ímeðan kontant varð innflutt"
 
-#: lib/SP/Services/Import/CsvImportBase.php:167
+#: lib/SP/Services/Import/CsvImportBase.php:171
 msgid "Error while processing line"
 msgstr "Feilur hendi ímeðan linjan varð tilgingin"
 
@@ -4220,23 +4252,23 @@ msgid "KeePass XML Import"
 msgstr "KeePass XML-innflyting"
 
 #: lib/SP/Services/Import/KeepassImport.php:91
-#: lib/SP/Services/Import/SyspassImport.php:211
+#: lib/SP/Services/Import/SyspassImport.php:212
 msgid "Category imported"
 msgstr "Bólkur innfluttur"
 
-#: lib/SP/Services/Import/SyspassImport.php:58
+#: lib/SP/Services/Import/SyspassImport.php:59
 msgid "sysPass XML Import"
 msgstr "sysPass XML-innflyting"
 
-#: lib/SP/Services/Import/SyspassImport.php:69
+#: lib/SP/Services/Import/SyspassImport.php:70
 msgid "Encryption password not set"
 msgstr "Brongluloyniorð ikki sett"
 
-#: lib/SP/Services/Import/SyspassImport.php:162
+#: lib/SP/Services/Import/SyspassImport.php:163
 msgid "Data unencrypted"
 msgstr "Dáta óbronglað"
 
-#: lib/SP/Services/Import/SyspassImport.php:177
+#: lib/SP/Services/Import/SyspassImport.php:178
 msgid ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
@@ -4244,12 +4276,12 @@ msgstr ""
 "Um tú innflytir eina útfluttaða fílu frá somu keldu, so kann dátan hava "
 "verið í hendur teldusníka"
 
-#: lib/SP/Services/Import/SyspassImport.php:250
-#: lib/SP/Services/Import/SyspassImport.php:290
+#: lib/SP/Services/Import/SyspassImport.php:251
+#: lib/SP/Services/Import/SyspassImport.php:291
 msgid "Client imported"
 msgstr "Viðskiftin innfluttur"
 
-#: lib/SP/Services/Import/SyspassImport.php:326
+#: lib/SP/Services/Import/SyspassImport.php:327
 msgid "Tag imported"
 msgstr "Merki innflutt"
 
@@ -4360,7 +4392,7 @@ msgstr "Ambætarin har dátugrunnurin verður innsettur"
 #: lib/SP/Services/Install/Installer.php:318
 #: lib/SP/Services/Install/Installer.php:369
 msgid "Warn to developer"
-msgstr ""
+msgstr "Ávara forritaran"
 
 #: lib/SP/Services/Install/Installer.php:359
 msgid "Error while creating 'admin' user"
@@ -4373,7 +4405,7 @@ msgstr "Kann ikki kanna sysPassbrúkaran (%s)"
 
 #: lib/SP/Services/Install/MySQL.php:137
 msgid "Please, check the DB connection user rights"
-msgstr ""
+msgstr "Vinarliga kanna dátugrunnarbrúkararættindini"
 
 #: lib/SP/Services/Install/MySQL.php:181
 #, php-format
@@ -4469,6 +4501,13 @@ msgstr "Hetta er ein teldupostarroynd fyri at vátta at uppsetanin riggar."
 msgid "Notification not found"
 msgstr "Fráboðanin ikki funnin"
 
+#: lib/SP/Services/Plugin/PluginDataService.php:97
+#: lib/SP/Services/Plugin/PluginDataService.php:121
+#: lib/SP/Services/Plugin/PluginDataService.php:165
+#: lib/SP/Services/Plugin/PluginDataService.php:183
+msgid "Plugin's data not found"
+msgstr ""
+
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
 #: lib/SP/Services/Plugin/PluginService.php:186
@@ -4480,16 +4519,16 @@ msgstr "Fráboðanin ikki funnin"
 msgid "Plugin not found"
 msgstr "Ískoytisforrit ikki funnið"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:122
-#: lib/SP/Services/PublicLink/PublicLinkService.php:145
-#: lib/SP/Services/PublicLink/PublicLinkService.php:219
-#: lib/SP/Services/PublicLink/PublicLinkService.php:297
-#: lib/SP/Services/PublicLink/PublicLinkService.php:332
-#: lib/SP/Services/PublicLink/PublicLinkService.php:353
+#: lib/SP/Services/PublicLink/PublicLinkService.php:123
+#: lib/SP/Services/PublicLink/PublicLinkService.php:146
+#: lib/SP/Services/PublicLink/PublicLinkService.php:220
+#: lib/SP/Services/PublicLink/PublicLinkService.php:298
+#: lib/SP/Services/PublicLink/PublicLinkService.php:333
+#: lib/SP/Services/PublicLink/PublicLinkService.php:354
 msgid "Link not found"
 msgstr "Leinkja ikki funnin"
 
-#: lib/SP/Services/PublicLink/PublicLinkService.php:238
+#: lib/SP/Services/PublicLink/PublicLinkService.php:239
 msgid "Error while removing the links"
 msgstr "Feilur hendi ímeðan leinkjurnar vórðu strikaðar"
 
@@ -4545,16 +4584,16 @@ msgstr "Sekundir"
 msgid "IP address not set"
 msgstr "IP-atsetur ikki sett"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:66
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:89
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:69
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:92
 msgid "Update Application"
 msgstr "Dagfør forrit"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:73
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:76
 msgid "Error while applying the application update"
 msgstr "Feilur hendi ímeðan forritardagføringin varð fest"
 
-#: lib/SP/Services/Upgrade/UpgradeAppService.php:75
+#: lib/SP/Services/Upgrade/UpgradeAppService.php:78
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:103
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:111
 msgid "Please, check the event log for more details"
@@ -4601,10 +4640,10 @@ msgstr ""
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:57
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:88
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:59
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:102
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:139
-#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:171
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:60
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:111
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:170
+#: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:202
 msgid "Custom fields update"
 msgstr "Dagfør tillagað reinir"
 
@@ -4632,12 +4671,17 @@ msgstr ""
 msgid "Database updating was completed successfully."
 msgstr "Hepnaðist at dagføra dátugrunnin."
 
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
+msgid "Plugins upgrade"
+msgstr ""
+
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:56
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:102
 msgid "Public links update"
 msgstr "Almenn leinkjudagføring"
 
-#: lib/SP/Services/User/UserPassService.php:256
+#: lib/SP/Services/User/UserPassService.php:257
 #: lib/SP/Services/User/UserService.php:123
 #: lib/SP/Services/User/UserService.php:154
 #: lib/SP/Services/User/UserService.php:173
@@ -4707,7 +4751,7 @@ msgstr ""
 msgid "Please, check the connection parameters"
 msgstr "Vinarliga kanna sambindingarviðurskiftini"
 
-#: lib/SP/Storage/Database/QueryData.php:338 app/config/strings.js.inc:26
+#: lib/SP/Storage/Database/QueryData.php:338 app/resources/strings.js.inc:26
 msgid "Error while querying"
 msgstr "Feilur hendi ímeðan fyrispurt varð"
 
@@ -4800,307 +4844,6 @@ msgstr "Eitt óheppi hendi"
 #: lib/SP/Util/ImageUtil.php:65
 msgid "Invalid image"
 msgstr "Ógildig mynd"
-
-#: app/config/strings.js.inc:27
-msgid "There was an error"
-msgstr "Har var ein feilur"
-
-#: app/config/strings.js.inc:28 app/config/strings.js.inc:86
-msgid "Session finished"
-msgstr "Setan liguð"
-
-#: app/config/strings.js.inc:29
-msgid "Delete account?"
-msgstr ""
-
-#: app/config/strings.js.inc:30
-msgid "Delete user?"
-msgstr ""
-
-#: app/config/strings.js.inc:31
-msgid "You should save configuration in order to take effect"
-msgstr "Tú átti at goymt fyri at uppsetingin verður sett í virki"
-
-#: app/config/strings.js.inc:32
-msgid "Generated Password"
-msgstr ""
-
-#: app/config/strings.js.inc:33
-msgid "High level"
-msgstr ""
-
-#: app/config/strings.js.inc:34
-msgid "Average level"
-msgstr ""
-
-#: app/config/strings.js.inc:35
-msgid "Low level"
-msgstr ""
-
-#: app/config/strings.js.inc:36
-msgid "Very High level"
-msgstr ""
-
-#: app/config/strings.js.inc:37
-msgid "You should use at least 8 characters"
-msgstr "Tú átti brúkt í minsta lagið 8 tekn"
-
-#: app/config/strings.js.inc:38
-msgid "Delete item?"
-msgstr ""
-
-#: app/config/strings.js.inc:39
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
-msgid "Page not found"
-msgstr "Síða ikki funnin"
-
-#: app/config/strings.js.inc:41
-msgid "Delete file?"
-msgstr "Strika fíla"
-
-#: app/config/strings.js.inc:42
-msgid "Your browser does not support HTML5 file uploads"
-msgstr "Kagi tín stuðlar ikki HTML5-fíluuppsending"
-
-#: app/config/strings.js.inc:43
-msgid "Too many files"
-msgstr "Ov nógvar fílur"
-
-#: app/config/strings.js.inc:44
-msgid "File size not allowed"
-msgstr "Fílystødd ikki loyvd"
-
-#: app/config/strings.js.inc:45
-msgid "MIME type not allowed"
-msgstr ""
-
-#: app/config/strings.js.inc:46
-msgid "Clear the event log out?"
-msgstr "Tváa hendingarskránnað?"
-
-#: app/config/strings.js.inc:47
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:186
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:281
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
-#: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
-msgid "Select Group"
-msgstr "Vel deild"
-
-#: app/config/strings.js.inc:48
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:168
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
-#: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
-msgid "Select User"
-msgstr "Vel brúkara"
-
-#: app/config/strings.js.inc:49
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
-msgid "Select Profile"
-msgstr "Vel vanga"
-
-#: app/config/strings.js.inc:50
-#: app/modules/web/themes/material-blue/views/account/account.inc:85
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
-msgid "Select Client"
-msgstr "Vel viðskifta"
-
-#: app/config/strings.js.inc:51
-#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:110
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
-msgid "Select Category"
-msgstr "Vel bólk"
-
-#: app/config/strings.js.inc:52
-msgid "No results"
-msgstr "Einki úrslit"
-
-#: app/config/strings.js.inc:53
-msgid "Password options"
-msgstr ""
-
-#: app/config/strings.js.inc:54
-msgid "Generate random password"
-msgstr "Ger tilvildarligt loyniorð"
-
-#: app/config/strings.js.inc:55
-msgid "Complexity"
-msgstr ""
-
-#: app/config/strings.js.inc:56
-msgid "Reset"
-msgstr "Endurset"
-
-#: app/config/strings.js.inc:57
-msgid "Password strength level"
-msgstr ""
-
-#: app/config/strings.js.inc:58
-msgid "Show Password"
-msgstr "Vís loyniorð"
-
-#: app/config/strings.js.inc:59
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
-msgid "Copy Username"
-msgstr "Avrita brúkaranavn"
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:60
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
-#: app/config/actions.xml:199 app/config/actions.xml:271
-msgid "Copy Password"
-msgstr "Avrita loyniorð"
-
-#: app/config/strings.js.inc:61
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
-msgid "Include Numbers"
-msgstr "Írokna tøl"
-
-#: app/config/strings.js.inc:62
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
-msgid "Include Uppercase"
-msgstr "Írokna stórir stavir"
-
-#: app/config/strings.js.inc:63
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
-msgid "Include Symbols"
-msgstr "Írokna tekin"
-
-#: app/config/strings.js.inc:64
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
-msgid "Length"
-msgstr "Longd"
-
-#: app/config/strings.js.inc:65
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
-msgid "Select Action"
-msgstr "Vel gerning"
-
-#: app/config/strings.js.inc:68
-msgid "Accept"
-msgstr "Góðkenna"
-
-#: app/config/strings.js.inc:69
-msgid "Cancel"
-msgstr "Ógilda"
-
-#: app/config/strings.js.inc:70
-msgid "Password Copied into Clipboard"
-msgstr "Loyniorð avritað á setiborðinum"
-
-#: app/config/strings.js.inc:71
-msgid "Error while copying to clipboard"
-msgstr "Feilur hendi ímeðan avritað varð í setiborðinum"
-
-#: app/config/strings.js.inc:73
-msgid "Send notifies?"
-msgstr ""
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:74
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
-#: app/config/actions.xml:247
-msgid "Mark as Favorite"
-msgstr ""
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:75
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
-#: app/config/actions.xml:253
-msgid "Delete Favorite"
-msgstr ""
-
-#: app/config/strings.js.inc:76
-msgid "Clear Selection"
-msgstr ""
-
-#. (itstool) path: action/text
-#: app/config/strings.js.inc:77
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
-#: app/config/actions.xml:241
-msgid "Show Favorites"
-msgstr ""
-
-#: app/config/strings.js.inc:78
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
-msgid "Display All"
-msgstr ""
-
-#: app/config/strings.js.inc:81
-msgid "Now"
-msgstr ""
-
-#: app/config/strings.js.inc:82
-msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr ""
-
-#: app/config/strings.js.inc:83
-msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr ""
-"Hesin gerningurin endursetur øll dáta frá ískoytingarforritum. Vilt tú halda "
-"á fram?"
-
-#: app/config/strings.js.inc:84
-msgid "This process could take some time long. Do you wish to continue?"
-msgstr ""
-
-#: app/config/strings.js.inc:87
-msgid "Performing task. Please, do not close browser's window/tab."
-msgstr "Avrikar koyrlu. Vinarliga ikki koyra vindeyga ella fána kagans aftur."
-
-#: app/config/strings.js.inc:88
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
-msgid "Include Letters"
-msgstr "Írokna stavir"
-
-#: app/config/strings.js.inc:89
-msgid "Cookies disabled. Application won't work properly."
-msgstr "Hundalortar óvirknar. Forritið fer ikki at rigga rætt."
-
-#: app/config/strings.js.inc:90
-msgid "Clipboard not supported by your browser."
-msgstr "Kagi tín stuðlar ikki setiborð"
-
-#: app/config/strings.js.inc:91
-msgid "Performing auto-login"
-msgstr "Avrikar sjálvinnritan"
-
-#: app/config/strings.js.inc:92
-msgid "There is a more recent version of {0} plugin ({1})"
-msgstr ""
-
-#: app/config/strings.js.inc:93
-#: app/modules/web/themes/material-blue/views/main/update.inc:30
-msgid "Updated"
-msgstr ""
-
-#: app/config/strings.js.inc:94
-#: app/modules/web/themes/material-blue/views/main/update.inc:36
-msgid "Error while checking for updates"
-msgstr "Feilur hendi ímeðan kannað varð eftir dagføringum"
-
-#: app/config/strings.js.inc:95
-msgid "sysPass Notices"
-msgstr ""
-
-#: app/config/strings.js.inc:96
-msgid "Clear the tracks out?"
-msgstr ""
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
@@ -5202,8 +4945,8 @@ msgid "No records found"
 msgstr ""
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
-#: app/modules/web/themes/material-blue/views/account/account.inc:169
-#: app/modules/web/themes/material-blue/views/account/account.inc:176
+#: app/modules/web/themes/material-blue/views/account/account.inc:180
+#: app/modules/web/themes/material-blue/views/account/account.inc:189
 #: app/modules/web/themes/material-blue/views/install/index.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:115
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:122
@@ -5215,8 +4958,8 @@ msgstr "Loyniorð (endurtak)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
-#: app/modules/web/themes/material-blue/views/account/account.inc:195
-#: app/modules/web/themes/material-blue/views/account/account.inc:279
+#: app/modules/web/themes/material-blue/views/account/account.inc:212
+#: app/modules/web/themes/material-blue/views/account/account.inc:305
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
 msgstr "Vel dato"
@@ -5224,20 +4967,28 @@ msgstr "Vel dato"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:142
-#: app/modules/web/themes/material-blue/views/account/account.inc:272
-#: app/modules/web/themes/material-blue/views/account/account.inc:274
+#: app/modules/web/themes/material-blue/views/account/account.inc:297
+#: app/modules/web/themes/material-blue/views/account/account.inc:299
 msgid "History"
 msgstr "Søga"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:28
-#: app/modules/web/themes/material-blue/views/account/account.inc:45
+#: app/modules/web/themes/material-blue/views/account/account.inc:50
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:22
 msgid "Details"
 msgstr "Frágreiðingar"
 
+#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
+#: app/modules/web/themes/material-blue/views/account/account.inc:120
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
+#: app/resources/strings.js.inc:51
+msgid "Select Category"
+msgstr "Vel bólk"
+
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:201
+#: app/modules/web/themes/material-blue/views/account/account.inc:218
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:163
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:169
@@ -5245,7 +4996,7 @@ msgid "Notes"
 msgstr "Upprit"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
-#: app/modules/web/themes/material-blue/views/account/account.inc:294
+#: app/modules/web/themes/material-blue/views/account/account.inc:320
 #: app/modules/web/themes/material-blue/views/account/details.inc:32
 #: app/modules/web/themes/material-blue/views/account/details.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:291
@@ -5253,8 +5004,8 @@ msgstr "Upprit"
 msgid "Last Modification"
 msgstr "Seinasta tillaging"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:23
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:54
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:25
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:58
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:140
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:18
@@ -5263,10 +5014,10 @@ msgstr "Seinasta tillaging"
 msgid "Select Users"
 msgstr "Vel brúkarar"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:33
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:37
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:101
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:105
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:35
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:39
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:107
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:111
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:127
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:176
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:29
@@ -5275,8 +5026,8 @@ msgstr "Vel brúkarar"
 msgid "View"
 msgstr "Vís"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:91
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:122
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:97
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:130
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:168
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:190
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:59
@@ -5284,12 +5035,36 @@ msgstr "Vís"
 msgid "Select Groups"
 msgstr "Vek deildir"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:208
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
+#: app/modules/web/themes/material-blue/views/config/import.inc:32
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
+#: app/resources/strings.js.inc:48
+msgid "Select User"
+msgstr "Vel brúkara"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
+#: app/modules/web/themes/material-blue/views/config/import.inc:59
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
+#: app/resources/strings.js.inc:47
+msgid "Select Group"
+msgstr "Vel deild"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:228
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
 msgstr "Privat"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:224
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:246
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:198
 msgid "Private for Group"
 msgstr "Privat innan deild"
@@ -5306,33 +5081,40 @@ msgstr "Eftirspyr frágreiðing"
 msgid "Send"
 msgstr "Send"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:37
+#: app/modules/web/themes/material-blue/views/account/account.inc:40
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:133
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:214
 msgid "Permissions"
 msgstr "Loyvisstillingar"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:219
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
+#: app/resources/strings.js.inc:50
+msgid "Select Client"
+msgstr "Vel viðskifta"
+
+#: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
 msgid "Select Tags"
 msgstr "Vel merkir"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:263
+#: app/modules/web/themes/material-blue/views/account/account.inc:288
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:26
 msgid "Select Account"
 msgstr "Vel kontu"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:302
-#: app/modules/web/themes/material-blue/views/account/account.inc:304
-#: app/modules/web/themes/material-blue/views/account/account.inc:307
+#: app/modules/web/themes/material-blue/views/account/account.inc:328
+#: app/modules/web/themes/material-blue/views/account/account.inc:330
+#: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:193
 msgid "Public Link"
 msgstr "Almenn leinkja"
 
-#: app/modules/web/themes/material-blue/views/account/account.inc:315
-#: app/modules/web/themes/material-blue/views/account/account.inc:317
-#: app/modules/web/themes/material-blue/views/account/account.inc:320
+#: app/modules/web/themes/material-blue/views/account/account.inc:342
+#: app/modules/web/themes/material-blue/views/account/account.inc:344
+#: app/modules/web/themes/material-blue/views/account/account.inc:348
 msgid "Direct Link"
 msgstr "Beinleiðis leinkja"
 
@@ -5382,6 +5164,18 @@ msgstr ""
 msgid "Private Account (Group)"
 msgstr "Privat konta (Deild)"
 
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
+#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
+msgid "Delete Favorite"
+msgstr ""
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
+#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
+msgid "Mark as Favorite"
+msgstr ""
+
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
 msgstr ""
@@ -5402,6 +5196,17 @@ msgstr ""
 msgid "Global search"
 msgstr ""
 
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
+#: app/resources/strings.js.inc:78
+msgid "Display All"
+msgstr ""
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
+#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
+msgid "Show Favorites"
+msgstr ""
+
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
 msgstr ""
@@ -5417,6 +5222,18 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:114
 msgid "Select Tag"
 msgstr "Vel merki"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
+#: app/resources/strings.js.inc:59
+msgid "Copy Username"
+msgstr "Avrita brúkaranavn"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
+#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
+#: app/resources/actions.xml:271
+msgid "Copy Password"
+msgstr "Avrita loyniorð"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
@@ -5545,7 +5362,7 @@ msgstr ""
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:196
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
-#: app/config/actions.xml:73
+#: app/resources/actions.xml:73
 msgid "Public Links"
 msgstr "Almennar leinkjur"
 
@@ -5710,8 +5527,8 @@ msgstr ""
 "Tað er møguligt at seta eitt útflytingarloyniorð fyri at goyma øll bronglað "
 "dáta í XML-fíluna."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:17
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:153
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:19
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:168
 #: app/modules/web/themes/material-blue/views/config/import.inc:152
 #: app/modules/web/themes/material-blue/views/config/import.inc:167
 #: app/modules/web/themes/material-blue/views/install/index.inc:50
@@ -5721,60 +5538,60 @@ msgstr ""
 msgid "Master Password"
 msgstr "Yvirloyniorð"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:24
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:27
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:198
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:201
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:26
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:29
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:214
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:217
 msgid "Last change"
 msgstr "Seinasta broytingin"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:35
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:43
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:37
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:46
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:142
 msgid "Current Master Password"
 msgstr "Núverandi yvirloyniorð"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:49
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:57
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:52
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:61
 msgid "New Master Password"
 msgstr "Nýtt yvirloyniorð"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:63
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:71
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:67
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:76
 msgid "New Master Password (repeat)"
 msgstr "Nýtt yvirloyniorð (endurtak)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:80
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "You should save the new password on a secure place"
 msgstr "Tú átti goymt nýggja loyniorðið eitt trygt stað"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:84
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:95
 msgid "All accounts passwords will be encrypted again."
 msgstr "Øll kontuloyniorð verða bronglað umaftur."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:88
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:99
 msgid "Users will need to enter the new Master Password."
 msgstr "Brúkarir skulu skriva nýggja yvirloyniorðið."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:92
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:109
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
-msgstr "Broyt ikki kontur"
+msgstr "Broyt ikki kontur."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:111
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:123
 msgid "Sets a new Master Password without re-encrypting the accounts."
 msgstr "Setir eitt nýtt yvirloyniorð uttan at endurbrongla konturnar."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:127
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:140
 msgid "Confirm change"
 msgstr "Vátta broyting"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:129
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:142
 msgid ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
@@ -5782,7 +5599,7 @@ msgstr ""
 "Vátta broyting yvirloyniorðsins aftaná tú hevur lisið allar ávaringarnar "
 "omanfyri."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:155
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:170
 msgid ""
 "The Master Password is used to encrypt sysPass accounts passwords and keep "
 "them safe."
@@ -5790,56 +5607,56 @@ msgstr ""
 "Yvirloyniorðið er brúkt til at brongla loyniorð sysPasskonta og fyri at "
 "halda tær tryggar."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:157
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:172
 msgid ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:159
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:174
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:132
 #, php-format
 msgid "You could get more info on: %s"
 msgstr "Tú kanst fáa meira at vita her: %s"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:169
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:184
 msgid "Update master password hash"
 msgstr "Dagfør yvirloyniorðsbronglu"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:189
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:323
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:344
 msgid "Temporary Password"
 msgstr "Fyribilsloyniorð"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:203
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:218
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:219
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
 msgid "Not generated"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:208
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:211
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
 msgid "Valid until"
 msgstr "Gildug til"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:224
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:227
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:240
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:243
 msgid "Attempts"
 msgstr "Royndir"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:234
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:244
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:250
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:262
 msgid "Life (s)"
 msgstr "Lív (s)"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:263
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:282
 msgid "Send email"
 msgstr "Send teldupost"
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:265
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:284
 msgid "Sends an email to all users or only to those whose group is selected."
 msgstr "Sendir ein teldupost til allar brúkarar ella bara valdar deildir."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:325
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
 "to enter it during login. By this way there is no need to tell them the real "
@@ -5849,7 +5666,7 @@ msgstr ""
 "skriva tað tá innritað verður. Soleiðis noyðast tey ikki at vita verðuliga "
 "yvirloyniorðið."
 
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:332
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
 msgstr ""
 
@@ -5974,20 +5791,20 @@ msgstr "Fulltrúarambætarabrúkari"
 msgid "Proxy server password"
 msgstr "Fulltrúarambætaraloyniorð"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:16
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:17
 msgid "This extension is needed to check for sysPass updates and notices"
 msgstr ""
 "Víðkanin er neyðug fyri at kanna eftir sysPass-dagføringum og frásøgnum"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:24
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:25
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:15
 msgid "Site"
 msgstr "Síða"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:30
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:107
-#: app/modules/web/themes/material-blue/views/config/info.inc:121
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:31
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:45
+#: app/modules/web/themes/material-blue/views/config/info.inc:113
+#: app/modules/web/themes/material-blue/views/config/info.inc:127
 #: app/modules/web/themes/material-blue/views/install/index.inc:137
 #: app/modules/web/themes/material-blue/views/install/index.inc:139
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:26
@@ -5995,14 +5812,14 @@ msgstr "Síða"
 msgid "Language"
 msgstr "Mál"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:35
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
 "Sets the global app language. You can set a per user language on preferences."
 msgstr ""
 "Setur heiltaka forritamálið. Tú kanst seta eitt \"pr. brúkara\" mál í "
 "stilllingarnar"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:39
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
 "join/project/fmlsBuugyv"
@@ -6010,14 +5827,14 @@ msgstr ""
 "Fyri at betra ella gera umsetingar, kanst tú vera við her: https://poeditor."
 "com/join/project/fmlsBuugyv"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:57
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:67
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:59
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:69
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:42
 msgid "Visual Theme"
 msgstr "Sjónligur stílur"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:62
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:64
 msgid ""
 "Sets the global application visual theme. You can set a per user visual "
 "theme on preferences."
@@ -6025,34 +5842,45 @@ msgstr ""
 "Heiltøkilliga setur sjónligi stílin í øllum forritinum. Tú kanst stilla "
 "sjónliga stílin á hvørjum brúkara í stillingarnar,"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:81
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:89
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:83
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:95
 msgid "Session timeout (s)"
 msgstr "Setuavbróting (s)"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:107
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
+msgid "Application URL"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
+msgid ""
+"Sets the application URL when accessing through a reverse proxy or load "
+"balancer."
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:136
 msgid "Force HTTPS"
 msgstr "Noyð HTTPS"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:108
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
 msgid "It forces the use of HTTPS on all the connections"
 msgstr "Noyðir HTTPS á øll sambond"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:122
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
 msgid "Enable debug"
 msgstr "Virka kembing"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:123
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
 msgid ""
 "Displays some information about application configuration and performance."
 msgstr ""
 "Vísir nakrar upplýsingar viðvíkjandi stillingarnar og avrikið á forritinum."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:137
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
 msgid "Maintenance mode"
 msgstr "Umsitingarsøða"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:138
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
 "In this mode nobody can log into the application. To disable it, you need to "
 "either modify the configuration file or unset on the site tab."
@@ -6060,19 +5888,19 @@ msgstr ""
 "Í hesari støðu, kann eingin rita seg inn í forritið. Fyri at sløkkja, skal "
 "tú annaðhvørt broyta stillingarfíluna ella óseta í síðuteiginum."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:152
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
 msgid "Check for updates"
 msgstr "Kanna eftir dagføringum"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:153
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
 msgid "Check for application updates (only for administrators)."
 msgstr "Kanna eftir forritardagføringar (bara fyri fyrisitarum)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:167
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:200
 msgid "Check for notifications"
 msgstr "Kanna eftir fráboðanum"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:168
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:201
 msgid ""
 "Check if there are either sysPass security or warning notices (only for "
 "administrators)."
@@ -6080,15 +5908,15 @@ msgstr ""
 "Kanna um har eru annaðhvørt sysPasstrygdar- ella ávaringarfrásagnir (bara "
 "til fyrisitarar)."
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:182
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:216
 msgid "Encrypt Session"
 msgstr "Brongla setur"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:184
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:218
 msgid "Encrypt PHP session data"
 msgstr "Brongla PHP-setudáta"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:185
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:219
 msgid ""
 "This feature increases the PHP sessions security, because the stored data "
 "won't be readable."
@@ -6201,73 +6029,73 @@ msgstr "Forritarupplýsingar"
 msgid "sysPass version"
 msgstr "sysPass-útgava"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:30
-#: app/modules/web/themes/material-blue/views/config/info.inc:33
+#: app/modules/web/themes/material-blue/views/config/info.inc:36
+#: app/modules/web/themes/material-blue/views/config/info.inc:39
 msgid "Database"
 msgstr "Dátugrunnur"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:44
-#: app/modules/web/themes/material-blue/views/config/info.inc:47
+#: app/modules/web/themes/material-blue/views/config/info.inc:50
+#: app/modules/web/themes/material-blue/views/config/info.inc:53
 msgid "PHP"
 msgstr "PHP"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:51
+#: app/modules/web/themes/material-blue/views/config/info.inc:57
 msgid "Extensions"
 msgstr "Víðkanir"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:55
+#: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
 msgstr "Ótøkur víðkanir"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:59
+#: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:63
+#: app/modules/web/themes/material-blue/views/config/info.inc:69
 msgid "Download rate"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:66
+#: app/modules/web/themes/material-blue/views/config/info.inc:72
 msgid "OP Cache"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:85
-#: app/modules/web/themes/material-blue/views/config/info.inc:88
+#: app/modules/web/themes/material-blue/views/config/info.inc:91
+#: app/modules/web/themes/material-blue/views/config/info.inc:94
 msgid "Configuration Backup"
 msgstr "Uppsetanartrygdaravrit"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:98
-#: app/modules/web/themes/material-blue/views/config/info.inc:180
+#: app/modules/web/themes/material-blue/views/config/info.inc:104
+#: app/modules/web/themes/material-blue/views/config/info.inc:186
 #, php-format
 msgid "Download %s"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:112
+#: app/modules/web/themes/material-blue/views/config/info.inc:118
 msgid "Tells whether the language is available or not."
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:116
+#: app/modules/web/themes/material-blue/views/config/info.inc:122
 msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:128
-#: app/modules/web/themes/material-blue/views/config/info.inc:138
+#: app/modules/web/themes/material-blue/views/config/info.inc:134
+#: app/modules/web/themes/material-blue/views/config/info.inc:144
 msgid "Encrypted Session"
 msgstr "Brongað setan"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:133
+#: app/modules/web/themes/material-blue/views/config/info.inc:139
 msgid "Tells whether the session data are encrypted in the server side or not"
 msgstr "Sigur hvørt setudáta er bronglað á ambætaran ella ikki"
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:145
-#: app/modules/web/themes/material-blue/views/config/info.inc:148
+#: app/modules/web/themes/material-blue/views/config/info.inc:151
+#: app/modules/web/themes/material-blue/views/config/info.inc:154
 msgid "Loaded Plugins"
 msgstr ""
 
-#: app/modules/web/themes/material-blue/views/config/info.inc:171
-#: app/modules/web/themes/material-blue/views/config/info.inc:174
+#: app/modules/web/themes/material-blue/views/config/info.inc:177
+#: app/modules/web/themes/material-blue/views/config/info.inc:180
 msgid "Log file"
 msgstr ""
 
@@ -6630,6 +6458,11 @@ msgstr "Skapari"
 msgid "Delete History"
 msgstr "Strika søgu"
 
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
+#: app/resources/strings.js.inc:65
+msgid "Select Action"
+msgstr "Vel gerning"
+
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:98
@@ -6674,6 +6507,12 @@ msgstr "Reinahjálp"
 msgid "Required"
 msgstr "Krevst"
 
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
+#: app/resources/strings.js.inc:64
+msgid "Length"
+msgstr "Longd"
+
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
 msgid "Score"
@@ -6683,6 +6522,26 @@ msgstr "Støða"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:65
 msgid "Regular Expression"
 msgstr "Vanlig framsøgn"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
+#: app/resources/strings.js.inc:61
+msgid "Include Numbers"
+msgstr "Írokna tøl"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
+#: app/resources/strings.js.inc:88
+msgid "Include Letters"
+msgstr "Írokna stavir"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
+#: app/resources/strings.js.inc:63
+msgid "Include Symbols"
+msgstr "Írokna tekin"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
+#: app/resources/strings.js.inc:62
+msgid "Include Uppercase"
+msgstr "Írokna stórir stavir"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:140
 msgid "Include Lowercase"
@@ -6713,6 +6572,12 @@ msgstr "IP-atsetur"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:37
 msgid "Timeout"
 msgstr "Avbróting"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
+#: app/resources/strings.js.inc:49
+msgid "Select Profile"
+msgstr "Vel vanga"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:89
 msgid ""
@@ -6832,7 +6697,7 @@ msgstr "vís kontuloyniorð"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:86
-#: app/config/actions.xml:259
+#: app/resources/actions.xml:259
 msgid "View History"
 msgstr "Vís søgu"
 
@@ -6930,7 +6795,7 @@ msgstr ""
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
-#: app/config/actions.xml:697
+#: app/resources/actions.xml:697
 msgid "General Configuration"
 msgstr "Almen uppsetan"
 
@@ -6965,6 +6830,16 @@ msgstr "Rita inn"
 #: app/modules/web/themes/material-blue/views/login/index.inc:82
 msgid "Forgot password?"
 msgstr "Gloymt loyniorðið?"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:30
+#: app/resources/strings.js.inc:93
+msgid "Updated"
+msgstr ""
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:36
+#: app/resources/strings.js.inc:94
+msgid "Error while checking for updates"
+msgstr "Feilur hendi ímeðan kannað varð eftir dagføringum"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
 #, php-format
@@ -7148,9 +7023,15 @@ msgstr ""
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:16
-#: app/config/actions.xml:277
+#: app/resources/actions.xml:277
 msgid "View Wiki"
 msgstr ""
+
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
+#: app/resources/strings.js.inc:39
+msgid "Page not found"
+msgstr "Síða ikki funnin"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
 #, php-format
@@ -7162,342 +7043,516 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
+#: app/resources/strings.js.inc:27
+msgid "There was an error"
+msgstr "Har var ein feilur"
+
+#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
+msgid "Session finished"
+msgstr "Setan liguð"
+
+#: app/resources/strings.js.inc:29
+msgid "Delete account?"
+msgstr ""
+
+#: app/resources/strings.js.inc:30
+msgid "Delete user?"
+msgstr ""
+
+#: app/resources/strings.js.inc:31
+msgid "You should save configuration in order to take effect"
+msgstr "Tú átti at goymt fyri at uppsetingin verður sett í virki"
+
+#: app/resources/strings.js.inc:32
+msgid "Generated Password"
+msgstr ""
+
+#: app/resources/strings.js.inc:33
+msgid "High level"
+msgstr ""
+
+#: app/resources/strings.js.inc:34
+msgid "Average level"
+msgstr ""
+
+#: app/resources/strings.js.inc:35
+msgid "Low level"
+msgstr ""
+
+#: app/resources/strings.js.inc:36
+msgid "Very High level"
+msgstr ""
+
+#: app/resources/strings.js.inc:37
+msgid "You should use at least 8 characters"
+msgstr "Tú átti brúkt í minsta lagið 8 tekn"
+
+#: app/resources/strings.js.inc:38
+msgid "Delete item?"
+msgstr ""
+
+#: app/resources/strings.js.inc:41
+msgid "Delete file?"
+msgstr "Strika fíla"
+
+#: app/resources/strings.js.inc:42
+msgid "Your browser does not support HTML5 file uploads"
+msgstr "Kagi tín stuðlar ikki HTML5-fíluuppsending"
+
+#: app/resources/strings.js.inc:43
+msgid "Too many files"
+msgstr "Ov nógvar fílur"
+
+#: app/resources/strings.js.inc:44
+msgid "File size not allowed"
+msgstr "Fílystødd ikki loyvd"
+
+#: app/resources/strings.js.inc:45
+msgid "MIME type not allowed"
+msgstr ""
+
+#: app/resources/strings.js.inc:46
+msgid "Clear the event log out?"
+msgstr "Tváa hendingarskránnað?"
+
+#: app/resources/strings.js.inc:52
+msgid "No results"
+msgstr "Einki úrslit"
+
+#: app/resources/strings.js.inc:53
+msgid "Password options"
+msgstr ""
+
+#: app/resources/strings.js.inc:54
+msgid "Generate random password"
+msgstr "Ger tilvildarligt loyniorð"
+
+#: app/resources/strings.js.inc:55
+msgid "Complexity"
+msgstr ""
+
+#: app/resources/strings.js.inc:56
+msgid "Reset"
+msgstr "Endurset"
+
+#: app/resources/strings.js.inc:57
+msgid "Password strength level"
+msgstr ""
+
+#: app/resources/strings.js.inc:58
+msgid "Show Password"
+msgstr "Vís loyniorð"
+
+#: app/resources/strings.js.inc:68
+msgid "Accept"
+msgstr "Góðkenna"
+
+#: app/resources/strings.js.inc:69
+msgid "Cancel"
+msgstr "Ógilda"
+
+#: app/resources/strings.js.inc:70
+msgid "Password Copied into Clipboard"
+msgstr "Loyniorð avritað á setiborðinum"
+
+#: app/resources/strings.js.inc:71
+msgid "Error while copying to clipboard"
+msgstr "Feilur hendi ímeðan avritað varð í setiborðinum"
+
+#: app/resources/strings.js.inc:73
+msgid "Send notifies?"
+msgstr ""
+
+#: app/resources/strings.js.inc:76
+msgid "Clear Selection"
+msgstr ""
+
+#: app/resources/strings.js.inc:81
+msgid "Now"
+msgstr ""
+
+#: app/resources/strings.js.inc:82
+msgid ""
+"This process will import the detected LDAP users. Would you like to continue?"
+msgstr ""
+
+#: app/resources/strings.js.inc:83
+msgid "This action will reset all plugin data. Do you want to continue?"
+msgstr ""
+"Hesin gerningurin endursetur øll dáta frá ískoytingarforritum. Vilt tú halda "
+"á fram?"
+
+#: app/resources/strings.js.inc:84
+msgid "This process could take some time long. Do you wish to continue?"
+msgstr ""
+
+#: app/resources/strings.js.inc:87
+msgid "Performing task. Please, do not close browser's window/tab."
+msgstr "Avrikar koyrlu. Vinarliga ikki koyra vindeyga ella fána kagans aftur."
+
+#: app/resources/strings.js.inc:89
+msgid "Cookies disabled. Application won't work properly."
+msgstr "Hundalortar óvirknar. Forritið fer ikki at rigga rætt."
+
+#: app/resources/strings.js.inc:90
+msgid "Clipboard not supported by your browser."
+msgstr "Kagi tín stuðlar ikki setiborð"
+
+#: app/resources/strings.js.inc:91
+msgid "Performing auto-login"
+msgstr "Avrikar sjálvinnritan"
+
+#: app/resources/strings.js.inc:92
+msgid "There is a more recent version of {0} plugin ({1})"
+msgstr ""
+
+#: app/resources/strings.js.inc:95
+msgid "sysPass Notices"
+msgstr ""
+
+#: app/resources/strings.js.inc:96
+msgid "Clear the tracks out?"
+msgstr ""
+
 #. (itstool) path: action/text
-#: app/config/actions.xml:7
+#: app/resources/actions.xml:7
 msgid "Search for Accounts"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:25
+#: app/resources/actions.xml:25
 msgid "Requests"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:31
+#: app/resources/actions.xml:31
 msgid "Favorites"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:43
+#: app/resources/actions.xml:43
 msgid "Items and Customizations"
 msgstr "Lutir og tillagingar"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:49
+#: app/resources/actions.xml:49
 msgid "Categories Management"
 msgstr "Bólkaleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:55
+#: app/resources/actions.xml:55
 msgid "Customers Management"
 msgstr "Viðskiftaleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:61
+#: app/resources/actions.xml:61
 msgid "API Authorizations Management"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:67
+#: app/resources/actions.xml:67
 msgid "Custom Fields Management"
 msgstr "Leiðsla av tillagað reinum"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:79
+#: app/resources/actions.xml:79
 msgid "Files Management"
 msgstr "Fíluleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:85
+#: app/resources/actions.xml:85
 msgid "Accounts Management"
 msgstr "Kontuleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:91
+#: app/resources/actions.xml:91
 msgid "Tags Management"
 msgstr "Merkisleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:97
+#: app/resources/actions.xml:97
 msgid "Plugins Management"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:103
+#: app/resources/actions.xml:103
 msgid "Users and Accesses"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:109
+#: app/resources/actions.xml:109
 msgid "Security and Audit"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:115
+#: app/resources/actions.xml:115
 msgid "Users Management"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:121
+#: app/resources/actions.xml:121
 msgid "Groups Management"
 msgstr "Deildarleiðsla"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:127
+#: app/resources/actions.xml:127
 msgid "Profiles Management"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:145
+#: app/resources/actions.xml:145
 msgid "Clear Events"
 msgstr "Tváa hendingar"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:151 app/config/actions.xml:481
+#: app/resources/actions.xml:151 app/resources/actions.xml:481
 msgid "View Account"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:211 app/config/actions.xml:469
+#: app/resources/actions.xml:211 app/resources/actions.xml:469
 msgid "Upload File"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:229
+#: app/resources/actions.xml:229
 msgid "Search for Files"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:235
+#: app/resources/actions.xml:235
 msgid "List Files"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:283
+#: app/resources/actions.xml:283
 msgid "Add Wiki"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:289
+#: app/resources/actions.xml:289
 msgid "Edit Wiki"
 msgstr "Ritstjórna Wiki"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:295
+#: app/resources/actions.xml:295
 msgid "Delete Wiki"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:361
+#: app/resources/actions.xml:361
 msgid "New API Token"
 msgstr "Nýtt API-teknmark"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:367
+#: app/resources/actions.xml:367
 msgid "View API Token"
 msgstr "Vís API-teknmark"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:373
+#: app/resources/actions.xml:373
 msgid "Edit API Token"
 msgstr "Ritstjørna API-teknmark"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:379
+#: app/resources/actions.xml:379
 msgid "Delete API Token"
 msgstr "Strika API-teknmark"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:385
+#: app/resources/actions.xml:385
 msgid "Search for API Token"
 msgstr "Leita eftir API-teknmark"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:391
+#: app/resources/actions.xml:391
 msgid "New Custom Field"
 msgstr "Nýggj tillagað rein"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:397
+#: app/resources/actions.xml:397
 msgid "Show Custom Field"
 msgstr "Vís tillagað rein"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:403
+#: app/resources/actions.xml:403
 msgid "Edit Custom Field"
 msgstr "Ritstjørna tillagað rein"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:409
+#: app/resources/actions.xml:409
 msgid "Delete Custom Field"
 msgstr "Strika tillagað rein"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:415
+#: app/resources/actions.xml:415
 msgid "Search for Custom Field"
 msgstr "Leita eftir tillagaðum reini"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:427
+#: app/resources/actions.xml:427
 msgid "Show Public Link"
 msgstr "Vís almenna leinkið"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:445
+#: app/resources/actions.xml:445
 msgid "Search for Public Link"
 msgstr "Leita eftir alemnnar leinkjur"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:553
+#: app/resources/actions.xml:553
 msgid "Enable Plugin"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:559
+#: app/resources/actions.xml:559
 msgid "Disable Plugin"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:565
+#: app/resources/actions.xml:565
 msgid "Reset Plugin"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:601
+#: app/resources/actions.xml:601
 msgid "Edit User Password"
 msgstr "Ritstjórna brúkaraloyniorð"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:673
+#: app/resources/actions.xml:673
 msgid "User Configuration"
 msgstr "Brúkarauppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:679
+#: app/resources/actions.xml:679
 msgid "General Preferences"
 msgstr "Almennu stillingarnar"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:703
+#: app/resources/actions.xml:703
 msgid "Accounts Configuration"
 msgstr "Kontuuppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:709
+#: app/resources/actions.xml:709
 msgid "Wiki Configuration"
 msgstr "Wiki-uppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:715
+#: app/resources/actions.xml:715
 msgid "Encryption Configuration"
 msgstr "Brongluuppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:721
+#: app/resources/actions.xml:721
 msgid "Update Hash"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:727
+#: app/resources/actions.xml:727
 msgid "Temporary Master Password"
 msgstr "Fyribilsyvirloyniorð"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:733
+#: app/resources/actions.xml:733
 msgid "Backup Configuration"
 msgstr "Trygdaravritsuppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:745
+#: app/resources/actions.xml:745
 msgid "Import Configuration"
 msgstr "Innflytingaruppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:751
+#: app/resources/actions.xml:751
 msgid "CSV Import"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:757
+#: app/resources/actions.xml:757
 msgid "XML Import"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:763
+#: app/resources/actions.xml:763
 msgid "Export Configuration"
 msgstr "Útflytingaruppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:769
+#: app/resources/actions.xml:769
 msgid "Export"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:775
+#: app/resources/actions.xml:775
 msgid "Email Configuration"
 msgstr "Teldupostaruppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:781
+#: app/resources/actions.xml:781
 msgid "LDAP Configuration"
 msgstr "LDAP-uppsetan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:787
+#: app/resources/actions.xml:787
 msgid "LDAP synchronization"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:793
+#: app/resources/actions.xml:793
 msgid "Account Management (H)"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:823
+#: app/resources/actions.xml:823
 msgid "Create Notification"
 msgstr "Gerð fráboðan"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:853
+#: app/resources/actions.xml:853
 msgid "Preset Values Management"
 msgstr "Leiðsla av føst virði"
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:889
+#: app/resources/actions.xml:889
 msgid "Tracks Management"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:901
+#: app/resources/actions.xml:901
 msgid "Unlock track"
 msgstr ""
 
 #. (itstool) path: action/text
-#: app/config/actions.xml:907
+#: app/resources/actions.xml:907
 msgid "Clear the tracks out"
 msgstr ""
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:4
-msgid "Color"
-msgstr ""
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "\"/config\" mappan er ikki til."
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:5
-msgid "Number"
-msgstr ""
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Kann ikki skriva inni í \"/config\" mappuna"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:6
-msgid "Phone"
-msgstr ""
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "Loyvisstillingarnar eru skeivar í \"/config\" mappuna"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:7
-msgid "Text Area"
-msgstr ""
+#~ msgid "Master Password %s"
+#~ msgstr "Yvirloyniorð %s"
 
-#. (itstool) path: strings/text
-#: app/config/strings.xml:8
-msgid "Text"
-msgstr ""
+#~ msgid "Mail service unavailable"
+#~ msgstr "Teldupostartænastan er ikki til taks"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Virkar Active Directory LDAP-sambindingarstøðu."
+
+#~ msgid "Recipient email address"
+#~ msgstr "Teldupostbústaður móttakarans"
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Skriva víðkingina og trýst á Enter fyri at skoyta uppí. Minst til at "
+#~ "goyma uppsetanina."
