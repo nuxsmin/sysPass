@@ -221,7 +221,8 @@ MagnificPopup.prototype = {
 				mfp.close();
 			});
 
-			mfp.wrap = _getEl('wrap').attr('tabindex', -1).on('click'+EVENT_NS, function(e) {
+			// mfp.wrap = _getEl('wrap').attr('tabindex', -1).on('click'+EVENT_NS, function(e) {
+			mfp.wrap = _getEl('wrap').on('click'+EVENT_NS, function(e) {
 				if(mfp._checkIfClose(e.target)) {
 					mfp.close();
 				}

@@ -100,27 +100,32 @@ sysPass.Theme = function (log) {
     const complexityDialog = function () {
 
         const content =
-            `<div id="box-complexity"><div>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-chars">
-            <input type="checkbox" id="checkbox-chars" class="mdl-checkbox__input" name="checkbox-chars" checked/>
-            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[63]}</span>
-            </label>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">
-            <input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers" checked/>
-            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[35]}</span>
-            </label>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">
-            <input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>
-            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[36]}</span>
-            </label>
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">
-            <input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>
-            <span class="mdl-checkbox__label">${sysPassApp.config.LANG[37]}</span>
-            </label>
-            <div class="mdl-textfield mdl-js-textfield textfield-passlength">
-            <input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" min="1" max="117" list="defaultLength"/>
-            <label class="mdl-textfield__label" for="passlength">${sysPassApp.config.LANG[38]}</label>
-            </div></div></div>
+            `<div id="box-complexity">
+                <div>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-chars">
+                        <input type="checkbox" id="checkbox-chars" class="mdl-checkbox__input" name="checkbox-chars" checked/>
+                        <span class="mdl-checkbox__label">${sysPassApp.config.LANG[63]}</span>
+                    </label>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">
+                        <input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers" checked/>
+                        <span class="mdl-checkbox__label">${sysPassApp.config.LANG[35]}</span>
+                    </label>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">
+                        <input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>
+                        <span class="mdl-checkbox__label">${sysPassApp.config.LANG[36]}</span>
+                    </label>
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">
+                        <input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>
+                        <span class="mdl-checkbox__label">${sysPassApp.config.LANG[37]}</span>
+                    </label>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input class="mdl-textfield__input" type="number" pattern="[0-9]{1,3}" id="passlength" 
+                        name="passlength" value="${sysPassApp.util.password.config.complexity.numlength}"
+                        min="1" max="117"/>
+                        <label class="mdl-textfield__label" for="passlength">${sysPassApp.config.LANG[38]}</label>
+                    </div>
+                </div>
+            </div>
             <datalist id="defaultLength"><option value="8"><option value="12"><option value="16"><option value="32"><option value="64"></datalist>`;
 
         mdlDialog().show({
@@ -148,7 +153,6 @@ sysPass.Theme = function (log) {
                 $("#checkbox-numbers").prop("checked", sysPassApp.util.password.config.complexity.numbers);
                 $("#checkbox-uppercase").prop("checked", sysPassApp.util.password.config.complexity.uppercase);
                 $("#checkbox-symbols").prop("checked", sysPassApp.util.password.config.complexity.symbols);
-                $("#passlength").val(sysPassApp.util.password.config.complexity.numlength);
             }
         });
     };

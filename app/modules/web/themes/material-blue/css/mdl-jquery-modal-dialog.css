@@ -19,7 +19,7 @@
   max-width: 500px;
   min-height: 25px;
   margin: 10% auto;
-  z-index: 99999;
+  z-index: 9999;
   padding-bottom: 1em; }
 
 .dialog-container > div > * {
@@ -44,7 +44,7 @@
   width: 50px;
   height: 50px;
   margin: 10% auto;
-  z-index: 99999; }
+  z-index: 9999; }
 
 .loading-container > div > div {
   width: 100%;

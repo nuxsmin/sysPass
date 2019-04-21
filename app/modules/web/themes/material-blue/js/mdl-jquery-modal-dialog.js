@@ -1,4 +1,4 @@
-var mdlDialog = function () {
+const mdlDialog = function () {
     function showDialog(options) {
         options = $.extend({
             id: 'orrsDiag',
@@ -20,17 +20,22 @@ var mdlDialog = function () {
         }
 
         $('<div id="' + options.id + '" class="dialog-container"><div class="mdl-card mdl-shadow--16dp" id="' + options.id + '_content"></div></div>').appendTo("body");
-        var dialog = $('#' + options.id);
-        var content = dialog.find('.mdl-card');
-        if (options.contentStyle != null) content.css(options.contentStyle);
-        if (options.title != null) {
+        const dialog = $('#' + options.id);
+        const content = dialog.find('.mdl-card');
+        if (options.contentStyle !== null) {
+            content.css(options.contentStyle);
+        }
+
+        if (options.title !== null) {
             $('<header>' + options.title + '</header>').appendTo(content);
         }
-        if (options.text != null) {
+
+        if (options.text !== null) {
             $(options.text).appendTo(content);
         }
+
         if (options.neutral || options.negative || options.positive) {
-            var buttonBar = $('<div class="mdl-card__actions dialog-button-bar"></div>');
+            const buttonBar = $('<div class="mdl-card__actions dialog-button-bar"></div>');
             if (options.neutral) {
                 options.neutral = $.extend({
                     id: 'neutral',
@@ -40,8 +45,9 @@ var mdlDialog = function () {
                 var neuButton = $('<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="' + options.neutral.id + '">' + options.neutral.title + '</button>');
                 neuButton.click(function (e) {
                     e.preventDefault();
-                    if (options.neutral.onClick == null || !options.neutral.onClick(e))
-                        hideDialog(dialog)
+                    if (options.neutral.onClick === null || !options.neutral.onClick(e)) {
+                        hideDialog(dialog);
+                    }
                 });
                 neuButton.appendTo(buttonBar);
             }
@@ -54,8 +60,9 @@ var mdlDialog = function () {
                 var negButton = $('<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="' + options.negative.id + '">' + options.negative.title + '</button>');
                 negButton.click(function (e) {
                     e.preventDefault();
-                    if (options.negative.onClick == null || !options.negative.onClick(e))
-                        hideDialog(dialog)
+                    if (options.negative.onClick === null || !options.negative.onClick(e)) {
+                        hideDialog(dialog);
+                    }
                 });
                 negButton.appendTo(buttonBar);
             }
@@ -68,8 +75,9 @@ var mdlDialog = function () {
                 var posButton = $('<button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="' + options.positive.id + '">' + options.positive.title + '</button>');
                 posButton.click(function (e) {
                     e.preventDefault();
-                    if (options.positive.onClick == null || !options.positive.onClick(e))
-                        hideDialog(dialog)
+                    if (options.positive.onClick === null || !options.positive.onClick(e)) {
+                        hideDialog(dialog);
+                    }
                 });
                 posButton.appendTo(buttonBar);
             }
@@ -81,8 +89,9 @@ var mdlDialog = function () {
                 hideDialog(dialog);
             });
             $(document).on("keyup.dialog", function (e) {
-                if (e.which == 27)
+                if (e.which === 27) {
                     hideDialog(dialog);
+                }
             });
             content.click(function (e) {
                 e.stopPropagation();
