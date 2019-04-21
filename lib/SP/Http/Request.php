@@ -151,7 +151,9 @@ final class Request
             return '127.0.0.1';
         }
 
-        if (($forwarded = $this->getForwardedFor()) !== null) {
+        $forwarded = $this->getForwardedFor();
+
+        if ($forwarded !== null) {
             return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
         }
 
@@ -164,7 +166,9 @@ final class Request
     public function getForwardedFor()
     {
         // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
-        if (($forwarded = $this->headers->get('HTTP_FORWARDED')) !== null &&
+        $forwarded = $this->headers->get('HTTP_FORWARDED');
+
+        if ($forwarded !== null &&
             preg_match_all('/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
                 $forwarded, $matches)
         ) {
@@ -174,7 +178,9 @@ final class Request
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
-        if (($xForwarded = $this->headers->exists('HTTP_X_FORWARDED_FOR')) !== null) {
+        $xForwarded = $this->headers->exists('HTTP_X_FORWARDED_FOR');
+
+        if ($xForwarded !== null) {
             $matches = preg_split('/(?<=[\w])+,\s?/i',
                 $xForwarded,
                 -1,

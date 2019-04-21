@@ -30,6 +30,7 @@ use Monolog\Logger;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Language;
+use SP\Http\Request;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SplSubject;
@@ -43,8 +44,11 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
-    const MESSAGE_FORMAT = '%s;%s';
-
+    const MESSAGE_FORMAT = '%s;%s;%s';
+    /**
+     * @var Request
+     */
+    private $request;
     /**
      * @var string
      */
@@ -110,9 +114,17 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
 
         if (($e = $event->getSource()) instanceof \Exception) {
             /** @var \Exception $e */
-            $this->logger->error(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
+            $this->logger->error(
+                sprintf(self::MESSAGE_FORMAT,
+                $eventType,
+                __($e->getMessage()),
+                $this->request->getClientAddress(true)));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $this->logger->debug(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
+            $this->logger->debug(
+                sprintf(self::MESSAGE_FORMAT,
+                    $eventType,
+                    $eventMessage->composeText(' '),
+                    $this->request->getClientAddress(true)));
         }
 
         $this->language->unsetAppLocales();
@@ -127,6 +139,7 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
     protected function initialize(Container $dic)
     {
         $this->language = $dic->get(Language::class);
+        $this->request = $dic->get(Request::class);
 
         $configData = $this->config->getConfigData();
 
