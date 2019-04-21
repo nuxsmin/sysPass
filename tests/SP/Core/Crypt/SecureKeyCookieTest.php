@@ -24,6 +24,8 @@
 
 namespace SP\Tests\SP\Core\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
@@ -68,8 +70,8 @@ class SecureKeyCookieTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
      */
     public function testGetKey()
     {

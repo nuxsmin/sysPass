@@ -25,9 +25,17 @@
 namespace SP\Tests\Services\AuthToken;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\DuplicatedItemException;
@@ -37,6 +45,7 @@ use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -55,9 +64,9 @@ class AuthTokenServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -73,9 +82,9 @@ class AuthTokenServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -90,8 +99,8 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -108,7 +117,7 @@ class AuthTokenServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRefreshAndUpdate()
     {
@@ -137,9 +146,9 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetTokenByToken()
     {
@@ -163,9 +172,9 @@ class AuthTokenServiceTest extends DatabaseTestCase
     /**
      * @throws CryptoException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -199,8 +208,8 @@ class AuthTokenServiceTest extends DatabaseTestCase
 
     /**
      * @throws CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -226,8 +235,8 @@ class AuthTokenServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -241,11 +250,11 @@ class AuthTokenServiceTest extends DatabaseTestCase
         $this->assertEquals(4, $result->getNumRows());
         $this->assertCount(4, $data);
 
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $data[0]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[0]->token);
 
-        $this->assertInstanceOf(\stdClass::class, $data[1]);
+        $this->assertInstanceOf(stdClass::class, $data[1]);
         $this->assertEquals(ActionsInterface::ACCOUNT_VIEW, $data[1]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[1]->token);
 
@@ -261,10 +270,10 @@ class AuthTokenServiceTest extends DatabaseTestCase
     /**
      * @throws CryptoException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreate()
     {

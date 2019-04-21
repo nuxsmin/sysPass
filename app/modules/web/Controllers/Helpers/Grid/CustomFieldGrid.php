@@ -98,7 +98,7 @@ final class CustomFieldGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -132,7 +132,7 @@ final class CustomFieldGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
+     * @return DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -149,7 +149,7 @@ final class CustomFieldGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getCreateAction()
     {
@@ -167,7 +167,7 @@ final class CustomFieldGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getEditAction()
     {
@@ -184,7 +184,7 @@ final class CustomFieldGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDeleteAction()
     {

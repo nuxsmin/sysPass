@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 
 /**
@@ -36,8 +38,8 @@ final class IndexController extends ControllerBase
     /**
      * Index action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function indexAction()
     {

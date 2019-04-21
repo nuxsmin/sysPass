@@ -26,6 +26,7 @@ namespace SP\Tests\Modules\Api\Controllers;
 
 use SP\Tests\Modules\Api\ApiTest;
 use SP\Tests\WebTestCase;
+use stdClass;
 
 /**
  * Class UserGroupControllerTest
@@ -53,12 +54,12 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(2, $result->result->itemId);
         $this->assertEquals('Group added', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
 
         return $result->result->itemId;
     }
@@ -82,7 +83,7 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->result->id);
@@ -112,12 +113,12 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('Group updated', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
     }
 
     /**
@@ -143,12 +144,12 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('Group updated', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
 
         return $id;
     }
@@ -172,7 +173,7 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->result->id);
@@ -194,7 +195,7 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(2, $result->result->count);
         $this->assertCount(2, $result->result->result);
@@ -211,7 +212,7 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(1, $result->result->count);
         $this->assertCount(1, $result->result->result);
@@ -231,7 +232,7 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(1, $result->result->count);
         $this->assertCount(1, $result->result->result);
@@ -257,11 +258,11 @@ class UserGroupControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('Group deleted', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
     }
 }

@@ -27,6 +27,7 @@ namespace SP\Util;
 
 use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 
 /**
  * Class PasswordUtil
@@ -132,7 +133,7 @@ final class PasswordUtil
      * @param int $length opcional, con la longitud de la cadena
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public static function generateRandomBytes($length = 30)
     {

@@ -24,8 +24,12 @@
 
 namespace SP\Services\Import;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\OldCrypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
@@ -96,10 +100,10 @@ trait ImportTrait
      *
      * @throws ImportException
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     protected function addAccount(AccountRequest $accountRequest)
     {

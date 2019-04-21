@@ -24,6 +24,7 @@
 
 namespace SP\Services\Ldap;
 
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\UserData;
@@ -139,7 +140,7 @@ final class LdapImportService extends Service
                             );
 
                             $this->syncedObjects++;
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             processException($e);
 
                             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -231,7 +232,7 @@ final class LdapImportService extends Service
                             );
 
                             $this->syncedObjects++;
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             processException($e);
 
                             $this->eventDispatcher->notifyEvent('exception', new Event($e));

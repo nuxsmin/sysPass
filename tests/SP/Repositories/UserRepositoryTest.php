@@ -24,11 +24,15 @@
 
 namespace SP\Tests\Repositories;
 
+use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
@@ -37,6 +41,7 @@ use SP\Repositories\User\UserRepository;
 use SP\Services\User\UpdatePassRequest;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -56,8 +61,8 @@ class UserRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -75,9 +80,9 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -112,7 +117,7 @@ class UserRepositoryTest extends DatabaseTestCase
      * Comprobar la modificación de las preferencias de usuario
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testUpdatePreferencesById()
     {
@@ -129,7 +134,7 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la obtención de los datos de un usuario
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetById()
     {
@@ -153,7 +158,7 @@ class UserRepositoryTest extends DatabaseTestCase
      * Comprobar si existe un usuario
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testCheckExistsByLogin()
     {
@@ -180,8 +185,8 @@ class UserRepositoryTest extends DatabaseTestCase
      * Comprobar la actualización de la clave de un usuario por Id
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws SPException
      */
     public function testUpdatePassById()
     {
@@ -234,7 +239,7 @@ class UserRepositoryTest extends DatabaseTestCase
      * Actualizar un usuario desde el proceso de login
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testUpdateOnLogin()
     {
@@ -256,7 +261,7 @@ class UserRepositoryTest extends DatabaseTestCase
      * Eliminar usuarios en lote
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testDeleteByIdBatch()
     {
@@ -270,7 +275,7 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la obtención de los datos de un usuario
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetByLogin()
     {
@@ -292,7 +297,7 @@ class UserRepositoryTest extends DatabaseTestCase
      * Comprobar la eliminación de usuarios
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testDelete()
     {
@@ -354,7 +359,7 @@ class UserRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(3, $data[0]->id);
         $this->assertEquals('User A', $data[0]->name);
 
@@ -371,8 +376,8 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws SPException
      */
     public function testUpdateMasterPassById()
     {
@@ -395,7 +400,7 @@ class UserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de usuarios
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {

@@ -24,6 +24,7 @@
 
 namespace SP\DataModel\ItemPreset;
 
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 
 /**
@@ -52,7 +53,7 @@ class SessionTimeout
      * @param string $address IP address and/or mask
      * @param int    $timeout Timeout in seconds
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $address, int $timeout)
     {

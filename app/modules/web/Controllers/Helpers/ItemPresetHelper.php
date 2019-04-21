@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
 use SP\DataModel\ItemPreset\Password;
@@ -57,7 +59,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @param ItemPresetData $itemPresetData
      *
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws NoSuchPropertyException
      */
     public function makeAccountPermissionView(ItemPresetData $itemPresetData)
     {
@@ -77,7 +79,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @param ItemPresetData $itemPresetData
      *
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws NoSuchPropertyException
      */
     public function makeAccountPrivateView(ItemPresetData $itemPresetData)
     {
@@ -92,8 +94,8 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @param ItemPresetData $itemPresetData
      *
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws NoSuchPropertyException
+     * @throws InvalidArgumentException
      */
     public function makeSessionTimeoutView(ItemPresetData $itemPresetData)
     {
@@ -108,7 +110,7 @@ final class ItemPresetHelper extends HelperBase
     /**
      * @param ItemPresetData $itemPresetData
      *
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws NoSuchPropertyException
      */
     public function makeAccountPasswordView(ItemPresetData $itemPresetData)
     {

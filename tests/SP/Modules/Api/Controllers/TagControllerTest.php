@@ -26,6 +26,7 @@ namespace SP\Tests\Modules\Api\Controllers;
 
 use SP\Tests\Modules\Api\ApiTest;
 use SP\Tests\WebTestCase;
+use stdClass;
 
 /**
  * Class TagControllerTest
@@ -52,12 +53,12 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(7, $result->result->itemId);
         $this->assertEquals('Tag added', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
 
         return $result->result->itemId;
     }
@@ -81,7 +82,7 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->result->id);
@@ -108,12 +109,12 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('Tag updated', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
     }
 
     public function testSearchAction()
@@ -129,7 +130,7 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(7, $result->result->count);
         $this->assertCount(7, $result->result->result);
@@ -146,7 +147,7 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(1, $result->result->count);
         $this->assertCount(1, $result->result->result);
@@ -166,7 +167,7 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertEquals(1, $result->result->count);
         $this->assertCount(1, $result->result->result);
@@ -192,11 +193,11 @@ class TagControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals($id, $result->result->itemId);
         $this->assertEquals('Tag removed', $result->result->resultMessage);
-        $this->assertInstanceOf(\stdClass::class, $result->result->result);
+        $this->assertInstanceOf(stdClass::class, $result->result->result);
     }
 }

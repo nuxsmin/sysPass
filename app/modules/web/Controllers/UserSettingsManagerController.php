@@ -24,15 +24,19 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcherInterface;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Language;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\ExtensibleTabControllerInterface;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\Template;
+use SP\Services\Auth\AuthException;
 
 /**
  * Class UserSettingsManagerController
@@ -47,8 +51,8 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     protected $tabsHelper;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function indexAction()
     {
@@ -58,8 +62,8 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function getTabs()
     {
@@ -127,10 +131,10 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\SessionTimeout
-     * @throws \SP\Services\Auth\AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
+     * @throws AuthException
      */
     protected function initialize()
     {

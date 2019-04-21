@@ -24,7 +24,12 @@
 
 namespace SP\Tests\Services\Tag;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
@@ -33,6 +38,7 @@ use SP\Services\ServiceException;
 use SP\Services\Tag\TagService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -48,9 +54,9 @@ class TagServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -66,7 +72,7 @@ class TagServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteByIdBatch()
     {
@@ -80,8 +86,8 @@ class TagServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testDelete()
@@ -99,8 +105,8 @@ class TagServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -127,7 +133,7 @@ class TagServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -148,7 +154,7 @@ class TagServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -168,7 +174,7 @@ class TagServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -181,7 +187,7 @@ class TagServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(1, $data[0]->id);
 
         $itemSearchData = new ItemSearchData();
@@ -198,7 +204,7 @@ class TagServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -218,7 +224,7 @@ class TagServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByName()
     {

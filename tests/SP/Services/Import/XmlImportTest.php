@@ -25,11 +25,16 @@
 namespace SP\Tests\Services\Import;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Services\Import\FileImport;
+use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
 use SP\Services\Import\XmlFileImport;
 use SP\Services\Import\XmlImport;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -46,9 +51,9 @@ class XmlImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -61,8 +66,8 @@ class XmlImportTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws ImportException
+     * @throws FileException
      */
     public function testDoImport()
     {

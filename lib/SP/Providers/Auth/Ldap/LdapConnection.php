@@ -120,8 +120,8 @@ final class LdapConnection implements LdapConnectionInterface
     /**
      * Realizar la conexión al servidor de LDAP.
      *
-     * @throws LdapException
      * @return bool
+     * @throws LdapException
      */
     public function connect(): bool
     {
@@ -242,8 +242,8 @@ final class LdapConnection implements LdapConnectionInterface
      * @param string $bindDn   con el DN del usuario
      * @param string $bindPass con la clave del usuario
      *
-     * @throws LdapException
      * @return bool
+     * @throws LdapException
      */
     public function bind(string $bindDn = null, string $bindPass = null): bool
     {

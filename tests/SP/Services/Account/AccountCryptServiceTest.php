@@ -25,7 +25,13 @@
 namespace SP\Tests\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountCryptService;
 use SP\Services\Account\AccountService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
@@ -54,9 +60,9 @@ class AccountCryptServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -73,11 +79,11 @@ class AccountCryptServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws CryptoException
+     * @throws NoSuchItemException
      */
     public function testUpdateMasterPassword()
     {
@@ -108,9 +114,9 @@ class AccountCryptServiceTest extends DatabaseTestCase
     /**
      * @throws CryptoException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testUpdateHistoryMasterPassword()
     {

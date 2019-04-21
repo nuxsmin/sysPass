@@ -25,6 +25,8 @@
 namespace SP\Html;
 
 use Klein\Klein;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Http\Request;
 
 defined('APP_ROOT') || die();
@@ -96,8 +98,8 @@ final class Minify
      *
      * @param bool $disableMinify Deshabilitar minimizar
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getMinified($disableMinify = false)
     {

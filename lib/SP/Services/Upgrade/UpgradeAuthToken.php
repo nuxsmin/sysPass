@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -46,7 +47,7 @@ final class UpgradeAuthToken extends Service
     /**
      * upgrade_300_18072901
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function upgrade_300_18072901()
     {
@@ -72,7 +73,7 @@ final class UpgradeAuthToken extends Service
                     );
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

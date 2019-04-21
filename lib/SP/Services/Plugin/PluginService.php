@@ -24,6 +24,8 @@
 
 namespace SP\Services\Plugin;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
@@ -49,11 +51,11 @@ final class PluginService extends Service
     /**
      * Creates an item
      *
-     * @param \SP\Repositories\Plugin\PluginModel $itemData
+     * @param PluginModel $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(PluginModel $itemData)
     {
@@ -63,11 +65,11 @@ final class PluginService extends Service
     /**
      * Updates an item
      *
-     * @param \SP\Repositories\Plugin\PluginModel $itemData
+     * @param PluginModel $itemData
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(PluginModel $itemData)
     {
@@ -79,9 +81,9 @@ final class PluginService extends Service
      *
      * @param int $id
      *
-     * @return \SP\Repositories\Plugin\PluginModel
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return PluginModel
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -99,8 +101,8 @@ final class PluginService extends Service
      * Returns all the items
      *
      * @return PluginModel[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -112,9 +114,9 @@ final class PluginService extends Service
      *
      * @param array $ids
      *
-     * @return \SP\Repositories\Plugin\PluginModel[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return PluginModel[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -127,9 +129,9 @@ final class PluginService extends Service
      * @param array $ids
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -144,8 +146,8 @@ final class PluginService extends Service
      * @param $id
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -160,8 +162,8 @@ final class PluginService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -173,10 +175,10 @@ final class PluginService extends Service
      *
      * @param string $name
      *
-     * @return \SP\Repositories\Plugin\PluginModel
+     * @return PluginModel
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName($name)
     {
@@ -197,8 +199,8 @@ final class PluginService extends Service
      *
      * @return void
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabled($id, $enabled)
     {
@@ -215,8 +217,8 @@ final class PluginService extends Service
      *
      * @return void
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabledByName($name, $enabled)
     {
@@ -232,8 +234,8 @@ final class PluginService extends Service
      * @param $available
      *
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailable($id, $available)
     {
@@ -249,8 +251,8 @@ final class PluginService extends Service
      * @param int    $available
      *
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailableByName($name, $available)
     {
@@ -266,8 +268,8 @@ final class PluginService extends Service
      *
      * @return bool
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function resetById($id)
     {
@@ -282,8 +284,8 @@ final class PluginService extends Service
      * Devolver los plugins activados
      *
      * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getEnabled()
     {

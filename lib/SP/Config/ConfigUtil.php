@@ -92,7 +92,7 @@ final class ConfigUtil
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
      *
-     * @throws \SP\Core\Exceptions\ConfigException
+     * @throws ConfigException
      */
     public static function checkConfigDir()
     {

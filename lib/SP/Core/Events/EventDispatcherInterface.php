@@ -24,12 +24,14 @@
 
 namespace SP\Core\Events;
 
+use SplSubject;
+
 /**
  * Interface EventDispatcherInterface
  *
  * @package SP\Core\EventDispatcher
  */
-interface EventDispatcherInterface extends \SplSubject
+interface EventDispatcherInterface extends SplSubject
 {
     /**
      * Notificar a los observadores y establecer el estado

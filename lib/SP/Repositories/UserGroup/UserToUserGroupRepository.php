@@ -24,10 +24,13 @@
 
 namespace SP\Repositories\UserGroup;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserToUserGroupRepository
@@ -45,8 +48,8 @@ final class UserToUserGroupRepository extends Repository
      * @param $userId
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkUserInGroup($groupId, $userId)
     {
@@ -62,9 +65,9 @@ final class UserToUserGroupRepository extends Repository
      *
      * @param $userId
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getGroupsForUser($userId)
     {
@@ -82,8 +85,8 @@ final class UserToUserGroupRepository extends Repository
      * @param array $users
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($id, array $users)
     {
@@ -97,8 +100,8 @@ final class UserToUserGroupRepository extends Repository
      * @param $id int
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -117,8 +120,8 @@ final class UserToUserGroupRepository extends Repository
      * @param array $users
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($groupId, array $users)
     {
@@ -147,9 +150,9 @@ final class UserToUserGroupRepository extends Repository
      *
      * @param $id int
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {

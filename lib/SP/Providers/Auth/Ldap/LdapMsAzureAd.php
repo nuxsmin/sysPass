@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\Address;
 
 /**
@@ -46,7 +47,7 @@ final class LdapMsAzureAd extends Ldap
      * Devolver el filtro para comprobar la pertenecia al grupo
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getGroupMembershipFilter(): string
     {

@@ -24,6 +24,11 @@
 
 namespace SP\Services\EventLog;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -51,8 +56,8 @@ final class EventlogService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -61,9 +66,9 @@ final class EventlogService extends Service
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function clear()
     {
@@ -74,8 +79,8 @@ final class EventlogService extends Service
      * @param EventlogData $eventlogData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(EventlogData $eventlogData)
     {
@@ -89,8 +94,8 @@ final class EventlogService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

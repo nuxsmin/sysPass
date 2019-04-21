@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
@@ -31,6 +32,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Import\FileImport;
@@ -49,7 +51,7 @@ final class ConfigImportController extends SimpleControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function importAction()
     {
@@ -91,7 +93,7 @@ final class ConfigImportController extends SimpleControllerBase
                 __u('No accounts were imported'),
                 [__u('Please check out the event log for more details')]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

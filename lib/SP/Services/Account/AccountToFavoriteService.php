@@ -24,6 +24,10 @@
 
 namespace SP\Services\Account;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Repositories\Account\AccountToFavoriteRepository;
 use SP\Services\Service;
 
@@ -45,8 +49,8 @@ final class AccountToFavoriteService extends Service
      * @param $id int El Id de usuario
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserId($id)
     {
@@ -60,8 +64,8 @@ final class AccountToFavoriteService extends Service
      * @param $userId    int El Id del usuario
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($accountId, $userId)
     {
@@ -75,8 +79,8 @@ final class AccountToFavoriteService extends Service
      * @param $userId    int El Id del usuario
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($accountId, $userId)
     {
@@ -84,8 +88,8 @@ final class AccountToFavoriteService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

@@ -24,10 +24,18 @@
 
 namespace SP\Tests\Services\Account;
 
+use Closure;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserPreferencesData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Services\Account\AccountSearchFilter;
+use SP\Services\Account\AccountSearchItem;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -47,14 +55,14 @@ class AccountSearchServiceTest extends DatabaseTestCase
      */
     private static $service;
     /**
-     * @var \Closure
+     * @var Closure
      */
     private static $setupUser;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -78,9 +86,9 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testProcessSearchResultsForUserAdmin()
     {
@@ -128,15 +136,15 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param int   $id Category Id
      * @param array $accountsId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkCategoryById($id, array $accountsId = [])
     {
         $rows = count($accountsId);
 
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setCategoryId($id);
 
@@ -145,7 +153,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $this->assertInstanceOf(QueryResult::class, $result);
 
         if ($rows > 0) {
-            /** @var \SP\Services\Account\AccountSearchItem[] $data */
+            /** @var AccountSearchItem[] $data */
             $data = $result->getDataAsArray();
 
             $i = 0;
@@ -158,9 +166,9 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkNonExistantCategory()
     {
@@ -178,15 +186,15 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param int   $id Client Id
      * @param array $accountsId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkClientById($id, array $accountsId = [])
     {
         $rows = count($accountsId);
 
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId($id);
 
@@ -195,7 +203,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $this->assertEquals($rows, $result->getNumRows());
 
         if ($rows > 0) {
-            /** @var \SP\Services\Account\AccountSearchItem[] $data */
+            /** @var AccountSearchItem[] $data */
             $data = $result->getDataAsArray();
 
             $i = 0;
@@ -213,15 +221,15 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param array  $accountsId
      * @param string $operator
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkClientAndCategory($clientId, $categoryId, array $accountsId = [], $operator = null)
     {
         $rows = count($accountsId);
 
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setFilterOperator($operator);
         $searchFilter->setClientId($clientId);
@@ -233,7 +241,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var \SP\Services\Account\AccountSearchItem $item */
+        /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
             $i++;
@@ -241,13 +249,13 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkNonExistantClient()
     {
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setClientId(10);
 
@@ -261,15 +269,15 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param string $string
      * @param array  $accountsId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkString($string, array $accountsId = [])
     {
         $rows = count($accountsId);
 
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setTxtSearch($string);
 
@@ -280,7 +288,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var \SP\Services\Account\AccountSearchItem $item */
+        /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
 
@@ -292,13 +300,13 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param int   $rows Expected rows
      * @param array $accountsId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkFavorites($rows, array $accountsId = [])
     {
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setSearchFavorites(true);
 
@@ -309,7 +317,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
 
         $i = 0;
 
-        /** @var \SP\Services\Account\AccountSearchItem $item */
+        /** @var AccountSearchItem $item */
         foreach ($result->getDataAsArray() as $item) {
             $this->assertEquals($accountsId[$i], $item->getAccountSearchVData()->getId());
             $i++;
@@ -321,15 +329,15 @@ class AccountSearchServiceTest extends DatabaseTestCase
      * @param array  $accountsId
      * @param string $operator
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     private function checkTags(array $tagsId, array $accountsId = [], $operator = null)
     {
         $rows = count($accountsId);
 
-        $searchFilter = new \SP\Services\Account\AccountSearchFilter();
+        $searchFilter = new AccountSearchFilter();
         $searchFilter->setLimitCount(10);
         $searchFilter->setFilterOperator($operator);
         $searchFilter->setTagsId($tagsId);
@@ -337,7 +345,7 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $result = self::$service->processSearchResults($searchFilter);
         $this->assertInstanceOf(QueryResult::class, $result);
 
-        /** @var \SP\Services\Account\AccountSearchItem[] $data */
+        /** @var AccountSearchItem[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals($rows, $result->getNumRows());
@@ -352,13 +360,13 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testProcessSearchResultsForUserDemo()
     {
-        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
+        AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(2);
@@ -399,13 +407,13 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testProcessSearchResultsForUserA()
     {
-        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
+        AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(3);
@@ -445,13 +453,13 @@ class AccountSearchServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testProcessSearchResultsForUserB()
     {
-        \SP\Services\Account\AccountSearchItem::$publicLinkEnabled = false;
+        AccountSearchItem::$publicLinkEnabled = false;
 
         $userData = new UserLoginResponse();
         $userData->setId(4);

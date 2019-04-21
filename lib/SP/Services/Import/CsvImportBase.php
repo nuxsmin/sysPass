@@ -24,6 +24,7 @@
 
 namespace SP\Services\Import;
 
+use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -35,6 +36,7 @@ use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Tag\TagService;
+use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -112,7 +114,7 @@ abstract class CsvImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     protected function processAccounts()
     {
@@ -162,7 +164,7 @@ abstract class CsvImportBase
                         ->addDetail(__u('Account imported'), $accountName)
                         ->addDetail(__u('Client'), $clientName))
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception',

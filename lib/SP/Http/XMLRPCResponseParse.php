@@ -26,6 +26,7 @@ namespace SP\Http;
 
 use DOMDocument;
 use DOMElement;
+use DOMException;
 use DOMNode;
 use DOMNodeList;
 use InvalidArgumentException;
@@ -55,7 +56,7 @@ abstract class XMLRPCResponseParse
      *
      * @param string $xml El documento XML
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct($xml)
     {
@@ -66,11 +67,11 @@ abstract class XMLRPCResponseParse
             $dom->loadXML($xml);
 
             if ($dom->getElementsByTagName('methodResponse')->length === 0) {
-                throw new \DOMException(__u('Invalid XML-RPC response'));
+                throw new DOMException(__u('Invalid XML-RPC response'));
             }
 
             $this->root = $dom->documentElement;
-        } catch (\DOMException $e) {
+        } catch (DOMException $e) {
             throw new InvalidArgumentException($e->getMessage(), $e->getCode());
         }
     }

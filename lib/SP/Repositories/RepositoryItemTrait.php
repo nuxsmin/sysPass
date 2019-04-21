@@ -24,6 +24,7 @@
 
 namespace SP\Repositories;
 
+use Exception;
 use SP\DataModel\DataModelInterface;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\DBStorageInterface;
@@ -51,7 +52,7 @@ trait RepositoryItemTrait
         foreach ($items as $key => $item) {
             try {
                 $this->delete($item->getId());
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 unset($items[$key]);
             }
         }

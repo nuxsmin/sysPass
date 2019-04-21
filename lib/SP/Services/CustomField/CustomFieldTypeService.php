@@ -24,6 +24,8 @@
 
 namespace SP\Services\CustomField;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\Repositories\CustomField\CustomFieldTypeRepository;
 use SP\Repositories\NoSuchItemException;
@@ -48,8 +50,8 @@ final class CustomFieldTypeService extends Service
      * Get all items from the service's repository
      *
      * @return CustomFieldTypeData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -60,8 +62,8 @@ final class CustomFieldTypeService extends Service
      * Returns all the items
      *
      * @return CustomFieldTypeData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -72,8 +74,8 @@ final class CustomFieldTypeService extends Service
      * @param $id
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)

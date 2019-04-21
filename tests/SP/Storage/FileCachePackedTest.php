@@ -28,6 +28,7 @@ use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 use SP\Storage\File\FileCachePacked;
 use SP\Storage\File\FileException;
+use stdClass;
 
 /**
  * Class FileCachePackedTest
@@ -51,11 +52,11 @@ class FileCachePackedTest extends TestCase
         $faker = Factory::create();
 
         do {
-            $data = new \stdClass();
+            $data = new stdClass();
             $data->id = uniqid();
             $data->name = $faker->name;
             $data->values = [1, 2, 3];
-            $data->object = new \stdClass();
+            $data->object = new stdClass();
             $data->object->uid = uniqid();
             $data->object->type = $faker->address;
             $data->object->notes = $faker->text;
@@ -67,7 +68,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testDeleteInvalid()
     {
@@ -77,7 +78,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testSave()
     {
@@ -88,7 +89,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testLoad()
     {
@@ -99,7 +100,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testIsExpired()
     {
@@ -111,7 +112,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testIsExpiredDate()
     {
@@ -123,7 +124,7 @@ class FileCachePackedTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testDelete()
     {

@@ -24,6 +24,7 @@
 
 namespace SP\Services\Task;
 
+use Closure;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\File\FileException;
@@ -46,7 +47,7 @@ final class TaskService extends Service
      */
     const STARTUP_WAIT_COUNT = 30;
     /**
-     * @var \Closure
+     * @var Closure
      */
     private $messagePusher;
     /**
@@ -70,11 +71,11 @@ final class TaskService extends Service
      * Track task status
      *
      * @param string   $taskId
-     * @param \Closure $messagePusher
+     * @param Closure $messagePusher
      *
      * @throws ServiceException
      */
-    public function trackStatus($taskId, \Closure $messagePusher)
+    public function trackStatus($taskId, Closure $messagePusher)
     {
         $this->taskId = $taskId;
         $this->taskDirectory = Util::getTempDir();

@@ -194,8 +194,8 @@ final class FileHandler
     /**
      * Closes the file
      *
-     * @throws FileException
      * @return FileHandler
+     * @throws FileException
      */
     public function close()
     {
@@ -252,8 +252,8 @@ final class FileHandler
     /**
      * Checks if the file is writable
      *
-     * @throws FileException
      * @return FileHandler
+     * @throws FileException
      */
     public function checkIsWritable()
     {
@@ -267,8 +267,8 @@ final class FileHandler
     /**
      * Checks if the file exists
      *
-     * @throws FileException
      * @return FileHandler
+     * @throws FileException
      */
     public function checkFileExists()
     {
@@ -347,8 +347,8 @@ final class FileHandler
     /**
      * Checks if the file is readable
      *
-     * @throws FileException
      * @return FileHandler
+     * @throws FileException
      */
     public function checkIsReadable()
     {

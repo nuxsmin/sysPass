@@ -25,6 +25,8 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
@@ -49,8 +51,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -66,8 +68,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteAdmin()
     {
@@ -78,8 +80,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteAdminBatch()
     {
@@ -88,8 +90,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -134,8 +136,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -165,8 +167,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -214,8 +216,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSetCheckedById()
     {
@@ -224,8 +226,8 @@ class NotificationRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate()
     {

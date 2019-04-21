@@ -76,7 +76,7 @@ final class Connection implements ConnectionInterface
      * @param $type int EL tipo de socket TCP/UDP
      *
      * @return resource
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getSocket($type)
     {
@@ -149,7 +149,7 @@ final class Connection implements ConnectionInterface
      * @param $message string El mensaje a enviar
      *
      * @return int|bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function send($message)
     {

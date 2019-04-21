@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Notification;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
@@ -312,7 +313,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -322,7 +323,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -332,7 +333,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

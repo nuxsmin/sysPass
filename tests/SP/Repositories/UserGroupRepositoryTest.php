@@ -25,8 +25,11 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\DuplicatedItemException;
@@ -51,8 +54,8 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -85,7 +88,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * Comprobar si el grupo está en uso
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function testCheckInUse()
@@ -204,7 +207,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -221,7 +224,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDuplicated()
     {
@@ -263,7 +266,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -277,7 +280,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteUsed()
     {

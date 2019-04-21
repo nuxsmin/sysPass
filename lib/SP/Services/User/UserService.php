@@ -24,6 +24,9 @@
 
 namespace SP\Services\User;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -266,7 +269,7 @@ final class UserService extends Service
      *
      * @return int
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function createWithMasterPass(UserData $itemData, $userPass, $masterPass)
     {
@@ -435,8 +438,8 @@ final class UserService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

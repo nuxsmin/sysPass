@@ -24,6 +24,7 @@
 
 namespace SP\Html\DataGrid\Action;
 
+use RuntimeException;
 use SP\Html\Assets\IconInterface;
 
 defined('APP_ROOT') || die();
@@ -158,8 +159,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @param string $class
      * @param string $method
      *
-     * @throws \RuntimeException
      * @return $this
+     * @throws RuntimeException
      */
     public function setRuntimeFilter($class, $method)
     {
@@ -169,7 +170,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
                 return $filter->{$method}();
             };
         } else {
-            throw new \RuntimeException('Method does not exist');
+            throw new RuntimeException('Method does not exist');
         }
 
         return $this;

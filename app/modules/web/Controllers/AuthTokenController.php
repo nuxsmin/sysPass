@@ -24,9 +24,17 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
 use SP\Http\JsonResponse;
@@ -36,7 +44,9 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Auth\AuthException;
 use SP\Services\AuthToken\AuthTokenService;
+use SP\Services\ServiceException;
 use SP\Services\User\UserService;
 
 /**
@@ -57,11 +67,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -82,10 +92,10 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -120,7 +130,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->eventDispatcher->notifyEvent('show.authToken.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -134,9 +144,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
      *
      * @param $authTokenId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     protected function setViewData($authTokenId = null)
     {
@@ -188,7 +198,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->eventDispatcher->notifyEvent('show.authToken.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -239,7 +249,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization deleted'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -275,7 +285,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -329,7 +339,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Authorization updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -367,7 +377,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             );
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -379,9 +389,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

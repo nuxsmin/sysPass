@@ -24,14 +24,19 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Repositories\DuplicatedItemException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -49,9 +54,9 @@ class CategoryRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -113,7 +118,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('Linux server', $data[0]->description);
 
@@ -181,10 +186,10 @@ class CategoryRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de categorías
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
      */
     public function testUpdate()
     {
@@ -214,8 +219,8 @@ class CategoryRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de categorías
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -237,7 +242,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
      * Comprobar la creación de categorías
      *
      * @throws DuplicatedItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -264,7 +269,7 @@ class CategoryRepositoryTest extends DatabaseTestCase
      * Comprobar la eliminación de categorías por Id
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testDelete()
     {

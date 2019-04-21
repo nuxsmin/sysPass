@@ -25,9 +25,11 @@
 namespace SP\Tests\Services\Task;
 
 use PHPUnit\Framework\TestCase;
+use SP\Core\Context\ContextException;
 use SP\Services\Task\Task;
 use SP\Services\Task\TaskFactory;
 use SP\Services\Task\TaskService;
+use SP\Storage\File\FileException;
 use function SP\Tests\setupContext;
 
 /**
@@ -40,8 +42,8 @@ class TaskServiceTest extends TestCase
     private static $pids = [];
 
     /**
-     * @throws \SP\Storage\File\FileException
-     * @throws \SP\Core\Context\ContextException
+     * @throws FileException
+     * @throws ContextException
      */
     public function testTrackStatus()
     {
@@ -82,7 +84,7 @@ class TaskServiceTest extends TestCase
             TaskFactory::end($task);
         });
 
-        while(count(self::$pids) > 0) {
+        while (count(self::$pids) > 0) {
             foreach (self::$pids as $key => $pid) {
                 $res = pcntl_waitpid($pid, $status);
 

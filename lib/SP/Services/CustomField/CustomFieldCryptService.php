@@ -26,9 +26,14 @@ namespace SP\Services\CustomField;
 
 defined('APP_ROOT') || die();
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\Service;
@@ -54,8 +59,8 @@ final class CustomFieldCryptService extends Service
     /**
      * @param callable $decryptor
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function processUpdateMasterPassword(callable $decryptor)
     {
@@ -94,7 +99,7 @@ final class CustomFieldCryptService extends Service
                 $this->customFieldService->updateMasterPass($customField, $this->request->getNewMasterPass());
 
                 $success[] = $customField->getId();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -129,7 +134,7 @@ final class CustomFieldCryptService extends Service
                     $customFieldData->getKey(),
                     $this->request->getCurrentMasterPass());
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
@@ -142,8 +147,8 @@ final class CustomFieldCryptService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

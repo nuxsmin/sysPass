@@ -26,6 +26,7 @@ namespace SP\Tests;
 
 use Goutte\Client;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Symfony\Component\BrowserKit\Response;
 
 /**
@@ -64,7 +65,7 @@ abstract class WebTestCase extends TestCase
      *
      * @param int    $httpCode
      *
-     * @return \stdClass
+     * @return stdClass
      */
     protected static function checkAndProcessJsonResponse(Client $client, $httpCode = 200)
     {

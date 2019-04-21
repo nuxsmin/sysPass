@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Plugin;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -247,7 +248,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -259,7 +260,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -271,7 +272,7 @@ final class PluginRepository extends Repository implements RepositoryItemInterfa
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

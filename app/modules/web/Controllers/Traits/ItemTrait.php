@@ -25,13 +25,19 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\CustomField\CustomFieldItem;
 use SP\Services\CustomField\CustomFieldService;
+use SP\Services\ServiceException;
 use SP\Util\Filter;
 
 /**
@@ -48,9 +54,9 @@ trait ItemTrait
      * @param int $itemId
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     protected function getCustomFieldsForItem($moduleId, $itemId)
     {
@@ -99,10 +105,10 @@ trait ItemTrait
      * @param Request   $request
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     protected function addCustomFieldsForItem($moduleId, $itemId, Request $request)
     {
@@ -138,8 +144,8 @@ trait ItemTrait
      * @param int|int[] $itemId
      *
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function deleteCustomFieldsForItem($moduleId, $itemId)
     {
@@ -160,8 +166,8 @@ trait ItemTrait
      * @param Request   $request
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId, Request $request)
     {

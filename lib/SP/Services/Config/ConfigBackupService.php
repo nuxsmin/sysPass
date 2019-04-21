@@ -24,11 +24,17 @@
 
 namespace SP\Services\Config;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use RuntimeException;
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\File\FileException;
 use SP\Util\Util;
 
 /**
@@ -47,7 +53,7 @@ final class ConfigBackupService extends Service
      * @param string $configData
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public static function configToJson(string $configData): string
     {
@@ -59,7 +65,7 @@ final class ConfigBackupService extends Service
      */
     public static function configToXml(string $configData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -72,7 +78,7 @@ final class ConfigBackupService extends Service
         try {
             $this->configService->save('config_backup', $this->packConfigData($configData));
             $this->configService->save('config_backup_date', time());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -90,9 +96,9 @@ final class ConfigBackupService extends Service
     /**
      * @return ConfigData
      * @throws ServiceException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws FileException
      */
     public function restore()
     {

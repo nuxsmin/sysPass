@@ -24,11 +24,13 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
+use SP\Storage\File\FileException;
 use SP\Util\VersionUtil;
 
 /**
@@ -60,7 +62,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
      * @param ConfigData $configData
      *
      * @throws UpgradeException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function upgrade($version, ConfigData $configData)
     {
@@ -125,7 +127,7 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                         ->upgrade_310_19012201();
                     return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 

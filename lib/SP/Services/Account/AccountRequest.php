@@ -138,13 +138,5 @@ final class AccountRequest
     /**
      * @var bool
      */
-    public $updateUserPermissions = false;
-    /**
-     * @var bool
-     */
-    public $updateUserGroupPermissions = false;
-    /**
-     * @var bool
-     */
     public $updateTags = false;
 }

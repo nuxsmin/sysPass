@@ -153,7 +153,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getCreateAction()
     {
@@ -188,7 +188,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDeleteAction()
     {
@@ -205,7 +205,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getViewAction()
     {
@@ -222,7 +222,7 @@ final class UserGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getEditPassAction()
     {

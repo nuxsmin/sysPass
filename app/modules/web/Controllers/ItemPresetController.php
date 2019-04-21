@@ -24,9 +24,19 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPresetData;
 use SP\Http\JsonResponse;
@@ -36,6 +46,8 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\ItemsPresetForm;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Repositories\NoSuchItemException;
+use SP\Services\Auth\AuthException;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
 use SP\Util\Filter;
@@ -78,7 +90,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.itemPreset', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -93,13 +105,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * @param int    $id
      * @param string $type
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     protected function setViewData(int $id = null, string $type = null)
     {
@@ -145,11 +157,11 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -170,10 +182,10 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -215,7 +227,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.itemPreset.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -249,7 +261,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.itemPreset.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -296,7 +308,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value deleted'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -335,7 +347,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value created'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -378,7 +390,7 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Value updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -390,9 +402,9 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

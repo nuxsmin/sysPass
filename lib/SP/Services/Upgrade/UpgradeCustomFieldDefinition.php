@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -44,14 +45,14 @@ use SP\Util\Util;
 final class UpgradeCustomFieldDefinition extends Service
 {
     /**
-     * @var \SP\Storage\Database\Database
+     * @var Database
      */
     private $db;
 
     /**
      * upgrade_300_18010101
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function upgrade_300_18010101()
     {
@@ -98,7 +99,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     );
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -138,6 +139,7 @@ final class UpgradeCustomFieldDefinition extends Service
 
     /**
      * @param int $typeId
+     *
      * @return string
      */
     private function typeMapper(int $typeId)
@@ -161,7 +163,7 @@ final class UpgradeCustomFieldDefinition extends Service
     /**
      * upgrade_300_18072901
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function upgrade_300_18072901()
     {
@@ -189,7 +191,7 @@ final class UpgradeCustomFieldDefinition extends Service
                     );
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

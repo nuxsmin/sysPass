@@ -24,12 +24,18 @@
 
 namespace SP\Tests\Services\Eventlog;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Services\EventLog\EventlogService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -45,9 +51,9 @@ class EventlogServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -63,9 +69,9 @@ class EventlogServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testClear()
     {
@@ -75,8 +81,8 @@ class EventlogServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -89,7 +95,7 @@ class EventlogServiceTest extends DatabaseTestCase
 
         $this->assertEquals(4, $result->getNumRows());
         $this->assertCount(4, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals('login.auth.database', $data[0]->action);
 
         $itemSearchData->setSeachString('login.auth.');
@@ -99,7 +105,7 @@ class EventlogServiceTest extends DatabaseTestCase
 
         $this->assertEquals(4, $result->getNumRows());
         $this->assertCount(4, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
 
         $itemSearchData->setSeachString('Tiempo inactivo : 0 min.');
 
@@ -108,7 +114,7 @@ class EventlogServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
 
         $itemSearchData->setSeachString('prueba');
 
@@ -120,7 +126,7 @@ class EventlogServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {

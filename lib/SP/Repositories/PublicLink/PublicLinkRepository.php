@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\PublicLink;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -109,7 +110,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      *
      * @param array $ids
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -182,7 +183,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -190,7 +191,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -311,7 +312,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -514,7 +515,7 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      *
      * @param int $itemId
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      * @todo Update tests to include userId

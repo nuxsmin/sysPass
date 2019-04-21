@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use SP\Core\AppInfoInterface;
@@ -45,8 +47,8 @@ final class StatusController extends SimpleControllerBase
      * checkReleaseAction
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function checkReleaseAction()
     {
@@ -104,8 +106,8 @@ final class StatusController extends SimpleControllerBase
      * checkNoticesAction
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function checkNoticesAction()
     {

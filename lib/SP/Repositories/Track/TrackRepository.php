@@ -44,8 +44,8 @@ final class TrackRepository extends Repository
      * @param TrackRequest $trackRequest
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(TrackRequest $trackRequest)
     {
@@ -74,8 +74,8 @@ final class TrackRepository extends Repository
      * @param $id int
      *
      * @return int
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function delete($id)
     {
@@ -91,8 +91,8 @@ final class TrackRepository extends Repository
      * @param $id int
      *
      * @return int
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function unlock($id)
     {
@@ -123,9 +123,9 @@ final class TrackRepository extends Repository
     /**
      * @param $id int
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -149,9 +149,9 @@ final class TrackRepository extends Repository
     }
 
     /**
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -176,9 +176,9 @@ final class TrackRepository extends Repository
      *
      * @param TrackRequest $trackRequest
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
     {

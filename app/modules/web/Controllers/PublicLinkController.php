@@ -24,10 +24,18 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
@@ -40,6 +48,7 @@ use SP\Modules\Web\Forms\PublicLinkForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
+use SP\Services\Auth\AuthException;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\PasswordUtil;
 
@@ -61,10 +70,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws SPException
      */
     public function searchAction()
@@ -86,10 +95,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -121,7 +130,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -135,7 +144,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      *
      * @param $publicLinkId
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerExceptionInterface
      * @throws SPException
      */
     protected function setViewData($publicLinkId = null)
@@ -183,7 +192,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -217,7 +226,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.publicLink.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -266,7 +275,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link deleted'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -297,7 +306,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -334,7 +343,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('create.publicLink.account', new Event($this));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Link created'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -350,7 +359,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      */
     public function saveEditAction($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -377,7 +386,7 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
             $this->eventDispatcher->notifyEvent('show.publicLink', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -389,9 +398,9 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

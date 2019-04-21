@@ -24,8 +24,12 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\Repositories\CustomField\CustomFieldRepository;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -45,9 +49,9 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -63,8 +67,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDataBatch()
     {
@@ -81,8 +85,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDataForDefinition()
     {
@@ -99,8 +103,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckExists()
     {
@@ -125,8 +129,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllEncrypted()
     {
@@ -144,8 +148,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDefinitionDataBatch()
     {
@@ -157,8 +161,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -173,8 +177,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldData()
     {
@@ -191,8 +195,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetForModuleById()
     {
@@ -283,8 +287,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -339,7 +343,7 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDefinitionData()
     {
@@ -351,7 +355,7 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdate()
     {

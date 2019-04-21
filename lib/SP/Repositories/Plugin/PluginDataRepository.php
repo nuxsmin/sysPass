@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Plugin;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
@@ -48,7 +49,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @param PluginDataModel $itemData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function create($itemData)
@@ -75,7 +76,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @param PluginDataModel $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function update($itemData)
@@ -104,7 +105,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function delete($id)
@@ -252,7 +253,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -264,7 +265,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -276,7 +277,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -288,7 +289,7 @@ final class PluginDataRepository extends Repository implements RepositoryItemInt
      */
     public function search(ItemSearchData $SearchData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

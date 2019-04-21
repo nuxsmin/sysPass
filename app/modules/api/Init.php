@@ -24,6 +24,9 @@
 
 namespace SP\Modules\Api;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Psr\Container\ContainerInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
@@ -34,6 +37,7 @@ use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Storage\Database\DatabaseUtil;
+use SP\Storage\File\FileException;
 use SP\Util\HttpUtil;
 
 /**
@@ -70,10 +74,10 @@ final class Init extends ModuleBase
      *
      * @throws ContextException
      * @throws InitializationException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public function initialize($controller)
     {
@@ -134,10 +138,10 @@ final class Init extends ModuleBase
      * Comprobar si es necesario actualizar componentes
      *
      * @throws InitializationException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     private function checkUpgrade()
     {

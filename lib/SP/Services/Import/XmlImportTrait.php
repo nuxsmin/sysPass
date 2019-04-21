@@ -24,6 +24,8 @@
 
 namespace SP\Services\Import;
 
+use DOMDocument;
+use DOMElement;
 use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
@@ -36,12 +38,12 @@ defined('APP_ROOT') || die();
 trait XmlImportTrait
 {
     /**
-     * @var \DOMDocument
+     * @var DOMDocument
      */
     protected $xmlDOM;
 
     /**
-     * @param \DOMDocument $xmlDOM
+     * @param DOMDocument $xmlDOM
      */
     public function setXmlDOM($xmlDOM)
     {
@@ -78,9 +80,9 @@ trait XmlImportTrait
             throw new ImportException(__u('Invalid Method'), SPException::WARNING);
         }
 
-        /** @var \DOMElement $nodes */
+        /** @var DOMElement $nodes */
         foreach ($ParentNode as $nodes) {
-            /** @var \DOMElement $Account */
+            /** @var DOMElement $Account */
             foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
                 $this->$callback($node);
             }

@@ -24,11 +24,17 @@
 
 namespace SP\Services\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\MailMessage;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\NoSuchItemException;
@@ -104,7 +110,7 @@ final class TemporaryMasterPassService extends Service
             );
 
             return $randomKey;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw new ServiceException(__u('Error while generating the temporary password'));
@@ -154,7 +160,7 @@ final class TemporaryMasterPassService extends Service
             return $isValid;
         } catch (NoSuchItemException $e) {
             return false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw new ServiceException(__u('Error while checking the temporary password'));
@@ -187,8 +193,8 @@ final class TemporaryMasterPassService extends Service
      * @param $key
      *
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function sendByEmailForGroup($groupId, $key)
     {
@@ -206,8 +212,8 @@ final class TemporaryMasterPassService extends Service
      * @param $key
      *
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function sendByEmailForAllUsers($key)
     {
@@ -254,7 +260,7 @@ final class TemporaryMasterPassService extends Service
      * @return string con la clave maestra desencriptada
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function getUsingKey($key)
     {
@@ -264,8 +270,8 @@ final class TemporaryMasterPassService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

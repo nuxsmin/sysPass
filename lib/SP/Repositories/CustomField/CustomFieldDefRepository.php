@@ -24,6 +24,9 @@
 
 namespace SP\Repositories\CustomField;
 
+use RuntimeException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
@@ -53,8 +56,8 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @param CustomFieldDefinitionData $itemData
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -83,8 +86,8 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @param CustomFieldDefinitionData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -126,8 +129,8 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @param int $id
      *
      * @return CustomFieldDefinitionData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -167,9 +170,9 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
     /**
      * Returns all the items
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -191,8 +194,8 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @param array $ids
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -221,8 +224,8 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      *
      * @return int
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -247,9 +250,9 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function delete($id)
     {
@@ -268,7 +271,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -278,7 +281,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -288,7 +291,7 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -296,9 +299,9 @@ final class CustomFieldDefRepository extends Repository implements RepositoryIte
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {

@@ -112,13 +112,13 @@ final class Util
      * Also takes into account some text-based representations of true of false,
      * such as 'false','N','yes','on','off', etc.
      *
-     * @author Samuel Levy <sam+nospam@samuellevy.com>
-     *
      * @param mixed $in     The variable to check
      * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      *
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
+     * @author Samuel Levy <sam+nospam@samuellevy.com>
+     *
      */
     public static function boolval($in, $strict = false)
     {
@@ -218,7 +218,7 @@ final class Util
      * @param int    $userId
      * @param string $subject
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public static function lockApp($userId, $subject)
     {

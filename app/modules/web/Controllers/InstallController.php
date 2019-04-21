@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
@@ -87,7 +88,7 @@ final class InstallController extends ControllerBase
             $this->dic->get(Installer::class)->run($installData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Installation finished'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);

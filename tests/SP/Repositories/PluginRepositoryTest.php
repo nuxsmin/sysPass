@@ -25,7 +25,11 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Plugin\PluginModel;
@@ -48,8 +52,8 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -65,8 +69,8 @@ class PluginRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -99,12 +103,12 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAll()
     {
         $result = self::$repository->getAll();
-        /** @var \SP\Repositories\Plugin\PluginModel[] $data */
+        /** @var PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(3, $result->getNumRows());
@@ -121,12 +125,12 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByName()
     {
         $result = self::$repository->getByName('Authenticator');
-        /** @var \SP\Repositories\Plugin\PluginModel $data */
+        /** @var PluginModel $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -142,7 +146,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testToggleAvailableByName()
     {
@@ -159,8 +163,8 @@ class PluginRepositoryTest extends DatabaseTestCase
     /**
      * @requires testGetById
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -172,7 +176,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testToggleEnabled()
     {
@@ -182,12 +186,12 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
         $result = self::$repository->getById(1);
-        /** @var \SP\Repositories\Plugin\PluginModel $data */
+        /** @var PluginModel $data */
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
@@ -203,8 +207,8 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDeleteByIdBatch()
     {
@@ -214,7 +218,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetEnabled()
     {
@@ -234,7 +238,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -260,7 +264,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreateBlank()
     {
@@ -271,13 +275,13 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testResetById()
     {
         $this->assertEquals(1, self::$repository->resetById(2));
 
-        /** @var \SP\Repositories\Plugin\PluginModel $data */
+        /** @var PluginModel $data */
         $data = self::$repository->getById(2)->getData();
 
         $this->assertNull($data->getData());
@@ -287,7 +291,7 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -319,13 +323,13 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testToggleEnabledByName()
     {
         $this->assertEquals(1, self::$repository->toggleEnabledByName('Authenticator', 1));
 
-        /** @var \SP\Repositories\Plugin\PluginModel $data */
+        /** @var PluginModel $data */
         $data = self::$repository->getByName('Authenticator')->getData();
 
         $this->assertEquals(1, $data->getEnabled());
@@ -335,13 +339,13 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testToggleAvailable()
     {
         $this->assertEquals(1, self::$repository->toggleAvailable(1, 0));
 
-        /** @var \SP\Repositories\Plugin\PluginModel $data */
+        /** @var PluginModel $data */
         $data = self::$repository->getByName('Authenticator')->getData();
 
         $this->assertEquals(0, $data->getAvailable());
@@ -351,12 +355,12 @@ class PluginRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
         $result = self::$repository->getByIdBatch([1, 2, 4]);
-        /** @var \SP\Repositories\Plugin\PluginModel[] $data */
+        /** @var PluginModel[] $data */
         $data = $result->getDataAsArray();
 
         $this->assertEquals(2, $result->getNumRows());

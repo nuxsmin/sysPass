@@ -237,7 +237,7 @@ final class Task
      * Register a task
      *
      * @return Task
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function register()
     {
@@ -254,7 +254,7 @@ final class Task
      * Session is locked in order to allow other scripts execution
      *
      * @return Task
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function registerSession()
     {

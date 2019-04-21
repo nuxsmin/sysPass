@@ -24,9 +24,17 @@
 
 namespace SP\Tests\Services\Import;
 
+use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountSearchVData;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -37,6 +45,7 @@ use SP\Services\Import\ImportParams;
 use SP\Services\Import\KeepassImport;
 use SP\Services\Import\XmlFileImport;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -53,9 +62,9 @@ class KeepassImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -69,14 +78,14 @@ class KeepassImportTest extends DatabaseTestCase
 
     /**
      * @throws ImportException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws FileException
      */
     public function testDoImport()
     {
@@ -93,13 +102,13 @@ class KeepassImportTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws SPException
      */
     private function checkImportedData()
     {

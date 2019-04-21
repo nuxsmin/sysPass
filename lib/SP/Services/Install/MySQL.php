@@ -48,7 +48,7 @@ final class MySQL implements DatabaseSetupInterface
      */
     protected $installData;
     /**
-     * @var \SP\Storage\Database\MySQLHandler
+     * @var MySQLHandler
      */
     protected $mysqlHandler;
     /**

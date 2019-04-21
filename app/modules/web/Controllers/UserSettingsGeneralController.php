@@ -24,6 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Events\Event;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -73,7 +76,7 @@ final class UserSettingsGeneralController extends SimpleControllerBase
             $userData->setPreferences($userPreferencesData);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Preferences updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -85,8 +88,8 @@ final class UserSettingsGeneralController extends SimpleControllerBase
     /**
      * initialize
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

@@ -52,8 +52,8 @@ interface LdapConnectionInterface
     /**
      * Realizar la conexión al servidor de LDAP.
      *
-     * @throws LdapException
      * @return bool
+     * @throws LdapException
      */
     public function connect(): bool;
 

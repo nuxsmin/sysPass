@@ -26,6 +26,7 @@ namespace SP\Providers\Auth\Ldap;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class LdapStd
@@ -55,7 +56,7 @@ final class LdapStd extends Ldap
      * Devolver el filtro para comprobar la pertenecia al grupo
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getGroupMembershipFilter(): string
     {

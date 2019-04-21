@@ -24,11 +24,18 @@
 
 namespace SP\Tests\Services\Account;
 
+use Closure;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\StatelessContext;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountService;
@@ -45,7 +52,7 @@ use function SP\Tests\setupContext;
 class AccountAclServiceTest extends DatabaseTestCase
 {
     /**
-     * @var \Closure
+     * @var Closure
      */
     private static $service;
     /**
@@ -78,9 +85,9 @@ class AccountAclServiceTest extends DatabaseTestCase
     protected $account;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -161,9 +168,9 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testGetAclAdmin()
     {
@@ -198,8 +205,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      *
      * @param bool          $should
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkAllowAll(AccountAclDto $accountAclDto, $should = true)
     {
@@ -245,8 +252,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      *
      * @param AccountAcl    $accountAclExample
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkForUserByExample(AccountAclDto $accountAclDto, AccountAcl $accountAclExample)
     {
@@ -356,9 +363,9 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param int $isAdminAcc
      *
      * @return AccountAclDto
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     private function setUpAccountEnvironment($accountId, $userId, $groupId, $isAdminApp = 0, $isAdminAcc = 0)
     {
@@ -382,9 +389,9 @@ class AccountAclServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testGetAclUser()
     {
@@ -491,8 +498,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile Sets profile action status
      * @param bool          $acl     Sets ACL expected result
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkView(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -532,8 +539,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkViewPass(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -573,8 +580,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkDelete(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -614,8 +621,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkEditPass(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -655,8 +662,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkEditAndRestore(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -699,8 +706,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkPermissions(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {
@@ -740,8 +747,8 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @param bool          $profile
      * @param bool          $acl
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkViewFiles(AccountAclDto $accountAclDto, $should = ['view' => true, 'edit' => true], $profile = true, $acl = true)
     {

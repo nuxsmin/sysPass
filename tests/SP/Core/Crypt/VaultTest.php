@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\Tests\Core\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Vault;
 use SP\Util\PasswordUtil;
@@ -44,7 +46,7 @@ class VaultTest extends TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     protected function setUp()
     {
@@ -52,7 +54,7 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testGetData()
     {
@@ -69,7 +71,7 @@ class VaultTest extends TestCase
 
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testGetTimeSet()
     {
@@ -79,7 +81,7 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testReKey()
     {
@@ -94,7 +96,7 @@ class VaultTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testGetTimeUpdated()
     {

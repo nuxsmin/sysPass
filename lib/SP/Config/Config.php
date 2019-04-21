@@ -24,6 +24,8 @@
 
 namespace SP\Config;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Exception;
 use Psr\Container\ContainerInterface;
 use ReflectionObject;
 use SP\Core\Context\ContextInterface;
@@ -127,7 +129,7 @@ final class Config
                 self::$timeUpdated = $this->configData->getConfigDate();
 
                 $this->configLoaded = true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 throw new ConfigException($e->getMessage(),
@@ -275,7 +277,7 @@ final class Config
     /**
      * @return Config
      * @throws FileException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function generateUpgradeKey()
     {

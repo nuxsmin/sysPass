@@ -24,7 +24,9 @@
 
 namespace SP\Services;
 
+use Closure;
 use Defuse\Crypto\Exception\CryptoException;
+use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextException;
@@ -82,13 +84,13 @@ abstract class Service
     /**
      * Bubbles a Closure in a database transaction
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      *
      * @return mixed
      * @throws ServiceException
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function transactionAware(\Closure $closure)
+    protected function transactionAware(Closure $closure)
     {
         $database = $this->dic->get(Database::class);
 
@@ -99,7 +101,7 @@ abstract class Service
                 $database->endTransaction();
 
                 return $result;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $database->rollbackTransaction();
 
                 logger('Transaction:Rollback');

@@ -24,6 +24,10 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
@@ -33,6 +37,11 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
@@ -48,6 +57,7 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
@@ -55,6 +65,7 @@ use SP\Services\Auth\AuthException;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\PublicLink\PublicLinkService;
+use SP\Services\ServiceException;
 use SP\Services\User\UserService;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
@@ -81,7 +92,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Index action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerExceptionInterface
      */
     public function indexAction()
     {
@@ -93,7 +104,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -118,7 +129,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             return $this->returnJsonResponseData([
                 'html' => $this->render()
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -132,8 +143,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function viewAction($id)
     {
@@ -169,7 +180,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -189,8 +200,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param string $hash Link's hash
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function viewLinkAction($hash)
     {
@@ -263,7 +274,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -300,7 +311,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             if ($this->isAjax === false
@@ -318,8 +329,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function copyAction($id)
     {
@@ -352,7 +363,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -372,8 +383,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function editAction($id)
     {
@@ -408,7 +419,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -428,8 +439,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function deleteAction($id = null)
     {
@@ -461,7 +472,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -481,8 +492,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function editPassAction($id)
     {
@@ -514,7 +525,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -534,8 +545,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function viewHistoryAction($id)
     {
@@ -567,7 +578,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -587,8 +598,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @param int $id Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function requestAccessAction($id)
     {
@@ -609,7 +620,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             }
 
             $this->view();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -658,7 +669,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             return $this->returnJsonResponseData($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -669,11 +680,11 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
     /**
      * @return Password
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     private function getPasswordPreset()
     {
@@ -718,7 +729,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             return $this->returnJsonResponseData($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -734,14 +745,14 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @return bool
      * @throws Helpers\HelperException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function copyPassAction($id)
     {
@@ -771,14 +782,14 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      *
      * @return bool
      * @throws Helpers\HelperException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function copyPassHistoryAction($id)
     {
@@ -843,7 +854,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -892,7 +903,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -937,7 +948,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -978,7 +989,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                 JsonResponse::JSON_SUCCESS,
                 __u('Account restored')
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -1025,7 +1036,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -1089,7 +1100,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             );
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -1104,7 +1115,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws AuthException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

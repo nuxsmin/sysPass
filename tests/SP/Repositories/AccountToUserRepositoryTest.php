@@ -25,7 +25,10 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Account\AccountRequest;
@@ -49,8 +52,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -69,7 +72,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de usuarios por Id de cuenta
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUsersByAccountId()
     {
@@ -119,8 +122,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -158,8 +161,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdateEdit()
     {
@@ -197,8 +200,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteViewByAccountId()
     {
@@ -213,8 +216,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByAccountId()
     {
@@ -229,8 +232,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAddEdit()
     {
@@ -267,8 +270,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAdd()
     {
@@ -305,8 +308,8 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteEditByAccountId()
     {

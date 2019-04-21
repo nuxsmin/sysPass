@@ -24,10 +24,17 @@
 
 namespace SP\Services\Backup;
 
+use Exception;
+use PDO;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\Core\AppInfoInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\PhpExtensionChecker;
 use SP\Services\Service;
@@ -36,6 +43,7 @@ use SP\Storage\Database\Database;
 use SP\Storage\Database\DatabaseUtil;
 use SP\Storage\Database\QueryData;
 use SP\Storage\File\ArchiveHandler;
+use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 use SP\Util\Checks;
 
@@ -111,7 +119,7 @@ final class FileBackupService extends Service
             $this->config->saveConfig($this->configData);
         } catch (ServiceException $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
@@ -127,8 +135,8 @@ final class FileBackupService extends Service
     /**
      * Comprobar y crear el directorio de backups.
      *
-     * @throws ServiceException
      * @return bool
+     * @throws ServiceException
      */
     private function checkBackupDir()
     {
@@ -203,13 +211,13 @@ final class FileBackupService extends Service
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param \SP\Storage\File\FileHandler $fileHandler
-     * @param string|array                 $tables
+     * @param FileHandler  $fileHandler
+     * @param string|array $tables
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Storage\File\FileException
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws FileException
+     * @throws CheckException
      */
     private function backupTables(FileHandler $fileHandler, $tables = '*')
     {
@@ -291,11 +299,11 @@ final class FileBackupService extends Service
             $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
 
             // Consulta para obtener los registros de la tabla
-            $queryRes = $db->doQueryRaw($queryData, [\PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL], false);
+            $queryRes = $db->doQueryRaw($queryData, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL], false);
 
             $numColumns = $queryRes->columnCount();
 
-            while ($row = $queryRes->fetch(\PDO::FETCH_NUM, \PDO::FETCH_ORI_NEXT)) {
+            while ($row = $queryRes->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
                 $fileHandler->write('INSERT INTO `' . $tableName . '` VALUES(');
 
                 $field = 1;
@@ -340,8 +348,8 @@ final class FileBackupService extends Service
      * Realizar un backup de la aplicación y comprimirlo.
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws \SP\Storage\File\FileException
+     * @throws CheckException
+     * @throws FileException
      */
     private function backupApp()
     {
@@ -389,8 +397,8 @@ final class FileBackupService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

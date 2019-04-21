@@ -24,6 +24,8 @@
 
 namespace SP\Mvc\Model;
 
+use RuntimeException;
+
 /**
  * Class QueryCondition
  *
@@ -68,7 +70,7 @@ final class QueryCondition
     public function getFilters($type = self::CONDITION_AND)
     {
         if ($type !== self::CONDITION_AND && $type !== self::CONDITION_OR) {
-            throw new \RuntimeException(__u('Invalid filter type'));
+            throw new RuntimeException(__u('Invalid filter type'));
         }
 
         return $this->hasFilters() ? '(' . implode($type, $this->query) . ')' : null;

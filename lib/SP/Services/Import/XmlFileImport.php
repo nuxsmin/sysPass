@@ -24,6 +24,9 @@
 
 namespace SP\Services\Import;
 
+use DOMDocument;
+use SP\Storage\File\FileException;
+
 /**
  * Class XmlFileImport
  *
@@ -36,7 +39,7 @@ final class XmlFileImport
      */
     protected $fileImport;
     /**
-     * @var \DOMDocument
+     * @var DOMDocument
      */
     protected $xmlDOM;
 
@@ -46,7 +49,7 @@ final class XmlFileImport
      * @param FileImport $fileImport
      *
      * @throws ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function __construct(FileImport $fileImport)
     {
@@ -59,14 +62,14 @@ final class XmlFileImport
      * Leer el archivo a un objeto XML.
      *
      * @throws ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     protected function readXMLFile()
     {
         libxml_use_internal_errors(true);
 
         // Cargar el XML con DOM
-        $this->xmlDOM = new \DOMDocument();
+        $this->xmlDOM = new DOMDocument();
         $this->xmlDOM->formatOutput = false;
         $this->xmlDOM->preserveWhiteSpace = false;
 
@@ -109,7 +112,7 @@ final class XmlFileImport
     }
 
     /**
-     * @return \DOMDocument
+     * @return DOMDocument
      */
     public function getXmlDOM()
     {

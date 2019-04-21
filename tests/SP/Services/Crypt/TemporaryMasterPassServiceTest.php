@@ -25,9 +25,14 @@
 namespace SP\Tests\Services\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Crypt\TemporaryMasterPassService;
+use SP\Services\ServiceException;
 use function SP\Tests\setupContext;
 
 /**
@@ -47,9 +52,9 @@ class TemporaryMasterPassServiceTest extends TestCase
     private $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public function setUp()
     {
@@ -62,7 +67,7 @@ class TemporaryMasterPassServiceTest extends TestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCreate()
     {
@@ -79,9 +84,9 @@ class TemporaryMasterPassServiceTest extends TestCase
      *
      * @param $key
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function testGetUsingKey($key)
     {
@@ -97,7 +102,7 @@ class TemporaryMasterPassServiceTest extends TestCase
      *
      * @param $key
      *
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testCheckTempMasterPass($key)
     {
@@ -112,7 +117,7 @@ class TemporaryMasterPassServiceTest extends TestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testExpiredKey()
     {

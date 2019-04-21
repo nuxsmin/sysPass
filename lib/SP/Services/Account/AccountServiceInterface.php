@@ -24,6 +24,7 @@
 
 namespace SP\Services\Account;
 
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountDetailsResponse;
 
 /**
@@ -37,7 +38,7 @@ interface AccountServiceInterface
      * @param int $id
      *
      * @return AccountDetailsResponse
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getById($id);
 }

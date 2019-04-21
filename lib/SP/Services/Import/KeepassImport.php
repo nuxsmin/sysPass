@@ -26,8 +26,10 @@ namespace SP\Services\Import;
 
 use DOMElement;
 use DOMXPath;
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Services\Account\AccountRequest;
@@ -49,7 +51,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
      * Iniciar la importación desde KeePass
      *
      * @return ImportInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function doImport()
     {
@@ -66,7 +68,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function process()
     {
@@ -81,7 +83,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
 
         $this->getEntries();
 
-        /** @var \SP\Services\Account\AccountRequest[] $group */
+        /** @var AccountRequest[] $group */
         foreach ($this->items as $group => $entry) {
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group, 'KeePass'));
@@ -105,7 +107,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
                         );
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -164,7 +166,7 @@ final class KeepassImport extends XmlImportBase implements ImportInterface
     /**
      * @param array $entry
      *
-     * @return \SP\Services\Account\AccountRequest
+     * @return AccountRequest
      */
     private function mapEntryToAccount(array $entry)
     {

@@ -24,6 +24,9 @@
 
 namespace SP\Repositories\Account;
 
+use RuntimeException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -48,8 +51,8 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @param FileData $itemData
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -88,15 +91,15 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      */
     public function update($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
      * @param $id
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getInfoById($id)
     {
@@ -126,9 +129,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param int $id
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -161,9 +164,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param int $id
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByAccountId($id)
     {
@@ -191,9 +194,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
     /**
      * Returns all the items
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -225,9 +228,9 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      *
      * @param array $ids
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -265,8 +268,8 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -287,8 +290,8 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -311,7 +314,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -321,7 +324,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -331,7 +334,7 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -340,8 +343,8 @@ final class AccountFileRepository extends Repository implements RepositoryItemIn
      * @param ItemSearchData $itemSearchData
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {

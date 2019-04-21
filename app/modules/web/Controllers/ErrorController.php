@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Klein\Klein;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
@@ -57,8 +59,8 @@ final class ErrorController
      * @param Container $container
      * @param string    $actionName
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function __construct(Container $container, $actionName)
     {

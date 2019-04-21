@@ -26,6 +26,7 @@ namespace SP\Tests\Modules\Api;
 
 use SP\Services\Api\JsonRpcResponse;
 use SP\Tests\WebTestCase;
+use stdClass;
 
 /**
  * Class ApiTest
@@ -43,7 +44,7 @@ class ApiTest extends WebTestCase
     {
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL), 404);
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
         $this->assertEquals(JsonRpcResponse::INVALID_REQUEST, $result->error->code);
         $this->assertNull($result->error->data);
@@ -63,7 +64,7 @@ class ApiTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
         $this->assertEquals('Internal error', $result->error->message);
         $this->assertEquals(0, $result->error->code);
@@ -84,7 +85,7 @@ class ApiTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data), 404);
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals('2.0', $result->jsonrpc);
         $this->assertEquals(JsonRpcResponse::METHOD_NOT_FOUND, $result->error->code);
         $this->assertNull($result->error->data);

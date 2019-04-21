@@ -25,6 +25,8 @@
 namespace SP\Services\Wiki;
 
 use DOMDocument;
+use DOMElement;
+use Exception;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
@@ -60,11 +62,11 @@ abstract class DokuWikiApiBase
      */
     private $xml;
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $root;
     /**
-     * @var \DOMElement
+     * @var DOMElement
      */
     private $params;
 
@@ -130,7 +132,7 @@ abstract class DokuWikiApiBase
 
             $this->params = $this->xml->createElement('params');
             $this->root->appendChild($this->params);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
@@ -140,7 +142,7 @@ abstract class DokuWikiApiBase
      *
      * @param $value
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function addParam($value)
     {
@@ -158,7 +160,7 @@ abstract class DokuWikiApiBase
 
             $xmlParam->appendChild($xmlValue);
             $this->params->appendChild($xmlParam);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
@@ -201,8 +203,8 @@ abstract class DokuWikiApiBase
     /**
      * Escribir el error en el registro de eventos
      *
-     * @param \SP\Core\Exceptions\SPException $e
-     * @param string                          $source Origen del error
+     * @param SPException $e
+     * @param string      $source Origen del error
      */
     protected function logException(SPException $e, $source = null)
     {

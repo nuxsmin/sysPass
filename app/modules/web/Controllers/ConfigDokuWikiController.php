@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -43,7 +44,7 @@ final class ConfigDokuWikiController extends SimpleControllerBase
     /**
      * saveAction
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function saveAction()
     {

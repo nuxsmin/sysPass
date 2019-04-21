@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use SP\Services\Import\FileImport;
 use SP\Services\Import\ImportException;
 use SP\Services\Import\XmlFileImport;
+use SP\Storage\File\FileException;
 
 /**
  * Class XmlFileImportTest
@@ -38,8 +39,8 @@ class XmlFileImportTest extends TestCase
 {
 
     /**
-     * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws ImportException
+     * @throws FileException
      */
     public function testDetectXMLFormat()
     {
@@ -57,8 +58,8 @@ class XmlFileImportTest extends TestCase
     }
 
     /**
-     * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws ImportException
+     * @throws FileException
      */
     public function testInvalidFile()
     {
@@ -70,8 +71,8 @@ class XmlFileImportTest extends TestCase
     }
 
     /**
-     * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws ImportException
+     * @throws FileException
      */
     public function testEmptyFile()
     {

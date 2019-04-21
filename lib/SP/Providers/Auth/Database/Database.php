@@ -24,6 +24,7 @@
 
 namespace SP\Providers\Auth\Database;
 
+use Exception;
 use SP\Core\Crypt\Hash;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
@@ -114,7 +115,7 @@ final class Database implements AuthInterface
             }
 
             return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 

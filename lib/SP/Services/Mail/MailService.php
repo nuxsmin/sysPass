@@ -24,6 +24,7 @@
 
 namespace SP\Services\Mail;
 
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Bootstrap;
 use SP\Core\AppInfoInterface;
@@ -72,7 +73,7 @@ final class MailService extends Service
             $mailer->Subject = $this->getSubjectForAction($mailMessage->getTitle());
             $mailer->Body = $mailMessage->composeHtml();
             $mailer->send();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -151,7 +152,7 @@ final class MailService extends Service
                         return $value[0];
                     }, $this->mailer->getToAddresses()))))
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

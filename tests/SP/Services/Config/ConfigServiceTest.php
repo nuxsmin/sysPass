@@ -24,10 +24,16 @@
 
 namespace SP\Tests\Services\Config;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -45,9 +51,9 @@ class ConfigServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -64,8 +70,8 @@ class ConfigServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -79,8 +85,8 @@ class ConfigServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByParam()
     {
@@ -92,7 +98,7 @@ class ConfigServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testSaveBatch()
     {
@@ -109,9 +115,9 @@ class ConfigServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testSave()
     {
@@ -123,9 +129,9 @@ class ConfigServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreate()
     {
@@ -138,7 +144,7 @@ class ConfigServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testGetByParam()
     {

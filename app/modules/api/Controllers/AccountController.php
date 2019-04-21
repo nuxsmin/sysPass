@@ -24,10 +24,14 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Mvc\Model\QueryCondition;
 use SP\Services\Account\AccountPresetService;
@@ -74,7 +78,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->returnResponseException($e);
 
             processException($e);
@@ -106,7 +110,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $id));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -142,7 +146,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Password updated')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -192,7 +196,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Account created')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -243,7 +247,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Account updated')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -288,7 +292,7 @@ final class AccountController extends ControllerBase
             $this->returnResponse(
                 ApiResponse::makeSuccess(
                     $this->accountService->getByFilter($accountSearchFilter)->getDataAsArray()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -318,7 +322,7 @@ final class AccountController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id, __('Account removed')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -326,9 +330,9 @@ final class AccountController extends ControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws InvalidClassException
      */
     protected function initialize()
     {

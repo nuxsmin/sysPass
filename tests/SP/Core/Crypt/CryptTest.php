@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -42,7 +42,7 @@ class CryptTest extends TestCase
     /**
      * Comprobar la generación de una llave de cifrado
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testMakeSecuredKey()
     {

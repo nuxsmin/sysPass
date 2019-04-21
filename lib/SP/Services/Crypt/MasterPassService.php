@@ -24,7 +24,13 @@
 
 namespace SP\Services\Crypt;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountCryptService;
 use SP\Services\Config\ConfigService;
 use SP\Services\CustomField\CustomFieldCryptService;
@@ -59,7 +65,7 @@ final class MasterPassService extends Service
      *
      * @return bool
      * @throws ServiceException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws NoSuchItemException
      */
     public function checkUserUpdateMPass($userMPassTime)
     {
@@ -72,7 +78,7 @@ final class MasterPassService extends Service
      *
      * @return bool
      * @throws ServiceException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws NoSuchItemException
      */
     public function checkMasterPassword($masterPassword)
     {
@@ -82,7 +88,7 @@ final class MasterPassService extends Service
     /**
      * @param UpdateMasterPassRequest $request
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request)
     {
@@ -100,8 +106,8 @@ final class MasterPassService extends Service
     /**
      * @param $hash
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateConfig($hash)
     {
@@ -110,8 +116,8 @@ final class MasterPassService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

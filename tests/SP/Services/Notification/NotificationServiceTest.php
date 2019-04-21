@@ -24,8 +24,12 @@
 
 namespace SP\Tests\Services\Notification;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Messages\NotificationMessage;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
@@ -54,9 +58,9 @@ class NotificationServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -74,8 +78,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -88,8 +92,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearchForUserId()
     {
@@ -145,8 +149,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testGetAllActiveForNonAdmin()
@@ -182,8 +186,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testGetAllActiveForAdmin()
@@ -221,7 +225,7 @@ class NotificationServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSetCheckedById()
     {
@@ -235,8 +239,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testGetForUserIdByDate()
@@ -253,8 +257,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testCreate()
@@ -284,8 +288,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -310,8 +314,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearchNonAdmin()
     {
@@ -372,8 +376,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearchAdmin()
     {
@@ -425,8 +429,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testGetById()
@@ -442,9 +446,9 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteAdminBatch()
     {
@@ -462,7 +466,7 @@ class NotificationServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteAdmin()
     {
@@ -478,8 +482,8 @@ class NotificationServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllForUserId()
     {
@@ -495,7 +499,7 @@ class NotificationServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -538,7 +542,7 @@ class NotificationServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -553,8 +557,8 @@ class NotificationServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatch()
     {

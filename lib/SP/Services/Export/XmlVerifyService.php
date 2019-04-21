@@ -27,11 +27,13 @@ namespace SP\Services\Export;
 
 use Defuse\Crypto\Exception\CryptoException;
 use DOMDocument;
+use DOMElement;
 use DOMXPath;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 
 /**
@@ -62,7 +64,7 @@ final class XmlVerifyService extends Service
      *
      * @return VerifyResult
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function verify(string $xmlFile): VerifyResult
     {
@@ -77,7 +79,7 @@ final class XmlVerifyService extends Service
 
     /**
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function setup()
     {
@@ -88,7 +90,7 @@ final class XmlVerifyService extends Service
      * Leer el archivo a un objeto XML.
      *
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     protected function readXmlFile()
     {
@@ -163,7 +165,7 @@ final class XmlVerifyService extends Service
      *
      * @return VerifyResult
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      * @throws CryptoException
      */
     public function verifyEncrypted(string $xmlFile, string $password): VerifyResult
@@ -221,7 +223,7 @@ final class XmlVerifyService extends Service
         $xmlOut->appendChild($xmlOut->createElement('Root'));
 
         foreach ($this->xml->getElementsByTagName('Data') as $node) {
-            /** @var $node \DOMElement */
+            /** @var $node DOMElement */
             $xml = new DOMDocument();
 
             if (!$xml->loadXML(Crypt::decrypt(base64_decode($node->nodeValue), $node->getAttribute('key'), $this->password))) {

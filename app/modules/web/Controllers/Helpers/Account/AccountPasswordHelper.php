@@ -24,14 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\AccountPassData;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Crypt\MasterPassService;
+use SP\Services\ServiceException;
 use SP\Util\ImageUtil;
 
 /**
@@ -53,12 +59,12 @@ final class AccountPasswordHelper extends HelperBase
      *
      * @return array
      * @throws HelperException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws FileNotFoundException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getPasswordView(AccountPassData $accountData, bool $useImage)
     {
@@ -104,11 +110,11 @@ final class AccountPasswordHelper extends HelperBase
      *
      * @return string
      * @throws HelperException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function getPasswordClear(AccountPassData $accountData)
     {
@@ -122,8 +128,8 @@ final class AccountPasswordHelper extends HelperBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

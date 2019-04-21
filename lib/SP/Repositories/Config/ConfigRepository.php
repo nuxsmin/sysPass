@@ -29,6 +29,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\Repositories\Repository;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class ConfigRepository
@@ -57,8 +58,8 @@ final class ConfigRepository extends Repository
      * @param ConfigData $configData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(ConfigData $configData)
     {
@@ -72,7 +73,7 @@ final class ConfigRepository extends Repository
     /**
      * Obtener un array con la configuración almacenada en la BBDD.
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -87,7 +88,7 @@ final class ConfigRepository extends Repository
     /**
      * @param string $param
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -120,8 +121,8 @@ final class ConfigRepository extends Repository
      * @param $param
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByParam($param)
     {

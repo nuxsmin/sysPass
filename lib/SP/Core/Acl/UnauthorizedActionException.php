@@ -25,6 +25,7 @@
 namespace SP\Core\Acl;
 
 
+use Exception;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -39,9 +40,9 @@ final class UnauthorizedActionException extends SPException
      *
      * @param string          $type
      * @param int             $code
-     * @param \Exception|null $previous
+     * @param Exception|null $previous
      */
-    public function __construct($type, $code = 0, \Exception $previous = null)
+    public function __construct($type, $code = 0, Exception $previous = null)
     {
         parent::__construct(__u('You don\'t have permission to do this operation'), $type, __u('Please contact to the administrator'), $code, $previous);
     }

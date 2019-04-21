@@ -24,9 +24,17 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
@@ -36,6 +44,9 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserProfileForm;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Repositories\NoSuchItemException;
+use SP\Services\Auth\AuthException;
+use SP\Services\ServiceException;
 use SP\Services\UserProfile\UserProfileService;
 
 /**
@@ -56,11 +67,11 @@ final class UserProfileController extends ControllerBase implements CrudControll
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -81,10 +92,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -116,7 +127,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.userProfile.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -130,10 +141,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
      *
      * @param $profileId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws NoSuchItemException
      */
     protected function setViewData($profileId = null)
     {
@@ -185,7 +196,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.userProfile.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -234,7 +245,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile deleted'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -275,7 +286,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -319,7 +330,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -352,7 +363,7 @@ final class UserProfileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.userProfile', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -364,9 +375,9 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

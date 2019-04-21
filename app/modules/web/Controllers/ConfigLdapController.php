@@ -24,6 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -101,7 +104,7 @@ final class ConfigLdapController extends SimpleControllerBase
             return $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
                 $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -163,7 +166,7 @@ final class ConfigLdapController extends SimpleControllerBase
                 __u('LDAP connection OK'),
                 [sprintf(__('Objects found: %d'), $data['count'])]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -209,7 +212,7 @@ final class ConfigLdapController extends SimpleControllerBase
                 __u('LDAP connection OK'),
                 [sprintf(__('Objects found: %d'), $data['count'])]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -221,8 +224,8 @@ final class ConfigLdapController extends SimpleControllerBase
     /**
      * importAction
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function importAction()
     {
@@ -288,7 +291,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

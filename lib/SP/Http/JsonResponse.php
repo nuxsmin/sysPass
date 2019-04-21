@@ -24,12 +24,15 @@
 
 namespace SP\Http;
 
+use JsonSerializable;
+use stdClass;
+
 /**
  * Class Json para definir la estructura de una respuesta en formato JSON
  *
  * @package SP\Http
  */
-final class JsonResponse implements \JsonSerializable
+final class JsonResponse implements JsonSerializable
 {
     const JSON_SUCCESS = 0;
     const JSON_SUCCESS_STICKY = 100;
@@ -147,7 +150,7 @@ final class JsonResponse implements \JsonSerializable
     }
 
     /**
-     * @param array|\stdClass $data
+     * @param array|stdClass $data
      *
      * @return JsonResponse
      */

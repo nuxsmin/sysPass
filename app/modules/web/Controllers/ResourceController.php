@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Html\Minify;
 
@@ -124,8 +126,8 @@ final class ResourceController extends SimpleControllerBase
 
     /**
      * @throws SPException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

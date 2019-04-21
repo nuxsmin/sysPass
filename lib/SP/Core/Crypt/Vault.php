@@ -24,6 +24,8 @@
 
 namespace SP\Core\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
+
 /**
  * Class Vault
  *
@@ -63,7 +65,7 @@ final class Vault
      * @param string $oldSeed
      *
      * @return Vault
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function reKey($newSeed, $oldSeed)
     {
@@ -78,10 +80,10 @@ final class Vault
     /**
      * Devolver la clave maestra de la sesión
      *
-     * @param  string $key
+     * @param string $key
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function getData($key)
     {
@@ -91,11 +93,11 @@ final class Vault
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param  mixed  $data
-     * @param  string $key
+     * @param mixed  $data
+     * @param string $key
      *
      * @return $this
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function saveData($data, $key)
     {

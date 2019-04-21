@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Account;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -45,6 +46,7 @@ use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Storage\Database\QueryData;
 use SP\Storage\Database\QueryResult;
+use stdClass;
 
 /**
  * Class AccountRepository
@@ -58,7 +60,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     /**
      * Devolver el número total de cuentas
      *
-     * @return \stdClass
+     * @return stdClass
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -326,7 +328,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     /**
      * Updates an item
      *
-     * @param \SP\Services\Account\AccountRequest $itemData
+     * @param AccountRequest $itemData
      *
      * @return mixed
      * @throws SPException
@@ -387,7 +389,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
     /**
      * Updates an item for bulk action
      *
-     * @param \SP\Services\Account\AccountRequest $itemData
+     * @param AccountRequest $itemData
      *
      * @return mixed
      * @throws SPException
@@ -476,7 +478,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -510,7 +512,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -520,7 +522,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -530,7 +532,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

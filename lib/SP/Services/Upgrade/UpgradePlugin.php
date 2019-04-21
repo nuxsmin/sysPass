@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Plugin\PluginManager;
@@ -39,7 +40,7 @@ final class UpgradePlugin extends Service
     /**
      * upgrade_300_18010101
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function upgrade_310_19012201()
     {

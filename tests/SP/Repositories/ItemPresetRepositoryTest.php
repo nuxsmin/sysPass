@@ -24,12 +24,17 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\ItemPreset\ItemPresetRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -45,9 +50,9 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -64,7 +69,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -77,7 +82,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -92,7 +97,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -103,7 +108,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -122,7 +127,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateDuplicatedHash()
     {
@@ -141,7 +146,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateUnknownUserId()
     {
@@ -160,7 +165,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateUnknownUserGroupId()
     {
@@ -179,7 +184,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateUnknownUserProfileId()
     {
@@ -198,7 +203,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateUnknownId()
     {
@@ -217,7 +222,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -236,7 +241,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -270,7 +275,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -284,7 +289,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(4, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertEquals(2, $data[0]->userId);
@@ -305,7 +310,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
@@ -326,7 +331,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(5, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
@@ -351,7 +356,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -371,7 +376,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreateDuplicatedHash()
     {
@@ -396,7 +401,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      * @param int $expected
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByFilter($userId, $userGroupId, $userProfileId, $expected)
     {

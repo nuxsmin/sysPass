@@ -24,10 +24,17 @@
 
 namespace SP\Services\AuthToken;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
@@ -105,8 +112,8 @@ final class AuthTokenService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -117,8 +124,8 @@ final class AuthTokenService extends Service
      * @param $id
      *
      * @return AuthTokenData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -129,8 +136,8 @@ final class AuthTokenService extends Service
      * @param $id
      *
      * @return AuthTokenService
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function delete($id)
@@ -149,8 +156,8 @@ final class AuthTokenService extends Service
      *
      * @return bool
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -166,10 +173,10 @@ final class AuthTokenService extends Service
      *
      * @return mixed
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -184,10 +191,10 @@ final class AuthTokenService extends Service
      *
      * @return AuthTokenData
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function injectSecureData(AuthTokenData $authTokenData, $token = null)
     {
@@ -212,7 +219,7 @@ final class AuthTokenService extends Service
      * Generar un token de acceso
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     private function generateToken()
     {
@@ -237,7 +244,7 @@ final class AuthTokenService extends Service
      *
      * @return Vault
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     private function getSecureData($token, $key)
     {
@@ -247,7 +254,7 @@ final class AuthTokenService extends Service
     /**
      * @param AuthTokenData $itemData
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function refreshAndUpdate(AuthTokenData $itemData)
     {
@@ -267,9 +274,9 @@ final class AuthTokenService extends Service
      * @param string        $token
      *
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(AuthTokenData $itemData, $token = null)
     {
@@ -282,8 +289,8 @@ final class AuthTokenService extends Service
      * @param AuthTokenData $itemData
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateRaw(AuthTokenData $itemData)
     {
@@ -299,8 +306,8 @@ final class AuthTokenService extends Service
      * @param $token    string El token de seguridad
      *
      * @return false|AuthTokenData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
     public function getTokenByToken($actionId, $token)
@@ -316,8 +323,8 @@ final class AuthTokenService extends Service
 
     /**
      * @return AuthTokenData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -325,8 +332,8 @@ final class AuthTokenService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

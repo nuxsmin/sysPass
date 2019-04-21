@@ -24,11 +24,14 @@
 
 namespace SP\Repositories\Account;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountToTagRepository
@@ -44,9 +47,9 @@ final class AccountToTagRepository extends Repository
      *
      * @param int $id
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTagsByAccountId($id)
     {
@@ -68,8 +71,8 @@ final class AccountToTagRepository extends Repository
     /**
      * @param AccountRequest $accountRequest
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(AccountRequest $accountRequest)
     {
@@ -83,8 +86,8 @@ final class AccountToTagRepository extends Repository
      * @param int $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByAccountId($id)
     {
@@ -102,8 +105,8 @@ final class AccountToTagRepository extends Repository
      * @param AccountRequest $accountRequest
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(AccountRequest $accountRequest)
     {

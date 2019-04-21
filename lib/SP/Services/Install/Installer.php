@@ -25,10 +25,16 @@
 
 namespace SP\Services\Install;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
@@ -81,9 +87,9 @@ final class Installer extends Service
      * @return static
      * @throws InvalidArgumentException
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws EnvironmentIsBrokenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function run(InstallData $installData)
     {
@@ -168,11 +174,11 @@ final class Installer extends Service
      * Iniciar instalación.
      *
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws EnvironmentIsBrokenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function install()
     {
@@ -307,7 +313,7 @@ final class Installer extends Service
 
             $configService->create(new \SP\DataModel\ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword())));
             $configService->create(new \SP\DataModel\ConfigData('lastupdatempass', time()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->dbs->rollback();
@@ -327,8 +333,8 @@ final class Installer extends Service
      * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
      *
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function createAdminAccount()
     {
@@ -358,7 +364,7 @@ final class Installer extends Service
             if ($id === 0) {
                 throw new SPException(__u('Error while creating \'admin\' user'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->dbs->rollback();

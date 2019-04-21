@@ -24,9 +24,14 @@
 
 namespace SP\Tests\Services\Install;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Install\InstallData;
@@ -56,7 +61,7 @@ class InstallerTest extends TestCase
     private static $dic;
 
     /**
-     * @throws \SP\Core\Context\ContextException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -75,11 +80,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testRun()
     {
@@ -117,11 +122,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testFailDbHostName()
     {
@@ -144,11 +149,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testFailDbHostIp()
     {
@@ -171,11 +176,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testFailDbHostPort()
     {
@@ -198,11 +203,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testFailDbUser()
     {
@@ -225,11 +230,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testFailDbPass()
     {
@@ -252,11 +257,11 @@ class InstallerTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws InvalidArgumentException
+     * @throws SPException
      */
     public function testHostingMode()
     {

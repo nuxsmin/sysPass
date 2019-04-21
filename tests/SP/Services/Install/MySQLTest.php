@@ -26,8 +26,10 @@ namespace SP\Tests\Services\Install;
 
 use PHPUnit\Framework\TestCase;
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\MySQL;
+use SP\Storage\Database\DatabaseException;
 use SP\Storage\Database\MySQLHandler;
 use SP\Tests\DatabaseUtil;
 use SP\Util\PasswordUtil;
@@ -42,7 +44,7 @@ class MySQLTest extends TestCase
     const DB_NAME = 'syspass-test-install';
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCheckDatabaseNotExist()
     {
@@ -81,8 +83,8 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\Database\DatabaseException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DatabaseException
+     * @throws SPException
      */
     public function testCheckDatabaseExist()
     {
@@ -96,7 +98,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testSetupDbUser()
     {
@@ -113,7 +115,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDatabase()
     {
@@ -131,7 +133,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCheckConnection()
     {
@@ -152,7 +154,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testConnectDatabase()
     {
@@ -163,7 +165,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBUser()
     {
@@ -182,7 +184,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testRollback()
     {
@@ -196,7 +198,7 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDBStructure()
     {

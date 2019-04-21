@@ -42,7 +42,7 @@ class AddressTest extends TestCase
      *
      * @param string $address
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testBinary($address)
     {
@@ -70,7 +70,7 @@ class AddressTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testBinaryInvalidIpv4()
     {
@@ -80,7 +80,7 @@ class AddressTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testBinaryInvalidIpv6()
     {
@@ -97,7 +97,7 @@ class AddressTest extends TestCase
      * @param string $inMask
      * @param bool   $expected
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testCheck($address, $inAddress, $inMask, $expected)
     {
@@ -112,7 +112,7 @@ class AddressTest extends TestCase
      * @param string $inMask
      * @param bool   $expected
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testCheckWithCidr($address, $inAddress, $inMask, $expected)
     {

@@ -25,6 +25,7 @@
 namespace SP\Services\Upgrade;
 
 
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -48,7 +49,7 @@ final class UpgradeCustomFieldData extends Service
     /**
      * upgrade_300_18072902
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function upgrade_300_18072902()
     {
@@ -75,7 +76,7 @@ final class UpgradeCustomFieldData extends Service
                     );
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

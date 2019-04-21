@@ -24,12 +24,20 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
+use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
+use SP\Services\Auth\AuthException;
 use SP\Services\EventLog\EventlogService;
 use SP\Services\Track\TrackService;
 
@@ -50,10 +58,10 @@ final class SecurityManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function indexAction()
     {
@@ -63,10 +71,10 @@ final class SecurityManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getGridTabs()
     {
@@ -95,11 +103,11 @@ final class SecurityManagerController extends ControllerBase
     /**
      * Returns eventlog data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getEventlogList()
     {
@@ -111,11 +119,11 @@ final class SecurityManagerController extends ControllerBase
     /**
      * Returns tracks data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getTracksList()
     {
@@ -133,9 +141,9 @@ final class SecurityManagerController extends ControllerBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

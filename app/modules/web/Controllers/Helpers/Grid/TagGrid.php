@@ -140,7 +140,7 @@ final class TagGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getCreateAction()
     {
@@ -175,7 +175,7 @@ final class TagGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDeleteAction()
     {

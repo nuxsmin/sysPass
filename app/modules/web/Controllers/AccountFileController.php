@@ -24,9 +24,17 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Html\Html;
@@ -37,6 +45,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountService;
+use SP\Services\Auth\AuthException;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
 use SP\Util\ErrorUtil;
@@ -106,7 +115,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -161,7 +170,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
 
             $response->body($fileData->getContent());
             $response->send(true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -256,7 +265,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -272,7 +281,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @return string
      * @throws SPException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler)
     {
@@ -293,10 +302,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws SPException
      */
     public function searchAction()
@@ -318,10 +327,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -337,7 +346,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     public function createAction()
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -347,7 +356,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     public function editAction($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -382,7 +391,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             $this->accountFileService->delete($id);
 
             return $this->returnJsonResponse(0, __u('File Deleted'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -396,7 +405,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     public function saveCreateAction()
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -406,7 +415,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     public function saveEditAction($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -414,7 +423,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @param int $accountId Account's ID
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerExceptionInterface
      */
     public function listAction($accountId)
     {
@@ -446,7 +455,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
             }
 
             $this->eventDispatcher->notifyEvent('list.accountFile', new Event($this));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION, true, 'files-list');
@@ -458,9 +467,9 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

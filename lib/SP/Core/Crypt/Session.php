@@ -24,6 +24,7 @@
 
 namespace SP\Core\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Context\SessionContext;
 
 /**
@@ -39,7 +40,7 @@ final class Session
      * @param SessionContext $sessionContext
      *
      * @return string
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public static function getSessionKey(SessionContext $sessionContext)
     {
@@ -62,7 +63,7 @@ final class Session
      * @param                $data
      * @param SessionContext $sessionContext
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public static function saveSessionKey($data, SessionContext $sessionContext)
     {
@@ -74,7 +75,7 @@ final class Session
      *
      * @param SessionContext $sessionContext
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public static function reKey(SessionContext $sessionContext)
     {

@@ -24,6 +24,7 @@
 
 namespace SP\Services\Task;
 
+use RuntimeException;
 use SP\Core\Messages\TaskMessage;
 use SP\Storage\File\FileException;
 
@@ -74,7 +75,7 @@ final class TaskFactory
             return $task;
         }
 
-        throw new \RuntimeException('Task already registered');
+        throw new RuntimeException('Task already registered');
     }
 
     /**
@@ -101,7 +102,7 @@ final class TaskFactory
             return self::$tasks[$id];
         }
 
-        throw new \RuntimeException('Task not registered');
+        throw new RuntimeException('Task not registered');
     }
 
     /**

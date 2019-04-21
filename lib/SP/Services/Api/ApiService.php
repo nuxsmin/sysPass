@@ -25,9 +25,12 @@
 namespace SP\Services\Api;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Exception;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
 use SP\Repositories\Track\TrackRequest;
@@ -81,8 +84,8 @@ final class ApiService extends Service
      * @param $actionId
      *
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Exception
+     * @throws SPException
+     * @throws Exception
      */
     public function setup($actionId)
     {
@@ -124,7 +127,7 @@ final class ApiService extends Service
     {
         try {
             $this->trackService->add($this->trackRequest);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 ServiceException::ERROR,
@@ -193,7 +196,7 @@ final class ApiService extends Service
     /**
      * Sets up user's data in context and performs some user checks
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     private function setupUser()
     {
@@ -366,7 +369,7 @@ final class ApiService extends Service
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function initialize()
     {

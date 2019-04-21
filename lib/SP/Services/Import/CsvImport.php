@@ -26,6 +26,7 @@ namespace SP\Services\Import;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -41,7 +42,7 @@ final class CsvImport extends CsvImportBase implements ImportInterface
      *
      * @return $this|ImportInterface
      * @throws ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function doImport()
     {

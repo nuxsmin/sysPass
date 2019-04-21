@@ -24,12 +24,15 @@
 
 namespace SP\Tests\Config;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextException;
+use SP\Storage\File\FileException;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
@@ -54,7 +57,7 @@ class ConfigTest extends TestCase
     protected static $currentConfig;
 
     /**
-     * @throws \SP\Core\Context\ContextException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -97,7 +100,7 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testSaveConfig($config)
     {
@@ -141,8 +144,8 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public function testGenerateUpgradeKey($config)
     {

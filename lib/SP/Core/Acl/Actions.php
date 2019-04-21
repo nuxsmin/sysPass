@@ -24,6 +24,7 @@
 
 namespace SP\Core\Acl;
 
+use RuntimeException;
 use SP\DataModel\ActionData;
 use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
@@ -53,7 +54,7 @@ final class Actions
      */
     protected $actions;
     /**
-     * @var \SP\Storage\File\XmlFileStorageInterface
+     * @var XmlFileStorageInterface
      */
     protected $xmlFileStorage;
     /**
@@ -64,8 +65,8 @@ final class Actions
     /**
      * Action constructor.
      *
-     * @param FileCacheInterface                       $fileCache
-     * @param \SP\Storage\File\XmlFileStorageInterface $xmlFileStorage
+     * @param FileCacheInterface      $fileCache
+     * @param XmlFileStorageInterface $xmlFileStorage
      *
      * @throws FileException
      */
@@ -124,7 +125,7 @@ final class Actions
 
         foreach ($this->load() as $a) {
             if (isset($this->actions[$a['id']])) {
-                throw new \RuntimeException('Duplicated action id: ' . $a['id']);
+                throw new RuntimeException('Duplicated action id: ' . $a['id']);
             }
 
             $action = new ActionData();

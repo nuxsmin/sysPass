@@ -24,8 +24,13 @@
 
 namespace SP\Plugin;
 
+use Defuse\Crypto\Exception\CryptoException;
 use Psr\Container\ContainerInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Services\Plugin\PluginService;
+use SP\Services\ServiceException;
 
 /**
  * Class PluginBase
@@ -128,11 +133,11 @@ abstract class PluginBase implements PluginInterface
      * @param int   $id
      * @param mixed $data
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     final public function saveData(int $id, $data)
     {

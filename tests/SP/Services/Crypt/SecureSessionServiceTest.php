@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,10 @@
 namespace SP\Tests\Services\Crypt;
 
 use Defuse\Crypto\Key;
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Services\Crypt\SecureSessionService;
 use function SP\Tests\setupContext;
@@ -38,9 +41,9 @@ use function SP\Tests\setupContext;
 class SecureSessionServiceTest extends TestCase
 {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public function testGetKey()
     {

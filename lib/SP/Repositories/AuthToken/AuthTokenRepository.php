@@ -24,6 +24,9 @@
 
 namespace SP\Repositories\AuthToken;
 
+use RuntimeException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\DuplicatedItemException;
@@ -48,8 +51,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -67,8 +70,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param int $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -97,8 +100,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      *
      * @return QueryResult
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -130,7 +133,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -139,8 +142,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -165,7 +168,7 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -174,8 +177,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -212,8 +215,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      *
      * @return int
      * @throws DuplicatedItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -252,8 +255,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param AuthTokenData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -279,8 +282,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param $id
      *
      * @return string
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTokenByUserId($id)
     {
@@ -300,8 +303,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      *
      * @return int
      * @throws DuplicatedItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -342,8 +345,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param AuthTokenData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -372,8 +375,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param string $token
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function refreshTokenByUserId($id, $token)
     {
@@ -399,8 +402,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param     $hash
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function refreshVaultByUserId($id, $vault, $hash)
     {
@@ -425,8 +428,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param $token string El token de autorización
      *
      * @return false|int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserIdForToken($token)
     {
@@ -446,8 +449,8 @@ final class AuthTokenRepository extends Repository implements RepositoryItemInte
      * @param $token    string El token de seguridad
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTokenByToken($actionId, $token)
     {

@@ -24,11 +24,13 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Backup\FileBackupService;
@@ -47,7 +49,7 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function fileBackupAction()
     {
@@ -69,7 +71,7 @@ final class ConfigBackupController extends SimpleControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Backup process finished'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -132,7 +134,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $export->createArchive();
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Export process finished'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -143,7 +145,7 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function downloadExportAction()
     {
@@ -174,7 +176,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $response->send();
 
             $file->readChunked();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -185,7 +187,7 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function downloadBackupAppAction()
     {
@@ -220,7 +222,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $response->send();
 
             $file->readChunked();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -231,7 +233,7 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function downloadBackupDbAction()
     {
@@ -266,7 +268,7 @@ final class ConfigBackupController extends SimpleControllerBase
             $response->send();
 
             $file->readChunked();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

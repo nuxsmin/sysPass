@@ -24,9 +24,12 @@
 
 namespace SP\Tests\SP\Core\Acl;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
@@ -874,9 +877,9 @@ class AclTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     protected function setUp()
     {

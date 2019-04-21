@@ -153,7 +153,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param \SP\Core\Acl\ActionsInterface $action
+     * @param ActionsInterface $action
      *
      * @return $this
      */

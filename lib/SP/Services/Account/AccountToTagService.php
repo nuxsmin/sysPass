@@ -24,6 +24,10 @@
 
 namespace SP\Services\Account;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Services\Service;
@@ -44,8 +48,8 @@ final class AccountToTagService extends Service
      * @param $id
      *
      * @return ItemData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTagsByAccountId($id)
     {
@@ -53,8 +57,8 @@ final class AccountToTagService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

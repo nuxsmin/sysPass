@@ -24,9 +24,13 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Modules\Api\Controllers\Help\TagHelp;
@@ -64,7 +68,7 @@ final class UserGroupController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -94,7 +98,7 @@ final class UserGroupController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group added')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -126,7 +130,7 @@ final class UserGroupController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -156,7 +160,7 @@ final class UserGroupController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -178,7 +182,7 @@ final class UserGroupController extends ControllerBase
             $this->eventDispatcher->notifyEvent('search.userGroup', new Event($this));
 
             $this->returnResponse(ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -186,9 +190,9 @@ final class UserGroupController extends ControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws InvalidClassException
      */
     protected function initialize()
     {

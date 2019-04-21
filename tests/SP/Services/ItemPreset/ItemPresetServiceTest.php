@@ -24,7 +24,12 @@
 
 namespace SP\Tests\Services\ItemPreset;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
@@ -33,6 +38,7 @@ use SP\Services\ItemPreset\ItemPresetRequest;
 use SP\Services\ItemPreset\ItemPresetService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -48,9 +54,9 @@ class ItemPresetServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -73,8 +79,8 @@ class ItemPresetServiceTest extends DatabaseTestCase
      * @param int $userProfileId
      * @param int $expected
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetForUser($userId, $userGroupId, $userProfileId, $expected)
     {
@@ -102,9 +108,9 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testGetById()
     {
@@ -122,8 +128,8 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -150,10 +156,10 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws NoSuchPropertyException
      */
     public function testUpdate()
     {
@@ -181,8 +187,8 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdateUnKnown()
     {
@@ -205,9 +211,9 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testDelete()
     {
@@ -220,8 +226,8 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteUnKnown()
     {
@@ -231,8 +237,8 @@ class ItemPresetServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -246,7 +252,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(4, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertEquals(2, $data[0]->userId);
@@ -267,7 +273,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
@@ -288,7 +294,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(5, $data[0]->id);
         $this->assertEquals('permission', $data[0]->type);
         $this->assertNull($data[0]->userId);
@@ -313,7 +319,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetForCurrentUser()
     {
@@ -326,12 +332,12 @@ class ItemPresetServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws QueryException
+     * @throws NoSuchPropertyException
      */
     public function testCreate()
     {
-        $accountPermission = new \SP\DataModel\ItemPreset\AccountPermission();
+        $accountPermission = new AccountPermission();
         $accountPermission->setUsersEdit([1, 2]);
         $accountPermission->setUsersView([3]);
         $accountPermission->setUserGroupsView([2]);
@@ -357,7 +363,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreateDuplicatedHash()
     {

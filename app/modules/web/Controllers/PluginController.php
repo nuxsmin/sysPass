@@ -24,17 +24,25 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Plugin\PluginManager;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginModel;
+use SP\Services\Auth\AuthException;
 use SP\Services\Plugin\PluginDataService;
 use SP\Services\Plugin\PluginService;
 
@@ -59,11 +67,11 @@ final class PluginController extends ControllerBase
     /**
      * indexAction
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function indexAction()
     {
@@ -84,10 +92,10 @@ final class PluginController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -102,11 +110,11 @@ final class PluginController extends ControllerBase
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -146,7 +154,7 @@ final class PluginController extends ControllerBase
             $this->eventDispatcher->notifyEvent('show.plugin', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -160,11 +168,11 @@ final class PluginController extends ControllerBase
      *
      * @param $pluginId
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     protected function setViewData($pluginId = null)
     {
@@ -207,7 +215,7 @@ final class PluginController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin enabled'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -236,7 +244,7 @@ final class PluginController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin disabled'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -266,7 +274,7 @@ final class PluginController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin reset'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -304,7 +312,7 @@ final class PluginController extends ControllerBase
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Plugin deleted'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -316,7 +324,7 @@ final class PluginController extends ControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws AuthException
      */
     protected function initialize()
     {

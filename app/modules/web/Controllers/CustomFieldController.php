@@ -24,9 +24,17 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Http\JsonResponse;
@@ -36,6 +44,8 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CustomFieldDefForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Repositories\NoSuchItemException;
+use SP\Services\Auth\AuthException;
 use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\CustomField\CustomFieldTypeService;
 
@@ -57,11 +67,11 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -82,10 +92,10 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -117,7 +127,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -131,9 +141,9 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      *
      * @param $customFieldId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     protected function setViewData($customFieldId = null)
     {
@@ -181,7 +191,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -221,7 +231,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field deleted'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -258,7 +268,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -299,7 +309,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Field updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -330,7 +340,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.customField', new Event($this));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -344,9 +354,9 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

@@ -24,6 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,8 +48,8 @@ final class BootstrapController extends SimpleControllerBase
      * Returns environment data
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function getEnvironmentAction()
     {
@@ -112,7 +115,7 @@ final class BootstrapController extends SimpleControllerBase
     {
         try {
             return $this->dic->get(PluginManager::class)->getEnabledPlugins();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 
@@ -121,8 +124,8 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function getAuthBasicAutologinEnabled()
     {
@@ -132,8 +135,8 @@ final class BootstrapController extends SimpleControllerBase
 
     /**
      * @return string
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function getPublicKey()
     {

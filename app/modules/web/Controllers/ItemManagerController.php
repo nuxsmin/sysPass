@@ -24,9 +24,16 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
+use SP\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
@@ -39,6 +46,7 @@ use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
+use SP\Services\Auth\AuthException;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\CustomField\CustomFieldDefService;
@@ -62,10 +70,10 @@ final class ItemManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function indexAction()
     {
@@ -75,10 +83,10 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getGridTabs()
     {
@@ -129,11 +137,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns categories' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getCategoriesList()
     {
@@ -145,11 +153,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns tags' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getTagsList()
     {
@@ -161,11 +169,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns clients' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getClientsList()
     {
@@ -177,11 +185,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns custom fields' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getCustomFieldsList()
     {
@@ -193,11 +201,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns account files' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getAccountFilesList()
     {
@@ -209,11 +217,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns accounts' data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getAccountsList()
     {
@@ -225,11 +233,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns accounts' history data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getAccountsHistoryList()
     {
@@ -241,11 +249,11 @@ final class ItemManagerController extends ControllerBase
     /**
      * Returns API tokens data tab
      *
-     * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return DataGridTab
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getItemPresetList()
     {
@@ -263,9 +271,9 @@ final class ItemManagerController extends ControllerBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

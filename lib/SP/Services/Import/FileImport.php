@@ -40,14 +40,14 @@ defined('APP_ROOT') || die();
 final class FileImport
 {
     /**
-     * @var \SP\Storage\File\FileHandler
+     * @var FileHandler
      */
     private $fileHandler;
 
     /**
      * FileImport constructor.
      *
-     * @param \SP\Storage\File\FileHandler $fileHandler Datos del archivo a importar
+     * @param FileHandler $fileHandler Datos del archivo a importar
      */
     private function __construct(FileHandler $fileHandler)
     {
@@ -172,7 +172,7 @@ final class FileImport
     }
 
     /**
-     * @return \SP\Storage\File\FileHandler
+     * @return FileHandler
      */
     public function getFileHandler(): FileHandler
     {

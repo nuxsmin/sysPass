@@ -24,6 +24,7 @@
 
 namespace SP\Tests\SP\Core\Crypt;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\Hash;
@@ -37,7 +38,7 @@ use SP\Util\PasswordUtil;
 class HashTest extends TestCase
 {
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function testHashKey()
     {
@@ -51,7 +52,7 @@ class HashTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function testSignMessage()
     {

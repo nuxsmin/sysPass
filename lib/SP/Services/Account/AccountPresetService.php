@@ -25,6 +25,9 @@
 namespace SP\Services\Account;
 
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPreset\Password;
 use SP\Mvc\Controller\Validators\PasswordValidator;
@@ -64,9 +67,9 @@ final class AccountPresetService
      * @param AccountRequest $accountRequest
      *
      * @throws ValidationException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     public function checkPasswordPreset(AccountRequest $accountRequest)
     {

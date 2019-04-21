@@ -24,9 +24,16 @@
 
 namespace SP\Tests\Services\PublicLink;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
@@ -58,9 +65,9 @@ class PublicLinkServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -78,8 +85,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -108,7 +115,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetByHash()
     {
@@ -138,8 +145,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -192,8 +199,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetHashForItem()
     {
@@ -208,10 +215,10 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -251,7 +258,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     /**
      * @param PublicLinkListData $data
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     private function checkVaultData(PublicLinkListData $data)
     {
@@ -269,10 +276,10 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreateSameItemId()
     {
@@ -294,8 +301,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -311,10 +318,10 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testRefresh()
     {
@@ -333,7 +340,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -348,8 +355,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testAddLinkView()
     {
@@ -385,9 +392,9 @@ class PublicLinkServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -427,8 +434,8 @@ class PublicLinkServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws SPException
+     * @throws CryptoException
      */
     public function testGetById()
     {

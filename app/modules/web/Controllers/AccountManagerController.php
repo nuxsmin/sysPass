@@ -24,9 +24,15 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
@@ -38,6 +44,7 @@ use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\Account\AccountService;
+use SP\Services\Auth\AuthException;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Tag\TagService;
@@ -65,11 +72,11 @@ final class AccountManagerController extends ControllerBase
 
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -90,11 +97,11 @@ final class AccountManagerController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     protected function getSearchGrid()
     {
@@ -103,10 +110,10 @@ final class AccountManagerController extends ControllerBase
         $accountGrid = $this->dic->get(AccountGrid::class);
 
         $filter = new AccountSearchFilter();
-        $filter->setTxtSearch($itemSearchData->getSeachString());
         $filter->setLimitCount($itemSearchData->getLimitCount());
         $filter->setLimitStart($itemSearchData->getLimitStart());
         $filter->setStringFilters($this->accountSearchService->analyzeQueryFilters($itemSearchData->getSeachString()));
+        $filter->setCleanTxtSearch($this->accountSearchService->getCleanString());
 
         return $accountGrid->updatePager(
             $accountGrid->getGrid(
@@ -152,7 +159,7 @@ final class AccountManagerController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);
@@ -192,7 +199,7 @@ final class AccountManagerController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);
@@ -223,7 +230,7 @@ final class AccountManagerController extends ControllerBase
             $this->eventDispatcher->notifyEvent('show.account.bulkEdit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);
@@ -265,9 +272,9 @@ final class AccountManagerController extends ControllerBase
     /**
      * Initialize class
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\Auth\AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws AuthException
      */
     protected function initialize()
     {

@@ -24,8 +24,14 @@
 
 namespace SP\Services\Account;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountCache;
@@ -137,9 +143,9 @@ final class AccountSearchService extends Service
      * @param AccountSearchFilter $accountSearchFilter
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
@@ -198,8 +204,8 @@ final class AccountSearchService extends Service
      * @param $string
      *
      * @return QueryCondition
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function analyzeQueryFilters($string)
     {
@@ -328,7 +334,7 @@ final class AccountSearchService extends Service
                                 break;
                         }
 
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         processException($e);
                     }
                 }
@@ -342,8 +348,8 @@ final class AccountSearchService extends Service
      * @param AccountSearchVData $accountSearchData
      *
      * @return AccountCache
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getCacheForAccount(AccountSearchVData $accountSearchData)
     {
@@ -401,8 +407,16 @@ final class AccountSearchService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return string
+     */
+    public function getCleanString()
+    {
+        return $this->cleanString;
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

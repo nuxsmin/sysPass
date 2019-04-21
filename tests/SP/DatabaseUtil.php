@@ -24,7 +24,10 @@
 
 namespace SP\Tests;
 
+use Exception;
+use PDO;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseException;
 
 /**
  * Trait DatabaseUtil
@@ -39,7 +42,7 @@ class DatabaseUtil
      * @param string $database
      * @param string $host
      *
-     * @throws \SP\Storage\Database\DatabaseException
+     * @throws DatabaseException
      */
     public static function createUser($user, $pass, $database, $host)
     {
@@ -57,8 +60,8 @@ class DatabaseUtil
     }
 
     /**
-     * @return \PDO
-     * @throws \SP\Storage\Database\DatabaseException
+     * @return PDO
+     * @throws DatabaseException
      */
     public static function getConnection()
     {
@@ -79,7 +82,7 @@ class DatabaseUtil
         try {
             self::getConnection()
                 ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -87,7 +90,7 @@ class DatabaseUtil
     /**
      * @param string $database
      *
-     * @throws \SP\Storage\Database\DatabaseException
+     * @throws DatabaseException
      */
     public static function dropDatabase($database)
     {
@@ -98,7 +101,7 @@ class DatabaseUtil
     /**
      * @param string $database
      *
-     * @throws \SP\Storage\Database\DatabaseException
+     * @throws DatabaseException
      */
     public static function createDatabase($database)
     {

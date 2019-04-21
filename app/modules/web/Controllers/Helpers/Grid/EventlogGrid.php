@@ -153,7 +153,7 @@ final class EventlogGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
+     * @return DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -170,7 +170,7 @@ final class EventlogGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getRefrestAction()
     {
@@ -189,7 +189,7 @@ final class EventlogGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getClearAction()
     {

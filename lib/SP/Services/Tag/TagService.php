@@ -24,14 +24,20 @@
 
 namespace SP\Services\Tag;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Tag\TagRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class TagService
@@ -50,9 +56,9 @@ final class TagService extends Service
     /**
      * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -64,8 +70,8 @@ final class TagService extends Service
      *
      * @return TagData
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -83,8 +89,8 @@ final class TagService extends Service
      *
      * @return TagData
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName($name)
     {
@@ -101,8 +107,8 @@ final class TagService extends Service
      * @param $id
      *
      * @return $this
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function delete($id)
@@ -133,9 +139,9 @@ final class TagService extends Service
      * @param $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {
@@ -147,8 +153,8 @@ final class TagService extends Service
      *
      * @return int
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -159,8 +165,8 @@ final class TagService extends Service
      * Get all items from the service's repository
      *
      * @return TagData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -168,8 +174,8 @@ final class TagService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

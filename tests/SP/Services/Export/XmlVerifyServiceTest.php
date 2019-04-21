@@ -24,9 +24,16 @@
 
 namespace SP\Tests\Services\Export;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use DOMDocument;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Context\ContextException;
 use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlVerifyService;
+use SP\Services\ServiceException;
+use SP\Storage\File\FileException;
 use function SP\Tests\setupContext;
 
 /**
@@ -42,9 +49,9 @@ class XmlVerifyServiceTest extends TestCase
     private static $xmlVerifyService;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -54,9 +61,9 @@ class XmlVerifyServiceTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws CryptoException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function testVerifyEncrypted()
     {
@@ -77,8 +84,8 @@ class XmlVerifyServiceTest extends TestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function testVerify()
     {
@@ -100,7 +107,7 @@ class XmlVerifyServiceTest extends TestCase
 
     public function testCheckXmlHash()
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml');
 
         $this->assertTrue(XmlVerifyService::checkXmlHash($dom, 'test_encrypt'));

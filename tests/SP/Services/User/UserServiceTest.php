@@ -24,9 +24,15 @@
 
 namespace SP\Tests\SP\Services\User;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
@@ -37,6 +43,7 @@ use SP\Services\User\UserLoginRequest;
 use SP\Services\User\UserService;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -59,10 +66,10 @@ class UserServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     * @throws SPException
      */
     public static function setUpBeforeClass()
     {
@@ -80,8 +87,8 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -93,8 +100,8 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUsageForUser()
     {
@@ -102,7 +109,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateOnLogin()
     {
@@ -151,11 +158,11 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -192,11 +199,11 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function testUpdateDuplicatedLogin()
     {
@@ -220,11 +227,11 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function testUpdateDuplicatedEmail()
     {
@@ -248,11 +255,11 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function testUpdateUnknown()
     {
@@ -276,11 +283,11 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws ServiceException
      */
     public function testUpdateNull()
     {
@@ -294,9 +301,9 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testUpdatePass()
     {
@@ -315,7 +322,7 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -330,7 +337,7 @@ class UserServiceTest extends DatabaseTestCase
         $data = $result->getDataAsArray();
 
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(3, $data[0]->id);
         $this->assertEquals('User A', $data[0]->name);
 
@@ -347,7 +354,7 @@ class UserServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -359,8 +366,8 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws SPException
      */
     public function testCreateWithMasterPass()
     {
@@ -401,7 +408,7 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUserEmailForGroup()
     {
@@ -411,7 +418,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetByLogin()
     {
@@ -446,7 +453,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -487,7 +494,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDuplicatedLogin()
     {
@@ -511,7 +518,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateDuplicatedEmail()
     {
@@ -535,7 +542,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateNull()
     {
@@ -557,7 +564,7 @@ class UserServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetById()
     {
@@ -593,8 +600,8 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdatePreferencesById()
     {
@@ -619,7 +626,7 @@ class UserServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateLastLoginById()
     {
@@ -632,7 +639,7 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCheckExistsByLogin()
     {
@@ -643,8 +650,8 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -655,8 +662,8 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDeleteUsed()
     {
@@ -667,8 +674,8 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDeleteUnknown()
     {
@@ -679,8 +686,8 @@ class UserServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdateOnLogin()
     {

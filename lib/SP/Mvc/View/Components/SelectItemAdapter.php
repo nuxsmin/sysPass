@@ -25,6 +25,7 @@
 namespace SP\Mvc\View\Components;
 
 use RuntimeException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\Http\Json;
 
@@ -84,7 +85,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
      * Returns a JSON like collection of items for a select component
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getJsonItemsFromModel()
     {
@@ -105,7 +106,7 @@ final class SelectItemAdapter implements ItemAdapterInterface
      * Returns a collection of items for a select component
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getJsonItemsFromArray()
     {

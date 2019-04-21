@@ -24,18 +24,24 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
+use SP\Services\ServiceException;
 use SP\Services\Task\TaskFactory;
 
 /**
@@ -49,11 +55,11 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function saveAction()
     {
@@ -144,7 +150,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 $mastePassService->changeMasterPassword($request);
 
                 $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -160,7 +166,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
 
                 $mastePassService->updateConfig(Hash::hashKey($newMasterPass));
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -195,7 +201,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                 new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated'))));
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Master password hash updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -233,7 +239,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
                         __u('Temporary password generated'),
                         [__u('Email sent')]
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -247,7 +253,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
             }
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Temporary password generated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

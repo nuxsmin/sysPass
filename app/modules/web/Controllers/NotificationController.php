@@ -24,9 +24,15 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\NotificationData;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
@@ -35,6 +41,8 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\NotificationForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Repositories\NoSuchItemException;
+use SP\Services\Auth\AuthException;
 use SP\Services\Notification\NotificationService;
 use SP\Services\User\UserService;
 
@@ -55,11 +63,11 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * indexAction
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function indexAction()
     {
@@ -80,10 +88,10 @@ final class NotificationController extends ControllerBase implements CrudControl
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -118,7 +126,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             $this->eventDispatcher->notifyEvent('show.notification', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -132,9 +140,9 @@ final class NotificationController extends ControllerBase implements CrudControl
      *
      * @param $notificationId
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     protected function setViewData($notificationId = null)
     {
@@ -161,11 +169,11 @@ final class NotificationController extends ControllerBase implements CrudControl
 
     /**
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -202,7 +210,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             $this->eventDispatcher->notifyEvent('show.notification.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -236,7 +244,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             $this->eventDispatcher->notifyEvent('show.notification.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -287,7 +295,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification deleted'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -322,7 +330,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification read'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -355,7 +363,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification created'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -392,7 +400,7 @@ final class NotificationController extends ControllerBase implements CrudControl
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Notification updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -402,9 +410,9 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\Auth\AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws AuthException
      */
     protected function initialize()
     {

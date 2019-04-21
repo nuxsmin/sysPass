@@ -50,7 +50,7 @@ final class AccountActionsHelper extends HelperBase
     protected $sk;
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getViewAction()
     {
@@ -166,7 +166,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getEditAction()
     {
@@ -187,7 +187,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getRequestAction()
     {
@@ -252,7 +252,7 @@ final class AccountActionsHelper extends HelperBase
      * @param AccountAcl        $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
-     * @return \SP\Html\DataGrid\Action\DataGridAction[]
+     * @return DataGridAction[]
      */
     public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
@@ -388,7 +388,7 @@ final class AccountActionsHelper extends HelperBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getPublicLinkAction()
     {

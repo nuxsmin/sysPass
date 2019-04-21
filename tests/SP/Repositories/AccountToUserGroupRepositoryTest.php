@@ -25,7 +25,10 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Services\Account\AccountRequest;
@@ -49,8 +52,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -69,7 +72,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de grupos de usuarios por Id de cuenta
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUserGroupsByAccountId()
     {
@@ -115,8 +118,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de grupos de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -152,8 +155,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdateEdit()
     {
@@ -189,8 +192,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testViewDeleteByAccountId()
     {
@@ -206,8 +209,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByAccountId()
     {
@@ -223,8 +226,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAddEdit()
     {
@@ -259,8 +262,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la insercción de grupos de usuarios por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAdd()
     {
@@ -298,8 +301,8 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de grupos de usuarios con permisos de modificación por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteEditByAccountId()
     {
@@ -315,7 +318,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de grupos de usuarios por Id de grupo
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUserGroupsByUserGroupId()
     {
@@ -330,7 +333,7 @@ class AccountToUserGroupRepositoryTest extends DatabaseTestCase
      * Comprobar la eliminación de grupos de usuarios por Id de grupo
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByUserGroupId()
     {

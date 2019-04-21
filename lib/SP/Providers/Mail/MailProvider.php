@@ -25,6 +25,9 @@
 namespace SP\Providers\Mail;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Core\AppInfoInterface;
 use SP\Providers\Provider;
@@ -84,7 +87,7 @@ final class MailProvider extends Provider
             $this->mailer->WordWrap = 100;
 
             return $this->mailer;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw new MailProviderException(
@@ -116,8 +119,8 @@ final class MailProvider extends Provider
     /**
      * @param Container $dic
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize(Container $dic)
     {

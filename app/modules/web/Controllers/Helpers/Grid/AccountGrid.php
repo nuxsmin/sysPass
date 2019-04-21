@@ -104,7 +104,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -154,7 +154,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getViewAction()
     {
@@ -188,7 +188,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     public function getBulkEditAction()
     {

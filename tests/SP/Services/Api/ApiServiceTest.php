@@ -24,7 +24,12 @@
 
 namespace SP\Tests\Services\Api;
 
+use Closure;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Api\ApiRequest;
 use SP\Services\Api\ApiService;
 use SP\Services\ServiceException;
@@ -49,14 +54,14 @@ class ApiServiceTest extends DatabaseTestCase
      */
     private static $service;
     /**
-     * @var \Closure
+     * @var Closure
      */
     private static $changeRequest;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -76,8 +81,8 @@ class ApiServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function testSetup()
     {
@@ -108,7 +113,7 @@ class ApiServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetParam()
     {
@@ -132,7 +137,7 @@ class ApiServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetParamInt()
     {
@@ -153,7 +158,7 @@ class ApiServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetParamString()
     {
@@ -168,7 +173,7 @@ class ApiServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetParamRaw()
     {
@@ -181,7 +186,7 @@ class ApiServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testGetRequestId()
     {

@@ -97,7 +97,7 @@ final class FileGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {

@@ -25,6 +25,8 @@
 namespace SP;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Klein\Klein;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
@@ -50,6 +52,7 @@ use SP\Util\Checks;
 use SP\Util\Filter;
 use SP\Util\VersionUtil;
 use Symfony\Component\Debug\Debug;
+use Throwable;
 
 defined('APP_ROOT') || die();
 
@@ -110,8 +113,8 @@ final class Bootstrap
      *
      * @param Container $container
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private final function __construct(Container $container)
     {
@@ -139,7 +142,7 @@ final class Bootstrap
         $this->router->onError(function ($router, $err_msg, $type, $err) {
             logger('Routing error: ' . $err_msg);
 
-            /** @var Exception|\Throwable $err */
+            /** @var Exception|Throwable $err */
             logger('Routing error: ' . $err->getTraceAsString());
 
             /** @var Klein $router */
@@ -264,8 +267,8 @@ final class Bootstrap
      * @throws Core\Exceptions\CheckException
      * @throws InitializationException
      * @throws Services\Upgrade\UpgradeException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws Storage\File\FileException
      */
     protected function initializeCommon()
@@ -386,8 +389,8 @@ final class Bootstrap
      * @throws ConfigException
      * @throws Services\Upgrade\UpgradeException
      * @throws Storage\File\FileException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function initConfig()
     {
@@ -401,8 +404,8 @@ final class Bootstrap
      *
      * @throws Services\Upgrade\UpgradeException
      * @throws Storage\File\FileException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function checkConfigVersion()
     {
@@ -446,8 +449,8 @@ final class Bootstrap
      * @param string    $module
      *
      * @throws InitializationException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public static function run(Container $container, $module = APP_MODULE)
     {

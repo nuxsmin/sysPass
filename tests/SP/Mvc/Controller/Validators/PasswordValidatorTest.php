@@ -42,7 +42,7 @@ class PasswordValidatorTest extends TestCase
     private $password;
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidate()
     {
@@ -53,7 +53,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoLength()
     {
@@ -65,7 +65,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoLetters()
     {
@@ -77,7 +77,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoUpper()
     {
@@ -89,7 +89,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoLower()
     {
@@ -101,7 +101,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoNumbers()
     {
@@ -113,7 +113,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoSymbols()
     {
@@ -125,7 +125,7 @@ class PasswordValidatorTest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function testValidateNoRegex()
     {

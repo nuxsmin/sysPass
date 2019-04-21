@@ -128,7 +128,7 @@ final class ClientGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
+     * @return DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -145,7 +145,7 @@ final class ClientGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getCreateAction()
     {
@@ -163,7 +163,7 @@ final class ClientGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getEditAction()
     {

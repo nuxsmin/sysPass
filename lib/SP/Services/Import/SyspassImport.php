@@ -25,7 +25,11 @@
 namespace SP\Services\Import;
 
 use Defuse\Crypto\Exception\CryptoException;
+use DOMDocument;
+use DOMElement;
+use DOMNodeList;
 use DOMXPath;
+use Exception;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\OldCrypt;
@@ -48,8 +52,8 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     /**
      * Iniciar la importación desde sysPass.
      *
-     * @throws ImportException
      * @return ImportInterface
+     * @throws ImportException
      */
     public function doImport()
     {
@@ -89,7 +93,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             return $this;
         } catch (ImportException $e) {
             throw $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ImportException($e->getMessage(), ImportException::CRITICAL);
         }
     }
@@ -126,7 +130,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
         }
 
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
-            /** @var $node \DOMElement */
+            /** @var $node DOMElement */
             $data = base64_decode($node->nodeValue);
 
             try {
@@ -143,7 +147,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                 continue;
             }
 
-            $newXmlData = new \DOMDocument();
+            $newXmlData = new DOMDocument();
 
             if ($newXmlData->loadXML($xmlDecrypted) === false) {
                 throw new ImportException(__u('Wrong encryption password'));
@@ -188,7 +192,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     protected function processCategories()
     {
         $this->getNodesData('Categories', 'Category',
-            function (\DOMElement $category) {
+            function (DOMElement $category) {
                 $categoryData = new CategoryData();
 
                 foreach ($category->childNodes as $node) {
@@ -211,7 +215,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                         new Event($this, EventMessage::factory()
                             ->addDetail(__u('Category imported'), $categoryData->getName()))
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -227,7 +231,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     protected function processClients()
     {
         $this->getNodesData('Clients', 'Client',
-            function (\DOMElement $client) {
+            function (DOMElement $client) {
                 $clientData = new ClientData();
 
                 foreach ($client->childNodes as $node) {
@@ -250,7 +254,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                         new Event($this, EventMessage::factory()
                             ->addDetail(__u('Client imported'), $clientData->getName()))
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -267,7 +271,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     protected function processCustomers()
     {
         $this->getNodesData('Customers', 'Customer',
-            function (\DOMElement $client) {
+            function (DOMElement $client) {
                 $clientData = new ClientData();
 
                 foreach ($client->childNodes as $node) {
@@ -290,7 +294,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                         new Event($this, EventMessage::factory()
                             ->addDetail(__u('Client imported'), $clientData->getName()))
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -306,7 +310,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     protected function processTags()
     {
         $this->getNodesData('Tags', 'Tag',
-            function (\DOMElement $tag) {
+            function (DOMElement $tag) {
                 $tagData = new TagData();
 
                 foreach ($tag->childNodes as $node) {
@@ -326,7 +330,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                         new Event($this, EventMessage::factory()
                             ->addDetail(__u('Tag imported'), $tagData->getName()))
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -342,10 +346,10 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     protected function processAccounts()
     {
         $this->getNodesData('Accounts', 'Account',
-            function (\DOMElement $account) {
+            function (DOMElement $account) {
                 $accountRequest = new AccountRequest();
 
-                /** @var \DOMElement $node */
+                /** @var DOMElement $node */
                 foreach ($account->childNodes as $node) {
                     if (isset($node->tagName)) {
                         switch ($node->tagName) {
@@ -387,7 +391,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                         new Event($this, EventMessage::factory()
                             ->addDetail(__u('Account imported'), $accountRequest->name))
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     processException($e);
 
                     $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -398,16 +402,16 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
     /**
      * Procesar las etiquetas de la cuenta
      *
-     * @param \DOMNodeList $nodes
+     * @param DOMNodeList $nodes
      *
      * @return array
      */
-    protected function processAccountTags(\DOMNodeList $nodes)
+    protected function processAccountTags(DOMNodeList $nodes)
     {
         $tags = [];
 
         if ($nodes->length > 0) {
-            /** @var \DOMElement $node */
+            /** @var DOMElement $node */
             foreach ($nodes as $node) {
                 if (isset($node->tagName)) {
                     $tags[] = $this->getWorkingItem('tag', (int)$node->getAttribute('id'));

@@ -24,6 +24,10 @@
 
 namespace SP\Services\UserGroup;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
@@ -44,10 +48,10 @@ final class UserToUserGroupService extends Service
     /**
      * @param $id
      *
-     * @return \SP\DataModel\UserToUserGroupData[]
+     * @return UserToUserGroupData[]
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -65,8 +69,8 @@ final class UserToUserGroupService extends Service
      * @param array $users
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($id, array $users)
     {
@@ -78,8 +82,8 @@ final class UserToUserGroupService extends Service
      * @param array $users
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($id, array $users)
     {
@@ -94,8 +98,8 @@ final class UserToUserGroupService extends Service
      * @param $id
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsersByGroupId($id)
     {
@@ -116,8 +120,8 @@ final class UserToUserGroupService extends Service
      * @param $userId
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkUserInGroup($groupId, $userId)
     {
@@ -130,8 +134,8 @@ final class UserToUserGroupService extends Service
      * @param $userId
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getGroupsForUser($userId)
     {
@@ -139,8 +143,8 @@ final class UserToUserGroupService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

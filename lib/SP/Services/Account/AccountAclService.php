@@ -25,13 +25,16 @@
 namespace SP\Services\Account;
 
 use SP\Core\Acl\Acl;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\ProfileData;
 use SP\Services\Service;
 use SP\Services\User\UserLoginResponse;
 use SP\Services\UserGroup\UserToUserGroupService;
 use SP\Storage\File\FileCache;
+use SP\Storage\File\FileCacheInterface;
 use SP\Storage\File\FileException;
 use SP\Util\FileUtil;
 
@@ -99,8 +102,8 @@ final class AccountAclService extends Service
      * @param bool          $isHistory
      *
      * @return AccountAcl
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAcl($actionId, AccountAclDto $accountAclDto = null, $isHistory = false)
     {
@@ -188,8 +191,8 @@ final class AccountAclService extends Service
      * Actualizar la ACL
      *
      * @return AccountAcl
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function updateAcl()
     {
@@ -215,8 +218,8 @@ final class AccountAclService extends Service
     /**
      * Crear la ACL de una cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function makeAcl()
     {
@@ -230,8 +233,8 @@ final class AccountAclService extends Service
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function compileAccountAccess()
     {
@@ -381,7 +384,7 @@ final class AccountAclService extends Service
      *
      * @param AccountAcl $accountAcl
      *
-     * @return null|\SP\Storage\File\FileCacheInterface
+     * @return null|FileCacheInterface
      */
     public function saveAclInCache(AccountAcl $accountAcl)
     {

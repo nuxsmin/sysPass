@@ -26,13 +26,14 @@ namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
+use SessionHandler;
 
 /**
  * Class CryptSessionHandler
  *
  * @package SP\Core\Crypt
  */
-final class CryptSessionHandler extends \SessionHandler
+final class CryptSessionHandler extends SessionHandler
 {
     /**
      * @var bool Indica si la sesión está encriptada

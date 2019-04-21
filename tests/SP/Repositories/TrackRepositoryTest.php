@@ -25,6 +25,11 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TrackData;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
@@ -46,15 +51,15 @@ class TrackRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
 
         self::$dataset = 'syspass_track.xml';
-        
+
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
@@ -63,8 +68,8 @@ class TrackRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -76,9 +81,9 @@ class TrackRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws InvalidArgumentException
      */
     public function testGetById()
     {
@@ -98,9 +103,9 @@ class TrackRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws InvalidArgumentException
      */
     public function testAdd()
     {
@@ -124,9 +129,9 @@ class TrackRepositoryTest extends DatabaseTestCase
 
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws InvalidArgumentException
      */
     public function testGetAll()
     {
@@ -146,9 +151,9 @@ class TrackRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function testGetTracksForClientFromTime()
     {

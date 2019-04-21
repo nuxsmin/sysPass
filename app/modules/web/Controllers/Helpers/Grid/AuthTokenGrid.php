@@ -98,7 +98,7 @@ final class AuthTokenGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -128,7 +128,7 @@ final class AuthTokenGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
+     * @return DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -163,7 +163,7 @@ final class AuthTokenGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getViewAction()
     {
@@ -180,7 +180,7 @@ final class AuthTokenGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getEditAction()
     {

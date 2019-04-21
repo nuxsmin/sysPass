@@ -24,7 +24,15 @@
 
 namespace SP\Tests\Services\User;
 
+use Closure;
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\User\UserLoginResponse;
@@ -45,7 +53,7 @@ class UserPassServiceTest extends DatabaseTestCase
     const NEW_MASTERPASS = '00123456789';
 
     /**
-     * @var \Closure
+     * @var Closure
      */
     private static $getUserLoginResponse;
 
@@ -55,10 +63,10 @@ class UserPassServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     * @throws SPException
      */
     public static function setUpBeforeClass()
     {
@@ -78,8 +86,8 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws SPException
      */
     public function testCreateMasterPass()
     {
@@ -91,9 +99,9 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testMigrateUserPassById()
     {
@@ -105,8 +113,8 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws SPException
      */
     public function testUpdateMasterPassFromOldPass()
     {
@@ -125,7 +133,7 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testLoadUserMPass()
     {
@@ -144,7 +152,7 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testLoadUserMPassOutdated()
     {
@@ -164,7 +172,7 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testLoadUserMPassChangedPass()
     {
@@ -184,7 +192,7 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testLoadUserMPassNotSet()
     {
@@ -199,8 +207,8 @@ class UserPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws SPException
      */
     public function testUpdateMasterPassOnLogin()
     {

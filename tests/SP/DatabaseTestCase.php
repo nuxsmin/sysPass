@@ -24,10 +24,12 @@
 
 namespace SP\Tests;
 
+use PDO;
 use PHPUnit\DbUnit\Database\DefaultConnection;
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Exceptions\SPException;
 use SP\Storage\Database\DatabaseConnectionData;
 
 /**
@@ -50,7 +52,7 @@ abstract class DatabaseTestCase extends TestCase
      */
     protected static $dataset = 'syspass.xml';
     /**
-     * @var \PDO
+     * @var PDO
      */
     private static $pdo;
     /**
@@ -62,7 +64,7 @@ abstract class DatabaseTestCase extends TestCase
      * Returns the test database connection.
      *
      * @return DefaultConnection
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     final public function getConnection()
     {

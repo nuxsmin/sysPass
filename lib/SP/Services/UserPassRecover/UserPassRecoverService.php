@@ -24,9 +24,16 @@
 
 namespace SP\Services\UserPassRecover;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\MailMessage;
 use SP\Html\Html;
+use SP\Repositories\User\UserPassRecoverRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Util\PasswordUtil;
@@ -50,7 +57,7 @@ final class UserPassRecoverService extends Service
     const USER_MAIL_EXIST = 2;
 
     /**
-     * @var \SP\Repositories\User\UserPassRecoverRepository
+     * @var UserPassRecoverRepository
      */
     protected $userPassRecoverRepository;
 
@@ -79,7 +86,7 @@ final class UserPassRecoverService extends Service
      *
      * @return void
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function toggleUsedByHash($hash)
     {
@@ -92,10 +99,10 @@ final class UserPassRecoverService extends Service
      * @param int $id
      *
      * @return string
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function requestForUserId($id)
     {
@@ -116,8 +123,8 @@ final class UserPassRecoverService extends Service
      * @param int $userId
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkAttemptsByUserId($userId)
     {
@@ -129,8 +136,8 @@ final class UserPassRecoverService extends Service
      * @param $hash
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($userId, $hash)
     {
@@ -144,8 +151,8 @@ final class UserPassRecoverService extends Service
      *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserIdForHash($hash)
     {
@@ -159,11 +166,11 @@ final class UserPassRecoverService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {
-        $this->userPassRecoverRepository = $this->dic->get(\SP\Repositories\User\UserPassRecoverRepository::class);
+        $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
     }
 }

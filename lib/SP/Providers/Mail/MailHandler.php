@@ -25,6 +25,9 @@
 namespace SP\Providers\Mail;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
@@ -66,7 +69,7 @@ final class MailHandler extends Provider implements EventReceiver
     ];
 
     /**
-     * @var \SP\Services\Mail\MailService
+     * @var MailService
      */
     private $mailService;
     /**
@@ -168,7 +171,7 @@ final class MailHandler extends Provider implements EventReceiver
                     $recipients,
                     $mailMessage
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
             }
         }
@@ -177,8 +180,8 @@ final class MailHandler extends Provider implements EventReceiver
     /**
      * @param Container $dic
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize(Container $dic)
     {

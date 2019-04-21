@@ -247,11 +247,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Allows the ability to arbitrarily request an attribute from
      * this instance while treating it as an instance property
      *
-     * @see get()
-     *
      * @param string $key The name of the parameter to return
      *
      * @return mixed
+     * @see get()
+     *
      */
     public function __get($key)
     {
@@ -264,12 +264,12 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Allows the ability to arbitrarily set an attribute from
      * this instance while treating it as an instance property
      *
-     * @see set()
-     *
      * @param string $key   The name of the parameter to set
      * @param mixed  $value The value of the parameter to set
      *
      * @return void
+     * @see set()
+     *
      */
     public function __set($key, $value)
     {
@@ -282,11 +282,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Allows the ability to arbitrarily check the existence of an attribute
      * from this instance while treating it as an instance property
      *
-     * @see exists()
-     *
      * @param string $key The name of the parameter
      *
      * @return boolean
+     * @see exists()
+     *
      */
     public function __isset($key)
     {
@@ -299,11 +299,11 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      * Allows the ability to arbitrarily remove an attribute from
      * this instance while treating it as an instance property
      *
-     * @see remove()
-     *
      * @param string $key The name of the parameter
      *
      * @return void
+     * @see remove()
+     *
      */
     public function __unset($key)
     {

@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Account;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -173,7 +174,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      */
     public function update($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -268,7 +269,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -326,7 +327,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -338,7 +339,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -350,7 +351,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

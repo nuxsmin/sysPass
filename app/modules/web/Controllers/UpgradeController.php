@@ -24,12 +24,16 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\Actions;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
+use SP\Storage\File\FileException;
 
 /**
  * Class UpgradeController
@@ -43,9 +47,9 @@ final class UpgradeController extends ControllerBase
     /**
      * indexAction
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws FileException
      */
     public function indexAction()
     {
@@ -101,7 +105,7 @@ final class UpgradeController extends ControllerBase
                 __u('Application successfully updated'),
                 [__u('You will be redirected to log in within 5 seconds')]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);

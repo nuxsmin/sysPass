@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\User;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -364,7 +365,7 @@ final class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

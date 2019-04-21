@@ -27,9 +27,16 @@ namespace SP\Services\Auth;
 defined('APP_ROOT') || die();
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\ThemeInterface;
@@ -43,6 +50,7 @@ use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuth;
 use SP\Providers\Auth\Ldap\LdapAuthData;
 use SP\Providers\Auth\Ldap\LdapCode;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Service;
@@ -113,19 +121,19 @@ final class LoginService extends Service
     /**
      * Ejecutar las acciones de login
      *
+     * @return LoginResponse
+     * @throws AuthException
+     * @throws SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
      * @uses LoginService::authBrowser()
      * @uses LoginService::authDatabase()
      * @uses LoginService::authLdap()
      *
-     * @return LoginResponse
-     * @throws AuthException
-     * @throws SPException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \Exception
      */
     public function doLogin()
     {
@@ -195,7 +203,7 @@ final class LoginService extends Service
     {
         try {
             $this->trackService->add($this->trackRequest);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new AuthException(
                 __u('Internal error'),
                 AuthException::ERROR,
@@ -208,13 +216,13 @@ final class LoginService extends Service
     /**
      * Comprobar estado del usuario
      *
-     * @throws AuthException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      * @return LoginResponse
+     * @throws EnvironmentIsBrokenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws AuthException
      */
     private function checkUser()
     {
@@ -268,8 +276,8 @@ final class LoginService extends Service
      *
      * @throws AuthException
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     private function loadMasterPass()
     {
@@ -382,11 +390,11 @@ final class LoginService extends Service
     /**
      * Cargar la sesión del usuario
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     private function setUserSession()
     {
@@ -449,9 +457,9 @@ final class LoginService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws InvalidArgumentException
      */
     protected function initialize()
     {
@@ -472,7 +480,7 @@ final class LoginService extends Service
      * @param LdapAuthData $authData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      * @throws AuthException
      */
     private function authLdap(LdapAuthData $authData)
@@ -578,7 +586,7 @@ final class LoginService extends Service
                 // Creamos el usuario de LDAP en MySQL
                 $this->userService->createOnLogin($userLoginRequest);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new AuthException(
                 __u('Internal error'),
                 AuthException::ERROR,
@@ -597,7 +605,7 @@ final class LoginService extends Service
      * @param DatabaseAuthData $authData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      * @throws AuthException
      */
     private function authDatabase(DatabaseAuthData $authData)
@@ -699,7 +707,7 @@ final class LoginService extends Service
                 );
 
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw new AuthException(
                     __u('Internal error'),
                     AuthException::ERROR,

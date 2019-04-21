@@ -24,12 +24,15 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
+use RuntimeException;
 use SP\Config\ConfigUtil;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Config\ConfigBackupService;
@@ -48,7 +51,7 @@ final class ConfigGeneralController extends SimpleControllerBase
     /**
      * saveAction
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function saveAction()
     {
@@ -187,7 +190,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function downloadLogAction()
     {
@@ -220,7 +223,7 @@ final class ConfigGeneralController extends SimpleControllerBase
             $response->send();
 
             $file->readChunked();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -233,7 +236,7 @@ final class ConfigGeneralController extends SimpleControllerBase
      * @param string $type
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function downloadConfigBackupAction($type)
     {
@@ -257,7 +260,7 @@ final class ConfigGeneralController extends SimpleControllerBase
                     $data = ConfigBackupService::configToJson($configBackupService->getBackup());
                     break;
                 default:
-                    throw new \RuntimeException('Not implemented');
+                    throw new RuntimeException('Not implemented');
             }
 
             $response = $this->router->response();
@@ -273,7 +276,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
             $response->body($data);
             $response->send(true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

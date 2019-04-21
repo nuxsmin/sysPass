@@ -25,6 +25,10 @@
 namespace SP\Services\UserGroup;
 
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
@@ -33,6 +37,7 @@ use SP\Repositories\UserGroup\UserGroupRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserGroupService
@@ -55,9 +60,9 @@ final class UserGroupService extends Service
     /**
      * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -68,8 +73,8 @@ final class UserGroupService extends Service
      * @param $id
      *
      * @return UserGroupData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -106,8 +111,8 @@ final class UserGroupService extends Service
      *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -161,8 +166,8 @@ final class UserGroupService extends Service
      * Get all items from the service's repository
      *
      * @return UserGroupData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -176,8 +181,8 @@ final class UserGroupService extends Service
      *
      * @return UserGroupData
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName($name)
     {
@@ -196,8 +201,8 @@ final class UserGroupService extends Service
      * @param $id int
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsage($id)
     {
@@ -210,8 +215,8 @@ final class UserGroupService extends Service
      * @param $id int
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsageByUsers($id)
     {
@@ -219,8 +224,8 @@ final class UserGroupService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

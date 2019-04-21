@@ -24,6 +24,7 @@
 
 namespace SP\Tests\Util;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\TestCase;
 use SP\Util\PasswordUtil;
 
@@ -118,7 +119,7 @@ class PasswordUtilTest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function testGenerateRandomBytes()
     {

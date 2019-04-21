@@ -45,8 +45,8 @@ final class FileUtil
      * @param $dir
      *
      * @return bool
-     * @see https://stackoverflow.com/a/7288067
      * @throws FileNotFoundException
+     * @see https://stackoverflow.com/a/7288067
      */
     public static function rmdir_recursive($dir)
     {

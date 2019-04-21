@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\CustomField;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -33,6 +34,7 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class CustomFieldTypeRepository
@@ -72,7 +74,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -108,7 +110,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -116,7 +118,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      *
      * @param int $id
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -133,7 +135,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
     /**
      * Returns all the items
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -155,7 +157,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -209,7 +211,7 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -221,6 +223,6 @@ final class CustomFieldTypeRepository extends Repository implements RepositoryIt
      */
     public function search(ItemSearchData $SearchData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 }

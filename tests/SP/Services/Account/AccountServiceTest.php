@@ -24,12 +24,22 @@
 
 namespace SP\Tests\Services\Account;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use SP\Core\Context\ContextException;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\ProfileData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountBulkRequest;
 use SP\Services\Account\AccountHistoryService;
@@ -38,9 +48,11 @@ use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\ServiceException;
+use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -56,20 +68,26 @@ class AccountServiceTest extends DatabaseTestCase
      */
     protected static $accountHistoryService;
     /**
+     * @var ContextInterface
+     */
+    private static $context;
+    /**
      * @var AccountService
      */
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
         $dic = setupContext();
 
         self::$dataset = 'syspass_account.xml';
+
+        self::$context = $dic->get(ContextInterface::class);
 
         // Datos de conexión a la BBDD
         self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
@@ -80,11 +98,11 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
      */
     public function testCreate()
     {
@@ -181,9 +199,9 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testUpdatePasswordMasterPass()
@@ -204,8 +222,8 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetTotalNumAccounts()
     {
@@ -214,8 +232,8 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetDataForLink()
     {
@@ -237,8 +255,8 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAccountsPassData()
     {
@@ -246,7 +264,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testEditRestore()
     {
@@ -261,8 +279,8 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetLinked()
     {
@@ -277,7 +295,7 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function testGetPasswordEncrypted()
     {
@@ -294,10 +312,10 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \Exception
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
      */
     public function testEditPassword()
     {
@@ -325,10 +343,10 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws Exception
      */
     public function testUpdate()
     {
@@ -352,8 +370,6 @@ class AccountServiceTest extends DatabaseTestCase
         $accountRequest->userGroupsView = [2, 3];
         $accountRequest->userGroupsEdit = [2];
         $accountRequest->updateTags = true;
-        $accountRequest->updateUserPermissions = true;
-        $accountRequest->updateUserGroupPermissions = true;
 
         self::$service->update($accountRequest);
 
@@ -400,16 +416,218 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals(1, (int)$groups[0]->isEdit);
         $this->assertEquals(3, $groups[1]->getId());
         $this->assertEquals(0, (int)$groups[1]->isEdit);
+    }
+
+    /**
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws Exception
+     */
+    public function testUpdateOwnerByAdmin()
+    {
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->name = 'Prueba 1';
+        $accountRequest->login = 'admin';
+        $accountRequest->url = 'http://syspass.org';
+        $accountRequest->notes = 'notas';
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->isPrivate = 0;
+        $accountRequest->isPrivateGroup = 0;
+        $accountRequest->parentId = 0;
+        $accountRequest->userId = 2;
+        $accountRequest->userGroupId = 2;
+
+        self::$service->update($accountRequest);
+
+        $result = self::$service->getById(1);
+
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals($accountRequest->userId, $data->getUserId());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function testUpdateOwnerByOwner()
+    {
+        $lastUserData = self::$context->getUserData();
+
+        $userData = new UserLoginResponse();
+        $userData->setId(1);
+        $userData->setUserGroupId(1);
+        $userData->setIsAdminApp(false);
+        $userData->setIsAdminAcc(false);
+
+        $userProfile = new ProfileData();
+        $userProfile->setAccEdit(true);
+        $userProfile->setAccPermission(true);
+
+        self::$context->setUserData($userData);
+        self::$context->setUserProfile($userProfile);
 
         $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->name = 'Prueba 1';
+        $accountRequest->login = 'admin';
+        $accountRequest->url = 'http://syspass.org';
+        $accountRequest->notes = 'notas';
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->isPrivate = 0;
+        $accountRequest->isPrivateGroup = 0;
+        $accountRequest->parentId = 0;
+        $accountRequest->userId = 2;
+        $accountRequest->userGroupId = 2;
+
+        self::$service->update($accountRequest);
+
+        $result = self::$service->getById(1);
+
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals($accountRequest->userId, $data->getUserId());
+        $this->assertEquals($accountRequest->userGroupId, $data->getUserGroupId());
+
+        self::$context->setUserData($lastUserData);
+        self::$context->setUserProfile(new ProfileData());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function testUpdateOwnerByForeign()
+    {
+        $lastUserData = self::$context->getUserData();
+
+        $userData = new UserLoginResponse();
+        $userData->setId(2);
+        $userData->setUserGroupId(2);
+        $userData->setIsAdminApp(false);
+        $userData->setIsAdminAcc(false);
+
+        $userProfile = new ProfileData();
+        $userProfile->setAccEdit(true);
+        $userProfile->setAccPermission(true);
+
+        self::$context->setUserData($userData);
+        self::$context->setUserProfile($userProfile);
+
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->name = 'Prueba 1';
+        $accountRequest->login = 'admin';
+        $accountRequest->url = 'http://syspass.org';
+        $accountRequest->notes = 'notas';
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->isPrivate = 0;
+        $accountRequest->isPrivateGroup = 0;
+        $accountRequest->parentId = 0;
+        $accountRequest->userId = 2;
+        $accountRequest->userGroupId = 2;
+
+        self::$service->update($accountRequest);
+
+        $result = self::$service->getById(1);
+
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(1, $data->getUserGroupId());
+
+        self::$context->setUserData($lastUserData);
+        self::$context->setUserProfile(new ProfileData());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function testUpdateGroupByGroup()
+    {
+        $lastUserData = self::$context->getUserData();
+
+        $userData = new UserLoginResponse();
+        $userData->setId(2);
+        $userData->setUserGroupId(1);
+        $userData->setIsAdminApp(false);
+        $userData->setIsAdminAcc(false);
+
+        $userProfile = new ProfileData();
+        $userProfile->setAccEdit(true);
+        $userProfile->setAccPermission(true);
+
+        self::$context->setUserData($userData);
+        self::$context->setUserProfile($userProfile);
+
+        $accountRequest = new AccountRequest();
+        $accountRequest->id = 1;
+        $accountRequest->name = 'Prueba 1';
+        $accountRequest->login = 'admin';
+        $accountRequest->url = 'http://syspass.org';
+        $accountRequest->notes = 'notas';
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->isPrivate = 0;
+        $accountRequest->isPrivateGroup = 0;
+        $accountRequest->parentId = 0;
+        $accountRequest->userId = 2;
+        $accountRequest->userGroupId = 2;
+
+        self::$service->update($accountRequest);
+
+        $result = self::$service->getById(1);
+
+        $data = $result->getAccountVData();
+
+        $this->assertEquals(1, $result->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals($accountRequest->userGroupId, $data->getUserGroupId());
+
+        self::$context->setUserData($lastUserData);
+        self::$context->setUserProfile(new ProfileData());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testUpdateNotFound()
+    {
+        $accountRequest = new AccountRequest();
         $accountRequest->id = 3;
+
+        $this->expectException(NoSuchItemException::class);
 
         self::$service->update($accountRequest);
     }
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetForUser()
     {
@@ -420,7 +638,7 @@ class AccountServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -431,7 +649,7 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteByIdBatch()
     {
@@ -450,8 +668,8 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testGetByFilter()
     {
@@ -530,7 +748,7 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -544,7 +762,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         $this->assertCount(1, $data);
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(1, $data[0]->id);
         $this->assertEquals('Google', $data[0]->name);
 
@@ -558,7 +776,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         $this->assertCount(1, $data);
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('Apple', $data[0]->name);
     }
@@ -566,7 +784,7 @@ class AccountServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testIncrementDecryptCounter()
     {
@@ -584,7 +802,7 @@ class AccountServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testIncrementViewCounter()
     {
@@ -602,7 +820,7 @@ class AccountServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetPasswordHistoryForId()
     {
@@ -623,7 +841,7 @@ class AccountServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -637,7 +855,7 @@ class AccountServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateFromHistory()
     {
@@ -671,7 +889,7 @@ class AccountServiceTest extends DatabaseTestCase
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateBulk()
     {
@@ -702,7 +920,7 @@ class AccountServiceTest extends DatabaseTestCase
      *
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     private function checkBulkData(AccountRequest $accountRequest, $accountId)
     {

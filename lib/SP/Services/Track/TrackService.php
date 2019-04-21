@@ -24,8 +24,14 @@
 
 namespace SP\Services\Track;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TrackData;
 use SP\Http\Request;
@@ -34,6 +40,7 @@ use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class TrackService
@@ -62,7 +69,7 @@ final class TrackService extends Service
      * @param string $source
      *
      * @return TrackRequest
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getTrackRequest($source)
     {
@@ -77,8 +84,8 @@ final class TrackService extends Service
     /**
      * @param $id int
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      * @throws NoSuchItemException
      */
     public function delete($id)
@@ -91,8 +98,8 @@ final class TrackService extends Service
     /**
      * @param $id int
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      * @throws NoSuchItemException
      */
     public function unlock($id)
@@ -104,8 +111,8 @@ final class TrackService extends Service
 
     /**
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function clear()
     {
@@ -116,8 +123,8 @@ final class TrackService extends Service
      * @param $id int
      *
      * @return TrackData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -133,8 +140,8 @@ final class TrackService extends Service
 
     /**
      * @return TrackData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -147,7 +154,7 @@ final class TrackService extends Service
      * @param TrackRequest $trackRequest
      *
      * @return bool True if delay is performed, false otherwise
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkTracking(TrackRequest $trackRequest)
     {
@@ -169,7 +176,7 @@ final class TrackService extends Service
 
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw $e;
@@ -184,8 +191,8 @@ final class TrackService extends Service
      * @param TrackRequest $trackRequest
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
     {
@@ -197,8 +204,8 @@ final class TrackService extends Service
      *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add(TrackRequest $trackRequest)
     {
@@ -221,9 +228,9 @@ final class TrackService extends Service
     /**
      * @param ItemSearchData $itemSearchData
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -231,8 +238,8 @@ final class TrackService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

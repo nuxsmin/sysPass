@@ -24,7 +24,12 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\Repositories\CustomField\CustomFieldTypeRepository;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -44,9 +49,9 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -62,8 +67,8 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -79,8 +84,8 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -98,7 +103,7 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -118,7 +123,7 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -138,8 +143,8 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -155,8 +160,8 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {

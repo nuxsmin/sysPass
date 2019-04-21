@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */
-class SPException extends \Exception
+class SPException extends Exception
 {
     /**
      * Constantes para tipos de excepción
@@ -59,7 +59,7 @@ class SPException extends \Exception
      * @param int            $code
      * @param Exception|null $previous
      */
-    public function __construct($message, $type = self::ERROR, $hint = null, $code = 0, \Exception $previous = null)
+    public function __construct($message, $type = self::ERROR, $hint = null, $code = 0, Exception $previous = null)
     {
         $this->type = $type;
         $this->hint = $hint;

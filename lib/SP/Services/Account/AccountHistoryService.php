@@ -24,6 +24,9 @@
 
 namespace SP\Services\Account;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
@@ -65,7 +68,7 @@ final class AccountHistoryService extends Service
      *
      * @return AccountHistoryData
      * @throws SPException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getById($id)
     {
@@ -85,7 +88,7 @@ final class AccountHistoryService extends Service
      *
      * @return array Con los registros con id como clave y fecha - usuario como valor
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getHistoryForAccount($id)
     {
@@ -122,7 +125,7 @@ final class AccountHistoryService extends Service
      *
      * @return ItemData[]
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getUsersByAccountId($id)
     {
@@ -134,7 +137,7 @@ final class AccountHistoryService extends Service
      *
      * @return ItemData[]
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getUserGroupsByAccountId($id)
     {
@@ -146,7 +149,7 @@ final class AccountHistoryService extends Service
      *
      * @return QueryResult
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -160,7 +163,7 @@ final class AccountHistoryService extends Service
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function create(AccountHistoryCreateDto $dto)
     {
@@ -170,7 +173,7 @@ final class AccountHistoryService extends Service
     /**
      * @return array
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getAccountsPassData()
     {
@@ -184,7 +187,7 @@ final class AccountHistoryService extends Service
      *
      * @throws QueryException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function delete($id)
     {
@@ -200,7 +203,7 @@ final class AccountHistoryService extends Service
      *
      * @return int
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -214,7 +217,7 @@ final class AccountHistoryService extends Service
      *
      * @return int
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteByAccountIdBatch(array $ids)
     {
@@ -225,7 +228,7 @@ final class AccountHistoryService extends Service
      * @param AccountPasswordRequest $accountRequest
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
     {
@@ -239,7 +242,7 @@ final class AccountHistoryService extends Service
      *
      * @return array
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -247,8 +250,8 @@ final class AccountHistoryService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

@@ -24,6 +24,10 @@
 
 namespace SP\Services\Notification;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Repositories\NoSuchItemException;
@@ -50,8 +54,8 @@ final class NotificationService extends Service
      * @param NotificationData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(NotificationData $itemData)
     {
@@ -64,8 +68,8 @@ final class NotificationService extends Service
      * @param NotificationData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(NotificationData $itemData)
     {
@@ -78,8 +82,8 @@ final class NotificationService extends Service
      * @param array $ids
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -93,8 +97,8 @@ final class NotificationService extends Service
      *
      * @return NotificationService
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -111,8 +115,8 @@ final class NotificationService extends Service
      * @param $id
      *
      * @return NotificationService
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function deleteAdmin($id)
@@ -130,8 +134,8 @@ final class NotificationService extends Service
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
     public function deleteAdminBatch(array $ids)
@@ -149,8 +153,8 @@ final class NotificationService extends Service
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids)
@@ -168,8 +172,8 @@ final class NotificationService extends Service
      * @param int $id
      *
      * @return NotificationData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -187,8 +191,8 @@ final class NotificationService extends Service
      * Returns all the items
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -200,8 +204,8 @@ final class NotificationService extends Service
      *
      * @param $id
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function setCheckedById($id)
@@ -218,8 +222,8 @@ final class NotificationService extends Service
      * @param $id
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate($component, $id)
     {
@@ -230,8 +234,8 @@ final class NotificationService extends Service
      * @param $id
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForUserId($id)
     {
@@ -242,8 +246,8 @@ final class NotificationService extends Service
      * @param $id
      *
      * @return NotificationData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId($id)
     {
@@ -260,8 +264,8 @@ final class NotificationService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -281,8 +285,8 @@ final class NotificationService extends Service
      * @param int            $userId
      *
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function searchForUserId(ItemSearchData $itemSearchData, $userId)
     {
@@ -290,8 +294,8 @@ final class NotificationService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

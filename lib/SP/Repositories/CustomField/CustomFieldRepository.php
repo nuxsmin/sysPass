@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\CustomField;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
@@ -32,6 +33,7 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class CustomFieldRepository
@@ -112,7 +114,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function delete($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -270,13 +272,13 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function getById($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
      * Returns all the items
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -292,7 +294,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
     /**
      * Returns all the items that were encryptes
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -314,7 +316,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -326,7 +328,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -338,7 +340,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -350,7 +352,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function search(ItemSearchData $SearchData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -359,7 +361,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      * @param $moduleId
      * @param $itemId
      *
-     * @return \SP\Storage\Database\QueryResult
+     * @return QueryResult
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -400,7 +402,7 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -412,6 +414,6 @@ final class CustomFieldRepository extends Repository implements RepositoryItemIn
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 }

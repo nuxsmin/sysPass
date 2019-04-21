@@ -24,11 +24,14 @@
 
 namespace SP\Repositories\Account;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountRequest;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountToUserRepository
@@ -47,8 +50,8 @@ final class AccountToUserRepository extends Repository
      * @param bool           $isEdit
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateByType(AccountRequest $accountRequest, bool $isEdit)
     {
@@ -65,8 +68,8 @@ final class AccountToUserRepository extends Repository
      * @param bool $isEdit
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteTypeByAccountId($id, bool $isEdit)
     {
@@ -85,8 +88,8 @@ final class AccountToUserRepository extends Repository
      * @param bool           $isEdit
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function addByType(AccountRequest $accountRequest, bool $isEdit)
     {
@@ -121,8 +124,8 @@ final class AccountToUserRepository extends Repository
      * @param int $id con el Id de la cuenta
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByAccountId($id)
     {
@@ -139,9 +142,9 @@ final class AccountToUserRepository extends Repository
      *
      * @param int $id con el id de la cuenta
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsersByAccountId($id)
     {

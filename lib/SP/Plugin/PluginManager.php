@@ -24,6 +24,7 @@
 
 namespace SP\Plugin;
 
+use Exception;
 use ReflectionClass;
 use SP\Bootstrap;
 use SP\Core\Context\ContextInterface;
@@ -32,6 +33,7 @@ use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginModel;
 use SP\Services\Install\Installer;
@@ -196,7 +198,7 @@ final class PluginManager
             }
 
             return $plugin;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception',
@@ -252,7 +254,7 @@ final class PluginManager
             }
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception',
@@ -271,7 +273,7 @@ final class PluginManager
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function loadPlugins()
     {
@@ -410,7 +412,7 @@ final class PluginManager
                             ->addDetail(__u('Name'), $pluginName))
                     );
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception',
@@ -426,7 +428,7 @@ final class PluginManager
     /**
      * Comprobar disponibilidad de plugins habilitados
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function checkEnabledPlugins()
     {
@@ -446,8 +448,8 @@ final class PluginManager
      * Devolver los plugins habilitados
      *
      * @return array
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getEnabledPlugins()
     {

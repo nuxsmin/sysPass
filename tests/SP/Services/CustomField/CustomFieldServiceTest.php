@@ -24,12 +24,19 @@
 
 namespace SP\Tests\Services\CustomField;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\CustomField\CustomFieldService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
@@ -48,9 +55,9 @@ class CustomFieldServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -66,8 +73,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDefinitionDataBatch()
     {
@@ -79,10 +86,10 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdateMasterPass()
     {
@@ -101,8 +108,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllEncrypted()
     {
@@ -116,8 +123,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDataBatch()
     {
@@ -133,10 +140,10 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdateOrCreateData()
     {
@@ -186,8 +193,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetForModuleAndItemId()
     {
@@ -295,7 +302,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteCustomFieldData()
     {
@@ -313,8 +320,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteCustomFieldDefinitionData()
     {
@@ -326,8 +333,8 @@ class CustomFieldServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -340,10 +347,10 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function testCreate()
     {

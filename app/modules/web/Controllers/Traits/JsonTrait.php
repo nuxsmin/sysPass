@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use Exception;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
@@ -97,12 +98,12 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param int        $status Status code
      *
      * @return bool
      */
-    protected function returnJsonResponseException(\Exception $exception, $status = JsonResponse::JSON_ERROR)
+    protected function returnJsonResponseException(Exception $exception, $status = JsonResponse::JSON_ERROR)
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);

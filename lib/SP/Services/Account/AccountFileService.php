@@ -24,8 +24,12 @@
 
 namespace SP\Services\Account;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\InvalidImageException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -56,8 +60,8 @@ final class AccountFileService extends Service
      *
      * @return int
      * @throws InvalidImageException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -81,8 +85,8 @@ final class AccountFileService extends Service
      * @param $id
      *
      * @return FileExtData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getInfoById($id)
     {
@@ -95,8 +99,8 @@ final class AccountFileService extends Service
      * @param int $id
      *
      * @return FileExtData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -107,8 +111,8 @@ final class AccountFileService extends Service
      * Returns all the items
      *
      * @return FileExtData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -121,8 +125,8 @@ final class AccountFileService extends Service
      * @param array $ids
      *
      * @return FileExtData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -136,8 +140,8 @@ final class AccountFileService extends Service
      *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -155,8 +159,8 @@ final class AccountFileService extends Service
      *
      * @return AccountFileService
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -173,8 +177,8 @@ final class AccountFileService extends Service
      * @param ItemSearchData $searchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $searchData)
     {
@@ -187,8 +191,8 @@ final class AccountFileService extends Service
      * @param int $id
      *
      * @return FileData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByAccountId($id)
     {
@@ -196,8 +200,8 @@ final class AccountFileService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

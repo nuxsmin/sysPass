@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
@@ -50,7 +52,7 @@ abstract class GridBase extends HelperBase implements GridInterface
      */
     protected $icons;
     /**
-     * @var \SP\Core\Acl\Acl
+     * @var Acl
      */
     protected $acl;
 
@@ -77,9 +79,9 @@ abstract class GridBase extends HelperBase implements GridInterface
     /**
      * Devolver el paginador por defecto
      *
-     * @param \SP\Html\DataGrid\Action\DataGridActionSearch $sourceAction
+     * @param DataGridActionSearch $sourceAction
      *
-     * @return \SP\Html\DataGrid\Layout\DataGridPager
+     * @return DataGridPager
      */
     final protected function getPager(DataGridActionSearch $sourceAction)
     {
@@ -97,8 +99,8 @@ abstract class GridBase extends HelperBase implements GridInterface
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     final protected function initialize()
     {
@@ -113,7 +115,7 @@ abstract class GridBase extends HelperBase implements GridInterface
     protected abstract function getGridLayout(): DataGridInterface;
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected abstract function getHeader(): DataGridHeader;
 

@@ -24,9 +24,13 @@
 
 namespace SP\Tests\Repositories;
 
+use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountSearchVData;
@@ -39,6 +43,7 @@ use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -58,8 +63,8 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -98,7 +103,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testEditRestore()
     {
@@ -111,7 +116,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testEditRestoreUnknownUser()
     {
@@ -124,8 +129,8 @@ class AccountRepositoryTest extends DatabaseTestCase
      * Comprobar la modificación de una clave de cuenta
      *
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws CryptoException
+     * @throws ConstraintException
      */
     public function testEditPassword()
     {
@@ -227,8 +232,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación en lotes
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -244,8 +249,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la búsqueda de cuentas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -259,7 +264,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(1, $data);
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(1, $data[0]->id);
         $this->assertEquals('Google', $data[0]->name);
 
@@ -273,7 +278,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $this->assertCount(1, $data);
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('Apple', $data[0]->name);
     }
@@ -281,8 +286,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar las cuentas enlazadas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetLinked()
     {
@@ -295,8 +300,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar en incremento del contador de vistas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws SPException
      */
     public function testIncrementViewCounter()
@@ -315,8 +320,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Obtener todas las cuentas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -336,8 +341,8 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws CryptoException
+     * @throws ConstraintException
      */
     public function testUpdatePassword()
     {
@@ -360,8 +365,8 @@ class AccountRepositoryTest extends DatabaseTestCase
      * Comprobar en incremento del contador de desencriptado
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testIncrementDecryptCounter()
     {
@@ -379,8 +384,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar el número total de cuentas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetTotalNumAccounts()
     {
@@ -388,8 +393,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetDataForLink()
     {
@@ -416,8 +421,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar las cuentas devueltas para un filtro de usuario
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetForUser()
     {
@@ -430,8 +435,8 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar las cuentas devueltas para obtener los datos de las claves
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAccountsPassData()
     {
@@ -442,9 +447,9 @@ class AccountRepositoryTest extends DatabaseTestCase
      * Comprobar la creación de una cuenta
      *
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -492,7 +497,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetPasswordHistoryForId()
     {
@@ -524,8 +529,8 @@ class AccountRepositoryTest extends DatabaseTestCase
      * Comprobar la búsqueda de cuentas mediante filtros
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByFilter()
     {
@@ -606,7 +611,7 @@ class AccountRepositoryTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws SPException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdateBulk()
     {

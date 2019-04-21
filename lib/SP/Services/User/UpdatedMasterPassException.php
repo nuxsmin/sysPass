@@ -24,6 +24,7 @@
 
 namespace SP\Services\User;
 
+use Exception;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -38,9 +39,9 @@ final class UpdatedMasterPassException extends SPException
      *
      * @param string     $type
      * @param int        $code
-     * @param \Exception $previous
+     * @param Exception $previous
      */
-    public function __construct($type, $code = 0, \Exception $previous = null)
+    public function __construct($type, $code = 0, Exception $previous = null)
     {
         parent::__construct(__u('Master password updated'), $type, __u('Please, restart the session for update it'), $code, $previous);
     }

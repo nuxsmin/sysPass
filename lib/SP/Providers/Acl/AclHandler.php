@@ -25,6 +25,7 @@
 namespace SP\Providers\Acl;
 
 use DI\Container;
+use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
@@ -137,7 +138,7 @@ final class AclHandler extends Provider implements EventReceiver
                     AccountAclService::clearAcl($user->id);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -173,7 +174,7 @@ final class AclHandler extends Provider implements EventReceiver
                     AccountAclService::clearAcl($user->id);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }

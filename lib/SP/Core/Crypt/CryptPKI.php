@@ -117,7 +117,7 @@ final class CryptPKI
      * @param string $data los datos a encriptar
      *
      * @return string
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function encryptRSA($data)
     {
@@ -131,7 +131,7 @@ final class CryptPKI
      * Devuelve la clave pública desde el archivo
      *
      * @return string
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function getPublicKey()
     {
@@ -146,7 +146,7 @@ final class CryptPKI
      * @param string $data los datos a desencriptar
      *
      * @return string
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function decryptRSA($data)
     {
@@ -160,7 +160,7 @@ final class CryptPKI
      * Devuelve la clave privada desde el archivo
      *
      * @return string
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function getPrivateKey()
     {

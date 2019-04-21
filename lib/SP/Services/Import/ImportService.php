@@ -25,7 +25,11 @@
 
 namespace SP\Services\Import;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Services\Service;
+use SP\Storage\File\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -59,9 +63,9 @@ final class ImportService extends Service
      * @param FileImport   $fileImport
      *
      * @return int Returns the total number of imported items
-     * @throws \Exception
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws Exception
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function doImport(ImportParams $importParams, FileImport $fileImport)
     {
@@ -78,7 +82,7 @@ final class ImportService extends Service
     /**
      * @return ImportInterface
      * @throws ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     protected function selectImportType()
     {
@@ -100,8 +104,8 @@ final class ImportService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

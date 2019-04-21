@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use Exception;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -66,7 +67,7 @@ trait ConfigTrait
             }
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the configuration'));

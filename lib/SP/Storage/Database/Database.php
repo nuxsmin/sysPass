@@ -24,6 +24,7 @@
 
 namespace SP\Storage\Database;
 
+use Exception;
 use PDO;
 use PDOStatement;
 use SP\Core\Events\Event;
@@ -147,7 +148,7 @@ final class Database implements DatabaseInterface
             processException($e);
 
             throw $e;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw new QueryException(
@@ -197,7 +198,7 @@ final class Database implements DatabaseInterface
      * @param bool      $isCount   Indica si es una consulta de contador de registros
      * @param array     $options
      *
-     * @return \PDOStatement
+     * @return PDOStatement
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -239,7 +240,7 @@ final class Database implements DatabaseInterface
             $this->lastId = $connection->lastInsertId();
 
             return $stmt;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             switch ((int)$e->getCode()) {
@@ -318,7 +319,7 @@ final class Database implements DatabaseInterface
      * @param array     $options
      * @param bool      $buffered Set buffered behavior (useful for big datasets)
      *
-     * @return \PDOStatement
+     * @return PDOStatement
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -329,7 +330,7 @@ final class Database implements DatabaseInterface
         ) {
             $this->dbHandler
                 ->getConnection()
-                ->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+                ->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         }
 
         return $this->prepareQueryData($queryData, $options);

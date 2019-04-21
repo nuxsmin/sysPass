@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\DataModel\PublickLinkOldData;
@@ -91,7 +92,7 @@ final class UpgradePublicLink extends Service
                     );
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

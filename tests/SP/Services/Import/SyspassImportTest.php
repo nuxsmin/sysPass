@@ -24,16 +24,25 @@
 
 namespace SP\Tests\Services\Import;
 
+use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Import\FileImport;
+use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
 use SP\Services\Import\SyspassImport;
 use SP\Services\Import\XmlFileImport;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -50,9 +59,9 @@ class SyspassImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -65,14 +74,14 @@ class SyspassImportTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\Import\ImportException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ImportException
+     * @throws FileException
      */
     public function testDoImport()
     {
@@ -89,12 +98,12 @@ class SyspassImportTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     private function checkImportedData()
     {

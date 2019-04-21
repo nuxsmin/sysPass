@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use Exception;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -31,6 +32,7 @@ use SP\Core\MimeTypes;
 use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\FileLogHandler;
 use SP\Services\Service;
+use SP\Storage\File\FileException;
 use SP\Util\VersionUtil;
 
 /**
@@ -122,7 +124,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             $message->addDetail(__u('Version'), $version);
 
             $this->eventDispatcher->notifyEvent('upgrade.config.old.end', new Event($this, $message));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception',
@@ -204,7 +206,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
      * @param            $version
      * @param ConfigData $configData
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function upgrade($version, ConfigData $configData)
     {
@@ -225,7 +227,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function applyUpgrade($version)
     {
@@ -245,7 +247,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function upgrade_200_17011202($version)
     {
@@ -264,7 +266,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function upgrade_300_18111001($version)
     {
@@ -313,7 +315,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     /**
      * @param $version
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function upgrade_300_18112501($version)
     {

@@ -25,10 +25,13 @@
 namespace SP\Core;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Http\Request;
@@ -49,7 +52,7 @@ use SP\Util\Util;
 abstract class ModuleBase
 {
     /**
-     * @var \SP\Config\ConfigData
+     * @var ConfigData
      */
     protected $configData;
     /**
@@ -116,8 +119,8 @@ abstract class ModuleBase
     /**
      * Initializes event handlers
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initEventHandlers()
     {

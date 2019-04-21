@@ -26,6 +26,7 @@ namespace SP\Tests\Modules\Api\Controllers;
 
 use SP\Tests\Modules\Api\ApiTest;
 use SP\Tests\WebTestCase;
+use stdClass;
 
 /**
  * Class ConfigControllerTest
@@ -47,7 +48,7 @@ class ConfigControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals('/var/www/html/sysPass/app/backup', $result->result->result);
@@ -68,7 +69,7 @@ class ConfigControllerTest extends WebTestCase
 
         $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
 
-        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertInstanceOf(stdClass::class, $result);
         $this->assertEquals(0, $result->result->resultCode);
         $this->assertNull($result->result->count);
         $this->assertEquals(0, $result->result->itemId);

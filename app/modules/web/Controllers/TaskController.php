@@ -29,6 +29,7 @@ use Psr\Container\ContainerInterface;
 use SP\Services\ServiceException;
 use SP\Services\Task\TaskFactory;
 use SP\Services\Task\TaskService;
+use SP\Storage\File\FileException;
 
 /**
  * Class TaskController
@@ -86,7 +87,7 @@ final class TaskController
     /**
      * @param $taskId
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testTaskAction($taskId)
     {

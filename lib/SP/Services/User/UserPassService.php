@@ -25,10 +25,14 @@
 namespace SP\Services\User;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Repositories\NoSuchItemException;
@@ -75,9 +79,9 @@ final class UserPassService extends Service
      *
      * @return UserPassResponse
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws CryptoException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function updateMasterPassFromOldPass($oldUserPass, UserLoginData $userLoginData)
     {
@@ -98,7 +102,7 @@ final class UserPassService extends Service
      *
      * @return UserPassResponse
      * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws ContainerExceptionInterface
      */
     public function loadUserMPass(UserLoginData $userLoginData, $userPass = null)
     {
@@ -174,10 +178,10 @@ final class UserPassService extends Service
      *
      * @return UserPassResponse
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws CryptoException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws SPException
      */
     public function updateMasterPassOnLogin($userMPass, UserLoginData $userLoginData)
     {
@@ -247,8 +251,8 @@ final class UserPassService extends Service
      * @param int    $id
      * @param string $userPass
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function migrateUserPassById($id, $userPass)
@@ -259,8 +263,8 @@ final class UserPassService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

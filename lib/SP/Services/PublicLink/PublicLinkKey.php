@@ -24,6 +24,7 @@
 
 namespace SP\Services\PublicLink;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Util\PasswordUtil;
 
 /**
@@ -48,7 +49,7 @@ final class PublicLinkKey
      * @param string $salt
      * @param string $hash
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function __construct(string $salt, string $hash = null)
     {

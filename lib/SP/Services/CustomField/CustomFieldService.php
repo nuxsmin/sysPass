@@ -25,11 +25,15 @@
 namespace SP\Services\CustomField;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Repositories\CustomField\CustomFieldRepository;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 
@@ -104,7 +108,7 @@ final class CustomFieldService extends Service
      *
      * @return array
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getForModuleAndItemId($moduleId, $itemId)
     {
@@ -119,7 +123,7 @@ final class CustomFieldService extends Service
      * @return bool
      * @throws CryptoException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      * @throws SPException
      */
     public function updateOrCreateData(CustomFieldData $customFieldData)
@@ -171,8 +175,8 @@ final class CustomFieldService extends Service
      * @throws CryptoException
      * @throws QueryException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
      */
     public function create(CustomFieldData $customFieldData)
     {
@@ -214,7 +218,7 @@ final class CustomFieldService extends Service
      *
      * @return int
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldDefinitionData($definitionId)
     {
@@ -229,7 +233,7 @@ final class CustomFieldService extends Service
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldDataBatch(array $ids, $moduleId)
     {
@@ -242,8 +246,8 @@ final class CustomFieldService extends Service
      * @param array $definitionIds
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
     {
@@ -260,7 +264,7 @@ final class CustomFieldService extends Service
      * @throws CryptoException
      * @throws QueryException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function updateMasterPass(CustomFieldData $customFieldData, $masterPass)
     {
@@ -272,7 +276,7 @@ final class CustomFieldService extends Service
     /**
      * @return CustomFieldData[]
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -282,7 +286,7 @@ final class CustomFieldService extends Service
     /**
      * @return CustomFieldData[]
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function getAllEncrypted()
     {
@@ -290,8 +294,8 @@ final class CustomFieldService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

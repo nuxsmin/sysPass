@@ -24,6 +24,8 @@
 
 namespace SP\Storage\Database;
 
+use Exception;
+
 /**
  * Class DBUtil con utilidades de la BD
  *
@@ -101,7 +103,7 @@ final class DatabaseUtil
             $numTables = (int)$this->DBStorage->getConnection()->query($query)->fetchColumn();
 
             return $numTables === count(self::$tables);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 
@@ -117,7 +119,7 @@ final class DatabaseUtil
             $this->DBStorage->getConnection();
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return false;
@@ -146,7 +148,7 @@ final class DatabaseUtil
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             logger($e->getMessage());
@@ -166,7 +168,7 @@ final class DatabaseUtil
     {
         try {
             return $this->DBStorage->getConnection()->quote(trim($str));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 

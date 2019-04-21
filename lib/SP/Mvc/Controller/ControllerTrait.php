@@ -24,6 +24,7 @@
 
 namespace SP\Mvc\Controller;
 
+use Closure;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
@@ -57,9 +58,9 @@ trait ControllerTrait
      *
      * @param Request    $request
      * @param ConfigData $configData
-     * @param \Closure   $onRedirect
+     * @param Closure   $onRedirect
      */
-    protected function sessionLogout(Request $request, ConfigData $configData, \Closure $onRedirect)
+    protected function sessionLogout(Request $request, ConfigData $configData, Closure $onRedirect)
     {
         if ($request->isJson()) {
             $jsonResponse = new JsonResponse(__u('Session not started or timed out'));

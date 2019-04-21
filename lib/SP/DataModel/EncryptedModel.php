@@ -25,6 +25,7 @@
 namespace SP\DataModel;
 
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\NoSuchPropertyException;
 
@@ -46,7 +47,7 @@ trait EncryptedModel
      *
      * @return static|null
      * @throws NoSuchPropertyException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function encrypt(string $key, string $property = 'data')
     {
@@ -71,7 +72,7 @@ trait EncryptedModel
      *
      * @return static|null
      * @throws NoSuchPropertyException
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws CryptoException
      */
     public function decrypt(string $key, string $property = 'data')
     {

@@ -24,6 +24,9 @@
 
 namespace SP\Repositories\ItemPreset;
 
+use RuntimeException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
@@ -47,8 +50,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param ItemPresetData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -84,8 +87,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param ItemPresetData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -123,8 +126,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -142,8 +145,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -166,8 +169,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param int    $userProfileId
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByFilter(string $type, int $userId, int $userGroupId, int $userProfileId)
     {
@@ -199,8 +202,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * Returns all the items
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -219,8 +222,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -244,8 +247,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -268,7 +271,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -278,7 +281,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -288,7 +291,7 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**
@@ -297,8 +300,8 @@ class ItemPresetRepository extends Repository implements RepositoryItemInterface
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {

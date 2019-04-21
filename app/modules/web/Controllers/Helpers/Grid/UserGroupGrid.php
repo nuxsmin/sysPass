@@ -98,7 +98,7 @@ final class UserGroupGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {

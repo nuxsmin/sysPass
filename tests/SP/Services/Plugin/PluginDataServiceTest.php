@@ -24,10 +24,18 @@
 
 namespace SP\Tests\Services\Plugin;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginDataModel;
 use SP\Services\Plugin\PluginDataService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -45,9 +53,9 @@ class PluginDataServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -65,10 +73,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -93,10 +101,10 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdateUnkown()
     {
@@ -110,7 +118,7 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -128,8 +136,8 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -144,8 +152,8 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testDeleteUnkown()
     {
@@ -157,10 +165,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreate()
     {
@@ -183,10 +191,10 @@ class PluginDataServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreateUnknown()
     {
@@ -203,10 +211,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testGetByItemId()
     {
@@ -221,10 +229,10 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testGetByItemIdUnkown()
     {
@@ -236,7 +244,7 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -259,7 +267,7 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByIdUnkown()
     {
@@ -271,7 +279,7 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByItemId()
     {
@@ -283,7 +291,7 @@ class PluginDataServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDeleteByItemIdUnkown()
     {

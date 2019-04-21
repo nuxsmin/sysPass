@@ -24,6 +24,7 @@
 
 namespace SP\Services\Api;
 
+use Exception;
 use SP\Core\Exceptions\SPException;
 use SP\Http\Json;
 
@@ -46,7 +47,7 @@ final class JsonRpcResponse
      * @param int         $id
      *
      * @return string
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public static function getResponse(ApiResponse $apiResponse, int $id)
     {
@@ -58,12 +59,12 @@ final class JsonRpcResponse
     }
 
     /**
-     * @param \Exception $e
-     * @param  int       $id
+     * @param Exception $e
+     * @param int        $id
      *
      * @return string
      */
-    public static function getResponseException(\Exception $e, int $id)
+    public static function getResponseException(Exception $e, int $id)
     {
         $data = ($e instanceof SPException) ? $e->getHint() : null;
 

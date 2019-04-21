@@ -24,9 +24,12 @@
 
 namespace SP\Tests\SP\Core\Crypt;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use phpseclib\Crypt\RSA;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Exceptions\SPException;
+use SP\Storage\File\FileException;
 use SP\Util\PasswordUtil;
 
 /**
@@ -42,8 +45,8 @@ class CryptPKITest extends TestCase
     private $cryptPki;
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public function testDecryptRSA()
     {
@@ -61,7 +64,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testDecryptRSAPassword()
     {
@@ -77,8 +80,8 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public function testDecryptRSAWrongLength()
     {
@@ -92,7 +95,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testGetPublicKey()
     {
@@ -104,7 +107,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testGetPrivateKey()
     {
@@ -116,8 +119,8 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public function testEncryptRSA()
     {
@@ -142,7 +145,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreateKeys()
     {
@@ -153,7 +156,7 @@ class CryptPKITest extends TestCase
     }
 
     /**
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testGetKeySize()
     {
@@ -164,7 +167,7 @@ class CryptPKITest extends TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     protected function setUp()
     {

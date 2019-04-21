@@ -95,7 +95,7 @@ final class AccountHistoryGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Layout\DataGridHeader
+     * @return DataGridHeader
      */
     protected function getHeader(): DataGridHeader
     {
@@ -150,7 +150,7 @@ final class AccountHistoryGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getRestoreAction()
     {
@@ -167,7 +167,7 @@ final class AccountHistoryGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDeleteAction()
     {

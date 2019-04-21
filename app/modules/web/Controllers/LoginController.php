@@ -24,6 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
@@ -46,8 +49,8 @@ final class LoginController extends ControllerBase
     /**
      * Login action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function loginAction()
     {
@@ -84,7 +87,7 @@ final class LoginController extends ControllerBase
             return $this->returnJsonResponseData([
                 'url' => $this->session->getTrasientKey('redirect') ?: $loginResponmse->getRedirect()
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -141,8 +144,8 @@ final class LoginController extends ControllerBase
     /**
      * Index action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function indexAction()
     {

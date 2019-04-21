@@ -24,10 +24,18 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\AppInfoInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\MimeTypes;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
@@ -37,11 +45,14 @@ use SP\Plugin\PluginManager;
 use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountService;
+use SP\Services\Auth\AuthException;
 use SP\Services\Backup\FileBackupService;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Export\XmlExportService;
+use SP\Services\ServiceException;
 use SP\Services\Task\Task;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
@@ -64,9 +75,9 @@ final class ConfigManagerController extends ControllerBase
     protected $tabsHelper;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws SPException
      */
     public function indexAction()
     {
@@ -76,9 +87,9 @@ final class ConfigManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws SPException
      */
     protected function getTabs()
     {
@@ -130,9 +141,9 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws CheckException
      */
     protected function getConfigGeneral()
     {
@@ -164,10 +175,10 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\CheckException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws CheckException
+     * @throws SPException
      */
     protected function getAccountConfig()
     {
@@ -194,7 +205,7 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     protected function getWikiConfig()
     {
@@ -209,9 +220,9 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws CheckException
      */
     protected function getLdapConfig()
     {
@@ -236,8 +247,8 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getMailConfig()
     {
@@ -262,12 +273,12 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     protected function getEncryptionConfig()
     {
@@ -303,7 +314,7 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \SP\Core\Exceptions\CheckException
+     * @throws CheckException
      */
     protected function getBackupConfig()
     {
@@ -344,8 +355,8 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function getImportConfig()
     {
@@ -367,10 +378,10 @@ final class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     protected function getInfo()
     {
@@ -406,9 +417,9 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

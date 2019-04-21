@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -42,7 +44,7 @@ use SP\Mvc\View\Template;
 abstract class HelperBase
 {
     /**
-     * @var \SP\Mvc\View\Template
+     * @var Template
      */
     protected $view;
     /**
@@ -73,14 +75,14 @@ abstract class HelperBase
     /**
      * Constructor
      *
-     * @param \SP\Mvc\View\Template $template
-     * @param Config                $config
-     * @param ContextInterface      $context
-     * @param EventDispatcher       $eventDispatcher
-     * @param Container             $container
+     * @param Template         $template
+     * @param Config           $config
+     * @param ContextInterface $context
+     * @param EventDispatcher  $eventDispatcher
+     * @param Container        $container
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
     {

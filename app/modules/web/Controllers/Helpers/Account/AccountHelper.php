@@ -24,11 +24,18 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
@@ -49,6 +56,7 @@ use SP\Services\Crypt\MasterPassService;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
 use SP\Services\PublicLink\PublicLinkService;
+use SP\Services\ServiceException;
 use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
 use SP\Services\User\UserService;
@@ -110,8 +118,8 @@ final class AccountHelper extends HelperBase
      * @throws SPException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function setViewForAccount(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {
@@ -222,9 +230,9 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ServiceException
      */
     public function checkActionAccess()
     {
@@ -246,10 +254,10 @@ final class AccountHelper extends HelperBase
      *
      * @return AccountAcl
      * @throws AccountPermissionException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function checkAccess(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -266,11 +274,11 @@ final class AccountHelper extends HelperBase
     /**
      * Sets account's view common data
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     protected function setViewCommon()
     {
@@ -342,12 +350,12 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function setViewForBlank($actionId)
     {
@@ -412,9 +420,9 @@ final class AccountHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ServiceException
      */
     public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {
@@ -445,8 +453,8 @@ final class AccountHelper extends HelperBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

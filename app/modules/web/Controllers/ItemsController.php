@@ -24,6 +24,11 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\DataModel\NotificationData;
 use SP\Html\Html;
@@ -35,6 +40,7 @@ use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Notification\NotificationService;
 use SP\Services\Tag\TagService;
+use stdClass;
 
 /**
  * Class ItemsController
@@ -48,17 +54,17 @@ final class ItemsController extends SimpleControllerBase
      *
      * @param int $accountId
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function accountsUserAction($accountId = null)
     {
         $outItems = [];
 
         foreach ($this->dic->get(AccountService::class)->getForUser($accountId) as $account) {
-            $obj = new \stdClass();
+            $obj = new stdClass();
             $obj->id = $account->id;
             $obj->name = $account->clientName . ' - ' . $account->name;
 
@@ -74,11 +80,11 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function clientsAction()
     {
@@ -90,11 +96,11 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function categoriesAction()
     {
@@ -106,11 +112,11 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function notificationsAction()
     {
@@ -143,11 +149,11 @@ final class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function tagsAction()
     {
@@ -179,7 +185,7 @@ final class ItemsController extends SimpleControllerBase
 
         /** @var DataModelInterface $item */
         foreach ($items as $item) {
-            $obj = new \stdClass();
+            $obj = new stdClass();
             $obj->id = $item->getId();
             $obj->name = $item->getName();
 

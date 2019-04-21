@@ -108,7 +108,7 @@ final class Template
      *
      * @return string La ruta al archivo de la plantilla
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws FileNotFoundException
      */
     private function checkTemplate($template, $base = null)
     {

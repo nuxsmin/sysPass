@@ -25,6 +25,8 @@
 namespace SP\Storage\File;
 
 
+use Phar;
+use PharData;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\PhpExtensionChecker;
 
@@ -87,9 +89,9 @@ final class ArchiveHandler
     {
         $this->extensionChecker->checkPharAvailable(true);
 
-        $archive = new \PharData($this->archive->getFile());
+        $archive = new PharData($this->archive->getFile());
         $archive->buildFromDirectory($directory, $regex);
-        $archive->compress(\Phar::GZ);
+        $archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
         $this->archive->delete();
@@ -107,9 +109,9 @@ final class ArchiveHandler
     {
         $this->extensionChecker->checkPharAvailable(true);
 
-        $archive = new \PharData($this->archive->getFile());
+        $archive = new PharData($this->archive->getFile());
         $archive->addFile($file, basename($file));
-        $archive->compress(\Phar::GZ);
+        $archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
         $this->archive->delete();

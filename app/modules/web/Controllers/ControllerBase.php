@@ -27,7 +27,12 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SessionTimeout;
@@ -87,8 +92,8 @@ abstract class ControllerBase
      * @param Container $container
      * @param           $actionName
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws SessionTimeout
      */
     public final function __construct(Container $container, $actionName)
@@ -218,7 +223,7 @@ abstract class ControllerBase
 
         try {
             $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -243,9 +248,9 @@ abstract class ControllerBase
      * @param bool $requireAuthCompleted
      *
      * @throws AuthException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function checkLoggedIn($requireAuthCompleted = true)
     {

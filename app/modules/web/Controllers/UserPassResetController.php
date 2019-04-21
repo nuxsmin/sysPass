@@ -24,8 +24,14 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -58,8 +64,8 @@ final class UserPassResetController extends ControllerBase
     /**
      * Password reset action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function indexAction()
     {
@@ -119,7 +125,7 @@ final class UserPassResetController extends ControllerBase
                 __u('Request sent'),
                 [__u('You will receive an email to complete the request shortly.')]
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->addTracking();
@@ -135,7 +141,7 @@ final class UserPassResetController extends ControllerBase
 
     /**
      * @throws SPException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function checkTracking()
     {
@@ -151,7 +157,7 @@ final class UserPassResetController extends ControllerBase
     {
         try {
             $this->trackService->add($this->trackRequest);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -159,8 +165,8 @@ final class UserPassResetController extends ControllerBase
     /**
      * @param null $hash
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function resetAction($hash = null)
     {
@@ -221,7 +227,7 @@ final class UserPassResetController extends ControllerBase
                 JsonResponse::JSON_SUCCESS,
                 __u('Password updated')
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->addTracking();
@@ -233,9 +239,9 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws InvalidArgumentException
      */
     protected function initialize()
     {

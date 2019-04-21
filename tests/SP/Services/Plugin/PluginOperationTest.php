@@ -24,12 +24,21 @@
 
 namespace SP\Tests\Services\Plugin;
 
+use Closure;
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Plugin\PluginOperation;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Plugin\PluginDataService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -41,14 +50,14 @@ class PluginOperationTest extends DatabaseTestCase
 {
 
     /**
-     * @var \Closure
+     * @var Closure
      */
     private static $pluginOperation;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -66,11 +75,11 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -82,21 +91,21 @@ class PluginOperationTest extends DatabaseTestCase
         $this->assertEquals(1, $pluginOperation->update(1, $data));
         $this->assertEquals($data, $pluginOperation->get(1));
 
-        $data = new \stdClass();
+        $data = new stdClass();
         $data->id = 1;
         $data->name = 'test';
-        $data->test = new \stdClass();
+        $data->test = new stdClass();
 
         $this->assertEquals(1, $pluginOperation->update(1, $data));
         $this->assertEquals($data, $pluginOperation->get(1));
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdateUnknown()
     {
@@ -111,11 +120,11 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdateWrongPlugin()
     {
@@ -128,9 +137,9 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testDelete()
     {
@@ -144,9 +153,9 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testDeleteUnknown()
     {
@@ -165,11 +174,11 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testGetUnknown()
     {
@@ -180,21 +189,21 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreate()
     {
         /** @var PluginOperation $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
-        $data = new \stdClass();
+        $data = new stdClass();
         $data->id = 1;
         $data->name = 'test';
-        $data->test = new \stdClass();
+        $data->test = new stdClass();
 
         $pluginOperation->create(4, $data);
 
@@ -202,21 +211,21 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreateDuplicated()
     {
         /** @var PluginOperation $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
 
-        $data = new \stdClass();
+        $data = new stdClass();
         $data->id = 1;
         $data->name = 'test';
-        $data->test = new \stdClass();
+        $data->test = new stdClass();
 
         $this->expectException(ConstraintException::class);
 
@@ -224,21 +233,21 @@ class PluginOperationTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testCreateWrongPlugin()
     {
         /** @var PluginOperation $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Test');
 
-        $data = new \stdClass();
+        $data = new stdClass();
         $data->id = 1;
         $data->name = 'test';
-        $data->test = new \stdClass();
+        $data->test = new stdClass();
 
         $this->expectException(ConstraintException::class);
 

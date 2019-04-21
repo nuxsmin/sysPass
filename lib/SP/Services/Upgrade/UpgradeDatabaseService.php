@@ -24,6 +24,9 @@
 
 namespace SP\Services\Upgrade;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -84,8 +87,8 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
      * @return bool
      * @throws FileException
      * @throws UpgradeException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function upgrade($version, ConfigData $configData)
     {
@@ -170,7 +173,7 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
                 $this->db->getDbHandler()
                     ->getConnection()
                     ->exec($query);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 processException($e);
 
                 logger('SQL: ' . $query);

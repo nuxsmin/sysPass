@@ -24,7 +24,9 @@
 
 namespace SP\Http;
 
+use Exception;
 use Klein\DataCollection\DataCollection;
+use Klein\DataCollection\HeaderDataCollection;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\Hash;
@@ -44,7 +46,7 @@ final class Request
      */
     const SECURE_DIRS = ['css', 'js'];
     /**
-     * @var \Klein\DataCollection\HeaderDataCollection
+     * @var HeaderDataCollection
      */
     private $headers;
     /**
@@ -247,7 +249,7 @@ final class Request
             }
 
             return $clearData;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $encryptedData;

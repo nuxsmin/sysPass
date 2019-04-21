@@ -26,8 +26,12 @@ namespace SP\Providers\Log;
 
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Language;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
@@ -83,7 +87,7 @@ final class FileLogHandler extends Provider implements EventReceiver
      *                            </p>
      *
      * @return void
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      * @since 5.1.0
      */
     public function update(SplSubject $subject)
@@ -97,13 +101,13 @@ final class FileLogHandler extends Provider implements EventReceiver
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     public function updateEvent($eventType, Event $event)
     {
         $this->language->setAppLocales();
 
-        if (($e = $event->getSource()) instanceof \Exception) {
+        if (($e = $event->getSource()) instanceof Exception) {
             logger(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             logger(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
@@ -115,8 +119,8 @@ final class FileLogHandler extends Provider implements EventReceiver
     /**
      * @param Container $dic
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize(Container $dic)
     {

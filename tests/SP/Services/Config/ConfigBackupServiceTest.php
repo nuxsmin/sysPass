@@ -24,10 +24,15 @@
 
 namespace SP\Tests\Services\Config;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextException;
 use SP\Services\Config\ConfigBackupService;
+use SP\Services\ServiceException;
+use SP\Storage\File\FileException;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
@@ -57,9 +62,9 @@ class ConfigBackupServiceTest extends TestCase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public function testBackup()
     {
@@ -81,11 +86,11 @@ class ConfigBackupServiceTest extends TestCase
      *
      * @param ConfigData $configData
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws ServiceException
+     * @throws FileException
      */
     public function testRestore(ConfigData $configData)
     {

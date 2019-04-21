@@ -24,8 +24,11 @@
 
 namespace SP\Repositories\Account;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Repositories\Repository;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountFavoriteRepository
@@ -39,9 +42,9 @@ final class AccountToFavoriteRepository extends Repository
      *
      * @param $id int El Id de usuario
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserId($id)
     {
@@ -60,8 +63,8 @@ final class AccountToFavoriteRepository extends Repository
      * @param $userId    int El Id del usuario
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($accountId, $userId)
     {
@@ -80,8 +83,8 @@ final class AccountToFavoriteRepository extends Repository
      * @param $userId    int El Id del usuario
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($accountId, $userId)
     {

@@ -24,9 +24,12 @@
 
 namespace SP\Repositories\User;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Repositories\Repository;
 use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserPassRecoverRepository
@@ -42,8 +45,8 @@ final class UserPassRecoverRepository extends Repository
      * @param int $time
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAttemptsByUserId($userId, $time)
     {
@@ -68,8 +71,8 @@ final class UserPassRecoverRepository extends Repository
      * @param string $hash
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function add($userId, $hash)
     {
@@ -120,9 +123,9 @@ final class UserPassRecoverRepository extends Repository
      * @param $hash
      * @param $time
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserIdForHash($hash, $time)
     {

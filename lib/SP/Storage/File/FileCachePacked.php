@@ -24,6 +24,8 @@
 
 namespace SP\Storage\File;
 
+use RuntimeException;
+
 /**
  * Class FileCachePacked
  *
@@ -33,7 +35,7 @@ final class FileCachePacked extends FileCacheBase
 {
     /**
      * @return mixed
-     * @throws \RuntimeException
+     * @throws RuntimeException
      * @throws FileException
      */
     public function load()
@@ -55,7 +57,7 @@ final class FileCachePacked extends FileCacheBase
     }
 
     /**
-     * @param mixed  $data
+     * @param mixed $data
      *
      * @return FileCacheInterface
      * @throws FileException

@@ -24,6 +24,7 @@
 
 namespace SP\Services\Wiki;
 
+use InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
@@ -48,7 +49,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function __construct($url = null, $user = null, $pass = null)
     {
@@ -73,7 +74,7 @@ class DokuWikiApi extends DokuWikiApiBase
         } catch (SPException $e) {
             $this->logException($e);
             throw $e;
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new SPException($e->getMessage(), SPException::WARNING);
         }
     }
@@ -86,7 +87,7 @@ class DokuWikiApi extends DokuWikiApiBase
      * @param string $pass La clave de conexión
      *
      * @return DokuWikiApi
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public static function checkConnection($url = null, $user = null, $pass = null)
     {

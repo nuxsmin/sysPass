@@ -26,6 +26,7 @@ namespace SP\Core\Exceptions;
 
 /**
  * Class CheckException
+ *
  * @package SP\Core\Exceptions
  */
 class CheckException extends SPException

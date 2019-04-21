@@ -24,7 +24,12 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
@@ -32,6 +37,7 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Tag\TagRepository;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -49,9 +55,9 @@ class TagRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -70,7 +76,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar la búsqueda mediante texto
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testSearch()
     {
@@ -83,7 +89,7 @@ class TagRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(1, $data[0]->id);
 
         $itemSearchData = new ItemSearchData();
@@ -100,7 +106,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar los resultados de obtener las etiquetas por Id
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testGetById()
     {
@@ -121,7 +127,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de todas las etiquetas
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testGetAll()
     {
@@ -144,9 +150,9 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de etiquetas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -174,7 +180,7 @@ class TagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de etiquetas
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteByIdBatch()
     {
@@ -188,7 +194,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar la creación de etiquetas
      *
      * @throws DuplicatedItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -213,7 +219,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar la eliminación de etiquetas por Id
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testDelete()
     {
@@ -233,7 +239,7 @@ class TagRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de etiquetas por Id en lote
      *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testGetByIdBatch()
     {
@@ -244,7 +250,7 @@ class TagRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function testCheckInUse()
     {

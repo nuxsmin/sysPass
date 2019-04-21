@@ -24,8 +24,12 @@
 
 namespace SP\Services\Upgrade;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Storage\File\FileException;
 use SP\Util\PasswordUtil;
 use SP\Util\VersionUtil;
 
@@ -61,10 +65,10 @@ final class UpgradeUtil
      *
      * @param Config $config
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Storage\File\FileException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws FileException
      */
     public static function setUpgradeKey(Config $config)
     {
@@ -81,8 +85,9 @@ final class UpgradeUtil
 
     /**
      * @param ConfigData $configData
-     * @param Config $config
-     * @throws \SP\Storage\File\FileException
+     * @param Config     $config
+     *
+     * @throws FileException
      */
     public static function fixAppUpgrade(ConfigData $configData, Config $config)
     {

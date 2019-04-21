@@ -24,8 +24,12 @@
 
 namespace SP\Tests\Repositories;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
@@ -50,9 +54,9 @@ class ClientRepositoryTest extends DatabaseTestCase
     private static $repository;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -175,10 +179,10 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de clientes
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws DuplicatedItemException
      */
     public function testUpdate()
     {
@@ -207,8 +211,8 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de clientes
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -230,7 +234,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      * Comprobar la creación de clientes
      *
      * @throws DuplicatedItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -262,8 +266,8 @@ class ClientRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de clientes por Id
      *
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function testDelete()
     {

@@ -25,6 +25,10 @@
 namespace SP\Providers\Auth;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\Browser\Browser;
@@ -76,11 +80,11 @@ final class AuthProvider extends Provider
      *
      * @param UserLoginData $userLoginData
      *
-     * @uses authLdap
+     * @return false|AuthResult[]
      * @uses authDatabase
      * @uses authBrowser
      *
-     * @return false|AuthResult[]
+     * @uses authLdap
      */
     public function doAuth(UserLoginData $userLoginData)
     {
@@ -159,8 +163,8 @@ final class AuthProvider extends Provider
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function authDatabase()
     {
@@ -183,8 +187,8 @@ final class AuthProvider extends Provider
      * @param Container $dic
      *
      * @throws AuthException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize(Container $dic)
     {

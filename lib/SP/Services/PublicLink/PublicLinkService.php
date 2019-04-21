@@ -24,9 +24,15 @@
 
 namespace SP\Services\PublicLink;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
@@ -101,8 +107,8 @@ final class PublicLinkService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -112,8 +118,8 @@ final class PublicLinkService extends Service
     /**
      * @param $id
      *
-     * @return \SP\DataModel\PublicLinkListData
-     * @throws \SP\Core\Exceptions\SPException
+     * @return PublicLinkListData
+     * @throws SPException
      */
     public function getById($id)
     {
@@ -131,12 +137,12 @@ final class PublicLinkService extends Service
      *
      * @return bool
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function refresh($id)
     {
@@ -162,7 +168,7 @@ final class PublicLinkService extends Service
      * @param string|null $hash
      *
      * @return PublicLinkKey
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function getPublicLinkKey(string $hash = null)
     {
@@ -178,9 +184,9 @@ final class PublicLinkService extends Service
      * @return Vault
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function getSecuredLinkData($itemId, PublicLinkKey $key)
     {
@@ -211,8 +217,8 @@ final class PublicLinkService extends Service
      *
      * @return $this
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -229,8 +235,8 @@ final class PublicLinkService extends Service
      * @param array $ids
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids)
@@ -247,11 +253,11 @@ final class PublicLinkService extends Service
      *
      * @return int
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(PublicLinkData $itemData)
     {
@@ -270,8 +276,8 @@ final class PublicLinkService extends Service
      * Get all items from the service's repository
      *
      * @return PublicLinkListData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -284,8 +290,8 @@ final class PublicLinkService extends Service
      * @param PublicLinkData $publicLinkData
      *
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function addLinkView(PublicLinkData $publicLinkData)
     {
@@ -323,7 +329,7 @@ final class PublicLinkService extends Service
      * @param $hash string
      *
      * @return bool|PublicLinkData
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getByHash($hash)
     {
@@ -342,9 +348,9 @@ final class PublicLinkService extends Service
      * @param int $itemId
      *
      * @return PublicLinkData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function getHashForItem($itemId)
     {
@@ -364,8 +370,8 @@ final class PublicLinkService extends Service
      *
      * @return mixed
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(PublicLinkData $itemData)
     {
@@ -373,8 +379,8 @@ final class PublicLinkService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

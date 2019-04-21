@@ -25,6 +25,9 @@
 namespace SP\Providers\Notification;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
@@ -137,7 +140,7 @@ final class NotificationHandler extends Provider implements EventReceiver
     {
         try {
             $this->notificationService->create($notificationData);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
     }
@@ -164,8 +167,8 @@ final class NotificationHandler extends Provider implements EventReceiver
     /**
      * @param Container $dic
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize(Container $dic)
     {

@@ -25,7 +25,10 @@
 namespace SP\Services\Import;
 
 use DI\Container;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
 
@@ -69,7 +72,7 @@ final class XmlImport implements ImportInterface
      *
      * @return ImportInterface
      * @throws ImportException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function doImport()
     {
@@ -83,8 +86,8 @@ final class XmlImport implements ImportInterface
      *
      * @return KeepassImport|SyspassImport
      * @throws ImportException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function selectImportType($format)
     {

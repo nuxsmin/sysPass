@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Client;
 
+use RuntimeException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -294,7 +295,7 @@ final class ClientRepository extends Repository implements RepositoryItemInterfa
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Not implemented');
+        throw new RuntimeException('Not implemented');
     }
 
     /**

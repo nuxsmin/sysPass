@@ -24,6 +24,8 @@
 
 namespace SP\Services\ItemPreset;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemPresetData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\ItemPreset\ItemPresetRepository;
@@ -48,8 +50,8 @@ final class ItemPresetService extends Service
      * @param ItemPresetRequest $itemPresetRequest
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(ItemPresetRequest $itemPresetRequest)
     {
@@ -60,8 +62,8 @@ final class ItemPresetService extends Service
      * @param ItemPresetRequest $itemPresetRequest
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(ItemPresetRequest $itemPresetRequest)
     {
@@ -75,8 +77,8 @@ final class ItemPresetService extends Service
      *
      * @return ItemPresetService
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -94,8 +96,8 @@ final class ItemPresetService extends Service
      *
      * @return ItemPresetData
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -112,8 +114,8 @@ final class ItemPresetService extends Service
      * Returns all the items
      *
      * @return ItemPresetData[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -126,8 +128,8 @@ final class ItemPresetService extends Service
      * @param ItemSearchData $itemSearchData
      *
      * @return QueryResult
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -138,8 +140,8 @@ final class ItemPresetService extends Service
      * @param string $type
      *
      * @return ItemPresetData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForCurrentUser(string $type)
     {
@@ -155,8 +157,8 @@ final class ItemPresetService extends Service
      * @param int    $userProfileId
      *
      * @return ItemPresetData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUser(string $type, int $userId, int $userGroupId, int $userProfileId)
     {
@@ -179,8 +181,8 @@ final class ItemPresetService extends Service
      *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {

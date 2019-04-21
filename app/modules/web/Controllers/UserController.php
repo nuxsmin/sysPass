@@ -24,9 +24,18 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
 use SP\Http\JsonResponse;
@@ -36,7 +45,9 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Auth\AuthException;
 use SP\Services\Mail\MailService;
+use SP\Services\ServiceException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
@@ -61,11 +72,11 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * Search action
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -86,10 +97,10 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -121,7 +132,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('show.user.create', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -135,8 +146,8 @@ final class UserController extends ControllerBase implements CrudControllerInter
      *
      * @param $userId
      *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws SPException
+     * @throws ContainerExceptionInterface
      */
     protected function setViewData($userId = null)
     {
@@ -208,7 +219,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('show.user.edit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -247,7 +258,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('show.user.editPass', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -299,7 +310,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User deleted'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -340,7 +351,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User added'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -353,12 +364,12 @@ final class UserController extends ControllerBase implements CrudControllerInter
      * @param int      $userId
      * @param UserData $userData
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
      */
     protected function checkChangeUserPass(int $userId, UserData $userData)
     {
@@ -408,7 +419,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('User updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -449,7 +460,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Password updated'));
         } catch (ValidationException $e) {
             return $this->returnJsonResponseException($e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -482,7 +493,7 @@ final class UserController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('show.user', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
@@ -492,9 +503,9 @@ final class UserController extends ControllerBase implements CrudControllerInter
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Services\Auth\AuthException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws AuthException
      */
     protected function initialize()
     {

@@ -24,6 +24,9 @@
 
 namespace SP\Services\Config;
 
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
@@ -57,7 +60,7 @@ final class ConfigService extends Service
     {
         try {
             $result = $this->configRepository->getByParam($param);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
         }
 
@@ -82,8 +85,8 @@ final class ConfigService extends Service
      * @param ConfigData $configData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(ConfigData $configData)
     {
@@ -103,7 +106,7 @@ final class ConfigService extends Service
                     $this->save($param, $value);
                 }
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             throw new ServiceException($e->getMessage(), ServiceException::ERROR, null, $e->getCode(), $e);
@@ -115,8 +118,8 @@ final class ConfigService extends Service
      * @param string $value
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function save($param, $value)
     {
@@ -155,8 +158,8 @@ final class ConfigService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

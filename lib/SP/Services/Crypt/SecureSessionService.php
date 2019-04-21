@@ -25,6 +25,7 @@
 namespace SP\Services\Crypt;
 
 use Defuse\Crypto\Key;
+use Exception;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Crypt\Vault;
 use SP\Http\Request;
@@ -85,7 +86,7 @@ final class SecureSessionService extends Service
             }
         } catch (FileException $e) {
             return $this->saveKey();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 
@@ -128,7 +129,7 @@ final class SecureSessionService extends Service
             logger('Saved session key');
 
             return $securedKey;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 

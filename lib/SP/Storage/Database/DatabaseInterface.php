@@ -24,6 +24,7 @@
 
 namespace SP\Storage\Database;
 
+use PDOStatement;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 
@@ -50,7 +51,7 @@ interface DatabaseInterface
      *
      * @param QueryData $queryData
      *
-     * @return \PDOStatement
+     * @return PDOStatement
      */
     public function doQueryRaw(QueryData $queryData);
 

@@ -24,8 +24,12 @@
 
 namespace SP\Tests\Services\Backup;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Context\ContextException;
 use SP\Services\Backup\FileBackupService;
+use SP\Services\ServiceException;
 use function SP\Tests\setupContext;
 
 /**
@@ -36,10 +40,10 @@ use function SP\Tests\setupContext;
 class FileBackupServiceTest extends TestCase
 {
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws ServiceException
      */
     public function testDoBackup()
     {

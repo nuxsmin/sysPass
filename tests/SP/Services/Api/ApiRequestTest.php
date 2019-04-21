@@ -37,7 +37,7 @@ use function SP\Tests\getResource;
 class ApiRequestTest extends TestCase
 {
     /**
-     * @throws \SP\Services\Api\ApiRequestException
+     * @throws ApiRequestException
      */
     public function testGetRequestJsonData()
     {

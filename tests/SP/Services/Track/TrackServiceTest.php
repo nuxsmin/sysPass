@@ -24,6 +24,13 @@
 
 namespace SP\Tests\Services\Track;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TrackData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Track\TrackRequest;
@@ -46,9 +53,9 @@ class TrackServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -64,8 +71,8 @@ class TrackServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function testDelete()
@@ -81,10 +88,10 @@ class TrackServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testAdd()
     {
@@ -108,8 +115,8 @@ class TrackServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAddNoAddress()
     {
@@ -124,9 +131,9 @@ class TrackServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -144,9 +151,9 @@ class TrackServiceTest extends DatabaseTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -165,8 +172,8 @@ class TrackServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
      */
     public function testCheckTracking()
     {
@@ -180,9 +187,9 @@ class TrackServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws QueryException
      */
     public function testGetTracksForClientFromTime()
     {

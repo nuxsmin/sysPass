@@ -24,6 +24,7 @@
 
 namespace SP\Util;
 
+use Exception;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\FileNotFoundException;
@@ -51,13 +52,13 @@ final class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param \SP\Mvc\View\Template $view
-     * @param \Exception            $e
-     * @param  string               $replace Template replacement
-     * @param bool                  $render
+     * @param Template   $view
+     * @param Exception $e
+     * @param string     $replace Template replacement
+     * @param bool       $render
      */
     public static function showExceptionInView(Template $view,
-                                               \Exception $e,
+                                               Exception $e,
                                                $replace = null,
                                                $render = true)
     {
@@ -79,10 +80,10 @@ final class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param \SP\Mvc\View\Template $view
-     * @param int                   $type int con el tipo de error
-     * @param bool                  $render
-     * @param null                  $replace
+     * @param Template $view
+     * @param int      $type int con el tipo de error
+     * @param bool     $render
+     * @param null     $replace
      */
     public static function showErrorInView(Template $view, $type, $render = true, $replace = null)
     {

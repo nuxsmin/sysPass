@@ -24,6 +24,7 @@
 
 namespace SP\Storage\Database;
 
+use Exception;
 use PDO;
 
 defined('APP_ROOT') || die();
@@ -113,7 +114,7 @@ final class MySQLHandler implements DBStorageInterface
                 $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, version_compare($serverVersion, '5.1.17', '<'));
 
                 $this->dbStatus = self::STATUS_OK;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,
@@ -154,7 +155,7 @@ final class MySQLHandler implements DBStorageInterface
     /**
      * Obtener una conexión PDO sin seleccionar la BD
      *
-     * @return \PDO
+     * @return PDO
      * @throws DatabaseException
      */
     public function getConnectionSimple()
@@ -172,7 +173,7 @@ final class MySQLHandler implements DBStorageInterface
 
                 $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
                 $this->dbStatus = self::STATUS_OK;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
                     DatabaseException::CRITICAL,

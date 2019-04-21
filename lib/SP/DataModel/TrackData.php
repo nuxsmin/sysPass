@@ -24,6 +24,7 @@
 
 namespace SP\DataModel;
 
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Http\Address;
 
 /**
@@ -128,7 +129,7 @@ class TrackData extends DataModelBase
 
     /**
      * @return string|null
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getIpv4()
     {
@@ -142,7 +143,7 @@ class TrackData extends DataModelBase
     /**
      * @param string $ipv4
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setIpv4($ipv4)
     {
@@ -152,7 +153,7 @@ class TrackData extends DataModelBase
     /**
      * @param string $track_ip
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setTrackIp($track_ip)
     {
@@ -175,7 +176,7 @@ class TrackData extends DataModelBase
 
     /**
      * @return string|null
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getIpv6()
     {
@@ -189,7 +190,7 @@ class TrackData extends DataModelBase
     /**
      * @param string $ipv6
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setIpv6($ipv6)
     {

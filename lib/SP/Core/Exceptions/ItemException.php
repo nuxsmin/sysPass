@@ -25,12 +25,14 @@
 namespace SP\Core\Exceptions;
 
 
+use Exception;
+
 /**
  * Class ItemException
  *
  * @package SP\Core\Exceptions
  */
-final class ItemException extends \Exception
+final class ItemException extends Exception
 {
 
 }

@@ -24,7 +24,12 @@
 
 namespace SP\Tests\SP\Services\UserGroup;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\UserGroup\UserToUserGroupService;
@@ -46,10 +51,10 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     * @throws SPException
      */
     public static function setUpBeforeClass()
     {
@@ -65,8 +70,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testCheckUserInGroup()
     {
@@ -78,8 +83,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetGroupsForUser()
     {
@@ -100,8 +105,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAdd()
     {
@@ -117,8 +122,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAddDuplicated()
     {
@@ -131,7 +136,7 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testUpdate()
     {
@@ -148,8 +153,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function testGetById()
     {
@@ -179,7 +184,7 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUsersByGroupId()
     {

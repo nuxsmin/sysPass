@@ -24,7 +24,12 @@
 
 namespace SP\Tests\SP\Services\UserGroup;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\DuplicatedItemException;
@@ -49,10 +54,10 @@ class UserGroupServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     * @throws SPException
      */
     public static function setUpBeforeClass()
     {
@@ -68,8 +73,8 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -87,7 +92,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDelete()
     {
@@ -97,7 +102,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteUsed()
     {
@@ -107,7 +112,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function testDeleteUnknown()
     {
@@ -118,8 +123,8 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatch()
     {
@@ -130,8 +135,8 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatchUsed()
     {
@@ -143,8 +148,8 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatchUnknown()
     {
@@ -155,8 +160,8 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -187,7 +192,7 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUsage()
     {
@@ -195,14 +200,14 @@ class UserGroupServiceTest extends DatabaseTestCase
 
         $this->assertCount(1, self::$service->getUsage(3));
 
-        $this->assertCount(0,  self::$service->getUsage(4));
+        $this->assertCount(0, self::$service->getUsage(4));
     }
 
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -233,7 +238,7 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -271,7 +276,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByName()
     {
@@ -289,7 +294,7 @@ class UserGroupServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -307,7 +312,7 @@ class UserGroupServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetUsageByUsers()
     {

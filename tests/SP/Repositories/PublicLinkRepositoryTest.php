@@ -24,8 +24,13 @@
 
 namespace SP\Tests\Repositories;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
@@ -50,8 +55,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -67,8 +72,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetHashForItem()
     {
@@ -85,8 +90,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -138,8 +143,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -150,11 +155,11 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\DuplicatedItemException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -200,7 +205,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -232,7 +237,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -245,7 +250,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testAddLinkView()
     {
@@ -275,7 +280,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByHash()
     {
@@ -307,9 +312,9 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws SPException
+     * @throws EnvironmentIsBrokenException
      */
     public function testRefresh()
     {
@@ -339,8 +344,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testRefreshNullHash()
     {
@@ -360,7 +365,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -396,7 +401,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -430,9 +435,9 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testUpdate()
     {

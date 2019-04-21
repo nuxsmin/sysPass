@@ -25,6 +25,7 @@
 namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use SP\Http\Request;
 
@@ -141,7 +142,7 @@ final class SecureKeyCookie extends Cookie
     /**
      * @return Vault
      * @throws CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws EnvironmentIsBrokenException
      */
     public function generateSecuredData()
     {

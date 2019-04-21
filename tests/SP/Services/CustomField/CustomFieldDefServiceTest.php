@@ -24,8 +24,12 @@
 
 namespace SP\Tests\Services\CustomField;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
@@ -48,9 +52,9 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -66,7 +70,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDelete()
     {
@@ -86,7 +90,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetAllBasic()
     {
@@ -119,7 +123,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     public function testDeleteByIdBatch()
     {
@@ -142,7 +146,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testCreate()
     {
@@ -167,7 +171,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -191,8 +195,8 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testUpdate()
     {
@@ -223,7 +227,7 @@ class CustomFieldDefServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testSearch()
     {

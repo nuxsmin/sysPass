@@ -24,11 +24,20 @@
 
 namespace SP\Tests\Services\Crypt;
 
+use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\CustomField\CustomFieldService;
+use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
@@ -55,9 +64,9 @@ class MasterPassServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
      */
     public static function setUpBeforeClass()
     {
@@ -75,8 +84,8 @@ class MasterPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Exception
+     * @throws CryptoException
+     * @throws Exception
      */
     public function testChangeMasterPassword()
     {
@@ -97,10 +106,10 @@ class MasterPassServiceTest extends DatabaseTestCase
     /**
      * @param UpdateMasterPassRequest $request
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     private function checckAccounts(UpdateMasterPassRequest $request)
     {
@@ -118,10 +127,10 @@ class MasterPassServiceTest extends DatabaseTestCase
     /**
      * @param UpdateMasterPassRequest $request
      *
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
     private function checkAccountsHistory(UpdateMasterPassRequest $request)
     {
@@ -158,9 +167,9 @@ class MasterPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     private function checkCustomFields()
     {
@@ -172,8 +181,8 @@ class MasterPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function testCheckUserUpdateMPass()
     {
@@ -182,8 +191,8 @@ class MasterPassServiceTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function testCheckMasterPassword()
     {

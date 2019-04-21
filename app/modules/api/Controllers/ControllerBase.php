@@ -25,6 +25,9 @@
 namespace SP\Modules\Api\Controllers;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
 use SP\Core\Context\StatelessContext;
@@ -34,6 +37,7 @@ use SP\Http\Json;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Api\ApiService;
 use SP\Services\Api\JsonRpcResponse;
+use SP\Services\ServiceException;
 
 /**
  * Class ControllerBase
@@ -82,8 +86,8 @@ abstract class ControllerBase
      * @param Container $container
      * @param string    $actionName
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public final function __construct(Container $container, $actionName)
     {
@@ -123,7 +127,7 @@ abstract class ControllerBase
      * @param int $actionId
      *
      * @throws SPException
-     * @throws \SP\Services\ServiceException
+     * @throws ServiceException
      */
     final protected function setupApi($actionId)
     {
@@ -137,7 +141,7 @@ abstract class ControllerBase
      *
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      *
-     * @param \SP\Services\Api\ApiResponse $apiResponse
+     * @param ApiResponse $apiResponse
      */
     final protected function returnResponse(ApiResponse $apiResponse)
     {
@@ -166,9 +170,9 @@ abstract class ControllerBase
     }
 
     /**
-     * @param \Exception $e
+     * @param Exception $e
      */
-    final protected function returnResponseException(\Exception $e)
+    final protected function returnResponseException(Exception $e)
     {
         $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
     }

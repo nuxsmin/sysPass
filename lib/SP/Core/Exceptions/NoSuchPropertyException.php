@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,14 @@
 
 namespace SP\Core\Exceptions;
 
+use Exception;
+
 /**
  * Class NoSuchPropertyException
  *
  * @package SP\Core\Exceptions
  */
-class NoSuchPropertyException extends \Exception
+class NoSuchPropertyException extends Exception
 {
 
 }

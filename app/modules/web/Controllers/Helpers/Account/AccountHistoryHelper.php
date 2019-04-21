@@ -24,20 +24,28 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAcl;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Crypt\MasterPassService;
+use SP\Services\ServiceException;
 use SP\Services\User\UpdatedMasterPassException;
 
 /**
@@ -79,12 +87,12 @@ final class AccountHistoryHelper extends HelperBase
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
     {
@@ -129,10 +137,10 @@ final class AccountHistoryHelper extends HelperBase
     /**
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \SP\Services\ServiceException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws NoSuchItemException
+     * @throws ServiceException
      */
     protected function checkActionAccess()
     {
@@ -153,10 +161,10 @@ final class AccountHistoryHelper extends HelperBase
      * @param AccountHistoryData $accountHistoryData
      *
      * @throws AccountPermissionException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function checkAccess(AccountHistoryData $accountHistoryData)
     {
@@ -179,8 +187,8 @@ final class AccountHistoryHelper extends HelperBase
     /**
      * Initialize class
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

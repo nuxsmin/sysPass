@@ -24,7 +24,13 @@
 
 namespace SP\Tests\SP\Services\UserPassRecover;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Services\ServiceException;
 use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -45,10 +51,10 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
     private static $service;
 
     /**
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
-     * @throws \DI\DependencyException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
+     * @throws ContextException
+     * @throws DependencyException
+     * @throws SPException
      */
     public static function setUpBeforeClass()
     {
@@ -66,9 +72,9 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testToggleUsedByHash()
     {
@@ -81,9 +87,9 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function testToggleUsedByHashExpired ()
+    public function testToggleUsedByHashExpired()
     {
         $this->expectException(ServiceException::class);
 
@@ -92,8 +98,8 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
      */
     public function testAdd()
     {
@@ -107,8 +113,8 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
      */
     public function testRequestForUserId()
     {
@@ -126,8 +132,8 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
     /**
      * @throws ConstraintException
      * @throws ServiceException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
      */
     public function testCheckAttemptsByUserId()
     {
@@ -144,9 +150,9 @@ class UserPassRecoverServiceTest extends DatabaseTestCase
 
     /**
      * @throws ConstraintException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws EnvironmentIsBrokenException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function testGetUserIdForHash()
     {

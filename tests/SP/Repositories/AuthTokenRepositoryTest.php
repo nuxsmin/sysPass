@@ -25,10 +25,16 @@
 namespace SP\Tests\Repositories;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\AuthToken\AuthTokenRepository;
@@ -37,6 +43,7 @@ use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use SP\Util\Util;
+use stdClass;
 use function SP\Tests\setupContext;
 
 /**
@@ -56,8 +63,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -73,8 +80,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetById()
     {
@@ -91,7 +98,7 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
         $result = self::$repository->getById(2);
         $this->assertEquals(1, $result->getNumRows());
-        
+
         $data = $result->getData();
 
         $this->assertInstanceOf(AuthTokenData::class, $data);
@@ -102,8 +109,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetTokenByUserId()
     {
@@ -114,8 +121,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetTokenByToken()
     {
@@ -140,8 +147,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testRefreshVaultByUserId()
     {
@@ -168,9 +175,9 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testRefreshTokenByUserId()
     {
@@ -186,10 +193,10 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Repositories\DuplicatedItemException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      * @throws CryptoException
      */
     public function testUpdate()
@@ -229,8 +236,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -244,11 +251,11 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $result->getNumRows());
         $this->assertCount(2, $data);
 
-        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertInstanceOf(stdClass::class, $data[0]);
         $this->assertEquals(ActionsInterface::ACCOUNT_SEARCH, $data[0]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[0]->token);
 
-        $this->assertInstanceOf(\stdClass::class, $data[1]);
+        $this->assertInstanceOf(stdClass::class, $data[1]);
         $this->assertEquals(ActionsInterface::ACCOUNT_VIEW_PASS, $data[1]->actionId);
         $this->assertEquals(self::AUTH_TOKEN, $data[1]->token);
 
@@ -262,8 +269,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByIdBatch()
     {
@@ -276,8 +283,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetUserIdForToken()
     {
@@ -287,8 +294,8 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDelete()
     {
@@ -299,10 +306,10 @@ class AuthTokenRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCreate()
     {

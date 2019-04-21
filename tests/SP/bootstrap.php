@@ -24,7 +24,10 @@
 
 namespace SP\Tests;
 
+use DI\Container;
 use DI\ContainerBuilder;
+use Exception;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
@@ -97,9 +100,9 @@ function getRealIpAddress()
 /**
  * Configura el contexto de la aplicación para los tests
  *
- * @throws \SP\Core\Context\ContextException
- * @return \DI\Container
- * @throws \Exception
+ * @return Container
+ * @throws ContextException
+ * @throws Exception
  */
 function setupContext()
 {

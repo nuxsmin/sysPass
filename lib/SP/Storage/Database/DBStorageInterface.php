@@ -24,6 +24,8 @@
 
 namespace SP\Storage\Database;
 
+use PDO;
+
 /**
  * Interface DBStorageInterface
  *
@@ -34,14 +36,14 @@ interface DBStorageInterface
     /**
      * Obtener una conexión PDO
      *
-     * @return \PDO
+     * @return PDO
      */
     public function getConnection();
 
     /**
      * Obtener una conexión PDO sin seleccionar la BD
      *
-     * @return \PDO
+     * @return PDO
      */
     public function getConnectionSimple();
 

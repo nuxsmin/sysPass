@@ -28,6 +28,7 @@ use DOMDocument;
 use DOMElement;
 use DOMNode;
 use DOMNodeList;
+use DOMXPath;
 use ReflectionObject;
 use RuntimeException;
 
@@ -303,7 +304,7 @@ final class XmlHandler implements XmlFileStorageInterface
         $dom = new DOMDocument('1.0', 'utf-8');
         $dom->load($this->fileHandler->getFile());
 
-        $query = (new \DOMXPath($dom))->query($path);
+        $query = (new DOMXPath($dom))->query($path);
 
         if ($query->length === 0) {
             throw new RuntimeException(__u('XML node does not exist'));

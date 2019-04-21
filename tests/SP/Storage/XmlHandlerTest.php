@@ -25,8 +25,11 @@
 namespace SP\Tests\Storage;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use SP\Storage\File\FileException;
 use SP\Storage\File\FileHandler;
+use SP\Storage\File\XmlHandler;
+use stdClass;
 
 /**
  * Class XmlHandlerTest
@@ -38,7 +41,7 @@ use SP\Storage\File\FileHandler;
 class XmlHandlerTest extends TestCase
 {
     /**
-     * @var \SP\Storage\File\XmlHandler
+     * @var XmlHandler
      */
     protected static $xmlHandler;
     /**
@@ -53,9 +56,9 @@ class XmlHandlerTest extends TestCase
     public static function setUpBeforeClass()
     {
         $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml';
-        self::$xmlHandler = new \SP\Storage\File\XmlHandler(new FileHandler($file));
+        self::$xmlHandler = new XmlHandler(new FileHandler($file));
 
-        self::$itemsData = new \stdClass();
+        self::$itemsData = new stdClass();
         self::$itemsData->configString = 'Hello world.';
         self::$itemsData->configNumber = 1;
         self::$itemsData->configArray = [1, 2, 3, 4];
@@ -75,11 +78,11 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar la carga de un archivo XML
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testLoadMissingNode()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         self::$xmlHandler->load('root')->getItems();
     }
@@ -87,7 +90,7 @@ class XmlHandlerTest extends TestCase
     /**
      * Test para comprobar la carga de un archivo XML
      *
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testLoad()
     {
@@ -110,7 +113,7 @@ class XmlHandlerTest extends TestCase
      */
     public function testSaveNoItems()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         self::$xmlHandler->save(null, 'config');
     }

@@ -24,8 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGrid;
@@ -85,10 +90,10 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Obtener los datos para la caja de búsqueda
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getSearchBox()
     {
@@ -111,11 +116,11 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Obtener los resultados de una búsqueda
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getAccountSearch()
     {
@@ -169,8 +174,8 @@ final class AccountSearchHelper extends HelperBase
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function getGrid()
     {
@@ -227,7 +232,7 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Devolver la cabecera con los campos de ordenación
      *
-     * @return \SP\Html\DataGrid\Layout\DataGridHeaderSort
+     * @return DataGridHeaderSort
      */
     private function getHeaderSort()
     {

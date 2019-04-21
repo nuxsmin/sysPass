@@ -25,6 +25,9 @@
 namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Exception;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -84,7 +87,7 @@ final class AccountCryptService extends Service
             });
 
             $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.end', new Event($this, $eventMessage));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
@@ -230,7 +233,7 @@ final class AccountCryptService extends Service
             });
 
             $this->eventDispatcher->notifyEvent('update.masterPassword.accountsHistory.end', new Event($this, $eventMessage));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             throw new ServiceException(
@@ -243,8 +246,8 @@ final class AccountCryptService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function initialize()
     {

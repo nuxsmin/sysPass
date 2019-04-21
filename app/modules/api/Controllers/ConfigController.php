@@ -24,9 +24,11 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Backup\FileBackupService;
@@ -59,7 +61,7 @@ final class ConfigController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Backup process finished')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -92,7 +94,7 @@ final class ConfigController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($path, null, __('Export process finished')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -100,7 +102,7 @@ final class ConfigController extends ControllerBase
     }
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws InvalidClassException
      */
     protected function initialize()
     {

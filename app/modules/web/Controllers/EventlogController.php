@@ -24,13 +24,20 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Services\Auth\AuthException;
 use SP\Services\EventLog\EventlogService;
 
 /**
@@ -50,11 +57,11 @@ final class EventlogController extends ControllerBase
     /**
      * indexAction
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function indexAction()
     {
@@ -75,10 +82,10 @@ final class EventlogController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function getSearchGrid()
     {
@@ -93,11 +100,11 @@ final class EventlogController extends ControllerBase
      * searchAction
      *
      * @return bool
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function searchAction()
     {
@@ -128,7 +135,7 @@ final class EventlogController extends ControllerBase
             );
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Event log cleared'));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             return $this->returnJsonResponseException($e);
@@ -136,9 +143,9 @@ final class EventlogController extends ControllerBase
     }
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Services\Auth\AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws AuthException
      */
     protected function initialize()
     {

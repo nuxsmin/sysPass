@@ -24,9 +24,13 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
@@ -65,7 +69,7 @@ final class CategoryController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -94,7 +98,7 @@ final class CategoryController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category added')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -124,7 +128,7 @@ final class CategoryController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -153,7 +157,7 @@ final class CategoryController extends ControllerBase
             );
 
             $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category deleted')));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -175,7 +179,7 @@ final class CategoryController extends ControllerBase
             $this->eventDispatcher->notifyEvent('search.category', new Event($this));
 
             $this->returnResponse(ApiResponse::makeSuccess($this->categoryService->search($itemSearchData)->getDataAsArray()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
 
             $this->returnResponseException($e);
@@ -185,9 +189,9 @@ final class CategoryController extends ControllerBase
     /**
      * initialize
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws InvalidClassException
      */
     protected function initialize()
     {

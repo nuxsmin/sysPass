@@ -25,11 +25,15 @@
 namespace SP\Tests\Services\Export;
 
 use Defuse\Crypto\Exception\CryptoException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
 use SP\Services\ServiceException;
 use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;
@@ -51,9 +55,9 @@ class XmlExportServiceTest extends DatabaseTestCase
     private static $xmlVerifyService;
 
     /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -71,7 +75,7 @@ class XmlExportServiceTest extends DatabaseTestCase
 
     /**
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testDoExportWithoutPassword()
     {
@@ -87,8 +91,8 @@ class XmlExportServiceTest extends DatabaseTestCase
      *
      * @param $file
      *
-     * @throws \SP\Services\ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws ServiceException
+     * @throws FileException
      */
     private function verifyExportWithoutPassword($file)
     {
@@ -120,7 +124,7 @@ class XmlExportServiceTest extends DatabaseTestCase
     /**
      * @throws CryptoException
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     public function testDoExportWithPassword()
     {
@@ -139,7 +143,7 @@ class XmlExportServiceTest extends DatabaseTestCase
      *
      * @throws CryptoException
      * @throws ServiceException
-     * @throws \SP\Storage\File\FileException
+     * @throws FileException
      */
     private function verifyExportWithPassword($file, $password)
     {

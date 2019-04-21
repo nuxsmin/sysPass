@@ -25,7 +25,10 @@
 namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
+use DI\NotFoundException;
+use SP\Core\Context\ContextException;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Services\Account\AccountRequest;
@@ -49,8 +52,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
 
     /**
      * @throws DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \SP\Core\Context\ContextException
+     * @throws NotFoundException
+     * @throws ContextException
      */
     public static function setUpBeforeClass()
     {
@@ -69,7 +72,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      * Comprobar la obtención de etiquetas por Id de cuenta
      *
      * @throws ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws QueryException
      */
     public function testGetTagsByAccountId()
     {
@@ -80,8 +83,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la creación de etiquetas asociadas a las cuentas
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testAdd()
     {
@@ -114,8 +117,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la eliminación de etiquetas por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testDeleteByAccountId()
     {
@@ -129,8 +132,8 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     /**
      * Comprobar la actualización de etiquetas por Id de cuenta
      *
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testUpdate()
     {

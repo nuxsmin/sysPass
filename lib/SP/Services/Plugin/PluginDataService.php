@@ -24,10 +24,16 @@
 
 namespace SP\Services\Plugin;
 
+use Defuse\Crypto\Exception\CryptoException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Plugin\PluginDataModel;
 use SP\Repositories\Plugin\PluginDataRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class PluginDataService
@@ -46,12 +52,12 @@ final class PluginDataService extends Service
      *
      * @param PluginDataModel $itemData
      *
-     * @return \SP\Storage\Database\QueryResult
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @return QueryResult
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function create(PluginDataModel $itemData)
     {
@@ -64,11 +70,11 @@ final class PluginDataService extends Service
      * @param PluginDataModel $itemData
      *
      * @return int
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function update(PluginDataModel $itemData)
     {
@@ -83,11 +89,11 @@ final class PluginDataService extends Service
      *
      * @return PluginDataModel
      * @throws NoSuchItemException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Services\ServiceException
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws ServiceException
      */
     public function getByItemId(string $name, int $id)
     {
@@ -109,8 +115,8 @@ final class PluginDataService extends Service
      * @param int $id
      *
      * @return PluginDataModel[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws NoSuchItemException
      */
     public function getById($id)
@@ -135,8 +141,8 @@ final class PluginDataService extends Service
      * Returns all the items
      *
      * @return PluginDataModel[]
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -156,8 +162,8 @@ final class PluginDataService extends Service
      * @param $id
      *
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -174,8 +180,8 @@ final class PluginDataService extends Service
      *
      * @return void
      * @throws NoSuchItemException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByItemId(string $name, int $itemId)
     {

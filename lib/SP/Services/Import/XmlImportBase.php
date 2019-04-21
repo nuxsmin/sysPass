@@ -25,6 +25,10 @@
 namespace SP\Services\Import;
 
 use DI\Container;
+use DOMDocument;
+use DOMElement;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Config\ConfigData;
 use SP\Core\Events\EventDispatcher;
 use SP\Services\Account\AccountService;
@@ -47,7 +51,7 @@ abstract class XmlImportBase
      */
     protected $xmlFileImport;
     /**
-     * @var \DOMDocument
+     * @var DOMDocument
      */
     protected $xmlDOM;
     /**
@@ -70,8 +74,8 @@ abstract class XmlImportBase
      * @param XmlFileImport $xmlFileImport
      * @param ImportParams  $importParams
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct(Container $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
     {
@@ -107,9 +111,9 @@ abstract class XmlImportBase
                 throw new ImportException(__u('Invalid Method'), ImportException::WARNING);
             }
 
-            /** @var \DOMElement $nodes */
+            /** @var DOMElement $nodes */
             foreach ($nodeList as $nodes) {
-                /** @var \DOMElement $Account */
+                /** @var DOMElement $Account */
                 foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
                     $callback($node);
                 }

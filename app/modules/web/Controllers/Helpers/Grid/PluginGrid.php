@@ -129,7 +129,7 @@ final class PluginGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridActionSearch
+     * @return DataGridActionSearch
      */
     private function getSearchAction()
     {
@@ -183,7 +183,7 @@ final class PluginGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDisableAction()
     {
@@ -221,7 +221,7 @@ final class PluginGrid extends GridBase
     }
 
     /**
-     * @return \SP\Html\DataGrid\Action\DataGridAction
+     * @return DataGridAction
      */
     private function getDeleteAction()
     {
