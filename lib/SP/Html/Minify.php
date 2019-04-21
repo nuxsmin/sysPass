@@ -125,7 +125,7 @@ final class Minify
                         $data .= $this->jsCompress(file_get_contents($filePath));
                     }
                 } else {
-                    $data .= '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
+                    $data .= PHP_EOL . '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
                 }
             }
         }

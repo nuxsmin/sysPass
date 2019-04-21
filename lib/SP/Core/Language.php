@@ -73,7 +73,7 @@ final class Language
         'de_DE' => 'Deutsch',
         'hu_HU' => 'Magyar',
         'fr_FR' => 'Français',
-        'po_PO' => 'Polski',
+        'pl_PL' => 'Polski',
         'ru_RU' => 'русский',
         'nl_NL' => 'Nederlands',
         'pt_BR' => 'Português',

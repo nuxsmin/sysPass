@@ -21,12 +21,23 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Fuentes para Iconos de MDL */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(public/vendor/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: url(public/vendor/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(public/vendor/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(public/vendor/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
 /* Iconos de MDL */
 .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
+    font-size: 24px; /* Preferred icon size */
     display: inline-block;
     width: 1em;
     height: 1em;
@@ -34,6 +45,8 @@
     text-transform: none;
     letter-spacing: normal;
     word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
 
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
@@ -47,14 +60,38 @@
     font-feature-settings: 'liga';
 }
 
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
-.material-icons.md-60 { font-size: 60px; }
+.material-icons.md-18 {
+    font-size: 18px;
+}
 
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+.material-icons.md-24 {
+    font-size: 24px;
+}
 
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+.material-icons.md-36 {
+    font-size: 36px;
+}
+
+.material-icons.md-48 {
+    font-size: 48px;
+}
+
+.material-icons.md-60 {
+    font-size: 60px;
+}
+
+.material-icons.md-dark {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.material-icons.md-dark.md-inactive {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.material-icons.md-light {
+    color: rgba(255, 255, 255, 1);
+}
+
+.material-icons.md-light.md-inactive {
+    color: rgba(255, 255, 255, 0.3);
+}
