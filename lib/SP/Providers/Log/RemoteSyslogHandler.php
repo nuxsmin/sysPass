@@ -27,16 +27,10 @@ namespace SP\Providers\Log;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
-use Exception;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Language;
-use SP\Http\Request;
-use SP\Providers\EventsTrait;
-use SP\Providers\Provider;
 use SplSubject;
 
 /**
@@ -44,28 +38,8 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-final class RemoteSyslogHandler extends Provider implements EventReceiver
+final class RemoteSyslogHandler extends LoggerBase
 {
-    use EventsTrait;
-
-    const MESSAGE_FORMAT = '%s;%s;%s';
-    /**
-     * @var Request
-     */
-    private $request;
-    /**
-     * @var string
-     */
-    private $events;
-    /**
-     * @var Logger
-     */
-    private $logger;
-    /**
-     * @var Language
-     */
-    private $language;
-
     /**
      * Devuelve los eventos que implementa el observador
      *
@@ -105,36 +79,6 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
     }
 
     /**
-     * Evento de actualización
-     *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
-     *
-     * @throws InvalidClassException
-     */
-    public function updateEvent($eventType, Event $event)
-    {
-        $this->language->setAppLocales();
-
-        if (($e = $event->getSource()) instanceof Exception) {
-            /** @var Exception $e */
-            $this->logger->error(
-                sprintf(self::MESSAGE_FORMAT,
-                    $eventType,
-                    __($e->getMessage()),
-                    $this->request->getClientAddress(true)));
-        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $this->logger->debug(
-                sprintf(self::MESSAGE_FORMAT,
-                    $eventType,
-                    $eventMessage->composeText(' '),
-                    $this->request->getClientAddress(true)));
-        }
-
-        $this->language->unsetAppLocales();
-    }
-
-    /**
      * @param Container $dic
      *
      * @throws DependencyException
@@ -142,29 +86,21 @@ final class RemoteSyslogHandler extends Provider implements EventReceiver
      */
     protected function initialize(Container $dic)
     {
-        $this->language = $dic->get(Language::class);
-        $this->request = $dic->get(Request::class);
+        parent::initialize($dic);
 
         $configData = $this->config->getConfigData();
 
-        $this->logger = $dic->get(Logger::class)
-            ->pushHandler(
-                new SyslogUdpHandler(
-                    $configData->getSyslogServer(),
-                    $configData->getSyslogPort(),
-                    LOG_USER,
-                    Logger::DEBUG,
-                    true,
-                    'syspass'
-                )
-            );
-
-        $configEvents = $configData->getLogEvents();
-
-        if (empty($configEvents)) {
-            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
-        } else {
-            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
-        }
+        $this->logger->pushHandler(
+            new SyslogUdpHandler(
+                $configData->getSyslogServer(),
+                $configData->getSyslogPort(),
+                LOG_USER,
+                Logger::DEBUG,
+                true,
+                'syspass'
+            )
+        );
     }
+
+
 }

@@ -30,9 +30,12 @@ use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContext;
+use SP\Core\Context\StatelessContext;
 use SP\Core\MimeTypes;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
+use SP\Http\Client;
 use SP\Http\Request;
 use SP\Services\Account\AccountAclService;
 use SP\Storage\Database\DatabaseConnectionData;
@@ -41,17 +44,20 @@ use SP\Storage\Database\MySQLHandler;
 use SP\Storage\File\FileCache;
 use SP\Storage\File\FileHandler;
 use SP\Storage\File\XmlHandler;
+use function DI\autowire;
+use function DI\create;
+use function DI\factory;
 use function DI\get;
 
 return [
-    Request::class => \DI\create(Request::class)
+    Request::class => create(Request::class)
         ->constructor(\Klein\Request::createFromGlobals()),
     ContextInterface::class => function (ContainerInterface $c) {
         switch (APP_MODULE) {
             case 'web':
-                return $c->get(\SP\Core\Context\SessionContext::class);
+                return $c->get(SessionContext::class);
             default:
-                return $c->get(\SP\Core\Context\StatelessContext::class);
+                return $c->get(StatelessContext::class);
         }
     },
     Config::class => function (ContainerInterface $c) {
@@ -63,8 +69,8 @@ return [
     ConfigData::class => function (Config $config) {
         return $config->getConfigData();
     },
-    DBStorageInterface::class => \DI\create(MySQLHandler::class)
-        ->constructor(\DI\factory([DatabaseConnectionData::class, 'getFromConfig'])),
+    DBStorageInterface::class => create(MySQLHandler::class)
+        ->constructor(factory([DatabaseConnectionData::class, 'getFromConfig'])),
     Actions::class => function (ContainerInterface $c) {
         return new Actions(
             new FileCache(Actions::ACTIONS_CACHE_FILE),
@@ -77,16 +83,16 @@ return [
             new XmlHandler(new FileHandler(MIMETYPES_FILE))
         );
     },
-    Acl::class => \DI\autowire(Acl::class)
+    Acl::class => autowire(Acl::class)
         ->constructorParameter('action', get(Actions::class)),
-    ThemeInterface::class => \DI\autowire(Theme::class)
+    ThemeInterface::class => autowire(Theme::class)
         ->constructorParameter('module', APP_MODULE)
         ->constructorParameter('fileCache', new FileCache(Theme::ICONS_CACHE_FILE)),
-    PHPMailer::class => \DI\create(PHPMailer::class)
+    PHPMailer::class => create(PHPMailer::class)
         ->constructor(true),
-    Logger::class => \DI\create(Logger::class)
+    Logger::class => create(Logger::class)
         ->constructor('syspass'),
-    AccountAclService::class => \DI\autowire(AccountAclService::class),
-    \GuzzleHttp\Client::class => \DI\create(GuzzleHttp\Client::class)
-        ->constructor(\DI\factory([\SP\Http\Client::class, 'getOptions']))
+    AccountAclService::class => autowire(AccountAclService::class),
+    \GuzzleHttp\Client::class => create(GuzzleHttp\Client::class)
+        ->constructor(factory([Client::class, 'getOptions']))
 ];

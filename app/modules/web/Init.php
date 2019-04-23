@@ -25,6 +25,10 @@
 namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Bootstrap;
 use SP\Core\Context\ContextInterface;
@@ -32,12 +36,18 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\UUIDCookie;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\ThemeInterface;
 use SP\DataModel\ItemPreset\SessionTimeout;
 use SP\Http\Address;
 use SP\Plugin\PluginManager;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Crypt\SecureSessionService;
 use SP\Services\ItemPreset\ItemPresetInterface;
 use SP\Services\ItemPreset\ItemPresetService;
@@ -46,6 +56,7 @@ use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database\DatabaseUtil;
+use SP\Storage\File\FileException;
 use SP\Util\HttpUtil;
 
 /**
@@ -125,14 +136,14 @@ final class Init extends ModuleBase
      *
      * @param string $controller
      *
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Repositories\NoSuchItemException
-     * @throws \Exception
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws Exception
      */
     public function initialize($controller)
     {
@@ -248,7 +259,7 @@ final class Init extends ModuleBase
      *
      * @param bool $encrypt Encriptar la sesión de PHP
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private function initSession($encrypt = false)
     {
@@ -261,7 +272,7 @@ final class Init extends ModuleBase
 
         try {
             $this->context->initialize();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
             throw $e;
@@ -280,7 +291,8 @@ final class Init extends ModuleBase
 
     /**
      * Comprobar si es necesario actualizar componentes
-     * @throws \SP\Storage\File\FileException
+     *
+     * @throws FileException
      */
     private function checkUpgrade()
     {
@@ -352,7 +364,7 @@ final class Init extends ModuleBase
 
                 return $this->context->setSessionTimeout($userTimeout);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             processException($e);
         }
 
@@ -363,10 +375,10 @@ final class Init extends ModuleBase
      * @param int $default
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws InvalidArgumentException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     private function getSessionTimeoutForUser(int $default = null)
     {

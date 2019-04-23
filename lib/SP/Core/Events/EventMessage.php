@@ -119,14 +119,6 @@ final class EventMessage implements MessageInterface
     {
         $this->description[] = $this->formatString($description);
 
-        return $this;
-    }
-
-    /**
-     * Añadir una línea en blanco a la descripción
-     */
-    public function addDescriptionLine()
-    {
         $this->descriptionCounter++;
 
         return $this;
@@ -141,6 +133,10 @@ final class EventMessage implements MessageInterface
      */
     public function composeText($delimiter = PHP_EOL)
     {
+        if ($this->descriptionCounter === 0 && $this->detailsCounter === 0) {
+            return '';
+        }
+
         $formatter = new TextFormatter($delimiter);
 
         return implode($delimiter, [
@@ -159,7 +155,7 @@ final class EventMessage implements MessageInterface
      */
     public function getDescription(FormatterInterface $formatter, $translate = false)
     {
-        if (count($this->description) === 0) {
+        if ($this->descriptionCounter === 0) {
             return '';
         }
 
@@ -176,7 +172,7 @@ final class EventMessage implements MessageInterface
      */
     public function getDetails(FormatterInterface $formatter, bool $translate = false)
     {
-        if (count($this->details) === 0) {
+        if ($this->detailsCounter === 0) {
             return '';
         }
 

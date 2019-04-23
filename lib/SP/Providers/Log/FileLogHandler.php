@@ -28,13 +28,10 @@ namespace SP\Providers\Log;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
-use Exception;
+use Monolog\Handler\StreamHandler;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventReceiver;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Language;
 use SP\Providers\EventsTrait;
-use SP\Providers\Provider;
 use SplSubject;
 
 /**
@@ -42,20 +39,9 @@ use SplSubject;
  *
  * @package SP\Providers\Log
  */
-final class FileLogHandler extends Provider implements EventReceiver
+final class FileLogHandler extends LoggerBase
 {
     use EventsTrait;
-
-    const MESSAGE_FORMAT = '%s;%s';
-
-    /**
-     * @var string
-     */
-    private $events;
-    /**
-     * @var Language
-     */
-    private $language;
 
     /**
      * Devuelve los eventos que implementa el observador
@@ -96,27 +82,6 @@ final class FileLogHandler extends Provider implements EventReceiver
     }
 
     /**
-     * Evento de actualización
-     *
-     * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
-     *
-     * @throws InvalidClassException
-     */
-    public function updateEvent($eventType, Event $event)
-    {
-        $this->language->setAppLocales();
-
-        if (($e = $event->getSource()) instanceof Exception) {
-            logger(sprintf(self::MESSAGE_FORMAT, $eventType, __($e->getMessage())));
-        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            logger(sprintf(self::MESSAGE_FORMAT, $eventType, $eventMessage->composeText(';')));
-        }
-
-        $this->language->unsetAppLocales();
-    }
-
-    /**
      * @param Container $dic
      *
      * @throws DependencyException
@@ -124,7 +89,8 @@ final class FileLogHandler extends Provider implements EventReceiver
      */
     protected function initialize(Container $dic)
     {
-        $this->language = $dic->get(Language::class);
-        $this->events = $this->parseEventsToRegex(array_merge(LogInterface::EVENTS, LogInterface::EVENTS_FIXED));
+        parent::initialize($dic);
+
+        $this->logger->pushHandler(new StreamHandler(LOG_FILE));
     }
 }

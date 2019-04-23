@@ -126,7 +126,7 @@ abstract class ModuleBase
     {
         $eventDispatcher = $this->container->get(EventDispatcher::class);
 
-        if (DEBUG) {
+        if (DEBUG || $this->configData->isDebug()) {
             $eventDispatcher->attach($this->container->get(FileLogHandler::class));
         }
 

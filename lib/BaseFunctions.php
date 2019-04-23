@@ -29,7 +29,7 @@ define('LOG_FORMAT', "[%s] [%s] %s");
 /**
  * [timestamp] [type] [caller] data
  */
-define('LOG_FORMAT_OWN', "%s [%s] [%s] %s\n");
+define('LOG_FORMAT_OWN', '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL);
 
 /**
  * Basic logger to handle some debugging and exception messages.
@@ -40,7 +40,7 @@ define('LOG_FORMAT_OWN', "%s [%s] [%s] %s\n");
  *
  * A more advanced event logging should be handled through EventDispatcher
  *
- * @param mixed $data
+ * @param mixed  $data
  * @param string $type
  */
 function logger($data, $type = 'DEBUG')
@@ -53,9 +53,9 @@ function logger($data, $type = 'DEBUG')
     $caller = getLastCaller();
 
     if (is_scalar($data)) {
-        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $caller, $data);
+        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $data, $caller);
     } else {
-        $line = sprintf(LOG_FORMAT_OWN, $date, $type, $caller, print_r($data, true));
+        $line = sprintf(LOG_FORMAT_OWN, $date, $type, print_r($data, true), $caller);
     }
 
     $useOwn = (!defined('LOG_FILE')
@@ -64,9 +64,9 @@ function logger($data, $type = 'DEBUG')
 
     if ($useOwn === false) {
         if (is_scalar($data)) {
-            $line = sprintf(LOG_FORMAT, $type, $caller, $data);
+            $line = sprintf(LOG_FORMAT, $type, $data, $caller);
         } else {
-            $line = sprintf(LOG_FORMAT, $type, $caller, print_r($data, true));
+            $line = sprintf(LOG_FORMAT, $type, print_r($data, true), $caller);
         }
 
         error_log($line);
@@ -84,17 +84,16 @@ function printLastCallers()
 /**
  * Print last caller from backtrace
  *
+ * @param int $skip
+ *
  * @return string
  */
-function getLastCaller()
+function getLastCaller($skip = 2)
 {
-    $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+    $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
-    if (isset($callers[2])
-        && isset($callers[2]['class'])
-        && isset($callers[2]['function'])
-    ) {
-        return $callers[2]['class'] . '::' . $callers[2]['function'];
+    if (isset($callers[$skip], $callers[$skip]['class'], $callers[$skip]['function'])) {
+        return $callers[$skip]['class'] . '::' . $callers[$skip]['function'];
     }
 
     return 'N/A';
@@ -140,7 +139,7 @@ function formatTrace($trace)
  * Alias gettext function
  *
  * @param string $message
- * @param bool $translate Si es necesario traducir
+ * @param bool   $translate Si es necesario traducir
  *
  * @return string
  */
@@ -167,7 +166,7 @@ function __u($message)
  *
  * @param string $domain
  * @param string $message
- * @param bool $translate
+ * @param bool   $translate
  *
  * @return string
  */
