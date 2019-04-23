@@ -139,10 +139,10 @@ final class EventMessage implements MessageInterface
 
         $formatter = new TextFormatter($delimiter);
 
-        return implode($delimiter, [
+        return implode($delimiter, array_filter([
             $this->getDescription($formatter, true),
             $this->getDetails($formatter, true)
-        ]);
+        ]));
     }
 
     /**

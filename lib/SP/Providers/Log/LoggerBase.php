@@ -90,7 +90,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             $this->logger->debug($eventType,
                 $this->formatContext(
-                    $eventMessage->composeText(' '),
+                    $eventMessage->composeText(' | '),
                     $this->request->getClientAddress(true),
                     $userLogin));
         } else {
