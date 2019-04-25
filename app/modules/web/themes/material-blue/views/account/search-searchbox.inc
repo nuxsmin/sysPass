@@ -120,7 +120,7 @@ $pager = $data->getPager();
             </select>
         </div>
 
-        <input type="submit" style="display: none"/>
+        <input type="submit" style="visibility: hidden"/>
 
         <input type="hidden" name="start" value="<?php echo $pager->getLimitStart(); ?>">
         <input type="hidden" name="skey" value="<?php echo $pager->getSortKey(); ?>"/>

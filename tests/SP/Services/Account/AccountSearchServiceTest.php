@@ -126,6 +126,14 @@ class AccountSearchServiceTest extends DatabaseTestCase
         $this->checkString('file:"syspass"', [1]);
         $this->checkString('id:1', [1]);
         $this->checkString('id:3');
+        $this->checkString('name_regex:"le$"', [2, 1]);
+        $this->checkString('name_regex:"^Gi"');
+        $this->checkString('name_regex:"^Go"', [1]);
+        $this->checkString('name_regex:"[eu]+"', [2, 1]);
+        $this->checkString('name_regex:"[eu]+" category:"Web"', [1]);
+        $this->checkString('name_regex:"[eu]+" category:"Web" client:"Google"', [1]);
+        $this->checkString('name_regex:"[eu]+" category:"Web" client:"Google" op:or', [2, 1]);
+        $this->checkString('name_regex:"[eu]+" category:"SSH"');
         $this->checkFavorites(1, [1]);
         $this->checkTags([1, 3], [2]);
         $this->checkTags([1, 3], [2, 1], QueryCondition::CONDITION_OR);

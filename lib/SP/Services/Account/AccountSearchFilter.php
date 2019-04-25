@@ -25,7 +25,6 @@
 namespace SP\Services\Account;
 
 use SP\Mvc\Model\QueryCondition;
-use SP\Util\Filter;
 
 
 /**
@@ -163,7 +162,7 @@ final class AccountSearchFilter
      */
     public function setTxtSearch($txtSearch)
     {
-        $this->txtSearch = Filter::safeSearchString($txtSearch);
+        $this->txtSearch = $txtSearch;
 
         return $this;
     }

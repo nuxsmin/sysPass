@@ -656,7 +656,7 @@ final class AccountRepository extends Repository implements RepositoryItemInterf
         $stringFilters = $accountSearchFilter->getStringFilters();
 
         if ($stringFilters->hasFilters()) {
-            $queryFilters->addFilter($stringFilters->getFilters(), $stringFilters->getParams());
+            $queryFilters->addFilter($stringFilters->getFilters($accountSearchFilter->getFilterOperator()), $stringFilters->getParams());
         }
 
         if (!empty($accountSearchFilter->getCategoryId())) {
