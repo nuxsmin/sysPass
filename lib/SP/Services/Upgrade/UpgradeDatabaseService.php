@@ -24,8 +24,6 @@
 
 namespace SP\Services\Upgrade;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
@@ -58,7 +56,8 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
         '300.18092401',
         '300.18093001',
         '300.18111801',
-        '300.18111901'
+        '300.18111901',
+        '310.19042701'
     ];
 
     /**
@@ -87,8 +86,6 @@ final class UpgradeDatabaseService extends Service implements UpgradeInterface
      * @return bool
      * @throws FileException
      * @throws UpgradeException
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     public function upgrade($version, ConfigData $configData)
     {

@@ -18,7 +18,7 @@ CREATE TABLE `Account`
   `userId`             smallint(5) unsigned  NOT NULL,
   `userEditId`         smallint(5) unsigned  NOT NULL,
   `clientId`           mediumint(8) unsigned NOT NULL,
-  `name`               varchar(50)           NOT NULL,
+  `name`               varchar(100)           NOT NULL,
   `categoryId`         mediumint(8) unsigned NOT NULL,
   `login`              varchar(50)                    DEFAULT NULL,
   `url`                varchar(255)                   DEFAULT NULL,

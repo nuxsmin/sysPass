@@ -109,7 +109,7 @@ final class ConfigGeneralController extends SimpleControllerBase
             if ($configData->isSyslogRemoteEnabled() === false) {
                 $eventMessage->addDescription(__u('Remote syslog enabled'));
             }
-        } elseif ($remoteSyslogEnabled === false && $configData->isSyslogEnabled()) {
+        } elseif ($remoteSyslogEnabled === false && $configData->isSyslogRemoteEnabled()) {
             $configData->setSyslogRemoteEnabled(false);
 
             $eventMessage->addDescription(__u('Remote syslog disabled'));
