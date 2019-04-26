@@ -70,7 +70,7 @@ final class ConfigAccountController extends SimpleControllerBase
         if ($filesEnabled) {
             $filesAllowedSize = $this->request->analyzeInt('files_allowed_size', 1024);
 
-            if ($filesAllowedSize >= 16384) {
+            if ($filesAllowedSize > 16384) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Maximum size per file is 16MB'));
             }
 
