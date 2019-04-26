@@ -44,7 +44,8 @@ final class UpgradeAppService extends Service implements UpgradeInterface
         '300.18010101',
         '300.18072901',
         '300.18072902',
-        '310.19012201'
+        '310.19012201',
+        '310.19042701'
     ];
 
     /**
@@ -125,6 +126,10 @@ final class UpgradeAppService extends Service implements UpgradeInterface
                 case '310.19012201':
                     $this->dic->get(UpgradePlugin::class)
                         ->upgrade_310_19012201();
+                    return true;
+                case '310.19042701':
+                    $this->dic->get(UpgradeCustomFieldDefinition::class)
+                        ->upgrade_310_19042701();
                     return true;
             }
         } catch (Exception $e) {

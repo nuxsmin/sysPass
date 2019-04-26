@@ -392,4 +392,21 @@ final class Database implements DatabaseInterface
 
         return $result;
     }
+
+    /**
+     * @param $table
+     *
+     * @return array
+     */
+    public function getColumnsForTable($table): array
+    {
+        $conn = $this->dbHandler->getConnection()->query("SELECT * FROM $table LIMIT 0");
+        $columns = [];
+
+        for ($i = 0; $i < $conn->columnCount(); $i++) {
+            $columns[] = $conn->getColumnMeta($i)['name'];
+        }
+
+        return $columns;
+    }
 }

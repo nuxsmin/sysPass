@@ -206,6 +206,70 @@ final class UpgradeCustomFieldDefinition extends Service
         );
     }
 
+    /**
+     * upgrade_300_19042701
+     *
+     * @throws Exception
+     */
+    public function upgrade_310_19042701()
+    {
+        if (!in_array('field', $this->db->getColumnsForTable('CustomFieldDefinition'))) {
+            return;
+        }
+
+        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Custom fields update'))
+                ->addDescription(__FUNCTION__))
+        );
+
+        try {
+            $customFieldTypeService = $this->dic->get(CustomFieldTypeService::class);
+
+            $customFieldType = [];
+
+            foreach ($customFieldTypeService->getAll() as $customFieldTypeData) {
+                $customFieldType[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
+            }
+
+            $this->transactionAware(function () use ($customFieldType) {
+                $queryData = new QueryData();
+                $queryData->setQuery('SELECT id, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
+
+                foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
+                    /** @var CustomFieldDefDataOld $data */
+                    $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
+
+                    $typeId = $customFieldType[$this->typeMapper((int)$data->getType())];
+
+                    $queryData = new QueryData();
+                    $queryData->setQuery('UPDATE CustomFieldDefinition SET typeId = ? WHERE id = ? LIMIT 1');
+                    $queryData->setParams([$typeId, $item->id]);
+
+                    $this->db->doQuery($queryData);
+
+                    $this->eventDispatcher->notifyEvent('upgrade.customField.process',
+                        new Event($this, EventMessage::factory()
+                            ->addDescription(__u('Field updated'))
+                            ->addDetail(__u('Field'), $data->getName()))
+                    );
+                }
+            });
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            throw $e;
+        }
+
+        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Custom fields update'))
+                ->addDescription(__FUNCTION__))
+        );
+    }
+
     protected function initialize()
     {
         $this->db = $this->dic->get(Database::class);
