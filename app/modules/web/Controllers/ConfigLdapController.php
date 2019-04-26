@@ -32,6 +32,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\CheckException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
@@ -79,7 +80,7 @@ final class ConfigLdapController extends SimpleControllerBase
                 $configData->setLdapEnabled(true);
                 $configData->setLdapType($ldapParams->getType());
                 $configData->setLdapTlsEnabled($ldapParams->isTlsEnabled());
-                $configData->setLdapServer($ldapParams->getServer());
+                $configData->setLdapServer($this->request->analyzeString('ldap_server'));
                 $configData->setLdapBase($ldapParams->getSearchBase());
                 $configData->setLdapGroup($ldapParams->getGroup());
                 $configData->setLdapDefaultGroup($ldapDefaultGroup);
@@ -302,6 +303,7 @@ final class ConfigLdapController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws SessionTimeout
      */
     protected function initialize()
     {
