@@ -128,17 +128,18 @@ final class MailHandler extends Provider implements EventReceiver
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
-                $recipients = null;
                 $configData = $this->config->getConfigData();
                 $extra = $eventMessage->getExtra();
 
                 if (isset($extra['userId'], $extra['email'])) {
                     $recipients = $extra['email'];
-                } elseif (count($configData->getMailRecipients()) > 0) {
+                } else {
                     $recipients = $configData->getMailRecipients();
                 }
 
-                if (empty($recipients)) {
+                $to = array_filter($recipients);
+
+                if (empty($to)) {
                     return;
                 }
 
@@ -168,7 +169,7 @@ final class MailHandler extends Provider implements EventReceiver
 
                 $this->mailService->send(
                     $subject,
-                    $recipients,
+                    $to,
                     $mailMessage
                 );
             } catch (Exception $e) {
