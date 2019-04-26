@@ -165,8 +165,10 @@ final class LdapAuth implements AuthInterface
             $this->ldapAuthData->setName($name);
         }
 
+        $mail = $attributes->get('mail');
+
         $this->ldapAuthData->setDn($attributes->get('dn'));
-        $this->ldapAuthData->setEmail($attributes->get('mail'));
+        $this->ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
         $this->ldapAuthData->setExpire($attributes->get('expire'));
 
         $this->ldapAuthData->setInGroup(
