@@ -14,7 +14,7 @@ $user = $_getvar('user');
     <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
-          data-onsubmit="appMgmt/save"
+          data-onsubmit="user/savePassword"
           data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
         <table class="popup-data">

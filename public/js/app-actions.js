@@ -551,6 +551,27 @@ sysPass.Actions = function (log) {
                     }, 2000);
                 }
             });
+        },
+        savePassword: function ($obj) {
+            log.info("user:savepassword");
+
+            const opts = sysPassApp.requests.getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+            opts.method = "post";
+            opts.data = $obj.serialize();
+            opts.data += "&sk=" + sysPassApp.sk.get();
+
+            sysPassApp.requests.getActionCall(opts, function (json) {
+                sysPassApp.msg.out(json);
+
+                if (json.status === 0) {
+                    closeFloatingBox();
+
+                    if (typeof onSuccess === "function") {
+                        onSuccess();
+                    }
+                }
+            });
         }
     };
 
