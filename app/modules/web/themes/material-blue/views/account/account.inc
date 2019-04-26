@@ -222,7 +222,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 class="mdl-textfield__input mdl-color-text--indigo-400"
                                 rows="3" id="notes"
                                 name="notes"
-                                maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlentities($accountData->getNotes()) : ''; ?></textarea>
+                                maxlength="5000" <?php echo $_getvar('readonly'); ?>><?php echo $gotData ? htmlspecialchars($accountData->getNotes(), ENT_QUOTES) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes about the account'); ?></label>
                             </div>

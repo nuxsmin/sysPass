@@ -1,14 +1,22 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                      $icons
- * @var callable                                    $_getvar
- * @var \SP\Config\ConfigData                       $configData
- * @var \SP\Services\Account\AccountSearchItem      $account
- * @var \SP\Html\DataGrid\DataGridTab               $data
- * @var \SP\Html\DataGrid\Action\DataGridActionBase $actionMenu
- * @var \SP\Html\DataGrid\Action\DataGridActionBase $action
- * @var \SP\Services\Account\AccountSearchItem      $accountSearchItem
+ * @var ThemeIcons         $icons
+ * @var callable           $_getvar
+ * @var ConfigData         $configData
+ * @var AccountSearchItem  $account
+ * @var DataGridTab        $data
+ * @var DataGridActionBase $actionMenu
+ * @var DataGridActionBase $action
+ * @var AccountSearchItem  $accountSearchItem
  */
+
+use SP\Config\ConfigData;
+use SP\Core\Acl\ActionsInterface;
+use SP\Core\UI\ThemeIcons;
+use SP\Html\DataGrid\Action\DataGridActionBase;
+use SP\Html\DataGrid\DataGridTab;
+use SP\Services\Account\AccountSearchItem;
+use SP\Util\DateUtil;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -31,7 +39,8 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <div class="field-customer label-field">
                         <div class="field-name-hidden"><?php echo __('Client'); ?></div>
                         <?php if (null !== $accountSearchItem->getClientLink()): ?>
-                            <a href="<?php echo $accountSearchItem->getClientLink(); ?>" target="blank"
+                            <a href="<?php echo $accountSearchItem->getClientLink(); ?>"
+                               target="blank"
                                title="<?php echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
@@ -55,7 +64,8 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <?php if ($accountSearchItem->isShow()
                             && $accountSearchItem::$accountLink
                             && $accountSearchItem->getLink()): ?>
-                            <a title="<?php echo __('Account Details'); ?>" class="btn-action"
+                            <a title="<?php echo __('Account Details'); ?>"
+                               class="btn-action"
                                data-action-route="<?php echo $_getvar('viewAccountRoute'); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-onclick="account/view"><?php echo $accountSearchData->getName(); ?></a>
@@ -80,7 +90,8 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <div class="field-url field-text label-field">
                             <div class="field-name"><?php echo __('URL / IP'); ?></div>
                             <?php if ($accountSearchItem->isUrlIslink()): ?>
-                                <a href="<?php echo $accountSearchData->getUrl(); ?>" target="_blank"
+                                <a href="<?php echo $accountSearchData->getUrl(); ?>"
+                                   target="_blank"
                                    title="<?php printf(__('Open link to: %s'), $accountSearchData->getUrl()); ?>"><?php echo $accountSearchItem->getShortUrl(); ?></a>
                             <?php else: ?>
                                 <div class="field-text"><?php echo $accountSearchItem->getShortUrl(); ?></div>
@@ -94,7 +105,8 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                 <div class="label-row-down">
                     <div class="tags-box">
                         <?php foreach ($accountSearchItem->getTags() as $tag): ?>
-                            <span class="tag" data-tag-id="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></span>
+                            <span class="tag"
+                                  data-tag-id="<?php echo $tag->id; ?>"><?php echo $tag->name; ?></span>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -161,13 +173,14 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <?php endif; ?>
 
                         <?php if ($accountSearchData->getNotes() !== ''): ?>
-                            <i id="notes-<?php echo $accountSearchData->getId(); ?>" class="material-icons">speaker_notes</i>
+                            <i id="notes-<?php echo $accountSearchData->getId(); ?>"
+                               class="material-icons">speaker_notes</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="notes-<?php echo $accountSearchData->getId(); ?>">
                                 <div class="tooltip-text">
                                     <p class="tooltip-header"><?php echo __('Notes'); ?></p>
                                     <p>
-                                        <?php echo $accountSearchItem->getShortNotes(); ?>
+                                        <?php echo htmlspecialchars($accountSearchItem->getShortNotes(), ENT_QUOTES); ?>
                                     </p>
                                 </div>
                             </div>
@@ -179,7 +192,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="attachments-<?php echo $accountSearchData->getId(); ?>">
                                 <div class="tooltip-text">
-                                    <?php echo __('Attachments'), ': ', $accountSearchItem->getNumFiles(); ?>
+                                    <?php printf('%s: %d', __('Attachments'), $accountSearchItem->getNumFiles()); ?>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -192,9 +205,9 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <div class="tooltip-text">
                                     <p class="tooltip-header"><?php echo __('Public Link'); ?></p>
                                     <p>
-                                        <?php printf('%s : %s', __('Expiry Date '), \SP\Util\DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())); ?>
+                                        <?php printf('%s: %s', __('Expiry Date'), DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())); ?>
                                         <br>
-                                        <?php printf('%s : %s', __('Visits'), $accountSearchData->getPublicLinkTotalCountViews()); ?>
+                                        <?php printf('%s: %s', __('Visits'), $accountSearchData->getPublicLinkTotalCountViews()); ?>
                                     </p>
                                 </div>
                             </div>
@@ -202,7 +215,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
 
                         <?php if ($wikiFilter
                             && $accountSearchItem->isWikiMatch($wikiFilter)): ?>
-                            <?php if (\SP\Services\Account\AccountSearchItem::$dokuWikiEnabled): ?>
+                            <?php if (AccountSearchItem::$dokuWikiEnabled): ?>
                                 <a href="<?php echo $_getvar('wikiPageUrl'), $accountSearchData->getName(); ?>"
                                    target="_blank">
                                     <i class="material-icons"
@@ -210,7 +223,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 </a>
                                 <i class="btn-action material-icons fg-green100"
                                    title="<?php echo __('View at Wiki'); ?>"
-                                   data-action-route="<?php echo \SP\Core\Acl\ActionsInterface::WIKI_VIEW; ?>"
+                                   data-action-route="<?php echo ActionsInterface::WIKI_VIEW; ?>"
                                    data-pagename="<?php echo $accountSearchData->getName(); ?>"
                                    data-onclick="wiki/show">library_books</i>
                             <?php else: ?>

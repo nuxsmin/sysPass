@@ -91,7 +91,7 @@ final class UserForm extends FormBase implements FormInterface
         $this->userData->setLogin($this->request->analyzeString('login'));
         $this->userData->setSsoLogin($this->request->analyzeString('login_sso'));
         $this->userData->setEmail($this->request->analyzeEmail('email'));
-        $this->userData->setNotes($this->request->analyzeString('notes'));
+        $this->userData->setNotes($this->request->analyzeUnsafeString('notes'));
         $this->userData->setUserGroupId($this->request->analyzeInt('usergroup_id'));
         $this->userData->setUserProfileId($this->request->analyzeInt('userprofile_id'));
         $this->userData->setIsAdminApp($this->request->analyzeBool('adminapp_enabled', false));

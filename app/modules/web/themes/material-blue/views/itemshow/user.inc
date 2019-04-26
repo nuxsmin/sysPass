@@ -164,7 +164,7 @@ $user = $_getvar('user');
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
-                                  maxlength="1000" <?php echo $_getvar('readonly'); ?>><?php echo $user->getNotes(); ?></textarea>
+                                  maxlength="1000" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes'); ?></label>
                             </div>

@@ -101,7 +101,7 @@ final class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->categoryId = $this->request->analyzeInt('category_id');
         $this->accountRequest->login = $this->request->analyzeString('login');
         $this->accountRequest->url = $this->request->analyzeString('url');
-        $this->accountRequest->notes = $this->request->analyzeString('notes');
+        $this->accountRequest->notes = $this->request->analyzeUnsafeString('notes');
         $this->accountRequest->userEditId = $this->context->getUserData()->getId();
         $this->accountRequest->pass = $this->request->analyzeEncrypted('password');
         $this->accountRequest->isPrivate = (int)$this->request->analyzeBool('private_enabled', false);
