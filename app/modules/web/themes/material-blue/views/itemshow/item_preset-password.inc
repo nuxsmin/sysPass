@@ -1,11 +1,16 @@
 <?php
 /**
- * @var \SP\DataModel\ItemPreset\Password $password
- * @var \SP\Core\UI\ThemeIcons            $icons
- * @var \SP\Config\ConfigData             $configData
- * @var callable                          $_getvar
- * @var \SP\Mvc\View\Template             $this
+ * @var Password   $password
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\ItemPreset\Password;
+use SP\Mvc\View\Template;
 
 $password = $_getvar('password');
 ?>
@@ -47,7 +52,8 @@ $password = $_getvar('password');
                 <input id="score" name="score" type="number"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        min="0" max="5"
-                       value="<?php echo $password->getScore(); ?>" disabled="disabled" readonly/>
+                       value="<?php echo $password->getScore(); ?>"
+                       disabled="disabled" readonly/>
                 <label class="mdl-textfield__label"
                        for="score"><?php echo __('Score'); ?></label>
             </div>
@@ -73,7 +79,8 @@ $password = $_getvar('password');
             <ul class="password-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_numbers_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_numbers_enabled">
                             <input type="checkbox" id="use_numbers_enabled"
                                    class="mdl-switch__input"
                                    name="use_numbers_enabled" <?php echo $password->isUseNumbers() ? 'checked' : ''; ?>/>
@@ -87,7 +94,8 @@ $password = $_getvar('password');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_letters_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_letters_enabled">
                             <input type="checkbox" id="use_letters_enabled"
                                    class="mdl-switch__input"
                                    name="use_letters_enabled" <?php echo $password->isUseLetters() ? 'checked' : ''; ?>/>
@@ -101,7 +109,8 @@ $password = $_getvar('password');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_symbols_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_symbols_enabled">
                             <input type="checkbox" id="use_symbols_enabled"
                                    class="mdl-switch__input"
                                    name="use_symbols_enabled" <?php echo $password->isUseSymbols() ? 'checked' : ''; ?>/>
@@ -115,7 +124,8 @@ $password = $_getvar('password');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_upper_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_upper_enabled">
                             <input type="checkbox" id="use_upper_enabled"
                                    class="mdl-switch__input"
                                    name="use_upper_enabled" <?php echo $password->isUseUpper() ? 'checked' : ''; ?>/>
@@ -129,7 +139,8 @@ $password = $_getvar('password');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_lower_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_lower_enabled">
                             <input type="checkbox" id="use_lower_enabled"
                                    class="mdl-switch__input"
                                    name="use_lower_enabled" <?php echo $password->isUseLower() ? 'checked' : ''; ?>/>
@@ -143,7 +154,8 @@ $password = $_getvar('password');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="use_image_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="use_image_enabled">
                             <input type="checkbox" id="use_image_enabled"
                                    class="mdl-switch__input"
                                    name="use_image_enabled" <?php echo $password->isUseImage() ? 'checked' : ''; ?>/>

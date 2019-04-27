@@ -1,4 +1,6 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php /** @var $icons ThemeIcons */
+
+use SP\Core\UI\ThemeIcons; ?>
 
 <div id="box-pub-noheader">
     <div class="box-spacer"></div>

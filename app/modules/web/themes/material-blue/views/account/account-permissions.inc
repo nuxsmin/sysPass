@@ -1,12 +1,20 @@
 <?php
 /**
- * @var callable                                $_getvar
- * @var \SP\Core\UI\ThemeIcons                  $icons
- * @var \SP\DataModel\AccountExtData            $accountData
- * @var \SP\Services\Account\AccountAcl         $accountAcl
- * @var \SP\Config\ConfigData                   $configData
- * @var \SP\DataModel\ItemPreset\AccountPrivate $accountPrivate
+ * @var callable       $_getvar
+ * @var ThemeIcons     $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
+ * @var AccountPrivate $accountPrivate
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Services\Account\AccountAcl;
+
 ?>
 
 <div id="data-accesses">
@@ -23,7 +31,7 @@
                                         multiple="multiple"
                                         class="select-box-tags" <?php echo $_getvar('disabled'); ?>>
                                     <option value=""><?php echo __('Select Users'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUser */
+                                    <?php /** @var SelectItem $otherUser */
                                     foreach ($_getvar('otherUsersView') as $otherUser): ?>
                                         <?php if ($otherUser->isSkip()): continue; endif; ?>
                                         <option
@@ -38,7 +46,7 @@
                                     <i class="material-icons select-icon"
                                        title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                                     <div class="tags-list-items">
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUser */
+                                        <?php /** @var SelectItem $otherUser */
                                         foreach ($_getvar('otherUsersView') as $otherUser): ?>
                                             <?php if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php echo $otherUser->getName(); ?></span>
@@ -56,7 +64,7 @@
                                         multiple="multiple"
                                         class="select-box-tags" <?php echo $_getvar('disabled'); ?>>
                                     <option value=""><?php echo __('Select Users'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUser */
+                                    <?php /** @var SelectItem $otherUser */
                                     foreach ($_getvar('otherUsersEdit') as $otherUser): ?>
                                         <?php if ($otherUser->isSkip()): continue; endif; ?>
                                         <option
@@ -71,7 +79,7 @@
                                     <i class="material-icons select-icon"
                                        title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                                     <div class="tags-list-items">
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUser */
+                                        <?php /** @var SelectItem $otherUser */
                                         foreach ($_getvar('otherUsersEdit') as $otherUser): ?>
                                             <?php if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php echo $otherUser->getName(); ?></span>
@@ -95,7 +103,7 @@
                                         multiple="multiple"
                                         class="select-box-tags" <?php echo $_getvar('disabled'); ?>>
                                     <option value=""><?php echo __('Select Groups'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUserGroup */
+                                    <?php /** @var SelectItem $otherUserGroup */
                                     foreach ($_getvar('otherUserGroupsView') as $otherUserGroup): ?>
                                         <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
                                         <option
@@ -110,7 +118,7 @@
                                     <i class="material-icons select-icon"
                                        title="<?php echo __('View'); ?>"><?php echo $icons->getIconView()->getIcon(); ?></i>
                                     <div class="tags-list-items">
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUserGroup */
+                                        <?php /** @var SelectItem $otherUserGroup */
                                         foreach ($_getvar('otherUserGroupsView') as $otherUserGroup): ?>
                                             <?php if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php echo $otherUserGroup->getName(); ?></span>
@@ -128,7 +136,7 @@
                                         multiple="multiple"
                                         class="select-box-tags" <?php echo $_getvar('disabled'); ?>>
                                     <option value=""><?php echo __('Select Groups'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUserGroup */
+                                    <?php /** @var SelectItem $otherUserGroup */
                                     foreach ($_getvar('otherUserGroupsEdit') as $otherUserGroup): ?>
                                         <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
                                         <option
@@ -143,7 +151,7 @@
                                     <i class="material-icons select-icon"
                                        title="<?php echo __('Edit'); ?>"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                                     <div class="tags-list-items">
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem $otherUserGroup */
+                                        <?php /** @var SelectItem $otherUserGroup */
                                         foreach ($_getvar('otherUserGroupsEdit') as $otherUserGroup): ?>
                                             <?php if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php echo $otherUserGroup->getName(); ?></span>
@@ -178,7 +186,7 @@
                     <select id="owner_id" name="owner_id"
                             class="select-box" <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Select User'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        <?php /** @var SelectItem $user */
                         foreach ($_getvar('users') as $user): ?>
                             <option
                                     value="<?php echo $user->getId(); ?>"
@@ -202,7 +210,7 @@
                     <select id="main_usergroup_id" name="main_usergroup_id"
                             class="select-box" <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Select Group'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                        <?php /** @var SelectItem $userGroup */
                         foreach ($_getvar('userGroups') as $userGroup): ?>
                             <option
                                     value="<?php echo $userGroup->getId(); ?>"

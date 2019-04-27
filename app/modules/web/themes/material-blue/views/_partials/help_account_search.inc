@@ -9,7 +9,8 @@
     </div>
 </div>
 
-<div for="help-account-search" class="help-box" title="<?php echo ucwords(__('Special parameters')); ?>">
+<div for="help-account-search" class="help-box"
+     title="<?php echo ucwords(__('Special parameters')); ?>">
     <div class="help-container">
         <p class="help-text"><?php echo __('You could use either one or several special parameters separated by blank spaces'); ?></p>
         <ul>

@@ -1,9 +1,13 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var callable               $_getvar
- * @var \SP\Config\ConfigData  $configData
+ * @var ThemeIcons $icons
+ * @var callable   $_getvar
+ * @var ConfigData $configData
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+
 ?>
 
 <div id="data-linkedAccounts">

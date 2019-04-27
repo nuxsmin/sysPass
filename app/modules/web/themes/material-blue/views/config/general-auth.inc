@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 
 <div id="title" class="titleNormal">
@@ -19,7 +25,8 @@
             <ul class="config-auth-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasic_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="authbasic_enabled">
                             <input type="checkbox" id="authbasic_enabled"
                                    class="mdl-switch__input"
                                    name="authbasic_enabled" <?php echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
@@ -34,8 +41,10 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasicautologin_enabled">
-                            <input type="checkbox" id="authbasicautologin_enabled"
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="authbasicautologin_enabled">
+                            <input type="checkbox"
+                                   id="authbasicautologin_enabled"
                                    class="mdl-switch__input"
                                    name="authbasicautologin_enabled" <?php echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
                         </label>
@@ -64,7 +73,8 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="authbasic_domain" name="authbasic_domain" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $configData->getAuthBasicDomain(); ?>">
+                       maxlength="128"
+                       value="<?php echo $configData->getAuthBasicDomain(); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php echo __('Domain name'); ?></label>
             </div>
@@ -75,7 +85,8 @@
             <?php echo __('Default Group'); ?>
             <div id="help-sso_defaultgroup"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-sso_defaultgroup">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-sso_defaultgroup">
                 <p>
                     <?php echo __('Sets the default users group for newly created SSO users'); ?>
                 </p>
@@ -87,7 +98,7 @@
             <select id="sso_defaultgroup" name="sso_defaultgroup"
                     class="select-box sel-chosen-usergroup">
                 <option value=""><?php echo __('Select Group'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                <?php /** @var SelectItem $userGroup */
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
                             value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
@@ -100,7 +111,8 @@
             <?php echo __('Default Profile'); ?>
             <div id="help-sso_defaultprofile"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-sso_defaultprofile">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-sso_defaultprofile">
                 <p>
                     <?php echo __('Sets the default profile for the newly created SSO users.'); ?>
                 </p>
@@ -112,7 +124,7 @@
             <select id="sso_defaultprofile" name="sso_defaultprofile"
                     class="select-box sel-chosen-profile">
                 <option value=""><?php echo __('Select User'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $userProfile */
+                <?php /** @var SelectItem $userProfile */
                 foreach ($_getvar('userProfiles') as $userProfile): ?>
                     <option
                             value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>

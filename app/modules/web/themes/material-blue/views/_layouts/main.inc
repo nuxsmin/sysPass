@@ -1,8 +1,11 @@
 <?php
 /**
- * @var callable              $_getvar
- * @var \SP\Mvc\View\Template $this
+ * @var callable $_getvar
+ * @var Template $this
  */
+
+use SP\Mvc\View\Template;
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $_getvar('lang'); ?>">
@@ -10,7 +13,8 @@
     <title><?php printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="<?php echo $_getvar('logo_icon'); ?>">
+    <link rel="icon" type="image/png"
+          href="<?php echo $_getvar('logo_icon'); ?>">
     <?php foreach ($_getvar('cssLinks') as $cssLink): ?>
         <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
     <?php endforeach; ?>
@@ -22,11 +26,13 @@
     </noscript>
 
     <div id="wrap-loading">
-        <div id="loading" class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
+        <div id="loading"
+             class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php echo $_getvar('page'); ?>" data-page="<?php echo $_getvar('page'); ?>"
+    <div id="container" class="<?php echo $_getvar('page'); ?>"
+         data-page="<?php echo $_getvar('page'); ?>"
          data-upgraded="<?php echo (int)$this->isUpgraded(); ?>">
         <?php
         if ($_getvar('useFixedHeader')):

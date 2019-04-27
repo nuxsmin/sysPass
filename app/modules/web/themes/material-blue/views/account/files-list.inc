@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var callable               $_getvar
- * @var \SP\Config\ConfigData  $configData
- * @var \SP\DataModel\FileData $file
+ * @var ThemeIcons $icons
+ * @var callable   $_getvar
+ * @var ConfigData $configData
+ * @var FileData   $file
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\FileData;
+use SP\Html\Html;
+
 ?>
 
 <div id="files-wrap">
@@ -13,9 +19,10 @@
             $extension = mb_strtoupper($file->getExtension());
             ?>
             <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content" title="<?php echo $file->getName(); ?>">
+                <span class="mdl-list__item-primary-content"
+                      title="<?php echo $file->getName(); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
-                    <span><?php printf('%s (%d KB)', \SP\Html\Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
+                    <span><?php printf('%s (%d KB)', Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
                 </span>
 
                 <span class="list-actions">
@@ -25,7 +32,8 @@
                               data-item-id="<?php echo $file->getId(); ?>"
                               data-action-route="<?php echo $_getvar('fileViewRoute'); ?>"
                               data-onclick="file/view">
-                            <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>" alt="thumbnail"/>
+                            <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>"
+                                 alt="thumbnail"/>
                         </span>
                     <?php endif; ?>
 

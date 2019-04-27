@@ -1,16 +1,23 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 
 <?php if ($_getvar('gdIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('The \'%s\' extension is unavailable'), 'gd'); ?>
-        <i id="help-gd" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <i id="help-gd"
+           class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-gd">
             <p>
                 <?php echo __('This extension is needed to display passwords as images'); ?>
@@ -35,7 +42,8 @@
                 <?php echo __('Results per page'); ?>
                 <div id="help-account_count"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-account_count">
                     <p>
                         <?php echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
@@ -43,10 +51,13 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="account_count" name="account_count" type="number" step="6"
-                           pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="account_count" name="account_count" type="number"
+                           step="6"
+                           pattern="[0-9]{1,5}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $configData->getAccountCount(); ?>" required/>
+                           value="<?php echo $configData->getAccountCount(); ?>"
+                           required/>
                     <label class="mdl-textfield__label"
                            for="account_count"><?php echo __('Results per page'); ?></label>
                 </div>
@@ -58,8 +69,10 @@
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_expire_enabled">
-                                <input type="checkbox" id="account_expire_enabled"
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_expire_enabled">
+                                <input type="checkbox"
+                                       id="account_expire_enabled"
                                        class="mdl-switch__input"
                                        name="account_expire_enabled" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
                             </label>
@@ -78,7 +91,8 @@
                 <?php echo __('Password expiry time'); ?>
                 <div id="help-account_expire_time"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire_time">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-account_expire_time">
                     <p>
                         <?php echo __('Number of days for account\'s password expiry date.'); ?>
                     </p>
@@ -86,8 +100,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="account_expire_time" name="account_expire_time" type="number"
-                           pattern="[0-9]{1,3}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="account_expire_time" name="account_expire_time"
+                           type="number"
+                           pattern="[0-9]{1,3}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php echo $configData->getAccountExpireTime() / 24 / 3600; ?>"/>
                     <label class="mdl-textfield__label"
                            for="account_expire_time"><?php echo __('Expire time (days)'); ?></label>
@@ -100,7 +116,8 @@
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link_enabled">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_link_enabled">
                                 <input type="checkbox" id="account_link_enabled"
                                        class="mdl-switch__input"
                                        name="account_link_enabled" <?php echo $configData->isAccountLink() ? 'checked' : ''; ?>/>
@@ -117,7 +134,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="account_globalsearch_enabled">
-                                <input type="checkbox" id="account_globalsearch_enabled"
+                                <input type="checkbox"
+                                       id="account_globalsearch_enabled"
                                        class="mdl-switch__input"
                                        name="account_globalsearch_enabled" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
                             </label>
@@ -133,7 +151,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="account_passtoimage_enabled">
-                                <input type="checkbox" id="account_passtoimage_enabled"
+                                <input type="checkbox"
+                                       id="account_passtoimage_enabled"
                                        class="mdl-switch__input"
                                        name="account_passtoimage_enabled" <?php echo $configData->isAccountPassToImage() ? 'checked' : ''; ?>/>
                             </label>
@@ -153,7 +172,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="account_resultsascards_enabled">
-                                <input type="checkbox" id="account_resultsascards_enabled"
+                                <input type="checkbox"
+                                       id="account_resultsascards_enabled"
                                        class="mdl-switch__input"
                                        name="account_resultsascards_enabled" <?php echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
                             </label>
@@ -171,7 +191,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="account_fullgroup_access_enabled">
-                                <input type="checkbox" id="account_fullgroup_access_enabled"
+                                <input type="checkbox"
+                                       id="account_fullgroup_access_enabled"
                                        class="mdl-switch__input"
                                        name="account_fullgroup_access_enabled" <?php echo $configData->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
                             </label>
@@ -203,7 +224,8 @@
                 <ul class="config-publiclinks-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publiclinks_enabled">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="publiclinks_enabled">
                                 <input type="checkbox" id="publiclinks_enabled"
                                        class="mdl-switch__input"
                                        name="publiclinks_enabled" <?php echo $configData->isPublinksEnabled() ? 'checked' : ''; ?>/>
@@ -226,7 +248,8 @@
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="publiclinks_image_enabled">
-                                <input type="checkbox" id="publiclinks_image_enabled"
+                                <input type="checkbox"
+                                       id="publiclinks_image_enabled"
                                        class="mdl-switch__input"
                                        name="publiclinks_image_enabled" <?php echo $configData->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
                             </label>
@@ -248,8 +271,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="publiclinks_maxtime" name="publiclinks_maxtime" type="number" step="5"
-                           pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="publiclinks_maxtime" name="publiclinks_maxtime"
+                           type="number" step="5"
+                           pattern="[0-9]{1,5}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxTime() / 60; ?>"/>
                     <label class="mdl-textfield__label"
@@ -263,8 +288,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="publiclinks_maxviews" name="publiclinks_maxviews" type="number" step="1"
-                           pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="publiclinks_maxviews" name="publiclinks_maxviews"
+                           type="number" step="1"
+                           pattern="[0-9]{1,5}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxViews(); ?>"/>
                     <label class="mdl-textfield__label"
@@ -286,7 +313,8 @@
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="files_enabled">
                                 <input type="checkbox" id="files_enabled"
                                        class="mdl-switch__input"
                                        name="files_enabled" <?php echo $configData->isFilesEnabled() ? 'checked' : ''; ?>/>
@@ -306,7 +334,8 @@
                 <?php echo __('Allowed MIME types'); ?>
                 <div id="help-files_allowed_mimetypes"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-files_allowed_mimetypes">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-files_allowed_mimetypes">
                     <p>
                         <?php echo __('Allowed file MIME types for uploading.'); ?>
                     </p>
@@ -318,9 +347,11 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Allowed MIME types'); ?></div>
 
-                <select id="files_allowed_mimetypes" name="files_allowed_mimetypes[]"
-                        multiple="multiple" class="select-box" data-create="true">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem $mimeType */
+                <select id="files_allowed_mimetypes"
+                        name="files_allowed_mimetypes[]"
+                        multiple="multiple" class="select-box"
+                        data-create="true">
+                    <?php /** @var SelectItem $mimeType */
                     foreach ($_getvar('mimeTypes') as $mimeType): ?>
                         <option
                                 value="<?php echo $mimeType->getName(); ?>"
@@ -334,7 +365,8 @@
                 <?php echo __('Maximum file size'); ?>
                 <div id="help-files_allowed_size"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-files_allowed_size">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-files_allowed_size">
                     <p>
                         <?php echo __('Sets the maximum file size for uploading.'); ?>
                     </p>
@@ -346,8 +378,10 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="files_allowed_size" name="files_allowed_size" type="number" step="512"
-                           pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="files_allowed_size" name="files_allowed_size"
+                           type="number" step="512"
+                           pattern="[0-9]{1,5}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
                            value="<?php echo $configData->getFilesAllowedSize(); ?>"/>
                     <label class="mdl-textfield__label"

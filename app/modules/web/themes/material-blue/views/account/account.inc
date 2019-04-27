@@ -1,11 +1,17 @@
 <?php
 /**
- * @var callable                        $_getvar
- * @var \SP\Core\UI\ThemeIcons          $icons
- * @var \SP\DataModel\AccountExtData    $accountData
- * @var \SP\Services\Account\AccountAcl $accountAcl
- * @var \SP\Config\ConfigData           $configData
+ * @var callable       $_getvar
+ * @var ThemeIcons     $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\AccountExtData;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Services\Account\AccountAcl;
 
 $accountData = $_getvar('accountData');
 $accountAcl = $_getvar('accountAcl');
@@ -92,7 +98,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Client'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem $client */
+                                <?php /** @var SelectItem $client */
                                 foreach ($_getvar('clients') as $client): ?>
                                     <option
                                             value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
@@ -118,7 +124,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     class="select-box"
                                     required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Category'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem $category */
+                                <?php /** @var SelectItem $category */
                                 foreach ($_getvar('categories') as $category): ?>
                                     <option
                                             value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
@@ -237,7 +243,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                         multiple="multiple"
                                         class="select-box-tags">
                                     <option value=""><?php echo __('Select Tags'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $tag */
+                                    <?php /** @var SelectItem $tag */
                                     foreach ($_getvar('tags') as $tag): ?>
                                         <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
                                     <?php endforeach; ?>
@@ -259,7 +265,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <div class="tag-list-box">
                                     <div class="tag-list-body">
                                         <div class="tags-list-items">
-                                            <?php /** @var \SP\Mvc\View\Components\SelectItem $tag */
+                                            <?php /** @var SelectItem $tag */
                                             foreach ($_getvar('tags') as $tag): ?>
                                                 <?php if ($tag->isSelected()): ?>
                                                     <span class="tag"><?php echo $tag->getName(); ?></span>
@@ -303,7 +309,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Select date'); ?></option>
-                                    <?php /** @var \SP\Mvc\View\Components\SelectItem $history */
+                                    <?php /** @var SelectItem $history */
                                     foreach ($_getvar('historyData') as $history): ?>
                                         <option
                                                 value="<?php echo $history->getId(); ?>"><?php echo $history->getName(); ?></option>

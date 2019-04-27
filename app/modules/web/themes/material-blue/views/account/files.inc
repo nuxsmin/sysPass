@@ -1,11 +1,17 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons          $icons
- * @var callable                        $_getvar
- * @var \SP\DataModel\AccountExtData    $accountData
- * @var \SP\Services\Account\AccountAcl $accountAcl
- * @var \SP\Config\ConfigData           $configData
+ * @var ThemeIcons     $icons
+ * @var callable       $_getvar
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\AccountExtData;
+use SP\Services\Account\AccountAcl;
+
 ?>
 
 <div id="data-files">
@@ -20,7 +26,8 @@
 
         <?php if ($_getvar('editAction')): ?>
             <div id="box-upload-files">
-                <div id="drop-account-files" class="round active-tooltip dropzone"
+                <div id="drop-account-files"
+                     class="round active-tooltip dropzone"
                      data-files-ext="<?php echo $_getvar('filesAllowedExts'); ?>"
                      data-item-id="<?php echo $_getvar('accountId'); ?>"
                      data-sk="<?php echo $_getvar('sk'); ?>"
@@ -28,7 +35,8 @@
                      data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
                     <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                 </div>
-                <form method="post" enctype="multipart/form-data" name="upload_form" class="file-upload"
+                <form method="post" enctype="multipart/form-data"
+                      name="upload_form" class="file-upload"
                       id="fileUploadForm">
                     <input type="file" id="inFile" multiple name="inFile"/>
                 </form>

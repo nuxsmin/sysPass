@@ -1,12 +1,19 @@
 <?php
 /**
- * @var \SP\Html\DataGrid\Action\DataGridAction|\SP\Html\DataGrid\Action\DataGridActionSearch $action
- * @var SP\Html\DataGrid\DataGridTab                                                          $data
- * @var \SP\Core\UI\ThemeIcons                                                                $icons
- * @var \SP\Config\ConfigData                                                                 $configData
- * @var callable                                                                              $_getvar
- * @var \SP\Mvc\View\Template                                                                 $this
+ * @var DataGridAction|DataGridActionSearch $action
+ * @var SP\Html\DataGrid\DataGridTab        $data
+ * @var ThemeIcons                          $icons
+ * @var ConfigData                          $configData
+ * @var callable                            $_getvar
+ * @var Template                            $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Html\DataGrid\Action\DataGridActionType;
+use SP\Mvc\View\Template;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -18,7 +25,7 @@ $index = isset($index) ? $index : 0;
 <div class="tab-actions">
     <ul>
         <?php foreach ($data->getDataActions() as $action):
-            if ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::MENUBAR_ITEM):
+            if ($action->getType() === DataGridActionType::MENUBAR_ITEM):
                 ?>
                 <li>
                     <button
@@ -34,7 +41,7 @@ $index = isset($index) ? $index : 0;
                           class="mdl-tooltip mdl-tooltip--bottom"
                           title="<?php echo $action->getTitle(); ?>"><?php echo $action->getName(); ?></span>
                 </li>
-            <?php elseif ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::SEARCH_ITEM): ?>
+            <?php elseif ($action->getType() === DataGridActionType::SEARCH_ITEM): ?>
                 <li class="datagrid-action-search">
                     <form method="post" id="<?php echo $action->getName(); ?>"
                           name="<?php echo $action->getName(); ?>"
@@ -54,13 +61,15 @@ $index = isset($index) ? $index : 0;
 
                             <div class="mdl-textfield__expandable-holder">
                                 <input class="mdl-textfield__input" type="text"
-                                       id="search-<?php echo $index; ?>" name="search"/>
+                                       id="search-<?php echo $index; ?>"
+                                       name="search"/>
                                 <label class="mdl-textfield__label"
                                        for="search-<?php echo $index; ?>"><?php echo $action->getTitle(); ?></label>
                             </div>
                         </div>
 
-                        <button type="reset" id="btn-reset-<?php echo $index; ?>"
+                        <button type="reset"
+                                id="btn-reset-<?php echo $index; ?>"
                                 class="btn-clear mdl-button mdl-js-button mdl-button--icon">
                             <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
                         </button>
@@ -68,15 +77,17 @@ $index = isset($index) ? $index : 0;
                         <span for="btn-reset-<?php echo $index; ?>"
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
 
-                        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
-                        <input type="hidden" name="activetab" value="<?php echo $index; ?>">
+                        <input type="hidden" name="sk"
+                               value="<?php echo $sk; ?>">
+                        <input type="hidden" name="activetab"
+                               value="<?php echo $index; ?>">
                         <input type="hidden" name="start" value="0">
                         <input type="hidden" name="count"
                                value="<?php echo $data->getPager()->getLimitCount(); ?>">
                         <input type="hidden" name="isAjax" value="1">
                     </form>
                 </li>
-            <?php elseif ($action->getType() === \SP\Html\DataGrid\Action\DataGridActionType::HELP_ITEM): ?>
+            <?php elseif ($action->getType() === DataGridActionType::HELP_ITEM): ?>
                 <li>
                     <?php include $this->includePartial('help_account_search'); ?>
                 </li>

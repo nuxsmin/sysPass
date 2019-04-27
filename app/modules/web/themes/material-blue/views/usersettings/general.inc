@@ -1,11 +1,17 @@
 <?php
 /**
- * @var \SP\DataModel\UserPreferencesData $userPreferences
- * @var \SP\Core\UI\ThemeIcons            $icons
- * @var \SP\Config\ConfigData             $configData
- * @var callable                          $_getvar
- * @var \SP\Mvc\View\Template             $this
+ * @var UserPreferencesData $userPreferences
+ * @var ThemeIcons          $icons
+ * @var ConfigData          $configData
+ * @var callable            $_getvar
+ * @var Template            $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\UserPreferencesData;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
 
 $userPreferences = $_getvar('userPreferences');
 ?>
@@ -15,7 +21,8 @@ $userPreferences = $_getvar('userPreferences');
     <?php echo __('Site'); ?>
 </div>
 
-<form method="post" name="frmPreferences" id="frmPreferences" class="form-action"
+<form method="post" name="frmPreferences" id="frmPreferences"
+      class="form-action"
       data-onsubmit="user/saveSettings"
       data-action-route="<?php echo $_getvar('route'); ?>"
       data-reload="1"
@@ -27,8 +34,9 @@ $userPreferences = $_getvar('userPreferences');
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Language'); ?></div>
 
-                <select name="userlang" id="sel-userlang" size="1" class="select-box sel-chosen-ns">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                <select name="userlang" id="sel-userlang" size="1"
+                        class="select-box sel-chosen-ns">
+                    <?php /** @var SelectItem $lang */
                     foreach ($_getvar('langs') as $langName => $lang): ?>
                         <option
                                 value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ""; ?>><?php echo $lang->getName(); ?></option>
@@ -43,7 +51,7 @@ $userPreferences = $_getvar('userPreferences');
 
                 <select name="usertheme" id="sel-usertheme" size="1"
                         class="select-box sel-chosen-ns">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem $theme */
+                    <?php /** @var SelectItem $theme */
                     foreach ($_getvar('themes') as $theme): ?>
                         <option
                                 value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>
@@ -56,7 +64,8 @@ $userPreferences = $_getvar('userPreferences');
                 <?php echo __('Results per page'); ?>
                 <div id="help-account_count"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-account_count">
                     <p>
                         <?php echo __('Number of results per page to display when performing a search.'); ?>
                     </p>
@@ -64,10 +73,13 @@ $userPreferences = $_getvar('userPreferences');
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="resultsperpage" name="resultsperpage" type="number" step="6"
-                           pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="resultsperpage" name="resultsperpage"
+                           type="number" step="6"
+                           pattern="[0-9]{1,5}"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
-                           value="<?php echo $userPreferences->getResultsPerPage(); ?>" required/>
+                           value="<?php echo $userPreferences->getResultsPerPage(); ?>"
+                           required/>
                     <label class="mdl-textfield__label"
                            for="resultsperpage"><?php echo __('Results per page'); ?></label>
                 </div>
@@ -79,7 +91,8 @@ $userPreferences = $_getvar('userPreferences');
                 <ul class="usersettings-general-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_link">
                                 <input type="checkbox" id="account_link"
                                        class="mdl-switch__input"
                                        name="account_link" <?php echo $userPreferences->isAccountLink() ? 'checked' : ''; ?>/>
@@ -96,7 +109,8 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="sort_views">
                                 <input type="checkbox" id="sort_views"
                                        class="mdl-switch__input"
                                        name="sort_views" <?php echo $userPreferences->isSortViews() ? 'checked' : ''; ?>/>
@@ -113,7 +127,8 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="top_navbar">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="top_navbar">
                                 <input type="checkbox" id="top_navbar"
                                        class="mdl-switch__input"
                                        name="top_navbar" <?php echo $userPreferences->isTopNavbar() ? 'checked' : ''; ?>/>
@@ -130,7 +145,8 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="optional_actions">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="optional_actions">
                                 <input type="checkbox" id="optional_actions"
                                        class="mdl-switch__input"
                                        name="optional_actions" <?php echo $userPreferences->isOptionalActions() ? 'checked' : ''; ?>/>
@@ -147,7 +163,8 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="resultsascards">
                                 <input type="checkbox" id="resultsascards"
                                        class="mdl-switch__input"
                                        name="resultsascards" <?php echo $userPreferences->isResultsAsCards() ? 'checked' : ''; ?>/>
@@ -164,7 +181,8 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="check_notifications">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="check_notifications">
                                 <input type="checkbox" id="check_notifications"
                                        class="mdl-switch__input"
                                        name="check_notifications" <?php echo $userPreferences->isCheckNotifications() ? 'checked' : ''; ?>/>
@@ -181,8 +199,10 @@ $userPreferences = $_getvar('userPreferences');
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show_account_search_filters">
-                                <input type="checkbox" id="show_account_search_filters"
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="show_account_search_filters">
+                                <input type="checkbox"
+                                       id="show_account_search_filters"
                                        class="mdl-switch__input"
                                        name="show_account_search_filters" <?php echo $userPreferences->isShowAccountSearchFilters() ? 'checked' : ''; ?>/>
                             </label>

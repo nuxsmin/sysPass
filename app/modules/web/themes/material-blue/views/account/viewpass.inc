@@ -1,11 +1,17 @@
 <?php
 /**
- * @var callable                        $_getvar
- * @var \SP\Core\UI\ThemeIcons          $icons
- * @var \SP\DataModel\AccountExtData    $accountData
- * @var \SP\Services\Account\AccountAcl $accountAcl
- * @var \SP\Config\ConfigData           $configData
+ * @var callable       $_getvar
+ * @var ThemeIcons     $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\AccountExtData;
+use SP\Services\Account\AccountAcl;
+
 ?>
 <div id="box-popup" class="box-password-view">
     <h2 class="center"><?php echo $_getvar('header'); ?>&nbsp;
@@ -21,7 +27,8 @@
                 <td class="dialog-text dialog-user-text"><?php echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copy Username'); ?>" data-clipboard-target=".dialog-user-text">
+                            title="<?php echo __('Copy Username'); ?>"
+                            data-clipboard-target=".dialog-user-text">
                         <?php echo __('User'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
@@ -38,7 +45,8 @@
                 <td class="dialog-text dialog-pass-text"><?php echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo __('Copy Password'); ?>" data-clipboard-target=".dialog-pass-text">
+                            title="<?php echo __('Copy Password'); ?>"
+                            data-clipboard-target=".dialog-pass-text">
                         <?php echo __('Password'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>

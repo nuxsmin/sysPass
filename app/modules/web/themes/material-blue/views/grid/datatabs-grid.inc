@@ -1,11 +1,15 @@
 <?php
 /**
  * @var SP\Html\DataGrid\DataGridTab $data
- * @var \SP\Core\UI\ThemeIcons       $icons
- * @var \SP\Config\ConfigData        $configData
+ * @var ThemeIcons                   $icons
+ * @var ConfigData                   $configData
  * @var callable                     $_getvar
- * @var \SP\Mvc\View\Template        $this
+ * @var Template                     $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
 
 $tabs = $_getvar('tabs');
 ?>

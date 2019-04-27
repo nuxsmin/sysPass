@@ -1,17 +1,25 @@
 <?php
 /**
- * @var \SP\DataModel\PublicLinkListData $publicLink
- * @var \SP\Core\UI\ThemeIcons           $icons
- * @var \SP\Config\ConfigData            $configData
- * @var callable                         $_getvar
- * @var \SP\Mvc\View\Template            $this
+ * @var PublicLinkListData $publicLink
+ * @var ThemeIcons         $icons
+ * @var ConfigData         $configData
+ * @var callable           $_getvar
+ * @var Template           $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\PublicLinkListData;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
 
 $publicLink = $_getvar('publicLink');
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
-    <form method="post" name="frmPublickLink" id="frmPublickLink" class="form-action"
+    <h2 class="center"><?php echo $_getvar('header'); ?><i
+                class="btn-popup-close material-icons">close</i></h2>
+    <form method="post" name="frmPublickLink" id="frmPublickLink"
+          class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php echo $_getvar('route', ''); ?>"
           data-hash="">
@@ -22,9 +30,10 @@ $publicLink = $_getvar('publicLink');
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Account'); ?></div>
 
-                    <select id="accountId" name="accountId" class="select-box" <?php echo $_getvar('disabled'); ?>>
+                    <select id="accountId" name="accountId"
+                            class="select-box" <?php echo $_getvar('disabled'); ?>>
                         <option value=""><?php echo __('Select Account'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $account */
+                        <?php /** @var SelectItem $account */
                         foreach ($_getvar('accounts') as $account): ?>
                             <option
                                     value="<?php echo $account->getId(); ?>" <?php echo $account->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->getName(), $account->getItemProperty('clientName')); ?></option>
@@ -35,7 +44,8 @@ $publicLink = $_getvar('publicLink');
             <tr>
                 <td class="descField"><?php echo __('Notify'); ?></td>
                 <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notify"
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                           for="notify"
                            title="<?php echo __('Notify'); ?>">
                         <input type="checkbox" id="notify"
                                class="mdl-switch__input mdl-color-text--indigo-400"

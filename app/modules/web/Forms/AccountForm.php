@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,9 @@ namespace SP\Modules\Web\Forms;
 
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\NoSuchPropertyException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Services\Account\AccountPresetService;
 use SP\Services\Account\AccountRequest;
@@ -53,9 +56,9 @@ final class AccountForm extends FormBase implements FormInterface
      *
      * @return AccountForm
      * @throws ValidationException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\NoSuchPropertyException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
      */
     public function validate($action)
     {

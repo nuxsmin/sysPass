@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,7 +58,7 @@ trait ControllerTrait
      *
      * @param Request    $request
      * @param ConfigData $configData
-     * @param Closure   $onRedirect
+     * @param Closure    $onRedirect
      */
     protected function sessionLogout(Request $request, ConfigData $configData, Closure $onRedirect)
     {

@@ -1,17 +1,23 @@
 <?php
 /**
- * @var \SP\DataModel\UserData $user
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var UserData   $user
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\UserData;
+use SP\Mvc\View\Template;
 
 $user = $_getvar('user');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i
+                class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
           data-onsubmit="user/savePassword"
@@ -24,7 +30,8 @@ $user = $_getvar('user');
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $user->getName(); ?>" readonly disabled/>
+                               value="<?php echo $user->getName(); ?>" readonly
+                               disabled/>
                     </div>
                 </td>
             </tr>
@@ -46,10 +53,12 @@ $user = $_getvar('user');
                 <td class="valField">
                     <div class="form-control">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="password" name="password" type="password" required
+                            <input id="password" name="password" type="password"
+                                   required
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                    maxlength="50">
-                            <label class="mdl-textfield__label" for="password"><?php echo __('Password'); ?></label>
+                            <label class="mdl-textfield__label"
+                                   for="password"><?php echo __('Password'); ?></label>
                         </div>
                     </div>
                 </td>
@@ -59,7 +68,8 @@ $user = $_getvar('user');
                 <td class="descField"><?php echo __('Password (repeat)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="password_repeat" name="password_repeat" type="password" required
+                        <input id="password_repeat" name="password_repeat"
+                               type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"

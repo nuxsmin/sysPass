@@ -1,15 +1,21 @@
 <?php
 /**
- * @var callable              $_getvar
- * @var \SP\Mvc\View\Template $this
+ * @var callable $_getvar
+ * @var Template $this
  */
+
+use SP\Html\Assets\IconInterface;
+use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Mvc\View\Template;
+
 ?>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
     <header class="mdl-layout__header mdl-color--indigo-400">
         <div class="mdl-layout__header-row">
             <!-- Title -->
             <span class="mdl-layout-icon">
-                <img class="logo btn-menu" src="<?php echo $_getvar('logo_no_bg_color'); ?>"
+                <img class="logo btn-menu"
+                     src="<?php echo $_getvar('logo_no_bg_color'); ?>"
                      alt="logo"
                      data-route="<?php echo $_getvar('homeRoute'); ?>"
                      data-view="search"
@@ -21,9 +27,10 @@
                 <div class="mdl-layout-spacer"></div>
                 <!-- Navigation -->
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
-                    <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
+                    <?php /** @var DataGridAction $action */
                     foreach ($_getvar('actions') as $action): ?>
-                        <a id="btn-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
+                        <a id="btn-<?php echo $action->getId(); ?>"
+                           class="btn-menu mdl-navigation__link"
                             <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                                 <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                             <?php endforeach; ?>>
@@ -38,10 +45,12 @@
                        data-historyreset="1"
                        data-view="notifications">
                         <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
-                           data-badge="0" data-color-class="mdl-color-text--amber-200">notifications</i>
+                           data-badge="0"
+                           data-color-class="mdl-color-text--amber-200">notifications</i>
                     </a>
 
-                    <span for="notifications" class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
+                    <span for="notifications"
+                          class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
                     </span>
 
                     <!-- User's menu -->
@@ -54,7 +63,8 @@
                     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
                         for="users-menu-lower-right">
                         <?php if ($_getvar('showPassIcon')): ?>
-                            <li id="btnUserPass" class="btn-action mdl-menu__item"
+                            <li id="btnUserPass"
+                                class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
                                 data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
@@ -86,9 +96,10 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title"><?php echo $_getvar('app_name'); ?></span>
             <nav class="mdl-navigation">
-                <?php /** @var \SP\Html\DataGrid\Action\DataGridAction $action */
+                <?php /** @var DataGridAction $action */
                 foreach ($_getvar('actions') as $action): ?>
-                    <a id="btn-drawer-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
+                    <a id="btn-drawer-<?php echo $action->getId(); ?>"
+                       class="btn-menu mdl-navigation__link"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                         <?php endforeach; ?>>
@@ -97,16 +108,19 @@
                     </a>
                 <?php endforeach; ?>
 
-                <a id="notifications-drawer" class="btn-menu mdl-navigation__link"
+                <a id="notifications-drawer"
+                   class="btn-menu mdl-navigation__link"
                    data-route="notification/index"
                    data-historyreset="1"
                    data-view="notifications">
                     <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
-                       data-badge="0" data-color-class="mdl-color-text--amber-200">notifications</i>
+                       data-badge="0"
+                       data-color-class="mdl-color-text--amber-200">notifications</i>
                     <?php echo __('Notifications'); ?>
                 </a>
 
-                <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
+                <span for="notifications-drawer"
+                      class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">
                 </span>
 
                 <span class="mdl-menu__item--full-bleed-divider"></span>
@@ -132,11 +146,12 @@
                     <span for="user-name"
                           class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
                     <?php
-                    /** @var \SP\Html\Assets\IconInterface $ctx_userType */
+                    /** @var IconInterface $ctx_userType */
                     $ctx_userType = $_getvar('ctx_userType');
 
                     if ($ctx_userType): ?>
-                        <i id="user-type" class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
+                        <i id="user-type"
+                           class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
                         <span for="user-type"
                               class="mdl-tooltip mdl-tooltip--top"><?php echo $ctx_userType->getTitle(); ?></span>
                     <?php endif; ?>
@@ -171,7 +186,8 @@
     <?php endif; ?>
 
     <main class="mdl-layout__content">
-        <div id="content" data-page="<?php echo $_getvar('contentPage', ''); ?>">
+        <div id="content"
+             data-page="<?php echo $_getvar('contentPage', ''); ?>">
             <?php if ($this->hashContentTemplates()):
                 foreach ($this->getContentTemplates() as $template):
                     include $template;

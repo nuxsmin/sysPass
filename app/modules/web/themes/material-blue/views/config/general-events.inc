@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 
 <div id="title" class="titleNormal">
@@ -19,7 +25,8 @@
             <ul class="config-events-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="log_enabled">
                             <input type="checkbox" id="log_enabled"
                                    class="mdl-switch__input"
                                    name="log_enabled" <?php echo $configData->isLogEnabled() ? 'checked' : ''; ?>/>
@@ -34,7 +41,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="syslog_enabled">
                             <input type="checkbox" id="syslog_enabled"
                                    class="mdl-switch__input"
                                    name="syslog_enabled" <?php echo $configData->isSyslogEnabled() ? 'checked' : ''; ?>/>
@@ -49,7 +57,8 @@
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="remotesyslog_enabled">
                             <input type="checkbox" id="remotesyslog_enabled"
                                    class="mdl-switch__input"
                                    name="remotesyslog_enabled" <?php echo $configData->isSyslogRemoteEnabled() ? 'checked' : ''; ?>/>
@@ -71,7 +80,8 @@
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="remotesyslog_server" name="remotesyslog_server" type="text"
+                <input id="remotesyslog_server" name="remotesyslog_server"
+                       type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $configData->getSyslogServer(); ?>"/>
                 <label class="mdl-textfield__label"
@@ -85,8 +95,10 @@
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="remotesyslog_port" name="remotesyslog_port" type="number"
-                       pattern="[0-9]{1-5}" step="1" max="65535" class="mdl-textfield__input mdl-color-text--indigo-400"
+                <input id="remotesyslog_port" name="remotesyslog_port"
+                       type="number"
+                       pattern="[0-9]{1-5}" step="1" max="65535"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $configData->getSyslogPort(); ?>"/>
                 <label class="mdl-textfield__label"
                        for="remotesyslog_port"><?php echo __('Port'); ?></label>
@@ -100,8 +112,9 @@
         <td class="valField">
             <div class="lowres-title"><?php echo __('Events'); ?></div>
 
-            <select id="log_events" name="log_events[]" multiple="multiple" class="select-box" data-create="true">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $logEvent */
+            <select id="log_events" name="log_events[]" multiple="multiple"
+                    class="select-box" data-create="true">
+                <?php /** @var SelectItem $logEvent */
                 foreach ($_getvar('logEvents') as $logEvent): ?>
                     <option
                             value="<?php echo $logEvent->getName(); ?>"

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Forms;
 
+use SP\Core\Exceptions\ValidationException;
+
 /**
  * Interface FormInterface
  *
@@ -35,8 +37,9 @@ interface FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return FormInterface
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function validate($action);
 

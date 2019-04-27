@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -70,7 +70,7 @@ final class TaskService extends Service
     /**
      * Track task status
      *
-     * @param string   $taskId
+     * @param string  $taskId
      * @param Closure $messagePusher
      *
      * @throws ServiceException

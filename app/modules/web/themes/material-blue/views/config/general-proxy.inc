@@ -1,10 +1,15 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+
 ?>
 
 <div id="title" class="titleNormal">
@@ -19,7 +24,8 @@
             <ul class="config-proxy-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="proxy_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="proxy_enabled">
                             <input type="checkbox" id="proxy_enabled"
                                    class="mdl-switch__input"
                                    name="proxy_enabled" <?php echo $configData->isProxyEnabled() ? 'checked' : ''; ?>/>
@@ -42,7 +48,8 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="proxy_server" name="proxy_server" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $configData->getProxyServer(); ?>">
+                       maxlength="128"
+                       value="<?php echo $configData->getProxyServer(); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_server"><?php echo __('Proxy server'); ?></label>
             </div>
@@ -55,8 +62,10 @@
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="proxy_port" name="proxy_port" type="number"
-                       class="mdl-textfield__input mdl-color-text--indigo-400" pattern="[0-9]{1,5}"
-                       maxlength="128" value="<?php echo $configData->getProxyPort(); ?>">
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       pattern="[0-9]{1,5}"
+                       maxlength="128"
+                       value="<?php echo $configData->getProxyPort(); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_port"><?php echo __('Proxy server port'); ?></label>
             </div>
@@ -70,7 +79,8 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="proxy_user" name="proxy_user" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $configData->getProxyUser(); ?>">
+                       maxlength="128"
+                       value="<?php echo $configData->getProxyUser(); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_user"><?php echo __('Proxy server user'); ?></label>
             </div>
@@ -84,7 +94,8 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="proxy_pass" name="proxy_pass" type="password"
                        class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
+                       maxlength="128"
+                       value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_pass"><?php echo __('Proxy server password'); ?></label>
             </div>

@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 
 <div id="title" class="titleNormal">
@@ -18,7 +24,8 @@
             <?php echo __('Default User'); ?>
             <div id="help-import_defaultuser"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultuser">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-import_defaultuser">
                 <p>
                     <?php echo __('Sets the default user for the accounts imported.'); ?>
                 </p>
@@ -30,7 +37,7 @@
             <select id="import_defaultuser" name="import_defaultuser"
                     class="select-box sel-chosen-user" required>
                 <option value=""><?php echo __('Select User'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                <?php /** @var SelectItem $user */
                 foreach ($_getvar('users') as $user): ?>
                     <option
                             value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>>
@@ -45,7 +52,8 @@
             <?php echo __('Default Group'); ?>
             <div id="help-import_defaultgroup"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultgroup">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-import_defaultgroup">
                 <p>
                     <?php echo __('Sets the default group for the accounts imported.'); ?>
                 </p>
@@ -57,7 +65,7 @@
             <select id="import_defaultgroup" name="import_defaultgroup"
                     class="select-box sel-chosen-usergroup" required>
                 <option value=""><?php echo __('Select Group'); ?></option>
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                <?php /** @var SelectItem $userGroup */
                 foreach ($_getvar('userGroups') as $userGroup): ?>
                     <option
                             value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>>
@@ -76,7 +84,8 @@
                  data-action-route="configImport/import">
                 <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
             </div>
-            <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
+            <form method="post" enctype="multipart/form-data" name="upload_form"
+                  id="fileUploadForm">
                 <input type="file" id="inFile" multiple name="inFile"/>
             </form>
         </td>
@@ -100,7 +109,8 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-import" class="help-box" title="<?php echo __('CSV/XML Import'); ?>">
+            <div for="help-import" class="help-box"
+                 title="<?php echo __('CSV/XML Import'); ?>">
                 <div class="help-container">
                     <p class="help-text"><?php echo __('Allows to import Accounts, Categories and Clients from XML or CSV files.'); ?></p>
 
@@ -152,7 +162,8 @@
             <?php echo __('Master Password'); ?>
             <div id="help-import_masterpwd"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-import_masterpwd">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-import_masterpwd">
                 <p>
                     <?php echo __('It\'s only needed for sysPass XML files that have been encrypted with a different master password from the current one.'); ?>
                 </p>
@@ -160,7 +171,8 @@
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="importMasterPwd" name="importMasterPwd" type="password"
+                <input id="importMasterPwd" name="importMasterPwd"
+                       type="password"
                        class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                        maxlength="255"/>
                 <label class="mdl-textfield__label"
@@ -180,7 +192,8 @@
             <?php echo __('CSV delimiter'); ?>
             <div id="help-import_csvdelimiter"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-            <div class="mdl-tooltip mdl-tooltip--large" for="help-import_csvdelimiter">
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-import_csvdelimiter">
                 <p>
                     <?php echo __('It\'s only needed for CSV files.'); ?>
                 </p>

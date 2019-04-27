@@ -1,16 +1,22 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+
 ?>
 
 <?php if (!$_getvar('curlIsAvailable')): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('The \'%s\' extension is unavailable'), 'curl'); ?>
-        <i id="help-curl" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <i id="help-curl"
+           class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-curl">
             <p>
                 <?php echo __('This extension is needed to connect with DokuWiki'); ?>
@@ -36,7 +42,8 @@
                 <ul class="config-wiki-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="dokuwiki_enabled">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="dokuwiki_enabled">
                                 <input type="checkbox" id="dokuwiki_enabled"
                                        class="mdl-switch__input"
                                        name="dokuwiki_enabled" <?php echo $configData->isDokuwikiEnabled() ? 'checked' : ''; ?>/>
@@ -61,7 +68,8 @@
                 <?php echo __('API URL'); ?>
                 <div id="help-dokuwiki_url"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_url">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-dokuwiki_url">
                     <p>
                         <?php echo __('DokuWiki API URL'); ?>
                     </p>
@@ -78,8 +86,10 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="255" value="<?php echo $configData->getDokuwikiUrl(); ?>"/>
-                    <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo __('API URL'); ?></label>
+                           maxlength="255"
+                           value="<?php echo $configData->getDokuwikiUrl(); ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="dokuwiki_url"><?php echo __('API URL'); ?></label>
                 </div>
             </td>
         </tr>
@@ -88,7 +98,8 @@
                 <?php echo __('Base URL'); ?>
                 <div id="help-dokuwiki_urlbase"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_urlbase">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-dokuwiki_urlbase">
                     <p>
                         <?php echo __('DokuWiki base URL'); ?>
                     </p>
@@ -103,9 +114,11 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dokuwiki_urlbase" name="dokuwiki_urlbase" type="text"
+                    <input id="dokuwiki_urlbase" name="dokuwiki_urlbase"
+                           type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="255" value="<?php echo $configData->getDokuwikiUrlBase(); ?>"/>
+                           maxlength="255"
+                           value="<?php echo $configData->getDokuwikiUrlBase(); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_urlbase"><?php echo __('Base URL'); ?></label>
                 </div>
@@ -116,7 +129,8 @@
                 <?php echo __('User'); ?>
                 <div id="help-dokuwiki_user"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_user">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-dokuwiki_user">
                     <p>
                         <?php echo __('User for connecting to the DokuWiki API.'); ?>
                     </p>
@@ -126,8 +140,10 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="dokuwiki_user" name="dokuwiki_user" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="128" value="<?php echo $configData->getDokuwikiUser(); ?>"/>
-                    <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo __('User'); ?></label>
+                           maxlength="128"
+                           value="<?php echo $configData->getDokuwikiUser(); ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="dokuwiki_user"><?php echo __('User'); ?></label>
                 </div>
             </td>
         </tr>
@@ -137,10 +153,13 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dokuwiki_pass" name="dokuwiki_pass" type="password"
+                    <input id="dokuwiki_pass" name="dokuwiki_pass"
+                           type="password"
                            class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                           maxlength="128" value="<?php echo $configData->getDokuwikiPass(); ?>"/>
-                    <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo __('Password'); ?></label>
+                           maxlength="128"
+                           value="<?php echo $configData->getDokuwikiPass(); ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="dokuwiki_pass"><?php echo __('Password'); ?></label>
                 </div>
             </td>
         </tr>
@@ -149,7 +168,8 @@
                 <?php echo __('Namespace'); ?>
                 <div id="help-dokuwiki_namespace"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_namespace">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-dokuwiki_namespace">
                     <p>
                         <?php echo __('Namespace used to search pages.'); ?>
                     </p>
@@ -157,7 +177,8 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dokuwiki_namespace" name="dokuwiki_namespace" type="text"
+                    <input id="dokuwiki_namespace" name="dokuwiki_namespace"
+                           type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php echo $configData->getDokuwikiNamespace(); ?>"/>

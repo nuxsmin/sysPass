@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -99,7 +99,7 @@ trait JsonTrait
      * Returns JSON response
      *
      * @param Exception $exception
-     * @param int        $status Status code
+     * @param int       $status Status code
      *
      * @return bool
      */

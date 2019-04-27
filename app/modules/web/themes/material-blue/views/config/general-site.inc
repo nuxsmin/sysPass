@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 
 <?php if (!$_getvar('curlIsAvailable')): ?>
@@ -46,7 +52,7 @@
 
             <select name="sitelang" id="sel-sitelang" size="1"
                     class="select-box sel-chosen-ns">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                <?php /** @var SelectItem $lang */
                 foreach ($_getvar('langs') as $lang): ?>
                     <option
                             value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
@@ -70,7 +76,7 @@
 
             <select name="sitetheme" id="sel-sitetheme" size="1"
                     class="select-box sel-chosen-ns">
-                <?php /** @var \SP\Mvc\View\Components\SelectItem $theme */
+                <?php /** @var SelectItem $theme */
                 foreach ($_getvar('themes') as $theme): ?>
                     <option
                             value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>

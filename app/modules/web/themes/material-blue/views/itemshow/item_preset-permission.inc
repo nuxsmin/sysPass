@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 <table class="popup-data">
     <tbody>
@@ -13,10 +19,11 @@
         <td class="valField">
             <div class="account-permissions">
                 <div class="tag-list-box">
-                    <select id="users_view" name="users_view[]" multiple="multiple"
+                    <select id="users_view" name="users_view[]"
+                            multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Select Users'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        <?php /** @var SelectItem $user */
                         foreach ($_getvar('usersView') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
@@ -30,10 +37,11 @@
                 </div>
 
                 <div class="tag-list-box">
-                    <select id="users_edit" name="users_edit[]" multiple="multiple"
+                    <select id="users_edit" name="users_edit[]"
+                            multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Select Users'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $user */
+                        <?php /** @var SelectItem $user */
                         foreach ($_getvar('usersEdit') as $user): ?>
                             <?php if ($user->isSkip()): continue; endif; ?>
                             <option
@@ -54,10 +62,11 @@
         <td class="valField">
             <div class="account-permissions">
                 <div class="tag-list-box">
-                    <select id="user_groups_view" name="user_groups_view[]" multiple="multiple"
+                    <select id="user_groups_view" name="user_groups_view[]"
+                            multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Select Groups'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                        <?php /** @var SelectItem $userGroup */
                         foreach ($_getvar('userGroupsView') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option
@@ -71,10 +80,11 @@
                 </div>
 
                 <div class="tag-list-box">
-                    <select id="user_groups_edit" name="user_groups_edit[]" multiple="multiple"
+                    <select id="user_groups_edit" name="user_groups_edit[]"
+                            multiple="multiple"
                             class="select-box-tags">
                         <option value=""><?php echo __('Select Groups'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                        <?php /** @var SelectItem $userGroup */
                         foreach ($_getvar('userGroupsEdit') as $userGroup): ?>
                             <?php if ($userGroup->isSkip()): continue; endif; ?>
                             <option

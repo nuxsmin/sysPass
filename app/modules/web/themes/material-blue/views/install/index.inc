@@ -1,10 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
+
 ?>
 <div id="actions" class="installer" align="center">
     <div id="page-title">
@@ -13,7 +19,8 @@
 
     <?php include $this->includePartial('error-list'); ?>
 
-    <form id="frmInstall" class="form-action" data-onsubmit="main/install" data-route="install/install">
+    <form id="frmInstall" class="form-action" data-onsubmit="main/install"
+          data-route="install/install">
         <input type="hidden" name="install" value="true"/>
         <input type="hidden" name="isAjax" value="1"/>
 
@@ -23,7 +30,8 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="adminlogin" name="adminlogin" type="text" required
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="admin" maxlength="80" autocomplete="off" tabindex="0"
+                       value="admin" maxlength="80" autocomplete="off"
+                       tabindex="0"
                        autofocus>
                 <label class="mdl-textfield__label"
                        for="adminlogin"><?php echo __('sysPass admin user'); ?></label>
@@ -49,7 +57,8 @@
         <fieldset id="masterpwd">
             <legend><?php echo __('Master Password'); ?></legend>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="masterpassword" name="masterpassword" type="password" required
+                <input id="masterpassword" name="masterpassword" type="password"
+                       required
                        class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                        value="" maxlength="255" autocomplete="off">
                 <label class="mdl-textfield__label"
@@ -57,7 +66,8 @@
             </div>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="masterpasswordR" name="masterpasswordr" type="password" required
+                <input id="masterpasswordR" name="masterpasswordr"
+                       type="password" required
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="" maxlength="255" autocomplete="off">
                 <label class="mdl-textfield__label"
@@ -135,9 +145,10 @@
 
             <div class="form-field">
                 <label for="sel-sitelang"><?php echo __('Language'); ?></label>
-                <select name="sitelang" id="sel-sitelang" size="1" class="select-box"
+                <select name="sitelang" id="sel-sitelang" size="1"
+                        class="select-box"
                         title="<?php echo __('Language'); ?>">
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem $lang */
+                    <?php /** @var SelectItem $lang */
                     foreach ($_getvar('langs') as $lang): ?>
                         <option value="<?php echo $lang->getId(); ?>" <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
                     <?php endforeach; ?>
@@ -158,15 +169,18 @@
                 </label>
 
                 <div>
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="hostingmode">
-                        <input type="checkbox" id="hostingmode" class="mdl-checkbox__input" name="hostingmode">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                           for="hostingmode">
+                        <input type="checkbox" id="hostingmode"
+                               class="mdl-checkbox__input" name="hostingmode">
                     </label>
                 </div>
             </div>
         </fieldset>
 
         <div class="buttons">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" type="submit">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+                    type="submit">
                 <?php echo __('Install'); ?>
                 <i class="material-icons"
                    title="<?php echo __('Install'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>

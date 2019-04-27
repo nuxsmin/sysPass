@@ -1,8 +1,11 @@
 <?php
 /**
- * @var callable              $_getvar
- * @var \SP\Mvc\View\Template $this
+ * @var callable $_getvar
+ * @var Template $this
  */
+
+use SP\Mvc\View\Template;
+
 ?>
 <?php if ($_getvar('message')): ?>
     <div class="noRes round"><?php echo $_getvar('message'); ?></div>

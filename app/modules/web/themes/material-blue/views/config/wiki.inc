@@ -1,10 +1,15 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+
 ?>
 
 <form method="post" name="frmWiki" id="frmWiki" class="form-action"
@@ -24,7 +29,8 @@
                 <ul class="config-wiki-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="wiki_enabled">
                                 <input type="checkbox" id="wiki_enabled"
                                        class="mdl-switch__input"
                                        name="wiki_enabled" <?php echo $configData->isWikiEnabled() ? 'checked' : ''; ?>/>
@@ -44,7 +50,8 @@
                 <?php echo __('Wiki search URL'); ?>
                 <div id="help-wiki_searchurl"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-wiki_searchurl">
                     <p>
                         <?php echo __('URL that Wiki uses for making an entry searching.'); ?>
                     </p>
@@ -66,7 +73,8 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="255" value="<?php echo $configData->getWikiSearchurl(); ?>">
+                           maxlength="255"
+                           value="<?php echo $configData->getWikiSearchurl(); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_searchurl"><?php echo __('Wiki search URL'); ?></label>
                 </div>
@@ -77,7 +85,8 @@
                 <?php echo __('Wiki page URL'); ?>
                 <div id="help-wiki_pageurl"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-wiki_pageurl">
                     <p>
                         <?php echo __('URL that Wiki uses for accessing to the entry details.'); ?>
                     </p>
@@ -99,7 +108,8 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="255" value="<?php echo $configData->getWikiPageurl(); ?>">
+                           maxlength="255"
+                           value="<?php echo $configData->getWikiPageurl(); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_pageurl"><?php echo __('Wiki page URL'); ?></label>
                 </div>
@@ -110,7 +120,8 @@
                 <?php echo __('Account name prefix'); ?>
                 <div id="help-wikifilter"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-wikifilter">
                     <p>
                         <?php echo __('Prefix to determine which accounts have a link to the Wiki.'); ?>
                     </p>

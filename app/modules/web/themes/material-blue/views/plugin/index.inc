@@ -1,4 +1,6 @@
-<h5 class="datagrid-header-title"><?php echo __('Plugins'); ?></h5>
+<h5 class="datagrid-header-title"><?php use SP\Mvc\View\Template;
+
+    echo __('Plugins'); ?></h5>
 <?php
-/** @var \SP\Mvc\View\Template $this */
+/** @var Template $this */
 include $this->includeTemplate('datagrid-grid', 'grid');

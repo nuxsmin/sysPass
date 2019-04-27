@@ -1,10 +1,14 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                     $icons
- * @var \SP\Services\CustomField\CustomFieldItem[] $customFields
- * @var callable                                   $_getvar
- * @var \SP\Mvc\View\Template                      $this
+ * @var ThemeIcons        $icons
+ * @var CustomFieldItem[] $customFields
+ * @var callable          $_getvar
+ * @var Template          $this
  */
+
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+use SP\Services\CustomField\CustomFieldItem;
 
 $customFields = $_getvar('customFields');
 
@@ -58,9 +62,11 @@ foreach ($customFields as $index => $field):?>
                 </div>
             <?php elseif ($field->typeName === 'textarea'): ?>
                 <div class="mdl-textfield mdl-js-textfield">
-                    <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
-                              name="customfield[<?php echo $field->definitionId; ?>]"
-                              id="<?php echo $field->formId; ?>" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($field->value, ENT_QUOTES); ?></textarea>
+                    <textarea
+                            class="mdl-textfield__input mdl-color-text--indigo-400"
+                            type="text" rows="3"
+                            name="customfield[<?php echo $field->definitionId; ?>]"
+                            id="<?php echo $field->formId; ?>" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($field->value, ENT_QUOTES); ?></textarea>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>

@@ -1,9 +1,11 @@
 <?php
 /**
  * @var SP\Html\DataGrid\DataGridInterface $data
- * @var \SP\Mvc\View\Template              $this
+ * @var Template                           $this
  * @var callable                           $_getvar
  */
+
+use SP\Mvc\View\Template;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -13,7 +15,8 @@ $pager = $data->getPager();
 ?>
 <div class="pager round5 shadow">
     <div class="pager-left">
-        <?php echo $data->getData()->getDataCount(); ?> @ <?php echo $data->getTime(); ?>s
+        <?php echo $data->getData()->getDataCount(); ?>
+        @ <?php echo $data->getTime(); ?>s
         <?php if ($pager->getFilterOn()): ?>
             <span class="filter-on round"><?php echo __('Filter ON'); ?></span>
         <?php endif; ?>

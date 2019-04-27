@@ -1,10 +1,15 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
 
 $disabled = $configData->isMaintenance() ? '' : 'disabled';
 ?>
@@ -299,7 +304,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                         name="temporary_masterpass_group"
                         class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
                     <option value=""><?php echo __('Select Group'); ?></option>
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem $userGroup */
+                    <?php /** @var SelectItem $userGroup */
                     foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
                                 value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>

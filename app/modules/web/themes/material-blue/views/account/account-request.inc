@@ -1,20 +1,27 @@
 <?php
 /**
- * @var callable                        $_getvar
- * @var \SP\Core\UI\ThemeIcons          $icons
- * @var \SP\DataModel\AccountExtData    $accountData
- * @var \SP\Services\Account\AccountAcl $accountAcl
- * @var \SP\Config\ConfigData           $configData
+ * @var callable       $_getvar
+ * @var ThemeIcons     $icons
+ * @var AccountExtData $accountData
+ * @var AccountAcl     $accountAcl
+ * @var ConfigData     $configData
  */
 
-/** @var \SP\DataModel\AccountExtData $accountData */
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\AccountExtData;
+use SP\Services\Account\AccountAcl;
+
+/** @var AccountExtData $accountData */
 $accountData = $_getvar('accountData');
 ?>
 
 <div class="data-container">
-    <div id="title" class="titleNormal"><?php echo __('Request Account Modification'); ?></div>
+    <div id="title"
+         class="titleNormal"><?php echo __('Request Account Modification'); ?></div>
 
-    <form method="post" name="requestmodify" id="frmRequestModify" class="form-action"
+    <form method="post" name="requestmodify" id="frmRequestModify"
+          class="form-action"
           data-onsubmit="account/request"
           data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
           data-item-id="<?php echo $_getvar('accountId', ''); ?>"
@@ -26,8 +33,10 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Account name'); ?></label>
+                               value="<?php echo $accountData->getName(); ?>"
+                               readonly>
+                        <label class="mdl-textfield__label"
+                               for="name"><?php echo __('Account name'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -37,8 +46,10 @@ $accountData = $_getvar('accountData');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getClientName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="client"><?php echo __('Client'); ?></label>
+                               value="<?php echo $accountData->getClientName(); ?>"
+                               readonly>
+                        <label class="mdl-textfield__label"
+                               for="client"><?php echo __('Client'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -46,8 +57,10 @@ $accountData = $_getvar('accountData');
                 <td class="descField"><?php echo __('Request'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="description"
-                              name="description" maxlength="1000"></textarea>
+                    <textarea
+                            class="mdl-textfield__input mdl-color-text--indigo-400"
+                            rows="3" id="description"
+                            name="description" maxlength="1000"></textarea>
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Request description'); ?></label>
                     </div>

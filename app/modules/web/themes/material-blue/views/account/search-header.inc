@@ -1,11 +1,16 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                 $icons
- * @var callable                               $_getvar
- * @var \SP\Config\ConfigData                  $configData
- * @var \SP\Services\Account\AccountSearchItem $account
- * @var \SP\Html\DataGrid\DataGridTab          $data
+ * @var ThemeIcons        $icons
+ * @var callable          $_getvar
+ * @var ConfigData        $configData
+ * @var AccountSearchItem $account
+ * @var DataGridTab       $data
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Html\DataGrid\DataGridTab;
+use SP\Services\Account\AccountSearchItem;
 
 if (!isset($data)) {
     $data = $_getvar('data');

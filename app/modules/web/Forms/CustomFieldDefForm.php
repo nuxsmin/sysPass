@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -46,7 +46,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
      * @param $action
      *
      * @return CustomFieldDefForm
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function validate($action)
     {

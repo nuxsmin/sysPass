@@ -1,20 +1,24 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
 ?>
 <main class="mdl-layout__content">
     <div id="actions" class="upgrade">
         <div id="page-title">
-            <h1><?php use SP\Util\VersionUtil;
+            <h1><?php use SP\Config\ConfigData;
+                use SP\Core\UI\ThemeIcons;
+                use SP\Mvc\View\Template;
+                use SP\Util\VersionUtil;
 
                 printf(__('Update %s'), $_getvar('upgradeVersion')); ?></h1>
         </div>
 
-        <form id="frmUpgrade" method="get" class="form-action" data-onsubmit="main/upgrade">
+        <form id="frmUpgrade" method="get" class="form-action"
+              data-onsubmit="main/upgrade">
             <fieldset>
                 <?php if ($_getvar('type') === 'db'): ?>
                     <legend><?php echo __('DB Update'); ?></legend>
@@ -23,7 +27,8 @@
                 <?php endif; ?>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="h" name="h" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
+                    <input id="h" name="h" type="text" required
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
                            autocomplete="off" autofocus>
                     <label class="mdl-textfield__label"
                            for="h"><?php echo __('Security Code'); ?></label>
@@ -69,7 +74,8 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="userid" name="userid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="0" max="1000" value="0">
+                                   autocomplete="off" min="0" max="1000"
+                                   value="0">
                             <label class="mdl-textfield__label"
                                    for="userid"><?php echo __('Enter a valid user ID for the accounts'); ?></label>
                         </div>
@@ -143,7 +149,8 @@
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="userlogin" name="userlogin" type="text" required
+                        <input id="userlogin" name="userlogin" type="text"
+                               required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
@@ -152,19 +159,25 @@
 
                     <?php if ($_getvar('numAccounts') >= 500): ?>
                         <input type="hidden" name="useTask" value="1">
-                        <input type="hidden" name="taskId" value="<?php echo $_getvar('taskId'); ?>">
+                        <input type="hidden" name="taskId"
+                               value="<?php echo $_getvar('taskId'); ?>">
                         <input type="hidden" name="lock" value="upgrade">
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
-                    <input type="checkbox" id="chkConfirm" class="mdl-checkbox__input" name="chkConfirm">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                       for="chkConfirm">
+                    <input type="checkbox" id="chkConfirm"
+                           class="mdl-checkbox__input" name="chkConfirm">
                     <span class="mdl-checkbox__label"><?php echo __('I\'ve done a full sysPass backup'); ?></span>
                 </label>
 
-                <input type="hidden" name="a" value="<?php echo $_getvar('action'); ?>">
-                <input type="hidden" name="type" value="<?php echo $_getvar('type'); ?>">
-                <input type="hidden" name="version" value="<?php echo $_getvar('version'); ?>">
+                <input type="hidden" name="a"
+                       value="<?php echo $_getvar('action'); ?>">
+                <input type="hidden" name="type"
+                       value="<?php echo $_getvar('type'); ?>">
+                <input type="hidden" name="version"
+                       value="<?php echo $_getvar('version'); ?>">
                 <input type="hidden" name="upgrade" value="1">
                 <input type="hidden" name="isAjax" value="1">
             </fieldset>
@@ -179,7 +192,8 @@
             </div>
 
             <div class="buttons">
-                <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+                <button id="btnChange"
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
                         type="submit">
                     <?php echo __('Update'); ?>
                     <i class="material-icons"

@@ -1,10 +1,15 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+
 ?>
 
 <div id="box-pub-noheader">
@@ -59,8 +64,10 @@
                 </div>
 
                 <?php if ($_getvar('from') && $_getvar('from_hash')): ?>
-                    <input type="hidden" name="from" value="<?php echo $_getvar('from'); ?>"/>
-                    <input type="hidden" name="h" value="<?php echo $_getvar('from_hash'); ?>"/>
+                    <input type="hidden" name="from"
+                           value="<?php echo $_getvar('from'); ?>"/>
+                    <input type="hidden" name="h"
+                           value="<?php echo $_getvar('from_hash'); ?>"/>
                 <?php endif; ?>
 
                 <input type="hidden" name="login" value="1"/>
@@ -85,7 +92,8 @@
     </div><!-- Close boxLogin -->
 
     <?php if ($_getvar('updated')): ?>
-        <div id="box-updated" class="round5"><?php echo __('Application successfully updated'); ?></div>
+        <div id="box-updated"
+             class="round5"><?php echo __('Application successfully updated'); ?></div>
     <?php endif; ?>
 
     <?php if ($_getvar('isDemo')): ?>

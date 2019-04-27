@@ -1,25 +1,35 @@
 <?php
 /**
- * @var \SP\DataModel\UserData $user
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var \SP\Mvc\View\Template  $this
+ * @var UserData   $user
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\UserData;
+use SP\Mvc\View\Components\SelectItem;
+use SP\Mvc\View\Template;
 
 $user = $_getvar('user');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i
+                class="btn-popup-close material-icons">close</i></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
-            <a href="#user-panel" class="mdl-tabs__tab is-active"><?php echo __('User'); ?></a>
-            <a href="#options-panel" class="mdl-tabs__tab"><?php echo __('Options'); ?></a>
+            <a href="#user-panel"
+               class="mdl-tabs__tab is-active"><?php echo __('User'); ?></a>
+            <a href="#options-panel"
+               class="mdl-tabs__tab"><?php echo __('Options'); ?></a>
 
             <?php if ($_getvar('isView')): ?>
-                <a href="#details-panel" class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
+                <a href="#details-panel"
+                   class="mdl-tabs__tab"><?php echo __('Details'); ?></a>
             <?php endif; ?>
         </div>
 
@@ -36,7 +46,8 @@ $user = $_getvar('user');
                         <td class="valField">
 
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="name" name="name" type="text" required
+                                <input id="name" name="name" type="text"
+                                       required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php echo $user->getName(); ?>"
                                        maxlength="80" <?php echo $_getvar('readonly'); ?>>
@@ -50,7 +61,8 @@ $user = $_getvar('user');
                         <td class="descField"><?php echo __('Login'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="login" name="login" type="text" required
+                                <input id="login" name="login" type="text"
+                                       required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php echo $user->getLogin(); ?>"
                                        maxlength="80" <?php echo $user->isLdap() ? 'readonly' : $_getvar('readonly'); ?>>
@@ -69,7 +81,8 @@ $user = $_getvar('user');
                             <td class="descField"><?php echo __('SSO Login '); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="login_sso" name="login_sso" type="text"
+                                    <input id="login_sso" name="login_sso"
+                                           type="text"
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            value="<?php echo $user->getSsoLogin(); ?>"
                                            maxlength="100" <?php echo $_getvar('readonly'); ?>>
@@ -84,7 +97,8 @@ $user = $_getvar('user');
                         <td class="descField"><?php echo __('Email'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="email" name="email" type="email" required
+                                <input id="email" name="email" type="email"
+                                       required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php echo $user->getEmail(); ?>"
                                        maxlength="50" <?php echo $_getvar('readonly'); ?>>
@@ -101,7 +115,8 @@ $user = $_getvar('user');
                             <td class="valField">
                                 <div class="form-control">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                        <input id="password" name="password" type="password" required
+                                        <input id="password" name="password"
+                                               type="password" required
                                                class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                                                maxlength="50">
                                         <label class="mdl-textfield__label"
@@ -115,7 +130,9 @@ $user = $_getvar('user');
                             <td class="descField"><?php echo __('Password (repeat)'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="password_repeat" name="password_repeat" type="password" required
+                                    <input id="password_repeat"
+                                           name="password_repeat"
+                                           type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            maxlength="50">
                                     <label class="mdl-textfield__label"
@@ -131,9 +148,10 @@ $user = $_getvar('user');
                             <div class="lowres-title"><?php echo __('Profile'); ?></div>
 
                             <select id="userprofile_id" name="userprofile_id"
-                                    class="select-box" required <?php echo $_getvar('disabled'); ?>>
+                                    class="select-box"
+                                    required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Profile'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem $profile */
+                                <?php /** @var SelectItem $profile */
                                 foreach ($_getvar('profiles') as $profile): ?>
                                     <option
                                             value="<?php echo $profile->getId(); ?>" <?php echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->getName(); ?></option>
@@ -148,9 +166,10 @@ $user = $_getvar('user');
                             <div class="lowres-title"><?php echo __('Group'); ?></div>
 
                             <select id="usergroup_id" name="usergroup_id"
-                                    class="select-box" required <?php echo $_getvar('disabled'); ?>>
+                                    class="select-box"
+                                    required <?php echo $_getvar('disabled'); ?>>
                                 <option value=""><?php echo __('Select Group'); ?></option>
-                                <?php /** @var \SP\Mvc\View\Components\SelectItem $group */
+                                <?php /** @var SelectItem $group */
                                 foreach ($_getvar('groups') as $group): ?>
                                     <option
                                             value="<?php echo $group->getId(); ?>" <?php echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->getName(); ?></option>
@@ -163,7 +182,8 @@ $user = $_getvar('user');
                         <td class="descField"><?php echo __('Notes') ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
+                        <textarea class="mdl-textfield__input" rows="3"
+                                  id="notes" name="notes"
                                   maxlength="1000" <?php echo $_getvar('readonly'); ?>><?php echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notes'); ?></label>
@@ -190,7 +210,8 @@ $user = $_getvar('user');
                                         <div class="mdl-switch__box">
                                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                                    for="adminapp_enabled">
-                                                <input type="checkbox" id="adminapp_enabled"
+                                                <input type="checkbox"
+                                                       id="adminapp_enabled"
                                                        class="mdl-switch__input"
                                                        name="adminapp_enabled" <?php echo $user->isAdminApp() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
                                             </label>
@@ -208,7 +229,8 @@ $user = $_getvar('user');
                                         <div class="mdl-switch__box">
                                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                                    for="adminacc_enabled">
-                                                <input type="checkbox" id="adminacc_enabled"
+                                                <input type="checkbox"
+                                                       id="adminacc_enabled"
                                                        class="mdl-switch__input"
                                                        name="adminacc_enabled" <?php echo $user->isAdminAcc() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
                                             </label>
@@ -228,7 +250,8 @@ $user = $_getvar('user');
                                         <div class="mdl-switch__box">
                                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                                    for="changepass_enabled">
-                                                <input type="checkbox" id="changepass_enabled"
+                                                <input type="checkbox"
+                                                       id="changepass_enabled"
                                                        class="mdl-switch__input"
                                                        name="changepass_enabled" <?php echo $user->isChangePass() ? 'checked' : ' '; ?> <?php echo $_getvar('disabled'); ?>/>
                                             </label>
@@ -312,7 +335,8 @@ $user = $_getvar('user');
                                 <div class="list-wrap">
                                     <ul class="mdl-list">
                                         <?php foreach ($_getvar('usage') as $item): ?>
-                                            <li class="mdl-list__item mdl-list__item" title="<?php echo $item->ref; ?>">
+                                            <li class="mdl-list__item mdl-list__item"
+                                                title="<?php echo $item->ref; ?>">
                                                 <span class="mdl-list__item-primary-content">
                                                 <i class="material-icons mdl-list__item-icon"><?php echo $item->icon; ?></i>
                                                     <?php printf('%s: %s', $item->ref, $item->name ?: $item->id); ?>
@@ -329,7 +353,8 @@ $user = $_getvar('user');
                 </div>
             <?php endif; ?>
 
-            <input type="hidden" name="isLdap" value="<?php echo $user->isLdap(); ?>"/>
+            <input type="hidden" name="isLdap"
+                   value="<?php echo $user->isLdap(); ?>"/>
             <input type="hidden" name="isAjax" value="1">
         </form>
     </div>

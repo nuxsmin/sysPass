@@ -1,19 +1,26 @@
 <?php
 /**
- * @var  \SP\Repositories\Plugin\PluginModel $plugin
- * @var  \SP\Plugin\PluginInterface          $pluginInfo
- * @var \SP\Core\UI\ThemeIcons               $icons
- * @var \SP\Config\ConfigData                $configData
- * @var callable                             $_getvar
- * @var \SP\Mvc\View\Template                $this
+ * @var  PluginModel     $plugin
+ * @var  PluginInterface $pluginInfo
+ * @var ThemeIcons       $icons
+ * @var ConfigData       $configData
+ * @var callable         $_getvar
+ * @var Template         $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+use SP\Plugin\PluginInterface;
+use SP\Repositories\Plugin\PluginModel;
 
 $plugin = $_getvar('plugin');
 $pluginInfo = $_getvar('pluginInfo');
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $_getvar('header'); ?><i class="btn-popup-close material-icons">close</i></h2>
+    <h2 class="center"><?php echo $_getvar('header'); ?><i
+                class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmPlugins">
         <table class="popup-data">
@@ -46,7 +53,8 @@ $pluginInfo = $_getvar('pluginInfo');
                 <td class="descField"><?php echo __('Compatible Version'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="compatible_version" name="compatible_version" type="text"
+                        <input id="compatible_version" name="compatible_version"
+                               type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"

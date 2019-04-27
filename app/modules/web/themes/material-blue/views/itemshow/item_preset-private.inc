@@ -1,11 +1,16 @@
 <?php
 /**
- * @var \SP\DataModel\ItemPreset\AccountPrivate $private
- * @var \SP\Core\UI\ThemeIcons                  $icons
- * @var \SP\Config\ConfigData                   $configData
- * @var callable                                $_getvar
- * @var \SP\Mvc\View\Template                   $this
+ * @var AccountPrivate $private
+ * @var ThemeIcons     $icons
+ * @var ConfigData     $configData
+ * @var callable       $_getvar
+ * @var Template       $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\DataModel\ItemPreset\AccountPrivate;
+use SP\Mvc\View\Template;
 
 $private = $_getvar('private');
 ?>
@@ -18,7 +23,8 @@ $private = $_getvar('private');
             <ul class="private-account-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_user_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="private_user_enabled">
                             <input type="checkbox" id="private_user_enabled"
                                    class="mdl-switch__input"
                                    name="private_user_enabled" <?php echo $private->isPrivateUser() ? 'checked' : ''; ?>/>
@@ -37,7 +43,8 @@ $private = $_getvar('private');
 
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_group_enabled">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="private_group_enabled">
                             <input type="checkbox" id="private_group_enabled"
                                    class="mdl-switch__input"
                                    name="private_group_enabled" <?php echo $private->isPrivateGroup() ? 'checked' : ''; ?>/>

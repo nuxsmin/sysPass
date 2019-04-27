@@ -1,12 +1,15 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons                 $icons
- * @var callable                               $_getvar
- * @var \SP\Config\ConfigData                  $configData
+ * @var ThemeIcons        $icons
+ * @var callable          $_getvar
+ * @var ConfigData        $configData
  * @var AccountSearchItem $account
- * @var \SP\Html\DataGrid\DataGrid             $data
+ * @var DataGrid          $data
  */
 
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Html\DataGrid\DataGrid;
 use SP\Services\Account\AccountSearchItem;
 
 if (!isset($data)) {

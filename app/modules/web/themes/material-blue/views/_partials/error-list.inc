@@ -1,14 +1,18 @@
 <?php
 /**
- * @var callable              $_getvar
- * @var \SP\Mvc\View\Template $this
+ * @var callable $_getvar
+ * @var Template $this
  */
+
+use SP\Core\Exceptions\SPException;
+use SP\Mvc\View\Template;
+
 ?>
 <?php if (count($_getvar('errors')) > 0): ?>
     <ul class="errors round">
         <?php foreach ($_getvar('errors') as $err): ?>
             <?php if (is_array($err)): ?>
-                <?php if ($err['type'] === \SP\Core\Exceptions\SPException::CRITICAL): ?>
+                <?php if ($err['type'] === SPException::CRITICAL): ?>
                     <li class="msg-critical">
                         <i class="material-icons <?php echo $icons->getIconCritical()->getClass(); ?>"><?php echo $icons->getIconCritical()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
@@ -18,7 +22,7 @@
                             </p>
                         <?php endif; ?>
                     </li>
-                <?php elseif ($err['type'] === \SP\Core\Exceptions\SPException::WARNING): ?>
+                <?php elseif ($err['type'] === SPException::WARNING): ?>
                     <li class="msg-warning">
                         <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>

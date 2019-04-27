@@ -1,17 +1,23 @@
 <?php
 /**
- * @var \SP\Core\UI\ThemeIcons $icons
- * @var \SP\Config\ConfigData  $configData
- * @var callable               $_getvar
- * @var callable               $_getRoute
- * @var \SP\Mvc\View\Template  $this
+ * @var ThemeIcons $icons
+ * @var ConfigData $configData
+ * @var callable   $_getvar
+ * @var callable   $_getRoute
+ * @var Template   $this
  */
+
+use SP\Config\ConfigData;
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Template;
+
 ?>
 
 <?php if ($_getvar('pharIsAvailable') !== true): ?>
     <div class="msg-option-unvailable">
         <?php printf(__('The \'%s\' extension is unavailable'), 'phar'); ?>
-        <i id="help-phar" class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
+        <i id="help-phar"
+           class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
         <div class="mdl-tooltip mdl-tooltip--large" for="help-phar">
             <p>
                 <?php echo __('This extension is needed to build the application\'s backup files'); ?>
@@ -76,7 +82,8 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-backup" class="help-box" title="<?php echo __('Backup') ?>">
+            <div for="help-backup" class="help-box"
+                 title="<?php echo __('Backup') ?>">
                 <div class="help-container">
                     <p class="help-text"><?php echo __('The backup allows you to save and download sysPass database and application files including its configuration.'); ?></p>
 
@@ -102,7 +109,8 @@
     <?php echo __('Export Accounts'); ?>
 </div>
 
-<form method="post" name="frmExport" id="frmExport" class="form-action" data-onsubmit="config/export"
+<form method="post" name="frmExport" id="frmExport" class="form-action"
+      data-onsubmit="config/export"
       data-action-route="configBackup/xmlExport">
     <table class="data">
         <tr>
@@ -126,7 +134,8 @@
                     <?php if ($_getvar('hasExport')): ?>
                         <a href="<?php echo $_getRoute('configBackup/downloadExport'); ?>"
                            class="download" target="_blank">
-                            <button type="button" class="mdl-button mdl-js-button">
+                            <button type="button"
+                                    class="mdl-button mdl-js-button">
                                 XML <?php echo $_getvar('siteName'); ?>
                             </button>
                         </a>
@@ -155,7 +164,8 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="export-password_repeat" name="exportPwdR" type="password"
+                    <input id="export-password_repeat" name="exportPwdR"
+                           type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"/>
                     <label class="mdl-textfield__label"
@@ -183,7 +193,8 @@
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div for="help-export" class="help-box" title="<?php echo __('Export Accounts'); ?>">
+            <div for="help-export" class="help-box"
+                 title="<?php echo __('Export Accounts'); ?>">
                 <div class="help-container">
                     <p class="help-text"><?php echo __('The accounts export allows you to save the accounts and their data in XML format to be imported in another sysPass instance.'); ?></p>
 

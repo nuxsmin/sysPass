@@ -1,10 +1,14 @@
 <?php
 /**
- * @var \SP\Mvc\View\Components\DataTab[] $tabs
- * @var \SP\Core\UI\ThemeIcons            $icons
- * @var callable                          $_getvar
- * @var \SP\Mvc\View\Template             $this
+ * @var DataTab[]  $tabs
+ * @var ThemeIcons $icons
+ * @var callable   $_getvar
+ * @var Template   $this
  */
+
+use SP\Core\UI\ThemeIcons;
+use SP\Mvc\View\Components\DataTab;
+use SP\Mvc\View\Template;
 
 $tabs = $_getvar('tabs');
 ?>
