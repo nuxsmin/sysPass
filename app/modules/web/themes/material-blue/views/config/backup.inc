@@ -123,7 +123,7 @@ use SP\Mvc\View\Template;
                 <?php echo $_getvar('lastExportTime'); ?>
             </td>
         </tr>
-        <?php if ($_getvar('ctx_userIsAdminApp')): ?>
+        <?php if ($_getvar('ctx_userIsAdminApp') || $_getvar('isDemo')): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Download Current'); ?>
