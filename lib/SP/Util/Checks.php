@@ -48,6 +48,7 @@ final class Checks
      */
     public static function checkPhpVersion()
     {
-        return version_compare(PHP_VERSION, '7.0', '>=') && version_compare(PHP_VERSION, '7.3', '<=');
+        return version_compare(PHP_VERSION, '7.0', '>=')
+            && version_compare(PHP_VERSION, '7.4', '<');
     }
 }
