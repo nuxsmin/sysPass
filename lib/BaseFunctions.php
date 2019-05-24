@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -100,13 +100,55 @@ function getLastCaller($skip = 2)
 }
 
 /**
+ * @param Throwable $e
+ *
+ * @return string
+ */
+function formatStackTrace(Throwable $e)
+{
+    $out = [];
+
+    foreach ($e->getTrace() as $index => $trace) {
+        if (isset($trace['file'])) {
+            $file = sprintf('%s(%d)', $trace['file'], $trace['line']);
+        } else {
+            $file = '[internal function]';
+        }
+
+        if (isset($trace['class'])) {
+            $function = sprintf('%s->%s', $trace['class'], $trace['function']);
+        } else {
+            $function = $trace['function'];
+        }
+
+        if (!empty($trace['args'])) {
+            $args = [];
+
+            foreach ($trace['args'] as $arg) {
+                $type = ucfirst(gettype($arg));
+
+                if ($type === 'Object') {
+                    $type = sprintf('Object(%s)', get_class($arg));
+                }
+
+                $args[] = $type;
+            }
+        }
+
+        $out[] = sprintf('#%d %s: %s(%s)', $index, $file, $function, implode(',', $args));
+    }
+
+    return implode(PHP_EOL, $out);
+}
+
+/**
  * Process an exception and log into the error log
  *
  * @param \Exception $exception
  */
 function processException(\Exception $exception)
 {
-    logger(sprintf("%s\n%s", __($exception->getMessage()), $exception->getTraceAsString()), 'EXCEPTION');
+    logger(sprintf("%s\n%s", __($exception->getMessage()), formatStackTrace($exception)), 'EXCEPTION');
 
     if (($previous = $exception->getPrevious()) !== null) {
         logger(sprintf("(P) %s\n%s", __($previous->getMessage()), $previous->getTraceAsString()), 'EXCEPTION');
