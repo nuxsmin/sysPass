@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-21 15:45+0200\n"
-"PO-Revision-Date: 2019-04-21 15:45+0200\n"
+"PO-Revision-Date: 2019-05-25 00:22+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: language@syspass.org\n"
 "Language: de\n"
@@ -612,13 +612,6 @@ msgstr "AUS"
 msgid "IP"
 msgstr "IP"
 
-#: app/modules/web/Controllers/AccountController.php:257
-#: app/modules/web/Controllers/AccountController.php:1073
-#: app/modules/web/Controllers/PublicLinkController.php:264
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
-msgid "Link"
-msgstr "Link"
-
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/AccountController.php:290
 #: app/modules/web/Controllers/AccountController.php:342
@@ -774,7 +767,6 @@ msgid "Invalid file"
 msgstr "Ungültige Datei"
 
 #: app/modules/web/Controllers/AccountFileController.php:211
-#, php-format
 msgid "File: %s"
 msgstr "Datei: %s"
 
@@ -783,7 +775,6 @@ msgid "File size exceeded"
 msgstr "Dateigröße erreicht"
 
 #: app/modules/web/Controllers/AccountFileController.php:225
-#, php-format
 msgid "Maximum size: %d KB"
 msgstr "Maximale Dateigröße: %d KB"
 
@@ -827,7 +818,6 @@ msgstr "Dateityp nicht erlaubt"
 
 #: app/modules/web/Controllers/AccountFileController.php:288
 #: lib/SP/Services/Import/FileImport.php:97
-#, php-format
 msgid "MIME type: %s"
 msgstr "MIME-Typ: %s"
 
@@ -1244,17 +1234,6 @@ msgstr "Masterpasswort inkorrekt"
 msgid "The current master password does not match"
 msgstr "Aktuelles Masterpasswort inkorrekt"
 
-#: app/modules/web/Controllers/ConfigEncryptionController.php:117
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
-msgid "Maintenance mode not enabled"
-msgstr "Wartungsmodus nicht aktiviert"
-
-#: app/modules/web/Controllers/ConfigEncryptionController.php:118
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
-msgid "Please, enable it to avoid unwanted behavior from other sessions"
-msgstr ""
-"Bitte aktivieren, um ungewünschte Nebeneffekte anderer Sitzungen zu vermeiden"
-
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
 msgstr "Fehler beim Speichern des Hashwerts für das Masterpasswort"
@@ -1377,7 +1356,6 @@ msgstr "LDAP-Verbindung ist OK"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:164
 #: app/modules/web/Controllers/ConfigLdapController.php:210
-#, php-format
 msgid "Objects found: %d"
 msgstr "Objekte gefunden: %d"
 
@@ -1394,12 +1372,10 @@ msgid "LDAP users import finished"
 msgstr "LDAP-Benutzerimport abgeschlossen"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:286
-#, php-format
 msgid "Imported users: %d / %d"
 msgstr "Importierte Benutzer: %d / %d"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:287
-#, php-format
 msgid "Errors: %d"
 msgstr "Fehler: %d"
 
@@ -2437,6 +2413,10 @@ msgstr "Benutzer ändern"
 msgid "Delete User"
 msgstr "Benutzer entfernen"
 
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:469
+msgid "Import users from LDAP"
+msgstr "Benutzer aus LDAP importieren"
+
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:215
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:216
 msgid "View User Details"
@@ -2598,7 +2578,6 @@ msgid "There aren't any pending notifications"
 msgstr "Keine neuen Benachrichtigungen"
 
 #: app/modules/web/Controllers/ItemsController.php:135
-#, php-format
 msgid "There are pending notifications: %d"
 msgstr "Es gibt ausstehende Benachrichtigungen: %d"
 
@@ -2691,6 +2670,14 @@ msgstr "Links entfernt"
 #: app/modules/web/Controllers/PublicLinkController.php:267
 msgid "Link deleted"
 msgstr "Link entfernt"
+
+#. (itstool) path: strings/text
+#: app/modules/web/Controllers/AccountController.php:257
+#: app/modules/web/Controllers/AccountController.php:1073
+#: app/modules/web/Controllers/PublicLinkController.php:264
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
+msgid "Link"
+msgstr "Link"
 
 #: app/modules/web/Controllers/PublicLinkController.php:297
 #: app/modules/web/Controllers/PublicLinkController.php:336
@@ -3126,7 +3113,6 @@ msgid "Last page"
 msgstr "Letzte Seite"
 
 #: lib/SP/Bootstrap.php:290
-#, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Erforderliche PHP-Version >= %s <= %s"
 
@@ -3136,23 +3122,23 @@ msgstr ""
 "Bitte aktualisieren Sie ihre PHP-Version, damit sysPass korrekt "
 "funktionieren kann."
 
-#: lib/SP/Config/ConfigUtil.php:102
-msgid "'/app/config' directory does not exist."
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:94
+msgid "\"/config\" directory does not exist."
+msgstr "Das \" Verzeichnis \"config\" existiert nicht"
 
-#: lib/SP/Config/ConfigUtil.php:108
-msgid "Unable to write into '/app/config' directory"
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:100
+msgid "Unable to write into \"/config\" directory"
+msgstr "In das Verzeichnis \"config\" kann nicht geschrieben werden"
 
-#: lib/SP/Config/ConfigUtil.php:117
-msgid "'/app/config' directory permissions are wrong"
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:109
+msgid "\"/config\" directory permissions are wrong"
+msgstr "Die Zugriffsrechte des \"config\"-Verzeichnisses sind falsch"
 
 #: lib/SP/Config/ConfigUtil.php:119
-#, php-format
 msgid "Current: %s - Needed: 750"
 msgstr "Aktuell:%s - Benötigt: 750"
 
+#. Not available
 #: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:652
 msgid "N/A"
 msgstr "N/A"
@@ -3212,7 +3198,6 @@ msgid "Invalid icons class"
 msgstr "Ungültige Symbolklasse"
 
 #: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
-#, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Fehler beim Ermitteln der Vorlage \"%s\" : %s"
 
@@ -3240,7 +3225,6 @@ msgid "Invalid Action"
 msgstr "Ungültige Aktion"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:71
-#, php-format
 msgid "Password needs to be %d characters long"
 msgstr "Das Passwort muss %d Zeichen lang sein"
 
@@ -3278,12 +3262,10 @@ msgid "Wrong object type"
 msgstr "Falscher Objekttyp"
 
 #: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
-#, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Variable \"%s\" konnte nicht gefunden werden"
 
 #: lib/SP/Mvc/View/Template.php:336
-#, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Variable \"%s\" konnte nicht entfernt werden"
 
@@ -3292,12 +3274,10 @@ msgid "Template does not contain files"
 msgstr "Vorlage enthält keine Dateien"
 
 #: lib/SP/Plugin/PluginManager.php:192
-#, php-format
 msgid "Plugin version not compatible (%s)"
 msgstr "Plugin-Version inkompatibel (%s)"
 
 #: lib/SP/Plugin/PluginManager.php:204 lib/SP/Plugin/PluginManager.php:260
-#, php-format
 msgid "Unable to load the \"%s\" plugin"
 msgstr "Fehler beim Laden des Plugins \"%s\""
 
@@ -3318,19 +3298,6 @@ msgstr "Plugin geladen"
 msgid "New Plugin"
 msgstr "Neues Plugin"
 
-#: lib/SP/Plugin/PluginManager.php:392
-msgid "Upgrading plugin"
-msgstr ""
-
-#: lib/SP/Plugin/PluginManager.php:409
-msgid "Plugin upgraded"
-msgstr ""
-
-#: lib/SP/Plugin/PluginManager.php:418
-#, php-format
-msgid "Unable to upgrade the \"%s\" plugin"
-msgstr ""
-
 #: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
 msgstr "Funktion nicht verfügbar"
@@ -3338,10 +3305,6 @@ msgstr "Funktion nicht verfügbar"
 #: lib/SP/Providers/Auth/AuthProvider.php:220
 msgid "Method already initialized"
 msgstr "Funktion bereits initialisiert"
-
-#: lib/SP/Providers/Auth/Ldap/Ldap.php:110
-msgid "LDAP type not set"
-msgstr "LDAP-Typ nicht gesetzt"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:121
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:128
@@ -3406,19 +3369,12 @@ msgstr "Benutzer in Gruppe verifiziert"
 msgid "User does not belong to the group"
 msgstr "Der Benutzer gehört nicht zur Gruppe"
 
-#: lib/SP/Providers/Mail/MailHandler.php:149
-#, php-format
-msgid "Event: %s"
-msgstr "Ereignis: %s"
-
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
-#, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Durchgeführt von: %s (%s)"
 
 #: lib/SP/Providers/Mail/MailHandler.php:162
-#, php-format
 msgid "IP Address: %s"
 msgstr "IP-Adresse: %s"
 
@@ -3663,20 +3619,6 @@ msgstr "Fehler beim Abrufen der Benachrichtigung"
 msgid "Error while retrieving the notifications"
 msgstr "Fehler beim Abrufen der Benachrichtigungen"
 
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
-msgid "Error while adding plugin's data"
-msgstr ""
-
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
-msgid "Error while updating plugin's data"
-msgstr ""
-
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
-msgid "Error while deleting plugin's data"
-msgstr ""
-
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
 msgstr "Fehler beim Hinzufügen des Plugins"
@@ -3881,12 +3823,10 @@ msgid "Error while retrieving the accounts' passwords"
 msgstr "Fehler beim Laden der Kontopasswörter"
 
 #: lib/SP/Services/Account/AccountCryptService.php:141
-#, php-format
 msgid "Accounts updated: %d / %d"
 msgstr "Aktualisierte Konten: %d /%d"
 
 #: lib/SP/Services/Account/AccountCryptService.php:150
-#, php-format
 msgid "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 msgstr ""
 "Konten aktualisiert: %d / %d - %d%% - voraussichtliche Verfügbarkeit: %ds "
@@ -4023,7 +3963,6 @@ msgid "Error while doing the backup"
 msgstr "Fehler beim Ausführen des Backups"
 
 #: lib/SP/Services/Backup/FileBackupService.php:139
-#, php-format
 msgid "Unable to create the backups directory (\"%s\")"
 msgstr "Backup-Verzeichnis (\"%s\") kann nicht erstellt werden"
 
@@ -4067,7 +4006,6 @@ msgstr "Wiederherstellen der Konfiguration nicht möglich"
 
 #: lib/SP/Services/Config/ConfigService.php:68
 #: lib/SP/Services/Config/ConfigService.php:153
-#, php-format
 msgid "Parameter not found (%s)"
 msgstr "Parameter nicht gefunden (%s)"
 
@@ -4088,10 +4026,9 @@ msgstr "Temporäres Passwort abgelaufen"
 msgid "Error while checking the temporary password"
 msgstr "Fehler beim Überprüfen des temporären Passworts"
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
-#, php-format
-msgid "%s Master Password"
-msgstr "%s Masterpasswort"
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
+msgid "Master Password %s"
+msgstr "Masterpasswort %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
@@ -4102,12 +4039,10 @@ msgstr ""
 "Anmeldung angefordert wird."
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:234
-#, php-format
 msgid "The new Master Password is: %s"
 msgstr "Neues Masterpasswort ist: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:235
-#, php-format
 msgid "This password will be valid until: %s"
 msgstr "Das Passwort ist gültig bis: %s"
 
@@ -4152,7 +4087,6 @@ msgstr "Feldtyp nicht gefunden"
 
 #: lib/SP/Services/Export/XmlExportService.php:125
 #: lib/SP/Storage/File/FileCacheBase.php:98
-#, php-format
 msgid "Unable to create the directory (%s)"
 msgstr "Fehler beim Erzeugen des Verzeichnisses (%s)"
 
@@ -4198,19 +4132,16 @@ msgid "Wrong encryption password"
 msgstr "Falsches Verschlüsselungspasswort"
 
 #: lib/SP/Services/Import/CsvImport.php:50
-#, php-format
 msgid "Detected format: %s"
 msgstr "Format erkannt: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
 #: lib/SP/Services/Import/CsvImportBase.php:180
-#, php-format
 msgid "Wrong number of fields (%d)"
 msgstr "Falsche Anzahl an Feldern (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
 #: lib/SP/Services/Import/CsvImportBase.php:182
-#, php-format
 msgid "Please, check the CSV file format in line %s"
 msgstr "Bitte die CSV-Datei in Zeile %s überprüfen"
 
@@ -4241,7 +4172,6 @@ msgid "Please, check PHP configuration for upload files"
 msgstr "Bitte überprüfen Sie die PHP-Konfiguration zum Hochladen von Dateien"
 
 #: lib/SP/Services/Import/ImportService.php:96
-#, php-format
 msgid "Mime type not supported (\"%s\")"
 msgstr "Mime-Typ (\"%s\") wird nicht unterstützt"
 
@@ -4325,7 +4255,6 @@ msgstr "Falsches XML-Format"
 
 #: lib/SP/Services/Import/XmlImportBase.php:121
 #: lib/SP/Services/Import/XmlImportTrait.php:70
-#, php-format
 msgid "\"%s\" node doesn't exist"
 msgstr "Knoten \"% s\" existiert nicht"
 
@@ -4411,7 +4340,6 @@ msgid "Error while creating 'admin' user"
 msgstr "Fehler beim Erstellen des Benutzers 'admin'"
 
 #: lib/SP/Services/Install/MySQL.php:135
-#, php-format
 msgid "Unable to check the sysPass user (%s)"
 msgstr "Der sysPass Benutzer konnte nicht überprüft werden (%s)"
 
@@ -4421,7 +4349,6 @@ msgstr ""
 "Bitte die Berechtigungen des Benutzers der Datenbankverbindung überprüfen"
 
 #: lib/SP/Services/Install/MySQL.php:181
-#, php-format
 msgid "Error while creating the MySQL connection user '%s'"
 msgstr "Fehler beim Erstellen des Benutzers '%s' für die Datenbankverbindung"
 
@@ -4436,7 +4363,6 @@ msgstr ""
 
 #: lib/SP/Services/Install/MySQL.php:213 lib/SP/Services/Install/MySQL.php:329
 #: lib/SP/Services/Install/MySQL.php:341
-#, php-format
 msgid "Error while creating the DB ('%s')"
 msgstr "Fehler beim Anlegen der Datenbank ('%s')"
 
@@ -4445,7 +4371,6 @@ msgid "Please check the database user permissions"
 msgstr "Bitte überprüfen Sie die Datenbank-Zugriffsberechtigungen"
 
 #: lib/SP/Services/Install/MySQL.php:237
-#, php-format
 msgid "Error while setting the database permissions ('%s')"
 msgstr "Fehler beim Konfigurieren der Datenbank ('%s')"
 
@@ -4458,7 +4383,6 @@ msgid "You need to create it and assign the needed permissions"
 msgstr "Sie müssen es erstellen und die nötigen Rechte zuweisen"
 
 #: lib/SP/Services/Install/MySQL.php:309
-#, php-format
 msgid "Error while selecting '%s' database (%s)"
 msgstr "Fehler beim Auswählen der Datenbank '%s' (%s)"
 
@@ -4507,19 +4431,16 @@ msgstr ""
 "Dies ist eine Test-E-Mail, um zu überprüfen, ob die Konfiguration richtig "
 "funktioniert."
 
+#: lib/SP/Services/Mail/MailService.php:186
+msgid "Mail service unavailable"
+msgstr "Mail Service nicht erreichbar"
+
 #: lib/SP/Services/Notification/NotificationService.php:102
 #: lib/SP/Services/Notification/NotificationService.php:121
 #: lib/SP/Services/Notification/NotificationService.php:180
 #: lib/SP/Services/Notification/NotificationService.php:210
 msgid "Notification not found"
 msgstr "Benachrichtigung nicht gefunden"
-
-#: lib/SP/Services/Plugin/PluginDataService.php:97
-#: lib/SP/Services/Plugin/PluginDataService.php:121
-#: lib/SP/Services/Plugin/PluginDataService.php:165
-#: lib/SP/Services/Plugin/PluginDataService.php:183
-msgid "Plugin's data not found"
-msgstr ""
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4570,10 +4491,6 @@ msgstr "Tag nicht gefunden"
 msgid "Unable to create the lock file"
 msgstr "Fehler beim Erzeugen der lock-Datei"
 
-#: lib/SP/Services/Task/TaskService.php:93
-msgid "Task not set within wait time"
-msgstr "Aufgabe nicht innerhalb der konfigurierten Wartezeit erledigt"
-
 #: lib/SP/Services/Task/TaskService.php:182
 msgid "Waiting for progress updating ..."
 msgstr "Warte auf Update-Fortschritt ..."
@@ -4585,7 +4502,6 @@ msgid "Track not found"
 msgstr "Track nicht gefunden"
 
 #: lib/SP/Services/Track/TrackService.php:162
-#, php-format
 msgid "Attempts exceeded (%d/%d)"
 msgstr "Versuche überschritten (%d/%d)"
 
@@ -4684,11 +4600,6 @@ msgstr "Die Update-Datei enthält keinerlei Daten"
 msgid "Database updating was completed successfully."
 msgstr "Die Aktualisierung der Datenbank war erfolgreich."
 
-#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
-#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
-msgid "Plugins upgrade"
-msgstr ""
-
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:56
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:102
 msgid "Public links update"
@@ -4770,7 +4681,6 @@ msgid "Error while querying"
 msgstr "Fehler bei der Abfrage"
 
 #: lib/SP/Storage/File/FileCachePacked.php:45
-#, php-format
 msgid "Error while decompressing the file data (%s)"
 msgstr "Fehler beim Dekomprimieren der Dateidaten (%s)"
 
@@ -4779,55 +4689,45 @@ msgid "Error while retrieving the data"
 msgstr "Fehler beim Abrufen der Daten"
 
 #: lib/SP/Storage/File/FileCachePacked.php:70
-#, php-format
 msgid "Error while compressing the file data (%s)"
 msgstr "Fehler beim Komprimieren der Dateidaten (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:76
 #: lib/SP/Storage/File/FileHandler.php:165
-#, php-format
 msgid "Unable to read/write the file (%s)"
 msgstr "Fehler beim Lesen/Schreiben der Datei (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:101
-#, php-format
 msgid "Unable to open the file (%s)"
 msgstr "Fehler beim Öffnen der Datei (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:119
-#, php-format
 msgid "Unable to obtain a lock (%s)"
 msgstr "Fehler beim Sperren (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:134
 #: lib/SP/Storage/File/FileHandler.php:148
-#, php-format
 msgid "Unable to read from file (%s)"
 msgstr "Lesen von Datei (%s) nicht möglich"
 
 #: lib/SP/Storage/File/FileHandler.php:207
-#, php-format
 msgid "Unable to close the file (%s)"
 msgstr "Fehler biem Schließen der Datei (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:261
-#, php-format
 msgid "Unable to write in file (%s)"
 msgstr "Schreiben in Datei (%s) nicht möglich"
 
 #: lib/SP/Storage/File/FileHandler.php:276
-#, php-format
 msgid "File not found (%s)"
 msgstr "Datei (%s) nicht gefunden"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
-#, php-format
 msgid "Unable to read/write file (%s)"
 msgstr "Fehler beim Lesen/Schreiben der Datei (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:328
-#, php-format
 msgid "Unable to delete file (%s)"
 msgstr "Entfernen von Datei (%s) nicht möglich"
 
@@ -4858,6 +4758,307 @@ msgstr "Ein Ausnahmefehler ist aufgetreten"
 #: lib/SP/Util/ImageUtil.php:65
 msgid "Invalid image"
 msgstr "Falsches Bild"
+
+#: app/resources/strings.js.inc:27
+msgid "There was an error"
+msgstr "Ein Fehler ist aufgetreten"
+
+#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
+msgid "Session finished"
+msgstr "Sitzung beendet"
+
+#: app/resources/strings.js.inc:29
+msgid "Delete account?"
+msgstr "Konto entfernen?"
+
+#: app/resources/strings.js.inc:30
+msgid "Delete user?"
+msgstr "Benutzer entfernen?"
+
+#: app/resources/strings.js.inc:31
+msgid "You should save configuration in order to take effect"
+msgstr "Bitte speichern Sie die Konfiguration"
+
+#: app/resources/strings.js.inc:32
+msgid "Generated Password"
+msgstr "Generiertes Passwort"
+
+#: app/resources/strings.js.inc:33
+msgid "High level"
+msgstr "Hohes Niveau"
+
+#: app/resources/strings.js.inc:34
+msgid "Average level"
+msgstr "Mittleres Niveau"
+
+#: app/resources/strings.js.inc:35
+msgid "Low level"
+msgstr "Niedriges Niveau"
+
+#: app/resources/strings.js.inc:36
+msgid "Very High level"
+msgstr "Sehr hohes Niveau"
+
+#: app/resources/strings.js.inc:37
+msgid "You should use at least 8 characters"
+msgstr "Verwenden Sie mindestens 8 Zeichen"
+
+#: app/resources/strings.js.inc:38
+msgid "Delete item?"
+msgstr "Element entfernen?"
+
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
+#: app/resources/strings.js.inc:39
+msgid "Page not found"
+msgstr "Seite nicht gefunden"
+
+#: app/resources/strings.js.inc:41
+msgid "Delete file?"
+msgstr "Datei entfernen?"
+
+#: app/resources/strings.js.inc:42
+msgid "Your browser does not support HTML5 file uploads"
+msgstr "Ihr Browser unterstützt kein Hochladen von Dateien via HTML5"
+
+#: app/resources/strings.js.inc:43
+msgid "Too many files"
+msgstr "Zu viele Dateien"
+
+#: app/resources/strings.js.inc:44
+msgid "File size not allowed"
+msgstr "Datei ist zu groß"
+
+#: app/resources/strings.js.inc:45
+msgid "MIME type not allowed"
+msgstr "MIME-Typ nicht erlaubt"
+
+#: app/resources/strings.js.inc:46
+msgid "Clear the event log out?"
+msgstr "Ereignisprotokoll leeren?"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
+#: app/modules/web/themes/material-blue/views/config/import.inc:59
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
+#: app/resources/strings.js.inc:47
+msgid "Select Group"
+msgstr "Gruppe auswählen"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
+#: app/modules/web/themes/material-blue/views/config/import.inc:32
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
+#: app/resources/strings.js.inc:48
+msgid "Select User"
+msgstr "Benutzer auswählen"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
+#: app/resources/strings.js.inc:49
+msgid "Select Profile"
+msgstr "Profil auswählen"
+
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
+#: app/resources/strings.js.inc:50
+msgid "Select Client"
+msgstr "Kunde auswählen"
+
+#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
+#: app/modules/web/themes/material-blue/views/account/account.inc:120
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
+#: app/resources/strings.js.inc:51
+msgid "Select Category"
+msgstr "Kategorie auswählen"
+
+#: app/resources/strings.js.inc:52
+msgid "No results"
+msgstr "Kein Ergebnis"
+
+#: app/resources/strings.js.inc:53
+msgid "Password options"
+msgstr "Passwort-Optionen"
+
+#: app/resources/strings.js.inc:54
+msgid "Generate random password"
+msgstr "Zufälliges Passwort erzeugen"
+
+#: app/resources/strings.js.inc:55
+msgid "Complexity"
+msgstr "Komplexität"
+
+#: app/resources/strings.js.inc:56
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: app/resources/strings.js.inc:57
+msgid "Password strength level"
+msgstr "Passwortstärke"
+
+#: app/resources/strings.js.inc:58
+msgid "Show Password"
+msgstr "Passwort anzeigen"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
+#: app/resources/strings.js.inc:59
+msgid "Copy Username"
+msgstr "Benutzername kopieren"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
+#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
+#: app/resources/actions.xml:271
+msgid "Copy Password"
+msgstr "Passwort kopieren"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
+#: app/resources/strings.js.inc:61
+msgid "Include Numbers"
+msgstr "Ziffern einschließen"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
+#: app/resources/strings.js.inc:62
+msgid "Include Uppercase"
+msgstr "Großbuchstaben verwenden"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
+#: app/resources/strings.js.inc:63
+msgid "Include Symbols"
+msgstr "Sonderzeichen einschließen"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
+#: app/resources/strings.js.inc:64
+msgid "Length"
+msgstr "Länge"
+
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
+#: app/resources/strings.js.inc:65
+msgid "Select Action"
+msgstr "Aktion auswählen"
+
+#: app/resources/strings.js.inc:68
+msgid "Accept"
+msgstr "OK"
+
+#: app/resources/strings.js.inc:69
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: app/resources/strings.js.inc:70
+msgid "Password Copied into Clipboard"
+msgstr "Passwort in die Zwischenablage kopiert"
+
+#: app/resources/strings.js.inc:71
+msgid "Error while copying to clipboard"
+msgstr "Fehler beim Kopieren in die Zwischenablage"
+
+#: app/resources/strings.js.inc:73
+msgid "Send notifies?"
+msgstr "Benachrichtigungen erhalten?"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
+#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
+msgid "Mark as Favorite"
+msgstr "Als Favorit markieren"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
+#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
+msgid "Delete Favorite"
+msgstr "Favorit entfernen"
+
+#: app/resources/strings.js.inc:76
+msgid "Clear Selection"
+msgstr "Auswahl aufheben"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
+#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
+msgid "Show Favorites"
+msgstr "Favoriten anzeigen"
+
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
+#: app/resources/strings.js.inc:78
+msgid "Display All"
+msgstr "Alle anzeigen"
+
+#: app/resources/strings.js.inc:81
+msgid "Now"
+msgstr "Jetzt"
+
+#: app/resources/strings.js.inc:82
+msgid ""
+"This process will import the detected LDAP users. Would you like to continue?"
+msgstr ""
+"Der Vorgang wird die ermittelten LDAP-Benutzer importieren. Möchten Sie "
+"fortfahren?"
+
+#: app/resources/strings.js.inc:83
+msgid "This action will reset all plugin data. Do you want to continue?"
+msgstr ""
+"Diese Aktion wird alle Plugin-Daten zurücksetzen. Möchten Sie fortfahren?"
+
+#: app/resources/strings.js.inc:84
+msgid "This process could take some time long. Do you wish to continue?"
+msgstr "Dieser Vorgang könnte länger dauern. Möchten Sie fortfahren?"
+
+#: app/resources/strings.js.inc:87
+msgid "Performing task. Please, do not close browser's window/tab."
+msgstr "Führe Aufgabe aus. Bitte das Browserfenster/Tab nicht schließen."
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
+#: app/resources/strings.js.inc:88
+msgid "Include Letters"
+msgstr "Buchstaben einschließen"
+
+#: app/resources/strings.js.inc:89
+msgid "Cookies disabled. Application won't work properly."
+msgstr ""
+"Cookies sind deaktiviert, weshalb die Anwendung nicht ordnungsgemäß "
+"funktionieren kann."
+
+#: app/resources/strings.js.inc:90
+msgid "Clipboard not supported by your browser."
+msgstr "Zwischenablage wird nicht vom Browser unterstützt."
+
+#: app/resources/strings.js.inc:91
+msgid "Performing auto-login"
+msgstr "Führe Auto-Login aus"
+
+#: app/resources/strings.js.inc:92
+msgid "There is a more recent version of {0} plugin ({1})"
+msgstr "Es gibt eine neuere Version des Plugins {0} ({1})"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:30
+#: app/resources/strings.js.inc:93
+msgid "Updated"
+msgstr "Aktualisiert"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:36
+#: app/resources/strings.js.inc:94
+msgid "Error while checking for updates"
+msgstr "Fehler bei der Updateprüfung"
+
+#: app/resources/strings.js.inc:95
+msgid "sysPass Notices"
+msgstr "sysPass Neuigkeiten"
+
+#: app/resources/strings.js.inc:96
+msgid "Clear the tracks out?"
+msgstr "Track-Liste leeren?"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
@@ -4997,14 +5198,6 @@ msgstr "Historie"
 msgid "Details"
 msgstr "Details"
 
-#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:120
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
-#: app/resources/strings.js.inc:51
-msgid "Select Category"
-msgstr "Kategorie auswählen"
-
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
 #: app/modules/web/themes/material-blue/views/account/account.inc:218
@@ -5054,30 +5247,6 @@ msgstr "Ansehen"
 msgid "Select Groups"
 msgstr "Gruppen auswählen"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
-#: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
-#: app/resources/strings.js.inc:48
-msgid "Select User"
-msgstr "Benutzer auswählen"
-
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
-#: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
-#: app/resources/strings.js.inc:47
-msgid "Select Group"
-msgstr "Gruppe auswählen"
-
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:228
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
@@ -5106,13 +5275,6 @@ msgstr "Senden"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:214
 msgid "Permissions"
 msgstr "Berechtigungen"
-
-#: app/modules/web/themes/material-blue/views/account/account.inc:94
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
-#: app/resources/strings.js.inc:50
-msgid "Select Client"
-msgstr "Kunde auswählen"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
@@ -5162,7 +5324,6 @@ msgid "Drop files here (max. 5) or click to select"
 msgstr "Dateien hier fallen lassen (max. 5) oder zum selektieren anklicken"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:39
-#, php-format
 msgid "Maximum file size: %d MB"
 msgstr "Maximale Dateigröße: %d MB"
 
@@ -5171,7 +5332,6 @@ msgid "Search in Wiki"
 msgstr "Im Wiki suchen"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:84
-#, php-format
 msgid "Open link to: %s"
 msgstr "Öffnen Sie den Link zu: %s"
 
@@ -5182,18 +5342,6 @@ msgstr "Passwort abgelaufen"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:125
 msgid "Private Account (Group)"
 msgstr "Privates Konto (Gruppe)"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
-#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
-msgid "Delete Favorite"
-msgstr "Favorit entfernen"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
-#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
-msgid "Mark as Favorite"
-msgstr "Als Favorit markieren"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
@@ -5215,17 +5363,6 @@ msgstr "Siehe Wiki"
 msgid "Global search"
 msgstr "Globale Suche"
 
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
-#: app/resources/strings.js.inc:78
-msgid "Display All"
-msgstr "Alle anzeigen"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
-#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
-msgid "Show Favorites"
-msgstr "Favoriten anzeigen"
-
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
 msgstr "Favoriten filtern"
@@ -5242,18 +5379,6 @@ msgstr "Mehr Filter"
 msgid "Select Tag"
 msgstr "Tag auswählen"
 
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
-#: app/resources/strings.js.inc:59
-msgid "Copy Username"
-msgstr "Benutzername kopieren"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
-#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
-#: app/resources/actions.xml:271
-msgid "Copy Password"
-msgstr "Passwort kopieren"
-
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
 msgstr "Daten werden nach dem Speichern verschlüsselt"
@@ -5267,7 +5392,6 @@ msgstr "Daten werden nach dem Speichern entschlüsselt"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:12
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:12
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:12
-#, php-format
 msgid "The '%s' extension is unavailable"
 msgstr "Die Erweiterung '%s' ist nicht verfügbar"
 
@@ -5422,10 +5546,6 @@ msgstr "Das Kontopasswort wird als Bild angezeigt."
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 msgid "Expire time"
 msgstr "Ablaufzeit"
-
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
-msgid "Expire time (minutes)"
-msgstr "Ablaufzeit (Minuten)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271
@@ -5607,7 +5727,6 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
-#, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr "Es werden %s Konten aktualisiert. Dies kann etwas dauern."
 
@@ -5649,7 +5768,6 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:174
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:132
-#, php-format
 msgid "You could get more info on: %s"
 msgstr "Mehr Informationen erhalten Sie hier: %s"
 
@@ -5885,17 +6003,6 @@ msgstr ""
 msgid "Session timeout (s)"
 msgstr "Ablauf der Sitzung (s)"
 
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
-msgid "Application URL"
-msgstr ""
-
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
-msgid ""
-"Sets the application URL when accessing through a reverse proxy or load "
-"balancer."
-msgstr ""
-
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:136
 msgid "Force HTTPS"
 msgstr "HTTPS erzwingen"
@@ -6106,7 +6213,6 @@ msgstr "Einstellungen sichern"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:104
 #: app/modules/web/themes/material-blue/views/config/info.inc:186
-#, php-format
 msgid "Download %s"
 msgstr "Download %s"
 
@@ -6161,15 +6267,17 @@ msgstr "Aktiviert die Authentifizierung über einen LDAP-Server."
 msgid "This method will use MySQL as fallback."
 msgstr "Diese Methode verwendet im Fehlerfall die Datenbank als Reserve."
 
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:65
+msgid "Active Directory"
+msgstr "Active Directory (AD)"
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:67
+msgid "Enables Active Directory LDAP connection mode."
+msgstr "Aktiviert den Active Directory LDAP-Verbindungsmodus."
+
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables the connection over TLS"
 msgstr "Aktiviert die Verbindung über TLS"
-
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:76
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:78
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:82
-msgid "Server Type"
-msgstr "Servertyp"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
 msgid "Hostname or IP address of LDAP server."
@@ -6198,14 +6306,6 @@ msgstr "LDAP-Passwort"
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:159
 msgid "LDAP connection user's password"
 msgstr "LDAP-Verbindungspasswort"
-
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:177
-msgid ""
-"This isn't the real LDAP password. You should set the real one before "
-"checking or importing LDAP objects"
-msgstr ""
-"Dies ist nicht das echte LDAP-Passwort. Vor dem Prüfen oder Importieren von "
-"LDAP-Objekten muss das echte LDAP-Passwort erneut eingegeben werden"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:185
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:209
@@ -6279,10 +6379,6 @@ msgstr "Filter"
 msgid "Filter for importing LDAP users or groups."
 msgstr "Filter zum Importieren von LDAP-Benutzern oder -Gruppen"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:469
-msgid "Import users from LDAP"
-msgstr "Benutzer aus LDAP importieren"
-
 #: app/modules/web/themes/material-blue/views/config/mail.inc:33
 #: app/modules/web/themes/material-blue/views/config/mail.inc:34
 msgid "Enable email notifications"
@@ -6311,7 +6407,7 @@ msgstr "Sicherheit"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
-msgid "Sender email address"
+msgid "Recipient email address"
 msgstr "Absender E-Mail-Adresse"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
@@ -6442,7 +6538,6 @@ msgid "Filter ON"
 msgstr "Filter eingeschaltet"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:11
-#, php-format
 msgid "Installation %s"
 msgstr "Installation %s"
 
@@ -6514,11 +6609,6 @@ msgstr "Ersteller"
 msgid "Delete History"
 msgstr "Historie leeren"
 
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
-#: app/resources/strings.js.inc:65
-msgid "Select Action"
-msgstr "Aktion auswählen"
-
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:98
@@ -6563,12 +6653,6 @@ msgstr "Feldhilfe"
 msgid "Required"
 msgstr "Erforderlich"
 
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
-#: app/resources/strings.js.inc:64
-msgid "Length"
-msgstr "Länge"
-
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
 msgid "Score"
@@ -6578,26 +6662,6 @@ msgstr "Bewertung"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:65
 msgid "Regular Expression"
 msgstr "Regulärer Ausdruck"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
-#: app/resources/strings.js.inc:61
-msgid "Include Numbers"
-msgstr "Ziffern einschließen"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
-#: app/resources/strings.js.inc:88
-msgid "Include Letters"
-msgstr "Buchstaben einschließen"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
-#: app/resources/strings.js.inc:63
-msgid "Include Symbols"
-msgstr "Sonderzeichen einschließen"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
-#: app/resources/strings.js.inc:62
-msgid "Include Uppercase"
-msgstr "Großbuchstaben verwenden"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:140
 msgid "Include Lowercase"
@@ -6627,12 +6691,6 @@ msgstr "IP Adresse"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:37
 msgid "Timeout"
 msgstr "Timeout"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
-#: app/resources/strings.js.inc:49
-msgid "Select Profile"
-msgstr "Profil auswählen"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:89
 msgid ""
@@ -6885,18 +6943,7 @@ msgstr "Anmeldung"
 msgid "Forgot password?"
 msgstr "Passwort vergessen?"
 
-#: app/modules/web/themes/material-blue/views/main/update.inc:30
-#: app/resources/strings.js.inc:93
-msgid "Updated"
-msgstr "Aktualisiert"
-
-#: app/modules/web/themes/material-blue/views/main/update.inc:36
-#: app/resources/strings.js.inc:94
-msgid "Error while checking for updates"
-msgstr "Fehler bei der Updateprüfung"
-
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
-#, php-format
 msgid "Update %s"
 msgstr "Aktualisierung %s"
 
@@ -7053,8 +7100,8 @@ msgid "Navigation bar on top"
 msgstr "Obere Navigationsleiste"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
-msgid "Displays a navigation bar on top of the search results."
-msgstr "Zeigt eine Navigationsleiste über den Suchergebnissen an."
+msgid "Dysplays a navigation bar on top of the search results."
+msgstr "Zeigt eine Navigationsleiste oberhalb der Suchresultate."
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
@@ -7087,14 +7134,7 @@ msgstr "Displays the additional filters selection on the accounts search."
 msgid "View Wiki"
 msgstr "Wiki anzeigen"
 
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
-#: app/resources/strings.js.inc:39
-msgid "Page not found"
-msgstr "Seite nicht gefunden"
-
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
-#, php-format
 msgid "Search results of '%s'"
 msgstr "Suchergebnisse von '%s'"
 
@@ -7102,180 +7142,6 @@ msgstr "Suchergebnisse von '%s'"
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:37
 msgid "Page"
 msgstr "Seite"
-
-#: app/resources/strings.js.inc:27
-msgid "There was an error"
-msgstr "Ein Fehler ist aufgetreten"
-
-#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
-msgid "Session finished"
-msgstr "Sitzung beendet"
-
-#: app/resources/strings.js.inc:29
-msgid "Delete account?"
-msgstr "Konto entfernen?"
-
-#: app/resources/strings.js.inc:30
-msgid "Delete user?"
-msgstr "Benutzer entfernen?"
-
-#: app/resources/strings.js.inc:31
-msgid "You should save configuration in order to take effect"
-msgstr "Bitte speichern Sie die Konfiguration"
-
-#: app/resources/strings.js.inc:32
-msgid "Generated Password"
-msgstr "Generiertes Passwort"
-
-#: app/resources/strings.js.inc:33
-msgid "High level"
-msgstr "Hohes Niveau"
-
-#: app/resources/strings.js.inc:34
-msgid "Average level"
-msgstr "Mittleres Niveau"
-
-#: app/resources/strings.js.inc:35
-msgid "Low level"
-msgstr "Niedriges Niveau"
-
-#: app/resources/strings.js.inc:36
-msgid "Very High level"
-msgstr "Sehr hohes Niveau"
-
-#: app/resources/strings.js.inc:37
-msgid "You should use at least 8 characters"
-msgstr "Verwenden Sie mindestens 8 Zeichen"
-
-#: app/resources/strings.js.inc:38
-msgid "Delete item?"
-msgstr "Element entfernen?"
-
-#: app/resources/strings.js.inc:41
-msgid "Delete file?"
-msgstr "Datei entfernen?"
-
-#: app/resources/strings.js.inc:42
-msgid "Your browser does not support HTML5 file uploads"
-msgstr "Ihr Browser unterstützt kein Hochladen von Dateien via HTML5"
-
-#: app/resources/strings.js.inc:43
-msgid "Too many files"
-msgstr "Zu viele Dateien"
-
-#: app/resources/strings.js.inc:44
-msgid "File size not allowed"
-msgstr "Datei ist zu groß"
-
-#: app/resources/strings.js.inc:45
-msgid "MIME type not allowed"
-msgstr "MIME-Typ nicht erlaubt"
-
-#: app/resources/strings.js.inc:46
-msgid "Clear the event log out?"
-msgstr "Ereignisprotokoll leeren?"
-
-#: app/resources/strings.js.inc:52
-msgid "No results"
-msgstr "Kein Ergebnis"
-
-#: app/resources/strings.js.inc:53
-msgid "Password options"
-msgstr "Passwort-Optionen"
-
-#: app/resources/strings.js.inc:54
-msgid "Generate random password"
-msgstr "Zufälliges Passwort erzeugen"
-
-#: app/resources/strings.js.inc:55
-msgid "Complexity"
-msgstr "Komplexität"
-
-#: app/resources/strings.js.inc:56
-msgid "Reset"
-msgstr "Zurücksetzen"
-
-#: app/resources/strings.js.inc:57
-msgid "Password strength level"
-msgstr "Passwortstärke"
-
-#: app/resources/strings.js.inc:58
-msgid "Show Password"
-msgstr "Passwort anzeigen"
-
-#: app/resources/strings.js.inc:68
-msgid "Accept"
-msgstr "OK"
-
-#: app/resources/strings.js.inc:69
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: app/resources/strings.js.inc:70
-msgid "Password Copied into Clipboard"
-msgstr "Passwort in die Zwischenablage kopiert"
-
-#: app/resources/strings.js.inc:71
-msgid "Error while copying to clipboard"
-msgstr "Fehler beim Kopieren in die Zwischenablage"
-
-#: app/resources/strings.js.inc:73
-msgid "Send notifies?"
-msgstr "Benachrichtigungen erhalten?"
-
-#: app/resources/strings.js.inc:76
-msgid "Clear Selection"
-msgstr "Auswahl aufheben"
-
-#: app/resources/strings.js.inc:81
-msgid "Now"
-msgstr "Jetzt"
-
-#: app/resources/strings.js.inc:82
-msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr ""
-"Der Vorgang wird die ermittelten LDAP-Benutzer importieren. Möchten Sie "
-"fortfahren?"
-
-#: app/resources/strings.js.inc:83
-msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr ""
-"Diese Aktion wird alle Plugin-Daten zurücksetzen. Möchten Sie fortfahren?"
-
-#: app/resources/strings.js.inc:84
-msgid "This process could take some time long. Do you wish to continue?"
-msgstr "Dieser Vorgang könnte länger dauern. Möchten Sie fortfahren?"
-
-#: app/resources/strings.js.inc:87
-msgid "Performing task. Please, do not close browser's window/tab."
-msgstr "Führe Aufgabe aus. Bitte das Browserfenster/Tab nicht schließen."
-
-#: app/resources/strings.js.inc:89
-msgid "Cookies disabled. Application won't work properly."
-msgstr ""
-"Cookies sind deaktiviert, weshalb die Anwendung nicht ordnungsgemäß "
-"funktionieren kann."
-
-#: app/resources/strings.js.inc:90
-msgid "Clipboard not supported by your browser."
-msgstr "Zwischenablage wird nicht vom Browser unterstützt."
-
-#: app/resources/strings.js.inc:91
-msgid "Performing auto-login"
-msgstr "Führe Auto-Login aus"
-
-#: app/resources/strings.js.inc:92
-msgid "There is a more recent version of {0} plugin ({1})"
-msgstr "Es gibt eine neuere Version des Plugins {0} ({1})"
-
-#: app/resources/strings.js.inc:95
-msgid "sysPass Notices"
-msgstr "sysPass Neuigkeiten"
-
-#: app/resources/strings.js.inc:96
-msgid "Clear the tracks out?"
-msgstr "Track-Liste leeren?"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:7
@@ -7592,75 +7458,185 @@ msgstr "Track entsperren"
 msgid "Clear the tracks out"
 msgstr "Track-Liste leeren"
 
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "Das \" Verzeichnis \"config\" existiert nicht"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:4
+msgid "Color"
+msgstr "Farbe"
 
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "In das Verzeichnis \"config\" kann nicht geschrieben werden"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:5
+msgid "Number"
+msgstr "Nummer"
 
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "Die Zugriffsrechte des \"config\"-Verzeichnisses sind falsch"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:6
+msgid "Phone"
+msgstr "Telefon"
 
-#~ msgid "Master Password %s"
-#~ msgstr "Masterpasswort %s"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:7
+msgid "Text Area"
+msgstr "Textbereich"
 
-#~ msgid "Mail service unavailable"
-#~ msgstr "Mail Service nicht erreichbar"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:8
+msgid "Text"
+msgstr "Text"
 
-#~ msgid "Active Directory"
-#~ msgstr "Active Directory (AD)"
+#: app/modules/web/Controllers/AccountFileController.php:192
+msgid "There aren't any allowed extensions"
+msgstr "Dateiendungen sind nicht erlaubt"
 
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Aktiviert den Active Directory LDAP-Verbindungsmodus."
+#: app/modules/web/Controllers/AccountFileController.php:211
+msgid "Extension: %s"
+msgstr "Dateierweiterung:%s"
 
-#~ msgid "Recipient email address"
-#~ msgstr "Absender E-Mail-Adresse"
+#: app/modules/web/Controllers/AccountFileController.php:226
+msgid "Maximum size: %s"
+msgstr "Maximale Dateigröße: %s"
 
-#~ msgid "Dysplays a navigation bar on top of the search results."
-#~ msgstr "Zeigt eine Navigationsleiste oberhalb der Suchresultate."
+#: lib/SP/Services/Import/FileImport.php:102
+msgid "Please, check the file extension"
+msgstr "Bitte überprüfen Sie die Dateierweiterung"
 
-#~ msgid "Color"
-#~ msgstr "Farbe"
+#: lib/SP/Storage/File/FileCachePacked.php:144
+msgid "Data not loaded"
+msgstr "Daten nicht geladen"
 
-#~ msgid "Number"
-#~ msgstr "Nummer"
+#: app/config/strings.js.inc:45
+msgid "Extension not allowed"
+msgstr "Dateiendung nicht erlaubt"
 
-#~ msgid "Phone"
-#~ msgstr "Telefon"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:307
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:320
+msgid "Allowed file extensions"
+msgstr "Erlaubte Dateiendungen"
 
-#~ msgid "Text Area"
-#~ msgstr "Textbereich"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:312
+msgid "Allowed file extensions for uploading."
+msgstr "Erlaubte Dateierweiterungen für Dateiupload."
 
-#~ msgid "Text"
-#~ msgstr "Text"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:315
+msgid ""
+"Write the extension and press enter to add. Remember to save the "
+"configuration."
+msgstr ""
+"Erweiterung eingeben und Enter zum Hinzufügen drücken. Speichern nicht "
+"vergessen."
 
-#~ msgid "There aren't any allowed extensions"
-#~ msgstr "Dateiendungen sind nicht erlaubt"
+#: lib/SP/Providers/Auth/Ldap/Ldap.php:110
+msgid "LDAP type not set"
+msgstr "LDAP-Typ nicht gesetzt"
 
-#~ msgid "Extension: %s"
-#~ msgstr "Dateierweiterung:%s"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
+msgid "Expire time (minutes)"
+msgstr "Ablaufzeit (Minuten)"
 
-#~ msgid "Maximum size: %s"
-#~ msgstr "Maximale Dateigröße: %s"
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:76
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:78
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:82
+msgid "Server Type"
+msgstr "Servertyp"
 
-#~ msgid "Please, check the file extension"
-#~ msgstr "Bitte überprüfen Sie die Dateierweiterung"
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:177
+msgid ""
+"This isn't the real LDAP password. You should set the real one before "
+"checking or importing LDAP objects"
+msgstr ""
+"Dies ist nicht das echte LDAP-Passwort. Vor dem Prüfen oder Importieren von "
+"LDAP-Objekten muss das echte LDAP-Passwort erneut eingegeben werden"
 
-#~ msgid "Data not loaded"
-#~ msgstr "Daten nicht geladen"
+#: app/modules/web/themes/material-blue/views/config/mail.inc:148
+#: app/modules/web/themes/material-blue/views/config/mail.inc:156
+msgid "Sender email address"
+msgstr "Absender E-Mail-Adresse"
 
-#~ msgid "Extension not allowed"
-#~ msgstr "Dateiendung nicht erlaubt"
+#: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
+msgid "Displays a navigation bar on top of the search results."
+msgstr "Zeigt eine Navigationsleiste über den Suchergebnissen an."
 
-#~ msgid "Allowed file extensions"
-#~ msgstr "Erlaubte Dateiendungen"
+#: app/modules/web/Controllers/ConfigEncryptionController.php:117
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
+msgid "Maintenance mode not enabled"
+msgstr "Wartungsmodus nicht aktiviert"
 
-#~ msgid "Allowed file extensions for uploading."
-#~ msgstr "Erlaubte Dateierweiterungen für Dateiupload."
+#: app/modules/web/Controllers/ConfigEncryptionController.php:118
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
+msgid "Please, enable it to avoid unwanted behavior from other sessions"
+msgstr ""
+"Bitte aktivieren, um ungewünschte Nebeneffekte anderer Sitzungen zu vermeiden"
 
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Erweiterung eingeben und Enter zum Hinzufügen drücken. Speichern nicht "
-#~ "vergessen."
+#: lib/SP/Providers/Mail/MailHandler.php:149
+msgid "Event: %s"
+msgstr "Ereignis: %s"
+
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
+msgid "%s Master Password"
+msgstr "%s Masterpasswort"
+
+#: lib/SP/Services/Task/TaskService.php:93
+msgid "Task not set within wait time"
+msgstr "Aufgabe nicht innerhalb der konfigurierten Wartezeit erledigt"
+
+#: lib/SP/Config/ConfigUtil.php:102
+msgid "'/app/config' directory does not exist."
+msgstr "Das Verzeichnis '/app/config' existiert nicht."
+
+#: lib/SP/Config/ConfigUtil.php:108
+msgid "Unable to write into '/app/config' directory"
+msgstr "Fehlender Schreibzugriff auf Verzeichnis '/app/config'"
+
+#: lib/SP/Config/ConfigUtil.php:117
+msgid "'/app/config' directory permissions are wrong"
+msgstr "Berechtigungen auf Verzeichnis '/app/config' sind falsch konfiguriert"
+
+#: lib/SP/Plugin/PluginManager.php:392
+msgid "Upgrading plugin"
+msgstr "Plugin-Upgrade wird ausgeführt"
+
+#: lib/SP/Plugin/PluginManager.php:409
+msgid "Plugin upgraded"
+msgstr "Plugin-Upgrade wurde ausgeführt"
+
+#: lib/SP/Plugin/PluginManager.php:418
+msgid "Unable to upgrade the \"%s\" plugin"
+msgstr "Upgrade für Plugin \"%s\" nicht möglich"
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
+msgid "Error while adding plugin's data"
+msgstr "Fehler beim Hinzufügen der Plugin-Daten"
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
+msgid "Error while updating plugin's data"
+msgstr "Fehler beim Aktualisieren der Plugin-Daten"
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
+msgid "Error while deleting plugin's data"
+msgstr "Fehler beim Löschen der Plugin-Daten"
+
+#: lib/SP/Services/Plugin/PluginDataService.php:97
+#: lib/SP/Services/Plugin/PluginDataService.php:121
+#: lib/SP/Services/Plugin/PluginDataService.php:165
+#: lib/SP/Services/Plugin/PluginDataService.php:183
+msgid "Plugin's data not found"
+msgstr "Plugin-Daten konnten nicht gefunden werden"
+
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
+msgid "Plugins upgrade"
+msgstr "Plugin upgraden"
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
+msgid "Application URL"
+msgstr "Anwendungs-URL"
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
+msgid ""
+"Sets the application URL when accessing through a reverse proxy or load "
+"balancer."
+msgstr ""
+"Konfiguriert die Anwendungs-URL, falls der Zugriff über einen Reverse Proxy "
+"oder einen Load Balancer erfolgt."

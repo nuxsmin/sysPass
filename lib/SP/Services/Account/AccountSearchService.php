@@ -298,11 +298,11 @@ final class AccountSearchService extends Service
 
                         if (is_object($userData)) {
                             $queryCondition->addFilter(
-                                'Account.userId = ? OR Account.id IN 
+                                'Account.userId = ? OR Account.userGroupId = ? OR Account.id IN 
                                         (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = ? 
-                                        UNION ALL 
+                                        UNION 
                                         SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = ?)',
-                                [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]);
+                                [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId()]);
                         }
                         break;
                     case 'owner':

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2019-04-21 15:54+0200\n"
+"PO-Revision-Date: 2019-05-25 00:26+0200\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: it_IT\n"
@@ -20,7 +20,6 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
-#, fuzzy
 msgid "Account displayed"
 msgstr "Account visualizzato"
 
@@ -121,7 +120,6 @@ msgstr "Nome"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:32
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:34
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:36
-#, fuzzy
 msgid "Client"
 msgstr "Cliente"
 
@@ -146,7 +144,6 @@ msgstr "Password aggiornata"
 #: app/modules/api/Controllers/AccountController.php:194
 #: app/modules/web/Controllers/AccountController.php:831
 #: app/modules/web/Controllers/AccountController.php:842
-#, fuzzy
 msgid "Account created"
 msgstr "Account creato"
 
@@ -209,7 +206,6 @@ msgstr "Cliente creato"
 #: app/modules/api/Controllers/ClientController.php:129
 #: app/modules/web/Controllers/ClientController.php:304
 #: app/modules/web/Controllers/ClientController.php:308
-#, fuzzy
 msgid "Client updated"
 msgstr "Cliente aggiornato"
 
@@ -217,7 +213,6 @@ msgstr "Cliente aggiornato"
 #: app/modules/api/Controllers/ClientController.php:158
 #: app/modules/web/Controllers/ClientController.php:228
 #: app/modules/web/Controllers/ClientController.php:232
-#, fuzzy
 msgid "Client deleted"
 msgstr "Cliente eliminato"
 
@@ -424,7 +419,6 @@ msgid "Category Id to filter on"
 msgstr "ID di categoria da filtrare"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:131
-#, fuzzy
 msgid "Client Id to filter on"
 msgstr "ID cliente da filtrare"
 
@@ -613,14 +607,6 @@ msgstr "OFF"
 msgid "IP"
 msgstr "IP"
 
-#: app/modules/web/Controllers/AccountController.php:257
-#: app/modules/web/Controllers/AccountController.php:1073
-#: app/modules/web/Controllers/PublicLinkController.php:264
-#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
-#, fuzzy
-msgid "Link"
-msgstr "Link"
-
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/AccountController.php:290
 #: app/modules/web/Controllers/AccountController.php:342
@@ -730,7 +716,6 @@ msgstr "Il file non esiste"
 
 #: app/modules/web/Controllers/AccountFileController.php:87
 #: app/modules/web/Controllers/AccountFileController.php:103
-#, fuzzy
 msgid "File viewed"
 msgstr "File visualizzato"
 
@@ -777,7 +762,6 @@ msgid "Invalid file"
 msgstr "File non valido"
 
 #: app/modules/web/Controllers/AccountFileController.php:211
-#, php-format
 msgid "File: %s"
 msgstr "File: %s"
 
@@ -786,7 +770,6 @@ msgid "File size exceeded"
 msgstr "Dimensione del file superata"
 
 #: app/modules/web/Controllers/AccountFileController.php:225
-#, php-format
 msgid "Maximum size: %d KB"
 msgstr "Maximum size: %d KB"
 
@@ -830,7 +813,6 @@ msgstr "Tipo di file non consensito"
 
 #: app/modules/web/Controllers/AccountFileController.php:288
 #: lib/SP/Services/Import/FileImport.php:97
-#, php-format
 msgid "MIME type: %s"
 msgstr "MIME type: %s"
 
@@ -1008,7 +990,6 @@ msgid "View Authorization"
 msgstr "Visualizza autorizzazione"
 
 #: app/modules/web/Controllers/AuthTokenController.php:365
-#, fuzzy
 msgid "Authorization viewed"
 msgstr "Autorizzazione visualizzata"
 
@@ -1065,7 +1046,6 @@ msgstr "Visualizza categoria"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
 #: app/modules/web/themes/material-blue/views/account/account.inc:103
 #: app/resources/actions.xml:337
-#, fuzzy
 msgid "New Client"
 msgstr "Nuovo cliente"
 
@@ -1074,7 +1054,6 @@ msgstr "Nuovo cliente"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
 #: app/resources/actions.xml:343
-#, fuzzy
 msgid "Edit Client"
 msgstr "Modifica cliente"
 
@@ -1086,7 +1065,6 @@ msgstr "Clienti eliminati"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:336
 #: app/resources/actions.xml:331
-#, fuzzy
 msgid "View Client"
 msgstr "Visualizza cliente"
 
@@ -1130,7 +1108,6 @@ msgstr "Ehi, questa è una DEMO !!"
 #: app/modules/web/Controllers/UserPassResetController.php:197
 #: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
-#, fuzzy
 msgid "Passwords do not match"
 msgstr "Le password non corrispondono"
 
@@ -1233,7 +1210,6 @@ msgid "Please, restart the session for update it"
 msgstr "Riavvia la sessione per cambiarla"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:82
-#, fuzzy
 msgid "Master password not entered"
 msgstr "Password principale non indicata"
 
@@ -1242,28 +1218,16 @@ msgid "The password update must be confirmed"
 msgstr "La modifica della chiave deve essere confermata"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:96
-#, fuzzy
 msgid "Passwords are the same"
 msgstr "Le chiavi sono identiche"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:103
-#, fuzzy
 msgid "Master passwords do not match"
 msgstr "Le chiavi principali non corrispondono"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:110
 msgid "The current master password does not match"
 msgstr "La chiave master corrente non corrisponde"
-
-#: app/modules/web/Controllers/ConfigEncryptionController.php:117
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
-msgid "Maintenance mode not enabled"
-msgstr ""
-
-#: app/modules/web/Controllers/ConfigEncryptionController.php:118
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
-msgid "Please, enable it to avoid unwanted behavior from other sessions"
-msgstr ""
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
@@ -1294,7 +1258,6 @@ msgstr "Email inviata"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:244
 #: lib/SP/Services/Mail/MailService.php:81
 #: lib/SP/Services/Mail/MailService.php:159
-#, fuzzy
 msgid "Error while sending the email"
 msgstr "Errore inviando l'email"
 
@@ -1388,7 +1351,6 @@ msgstr "Connetti per correggere LDAP"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:164
 #: app/modules/web/Controllers/ConfigLdapController.php:210
-#, php-format
 msgid "Objects found: %d"
 msgstr "Oggetti trovati: %d"
 
@@ -1405,12 +1367,10 @@ msgid "LDAP users import finished"
 msgstr "Importazione utenti LDAP terminata"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:286
-#, php-format
 msgid "Imported users: %d / %d"
 msgstr "Importazione utenti: %d / %d"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:287
-#, php-format
 msgid "Errors: %d"
 msgstr "Errori: %d"
 
@@ -1555,7 +1515,6 @@ msgid "View Field"
 msgstr "Visualizza Campi"
 
 #: app/modules/web/Controllers/ErrorController.php:107
-#, fuzzy
 msgid "Application on maintenance"
 msgstr "Applicazione in manutenzione"
 
@@ -1587,7 +1546,6 @@ msgstr "Verificare con l'amministratore"
 #: lib/SP/Storage/Database/MySQLHandler.php:118
 #: lib/SP/Storage/Database/MySQLHandler.php:165
 #: lib/SP/Storage/Database/MySQLHandler.php:177
-#, fuzzy
 msgid "Unable to connect to DB"
 msgstr "Non è possibile connettersi al BD"
 
@@ -1650,7 +1608,6 @@ msgstr "Salva"
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:354
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:355
 #: app/resources/actions.xml:439
-#, fuzzy
 msgid "Update Public Link"
 msgstr "Update Public Link"
 
@@ -1710,7 +1667,6 @@ msgid "More Actions"
 msgstr "Altre azioni"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:238
-#, fuzzy
 msgid "Sort by Client"
 msgstr "Ordina per cliente"
 
@@ -2032,7 +1988,6 @@ msgstr "Refresh"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
-#, fuzzy
 msgid "Clear the event log out"
 msgstr "Registrazione vuota di eventi"
 
@@ -2145,34 +2100,28 @@ msgstr "Nuovo permesso predefinito"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:187
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:87
-#, fuzzy
 msgid "Private Account Preset"
 msgstr "Account privato predefinito"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:188
-#, fuzzy
 msgid "New Private Account Preset"
 msgstr "Nuovo Account privato predefinito"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:211
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:103
-#, fuzzy
 msgid "Session Timeout Preset"
 msgstr "Session Timeout predefinita"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:212
-#, fuzzy
 msgid "New Session Timeout Preset"
 msgstr "New Session Timeout Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:235
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:118
-#, fuzzy
 msgid "Account Password Preset"
 msgstr "Account Password Preset"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:236
-#, fuzzy
 msgid "New Account Password Preset"
 msgstr "New Account Password Preset"
 
@@ -2313,7 +2262,6 @@ msgstr "Elimina Plugin"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:96
 #: app/modules/web/themes/material-blue/views/account/account.inc:55
-#, fuzzy
 msgid "Links"
 msgstr "Collegamento"
 
@@ -2406,7 +2354,6 @@ msgid "Tracks"
 msgstr "Traccia"
 
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:101
-#, fuzzy
 msgid "Date Unlocked"
 msgstr "Date Unlocked"
 
@@ -2417,7 +2364,6 @@ msgstr "Sorgente"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:162
 #: app/resources/actions.xml:895
-#, fuzzy
 msgid "Search for track"
 msgstr "Cerca traccia"
 
@@ -2461,6 +2407,10 @@ msgstr "Modifica utente"
 #: app/resources/actions.xml:595
 msgid "Delete User"
 msgstr "Elimina utente"
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:469
+msgid "Import users from LDAP"
+msgstr "Importa utenti LDAP"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:215
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:216
@@ -2624,7 +2574,6 @@ msgid "There aren't any pending notifications"
 msgstr "Non ci sono notifiche in sospeso"
 
 #: app/modules/web/Controllers/ItemsController.php:135
-#, php-format
 msgid "There are pending notifications: %d"
 msgstr "Ci sono notifiche in sospeso: %d"
 
@@ -2688,12 +2637,10 @@ msgid "Plugin reset"
 msgstr "Resetta Plugin"
 
 #: app/modules/web/Controllers/PluginController.php:299
-#, fuzzy
 msgid "Plugins deleted"
 msgstr "Plugins rimossi"
 
 #: app/modules/web/Controllers/PluginController.php:305
-#, fuzzy
 msgid "Plugin deleted"
 msgstr "Plugin rimosso"
 
@@ -2703,12 +2650,10 @@ msgstr "Nuovo collegamento pubblico"
 
 #: app/modules/web/Controllers/PublicLinkController.php:185
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:89
-#, fuzzy
 msgid "Link updated"
 msgstr "Link aggiornato"
 
 #: app/modules/web/Controllers/PublicLinkController.php:211
-#, fuzzy
 msgid "Edit Public Link"
 msgstr "Edit Public Link"
 
@@ -2719,9 +2664,16 @@ msgstr "Collegamenti cancellati"
 
 #: app/modules/web/Controllers/PublicLinkController.php:263
 #: app/modules/web/Controllers/PublicLinkController.php:267
-#, fuzzy
 msgid "Link deleted"
 msgstr "Link eliminato"
+
+#. (itstool) path: strings/text
+#: app/modules/web/Controllers/AccountController.php:257
+#: app/modules/web/Controllers/AccountController.php:1073
+#: app/modules/web/Controllers/PublicLinkController.php:264
+#: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
+msgid "Link"
+msgstr "Link"
 
 #: app/modules/web/Controllers/PublicLinkController.php:297
 #: app/modules/web/Controllers/PublicLinkController.php:336
@@ -2747,12 +2699,10 @@ msgid "View Tag"
 msgstr "Visualizza Tag"
 
 #: app/modules/web/Controllers/TrackController.php:114
-#, fuzzy
 msgid "Track unlocked"
 msgstr "Traccia sbloccata"
 
 #: app/modules/web/Controllers/TrackController.php:142
-#, fuzzy
 msgid "Tracks cleared out"
 msgstr "Tracce cancellate"
 
@@ -2965,12 +2915,10 @@ msgid "Field module not set"
 msgstr "Modulo di campo non indicato"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:116
-#, fuzzy
 msgid "Value type not set or incorrect"
 msgstr "Tipo di valore non impostato o errato"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:133
-#, fuzzy
 msgid "There aren't any defined permissions"
 msgstr "Non ci sono permessi definiti"
 
@@ -2979,7 +2927,6 @@ msgid "Invalid regular expression"
 msgstr "Invalid regular expression"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:208
-#, fuzzy
 msgid "An element of type user, group or profile need to be set"
 msgstr "È necessario impostare un elemento di tipo utente, gruppo o profilo"
 
@@ -2996,7 +2943,6 @@ msgid "A target  is needed"
 msgstr "È richiesta una destinazione"
 
 #: app/modules/web/Forms/PublicLinkForm.php:85
-#, fuzzy
 msgid "An account is needed"
 msgstr "È necessario un account"
 
@@ -3005,7 +2951,6 @@ msgid "A tag name is needed"
 msgstr "È richiesto un nome di tag"
 
 #: app/modules/web/Forms/UserForm.php:111
-#, fuzzy
 msgid "An username is needed"
 msgstr "È richiesto un nome utente"
 
@@ -3163,7 +3108,6 @@ msgid "Last page"
 msgstr "Ultima pagina"
 
 #: lib/SP/Bootstrap.php:290
-#, fuzzy, php-format
 msgid "Required PHP version >= %s <= %s"
 msgstr "Required PHP version >= %s <= %s"
 
@@ -3172,23 +3116,23 @@ msgid "Please update the PHP version to run sysPass"
 msgstr ""
 "Aggiorna la versione di PHP affinché l'applicazione funzioni correttamente"
 
-#: lib/SP/Config/ConfigUtil.php:102
-msgid "'/app/config' directory does not exist."
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:94
+msgid "\"/config\" directory does not exist."
+msgstr "La directory \"/config\" non esiste"
 
-#: lib/SP/Config/ConfigUtil.php:108
-msgid "Unable to write into '/app/config' directory"
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:100
+msgid "Unable to write into \"/config\" directory"
+msgstr "Non è possibile scrivere nella directory \"/config\""
 
-#: lib/SP/Config/ConfigUtil.php:117
-msgid "'/app/config' directory permissions are wrong"
-msgstr ""
+#: lib/SP/Config/ConfigUtil.php:109
+msgid "\"/config\" directory permissions are wrong"
+msgstr "Le autorizzazioni della directory \"/config\" non sono corrette"
 
 #: lib/SP/Config/ConfigUtil.php:119
-#, fuzzy, php-format
 msgid "Current: %s - Needed: 750"
 msgstr "Current: %s - Needed: 750"
 
+#. Not available
 #: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:652
 msgid "N/A"
 msgstr "N/D"
@@ -3198,7 +3142,6 @@ msgid "Access denied"
 msgstr "Accesso negato"
 
 #: lib/SP/Core/Acl/Actions.php:176
-#, fuzzy
 msgid "Action not found"
 msgstr "Action not found"
 
@@ -3213,17 +3156,14 @@ msgstr "Unable to change password value"
 
 #: lib/SP/Core/Context/ContextBase.php:103
 #: lib/SP/Core/Context/ContextBase.php:126
-#, fuzzy
 msgid "Context already initialized"
 msgstr "Context already initialized"
 
 #: lib/SP/Core/Context/ContextBase.php:109
-#, fuzzy
 msgid "Invalid context"
 msgstr "Invalid context"
 
 #: lib/SP/Core/Context/ContextBase.php:154
-#, fuzzy
 msgid "Context not initialized"
 msgstr "Context not initialized"
 
@@ -3248,12 +3188,10 @@ msgid "Observer not initialized"
 msgstr "Observer non inizializzato"
 
 #: lib/SP/Core/UI/Theme.php:185
-#, fuzzy
 msgid "Invalid icons class"
 msgstr "Invalid icons class"
 
 #: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
-#, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Non è possibile ottenere il modello \"%s\": %s"
 
@@ -3281,42 +3219,34 @@ msgid "Invalid Action"
 msgstr "Azione non valida"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:71
-#, fuzzy, php-format
 msgid "Password needs to be %d characters long"
 msgstr "Password needs to be %d characters long"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:77
-#, fuzzy
 msgid "Password does not contain the required characters"
 msgstr "Password does not contain the required characters"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:82
-#, fuzzy
 msgid "Password needs to contain letters"
 msgstr "Password needs to contain letters"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:86
-#, fuzzy
 msgid "Password needs to contain lower case letters"
 msgstr "Password needs to contain lower case letters"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:90
-#, fuzzy
 msgid "Password needs to contain upper case letters"
 msgstr "Password needs to contain upper case letters"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:95
-#, fuzzy
 msgid "Password needs to contain numbers"
 msgstr "Password needs to contain numbers"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:99
-#, fuzzy
 msgid "Password needs to contain symbols"
 msgstr "Password needs to contain symbols"
 
 #: lib/SP/Mvc/Model/QueryCondition.php:71
-#, fuzzy
 msgid "Invalid filter type"
 msgstr "Invalid filter type"
 
@@ -3327,12 +3257,10 @@ msgid "Wrong object type"
 msgstr "Wrong object type"
 
 #: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
-#, fuzzy, php-format
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Non è possibile ottenere la variabile \"%s\""
 
 #: lib/SP/Mvc/View/Template.php:336
-#, fuzzy, php-format
 msgid "Unable to unset \"%s\" variable"
 msgstr "Non è possibile distruggere la variabile \"%s\""
 
@@ -3341,27 +3269,22 @@ msgid "Template does not contain files"
 msgstr "Il modello non contiene file"
 
 #: lib/SP/Plugin/PluginManager.php:192
-#, php-format
 msgid "Plugin version not compatible (%s)"
 msgstr "Plugin version not compatible (%s)"
 
 #: lib/SP/Plugin/PluginManager.php:204 lib/SP/Plugin/PluginManager.php:260
-#, php-format
 msgid "Unable to load the \"%s\" plugin"
 msgstr "Impossibile caricare il plug-in \"%s\""
 
 #: lib/SP/Plugin/PluginManager.php:295
-#, fuzzy
 msgid "Plugin available"
 msgstr "Plugin available"
 
 #: lib/SP/Plugin/PluginManager.php:306
-#, fuzzy
 msgid "Plugin unavailable"
 msgstr "Plugin unavailable"
 
 #: lib/SP/Plugin/PluginManager.php:339
-#, fuzzy
 msgid "Plugin loaded"
 msgstr "Plugin loaded"
 
@@ -3370,19 +3293,6 @@ msgstr "Plugin loaded"
 msgid "New Plugin"
 msgstr "Nuovo Plugin"
 
-#: lib/SP/Plugin/PluginManager.php:392
-msgid "Upgrading plugin"
-msgstr ""
-
-#: lib/SP/Plugin/PluginManager.php:409
-msgid "Plugin upgraded"
-msgstr ""
-
-#: lib/SP/Plugin/PluginManager.php:418
-#, php-format
-msgid "Unable to upgrade the \"%s\" plugin"
-msgstr ""
-
 #: lib/SP/Providers/Auth/AuthProvider.php:216
 msgid "Method unavailable"
 msgstr "Metodo non disponibile"
@@ -3390,10 +3300,6 @@ msgstr "Metodo non disponibile"
 #: lib/SP/Providers/Auth/AuthProvider.php:220
 msgid "Method already initialized"
 msgstr "Metodo già inizializzato"
-
-#: lib/SP/Providers/Auth/Ldap/Ldap.php:110
-msgid "LDAP type not set"
-msgstr "LDAP type non impostato"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:121
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:128
@@ -3458,24 +3364,16 @@ msgstr "Utente verificato nel gruppo"
 msgid "User does not belong to the group"
 msgstr "L'utente non appartiene al gruppo"
 
-#: lib/SP/Providers/Mail/MailHandler.php:149
-#, php-format
-msgid "Event: %s"
-msgstr ""
-
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
-#, php-format
 msgid "Performed by: %s (%s)"
 msgstr "Performed by: %s (%s)"
 
 #: lib/SP/Providers/Mail/MailHandler.php:162
-#, php-format
 msgid "IP Address: %s"
 msgstr "IP Address: %s"
 
 #: lib/SP/Providers/Mail/MailProvider.php:91
-#, fuzzy
 msgid "Unable to initialize"
 msgstr "Unable to initialize"
 
@@ -3489,7 +3387,6 @@ msgstr "Errore durante l'eliminazione del file"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:302
 #: lib/SP/Services/Account/AccountFileService.php:145
-#, fuzzy
 msgid "Error while deleting the files"
 msgstr "Error while deleting the files"
 
@@ -3507,7 +3404,6 @@ msgstr "Errore durante l'eliminazione dell'account"
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:315
 #: lib/SP/Repositories/Account/AccountRepository.php:501
 #: lib/SP/Services/Account/AccountService.php:640
-#, fuzzy
 msgid "Error while deleting the accounts"
 msgstr "Error while deleting the accounts"
 
@@ -3537,7 +3433,6 @@ msgstr "Errore durante l'aggiornamento dell'account"
 #: lib/SP/Repositories/Account/AccountRepository.php:451
 #: lib/SP/Repositories/Account/AccountRepository.php:623
 #: lib/SP/Services/Account/AccountHistoryService.php:75
-#, fuzzy
 msgid "Error while retrieving account's data"
 msgstr "Impossibile ottenere i dati dell'account"
 
@@ -3607,7 +3502,6 @@ msgstr "Errore durante la rimozione della categoria"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:62
 #: lib/SP/Repositories/Client/ClientRepository.php:116
-#, fuzzy
 msgid "Duplicated client"
 msgstr "Cliente duplicato"
 
@@ -3616,7 +3510,6 @@ msgid "Error while creating the client"
 msgstr "Errore durante la creazione del client"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:136
-#, fuzzy
 msgid "Error while updating the client"
 msgstr "Errore durante l'aggiornamento del cliente"
 
@@ -3670,7 +3563,6 @@ msgid "Error while deleting the field type"
 msgstr "Error while deleting the field type"
 
 #: lib/SP/Repositories/EventLog/EventlogRepository.php:53
-#, fuzzy
 msgid "Error while clearing the event log out"
 msgstr "Errore durante lo svuotamento del registro eventi"
 
@@ -3722,20 +3614,6 @@ msgstr "Errore durante la ricezione della notifica"
 #: lib/SP/Repositories/Notification/NotificationRepository.php:615
 msgid "Error while retrieving the notifications"
 msgstr "Impossibile ottenere le notifiche"
-
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
-msgid "Error while adding plugin's data"
-msgstr ""
-
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
-msgid "Error while updating plugin's data"
-msgstr ""
-
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
-#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
-msgid "Error while deleting plugin's data"
-msgstr ""
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3941,12 +3819,10 @@ msgid "Error while retrieving the accounts' passwords"
 msgstr "Errore nell'ottenere la password dell'account"
 
 #: lib/SP/Services/Account/AccountCryptService.php:141
-#, php-format
 msgid "Accounts updated: %d / %d"
 msgstr "Accounts updated: %d / %d"
 
 #: lib/SP/Services/Account/AccountCryptService.php:150
-#, php-format
 msgid "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 msgstr "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 
@@ -4011,7 +3887,6 @@ msgstr "Parametri errati"
 #: lib/SP/Services/Auth/LoginService.php:625
 #: lib/SP/Services/Auth/LoginService.php:667
 #: lib/SP/Services/Auth/LoginService.php:675
-#, fuzzy
 msgid "Wrong login"
 msgstr "Login errato"
 
@@ -4051,7 +3926,6 @@ msgstr "Account scaduto"
 
 #: lib/SP/Services/Auth/LoginService.php:521
 #: lib/SP/Services/Auth/LoginService.php:529
-#, fuzzy
 msgid "User has no associated groups"
 msgstr "L'utente non ha gruppi associati"
 
@@ -4083,7 +3957,6 @@ msgid "Error while doing the backup"
 msgstr "Errore durante il backup"
 
 #: lib/SP/Services/Backup/FileBackupService.php:139
-#, php-format
 msgid "Unable to create the backups directory (\"%s\")"
 msgstr "Non è possibile creare la directory di backup (\"%s\")"
 
@@ -4117,7 +3990,6 @@ msgstr "Error while deleting categories"
 #: lib/SP/Services/Client/ClientService.php:76
 #: lib/SP/Services/Client/ClientService.php:95
 #: lib/SP/Services/Client/ClientService.php:110
-#, fuzzy
 msgid "Client not found"
 msgstr "Cliente non trovato"
 
@@ -4128,7 +4000,6 @@ msgstr "Unable to restore the configuration"
 
 #: lib/SP/Services/Config/ConfigService.php:68
 #: lib/SP/Services/Config/ConfigService.php:153
-#, php-format
 msgid "Parameter not found (%s)"
 msgstr "Parameter not found (%s)"
 
@@ -4149,13 +4020,11 @@ msgstr "Chiave temporanea scaduta"
 msgid "Error while checking the temporary password"
 msgstr "Error while checking the temporary password"
 
-#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
-#, php-format
-msgid "%s Master Password"
-msgstr ""
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
+msgid "Master Password %s"
+msgstr "Master Password %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
-#, fuzzy
 msgid ""
 "A new sysPass master password has been generated, so next time you log into "
 "the application it will be requested."
@@ -4164,12 +4033,10 @@ msgstr ""
 "al prossimo avvio."
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:234
-#, php-format
 msgid "The new Master Password is: %s"
 msgstr "La nuova Master Password è: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:235
-#, php-format
 msgid "This password will be valid until: %s"
 msgstr "This password will be valid until: %s"
 
@@ -4213,7 +4080,6 @@ msgstr "Field type not found"
 
 #: lib/SP/Services/Export/XmlExportService.php:125
 #: lib/SP/Storage/File/FileCacheBase.php:98
-#, php-format
 msgid "Unable to create the directory (%s)"
 msgstr "Unable to create the directory (%s)"
 
@@ -4259,19 +4125,16 @@ msgid "Wrong encryption password"
 msgstr "Chiave di crittografia errata"
 
 #: lib/SP/Services/Import/CsvImport.php:50
-#, php-format
 msgid "Detected format: %s"
 msgstr "Formato rilevato: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
 #: lib/SP/Services/Import/CsvImportBase.php:180
-#, php-format
 msgid "Wrong number of fields (%d)"
 msgstr "Il numero di campi non è corretto (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
 #: lib/SP/Services/Import/CsvImportBase.php:182
-#, php-format
 msgid "Please, check the CSV file format in line %s"
 msgstr "Controlla il formato file CSV alla linea %s"
 
@@ -4302,7 +4165,6 @@ msgid "Please, check PHP configuration for upload files"
 msgstr "Controlla le impostazioni PHP per il caricamento dei file"
 
 #: lib/SP/Services/Import/ImportService.php:96
-#, php-format
 msgid "Mime type not supported (\"%s\")"
 msgstr "Tipo MIME non supportato (\"%s\")"
 
@@ -4311,12 +4173,10 @@ msgid "Please, check the file format"
 msgstr "Controlla il formato del file"
 
 #: lib/SP/Services/Import/ImportTrait.php:107
-#, fuzzy
 msgid "Category Id not set. Unable to import account."
 msgstr "ID di categoria non definito. Non è possibile importare account."
 
 #: lib/SP/Services/Import/ImportTrait.php:111
-#, fuzzy
 msgid "Client Id not set. Unable to import account."
 msgstr "ID cliente non definito. Non è possibile importare account."
 
@@ -4363,7 +4223,6 @@ msgid "XML file not supported"
 msgstr "File XML non supportato"
 
 #: lib/SP/Services/Import/XmlFileImport.php:107
-#, fuzzy
 msgid "Unable to guess the application which data was exported from"
 msgstr "Non è possibile rilevare l'applicazione che ha esportato i dati"
 
@@ -4387,7 +4246,6 @@ msgstr "Formato XML non valido"
 
 #: lib/SP/Services/Import/XmlImportBase.php:121
 #: lib/SP/Services/Import/XmlImportTrait.php:70
-#, fuzzy, php-format
 msgid "\"%s\" node doesn't exist"
 msgstr "Il nodo \"%s\" non esiste"
 
@@ -4429,7 +4287,6 @@ msgid "Please, enter the database user"
 msgstr "Indicare l'utente del BBDD"
 
 #: lib/SP/Services/Install/Installer.php:135
-#, fuzzy
 msgid "An user with database administrative rights"
 msgstr "Utente con autorizzazioni di amministratore del database"
 
@@ -4475,7 +4332,6 @@ msgid "Error while creating 'admin' user"
 msgstr "Error while creating 'admin' user"
 
 #: lib/SP/Services/Install/MySQL.php:135
-#, php-format
 msgid "Unable to check the sysPass user (%s)"
 msgstr "Unable to check the sysPass user (%s)"
 
@@ -4484,7 +4340,6 @@ msgid "Please, check the DB connection user rights"
 msgstr "Verifica le autorizzazioni dell'utente per connettersi al BD"
 
 #: lib/SP/Services/Install/MySQL.php:181
-#, php-format
 msgid "Error while creating the MySQL connection user '%s'"
 msgstr "Errore durante la creazione dell'accesso utente a MySQL '%s'"
 
@@ -4498,7 +4353,6 @@ msgstr "Indicare un nuovo database o eliminare quello esistente"
 
 #: lib/SP/Services/Install/MySQL.php:213 lib/SP/Services/Install/MySQL.php:329
 #: lib/SP/Services/Install/MySQL.php:341
-#, php-format
 msgid "Error while creating the DB ('%s')"
 msgstr "Error while creating the DB ('%s')"
 
@@ -4507,7 +4361,6 @@ msgid "Please check the database user permissions"
 msgstr "Verifica le autorizzazioni dell'utente del Database"
 
 #: lib/SP/Services/Install/MySQL.php:237
-#, php-format
 msgid "Error while setting the database permissions ('%s')"
 msgstr "Impossibile impostare le autorizzazioni del DB ('%s')"
 
@@ -4520,12 +4373,10 @@ msgid "You need to create it and assign the needed permissions"
 msgstr "È necessario crearlo e assegnare le autorizzazioni necessarie"
 
 #: lib/SP/Services/Install/MySQL.php:309
-#, php-format
 msgid "Error while selecting '%s' database (%s)"
 msgstr "Error while selecting '%s' database (%s)"
 
 #: lib/SP/Services/Install/MySQL.php:311
-#, fuzzy
 msgid ""
 "Unable to use the database to create the structure. Please check the "
 "permissions and it does not exist."
@@ -4572,19 +4423,16 @@ msgstr ""
 "This is a test email in order to verify that the configuration is working "
 "right."
 
+#: lib/SP/Services/Mail/MailService.php:186
+msgid "Mail service unavailable"
+msgstr "Mail service unavailable"
+
 #: lib/SP/Services/Notification/NotificationService.php:102
 #: lib/SP/Services/Notification/NotificationService.php:121
 #: lib/SP/Services/Notification/NotificationService.php:180
 #: lib/SP/Services/Notification/NotificationService.php:210
 msgid "Notification not found"
 msgstr "Notifica non trovata"
-
-#: lib/SP/Services/Plugin/PluginDataService.php:97
-#: lib/SP/Services/Plugin/PluginDataService.php:121
-#: lib/SP/Services/Plugin/PluginDataService.php:165
-#: lib/SP/Services/Plugin/PluginDataService.php:183
-msgid "Plugin's data not found"
-msgstr ""
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4635,10 +4483,6 @@ msgstr "Tag non trovato"
 msgid "Unable to create the lock file"
 msgstr "Unable to create the lock file"
 
-#: lib/SP/Services/Task/TaskService.php:93
-msgid "Task not set within wait time"
-msgstr ""
-
 #: lib/SP/Services/Task/TaskService.php:182
 msgid "Waiting for progress updating ..."
 msgstr "In attesa dell'aggiornamento ..."
@@ -4650,7 +4494,6 @@ msgid "Track not found"
 msgstr "Track not found"
 
 #: lib/SP/Services/Track/TrackService.php:162
-#, php-format
 msgid "Attempts exceeded (%d/%d)"
 msgstr "Numero massimo di tentativi superati (%d/%d)"
 
@@ -4749,11 +4592,6 @@ msgstr "Update file does not contain data"
 msgid "Database updating was completed successfully."
 msgstr "Aggiornamento del database eseguito correttamente."
 
-#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
-#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
-msgid "Plugins upgrade"
-msgstr ""
-
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:56
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:102
 msgid "Public links update"
@@ -4833,7 +4671,6 @@ msgid "Error while querying"
 msgstr "Errore in ricerca"
 
 #: lib/SP/Storage/File/FileCachePacked.php:45
-#, php-format
 msgid "Error while decompressing the file data (%s)"
 msgstr "Error while decompressing the file data (%s)"
 
@@ -4842,55 +4679,45 @@ msgid "Error while retrieving the data"
 msgstr "Error while retrieving the data"
 
 #: lib/SP/Storage/File/FileCachePacked.php:70
-#, php-format
 msgid "Error while compressing the file data (%s)"
 msgstr "Error while compressing the file data (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:76
 #: lib/SP/Storage/File/FileHandler.php:165
-#, php-format
 msgid "Unable to read/write the file (%s)"
 msgstr "Unable to read/write the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:101
-#, php-format
 msgid "Unable to open the file (%s)"
 msgstr "Unable to open the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:119
-#, php-format
 msgid "Unable to obtain a lock (%s)"
 msgstr "Impossibile ottenere un lock (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:134
 #: lib/SP/Storage/File/FileHandler.php:148
-#, php-format
 msgid "Unable to read from file (%s)"
 msgstr "Unable to read from file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:207
-#, php-format
 msgid "Unable to close the file (%s)"
 msgstr "Unable to close the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:261
-#, php-format
 msgid "Unable to write in file (%s)"
 msgstr "Unable to write in file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:276
-#, php-format
 msgid "File not found (%s)"
 msgstr "File not found (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
-#, php-format
 msgid "Unable to read/write file (%s)"
 msgstr "Unable to read/write file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:328
-#, php-format
 msgid "Unable to delete file (%s)"
 msgstr "Unable to delete file (%s)"
 
@@ -4922,6 +4749,305 @@ msgstr "Si è verificata un'eccezione"
 msgid "Invalid image"
 msgstr "Invalid image"
 
+#: app/resources/strings.js.inc:27
+msgid "There was an error"
+msgstr "Si è verificato un errore"
+
+#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
+msgid "Session finished"
+msgstr "Sessione terminata"
+
+#: app/resources/strings.js.inc:29
+msgid "Delete account?"
+msgstr "Elimina l'account?"
+
+#: app/resources/strings.js.inc:30
+msgid "Delete user?"
+msgstr "Elimina l'utente?"
+
+#: app/resources/strings.js.inc:31
+msgid "You should save configuration in order to take effect"
+msgstr "Salva la configurazione per renderla effettiva"
+
+#: app/resources/strings.js.inc:32
+msgid "Generated Password"
+msgstr "Password generata"
+
+#: app/resources/strings.js.inc:33
+msgid "High level"
+msgstr "Livello alto"
+
+#: app/resources/strings.js.inc:34
+msgid "Average level"
+msgstr "Livello medio"
+
+#: app/resources/strings.js.inc:35
+msgid "Low level"
+msgstr "Livello basso"
+
+#: app/resources/strings.js.inc:36
+msgid "Very High level"
+msgstr "Livello molto alto"
+
+#: app/resources/strings.js.inc:37
+msgid "You should use at least 8 characters"
+msgstr "Utilizzare almeno 8 caratteri"
+
+#: app/resources/strings.js.inc:38
+msgid "Delete item?"
+msgstr "Eliminare l'oggetto?"
+
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
+#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
+#: app/resources/strings.js.inc:39
+msgid "Page not found"
+msgstr "Pagina inesistente"
+
+#: app/resources/strings.js.inc:41
+msgid "Delete file?"
+msgstr "Eliminare il file?"
+
+#: app/resources/strings.js.inc:42
+msgid "Your browser does not support HTML5 file uploads"
+msgstr ""
+"Il tuo browser non supporta i caricamenti di file in HTML5 prova a cambiare "
+"browser"
+
+#: app/resources/strings.js.inc:43
+msgid "Too many files"
+msgstr "Troppi files"
+
+#: app/resources/strings.js.inc:44
+msgid "File size not allowed"
+msgstr "La dimensione del file non è consentita"
+
+#: app/resources/strings.js.inc:45
+msgid "MIME type not allowed"
+msgstr "MIME type non permessa"
+
+#: app/resources/strings.js.inc:46
+msgid "Clear the event log out?"
+msgstr "Cancellare il registro degli eventi?"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
+#: app/modules/web/themes/material-blue/views/config/import.inc:59
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
+#: app/resources/strings.js.inc:47
+msgid "Select Group"
+msgstr "Selezionare Gruppo"
+
+#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
+#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
+#: app/modules/web/themes/material-blue/views/config/import.inc:32
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
+#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
+#: app/resources/strings.js.inc:48
+msgid "Select User"
+msgstr "Selezionare Utente"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
+#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
+#: app/resources/strings.js.inc:49
+msgid "Select Profile"
+msgstr "Selezionare Profilo"
+
+#: app/modules/web/themes/material-blue/views/account/account.inc:94
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
+#: app/resources/strings.js.inc:50
+msgid "Select Client"
+msgstr "Selezionare il Cliente"
+
+#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
+#: app/modules/web/themes/material-blue/views/account/account.inc:120
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
+#: app/resources/strings.js.inc:51
+msgid "Select Category"
+msgstr "Selezionare la categoria"
+
+#: app/resources/strings.js.inc:52
+msgid "No results"
+msgstr "Nessun risultato"
+
+#: app/resources/strings.js.inc:53
+msgid "Password options"
+msgstr "Opzioni password"
+
+#: app/resources/strings.js.inc:54
+msgid "Generate random password"
+msgstr "Genera una password casuale"
+
+#: app/resources/strings.js.inc:55
+msgid "Complexity"
+msgstr "Complessità"
+
+#: app/resources/strings.js.inc:56
+msgid "Reset"
+msgstr "Ripristina"
+
+#: app/resources/strings.js.inc:57
+msgid "Password strength level"
+msgstr "Livello di complessità della password"
+
+#: app/resources/strings.js.inc:58
+msgid "Show Password"
+msgstr "Mostra Password"
+
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
+#: app/resources/strings.js.inc:59
+msgid "Copy Username"
+msgstr "Copia utente"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
+#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
+#: app/resources/actions.xml:271
+msgid "Copy Password"
+msgstr "Copy Password"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
+#: app/resources/strings.js.inc:61
+msgid "Include Numbers"
+msgstr "Includi numeri"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
+#: app/resources/strings.js.inc:62
+msgid "Include Uppercase"
+msgstr "Includi maiuscole"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
+#: app/resources/strings.js.inc:63
+msgid "Include Symbols"
+msgstr "Includi simboli"
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
+#: app/resources/strings.js.inc:64
+msgid "Length"
+msgstr "Lunghezza"
+
+#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
+#: app/resources/strings.js.inc:65
+msgid "Select Action"
+msgstr "Seleziona azione"
+
+#: app/resources/strings.js.inc:68
+msgid "Accept"
+msgstr "Accetta"
+
+#: app/resources/strings.js.inc:69
+msgid "Cancel"
+msgstr "Annulla"
+
+#: app/resources/strings.js.inc:70
+msgid "Password Copied into Clipboard"
+msgstr "Chiave copiata negli appunti"
+
+#: app/resources/strings.js.inc:71
+msgid "Error while copying to clipboard"
+msgstr "Errore durante la copia negli appunti"
+
+#: app/resources/strings.js.inc:73
+msgid "Send notifies?"
+msgstr "Ricevere notifiche?"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
+#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
+msgid "Mark as Favorite"
+msgstr "Segna come preferito"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
+#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
+msgid "Delete Favorite"
+msgstr "Rimuovi preferito"
+
+#: app/resources/strings.js.inc:76
+msgid "Clear Selection"
+msgstr "Annulla selezione"
+
+#. (itstool) path: action/text
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
+#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
+msgid "Show Favorites"
+msgstr "Mostra Preferiti"
+
+#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
+#: app/resources/strings.js.inc:78
+msgid "Display All"
+msgstr "Mostra tutto"
+
+#: app/resources/strings.js.inc:81
+msgid "Now"
+msgstr "Ora"
+
+#: app/resources/strings.js.inc:82
+msgid ""
+"This process will import the detected LDAP users. Would you like to continue?"
+msgstr "Questo processo importa gli utenti LDAP rilevati. Vuoi continuare?"
+
+#: app/resources/strings.js.inc:83
+msgid "This action will reset all plugin data. Do you want to continue?"
+msgstr "Questa azione ripristinerà tutti i dati del plugin. Vuoi continuare?"
+
+#: app/resources/strings.js.inc:84
+msgid "This process could take some time long. Do you wish to continue?"
+msgstr "Questo processo potrebbe richiedere del tempo. Vuoi continuare?"
+
+#: app/resources/strings.js.inc:87
+msgid "Performing task. Please, do not close browser's window/tab."
+msgstr ""
+"Fare i compiti Per favore, non chiudere la finestra / scheda del browser."
+
+#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
+#: app/resources/strings.js.inc:88
+msgid "Include Letters"
+msgstr "Includi lettere"
+
+#: app/resources/strings.js.inc:89
+msgid "Cookies disabled. Application won't work properly."
+msgstr "Cookie disabilitati L'applicazione non funzionerà correttamente."
+
+#: app/resources/strings.js.inc:90
+msgid "Clipboard not supported by your browser."
+msgstr "Appunti non supportati dal browser."
+
+#: app/resources/strings.js.inc:91
+msgid "Performing auto-login"
+msgstr "Performing auto-login"
+
+#: app/resources/strings.js.inc:92
+msgid "There is a more recent version of {0} plugin ({1})"
+msgstr "C'è una versione più recente del plugin {0} ({1})"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:30
+#: app/resources/strings.js.inc:93
+msgid "Updated"
+msgstr "Aggiornato"
+
+#: app/modules/web/themes/material-blue/views/main/update.inc:36
+#: app/resources/strings.js.inc:94
+msgid "Error while checking for updates"
+msgstr "Errore durante il controllo degli aggiornamenti"
+
+#: app/resources/strings.js.inc:95
+msgid "sysPass Notices"
+msgstr "Avvisi SysPass"
+
+#: app/resources/strings.js.inc:96
+msgid "Clear the tracks out?"
+msgstr "Clear the tracks out?"
+
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
 msgstr "Javascript è necessario per il corretto funzionamento"
@@ -4948,7 +5074,6 @@ msgid "Tells whether the connection uses HTTPS or not."
 msgstr "Indica se la connessione utilizza HTTPS."
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:44
-#, fuzzy
 msgid ""
 "Passwords sent from forms are encrypted using PKI, the remain data don't."
 msgstr ""
@@ -4981,7 +5106,6 @@ msgid "Search for accounts which 'login' has access rights"
 msgstr "Cerca account a cui 'login' ha accesso"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:17
-#, fuzzy
 msgid "Get the accounts in which user login \"login\" is the owner"
 msgstr "Restituisci i conti in cui \"login\" è il proprietario"
 
@@ -4990,12 +5114,10 @@ msgid "Search for accounts which 'group_name' has access rights"
 msgstr "Cerca account a cui 'group_name' ha accesso"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:19
-#, fuzzy
 msgid "Get the accounts in which main group \"group_name\" is set"
 msgstr "Restituisci account con il gruppo 'group_name'"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:20
-#, fuzzy
 msgid "Search for accounts which contain a file with the name 'file_name'"
 msgstr "Cerca account con file con il nome 'file_name'"
 
@@ -5016,7 +5138,6 @@ msgid "Search for accounts with expired password"
 msgstr "Cerca account con la chiave scaduta"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:25
-#, fuzzy
 msgid "Get private accounts for current user"
 msgstr "Restituisce gli account privati ​​dell'utente corrente"
 
@@ -5062,14 +5183,6 @@ msgstr "Storico"
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:22
 msgid "Details"
 msgstr "Dettagli"
-
-#: app/modules/web/themes/material-blue/views/account/account-history.inc:78
-#: app/modules/web/themes/material-blue/views/account/account.inc:120
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:44
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:54
-#: app/resources/strings.js.inc:51
-msgid "Select Category"
-msgstr "Selezionare la categoria"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:127
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:78
@@ -5120,30 +5233,6 @@ msgstr "Visualizza"
 msgid "Select Groups"
 msgstr "Seleziona gruppi"
 
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:180
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:114
-#: app/modules/web/themes/material-blue/views/config/import.inc:32
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:287
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:69
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:27
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
-#: app/modules/web/themes/material-blue/views/notification/notification.inc:87
-#: app/resources/strings.js.inc:48
-msgid "Select User"
-msgstr "Selezionare Utente"
-
-#: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
-#: app/modules/web/themes/material-blue/views/config/encryption.inc:301
-#: app/modules/web/themes/material-blue/views/config/general-auth.inc:89
-#: app/modules/web/themes/material-blue/views/config/import.inc:59
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:262
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:84
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:54
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:152
-#: app/resources/strings.js.inc:47
-msgid "Select Group"
-msgstr "Selezionare Gruppo"
-
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:228
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:182
 msgid "Private"
@@ -5172,13 +5261,6 @@ msgstr "Inviare"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:214
 msgid "Permissions"
 msgstr "Permessi"
-
-#: app/modules/web/themes/material-blue/views/account/account.inc:94
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
-#: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
-#: app/resources/strings.js.inc:50
-msgid "Select Client"
-msgstr "Selezionare il Cliente"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
@@ -5228,7 +5310,6 @@ msgid "Drop files here (max. 5) or click to select"
 msgstr "Trascina qui i file (max 5) o fai clic per selezionare"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:39
-#, php-format
 msgid "Maximum file size: %d MB"
 msgstr "Dimensione massima del file: %d MB"
 
@@ -5237,7 +5318,6 @@ msgid "Search in Wiki"
 msgstr "Cerca in Wiki"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:84
-#, php-format
 msgid "Open link to: %s"
 msgstr "Open link to: %s"
 
@@ -5248,18 +5328,6 @@ msgstr "Chiave scaduta"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:125
 msgid "Private Account (Group)"
 msgstr "Private Account (Group)"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
-#: app/resources/strings.js.inc:75 app/resources/actions.xml:253
-msgid "Delete Favorite"
-msgstr "Rimuovi preferito"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
-#: app/resources/strings.js.inc:74 app/resources/actions.xml:247
-msgid "Mark as Favorite"
-msgstr "Segna come preferito"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
@@ -5278,21 +5346,8 @@ msgstr "Visualizza in Wiki"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:230
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:231
-#, fuzzy
 msgid "Global search"
 msgstr "Ricerca globale"
-
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
-#: app/resources/strings.js.inc:78
-#, fuzzy
-msgid "Display All"
-msgstr "Mostra tutto"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
-#: app/resources/strings.js.inc:77 app/resources/actions.xml:241
-msgid "Show Favorites"
-msgstr "Mostra Preferiti"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
@@ -5310,18 +5365,6 @@ msgstr "Più filtri"
 msgid "Select Tag"
 msgstr "Seleziona tag"
 
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
-#: app/resources/strings.js.inc:59
-msgid "Copy Username"
-msgstr "Copia utente"
-
-#. (itstool) path: action/text
-#: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
-#: app/resources/strings.js.inc:60 app/resources/actions.xml:199
-#: app/resources/actions.xml:271
-msgid "Copy Password"
-msgstr "Copy Password"
-
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
 msgstr "Data will be encrypted after saving"
@@ -5335,7 +5378,6 @@ msgstr "Data will be unencrypted after saving"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:12
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:12
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:12
-#, php-format
 msgid "The '%s' extension is unavailable"
 msgstr "The '%s' extension is unavailable"
 
@@ -5356,7 +5398,6 @@ msgstr "Risultati per pagina"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:61
-#, fuzzy
 msgid "Number of results per page to display when performing a search."
 msgstr ""
 "Numero di risultati per pagina da visualizzare, quando si esegue una ricerca."
@@ -5390,7 +5431,6 @@ msgstr "Nome account come link"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
-#, fuzzy
 msgid "Enables to use the account name as a link to account details."
 msgstr ""
 "Abilita il nome dell'account di ricerca, come link ai dettagli dell'account."
@@ -5400,7 +5440,6 @@ msgid "Global searches"
 msgstr "Ricerche globali"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:128
-#, fuzzy
 msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
 "able to display the account details if they don't have permission."
@@ -5433,7 +5472,6 @@ msgstr "Risultati stile biglietti da visita"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:165
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
-#, fuzzy
 msgid "Displays account's search results on a card like format."
 msgstr ""
 "Visualizza i risultati della ricerca dell'account nel formato della "
@@ -5444,12 +5482,10 @@ msgid "Secondary Groups Access"
 msgstr "Accesso ai gruppi secondari"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:183
-#, fuzzy
 msgid "Grants access to users that are included in secondary groups."
 msgstr "Consente l'accesso agli utenti inclusi nei gruppi figlio."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:185
-#, fuzzy
 msgid ""
 "By default, user in a secondary group is granted if the secondary group is "
 "set as user's main group."
@@ -5475,12 +5511,10 @@ msgstr ""
 "dettagli di un account."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:218
-#, fuzzy
 msgid "Linked accounts will be visible by anyone that have the link."
 msgstr "Gli account collegati saranno visibili da chiunque abbia il link."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:220
-#, fuzzy
 msgid ""
 "In order to create links, users must have activated the option on their "
 "profiles."
@@ -5499,10 +5533,6 @@ msgstr "Il tasto account è visualizzato come un'immagine."
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 msgid "Expire time"
 msgstr "Scadenza"
-
-#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
-msgid "Expire time (minutes)"
-msgstr "Scadenza (minuti)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271
@@ -5540,12 +5570,10 @@ msgid "Maximum file size"
 msgstr "Dimensione massima del file"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:339
-#, fuzzy
 msgid "Sets the maximum file size for uploading."
 msgstr "Imposta la dimensione massima per caricare i file."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:343
-#, fuzzy
 msgid "Absolute maximum is 16MB."
 msgstr "Il massimo assoluto è 16 MB."
 
@@ -5568,7 +5596,6 @@ msgstr "Risultato"
 #: app/modules/web/themes/material-blue/views/config/backup.inc:45
 #: app/modules/web/themes/material-blue/views/config/backup.inc:121
 #: app/modules/web/themes/material-blue/views/config/backup.inc:124
-#, fuzzy
 msgid "Download Current"
 msgstr "Scarica corrente"
 
@@ -5581,7 +5608,6 @@ msgid "sysPass Backup"
 msgstr "Copia sysPass"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:81
-#, fuzzy
 msgid ""
 "The backup allows you to save and download sysPass database and application "
 "files including its configuration."
@@ -5622,12 +5648,10 @@ msgstr ""
 "istanze di sysPass."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:190
-#, fuzzy
 msgid "Exported items are accounts, clients, categories and tags."
 msgstr "Gli articoli esportati sono account, clienti, categorie e tag."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:192
-#, fuzzy
 msgid ""
 "Accounts' password are exported in an encrypted way for better security."
 msgstr ""
@@ -5635,7 +5659,6 @@ msgstr ""
 "maggiore sicurezza."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:194
-#, fuzzy
 msgid ""
 "It's possible to set an export password to save all the encrypted data in "
 "the XML file."
@@ -5658,7 +5681,6 @@ msgstr "Password principale"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:29
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:214
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:217
-#, fuzzy
 msgid "Last change"
 msgstr "Ultima modifica"
 
@@ -5692,7 +5714,6 @@ msgstr "Gli utenti devono inserire la nuova password principale."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
-#, fuzzy, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr "Aggiornerai %s account. Questo processo potrebbe richiedere del tempo."
 
@@ -5706,7 +5727,6 @@ msgstr ""
 "Imposta una nuova password master senza ricodificare nuovamente gli account"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:140
-#, fuzzy
 msgid "Confirm change"
 msgstr "Conferma modifica"
 
@@ -5727,7 +5747,6 @@ msgstr ""
 "account sysPass per mantenerle sicure."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:172
-#, fuzzy
 msgid ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
@@ -5737,7 +5756,6 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:174
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:132
-#, php-format
 msgid "You could get more info on: %s"
 msgstr "Per maggiori informazioni vedi: %s"
 
@@ -5936,7 +5954,6 @@ msgid "Language"
 msgstr "Lingua"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
-#, fuzzy
 msgid ""
 "Sets the global app language. You can set a per user language on preferences."
 msgstr ""
@@ -5944,7 +5961,6 @@ msgstr ""
 "lingua per utente nelle preferenze."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
-#, fuzzy
 msgid ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
 "join/project/fmlsBuugyv"
@@ -5960,7 +5976,6 @@ msgid "Visual Theme"
 msgstr "Tema del portale"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:64
-#, fuzzy
 msgid ""
 "Sets the global application visual theme. You can set a per user visual "
 "theme on preferences."
@@ -5972,17 +5987,6 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:95
 msgid "Session timeout (s)"
 msgstr "Timeout della sessione (s)"
-
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
-msgid "Application URL"
-msgstr ""
-
-#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
-msgid ""
-"Sets the application URL when accessing through a reverse proxy or load "
-"balancer."
-msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:136
 msgid "Force HTTPS"
@@ -5997,7 +6001,6 @@ msgid "Enable debug"
 msgstr "Abilita il debug"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:153
-#, fuzzy
 msgid ""
 "Displays some information about application configuration and performance."
 msgstr ""
@@ -6027,7 +6030,6 @@ msgstr ""
 "amministratori)."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:200
-#, fuzzy
 msgid "Check for notifications"
 msgstr "Controlla le notifiche"
 
@@ -6078,13 +6080,11 @@ msgid "Drop files here or click to select"
 msgstr "Trascina qui il file o fai clic per selezionare"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:105
-#, fuzzy
 msgid ""
 "Allows to import Accounts, Categories and Clients from XML or CSV files."
 msgstr "Permette di importare account, categorie e client da file XML e CSV."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:107
-#, fuzzy
 msgid "Supported XML file formats are: sysPass, KeePass and KeePassX"
 msgstr "I formati di file XML supportati sono: sysPass, KeePass e KeePassX"
 
@@ -6094,7 +6094,6 @@ msgstr ""
 "Trascina il file da importare nell'area indicata o fai clic sulla freccia."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:111
-#, fuzzy
 msgid ""
 "For KeePass or KeePassX files, client name will be KeePass or KeePassX and "
 "category name like groups name."
@@ -6107,7 +6106,6 @@ msgid "The CSV import file requires the following format:"
 msgstr "L'importazione di file CSV viene eseguita nel seguente formato:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-#, fuzzy
 msgid ""
 "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
 "\"notes\""
@@ -6137,7 +6135,6 @@ msgid "It's only needed for sysPass XML files that have been encrypted."
 msgstr "È necessario solo per i file XML sysPass crittografati."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:157
-#, fuzzy
 msgid ""
 "It's only needed for sysPass XML files that have been encrypted with a "
 "different master password from the current one."
@@ -6204,7 +6201,6 @@ msgstr "Copia della configurazione"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:104
 #: app/modules/web/themes/material-blue/views/config/info.inc:186
-#, php-format
 msgid "Download %s"
 msgstr "Download %s"
 
@@ -6226,7 +6222,6 @@ msgid "Encrypted Session"
 msgstr "Sessione crittografata"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:139
-#, fuzzy
 msgid "Tells whether the session data are encrypted in the server side or not"
 msgstr "Indica se i dati della sessione sono crittografati sul server"
 
@@ -6256,18 +6251,19 @@ msgstr "Abilita l'autenticazione tramite il server LDAP."
 msgid "This method will use MySQL as fallback."
 msgstr "Questo metodo utilizzerà MySQL in caso di errore."
 
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:65
+msgid "Active Directory"
+msgstr "Active Directory"
+
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:67
+msgid "Enables Active Directory LDAP connection mode."
+msgstr "Abilita la modalità di connessione LDAP di Active Directory."
+
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables the connection over TLS"
 msgstr "Enables the connection over TLS"
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:76
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:78
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:82
-msgid "Server Type"
-msgstr "Tipologia Server"
-
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
-#, fuzzy
 msgid "Hostname or IP address of LDAP server."
 msgstr "Nome o indirizzo IP del server LDAP."
 
@@ -6284,7 +6280,6 @@ msgid "Bind User"
 msgstr "Utente di connessione"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:129
-#, fuzzy
 msgid "User to connect to LDAP service."
 msgstr "Utente per connettersi con il servizio LDAP."
 
@@ -6293,17 +6288,8 @@ msgid "Bind Password"
 msgstr "Password di connessione"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:159
-#, fuzzy
 msgid "LDAP connection user's password"
 msgstr "Password dell'utente di connessione LDAP."
-
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:177
-msgid ""
-"This isn't the real LDAP password. You should set the real one before "
-"checking or importing LDAP objects"
-msgstr ""
-"Questa non e' la reale password LDAP. Devi inserire quella reale prima di "
-"verificare o importare gli oggetti LDAP"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:185
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:209
@@ -6311,12 +6297,10 @@ msgid "Search base"
 msgstr "Cerca database"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:190
-#, fuzzy
 msgid "LDAP base to perform the LDAP users search."
 msgstr "Database su cui eseguire la ricerca di utenti LDAP."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:220
-#, fuzzy
 msgid "LDAP group which user must belong to for granting to log in."
 msgstr "Gruppo LDAP a cui l'utente deve appartenere per consentire l'accesso."
 
@@ -6325,7 +6309,6 @@ msgid "This group needs to be placed in the LDAP search base."
 msgstr "Questo gruppo deve trovarsi nel database di ricerca LDAP."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:253
-#, fuzzy
 msgid "Sets the default users group for newly created LDAP users"
 msgstr "Definisce il gruppo di utenti predefinito per i nuovi utenti LDAP."
 
@@ -6382,10 +6365,6 @@ msgstr "Filter"
 msgid "Filter for importing LDAP users or groups."
 msgstr "Filter for importing LDAP users or groups."
 
-#: app/modules/web/themes/material-blue/views/config/ldap.inc:469
-msgid "Import users from LDAP"
-msgstr "Importa utenti LDAP"
-
 #: app/modules/web/themes/material-blue/views/config/mail.inc:33
 #: app/modules/web/themes/material-blue/views/config/mail.inc:34
 msgid "Enable email notifications"
@@ -6396,7 +6375,6 @@ msgid "Enable requests by email"
 msgstr "Abilita le richieste per posta"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:50
-#, fuzzy
 msgid ""
 "Allows users to request for either modifications to existing accounts or "
 "access to accounts which they have no rights on."
@@ -6415,8 +6393,8 @@ msgstr "Sicurezza"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
-msgid "Sender email address"
-msgstr "Indirizzo mail del mittente"
+msgid "Recipient email address"
+msgstr "Indirizzo mail  di spedizione"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
 #: app/modules/web/themes/material-blue/views/config/mail.inc:165
@@ -6474,7 +6452,6 @@ msgid "DokuWiki base URL"
 msgstr "URL di base di DokuWiki."
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:121
-#, fuzzy
 msgid "User for connecting to the DokuWiki API."
 msgstr "Utente per connettersi all'API DokuWiki."
 
@@ -6504,12 +6481,10 @@ msgid "Wiki search URL"
 msgstr "URL di ricerca Wiki"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:49
-#, fuzzy
 msgid "URL that Wiki uses for making an entry searching."
 msgstr "URL utilizzato dalla wiki per eseguire una ricerca su una pagina."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:53
-#, fuzzy
 msgid "The client's name is used as parameter."
 msgstr "Come parametro si utilizza il nome del cliente."
 
@@ -6519,12 +6494,10 @@ msgid "Wiki page URL"
 msgstr "URL della pagina in Wiki"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:82
-#, fuzzy
 msgid "URL that Wiki uses for accessing to the entry details."
 msgstr "URL utilizzato dal wiki per accedere ai dettagli di una pagina."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:86
-#, fuzzy
 msgid "Account's name is used as parameter of Wiki search variable."
 msgstr ""
 "Il nome dell'account viene utilizzato come parametro della variabile di "
@@ -6552,7 +6525,6 @@ msgid "Filter ON"
 msgstr "Filtro ON"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:11
-#, php-format
 msgid "Installation %s"
 msgstr "Installazione %s"
 
@@ -6577,7 +6549,6 @@ msgid "DB access user"
 msgstr "Accesso utente BBDD"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:87
-#, fuzzy
 msgid "An user with MySQL admin rights"
 msgstr "Utente con permessi di amministratore MySQL"
 
@@ -6595,7 +6566,6 @@ msgid "sysPass database server"
 msgstr "Server BBDD per sysPass"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:129
-#, fuzzy
 msgid "Server name to install sysPass database"
 msgstr "Nome del server per installare il database sysPass"
 
@@ -6621,11 +6591,6 @@ msgstr "Creatore"
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:234
 msgid "Delete History"
 msgstr "Delete History"
-
-#: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
-#: app/resources/strings.js.inc:65
-msgid "Select Action"
-msgstr "Seleziona azione"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
@@ -6664,19 +6629,12 @@ msgid "Help Text"
 msgstr "Aiuto testo"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:69
-#, fuzzy
 msgid "Field's help"
 msgstr "Suggerimento"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:80
 msgid "Required"
 msgstr "Obbligatorio"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
-#: app/resources/strings.js.inc:64
-msgid "Length"
-msgstr "Lunghezza"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
@@ -6687,27 +6645,6 @@ msgstr "Score"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:65
 msgid "Regular Expression"
 msgstr "Regular Expression"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:84
-#: app/resources/strings.js.inc:61
-msgid "Include Numbers"
-msgstr "Includi numeri"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
-#: app/resources/strings.js.inc:88
-msgid "Include Letters"
-msgstr "Includi lettere"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
-#: app/resources/strings.js.inc:63
-#, fuzzy
-msgid "Include Symbols"
-msgstr "Includi simboli"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:126
-#: app/resources/strings.js.inc:62
-msgid "Include Uppercase"
-msgstr "Includi maiuscole"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:140
 msgid "Include Lowercase"
@@ -6739,12 +6676,6 @@ msgstr "IP Address"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-session_timeout.inc:37
 msgid "Timeout"
 msgstr "Timeout"
-
-#: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:71
-#: app/modules/web/themes/material-blue/views/itemshow/user.inc:135
-#: app/resources/strings.js.inc:49
-msgid "Select Profile"
-msgstr "Selezionare Profilo"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:89
 msgid ""
@@ -6849,7 +6780,6 @@ msgid "Management"
 msgstr "Gestione"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:37
-#, fuzzy
 msgid "Create new account"
 msgstr "Creare un nuovo account"
 
@@ -6932,7 +6862,6 @@ msgid "Tags management"
 msgstr "Gestione dei tag"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:331
-#, fuzzy
 msgid "Customers management"
 msgstr "Gestione dei clienti"
 
@@ -6998,18 +6927,7 @@ msgstr "Accedere"
 msgid "Forgot password?"
 msgstr "Hai dimenticato la password?"
 
-#: app/modules/web/themes/material-blue/views/main/update.inc:30
-#: app/resources/strings.js.inc:93
-msgid "Updated"
-msgstr "Aggiornato"
-
-#: app/modules/web/themes/material-blue/views/main/update.inc:36
-#: app/resources/strings.js.inc:94
-msgid "Error while checking for updates"
-msgstr "Errore durante il controllo degli aggiornamenti"
-
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
-#, php-format
 msgid "Update %s"
 msgstr "Aggiorna %s"
 
@@ -7027,7 +6945,6 @@ msgid "Security Code"
 msgstr "Codice di sicurezza"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-#, fuzzy
 msgid ""
 "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr ""
@@ -7043,7 +6960,6 @@ msgstr ""
 "indicare gli ID di default per gli elementi orfani."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
-#, fuzzy
 msgid "If items IDs are not set, they will be created."
 msgstr "Se gli ID non vengono indicati, verranno creati nuovi elementi."
 
@@ -7056,7 +6972,6 @@ msgid "Enter a valid category ID for the accounts"
 msgstr "Inserisci un ID di categoria valido per gli account"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:96
-#, fuzzy
 msgid "Enter a valid client ID for the accounts"
 msgstr "Inserisci un ID cliente valido per gli account"
 
@@ -7160,7 +7075,6 @@ msgid "Sort search results by views"
 msgstr "Ordina i risultati per visite"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:109
-#, fuzzy
 msgid "Sorts accounts search results by the number of account's views"
 msgstr ""
 "Ordina i risultati della ricerca in base al numero di visite agli account."
@@ -7170,15 +7084,14 @@ msgid "Navigation bar on top"
 msgstr "La barra di navigazione in alto"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
-msgid "Displays a navigation bar on top of the search results."
-msgstr "Visualizza la barra di navigazione sopra i risultati della ricerca "
+msgid "Dysplays a navigation bar on top of the search results."
+msgstr "Mostra una barra di navigazione superiore nelle ricerche."
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
 msgstr "Mostra azioni nascoste"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:143
-#, fuzzy
 msgid "Always display hidden actions on the accounts search page."
 msgstr "Mostra azioni nascoste per gli elementi nella ricerca dell'account."
 
@@ -7204,14 +7117,7 @@ msgstr "Displays the additional filters selection on the accounts search."
 msgid "View Wiki"
 msgstr "Vedi Wiki"
 
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
-#: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
-#: app/resources/strings.js.inc:39
-msgid "Page not found"
-msgstr "Pagina inesistente"
-
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
-#, php-format
 msgid "Search results of '%s'"
 msgstr "Cerca risultati per '%s'"
 
@@ -7219,183 +7125,6 @@ msgstr "Cerca risultati per '%s'"
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:37
 msgid "Page"
 msgstr "Pagina"
-
-#: app/resources/strings.js.inc:27
-msgid "There was an error"
-msgstr "Si è verificato un errore"
-
-#: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
-msgid "Session finished"
-msgstr "Sessione terminata"
-
-#: app/resources/strings.js.inc:29
-msgid "Delete account?"
-msgstr "Elimina l'account?"
-
-#: app/resources/strings.js.inc:30
-msgid "Delete user?"
-msgstr "Elimina l'utente?"
-
-#: app/resources/strings.js.inc:31
-msgid "You should save configuration in order to take effect"
-msgstr "Salva la configurazione per renderla effettiva"
-
-#: app/resources/strings.js.inc:32
-msgid "Generated Password"
-msgstr "Password generata"
-
-#: app/resources/strings.js.inc:33
-msgid "High level"
-msgstr "Livello alto"
-
-#: app/resources/strings.js.inc:34
-msgid "Average level"
-msgstr "Livello medio"
-
-#: app/resources/strings.js.inc:35
-msgid "Low level"
-msgstr "Livello basso"
-
-#: app/resources/strings.js.inc:36
-msgid "Very High level"
-msgstr "Livello molto alto"
-
-#: app/resources/strings.js.inc:37
-msgid "You should use at least 8 characters"
-msgstr "Utilizzare almeno 8 caratteri"
-
-#: app/resources/strings.js.inc:38
-msgid "Delete item?"
-msgstr "Eliminare l'oggetto?"
-
-#: app/resources/strings.js.inc:41
-msgid "Delete file?"
-msgstr "Eliminare il file?"
-
-#: app/resources/strings.js.inc:42
-msgid "Your browser does not support HTML5 file uploads"
-msgstr ""
-"Il tuo browser non supporta i caricamenti di file in HTML5 prova a cambiare "
-"browser"
-
-#: app/resources/strings.js.inc:43
-msgid "Too many files"
-msgstr "Troppi files"
-
-#: app/resources/strings.js.inc:44
-msgid "File size not allowed"
-msgstr "La dimensione del file non è consentita"
-
-#: app/resources/strings.js.inc:45
-msgid "MIME type not allowed"
-msgstr "MIME type non permessa"
-
-#: app/resources/strings.js.inc:46
-#, fuzzy
-msgid "Clear the event log out?"
-msgstr "Cancellare il registro degli eventi?"
-
-#: app/resources/strings.js.inc:52
-msgid "No results"
-msgstr "Nessun risultato"
-
-#: app/resources/strings.js.inc:53
-msgid "Password options"
-msgstr "Opzioni password"
-
-#: app/resources/strings.js.inc:54
-msgid "Generate random password"
-msgstr "Genera una password casuale"
-
-#: app/resources/strings.js.inc:55
-msgid "Complexity"
-msgstr "Complessità"
-
-#: app/resources/strings.js.inc:56
-msgid "Reset"
-msgstr "Ripristina"
-
-#: app/resources/strings.js.inc:57
-msgid "Password strength level"
-msgstr "Livello di complessità della password"
-
-#: app/resources/strings.js.inc:58
-msgid "Show Password"
-msgstr "Mostra Password"
-
-#: app/resources/strings.js.inc:68
-msgid "Accept"
-msgstr "Accetta"
-
-#: app/resources/strings.js.inc:69
-msgid "Cancel"
-msgstr "Annulla"
-
-#: app/resources/strings.js.inc:70
-#, fuzzy
-msgid "Password Copied into Clipboard"
-msgstr "Chiave copiata negli appunti"
-
-#: app/resources/strings.js.inc:71
-msgid "Error while copying to clipboard"
-msgstr "Errore durante la copia negli appunti"
-
-#: app/resources/strings.js.inc:73
-msgid "Send notifies?"
-msgstr "Ricevere notifiche?"
-
-#: app/resources/strings.js.inc:76
-msgid "Clear Selection"
-msgstr "Annulla selezione"
-
-#: app/resources/strings.js.inc:81
-msgid "Now"
-msgstr "Ora"
-
-#: app/resources/strings.js.inc:82
-msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr "Questo processo importa gli utenti LDAP rilevati. Vuoi continuare?"
-
-#: app/resources/strings.js.inc:83
-msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr "Questa azione ripristinerà tutti i dati del plugin. Vuoi continuare?"
-
-#: app/resources/strings.js.inc:84
-#, fuzzy
-msgid "This process could take some time long. Do you wish to continue?"
-msgstr "Questo processo potrebbe richiedere del tempo. Vuoi continuare?"
-
-#: app/resources/strings.js.inc:87
-#, fuzzy
-msgid "Performing task. Please, do not close browser's window/tab."
-msgstr ""
-"Fare i compiti Per favore, non chiudere la finestra / scheda del browser."
-
-#: app/resources/strings.js.inc:89
-#, fuzzy
-msgid "Cookies disabled. Application won't work properly."
-msgstr "Cookie disabilitati L'applicazione non funzionerà correttamente."
-
-#: app/resources/strings.js.inc:90
-msgid "Clipboard not supported by your browser."
-msgstr "Appunti non supportati dal browser."
-
-#: app/resources/strings.js.inc:91
-msgid "Performing auto-login"
-msgstr "Performing auto-login"
-
-#: app/resources/strings.js.inc:92
-msgid "There is a more recent version of {0} plugin ({1})"
-msgstr "C'è una versione più recente del plugin {0} ({1})"
-
-#: app/resources/strings.js.inc:95
-msgid "sysPass Notices"
-msgstr "Avvisi SysPass"
-
-#: app/resources/strings.js.inc:96
-msgid "Clear the tracks out?"
-msgstr "Clear the tracks out?"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:7
@@ -7424,7 +7153,6 @@ msgstr "Gestione Categorie"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:55
-#, fuzzy
 msgid "Customers Management"
 msgstr "Gestione Clienti"
 
@@ -7575,7 +7303,6 @@ msgstr "Search for Custom Field"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:427
-#, fuzzy
 msgid "Show Public Link"
 msgstr "Vedi Link pubblico"
 
@@ -7714,78 +7441,185 @@ msgstr "Unlock track"
 msgid "Clear the tracks out"
 msgstr "Clear the tracks out"
 
-#, fuzzy
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "La directory \"/config\" non esiste"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:4
+msgid "Color"
+msgstr "Colore"
 
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "Non è possibile scrivere nella directory \"/config\""
+#. (itstool) path: strings/text
+#: app/config/strings.xml:5
+msgid "Number"
+msgstr "Numero"
 
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "Le autorizzazioni della directory \"/config\" non sono corrette"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:6
+msgid "Phone"
+msgstr "Telefono"
 
-#~ msgid "Master Password %s"
-#~ msgstr "Master Password %s"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:7
+msgid "Text Area"
+msgstr "Area di testo"
 
-#~ msgid "Mail service unavailable"
-#~ msgstr "Mail service unavailable"
+#. (itstool) path: strings/text
+#: app/config/strings.xml:8
+msgid "Text"
+msgstr "Testo"
 
-#~ msgid "Active Directory"
-#~ msgstr "Active Directory"
+#: app/modules/web/Controllers/AccountFileController.php:192
+msgid "There aren't any allowed extensions"
+msgstr "Non ci sono estensioni consentite"
 
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Abilita la modalità di connessione LDAP di Active Directory."
+#: app/modules/web/Controllers/AccountFileController.php:211
+msgid "Extension: %s"
+msgstr "Extension: %s"
 
-#, fuzzy
-#~ msgid "Recipient email address"
-#~ msgstr "Indirizzo mail  di spedizione"
+#: app/modules/web/Controllers/AccountFileController.php:226
+msgid "Maximum size: %s"
+msgstr "Maximum size: %s"
 
-#, fuzzy
-#~ msgid "Dysplays a navigation bar on top of the search results."
-#~ msgstr "Mostra una barra di navigazione superiore nelle ricerche."
+#: lib/SP/Services/Import/FileImport.php:102
+msgid "Please, check the file extension"
+msgstr "Controlla l'estensione del file"
 
-#~ msgid "Color"
-#~ msgstr "Colore"
+#: lib/SP/Storage/File/FileCachePacked.php:144
+msgid "Data not loaded"
+msgstr "Data not loaded"
 
-#~ msgid "Number"
-#~ msgstr "Numero"
+#: app/config/strings.js.inc:45
+msgid "Extension not allowed"
+msgstr "Estensione non consentita"
 
-#~ msgid "Phone"
-#~ msgstr "Telefono"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:307
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:320
+msgid "Allowed file extensions"
+msgstr "Estensioni di file consentite"
 
-#~ msgid "Text Area"
-#~ msgstr "Area di testo"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:312
+msgid "Allowed file extensions for uploading."
+msgstr "Estensioni consentite per il caricamento di file."
 
-#~ msgid "Text"
-#~ msgstr "Testo"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:315
+msgid ""
+"Write the extension and press enter to add. Remember to save the "
+"configuration."
+msgstr ""
+"Scrivi l'estensione e premi invio per aggiungere. È necessario salvare la "
+"configurazione."
 
-#~ msgid "There aren't any allowed extensions"
-#~ msgstr "Non ci sono estensioni consentite"
+#: lib/SP/Providers/Auth/Ldap/Ldap.php:110
+msgid "LDAP type not set"
+msgstr "LDAP type non impostato"
 
-#~ msgid "Extension: %s"
-#~ msgstr "Extension: %s"
+#: app/modules/web/themes/material-blue/views/config/accounts.inc:256
+msgid "Expire time (minutes)"
+msgstr "Scadenza (minuti)"
 
-#~ msgid "Maximum size: %s"
-#~ msgstr "Maximum size: %s"
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:76
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:78
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:82
+msgid "Server Type"
+msgstr "Tipologia Server"
 
-#~ msgid "Please, check the file extension"
-#~ msgstr "Controlla l'estensione del file"
+#: app/modules/web/themes/material-blue/views/config/ldap.inc:177
+msgid ""
+"This isn't the real LDAP password. You should set the real one before "
+"checking or importing LDAP objects"
+msgstr ""
+"Questa non e' la reale password LDAP. Devi inserire quella reale prima di "
+"verificare o importare gli oggetti LDAP"
 
-#~ msgid "Data not loaded"
-#~ msgstr "Data not loaded"
+#: app/modules/web/themes/material-blue/views/config/mail.inc:148
+#: app/modules/web/themes/material-blue/views/config/mail.inc:156
+msgid "Sender email address"
+msgstr "Indirizzo mail del mittente"
 
-#~ msgid "Extension not allowed"
-#~ msgstr "Estensione non consentita"
+#: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
+msgid "Displays a navigation bar on top of the search results."
+msgstr "Visualizza la barra di navigazione sopra i risultati della ricerca "
 
-#~ msgid "Allowed file extensions"
-#~ msgstr "Estensioni di file consentite"
+#: app/modules/web/Controllers/ConfigEncryptionController.php:117
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
+msgid "Maintenance mode not enabled"
+msgstr "Modalità manutenzione non abilitata"
 
-#~ msgid "Allowed file extensions for uploading."
-#~ msgstr "Estensioni consentite per il caricamento di file."
+#: app/modules/web/Controllers/ConfigEncryptionController.php:118
+#: app/modules/web/themes/material-blue/views/config/encryption.inc:86
+msgid "Please, enable it to avoid unwanted behavior from other sessions"
+msgstr ""
+"Per favore, abilita per evitare comportamenti imprevedibili da altre sessioni"
 
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Scrivi l'estensione e premi invio per aggiungere. È necessario salvare la "
-#~ "configurazione."
+#: lib/SP/Providers/Mail/MailHandler.php:149
+msgid "Event: %s"
+msgstr "Evento: %s"
+
+#: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
+msgid "%s Master Password"
+msgstr "%s Master Password"
+
+#: lib/SP/Services/Task/TaskService.php:93
+msgid "Task not set within wait time"
+msgstr "Compito non assegnato nel tempo di attesa"
+
+#: lib/SP/Config/ConfigUtil.php:102
+msgid "'/app/config' directory does not exist."
+msgstr "La cartella '/app/config' non esiste."
+
+#: lib/SP/Config/ConfigUtil.php:108
+msgid "Unable to write into '/app/config' directory"
+msgstr "Impossibile scrivere nella cartella '/app/config'"
+
+#: lib/SP/Config/ConfigUtil.php:117
+msgid "'/app/config' directory permissions are wrong"
+msgstr "I permessi della cartella '/app/config' sono errati"
+
+#: lib/SP/Plugin/PluginManager.php:392
+msgid "Upgrading plugin"
+msgstr "Aggiornando plugin"
+
+#: lib/SP/Plugin/PluginManager.php:409
+msgid "Plugin upgraded"
+msgstr "Plugin aggiornato"
+
+#: lib/SP/Plugin/PluginManager.php:418
+msgid "Unable to upgrade the \"%s\" plugin"
+msgstr "Impossibile aggiornare il plugin \"%s\""
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
+msgid "Error while adding plugin's data"
+msgstr "Errore durante la creazione dei dati del plugin"
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
+msgid "Error while updating plugin's data"
+msgstr "Errore durante l'aggiornamento dei dati del plugin"
+
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
+#: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
+msgid "Error while deleting plugin's data"
+msgstr "Errore durante l'eliminazione dei dati del plugin"
+
+#: lib/SP/Services/Plugin/PluginDataService.php:97
+#: lib/SP/Services/Plugin/PluginDataService.php:121
+#: lib/SP/Services/Plugin/PluginDataService.php:165
+#: lib/SP/Services/Plugin/PluginDataService.php:183
+msgid "Plugin's data not found"
+msgstr "Dati del plugin non trovati"
+
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:48
+#: lib/SP/Services/Upgrade/UpgradePlugin.php:57
+msgid "Plugins upgrade"
+msgstr "Aggiornamenti del plugin"
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:101
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:117
+msgid "Application URL"
+msgstr "URL dell'applicazione"
+
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:106
+msgid ""
+"Sets the application URL when accessing through a reverse proxy or load "
+"balancer."
+msgstr ""
+"Imposta l'URL dell'applicazione quando effettua l'accesso tramite un reverse "
+"proxy o load balancer."
