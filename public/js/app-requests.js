@@ -242,6 +242,7 @@ sysPass.Requests = function (sysPassApp) {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
         getActionEvent: getActionEvent,
+        getUrl: getUrl,
         history: history
     };
 };

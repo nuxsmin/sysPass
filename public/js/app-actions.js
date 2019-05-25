@@ -942,11 +942,11 @@ sysPass.Actions = function (log) {
             log.info("file:download");
 
             const fileType = $obj.data("item-type");
-            const url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
+            const url = sysPassApp.requests.getUrl(sysPassApp.util.getUrl(ajaxUrl.entrypoint,
                 {
                     r: [$obj.data("action-route"), $obj.data("item-id")],
                     sk: sysPassApp.sk.get()
-                });
+                }));
 
             if (fileType === 'application/pdf') {
                 window.open(url, '_blank');
