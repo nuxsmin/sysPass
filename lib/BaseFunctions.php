@@ -121,9 +121,9 @@ function formatStackTrace(Throwable $e)
             $function = $trace['function'];
         }
 
-        if (!empty($trace['args'])) {
-            $args = [];
+        $args = [];
 
+        if (!empty($trace['args'])) {
             foreach ($trace['args'] as $arg) {
                 $type = ucfirst(gettype($arg));
 
