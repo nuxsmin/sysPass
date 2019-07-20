@@ -46,12 +46,12 @@
     "fzaninotto/faker": "~v1.8",
     "fabpot/goutte": "~v3.2",
     "syspass/extension-installer-plugin": "dev-master",
-    "syspass/plugin-authenticator": "^2.0",
+    "syspass/plugin-authenticator": "^2.1",
     "ext-xdebug": "*",
     "nikic/php-parser": " ~v4.1"
   },
   "suggest": {
-    "syspass/plugin-authenticator": "^2.0",
+    "syspass/plugin-authenticator": "^2.1",
     "ext-ldap": "*",
     "ext-curl": "*"
   },

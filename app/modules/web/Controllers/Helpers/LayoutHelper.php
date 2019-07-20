@@ -98,15 +98,17 @@ final class LayoutHelper extends HelperBase
      */
     public function initBody()
     {
+        $baseUrl = $this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI;
+
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
         $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', Installer::VERSION_TEXT);
-        $this->view->assign('logo_icon', Bootstrap::$WEBROOT . '/public/images/logo_icon.png');
-        $this->view->assign('logo_no_bg_color', Bootstrap::$WEBROOT . '/public/images/logo_full_nobg_outline_color.png');
-        $this->view->assign('logo_no_bg', Bootstrap::$WEBROOT . '/public/images/logo_full_nobg_outline.png');
+        $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
+        $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
+        $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
 
