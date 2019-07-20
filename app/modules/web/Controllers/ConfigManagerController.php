@@ -35,6 +35,7 @@ use SP\Core\Events\Event;
 use SP\Core\Exceptions\CheckException;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\MimeTypes;
@@ -417,9 +418,10 @@ final class ConfigManagerController extends ControllerBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

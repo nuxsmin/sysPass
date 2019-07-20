@@ -27,13 +27,12 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
@@ -224,25 +223,29 @@ final class UserProfileController extends ControllerBase implements CrudControll
             if ($id === null) {
                 $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.userProfile.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Profiles deleted')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.userProfile.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Profiles deleted')))
                 );
+
+                $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profiles deleted'));
             }
 
             $this->userProfileService->delete($id);
 
-            $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.userProfile',
+            $this->eventDispatcher->notifyEvent(
+                'delete.userProfile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Profile deleted'))
                     ->addDetail(__u('Profile'), $id)
                     ->addExtra('userProfileId', $id))
             );
+
+            $this->deleteCustomFieldsForItem(Acl::PROFILE, $id);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile deleted'));
         } catch (Exception $e) {
@@ -273,15 +276,13 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $id = $this->userProfileService->create($profileData);
 
-            $this->addCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
-
-            $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
-
             $this->eventDispatcher->notifyEvent('create.userProfile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Profile added'))
                     ->addDetail(__u('Name'), $profileData->getName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile added'));
         } catch (ValidationException $e) {
@@ -318,14 +319,14 @@ final class UserProfileController extends ControllerBase implements CrudControll
 
             $this->userProfileService->update($profileData);
 
-            $this->updateCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('edit.userProfile',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Profile updated'))
                     ->addDetail(__u('Name'), $profileData->getName())
                     ->addExtra('userProfileId', $id))
             );
+
+            $this->updateCustomFieldsForItem(Acl::PROFILE, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Profile updated'));
         } catch (ValidationException $e) {
@@ -375,9 +376,10 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

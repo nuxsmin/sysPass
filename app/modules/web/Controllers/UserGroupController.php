@@ -27,13 +27,12 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
@@ -234,17 +233,17 @@ final class UserGroupController extends ControllerBase implements CrudController
             if ($id === null) {
                 $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.userGroup.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Groups deleted')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.userGroup.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Groups deleted')))
                 );
+
+                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Groups deleted'));
             } else {
                 $this->userGroupService->delete($id);
-
-                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.userGroup',
                     new Event($this, EventMessage::factory()
@@ -252,6 +251,8 @@ final class UserGroupController extends ControllerBase implements CrudController
                         ->addDetail(__u('Group'), $id)
                         ->addExtra('userGroupId', $id))
                 );
+
+                $this->deleteCustomFieldsForItem(Acl::GROUP, $id);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group deleted'));
             }
@@ -283,13 +284,13 @@ final class UserGroupController extends ControllerBase implements CrudController
 
             $id = $this->userGroupService->create($groupData);
 
-            $this->addCustomFieldsForItem(Acl::GROUP, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('create.userGroup',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group added'))
                     ->addDetail(__u('Name'), $groupData->getName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::GROUP, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group added'));
         } catch (ValidationException $e) {
@@ -326,14 +327,14 @@ final class UserGroupController extends ControllerBase implements CrudController
 
             $this->userGroupService->update($groupData);
 
-            $this->updateCustomFieldsForItem(Acl::GROUP, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('edit.userGroup',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Group updated'))
                     ->addDetail(__u('Name'), $groupData->getName())
                     ->addExtra('userGroupId', $id))
             );
+
+            $this->updateCustomFieldsForItem(Acl::GROUP, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Group updated'));
         } catch (ValidationException $e) {
@@ -383,9 +384,10 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

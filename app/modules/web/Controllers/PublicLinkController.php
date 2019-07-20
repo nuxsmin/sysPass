@@ -28,7 +28,6 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
@@ -36,6 +35,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
@@ -398,9 +398,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

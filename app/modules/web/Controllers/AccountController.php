@@ -833,8 +833,6 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $accountId = $this->accountService->create($form->getItemData());
 
-            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId, $this->request);
-
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('create.account',
@@ -843,6 +841,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::ACCOUNT, $accountId, $this->request);
 
             return $this->returnJsonResponseData(
                 [
@@ -882,8 +882,6 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->accountService->update($itemData);
 
-            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
-
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('edit.account',
@@ -892,6 +890,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
+
+            $this->updateCustomFieldsForItem(Acl::ACCOUNT, $id, $this->request);
 
             return $this->returnJsonResponseData(
                 [
@@ -1013,11 +1013,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
-
-                $this->eventDispatcher->notifyEvent('delete.account.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
+                $this->eventDispatcher->notifyEvent(
+                    'delete.account.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Accounts removed')))
                 );
+
+                $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
                 return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Accounts removed'));
             }
@@ -1026,14 +1028,14 @@ final class AccountController extends ControllerBase implements CrudControllerIn
 
             $this->accountService->delete($id);
 
-            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
-
             $this->eventDispatcher->notifyEvent('delete.account',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Account removed'))
                     ->addDetail(__u('Account'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName()))
             );
+
+            $this->deleteCustomFieldsForItem(Acl::ACCOUNT, $id);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Account removed'));
         } catch (Exception $e) {

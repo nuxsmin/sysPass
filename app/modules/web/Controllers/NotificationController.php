@@ -32,6 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\NotificationData;
 use SP\Http\JsonResponse;
@@ -410,9 +411,10 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
+     * @throws AuthException
      * @throws DependencyException
      * @throws NotFoundException
-     * @throws AuthException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

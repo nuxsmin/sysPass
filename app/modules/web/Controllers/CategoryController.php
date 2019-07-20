@@ -27,13 +27,12 @@ namespace SP\Modules\Web\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
@@ -272,14 +271,14 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $id = $this->categoryService->create($itemData);
 
-            $this->addCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('create.category',
                 new Event($this,
                     EventMessage::factory()
                         ->addDescription(__u('Category added'))
                         ->addDetail(__u('Category'), $itemData->getName()))
             );
+
+            $this->addCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category added'));
         } catch (ValidationException $e) {
@@ -316,14 +315,14 @@ final class CategoryController extends ControllerBase implements CrudControllerI
 
             $this->categoryService->update($itemData);
 
-            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
-
             $this->eventDispatcher->notifyEvent('edit.category',
                 new Event($this,
                     EventMessage::factory()
                         ->addDescription(__u('Category updated'))
                         ->addDetail(__u('Category'), $itemData->getName()))
             );
+
+            $this->updateCustomFieldsForItem(Acl::CATEGORY, $id, $this->request);
 
             return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Category updated'));
         } catch (ValidationException $e) {
@@ -373,9 +372,10 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * Initialize class
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws AuthException
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

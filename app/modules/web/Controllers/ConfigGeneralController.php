@@ -32,6 +32,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -287,6 +288,7 @@ final class ConfigGeneralController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws SessionTimeout
      */
     protected function initialize()
     {

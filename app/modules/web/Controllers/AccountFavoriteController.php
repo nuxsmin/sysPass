@@ -24,8 +24,11 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use SP\Core\Events\Event;
+use SP\Core\Exceptions\SessionTimeout;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Account\AccountToFavoriteService;
@@ -84,6 +87,11 @@ final class AccountFavoriteController extends SimpleControllerBase
         }
     }
 
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws SessionTimeout
+     */
     protected function initialize()
     {
         $this->checks();
