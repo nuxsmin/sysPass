@@ -185,6 +185,8 @@ final class Init extends ModuleBase
                 $this->router->response()
                     ->redirect('index.php?r=install/index')
                     ->send();
+
+                return;
             }
 
             // Checks if the database is set up
@@ -194,6 +196,8 @@ final class Init extends ModuleBase
                 $this->router->response()
                     ->redirect('index.php?r=error/databaseConnection')
                     ->send();
+
+                return;
             }
 
             // Checks if maintenance mode is turned on
@@ -203,6 +207,8 @@ final class Init extends ModuleBase
                 $this->router->response()
                     ->redirect('index.php?r=error/maintenanceError')
                     ->send();
+
+                return;
             }
 
             // Checks if upgrade is needed
@@ -214,6 +220,8 @@ final class Init extends ModuleBase
                 $this->router->response()
                     ->redirect('index.php?r=upgrade/index')
                     ->send();
+
+                return;
             }
 
             // Checks if the database is set up
@@ -223,6 +231,8 @@ final class Init extends ModuleBase
                 $this->router->response()
                     ->redirect('index.php?r=error/databaseError')
                     ->send();
+
+                return;
             }
 
             // Initialize event handlers
