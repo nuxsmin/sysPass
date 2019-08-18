@@ -40,9 +40,10 @@ final class ImportService extends Service
 {
     const ALLOWED_MIME = [
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.mes-excel',
+        'application/vnd.ms-excel',
         'text/plain',
         'text/csv',
+        'text/x-csv',
         'application/xml',
         'text/xml'
     ];
