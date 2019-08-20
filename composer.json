@@ -19,7 +19,7 @@
   },
   "require": {
     "roave/security-advisories": "dev-master",
-    "php": "~7.0 || ~7.1 || ~7.2",
+    "php": "~7.0 || ~7.1 || ~7.2 || ~7.3",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
@@ -47,13 +47,13 @@
     "fabpot/goutte": "~v3.2",
     "syspass/extension-installer-plugin": "dev-master",
     "syspass/plugin-authenticator": "^2.1-dev",
-    "ext-xdebug": "*",
     "nikic/php-parser": " ~v4.1"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^2.1",
     "ext-ldap": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "ext-xdebug": "*"
   },
   "autoload": {
     "psr-4": {
