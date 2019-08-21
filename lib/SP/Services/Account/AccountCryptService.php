@@ -70,23 +70,34 @@ final class AccountCryptService extends Service
         $this->request = $updateMasterPassRequest;
 
         try {
-            $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Update Master Password')))
+            $this->eventDispatcher->notifyEvent(
+                'update.masterPassword.accounts.start',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Update Master Password'))
+                )
             );
 
             if ($this->request->useTask()) {
                 $task = $this->request->getTask();
 
                 TaskFactory::update($task,
-                    TaskFactory::createMessage($task->getTaskId(), __u('Update Master Password'))
+                    TaskFactory::createMessage($task->getTaskId(),
+                        __u('Update Master Password'))
                 );
             }
 
-            $eventMessage = $this->processAccounts($this->accountService->getAccountsPassData(), function ($request) {
-                $this->accountService->updatePasswordMasterPass($request);
-            });
+            $eventMessage = $this->processAccounts(
+                $this->accountService->getAccountsPassData(),
+                function (AccountPasswordRequest $request) {
+                    $this->accountService->updatePasswordMasterPass($request);
+                }
+            );
 
-            $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.end', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'update.masterPassword.accounts.end',
+                new Event($this, $eventMessage)
+            );
         } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
@@ -104,7 +115,6 @@ final class AccountCryptService extends Service
      * @param callable $passUpdater
      *
      * @return EventMessage
-     * @throws ServiceException
      */
     private function processAccounts(array $accounts, callable $passUpdater)
     {
@@ -116,8 +126,14 @@ final class AccountCryptService extends Service
         $startTime = time();
         $numAccounts = count($accounts);
 
+        $eventMessage = EventMessage::factory();
+
         if ($numAccounts === 0) {
-            throw new ServiceException(__u('Error while retrieving the accounts\' passwords'), ServiceException::ERROR);
+            $eventMessage->addDescription(__u('There are no accounts for processing'));
+            $eventMessage->addDetail(__u('Accounts updated'), __u('N/A'));
+            $eventMessage->addDetail(__u('Errors'), 0);
+
+            return $eventMessage;
         }
 
         $configData = $this->config->getConfigData();
@@ -126,8 +142,6 @@ final class AccountCryptService extends Service
         if ($this->request->useTask()) {
             $task = $this->request->getTask();
         }
-
-        $eventMessage = EventMessage::factory();
 
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
@@ -140,8 +154,10 @@ final class AccountCryptService extends Service
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
                 if (isset($task)) {
-                    $taskMessage = TaskFactory::createMessage($task->getTaskId(), __('Update Master Password'))
-                        ->setMessage(sprintf(__('Accounts updated: %d / %d'), $counter, $numAccounts))
+                    $taskMessage = TaskFactory::createMessage(
+                        $task->getTaskId(),
+                        __('Update Master Password')
+                    )->setMessage(sprintf(__('Accounts updated: %d / %d'), $counter, $numAccounts))
                         ->setProgress(round(($counter * 100) / $numAccounts, 2))
                         ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
@@ -213,26 +229,35 @@ final class AccountCryptService extends Service
         $this->request = $updateMasterPassRequest;
 
         try {
-            $this->eventDispatcher->notifyEvent('update.masterPassword.accountsHistory.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Update Master Password (H)')))
+            $this->eventDispatcher->notifyEvent(
+                'update.masterPassword.accountsHistory.start',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Update Master Password (H)'))
+                )
             );
 
             if ($this->request->useTask()) {
                 $task = $this->request->getTask();
 
                 TaskFactory::update($task,
-                    TaskFactory::createMessage($task->getTaskId(), __u('Update Master Password (H)'))
+                    TaskFactory::createMessage($task->getTaskId(),
+                        __u('Update Master Password (H)'))
                 );
             }
 
-            $eventMessage = $this->processAccounts($this->accountHistoryService->getAccountsPassData(), function ($request) {
-                /** @var AccountPasswordRequest $request */
-                $request->hash = $this->request->getHash();
+            $eventMessage = $this->processAccounts(
+                $this->accountHistoryService->getAccountsPassData(),
+                function (AccountPasswordRequest $request) {
+                    $request->hash = $this->request->getHash();
 
-                $this->accountHistoryService->updatePasswordMasterPass($request);
-            });
+                    $this->accountHistoryService->updatePasswordMasterPass($request);
+                });
 
-            $this->eventDispatcher->notifyEvent('update.masterPassword.accountsHistory.end', new Event($this, $eventMessage));
+            $this->eventDispatcher->notifyEvent(
+                'update.masterPassword.accountsHistory.end',
+                new Event($this, $eventMessage)
+            );
         } catch (Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
