@@ -379,7 +379,7 @@ final class AccountSearchItem
     public function getShortNotes()
     {
         if ($this->accountSearchVData->getNotes()) {
-            return nl2br(Html::truncate($this->accountSearchVData->getNotes(), 300));
+            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchVData->getNotes(), 300), ENT_QUOTES));
         }
 
         return '';
