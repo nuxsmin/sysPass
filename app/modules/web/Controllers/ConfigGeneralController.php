@@ -72,6 +72,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $checkUpdatesEnabled = $this->request->analyzeBool('check_updates_enabled', false);
         $checkNoticesEnabled = $this->request->analyzeBool('check_notices_enabled', false);
         $encryptSessionEnabled = $this->request->analyzeBool('encrypt_session_enabled', false);
+        $maxLoginAttemptsEnabled = $this->request->analyzeBool('max_login_attempts_enabled', false);
 
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);
@@ -83,6 +84,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $configData->setCheckUpdates($checkUpdatesEnabled);
         $configData->setChecknotices($checkNoticesEnabled);
         $configData->setEncryptSession($encryptSessionEnabled);
+        $configData->setMaxLoginAttemptsEnabled($maxLoginAttemptsEnabled);
 
         // Events
         $logEnabled = $this->request->analyzeBool('log_enabled', false);

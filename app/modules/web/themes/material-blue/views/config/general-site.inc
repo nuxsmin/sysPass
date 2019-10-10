@@ -226,6 +226,24 @@ use SP\Mvc\View\Template;
                         </span>
                     </span>
                 </li>
+
+                <li class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="max_login_attempts_enabled">
+                            <input type="checkbox" id="max_login_attempts_enabled"
+                                   class="mdl-switch__input"
+                                   name="max_login_attempts_enabled" <?php echo $configData->isMaxLoginAttemptsEnabled() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Limit Login Attempts'); ?></span>
+                        <span class="mdl-list__item-sub-title">
+                            <?php echo __('This feature increases the security by blocking the IP address for 10 minutes if someone does 10 wrong login attempts. You might disable it, if all your users are behind the same ip address.'); ?>
+                        </span>
+                    </span>
+                </li>
             </ul>
         </td>
     </tr>

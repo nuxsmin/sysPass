@@ -6069,6 +6069,10 @@ msgstr ""
 msgid "Encrypt Session"
 msgstr "Session chiffrée"
 
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:241
+msgid "Limit Login Attempts"
+msgstr "Limit login attempts"
+
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:218
 msgid "Encrypt PHP session data"
 msgstr "Données de session PHP chiffrées"

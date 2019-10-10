@@ -5771,6 +5771,10 @@ msgstr ""
 msgid "Encrypt Session"
 msgstr "Encrypt Session"
 
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:241
+msgid "Limit Login Attempts"
+msgstr "Limit login attempts"
+
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:224
 msgid "Encrypt PHP session data"
 msgstr "Encrypt PHP session data"

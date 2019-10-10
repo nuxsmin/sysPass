@@ -270,6 +270,10 @@ final class ConfigData implements JsonSerializable
      */
     private $maintenance = false;
     /**
+     * @var bool
+     */
+    private $maxLoginAttemptsEnabled = true;
+    /**
      * @var string
      */
     private $passwordSalt;
@@ -440,6 +444,26 @@ final class ConfigData implements JsonSerializable
         $this->dokuwikiEnabled = (bool)$dokuwikiEnabled;
 
         return $this;
+    }
+
+    /**
+     * @param boolean $maxLoginAttemptsEnabled
+     *
+     * @return $this
+     */
+    public function setMaxLoginAttemptsEnabled($maxLoginAttemptsEnabled)
+    {
+        $this->maxLoginAttemptsEnabled = (bool)$maxLoginAttemptsEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMaxLoginAttemptsEnabled()
+    {
+        return $this->maxLoginAttemptsEnabled;
     }
 
     /**

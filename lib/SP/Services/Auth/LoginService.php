@@ -139,16 +139,19 @@ final class LoginService extends Service
     {
         $this->userLoginData->setLoginUser($this->request->analyzeString('user'));
         $this->userLoginData->setLoginPass($this->request->analyzeEncrypted('pass'));
+        
+        //do not check if maxLoginAttemptsEnabled is false
+        if ($this->configData->isMaxLoginAttemptsEnabled()) {
+            if ($this->trackService->checkTracking($this->trackRequest)) {
+                $this->addTracking();
 
-        if ($this->trackService->checkTracking($this->trackRequest)) {
-            $this->addTracking();
-
-            throw new AuthException(
-                __u('Attempts exceeded'),
-                AuthException::INFO,
-                null,
-                self::STATUS_MAX_ATTEMPTS_EXCEEDED
-            );
+                throw new AuthException(
+                    __u('Attempts exceeded'),
+                    AuthException::INFO,
+                    null,
+                    self::STATUS_MAX_ATTEMPTS_EXCEEDED
+                );
+            }
         }
 
         $result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData);

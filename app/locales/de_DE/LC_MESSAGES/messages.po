@@ -6054,6 +6054,10 @@ msgstr "Prüft auf sysPass Sicherheitsmeldungen (nur für Administratoren)."
 msgid "Encrypt Session"
 msgstr "Sitzung verschlüsseln"
 
+#: app/modules/web/themes/material-blue/views/config/general-site.inc:241
+msgid "Limit Login Attempts"
+msgstr "Limitiere Login-Versuche"
+
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:218
 msgid "Encrypt PHP session data"
 msgstr " PHP-Sitzungsdaten verschlüsseln."
