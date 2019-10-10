@@ -179,6 +179,7 @@ label.mdl-switch {
 
 .mdl-switch__box {
     width: 48px;
+    min-width: 50px;
 }
 
 .mdl-list__item--two-line {
