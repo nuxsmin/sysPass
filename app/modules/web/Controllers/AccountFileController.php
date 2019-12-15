@@ -153,20 +153,22 @@ final class AccountFileController extends ControllerBase implements CrudControll
             );
 
             $response = $this->router->response();
-            $response->header('Cache-Control', 'max-age=60, must-revalidate');
-            $response->header('Content-length', $fileData->getSize());
-            $response->header('Content-type', $fileData->getType());
+            $response->header('Content-Length', $fileData->getSize());
+            $response->header('Content-Type', $fileData->getType());
             $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-transfer-encoding', 'binary');
+            $response->header('Content-Transfer-Encoding', 'binary');
+            $response->header('Accept-Ranges', 'bytes');
 
             $type = strtolower($fileData->getType());
 
             if ($type === 'application/pdf') {
-                $response->header('Content-Disposition', 'inline; filename="' . $fileData->getName() . '"');
+                $disposition = sprintf('inline; filename="%s"', $fileData->getName());
             } else {
+                $disposition = sprintf('attachment; filename="%s"', $fileData->getName());
                 $response->header('Set-Cookie', 'fileDownload=true; path=/');
-                $response->header('Content-Disposition', 'attachment; filename="' . $fileData->getName() . '"');
             }
+
+            $response->header('Content-Disposition', $disposition);
 
             $response->body($fileData->getContent());
             $response->send(true);
