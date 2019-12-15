@@ -321,29 +321,32 @@ final class XmlExportService extends Service
                 $nodeXML = $this->xml->saveXML($node);
 
                 // Crear los datos encriptados con la información del nodo
-                $securedKey = Crypt::makeSecuredKey($this->exportPass);
-                $encrypted = Crypt::encrypt($nodeXML, $securedKey, $this->exportPass);
-
-                // Buscar si existe ya un nodo para el conjunto de datos encriptados
-                $encryptedNode = $this->root->getElementsByTagName('Encrypted')->item(0);
-
-                if (!$encryptedNode instanceof DOMElement) {
-                    $encryptedNode = $this->xml->createElement('Encrypted');
-                    $encryptedNode->setAttribute('hash', Hash::hashKey($this->exportPass));
-                }
+                $securedKey = Crypt::makeSecuredKey($this->exportPass, false);
+                $encrypted = Crypt::encrypt($nodeXML, $securedKey->unlockKey($this->exportPass));
 
                 // Crear el nodo hijo con los datos encriptados
-                $encryptedData = $this->xml->createElement('Data', base64_encode($encrypted));
+                $encryptedData = $this->xml->createElement('Data', $encrypted);
 
-                $encryptedDataIV = $this->xml->createAttribute('key');
-                $encryptedDataIV->value = $securedKey;
+                $encryptedDataKey = $this->xml->createAttribute('key');
+                $encryptedDataKey->value = $securedKey->saveToAsciiSafeString();
 
                 // Añadir nodos de datos
-                $encryptedData->appendChild($encryptedDataIV);
-                $encryptedNode->appendChild($encryptedData);
+                $encryptedData->appendChild($encryptedDataKey);
+
+                // Buscar si existe ya un nodo para el conjunto de datos encriptados
+                $encryptedNode = $this->root->getElementsByTagName('Encrypted');
+
+                if ($encryptedNode->length === 0) {
+                    $newNode = $this->xml->createElement('Encrypted');
+                    $newNode->setAttribute('hash', Hash::hashKey($this->exportPass));
+                } else {
+                    $newNode = $encryptedNode->item(0);
+                }
+
+                $newNode->appendChild($encryptedData);
 
                 // Añadir el nodo encriptado
-                $this->root->appendChild($encryptedNode);
+                $this->root->appendChild($newNode);
             } else {
                 $this->root->appendChild($node);
             }

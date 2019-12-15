@@ -129,15 +129,27 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
             throw new ImportException(__u('Wrong encryption password'));
         }
 
+        /** @var DOMElement $node */
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
-            /** @var $node DOMElement */
-            $data = base64_decode($node->nodeValue);
-
             try {
-                if ($this->version >= 210) {
-                    $xmlDecrypted = Crypt::decrypt($data, $node->getAttribute('key'), $this->importParams->getImportPwd());
+                if ($this->version >= 210 && $this->version <= 310) {
+                    $xmlDecrypted = Crypt::decrypt(
+                        base64_decode($node->nodeValue),
+                        $node->getAttribute('key'),
+                        $this->importParams->getImportPwd()
+                    );
+                } else if ($this->version >= 320) {
+                    $xmlDecrypted = Crypt::decrypt(
+                        $node->nodeValue,
+                        $node->getAttribute('key'),
+                        $this->importParams->getImportPwd()
+                    );
                 } else {
-                    $xmlDecrypted = OldCrypt::getDecrypt($data, base64_decode($node->getAttribute('iv')), $this->importParams->getImportPwd());
+                    $xmlDecrypted = OldCrypt::getDecrypt(
+                        base64_decode($node->nodeValue),
+                        base64_decode($node->getAttribute('iv')),
+                        $this->importParams->getImportPwd()
+                    );
                 }
             } catch (CryptoException $e) {
                 processException($e);
