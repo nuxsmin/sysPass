@@ -180,7 +180,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 <div class="tooltip-text">
                                     <p class="tooltip-header"><?php echo __('Notes'); ?></p>
                                     <p>
-                                        <?php echo htmlspecialchars($accountSearchItem->getShortNotes(), ENT_QUOTES); ?>
+                                        <?php echo $accountSearchItem->getShortNotes(); ?>
                                     </p>
                                 </div>
                             </div>

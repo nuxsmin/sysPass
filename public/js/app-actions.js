@@ -948,10 +948,14 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 }));
 
-            if (fileType === 'application/pdf') {
+            if (fileType.toUpperCase() === 'PDF') {
+                log.info("Opening PDF file in new window/tab");
+
                 window.open(url, '_blank');
                 return;
             }
+
+            log.info("Downloading file");
 
             $.fileDownload(url,
                 {
