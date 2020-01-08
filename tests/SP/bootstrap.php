@@ -50,6 +50,8 @@ define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
 define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 
+define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
+
 define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));

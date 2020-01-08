@@ -72,8 +72,6 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function indexAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::NOTIFICATION)) {
             return;
         }
@@ -113,8 +111,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -178,8 +174,6 @@ final class NotificationController extends ControllerBase implements CrudControl
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -196,8 +190,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function createAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -230,8 +222,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function editAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -264,8 +254,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if ($id === null) {
                 if ($this->userData->getIsAdminApp()) {
                     $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
@@ -315,8 +303,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function checkAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -346,8 +332,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function saveCreateAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -383,8 +367,6 @@ final class NotificationController extends ControllerBase implements CrudControl
     public function saveEditAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

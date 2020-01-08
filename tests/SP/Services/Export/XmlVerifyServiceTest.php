@@ -24,7 +24,6 @@
 
 namespace SP\Tests\Services\Export;
 
-use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
 use DI\NotFoundException;
 use DOMDocument;
@@ -32,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
 use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlVerifyService;
+use SP\Services\Import\ImportException;
 use SP\Services\ServiceException;
 use SP\Storage\File\FileException;
 use function SP\Tests\setupContext;
@@ -61,9 +61,9 @@ class XmlVerifyServiceTest extends TestCase
     }
 
     /**
-     * @throws CryptoException
-     * @throws ServiceException
      * @throws FileException
+     * @throws ImportException
+     * @throws ServiceException
      */
     public function testVerifyEncrypted()
     {
@@ -84,8 +84,9 @@ class XmlVerifyServiceTest extends TestCase
     }
 
     /**
-     * @throws ServiceException
      * @throws FileException
+     * @throws ServiceException
+     * @throws ImportException
      */
     public function testVerify()
     {

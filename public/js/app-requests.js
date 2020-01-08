@@ -126,6 +126,15 @@ sysPass.Requests = function (sysPassApp) {
     const getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
+        let headers = {};
+        let method = opts.method.toUpperCase();
+
+        if ((method === "POST" || method === "GET")
+            && sysPassApp.config.CSRF
+        ) {
+            headers = {"X-CSRF": sysPassApp.config.CSRF};
+        }
+
         return $.ajax({
             dataType: opts.type,
             url: getUrl(opts.url),
@@ -136,6 +145,7 @@ sysPass.Requests = function (sysPassApp) {
             processData: opts.processData,
             contentType: opts.contentType,
             timeout: opts.timeout,
+            headers: headers,
             beforeSend: function () {
                 if (opts.useLoading === true) {
                     sysPassApp.theme.loading.show(opts.useFullLoading);
@@ -150,13 +160,6 @@ sysPass.Requests = function (sysPassApp) {
                 if (opts.addHistory === true) {
                     opts.callback = callbackOk;
                     history.add(opts);
-                }
-
-                if (opts.type === "json"
-                    && response['csrf'] !== undefined
-                    && response.csrf !== ""
-                ) {
-                    sysPassApp.sk.set(response.csrf);
                 }
 
                 callbackOk(response);

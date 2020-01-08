@@ -81,8 +81,6 @@ final class AccountManagerController extends ControllerBase
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -132,8 +130,6 @@ final class AccountManagerController extends ControllerBase
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if ($id === null) {
                 $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -175,8 +171,6 @@ final class AccountManagerController extends ControllerBase
     public function saveBulkEditAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $form = new AccountForm($this->dic);
             $form->validate(Acl::ACCOUNTMGR_BULK_EDIT);
 
@@ -215,8 +209,6 @@ final class AccountManagerController extends ControllerBase
     public function bulkEditAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

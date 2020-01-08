@@ -132,7 +132,6 @@ $accountData = $_getvar('accountData');
                                 class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#password"
                                 data-item-id="<?php echo $accountData->getId(); ?>"
-                                data-sk="<?php echo $_getvar('sk'); ?>"
                                 data-history="0"
                                 data-onclick="account/copypass">
                             <i class="material-icons">content_paste</i>

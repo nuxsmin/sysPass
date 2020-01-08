@@ -75,8 +75,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -164,8 +162,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -204,8 +200,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function createAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -245,8 +239,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function editAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -279,8 +271,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -322,8 +312,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function saveCreateAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -365,8 +353,6 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     public function saveEditAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

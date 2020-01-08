@@ -31,7 +31,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
@@ -48,13 +47,9 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * saveAction
-     *
-     * @throws SPException
      */
     public function saveAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
 
@@ -128,13 +123,9 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * checkAction
-     *
-     * @throws SPException
      */
     public function checkAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $mailParams = new MailParams();
         $mailParams->server = $this->request->analyzeString('mail_server');
         $mailParams->port = $this->request->analyzeInt('mail_port', 25);

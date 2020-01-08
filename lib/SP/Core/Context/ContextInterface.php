@@ -90,23 +90,6 @@ interface ContextInterface
     public function getUserData();
 
     /**
-     * @return mixed
-     */
-    public function getSecurityKey();
-
-    /**
-     * @param string $salt
-     *
-     * @return string
-     */
-    public function generateSecurityKey(string $salt);
-
-    /**
-     * @param $sk
-     */
-    public function setSecurityKey($sk);
-
-    /**
      * Establecer el lenguaje de la sesión
      *
      * @param $locale

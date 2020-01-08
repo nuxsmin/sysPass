@@ -20,8 +20,7 @@ use SP\Services\Account\AccountAcl;
              data-action-route="<?php echo $_getvar('fileListRoute'); ?>"
              data-item-id="<?php echo $_getvar('accountId'); ?>"
              data-history="<?php echo $_getvar('accountIsHistory', false); ?>"
-             data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>"
-             data-sk="<?php echo $_getvar('sk'); ?>">
+             data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
         </div>
 
         <?php if ($_getvar('editAction')): ?>
@@ -30,7 +29,6 @@ use SP\Services\Account\AccountAcl;
                      class="round active-tooltip dropzone"
                      data-files-ext="<?php echo $_getvar('filesAllowedExts'); ?>"
                      data-item-id="<?php echo $_getvar('accountId'); ?>"
-                     data-sk="<?php echo $_getvar('sk'); ?>"
                      data-action-route="<?php echo $_getvar('fileUploadRoute'); ?>"
                      data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
                     <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>

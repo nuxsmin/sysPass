@@ -67,8 +67,7 @@ use SP\Mvc\View\Template;
                                 class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
-                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
-                                data-sk="<?php echo $_getvar('sk'); ?>">
+                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
                                 <i class="material-icons">lock</i>
                                 <?php echo __('Change User\'s Password'); ?>
                             </li>
@@ -130,8 +129,7 @@ use SP\Mvc\View\Template;
                        title="<?php echo __('Change User\'s Password'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
-                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
-                       data-sk="<?php echo $_getvar('sk'); ?>">
+                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Change User\'s Password'); ?>
                     </a>

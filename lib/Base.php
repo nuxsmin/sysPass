@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,6 +56,7 @@ define('TMP_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'temp');
 define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('PUBLIC_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
+define('XML_SCHEMA', BASE_PATH . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
 
 define('DEBUG', false);
 

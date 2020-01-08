@@ -131,7 +131,6 @@ $accountAcl = $_getvar('accountAcl');
             <?php endif; ?>
         </table>
 
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
 
         <div class="item-actions">

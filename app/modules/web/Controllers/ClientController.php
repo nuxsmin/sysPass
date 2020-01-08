@@ -74,8 +74,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::CLIENT_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -111,8 +109,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function createAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -177,8 +173,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function editAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -211,8 +205,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_DELETE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -255,8 +247,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function saveCreateAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -299,8 +289,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function saveEditAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -341,8 +329,6 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::CLIENT_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

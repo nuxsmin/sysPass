@@ -75,7 +75,6 @@ final class ItemsController extends SimpleControllerBase
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus(0);
         $jsonResponse->setData($outItems);
-        $jsonResponse->setCsrf($this->session->getSecurityKey());
 
         Json::fromDic()->returnJson($jsonResponse);
     }

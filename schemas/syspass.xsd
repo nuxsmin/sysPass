@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:attribute name="id" type="xs:integer"/>
+    <xs:simpleType name="NonEmptyString">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="NonEmptyInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="Root">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Meta"/>
+                <xs:choice>
+                    <xs:sequence>
+                        <xs:element ref="Categories"/>
+                        <xs:element ref="Clients"/>
+                        <xs:element ref="Tags"/>
+                        <xs:element ref="Accounts"/>
+                    </xs:sequence>
+                    <xs:sequence>
+                        <xs:element ref="Encrypted"/>
+                    </xs:sequence>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Meta">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Generator"/>
+                <xs:element ref="Version"/>
+                <xs:element ref="Time"/>
+                <xs:element ref="User"/>
+                <xs:element ref="Group"/>
+                <xs:element ref="Hash"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Generator" type="NonEmptyString"/>
+    <xs:element name="Version" type="NonEmptyString"/>
+    <xs:element name="Time" type="NonEmptyInteger"/>
+    <xs:element name="User">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="NonEmptyString">
+                    <xs:attribute ref="id" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Group">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="NonEmptyString">
+                    <xs:attribute ref="id" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Hash">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="NonEmptyString">
+                    <xs:attribute name="sign" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="SimpleItem">
+        <xs:sequence>
+            <xs:element name="name" type="NonEmptyString"/>
+            <xs:element name="description" type="xs:string" nillable="true"/>
+        </xs:sequence>
+        <xs:attribute ref="id" use="required"/>
+    </xs:complexType>
+    <xs:element name="Categories">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="Category"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Category" type="SimpleItem"/>
+    <xs:element name="Clients">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Client"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Client" type="SimpleItem"/>
+    <xs:element name="Tags">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="Tag"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Tag">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="NonEmptyString"/>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Accounts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Account"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Account">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="NonEmptyString"/>
+                <xs:element name="clientId" type="NonEmptyInteger"/>
+                <xs:element name="categoryId" type="NonEmptyInteger"/>
+                <xs:element name="login" type="xs:string"/>
+                <xs:element name="url" type="xs:string"/>
+                <xs:element name="notes" type="xs:string"/>
+                <xs:element name="pass" type="NonEmptyString"/>
+                <xs:element name="key" type="NonEmptyString"/>
+                <xs:element name="tags">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="tag" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute ref="id" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute ref="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Encrypted">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Data" minOccurs="4" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="NonEmptyString">
+                                <xs:attribute name="key" use="required" type="xs:string"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="hash" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

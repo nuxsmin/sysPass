@@ -45,7 +45,6 @@ $accountAcl = $_getvar('accountAcl');
                   data-action-route="<?php echo $_getvar('formRoute', ''); ?>"
                   data-item-id="<?php echo $_getvar('accountId', ''); ?>"
                   data-hash="">
-                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
 
                 <table class="data">

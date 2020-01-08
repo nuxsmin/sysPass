@@ -53,8 +53,6 @@ final class UserSettingsGeneralController extends SimpleControllerBase
     public function saveAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $userData = $this->session->getUserData();
 
             $userPreferencesData = clone $userData->getPreferences();

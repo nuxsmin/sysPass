@@ -125,34 +125,6 @@ final class StatelessContext extends ContextBase
     }
 
     /**
-     * @return mixed
-     */
-    public function getSecurityKey()
-    {
-        return $this->getContextKey('sk');
-    }
-
-    /**
-     * @param string $salt
-     *
-     * @return string
-     */
-    public function generateSecurityKey(string $salt)
-    {
-        return $this->setSecurityKey(sha1(time() . $salt));
-    }
-
-    /**
-     * @param $sk
-     *
-     * @return mixed
-     */
-    public function setSecurityKey($sk)
-    {
-        return $this->setContextKey('sk', $sk);
-    }
-
-    /**
      * Establecer el lenguaje de la sesión
      *
      * @param $locale

@@ -32,6 +32,7 @@ use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Context\StatelessContext;
+use SP\Core\Crypt\CSRF;
 use SP\Core\MimeTypes;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
@@ -94,5 +95,6 @@ return [
         ->constructor('syspass'),
     AccountAclService::class => autowire(AccountAclService::class),
     \GuzzleHttp\Client::class => create(GuzzleHttp\Client::class)
-        ->constructor(factory([Client::class, 'getOptions']))
+        ->constructor(factory([Client::class, 'getOptions'])),
+    CSRF::class => autowire(CSRF::class)
 ];

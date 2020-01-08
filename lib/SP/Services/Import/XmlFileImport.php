@@ -73,7 +73,7 @@ final class XmlFileImport
         $this->xmlDOM->formatOutput = false;
         $this->xmlDOM->preserveWhiteSpace = false;
 
-        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString()) === false) {
+        if ($this->xmlDOM->loadXML($this->fileImport->readFileToString(), LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
                 logger(__METHOD__ . ' - ' . $error->message);
             }

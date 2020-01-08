@@ -31,10 +31,13 @@ use DOMElement;
 use DOMXPath;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Services\Import\FileImport;
+use SP\Services\Import\ImportException;
+use SP\Services\Import\XmlFileImport;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\File\FileException;
-use SP\Storage\File\FileHandler;
+use SP\Util\VersionUtil;
 
 /**
  * Class XmlVerifyService
@@ -46,6 +49,7 @@ use SP\Storage\File\FileHandler;
 final class XmlVerifyService extends Service
 {
     const NODES = ['Category', 'Client', 'Tag', 'Account'];
+    const XML_MIN_VERSION = [2, 1, 0, 0];
     /**
      * @var DOMDocument
      */
@@ -63,8 +67,9 @@ final class XmlVerifyService extends Service
      * @param string $xmlFile
      *
      * @return VerifyResult
-     * @throws ServiceException
      * @throws FileException
+     * @throws ImportException
+     * @throws ServiceException
      */
     public function verify(string $xmlFile): VerifyResult
     {
@@ -72,44 +77,57 @@ final class XmlVerifyService extends Service
 
         $this->setup();
 
+        self::validateSchema($this->xml);
+
+        $version = $this->getXmlVersion();
+
+        self::checkVersion($version);
+
         self::checkXmlHash($this->xml, $this->config->getConfigData()->getPasswordSalt());
 
-        return new VerifyResult($this->getXmlVersion(), false, $this->countItemNodes($this->xml));
+        return new VerifyResult($version, false, $this->countItemNodes($this->xml));
     }
 
     /**
-     * @throws ServiceException
      * @throws FileException
+     * @throws ImportException
      */
     private function setup()
     {
-        $this->readXmlFile();
+        $this->xml = (new XmlFileImport(FileImport::fromFilesystem($this->xmlFile)))->getXmlDOM();
     }
 
     /**
-     * Leer el archivo a un objeto XML.
+     * @param DOMDocument $document
      *
      * @throws ServiceException
-     * @throws FileException
      */
-    protected function readXmlFile()
+    public static function validateSchema(DOMDocument $document)
     {
-        libxml_use_internal_errors(true);
+        if (!$document->schemaValidate(XML_SCHEMA)) {
+            throw new ServiceException('Invalid XML schema');
+        }
+    }
 
-        // Cargar el XML con DOM
-        $this->xml = new DOMDocument();
-        $this->xml->formatOutput = false;
-        $this->xml->preserveWhiteSpace = false;
+    /**
+     * Obtener la versión del XML
+     */
+    private function getXmlVersion(): string
+    {
+        return (new DOMXPath($this->xml))->query('/Root/Meta/Version')->item(0)->nodeValue;
+    }
 
-        if ($this->xml->loadXML((new FileHandler($this->xmlFile))->read()) === false) {
-            foreach (libxml_get_errors() as $error) {
-                logger(__METHOD__ . ' - ' . $error->message);
-            }
-
-            throw new ServiceException(
-                __u('Internal error'),
-                ServiceException::ERROR,
-                __u('Unable to process the XML file')
+    /**
+     * @param string $version
+     *
+     * @return void
+     * @throws ServiceException
+     */
+    public static function checkVersion(string $version)
+    {
+        if (VersionUtil::checkVersion($version, self::XML_MIN_VERSION)) {
+            throw new ServiceException(sprintf('Sorry, this XML version is not compatible. Please use >= %s',
+                    VersionUtil::normalizeVersionForCompare(self::XML_MIN_VERSION))
             );
         }
     }
@@ -136,14 +154,6 @@ final class XmlVerifyService extends Service
     }
 
     /**
-     * Obtener la versión del XML
-     */
-    private function getXmlVersion(): string
-    {
-        return (new DOMXPath($this->xml))->query('/Root/Meta/Version')->item(0)->nodeValue;
-    }
-
-    /**
      * @param DOMDocument $document
      *
      * @return int[]
@@ -164,9 +174,9 @@ final class XmlVerifyService extends Service
      * @param string $password
      *
      * @return VerifyResult
-     * @throws ServiceException
      * @throws FileException
-     * @throws CryptoException
+     * @throws ImportException
+     * @throws ServiceException
      */
     public function verifyEncrypted(string $xmlFile, string $password): VerifyResult
     {
@@ -174,6 +184,10 @@ final class XmlVerifyService extends Service
         $this->password = $password;
 
         $this->setup();
+
+        self::validateSchema($this->xml);
+
+        self::checkVersion($this->getXmlVersion());
 
         $this->checkPassword();
 
@@ -183,7 +197,9 @@ final class XmlVerifyService extends Service
             throw new ServiceException(__u('Error while checking integrity hash'));
         }
 
-        return new VerifyResult($this->getXmlVersion(), $this->detectEncrypted(), $this->countItemNodes($this->processEncrypted()));
+        return new VerifyResult($this->getXmlVersion(),
+            $this->detectEncrypted(),
+            $this->countItemNodes($this->processEncrypted()));
     }
 
     /**
@@ -212,27 +228,42 @@ final class XmlVerifyService extends Service
     }
 
     /**
-     * Procesar los datos encriptados y añadirlos al árbol DOM desencriptados
+     * Process the encrypted data and then build the unencrypted DOM
      *
-     * @throws CryptoException
      * @throws ServiceException
      */
     private function processEncrypted(): DOMDocument
     {
-        $xmlOut = new DOMDocument('1.0', 'UTF-8');
-        $xmlOut->appendChild($xmlOut->createElement('Root'));
+        $xpath = new DOMXPath($this->xml);
+        $dataNodes = $xpath->query('/Root/Encrypted/Data');
 
-        foreach ($this->xml->getElementsByTagName('Data') as $node) {
-            /** @var $node DOMElement */
-            $xml = new DOMDocument();
+        $decode = VersionUtil::checkVersion($this->getXmlVersion(), '320.0');
 
-            if (!$xml->loadXML(Crypt::decrypt(base64_decode($node->nodeValue), $node->getAttribute('key'), $this->password))) {
+        /** @var $node DOMElement */
+        foreach ($dataNodes as $node) {
+            $data = $decode ? base64_decode($node->nodeValue) : $node->nodeValue;
+
+            try {
+                $xmlDecrypted = Crypt::decrypt($data, $node->getAttribute('key'), $this->password);
+            } catch (CryptoException $e) {
                 throw new ServiceException(__u('Wrong encryption password'));
             }
 
-            $xmlOut->documentElement->appendChild($xmlOut->importNode($xml->documentElement, true));
+            $newXmlData = new DOMDocument();
+
+            if ($newXmlData->loadXML($xmlDecrypted) === false) {
+                throw new ServiceException(__u('Error loading XML data'));
+            }
+
+            $this->xml->documentElement->appendChild($this->xml->importNode($newXmlData->documentElement, true));
         }
 
-        return $xmlOut;
+        // Remove the encrypted data after processing
+        $this->xml->documentElement->removeChild($dataNodes->item(0)->parentNode);
+
+        // Validate XML schema again after processing the encrypted data
+        self::validateSchema($this->xml);
+
+        return $this->xml;
     }
 }

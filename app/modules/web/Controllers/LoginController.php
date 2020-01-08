@@ -55,8 +55,6 @@ final class LoginController extends ControllerBase
     public function loginAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $loginService = $this->dic->get(LoginService::class);
 
             $from = $this->getSignedUriFromRequest();

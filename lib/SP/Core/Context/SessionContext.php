@@ -271,34 +271,6 @@ final class SessionContext extends ContextBase
     }
 
     /**
-     * @return mixed
-     */
-    public function getSecurityKey()
-    {
-        return $this->getContextKey('sk');
-    }
-
-    /**
-     * @param string $salt
-     *
-     * @return string
-     */
-    public function generateSecurityKey(string $salt)
-    {
-        return $this->setSecurityKey(sha1(time() . $salt));
-    }
-
-    /**
-     * @param $sk
-     *
-     * @return mixed
-     */
-    public function setSecurityKey($sk)
-    {
-        return $this->setContextKey('sk', $sk);
-    }
-
-    /**
      * Devolver la clave pública
      *
      * @return mixed
@@ -430,6 +402,26 @@ final class SessionContext extends ContextBase
     public function setAppStatus($status)
     {
         $this->setContextKey('status', $status);
+    }
+
+    /**
+     * Return the CSRF key
+     *
+     * @return bool
+     */
+    public function getCSRF()
+    {
+        return $this->getContextKey('csrf');
+    }
+
+    /**
+     * Set the CSRF key
+     *
+     * @param string $csrf
+     */
+    public function setCSRF($csrf)
+    {
+        $this->setContextKey('csrf', $csrf);
     }
 
     /**

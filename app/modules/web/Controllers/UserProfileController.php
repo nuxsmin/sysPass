@@ -74,8 +74,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::PROFILE_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -111,8 +109,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function createAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -180,8 +176,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function editAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -214,8 +208,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_DELETE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -263,8 +255,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function saveCreateAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -306,8 +296,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function saveEditAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -350,8 +338,6 @@ final class UserProfileController extends ControllerBase implements CrudControll
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PROFILE_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

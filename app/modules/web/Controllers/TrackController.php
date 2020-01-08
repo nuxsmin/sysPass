@@ -68,8 +68,6 @@ final class TrackController extends ControllerBase
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::TRACK_SEARCH)) {
             throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
         }
@@ -109,8 +107,6 @@ final class TrackController extends ControllerBase
     public function unlockAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
                 throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
             }
@@ -137,8 +133,6 @@ final class TrackController extends ControllerBase
     public function clearAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {
                 throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
             }

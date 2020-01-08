@@ -74,8 +74,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -90,7 +88,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
@@ -114,8 +111,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function createAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -181,8 +176,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function editAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -216,8 +209,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -263,8 +254,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function saveCreateAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -303,8 +292,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function saveEditAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -357,8 +344,6 @@ final class AuthTokenController extends ControllerBase implements CrudController
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

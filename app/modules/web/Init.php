@@ -34,9 +34,11 @@ use SP\Bootstrap;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
+use SP\Core\Crypt\CSRF;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\UUIDCookie;
 use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\NoSuchPropertyException;
 use SP\Core\Exceptions\QueryException;
@@ -84,7 +86,10 @@ final class Init extends ModuleBase
      * List of controllers that don't need to update the user's session activity
      */
     const NO_SESSION_ACTIVITY = ['items', 'login'];
-
+    /**
+     * @var CSRF
+     */
+    private $csrf;
     /**
      * @var SessionContext
      */
@@ -129,6 +134,7 @@ final class Init extends ModuleBase
         $this->secureSessionService = $container->get(SecureSessionService::class);
         $this->pluginManager = $container->get(PluginManager::class);
         $this->itemPresetService = $container->get(ItemPresetService::class);
+        $this->csrf = $container->get(CSRF::class);
     }
 
     /**
@@ -250,12 +256,20 @@ final class Init extends ModuleBase
                 && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED
             ) {
                 logger('Reload user profile');
+
                 // Recargar los permisos del perfil de usuario
                 $this->context->setUserProfile(
                     $this->container->get(UserProfileService::class)
                         ->getById($this->context->getUserData()
                             ->getUserProfileId())->getProfile());
             }
+
+            if (!$this->csrf->check()) {
+                throw new InitializationException('Invalid request token');
+            }
+
+            // Initialize CSRF
+            $this->csrf->initialize();
 
             return;
         }

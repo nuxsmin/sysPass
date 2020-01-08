@@ -134,8 +134,6 @@ sysPass.Main = function () {
 
                     return false;
                 }
-
-                sk.set(json.csrf);
             });
 
             if (json !== false) {
@@ -453,6 +451,7 @@ sysPass.Main = function () {
                 configHandler.setPlugins(json.data.plugins);
                 configHandler.setLoggedIn(json.data.loggedin);
                 configHandler.setAuthBasicAutologinEnabled(json.data.authbasic_autologin);
+                configHandler.setCSRF(json.data.csrf);
 
                 configHandler.initialize();
 

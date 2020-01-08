@@ -107,7 +107,6 @@ abstract class ControllerBase
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->isAjax = $this->request->isAjax();
-        $this->previousSk = $this->session->getSecurityKey();
 
         $loggedIn = $this->session->isLoggedIn();
 
@@ -147,7 +146,6 @@ abstract class ControllerBase
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('configData', $this->configData);
-        $this->view->assign('sk', $loggedIn ? $this->session->generateSecurityKey($this->configData->getPasswordSalt()) : '');
 
         // Pass the action name to the template as a variable
         $this->view->assign($this->actionName, true);

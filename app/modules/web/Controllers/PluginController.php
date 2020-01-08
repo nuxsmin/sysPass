@@ -74,8 +74,6 @@ final class PluginController extends ControllerBase
      */
     public function indexAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::PLUGIN)) {
             return;
         }
@@ -117,8 +115,6 @@ final class PluginController extends ControllerBase
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -139,8 +135,6 @@ final class PluginController extends ControllerBase
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
@@ -204,8 +198,6 @@ final class PluginController extends ControllerBase
     public function enableAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->pluginService->toggleEnabled($id, 1);
 
             $this->eventDispatcher->notifyEvent('edit.plugin.enable',
@@ -233,8 +225,6 @@ final class PluginController extends ControllerBase
     public function disableAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->pluginService->toggleEnabled($id, 0);
 
             $this->eventDispatcher->notifyEvent('edit.plugin.disable',
@@ -262,8 +252,6 @@ final class PluginController extends ControllerBase
     public function resetAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $pluginModel = $this->pluginService->getById($id);
             $this->pluginDataService->delete($pluginModel->getName());
 
@@ -292,8 +280,6 @@ final class PluginController extends ControllerBase
     public function deleteAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_DELETE)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }

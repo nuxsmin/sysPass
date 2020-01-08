@@ -69,7 +69,6 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
               data-item-id="<?php echo $_getvar('accountId') ?: ''; ?>"
               data-hash="">
 
-            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
 
             <div class="mdl-tabs__panel is-active" id="account-panel">
@@ -287,7 +286,6 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 <select id="parent_account_id"
                                         name="parent_account_id"
                                         class="select-box select-box-deselect" <?php echo $_getvar('disabled'); ?>
-                                        data-sk="<?php echo $_getvar('sk'); ?>"
                                         data-action-route="items/accountsUser"
                                         data-item-id="<?php echo $gotData ? $_getvar('accountId') : ''; ?>"
                                         data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">

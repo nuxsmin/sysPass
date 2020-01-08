@@ -359,7 +359,6 @@ final class Template
 
         $icons = $this->theme->getIcons();
         $configData = $this->vars->get('configData');
-        $sk = $this->vars->get('sk');
 
         // An anonymous proxy function for handling views variables
         $_getvar = function ($key, $default = null) {
@@ -372,12 +371,11 @@ final class Template
             return $this->vars->get($key, $default);
         };
 
-        $_getRoute = function ($path) use ($sk, $configData) {
+        $_getRoute = function ($path) use ($configData) {
             $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
 
             $uri = new Uri($baseUrl);
             $uri->addParam('r', $path);
-            $uri->addParam('sk', $sk);
 
             return $uri->getUri();
         };

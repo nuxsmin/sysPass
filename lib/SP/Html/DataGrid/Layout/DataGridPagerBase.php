@@ -114,18 +114,6 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * @param string $sk
-     *
-     * @return $this
-     */
-    public function setSk($sk)
-    {
-        $this->sk = $sk;
-
-        return $this;
-    }
-
-    /**
      * @return IconInterface
      */
     public function getIconPrev()

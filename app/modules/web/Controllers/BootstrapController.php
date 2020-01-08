@@ -54,7 +54,8 @@ final class BootstrapController extends SimpleControllerBase
     public function getEnvironmentAction()
     {
         $checkStatus = $this->session->getAuthCompleted()
-            && ($this->session->getUserData()->getIsAdminApp() || $this->configData->isDemoEnabled());
+            && ($this->session->getUserData()->getIsAdminApp()
+                || $this->configData->isDemoEnabled());
 
         $data = [
             'lang' => $this->getJsLang(),
@@ -74,7 +75,8 @@ final class BootstrapController extends SimpleControllerBase
             'pki_max_size' => CryptPKI::getMaxDataSize(),
             'import_allowed_mime' => ImportService::ALLOWED_MIME,
             'files_allowed_mime' => $this->configData->getFilesAllowedMime(),
-            'session_timeout' => $this->configData->getSessionTimeout()
+            'session_timeout' => $this->configData->getSessionTimeout(),
+            'csrf' => $this->getCSRF()
         ];
 
         return $this->returnJsonResponseData($data);
@@ -155,5 +157,17 @@ final class BootstrapController extends SimpleControllerBase
     protected function initialize()
     {
         // TODO: Implement initialize() method.
+    }
+
+    /**
+     * Generate the CSRF token if not set
+     *
+     * @return bool
+     */
+    private function getCSRF()
+    {
+        logger(sprintf('CSRF key (get): %s', $this->session->getCSRF()));
+
+        return $this->session->getCSRF();
     }
 }

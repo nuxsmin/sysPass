@@ -289,7 +289,6 @@ final class AccountSearchHelper extends HelperBase
     protected function initialize()
     {
         $this->queryTimeStart = microtime(true);
-        $this->sk = $this->view->get('sk');
         $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(ActionsInterface::ACCOUNT);
         $this->setVars();
     }

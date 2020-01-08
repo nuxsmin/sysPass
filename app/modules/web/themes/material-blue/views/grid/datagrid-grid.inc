@@ -77,8 +77,6 @@ $index = isset($index) ? $index : 0;
                         <span for="btn-reset-<?php echo $index; ?>"
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
 
-                        <input type="hidden" name="sk"
-                               value="<?php echo $sk; ?>">
                         <input type="hidden" name="activetab"
                                value="<?php echo $index; ?>">
                         <input type="hidden" name="start" value="0">

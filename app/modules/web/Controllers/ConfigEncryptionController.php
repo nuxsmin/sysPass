@@ -64,8 +64,6 @@ final class ConfigEncryptionController extends SimpleControllerBase
      */
     public function saveAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $mastePassService = $this->dic->get(MasterPassService::class);
 
         $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');
@@ -189,8 +187,6 @@ final class ConfigEncryptionController extends SimpleControllerBase
     public function refreshAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if ($this->config->getConfigData()->isDemoEnabled()) {
                 return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
             }
@@ -218,8 +214,6 @@ final class ConfigEncryptionController extends SimpleControllerBase
     public function saveTempAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
             $key = $temporaryMasterPassService->create($this->request->analyzeInt('temporary_masterpass_maxtime', 3600));
 

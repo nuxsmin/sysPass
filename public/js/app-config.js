@@ -56,7 +56,8 @@ sysPass.Config = function () {
             LOGGEDIN: false,
             AUTHBASIC_AUTOLOGIN: false
         },
-        SESSION_TIMEOUT: 0
+        SESSION_TIMEOUT: 0,
+        CSRF: ""
     };
 
     return {
@@ -121,6 +122,9 @@ sysPass.Config = function () {
         },
         getConfig: function () {
             return config;
+        },
+        setCSRF: function (csrf) {
+            config.CSRF = csrf;
         },
         initialize: function () {
             Object.freeze(config);

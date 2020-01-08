@@ -48,7 +48,6 @@ use SP\Mvc\View\Template;
                 </div>
                 <input type="hidden" name="hash"
                        value="<?php echo $_getvar('hash'); ?>">
-                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
                 <input type="hidden" name="isAjax" value="1">
             </fieldset>
 

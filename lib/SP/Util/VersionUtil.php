@@ -78,16 +78,23 @@ final class VersionUtil
     }
 
     /**
-     * Devuelve una versión normalizada para poder ser comparada
+     * Return a normalized version string to be compared
      *
-     * @param string $versionIn
+     * @param string|array $versionIn
      *
      * @return string
      */
     public static function normalizeVersionForCompare($versionIn)
     {
-        if (is_string($versionIn) && !empty($versionIn)) {
-            list($version, $build) = explode('.', $versionIn);
+        if (!empty($versionIn)) {
+            if (is_string($versionIn)) {
+                list($version, $build) = explode('.', $versionIn);
+            } elseif (is_array($versionIn) && count($versionIn) === 4) {
+                $version = implode('', array_slice($versionIn, 0, 3));
+                $build = $versionIn[3];
+            } else {
+                return '';
+            }
 
             $nomalizedVersion = 0;
 

@@ -66,8 +66,6 @@ final class AccountHistoryManagerController extends ControllerBase
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::ACCOUNTMGR_HISTORY_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -107,8 +105,6 @@ final class AccountHistoryManagerController extends ControllerBase
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if ($id === null) {
                 $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -149,8 +145,6 @@ final class AccountHistoryManagerController extends ControllerBase
     public function restoreAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $accountDetails = $this->accountHistoryService->getById($id);
 
             $accountService = $this->dic->get(AccountService::class);

@@ -53,10 +53,6 @@ trait JsonTrait
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($description);
 
-        if (property_exists($this, 'session')) {
-            $jsonResponse->setCsrf($this->session->getSecurityKey());
-        }
-
         if (null !== $messages) {
             $jsonResponse->setMessages($messages);
         }
@@ -79,10 +75,6 @@ trait JsonTrait
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
-
-        if (isset($this->session)) {
-            $jsonResponse->setCsrf($this->session->getSecurityKey());
-        }
 
         if (null !== $description) {
             $jsonResponse->setDescription($description);
@@ -111,10 +103,6 @@ trait JsonTrait
 
         if ($exception instanceof SPException && $exception->getHint() !== null) {
             $jsonResponse->setMessages([$exception->getHint()]);
-        }
-
-        if (isset($this->session)) {
-            $jsonResponse->setCsrf($this->session->getSecurityKey());
         }
 
         return Json::fromDic()->returnJson($jsonResponse);

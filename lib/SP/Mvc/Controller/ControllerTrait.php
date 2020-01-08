@@ -97,10 +97,19 @@ trait ControllerTrait
     }
 
     /**
+     * Acción no disponible
+     */
+    protected function invalidAction()
+    {
+        Json::fromDic()->returnJson(new JsonResponse(__u('Invalid Action')));
+    }
+
+    /**
      * @param string  $previousToken
      * @param Request $request
      *
      * @throws SPException
+     * @deprecated
      */
     protected function checkSecurityToken($previousToken, Request $request)
     {
@@ -121,13 +130,5 @@ trait ControllerTrait
                 );
             }
         }
-    }
-
-    /**
-     * Acción no disponible
-     */
-    protected function invalidAction()
-    {
-        Json::fromDic()->returnJson(new JsonResponse(__u('Invalid Action')));
     }
 }

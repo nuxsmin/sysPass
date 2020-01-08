@@ -66,8 +66,6 @@ final class EventlogController extends ControllerBase
      */
     public function indexAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG)) {
             return;
         }
@@ -109,8 +107,6 @@ final class EventlogController extends ControllerBase
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -127,8 +123,6 @@ final class EventlogController extends ControllerBase
     public function clearAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->eventLogService->clear();
 
             $this->eventDispatcher->notifyEvent('clear.eventlog',

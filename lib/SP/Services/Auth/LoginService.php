@@ -186,7 +186,6 @@ final class LoginService extends Service
 
         if ($this->from) {
             $uri->addParam('r', $this->from);
-            $uri->addParam('sk', $this->context->getSecurityKey());
         } else {
             $uri->addParam('r', 'index');
         }

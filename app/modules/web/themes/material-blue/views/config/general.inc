@@ -20,8 +20,6 @@ use SP\Mvc\View\Template;
     <?php include $this->includeTemplate('general-events'); ?>
     <?php include $this->includeTemplate('general-proxy'); ?>
     <?php include $this->includeTemplate('general-auth'); ?>
-
-    <input type="hidden" name="sk" value="<?php echo $sk; ?>">
 </form>
 
 <div class="tab-actions">

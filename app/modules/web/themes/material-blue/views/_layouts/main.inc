@@ -57,8 +57,6 @@ use SP\Mvc\View\Template;
         "use strict";
 
         sysPassApp.log.info("ready");
-
-        sysPassApp.sk.set("<?php echo $_getvar('sk'); ?>");
     });
 </script>
 

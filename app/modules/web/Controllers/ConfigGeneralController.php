@@ -33,7 +33,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Config\ConfigBackupService;
@@ -51,13 +50,9 @@ final class ConfigGeneralController extends SimpleControllerBase
 
     /**
      * saveAction
-     *
-     * @throws SPException
      */
     public function saveAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $configData = $this->config->getConfigData();
         $eventMessage = EventMessage::factory();
 
@@ -191,12 +186,9 @@ final class ConfigGeneralController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws SPException
      */
     public function downloadLogAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
         }
@@ -237,12 +229,9 @@ final class ConfigGeneralController extends SimpleControllerBase
      * @param string $type
      *
      * @return bool
-     * @throws SPException
      */
     public function downloadConfigBackupAction($type)
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
         }

@@ -33,7 +33,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Import\FileImport;
@@ -52,12 +51,9 @@ final class ConfigImportController extends SimpleControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws SPException
      */
     public function importAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }

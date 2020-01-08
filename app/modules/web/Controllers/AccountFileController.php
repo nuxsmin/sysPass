@@ -77,8 +77,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function viewAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if (null === ($fileData = $this->accountFileService->getById($id))) {
                 throw new SPException(__u('File does not exist'), SPException::INFO);
             }
@@ -136,12 +134,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function downloadAction($id)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
-            // Set the security token to its previous value because we can't tell
-            // the browser which will be the new security token (not so good...)
-            $this->session->setSecurityKey($this->previousSk);
-
             if (null === ($fileData = $this->accountFileService->getById($id))) {
                 throw new SPException(__u('File does not exist'), SPException::INFO);
             }
@@ -191,8 +183,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function uploadAction($accountId)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $file = $this->router->request()->files()->get('inFile');
 
             if ($accountId === 0 || null === $file) {
@@ -312,8 +302,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
      */
     public function searchAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
         }
@@ -371,8 +359,6 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function deleteAction($id = null)
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             if ($id === null) {
                 $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
@@ -435,13 +421,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
         }
 
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->view->addTemplate('files-list', 'account');
 
             $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
             $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
-            $this->view->assign('sk', $this->session->getSecurityKey());
             $this->view->assign('fileViewRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_VIEW));
             $this->view->assign('fileDownloadRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DOWNLOAD));
             $this->view->assign('fileDeleteRoute', Acl::getActionRoute(Acl::ACCOUNT_FILE_DELETE));

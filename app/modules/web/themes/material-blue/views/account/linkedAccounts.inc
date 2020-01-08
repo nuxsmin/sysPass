@@ -24,16 +24,14 @@ use SP\Core\UI\ThemeIcons;
                            title="<?php echo __('Edit Account'); ?>"
                            data-action-route="account/edit"
                            data-item-id="<?php echo $account->id; ?>"
-                           data-onclick="account/edit"
-                           data-action-sk="<?php echo $_getvar('sk'); ?>">
+                           data-onclick="account/edit">
                             <?php echo $icons->getIconEdit()->getIcon(); ?></i>
 
                         <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
                            title="<?php echo __('Account Details'); ?>"
                            data-action-route="account/view"
                            data-item-id="<?php echo $account->id; ?>"
-                           data-onclick="account/view"
-                           data-action-sk="<?php echo $_getvar('sk'); ?>">
+                           data-onclick="account/view">
                         <?php echo $icons->getIconView()->getIcon(); ?></i>
                     </span>
                 </li>

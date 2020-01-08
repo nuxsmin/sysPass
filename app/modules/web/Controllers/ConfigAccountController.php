@@ -29,7 +29,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
@@ -44,13 +43,9 @@ final class ConfigAccountController extends SimpleControllerBase
 
     /**
      * saveAction
-     *
-     * @throws SPException
      */
     public function saveAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         $configData = $this->config->getConfigData();
 
         $eventMessage = EventMessage::factory();

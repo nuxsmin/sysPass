@@ -63,8 +63,6 @@ abstract class SimpleControllerBase
 
         $this->setUp($container);
 
-        $this->previousSk = $this->session->getSecurityKey();
-
         try {
             $this->initialize();
         } catch (SessionTimeout $sessionTimeout) {

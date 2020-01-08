@@ -85,8 +85,6 @@ final class UserPassResetController extends ControllerBase
     public function saveRequestAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->checkTracking();
 
             $login = $this->request->analyzeString('login');
@@ -188,8 +186,6 @@ final class UserPassResetController extends ControllerBase
     public function saveResetAction()
     {
         try {
-            $this->checkSecurityToken($this->previousSk, $this->request);
-
             $this->checkTracking();
 
             $pass = $this->request->analyzeEncrypted('password');

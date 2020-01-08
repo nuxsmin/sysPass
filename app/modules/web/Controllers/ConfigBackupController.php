@@ -31,7 +31,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Services\Backup\FileBackupService;
@@ -50,12 +49,9 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws SPException
      */
     public function fileBackupAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
         }
@@ -146,12 +142,9 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws SPException
      */
     public function downloadExportAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         try {
             SessionContext::close();
 
@@ -188,12 +181,9 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws SPException
      */
     public function downloadBackupAppAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
         }
@@ -234,12 +224,9 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
-     * @throws SPException
      */
     public function downloadBackupDbAction()
     {
-        $this->checkSecurityToken($this->previousSk, $this->request);
-
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
         }

@@ -369,10 +369,6 @@ sysPass.Triggers = function (log) {
 
             const $sk = $container.find(":input[name='sk']");
 
-            if ($sk.length > 0 && $sk[0].value !== "") {
-                sysPassApp.sk.set($sk[0].value);
-            }
-
             if (typeof sysPassApp.theme.viewsTriggers.common === "function") {
                 sysPassApp.theme.viewsTriggers.common($container);
             }

@@ -150,7 +150,6 @@ $pager = $data->getPager();
                value="<?php echo $pager->getSortOrder(); ?>"/>
         <input type="hidden" name="searchfav"
                value="<?php echo $searchFavorites; ?>"/>
-        <input type="hidden" name="sk" value="<?php echo $_getvar('sk'); ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
 </div>

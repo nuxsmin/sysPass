@@ -68,7 +68,6 @@ $accountData = $_getvar('accountData');
             </tr>
         </table>
 
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
     </form>
 
