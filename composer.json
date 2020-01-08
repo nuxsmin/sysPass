@@ -30,6 +30,7 @@
     "guzzlehttp/guzzle": "~6.3",
     "monolog/monolog": "^1.23",
     "symfony/debug" : "~v3.4",
+    "vlucas/phpdotenv" : "~v4.1",
     "ext-pdo": "*",
     "ext-dom": "*",
     "ext-gd": "*",
