@@ -29,7 +29,7 @@ namespace SP\Services\CustomField;
  *
  * @package SP\Services\CustomField
  */
-final class CustomFieldItem
+final class CustomFieldItem implements \JsonSerializable
 {
     public $required = false;
     public $showInList = false;
@@ -44,4 +44,23 @@ final class CustomFieldItem
     public $value;
     public $isEncrypted;
     public $isValueEncrypted;
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'required' => $this->required,
+            'showInList' => $this->showInList,
+            'help' => $this->help,
+            'typeId' => $this->typeId,
+            'typeName' => $this->typeName,
+            'typeText' => $this->typeText,
+            'moduleId' => $this->moduleId,
+            'value' => $this->value,
+            'isEncrypted' => $this->isEncrypted,
+            'isValueEncrypted' => $this->isValueEncrypted
+        ];
+    }
 }

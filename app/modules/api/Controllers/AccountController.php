@@ -27,12 +27,16 @@ namespace SP\Modules\Api\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use League\Fractal\Resource\Item;
+use SP\Adapters\AccountAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\InvalidClassException;
+use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Model\QueryCondition;
 use SP\Services\Account\AccountPresetService;
 use SP\Services\Account\AccountRequest;
@@ -47,6 +51,8 @@ use SP\Services\Api\ApiResponse;
  */
 final class AccountController extends ControllerBase
 {
+    use ItemTrait;
+
     /**
      * @var AccountPresetService
      */
@@ -61,13 +67,27 @@ final class AccountController extends ControllerBase
      */
     public function viewAction()
     {
+
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
+            $customFields = boolval($this->apiService->getParamString('customFields'));
+
+            if ($customFields) {
+                $this->apiService->requireMasterPass();
+            }
+
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->accountService->incrementViewCounter($id);
+
+            $accountResponse = new AccountDetailsResponse($id, $accountDetails);
+
+            $this->accountService
+                ->withUsersById($accountResponse)
+                ->withUserGroupsById($accountResponse)
+                ->withTagsById($accountResponse);
 
             $this->eventDispatcher->notifyEvent('show.account',
                 new Event($this, EventMessage::factory()
@@ -77,7 +97,15 @@ final class AccountController extends ControllerBase
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id));
+            $adapter = new AccountAdapter($this->configData);
+
+            if ($customFields) {
+                $adapter->withCustomFields($this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $id));
+            }
+
+            $item = new Item($accountResponse, $adapter);
+
+            $this->returnResponse(ApiResponse::makeSuccess($this->fractal->createData($item)->toArray(), $id));
         } catch (Exception $e) {
             $this->returnResponseException($e);
 

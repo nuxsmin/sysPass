@@ -49,7 +49,6 @@ $dotenv->load();
 defined('APP_MODULE') || define('APP_MODULE', 'web');
 define('DEBUG', getenv('DEBUG') || false);
 
-// Please, notice that this file should be outside the webserver root. You can move it and then update this path
 define('CONFIG_PATH', getenv('CONFIG_PATH')
     ?: APP_PATH . DIRECTORY_SEPARATOR . 'config');
 define('RESOURCES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'resources');

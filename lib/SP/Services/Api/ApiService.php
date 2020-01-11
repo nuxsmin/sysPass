@@ -26,6 +26,7 @@ namespace SP\Services\Api;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Exception;
+use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\InvalidArgumentException;
@@ -125,7 +126,7 @@ final class ApiService extends Service
         $this->setupUser();
 
         if (AuthTokenService::isSecuredAction($actionId)) {
-            $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
+            $this->requireMasterPass();
         }
 
         $this->initialized = true;
@@ -256,6 +257,15 @@ final class ApiService extends Service
                 JsonRpcResponse::INTERNAL_ERROR
             );
         }
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws ContextException
+     */
+    public function requireMasterPass()
+    {
+        $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
     }
 
     /**

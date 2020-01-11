@@ -55,7 +55,7 @@ final class JsonRpcResponse
             'jsonrpc' => '2.0',
             'result' => $apiResponse->getResponse(),
             'id' => $id
-        ]);
+        ], JSON_UNESCAPED_SLASHES);
     }
 
     /**

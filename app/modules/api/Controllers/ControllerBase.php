@@ -29,7 +29,10 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use Klein\Klein;
+use League\Fractal\Manager;
 use Psr\Container\ContainerInterface;
+use SP\Config\ConfigData;
+use SP\Core\Acl\Acl;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\SPException;
@@ -76,6 +79,18 @@ abstract class ControllerBase
      */
     protected $router;
     /**
+     * @var ConfigData
+     */
+    protected $configData;
+    /**
+     * @var Manager
+     */
+    protected $fractal;
+    /**
+     * @var Acl
+     */
+    protected $acl;
+    /**
      * @var bool
      */
     private $isAuthenticated = false;
@@ -93,9 +108,12 @@ abstract class ControllerBase
     {
         $this->dic = $container;
         $this->context = $container->get(StatelessContext::class);
+        $this->configData = $container->get(ConfigData::class);
         $this->eventDispatcher = $container->get(EventDispatcher::class);
         $this->router = $container->get(Klein::class);
         $this->apiService = $container->get(ApiService::class);
+        $this->acl = $container->get(Acl::class);
+        $this->fractal = new Manager();
 
         $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;

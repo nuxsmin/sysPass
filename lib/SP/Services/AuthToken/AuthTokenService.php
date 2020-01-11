@@ -61,6 +61,10 @@ final class AuthTokenService extends Service
         ActionsInterface::ACCOUNT_CREATE
     ];
 
+    const CAN_USE_SECURE_TOKEN_ACTIONS = [
+        ActionsInterface::ACCOUNT_VIEW,
+    ];
+
     /**
      * @var AuthTokenRepository
      */
@@ -202,7 +206,9 @@ final class AuthTokenService extends Service
             $token = $this->authTokenRepository->getTokenByUserId($authTokenData->getUserId()) ?: $this->generateToken();
         }
 
-        if (self::isSecuredAction($authTokenData->getActionId())) {
+        if (self::isSecuredAction($authTokenData->getActionId())
+            || self::canUseSecureTokenAction($authTokenData->getActionId())
+        ) {
             $authTokenData->setVault($this->getSecureData($token, $authTokenData->getHash()));
             $authTokenData->setHash(Hash::hashKey($authTokenData->getHash()));
         } else {
@@ -234,6 +240,16 @@ final class AuthTokenService extends Service
     public static function isSecuredAction(int $action)
     {
         return in_array($action, self::SECURED_ACTIONS, true);
+    }
+
+    /**
+     * @param int $action
+     *
+     * @return bool
+     */
+    public static function canUseSecureTokenAction(int $action)
+    {
+        return in_array($action, self::CAN_USE_SECURE_TOKEN_ACTIONS, true);
     }
 
     /**

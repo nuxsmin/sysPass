@@ -24,12 +24,14 @@
 
 namespace SP\Mvc\View\Components;
 
+use JsonSerializable;
+
 /**
  * Class SelectItem
  *
  * @package SP\Mvc\View\Components
  */
-final class SelectItem
+final class SelectItem implements JsonSerializable
 {
     /**
      * @var int
@@ -122,5 +124,13 @@ final class SelectItem
     public function setSkip($skip)
     {
         $this->skip = (bool)$skip;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return ['id' => (int)$this->id, 'name' => $this->name];
     }
 }

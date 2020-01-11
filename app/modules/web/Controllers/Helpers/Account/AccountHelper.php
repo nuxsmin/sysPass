@@ -41,9 +41,8 @@ use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemPreset\AccountPermission;
 use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\Http\Uri;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
-use SP\Modules\Web\Controllers\Traits\ItemTrait;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAcl;
@@ -61,6 +60,7 @@ use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Util\Link;
 
 /**
  * Class AccountHelper
@@ -323,22 +323,7 @@ final class AccountHelper extends HelperBase
         $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
         $this->view->assign('accountAcl', $this->accountAcl);
 
-        $this->view->assign('deepLink', $this->getDeepLink());
-    }
-
-    /**
-     * @return string
-     */
-    private function getDeepLink()
-    {
-        $route = Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : '');
-
-        $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
-
-        $uri = new Uri($baseUrl);
-        $uri->addParam('r', $route);
-
-        return $uri->getUriSigned($this->configData->getPasswordSalt());
+        $this->view->assign('deepLink', Link::getDeepLink($this->accountId, $this->actionId, $this->configData));
     }
 
     /**

@@ -40,7 +40,9 @@ final class AccountHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Account Id'), true)
+                self::getItem('id', __('Account Id'), true),
+                self::getItem('customFields', __('Get custom fields for the account within the response')),
+                self::getItem('tokenPass', __('Token\'s password when custom fields are retrieved'), true)
             ];
     }
 

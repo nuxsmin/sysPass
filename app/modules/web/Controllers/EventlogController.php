@@ -36,8 +36,8 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
-use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Services\Auth\AuthException;
 use SP\Services\EventLog\EventlogService;
 

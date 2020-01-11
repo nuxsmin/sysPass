@@ -39,7 +39,8 @@
     "ext-fileinfo": "*",
     "ext-zlib": "*",
     "ext-libxml": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "league/fractal": "^0.18.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^6",
