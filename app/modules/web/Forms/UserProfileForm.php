@@ -94,6 +94,7 @@ final class UserProfileForm extends FormBase implements FormInterface
         $profileData->setMgmGroups($this->request->analyzeBool('profile_groups', false));
         $profileData->setMgmProfiles($this->request->analyzeBool('profile_profiles', false));
         $profileData->setMgmApiTokens($this->request->analyzeBool('profile_apitokens', false));
+        $profileData->setMgmApiOnlyUser($this->request->analyzeBool('profile_mgmapionlyuser', false));
         $profileData->setMgmPublicLinks($this->request->analyzeBool('profile_publinks', false));
         $profileData->setMgmAccounts($this->request->analyzeBool('profile_accounts', false));
         $profileData->setMgmFiles($this->request->analyzeBool('profile_files', false));

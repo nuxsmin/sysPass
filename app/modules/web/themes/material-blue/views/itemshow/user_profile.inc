@@ -409,6 +409,24 @@ $profileData = $_getvar('profileData');
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <span class="mdl-list__item-primary-content">
                             <i class="material-icons  mdl-list__item-icon">vpn_key</i>
+                            <span><?php echo __('API Authorization only for current user'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Will allow to show only API Authorizations for current user'); ?></span>
+                        </span>
+
+                        <span class="mdl-list__item-secondary-action">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="profile_mgmapionlyuser">
+                                <input type="checkbox"
+                                       id="profile_mgmapionlyuser"
+                                       class="mdl-switch__input"
+                                       name="profile_mgmapionlyuser" <?php echo $profileData->isMgmApiOnlyUser() ? 'CHECKED' : ''; ?> <?php echo $_getvar('disabled'); ?>/>
+                            </label>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons  mdl-list__item-icon">vpn_key</i>
                             <span><?php echo __('Public Links'); ?></span>
                             <span class="mdl-list__item-sub-title"><?php echo __('Links management'); ?></span>
                         </span>
