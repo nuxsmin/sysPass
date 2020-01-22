@@ -184,7 +184,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
             $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT) && !$this->authTokenOnlyUser($tokenUserId)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
