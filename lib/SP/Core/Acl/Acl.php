@@ -228,8 +228,7 @@ final class Acl implements ActionsInterface
                 return ($userProfile->isMgmUsers()
                     || $userProfile->isMgmGroups()
                     || $userProfile->isMgmProfiles()
-                    || $userProfile->isMgmApiTokens()
-                    || $userProfile->isMgmApiOnlyUser());
+                    || $userProfile->isMgmApiTokens());
             case self::SECURITY_MANAGE:
                 return $userProfile->isEvl()
                     || $userProfile->isMgmUsers();

@@ -63,6 +63,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
     protected $authTokenService;
 
     /**
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
      * Search action
      *
      * @return bool
@@ -155,7 +160,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
 
         $this->view->assign('authToken', $authToken);
 
-        $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$authToken->getUserId()]));
+        if($this->authTokenOnlyUser($authToken->getUserId())) {
+            $selectItems = [$this->userService->getById($authToken->getUserId())];
+        } else {
+            $selectItems = UserService::getItemsBasic();
+        }
+
+        $this->view->assign('users', SelectItemAdapter::factory($selectItems)->getItemsFromModelSelected([$authToken->getUserId()]));
         $this->view->assign('actions', SelectItemAdapter::factory(AuthTokenService::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
 
         $this->view->assign('nextAction', Acl::getActionRoute(Acl::ACCESS_MANAGE));
@@ -218,8 +229,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -359,8 +371,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     {
         try {
             $this->checkSecurityToken($this->previousSk, $this->request);
+            $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW) || !$this->authTokenOnlyUser($tokenUserId)) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -399,6 +412,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->checkLoggedIn();
 
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
+        $this->userService = $this->dic->get(UserService::class);
     }
 
     protected function authTokenOnlyUser($tokenUserId) {
