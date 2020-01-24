@@ -157,11 +157,11 @@ final class AuthTokenController extends ControllerBase implements CrudController
         $this->view->addTemplate('auth_token', 'itemshow');
 
         $authToken = $authTokenId ? $this->authTokenService->getById($authTokenId) : new AuthTokenData();
-
         $this->view->assign('authToken', $authToken);
 
-        if($this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) && $tokenUserId == $this->session->getUserData()->getId()) {
-            $selectItems = [$this->userService->getById($authToken->getUserId())];
+        if($this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) && !$this->session->getUserData()->getIsAdminApp()) {
+            $tokenUserId = $this->session->getUserData()->getId();
+            $selectItems = [$this->userService->getById($tokenUserId)];
         } else {
             $selectItems = UserService::getItemsBasic();
         }
@@ -279,7 +279,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
             $tokenUserId = $this->session->getUserData()->getId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE) || !($this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) && $tokenUserId === $this->request->analyzeInt('users'))) {
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_CREATE) || (!$this->session->getUserData()->getIsAdminApp() && $tokenUserId !== $this->request->analyzeInt('users'))) {
                 return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
@@ -321,8 +321,8 @@ final class AuthTokenController extends ControllerBase implements CrudController
             $this->checkSecurityToken($this->previousSk, $this->request);
             $tokenUserId = $this->authTokenService->getById($id)->getUserId();
 
-            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_ONLY_USER) || !$this->authTokenOnlyUser($tokenUserId)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT) || !$this->authTokenOnlyUser($tokenUserId)) {
+             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
             }
 
             $form = new AuthTokenForm($this->dic, $id);
