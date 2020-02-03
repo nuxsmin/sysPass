@@ -38,7 +38,7 @@ use SP\Http\Address;
  */
 final class LdapMsAds extends Ldap
 {
-    const FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectCategory=person)(objectClass=user)))';
+    const FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=32))(|(objectCategory=person)(objectClass=user)))';
     const FILTER_GROUP_OBJECT = '(objectCategory=group)';
     const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
     const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
