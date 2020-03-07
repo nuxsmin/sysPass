@@ -40,7 +40,9 @@ final class CategoryHelp implements HelpInterface
     {
         return
             [
-                self::getItem('id', __('Category Id'), true)
+                self::getItem('id', __('Category Id'), true),
+                self::getItem('customFields', __('Get custom fields for the category within the response')),
+                self::getItem('tokenPass', __('Token\'s password when custom fields are retrieved'), true)
             ];
     }
 

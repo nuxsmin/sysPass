@@ -24,13 +24,12 @@
 
 namespace SP\Adapters;
 
-use League\Fractal\TransformerAbstract;
-use SP\Config\ConfigData;
+use League\Fractal\Resource\Collection;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountDetailsResponse;
-use SP\DataModel\ItemData;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\CustomField\CustomFieldItem;
 use SP\Util\Link;
 
 /**
@@ -38,33 +37,26 @@ use SP\Util\Link;
  *
  * @package SP\Adapters
  */
-final class AccountAdapter extends TransformerAbstract
+final class AccountAdapter extends AdapterBase
 {
-    /**
-     * @var CustomFieldItem[]
-     */
-    private $customFields;
-    /**
-     * @var ConfigData
-     */
-    private $configData;
+    use ItemTrait;
+
+    protected $availableIncludes = [
+        'customFields'
+    ];
 
     /**
-     * AccountAdapter constructor.
+     * @param AccountDetailsResponse $data
      *
-     * @param ConfigData $configData
+     * @return Collection
+     * @throws SPException
      */
-    public function __construct(ConfigData $configData)
+    public function includeCustomFields(AccountDetailsResponse $data)
     {
-        $this->configData = $configData;
-    }
-
-    /**
-     * @param ItemData[] $items
-     */
-    public function withCustomFields(array $items)
-    {
-        $this->customFields = $items;
+        return $this->collection(
+            $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $data->getId()),
+            new CustomFieldAdapter($this->configData)
+        );
     }
 
     /**
@@ -72,7 +64,7 @@ final class AccountAdapter extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(AccountDetailsResponse $data)
+    public function transform(AccountDetailsResponse $data): array
     {
         $account = $data->getAccountVData();
 
@@ -109,7 +101,7 @@ final class AccountAdapter extends TransformerAbstract
             'tags' => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
             'users' => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
             'userGroups' => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
-            'customFields' => $this->customFields,
+            'customFields' => null,
             'links' => [
                 [
                     'rel' => 'self',

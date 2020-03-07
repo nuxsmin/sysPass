@@ -27,6 +27,8 @@ namespace SP\Modules\Api\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use League\Fractal\Resource\Item;
+use SP\Adapters\CategoryAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -34,8 +36,10 @@ use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Category\CategoryService;
+use SP\Util\Util;
 
 
 /**
@@ -45,6 +49,8 @@ use SP\Services\Category\CategoryService;
  */
 final class CategoryController extends ControllerBase
 {
+    use ItemTrait;
+
     /**
      * @var CategoryService
      */
@@ -59,6 +65,10 @@ final class CategoryController extends ControllerBase
             $this->setupApi(ActionsInterface::CATEGORY_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
+            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+
+            $adapter = new CategoryAdapter($this->configData);
+
             $categoryData = $this->categoryService->getById($id);
 
             $this->eventDispatcher->notifyEvent('show.category',
@@ -68,7 +78,16 @@ final class CategoryController extends ControllerBase
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id));
+            $out = $this->fractal
+                ->createData(
+                    new Item($categoryData, new CategoryAdapter($this->configData)));
+
+            if ($customFields) {
+                $this->apiService->requireMasterPass();
+                $this->fractal->parseIncludes(['customFields']);
+            }
+
+            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
         } catch (Exception $e) {
             processException($e);
 

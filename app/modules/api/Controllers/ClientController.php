@@ -27,6 +27,8 @@ namespace SP\Modules\Api\Controllers;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use League\Fractal\Resource\Item;
+use SP\Adapters\ClientAdapter;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -34,8 +36,10 @@ use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
+use SP\Mvc\Controller\ItemTrait;
 use SP\Services\Api\ApiResponse;
 use SP\Services\Client\ClientService;
+use SP\Util\Util;
 
 /**
  * Class ClientController
@@ -44,6 +48,8 @@ use SP\Services\Client\ClientService;
  */
 final class ClientController extends ControllerBase
 {
+    use ItemTrait;
+
     /**
      * @var ClientService
      */
@@ -58,6 +64,9 @@ final class ClientController extends ControllerBase
             $this->setupApi(ActionsInterface::CLIENT_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
+
+            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+
             $clientData = $this->clientService->getById($id);
 
             $this->eventDispatcher->notifyEvent('show.client', new Event($this));
@@ -69,7 +78,20 @@ final class ClientController extends ControllerBase
                     ->addDetail('ID', $id))
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id));
+            if ($customFields) {
+                $this->apiService->requireMasterPass();
+            }
+
+            $out = $this->fractal
+                ->createData(
+                    new Item($clientData, new ClientAdapter($this->configData)));
+
+            if ($customFields) {
+                $this->apiService->requireMasterPass();
+                $this->fractal->parseIncludes(['customFields']);
+            }
+
+            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
         } catch (Exception $e) {
             processException($e);
 

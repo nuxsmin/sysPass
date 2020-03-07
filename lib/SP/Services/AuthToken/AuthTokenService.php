@@ -63,6 +63,8 @@ final class AuthTokenService extends Service
 
     const CAN_USE_SECURE_TOKEN_ACTIONS = [
         ActionsInterface::ACCOUNT_VIEW,
+        ActionsInterface::CATEGORY_VIEW,
+        ActionsInterface::CLIENT_VIEW,
     ];
 
     /**

@@ -43,6 +43,7 @@ use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\Api\ApiResponse;
+use SP\Util\Util;
 
 /**
  * Class AccountController
@@ -72,7 +73,7 @@ final class AccountController extends ControllerBase
             $this->setupApi(ActionsInterface::ACCOUNT_VIEW);
 
             $id = $this->apiService->getParamInt('id', true);
-            $customFields = boolval($this->apiService->getParamString('customFields'));
+            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
             if ($customFields) {
                 $this->apiService->requireMasterPass();
@@ -99,13 +100,14 @@ final class AccountController extends ControllerBase
 
             $adapter = new AccountAdapter($this->configData);
 
+            $out = $this->fractal
+                ->createData(new Item($accountResponse, $adapter));
+
             if ($customFields) {
-                $adapter->withCustomFields($this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $id));
+                $this->fractal->parseIncludes(['customFields']);
             }
 
-            $item = new Item($accountResponse, $adapter);
-
-            $this->returnResponse(ApiResponse::makeSuccess($this->fractal->createData($item)->toArray(), $id));
+            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
         } catch (Exception $e) {
             $this->returnResponseException($e);
 

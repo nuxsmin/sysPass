@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -57,6 +57,7 @@ trait ItemTrait
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
+     * @throws SPException
      */
     protected function getCustomFieldsForItem($moduleId, $itemId)
     {
@@ -90,7 +91,7 @@ trait ItemTrait
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
-                logger($e->getMessage());
+                throw new SPException(__u('Internal error'), SPException::ERROR);
             }
         }
 
