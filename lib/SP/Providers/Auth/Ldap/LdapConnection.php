@@ -136,7 +136,7 @@ final class LdapConnection implements LdapConnectionInterface
             @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         }
 
-        $this->ldapHandler = @ldap_connect($this->getServer(), $this->ldapParams->getPort());
+        $this->ldapHandler = @ldap_connect($this->getServerUri());
 
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
@@ -165,9 +165,9 @@ final class LdapConnection implements LdapConnectionInterface
      */
     public function checkParams()
     {
-        if (!$this->ldapParams->getSearchBase()
-            || !$this->getServer()
-            || !$this->ldapParams->getBindDn()
+        if (empty($this->ldapParams->getSearchBase())
+            || empty($this->getServer())
+            || empty($this->ldapParams->getBindDn())
         ) {
             $this->eventDispatcher->notifyEvent('ldap.check.params',
                 new Event($this, EventMessage::factory()
@@ -195,6 +195,25 @@ final class LdapConnection implements LdapConnectionInterface
         $this->server = $server;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getServerUri(): string
+    {
+        $server = $this->getServer();
+        $port = $this->ldapParams->getPort();
+
+        if (strpos($server, '://') !== false) {
+            return $server . ':' . $port;
+        } elseif ($port === 389 || $port === null) {
+            return 'ldap://' . $server;
+        } elseif ($port === 636) {
+            return 'ldaps://' . $server;
+        }
+
+        return 'ldap://' . $server . ':' . $port;
     }
 
     /**

@@ -47,7 +47,8 @@
     "fabpot/goutte": "~v3.2",
     "syspass/extension-installer-plugin": "dev-master",
     "syspass/plugin-authenticator": "^2.1-dev",
-    "nikic/php-parser": " ~v4.1"
+    "nikic/php-parser": "~v4.1",
+    "php-mock/php-mock-phpunit": "~2.6"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^2.1",
