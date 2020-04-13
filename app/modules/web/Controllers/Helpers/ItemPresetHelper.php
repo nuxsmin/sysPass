@@ -74,6 +74,7 @@ final class ItemPresetHelper extends HelperBase
         $this->view->assign('usersEdit', $this->users->getItemsFromModelSelected($accountPermission->getUsersEdit()));
         $this->view->assign('userGroupsView', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView()));
         $this->view->assign('userGroupsEdit', $this->userGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
+        $this->view->assign('mainUsergroupId', $this->userGroups->getItemsFromModelSelected(array($accountPermission->getMainUsergroupId())));
     }
 
     /**

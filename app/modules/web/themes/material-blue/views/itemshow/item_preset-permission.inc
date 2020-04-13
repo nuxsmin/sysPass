@@ -99,5 +99,23 @@ use SP\Mvc\View\Template;
             </div>
         </td>
     </tr>
+	<tr>
+        <td class="descField"><?php echo __('Main Group'); ?></td>
+        <td class="valField">
+            <div class="account-permissions">
+                <select id="main_usergroup_id" name="main_usergroup_id"
+                        class="select-box">
+                    <option value=""><?php echo __('Select Groups'); ?></option>
+                    <?php /** @var SelectItem $userGroup */
+                    foreach ($_getvar('mainUsergroupId') as $userGroup): ?>
+                        <?php if ($userGroup->isSkip()): continue; endif; ?>
+                        <option
+                                value="<?php echo $userGroup->getId(); ?>"
+                            <?php echo $userGroup->isSelected() ? 'selected' : '' ?>><?php echo $userGroup->getName(); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </td>
+    </tr>
     </tbody>
 </table>

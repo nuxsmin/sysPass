@@ -209,7 +209,7 @@ final class AccountService extends Service implements AccountServiceInterface
             $accountRequest->key = $pass['key'];
         }
 
-        $this->setPresetPrivate($accountRequest);
+        $this->setPresetPrivatePermissions($accountRequest);
 
         $accountRequest->id = $this->accountRepository->create($accountRequest);
 
@@ -261,7 +261,7 @@ final class AccountService extends Service implements AccountServiceInterface
      * @throws NoSuchPropertyException
      * @throws NoSuchItemException
      */
-    private function setPresetPrivate(AccountRequest $accountRequest)
+    private function setPresetPrivatePermissions(AccountRequest $accountRequest)
     {
         $userData = $this->context->getUserData();
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE);
@@ -285,6 +285,17 @@ final class AccountService extends Service implements AccountServiceInterface
                 $accountRequest->isPrivateGroup = (int)$accountPrivate->isPrivateGroup();
             }
         }
+
+        $itemPresetData = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
+
+        if ($itemPresetData !== null
+            && $itemPresetData->getFixed()
+        ) {
+            $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
+
+            $accountRequest->userGroupId = (int)$accountPermission->getMainUsergroupId();
+        }
+
     }
 
     /**
@@ -456,7 +467,7 @@ final class AccountService extends Service implements AccountServiceInterface
 
             $this->addHistory($accountRequest->id);
 
-            $this->setPresetPrivate($accountRequest);
+            $this->setPresetPrivatePermissions($accountRequest);
 
             $this->accountRepository->update($accountRequest);
 

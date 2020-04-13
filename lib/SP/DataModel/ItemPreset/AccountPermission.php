@@ -47,6 +47,10 @@ class AccountPermission
      * @var array
      */
     private $userGroupsEdit = [];
+    /**
+     * @var int
+     */
+    private $mainUsergroupId = 0;
 
     /**
      * @return array
@@ -129,6 +133,22 @@ class AccountPermission
     }
 
     /**
+     * @return int
+     */
+    public function getMainUsergroupId()
+    {
+        return (int)$this->mainUsergroupId;
+    }
+
+    /**
+     * @param int $mainUsergroupId
+     */
+    public function setMainUsergroupId($mainUsergroupId)
+    {
+        $this->mainUsergroupId = (int)$mainUsergroupId;
+    }
+
+    /**
      * @return bool
      */
     public function hasItems()
@@ -136,6 +156,7 @@ class AccountPermission
         return count($this->usersView) > 0
             || count($this->usersEdit) > 0
             || count($this->userGroupsView) > 0
-            || count($this->userGroupsEdit) > 0;
+            || count($this->userGroupsEdit) > 0
+            || $this->mainUsergroupId !== 0;
     }
 }
