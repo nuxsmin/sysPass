@@ -62,7 +62,7 @@ final class Installer extends Service
      */
     const VERSION = [3, 2, 0];
     const VERSION_TEXT = '3.2';
-    const BUILD = 20062801;
+    const BUILD = 20062901;
 
     /**
      * @var DatabaseSetupInterface

@@ -50,31 +50,39 @@ $dotenv->load();
 defined('APP_MODULE') || define('APP_MODULE', 'web');
 define('DEBUG', getenv('DEBUG') || false);
 
-define('CONFIG_PATH', getenv('CONFIG_PATH')
-    ?: APP_PATH . DS . 'config');
+define('CONFIG_PATH',
+    getenv('CONFIG_PATH')
+        ?: APP_PATH . DS . 'config');
 define('RESOURCES_PATH', APP_PATH . DS . 'resources');
 
 // Setup config files
-define('CONFIG_FILE', getenv('CONFIG_FILE')
-    ?: CONFIG_PATH . DS . 'config.xml');
-define('ACTIONS_FILE', getenv('ACTIONS_FILE')
-    ?: RESOURCES_PATH . DS . 'actions.xml');
-define('MIMETYPES_FILE', getenv('MIMETYPES_FILE')
-    ?: RESOURCES_PATH . DS . 'mime.xml');
+define('CONFIG_FILE',
+    getenv('CONFIG_FILE')
+        ?: CONFIG_PATH . DS . 'config.xml');
+define('ACTIONS_FILE',
+    getenv('ACTIONS_FILE')
+        ?: RESOURCES_PATH . DS . 'actions.xml');
+define('MIMETYPES_FILE',
+    getenv('MIMETYPES_FILE')
+        ?: RESOURCES_PATH . DS . 'mime.xml');
 define('OLD_CONFIG_FILE', CONFIG_PATH . DS . 'config.php');
-define('LOG_FILE', getenv('LOG_FILE')
-    ?: CONFIG_PATH . DS . 'syspass.log');
+define('LOG_FILE',
+    getenv('LOG_FILE')
+        ?: CONFIG_PATH . DS . 'syspass.log');
 define('LOCK_FILE', CONFIG_PATH . DS . '.lock');
 
 // Setup application paths
 define('MODULES_PATH', APP_PATH . DS . 'modules');
 define('LOCALES_PATH', APP_PATH . DS . 'locales');
-define('BACKUP_PATH', getenv('BACKUP_PATH')
-    ?: APP_PATH . DS . 'backup');
-define('CACHE_PATH', getenv('CACHE_PATH')
-    ?: APP_PATH . DS . 'cache');
-define('TMP_PATH', getenv('TMP_PATH')
-    ?: APP_PATH . DS . 'temp');
+define('BACKUP_PATH',
+    getenv('BACKUP_PATH')
+        ?: APP_PATH . DS . 'backup');
+define('CACHE_PATH',
+    getenv('CACHE_PATH')
+        ?: APP_PATH . DS . 'cache');
+define('TMP_PATH',
+    getenv('TMP_PATH')
+        ?: APP_PATH . DS . 'temp');
 
 initModule(APP_MODULE);
 
