@@ -44,11 +44,20 @@ interface LdapInterface
     public function getUserDnFilter(string $userLogin): string;
 
     /**
-     * Devolver el filtro para comprobar la pertenecia al grupo
+     * Return the filter to check the group membership from user's attributes
      *
      * @return string
      */
-    public function getGroupMembershipFilter(): string;
+    public function getGroupMembershipIndirectFilter(): string;
+
+    /**
+     * Return the filter to check the group membership from group's attributes
+     *
+     * @param string $userDn
+     *
+     * @return string
+     */
+    public function getGroupMembershipDirectFilter(string $userDn = null): string;
 
     /**
      * Buscar al usuario en un grupo.

@@ -108,7 +108,6 @@ final class AuthProvider extends Provider
      * Autentificación de usuarios con LDAP.
      *
      * @return bool|LdapAuthData
-     * @throws AuthException
      * @throws LdapException
      */
     public function authLdap()
@@ -138,14 +137,18 @@ final class AuthProvider extends Provider
     {
         $data = LdapParams::getServerAndPort($this->configData->getLdapServer());
 
-        $ldapParams = (new LdapParams())
-            ->setServer($data['server'])
-            ->setPort(isset($data['port']) ? $data['port'] : 389)
-            ->setSearchBase($this->configData->getLdapBase())
-            ->setGroup($this->configData->getLdapGroup())
-            ->setBindDn($this->configData->getLdapBindUser())
-            ->setBindPass($this->configData->getLdapBindPass())
-            ->setType($this->configData->getLdapType());
+        $ldapParams = new LdapParams();
+        $ldapParams->setServer($data['server']);
+        $ldapParams->setPort(isset($data['port']) ? $data['port'] : 389);
+        $ldapParams->setSearchBase($this->configData->getLdapBase());
+        $ldapParams->setGroup($this->configData->getLdapGroup());
+        $ldapParams->setBindDn($this->configData->getLdapBindUser());
+        $ldapParams->setBindPass($this->configData->getLdapBindPass());
+        $ldapParams->setType($this->configData->getLdapType());
+        $ldapParams->setFilterUserObject($this->configData->getLdapFilterUserObject());
+        $ldapParams->setFilterGroupObject($this->configData->getLdapFilterGroupObject());
+        $ldapParams->setFilterUserAttributes($this->configData->getLdapFilterUserAttributes());
+        $ldapParams->setFilterGroupAttributes($this->configData->getLdapFilterGroupAttributes());
 
         return new LdapAuth(
             Ldap::factory(

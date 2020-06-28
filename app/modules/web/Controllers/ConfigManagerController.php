@@ -43,6 +43,8 @@ use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
+use SP\Providers\Auth\Ldap\LdapMsAds;
+use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Providers\Auth\Ldap\LdapTypeInterface;
 use SP\Providers\Log\LogInterface;
 use SP\Providers\Mail\MailHandler;
@@ -231,9 +233,14 @@ final class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('ldap');
 
-        $template->assign('ldapIsAvailable', $this->extensionChecker->checkIsAvailable('ldap'));
-        $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
-        $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
+        $template->assign('ldapIsAvailable',
+            $this->extensionChecker->checkIsAvailable('ldap'));
+        $template->assign('userGroups',
+            SelectItemAdapter::factory(UserGroupService::getItemsBasic())
+                ->getItemsFromModel());
+        $template->assign('userProfiles',
+            SelectItemAdapter::factory(UserProfileService::getItemsBasic())
+                ->getItemsFromModel());
 
         $serverTypes = [
             LdapTypeInterface::LDAP_STD => 'Standard',
@@ -241,7 +248,29 @@ final class ConfigManagerController extends ControllerBase
             LdapTypeInterface::LDAP_AZURE => 'Azure Active Directory',
         ];
 
-        $template->assign('serverTypes', SelectItemAdapter::factory($serverTypes)->getItemsFromArraySelected([$this->configData->getLdapType()]));
+        $template->assign('serverTypes',
+            SelectItemAdapter::factory($serverTypes)
+                ->getItemsFromArraySelected([$this->configData->getLdapType()]));
+
+        $userAttributes = array_merge(
+            LdapStd::DEFAULT_FILTER_USER_ATTRIBUTES,
+            LdapMsAds::DEFAULT_FILTER_USER_ATTRIBUTES,
+            $this->configData->getLdapFilterUserAttributes()
+        );
+
+        $template->assign('userAttributes',
+            SelectItemAdapter::factory($userAttributes)
+                ->getItemsFromArraySelected($this->configData->getLdapFilterUserAttributes()));
+
+        $groupAttributes = array_merge(
+            LdapStd::DEFAULT_FILTER_GROUP_ATTRIBUTES,
+            LdapMsAds::DEFAULT_FILTER_GROUP_ATTRIBUTES,
+            $this->configData->getLdapFilterGroupAttributes()
+        );
+
+        $template->assign('groupAttributes',
+            SelectItemAdapter::factory($groupAttributes)
+                ->getItemsFromArraySelected($this->configData->getLdapFilterGroupAttributes()));
 
         return new DataTab(__('LDAP'), $template);
     }

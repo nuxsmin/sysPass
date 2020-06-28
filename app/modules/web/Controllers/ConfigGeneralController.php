@@ -76,7 +76,7 @@ final class ConfigGeneralController extends SimpleControllerBase
         $configData->setDebug($debugEnabled);
         $configData->setMaintenance($maintenanceEnabled);
         $configData->setCheckUpdates($checkUpdatesEnabled);
-        $configData->setChecknotices($checkNoticesEnabled);
+        $configData->setCheckNotices($checkNoticesEnabled);
         $configData->setEncryptSession($encryptSessionEnabled);
 
         // Events

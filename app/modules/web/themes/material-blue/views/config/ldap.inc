@@ -92,7 +92,10 @@ use SP\Mvc\View\Template;
                     <?php /** @var SelectItem $serverType */
                     foreach ($_getvar('serverTypes') as $serverType): ?>
                         <option
-                                value="<?php echo $serverType->getId(); ?>" <?php echo $serverType->isSelected() ? 'selected' : ''; ?>><?php echo $serverType->getName(); ?></option>
+                                value="<?php echo $serverType->getId(); ?>"
+                            <?php echo $serverType->isSelected() ? 'selected' : ''; ?>>
+                            <?php echo $serverType->getName(); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </td>
@@ -101,7 +104,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Server'); ?>
                 <div id="help-ldap_server"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_server">
                     <p>
@@ -134,7 +139,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Bind User'); ?>
                 <div id="help-ldap_binduser"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_binduser">
                     <p>
@@ -166,7 +173,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Bind Password'); ?>
                 <div id="help-ldap_bindpass"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_bindpass">
                     <p>
@@ -187,7 +196,9 @@ use SP\Mvc\View\Template;
                 </div>
                 <?php if ($configData->getLdapBindPass()): ?>
                     <div id="help-ldap_password"
-                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>">
+                        <?php echo $icons->getIconWarning()->getIcon(); ?>
+                    </div>
                     <div class="mdl-tooltip mdl-tooltip--large"
                          for="help-ldap_password">
                         <p>
@@ -201,7 +212,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Search base'); ?>
                 <div id="help-ldap_base"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_base">
                     <p>
@@ -233,7 +246,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Group'); ?>
                 <div id="help-ldap_group"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_group">
                     <p>
@@ -269,7 +284,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Default Group'); ?>
                 <div id="help-ldap_defaultgroup"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_defaultgroup">
                     <p>
@@ -286,7 +303,10 @@ use SP\Mvc\View\Template;
                     <?php /** @var SelectItem $userGroup */
                     foreach ($_getvar('userGroups') as $userGroup): ?>
                         <option
-                                value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
+                                value="<?php echo $userGroup->getId(); ?>"
+                            <?php echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>>
+                            <?php echo $userGroup->getName(); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </td>
@@ -295,7 +315,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Default Profile'); ?>
                 <div id="help-ldap_defaultprofile"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_defaultprofile">
                     <p>
@@ -312,7 +334,132 @@ use SP\Mvc\View\Template;
                     <?php /** @var SelectItem $userProfile */
                     foreach ($_getvar('userProfiles') as $userProfile): ?>
                         <option
-                                value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
+                                value="<?php echo $userProfile->getId(); ?>"
+                            <?php echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>>
+                            <?php echo $userProfile->getName(); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
+
+        <tr class="header">
+            <td colspan="2"><?php echo __('Advanced Settings'); ?></td>
+        </tr>
+
+        <tr>
+            <td class="descField">
+                <?php echo __('User Filter'); ?>
+                <div id="help-ldap_filter_user_object"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-ldap_filter_user_object">
+                    <p>
+                        <?php echo __('LDAP filter for user objects lookup.'); ?>
+                    </p>
+                    <p>
+                        <?php echo __('Examples:'); ?>
+                    </p>
+                    <ul>
+                        <li>
+                            (|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))
+                        </li>
+                        <li>(objectClass=inetOrgPerson)</li>
+                    </ul>
+                </div>
+            </td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="ldap_filter_user_object"
+                           name="ldap_filter_user_object"
+                           type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $configData->getLdapFilterUserObject(); ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="ldap_filter_user_object"><?php echo __('Filter'); ?></label>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="descField">
+                <?php echo __('Group Filter'); ?>
+                <div id="help-ldap_filter_group_object"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-ldap_filter_group_object">
+                    <p>
+                        <?php echo __('LDAP filter for group objects lookup.'); ?>
+                    </p>
+                    <p>
+                        <?php echo __('Examples:'); ?>
+                    </p>
+                    <ul>
+                        <li>
+                            (|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))
+                        </li>
+                        <li>(objectClass=groupOfNames)</li>
+                    </ul>
+                </div>
+            </td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="ldap_filter_group_object"
+                           name="ldap_filter_group_object"
+                           type="text"
+                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $configData->getLdapFilterGroupObject(); ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="ldap_filter_group_object"><?php echo __('Filter'); ?></label>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="descField">
+                <?php echo __('User Attributes'); ?>
+            </td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('User Attributes'); ?></div>
+
+                <select id="ldap_filter_user_attributes"
+                        name="ldap_filter_user_attributes[]"
+                        multiple="multiple"
+                        class="select-box" data-create="true">
+                    <?php /** @var SelectItem $userAttribute */
+                    foreach ($_getvar('userAttributes') as $userAttribute): ?>
+                        <option
+                                value="<?php echo $userAttribute->getName(); ?>"
+                            <?php echo $userAttribute->isSelected() ? 'selected' : ''; ?>>
+                            <?php echo $userAttribute->getName(); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="descField">
+                <?php echo __('Group Attributes'); ?>
+            </td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Group Attributes'); ?></div>
+
+                <select id="ldap_filter_group_attributes"
+                        name="ldap_filter_group_attributes[]"
+                        multiple="multiple"
+                        class="select-box" data-create="true">
+                    <?php /** @var SelectItem $groupAttribute */
+                    foreach ($_getvar('groupAttributes') as $groupAttribute): ?>
+                        <option
+                                value="<?php echo $groupAttribute->getName(); ?>"
+                            <?php echo $groupAttribute->isSelected() ? 'selected' : ''; ?>>
+                            <?php echo $groupAttribute->getName(); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </td>
@@ -359,7 +506,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Login Attribute'); ?>
                 <div id="help-ldap_login_attribute"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_login_attribute">
                     <p>
@@ -384,7 +533,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Name Attribute'); ?>
                 <div id="help-ldap_username_attribute"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_username_attribute">
                     <p>
@@ -431,7 +582,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Group Name Attribute'); ?>
                 <div id="help-ldap_groupname_attribute"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_groupname_attribute">
                     <p>
@@ -454,7 +607,9 @@ use SP\Mvc\View\Template;
             <td class="descField">
                 <?php echo __('Filter'); ?>
                 <div id="help-ldap_import_filter"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-ldap_import_filter">
                     <p>

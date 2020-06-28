@@ -225,8 +225,15 @@ final class Installer extends Service
                 $address = $this->request->getServer('SERVER_ADDR');
             }
 
-            $this->installData->setDbAuthHost($address);
-            $this->installData->setDbAuthHostDns(gethostbyaddr($address));
+            // Check whether sysPass is running on docker. Not so accurate,
+            // but avoid some overhead from parsing /proc/self/cgroup
+            if (getenv('SYSPASS_DIR') !== false) {
+                $this->installData->setDbAuthHost('%');
+            } else {
+                $this->installData->setDbAuthHost($address);
+                $this->installData->setDbAuthHostDns(gethostbyaddr($address));
+            }
+
         } else {
             $this->installData->setDbAuthHost('localhost');
         }

@@ -27,7 +27,7 @@ namespace SP\Config;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use Psr\Container\ContainerInterface;
-use ReflectionObject;
+use SP\Core\AppInfoInterface;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Services\Config\ConfigBackupService;
@@ -107,6 +107,12 @@ final class Config
                 ) {
                     $this->configData = $this->fileCache->load();
 
+                    if ($this->configData->count() === 0) {
+                        $this->fileCache->delete();
+                        $this->initialize();
+                        return;
+                    }
+
                     logger('Config cache loaded');
                 } else {
                     if (file_exists($this->fileStorage->getFileHandler()->getFile())) {
@@ -161,20 +167,27 @@ final class Config
      */
     public function loadConfigFromFile()
     {
+        return $this->configMapper($this->fileStorage->load('config')->getItems());
+    }
+
+    /**
+     * Map the config array keys with ConfigData class setters
+     *
+     * @param array $items
+     *
+     * @return ConfigData
+     */
+    private function configMapper(array $items)
+    {
         $configData = new ConfigData();
 
-        // Mapear el array de elementos de configuración con las propiedades de la clase configData
-        $items = $this->fileStorage->load('config')->getItems();
-        $reflectionObject = new ReflectionObject($configData);
+        foreach ($items as $item => $value) {
+            $methodName = 'set' . ucfirst($item);
 
-        foreach ($reflectionObject->getProperties() as $property) {
-            $property->setAccessible(true);
-
-            if (isset($items[$property->getName()])) {
-                $property->setValue($configData, $items[$property->getName()]);
+            if (method_exists($configData, $methodName)) {
+                $configData->$methodName($value);
             }
 
-            $property->setAccessible(false);
         }
 
         return $configData;
@@ -197,10 +210,12 @@ final class Config
         }
 
         $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->context->getUserData()->getLogin() ?: 'sysPass');
+        $configData->setConfigSaver($this->context->getUserData()->getLogin() ?: AppInfoInterface::APP_NAME);
         $configData->setConfigHash();
 
-        $this->fileStorage->save($configData, 'config');
+        // Save only attributes to avoid a parent attributes node within the XML
+        $this->fileStorage->save($configData->getAttributes(), 'config');
+        // Save the class object (serialized)
         $this->fileCache->save($configData);
 
         $this->configData = $configData;

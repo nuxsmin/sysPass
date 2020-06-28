@@ -65,6 +65,22 @@ final class LdapParams
      * @var bool
      */
     protected $tlsEnabled = false;
+    /**
+     * @var string
+     */
+    protected $filterUserObject;
+    /**
+     * @var string
+     */
+    protected $filterGroupObject;
+    /**
+     * @var array
+     */
+    protected $filterUserAttributes;
+    /**
+     * @var array
+     */
+    protected $filterGroupAttributes;
 
     /**
      * Devolver el puerto del servidor si está establecido
@@ -76,6 +92,74 @@ final class LdapParams
     public static function getServerAndPort($server)
     {
         return preg_match('#' . self::REGEX_SERVER . '#i', $server, $matches) ? $matches : false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterUserObject(): ?string
+    {
+        return $this->filterUserObject;
+    }
+
+    /**
+     * @param string $filterUserObject
+     */
+    public function setFilterUserObject(string $filterUserObject = null)
+    {
+        if (!empty($filterUserObject)) {
+            $this->filterUserObject = $filterUserObject;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterGroupObject(): ?string
+    {
+        return $this->filterGroupObject;
+    }
+
+    /**
+     * @param string $filterGroupObject
+     */
+    public function setFilterGroupObject(string $filterGroupObject = null)
+    {
+        if (!empty($filterGroupObject)) {
+            $this->filterGroupObject = $filterGroupObject;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterUserAttributes(): ?array
+    {
+        return $this->filterUserAttributes;
+    }
+
+    /**
+     * @param array $filterUserAttributes
+     */
+    public function setFilterUserAttributes(array $filterUserAttributes = null)
+    {
+        $this->filterUserAttributes = $filterUserAttributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilterGroupAttributes(): ?array
+    {
+        return $this->filterGroupAttributes;
+    }
+
+    /**
+     * @param array $filterGroupAttributes
+     */
+    public function setFilterGroupAttributes(array $filterGroupAttributes = null)
+    {
+        $this->filterGroupAttributes = $filterGroupAttributes;
     }
 
     /**

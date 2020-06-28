@@ -320,7 +320,7 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
     private function upgrade_300_18112501($version)
     {
         if ($this->configData->isLdapEnabled()) {
-            if ($this->configData->isLdapAds()) {
+            if ($this->configData->get('ldapAds')) {
                 $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
             } else {
                 $this->configData->setLdapType(LdapTypeInterface::LDAP_STD);

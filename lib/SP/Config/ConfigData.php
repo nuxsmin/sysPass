@@ -25,409 +25,56 @@
 namespace SP\Config;
 
 use JsonSerializable;
+use SP\Core\DataCollection;
 
 /**
  * Class configData
  *
  * @package SP\Config
  */
-final class ConfigData implements JsonSerializable
+final class ConfigData extends DataCollection implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $upgradeKey;
-    /**
-     * @var bool
-     */
-    private $dokuwikiEnabled = false;
-    /**
-     * @var string
-     */
-    private $dokuwikiUrl;
-    /**
-     * @var string
-     */
-    private $dokuwikiUrlBase;
-    /**
-     * @var string
-     */
-    private $dokuwikiUser;
-    /**
-     * @var string
-     */
-    private $dokuwikiPass;
-    /**
-     * @var string
-     */
-    private $dokuwikiNamespace;
-    /**
-     * @var int
-     */
-    private $ldapDefaultGroup;
-    /**
-     * @var int
-     */
-    private $ldapDefaultProfile;
-    /**
-     * @var bool
-     */
-    private $proxyEnabled = false;
-    /**
-     * @var string
-     */
-    private $proxyServer;
-    /**
-     * @var int
-     */
-    private $proxyPort = 8080;
-    /**
-     * @var string
-     */
-    private $proxyUser;
-    /**
-     * @var string
-     */
-    private $proxyPass;
-    /**
-     * @var int
-     */
-    private $publinksMaxViews = 3;
-    /**
-     * @var int
-     */
-    private $publinksMaxTime = 600;
-    /**
-     * @var bool
-     */
-    private $publinksEnabled = false;
-    /**
-     * @var int
-     */
-    private $accountCount = 12;
-    /**
-     * @var bool
-     */
-    private $accountLink = true;
-    /**
-     * @var bool
-     */
-    private $checkUpdates = false;
-    /**
-     * @var bool
-     */
-    private $checknotices = false;
-    /**
-     * @var string
-     */
-    private $configHash;
-    /**
-     * @var string
-     */
-    private $dbHost;
-    /**
-     * @var string
-     */
-    private $dbSocket;
-    /**
-     * @var string
-     */
-    private $dbName;
-    /**
-     * @var string
-     */
-    private $dbPass;
-    /**
-     * @var string
-     */
-    private $dbUser;
-    /**
-     * @var int
-     */
-    private $dbPort = 3306;
-    /**
-     * @var bool
-     */
-    private $debug = false;
-    /**
-     * @var bool
-     */
-    private $demoEnabled = false;
-    /**
-     * @var array
-     */
-    private $filesAllowedExts = [];
-    /**
-     * @var array
-     */
-    private $filesAllowedMime = [];
-    /**
-     * @var int
-     */
-    private $filesAllowedSize = 1024;
-    /**
-     * @var bool
-     */
-    private $filesEnabled = true;
-    /**
-     * @var bool
-     */
-    private $globalSearch = true;
-    /**
-     * @var bool
-     */
-    private $installed = false;
-    /**
-     * @var string
-     */
-    private $ldapBase;
-    /**
-     * @var string
-     */
-    private $ldapBindUser;
-    /**
-     * @var string
-     */
-    private $ldapBindPass;
-    /**
-     * @var string
-     */
-    private $ldapProxyUser;
-    /**
-     * @var bool
-     */
-    private $ldapEnabled = false;
-    /**
-     * @var bool
-     */
-    private $ldapAds = false;
-    /**
-     * @var int
-     */
-    private $ldapType;
-    /**
-     * @var string
-     */
-    private $ldapGroup;
-    /**
-     * @var string
-     */
-    private $ldapServer;
-    /**
-     * @var bool
-     */
-    private $logEnabled = true;
-    /**
-     * @var array
-     */
-    private $logEvents = [];
-    /**
-     * @var bool
-     */
-    private $mailAuthenabled = false;
-    /**
-     * @var bool
-     */
-    private $mailEnabled = false;
-    /**
-     * @var string
-     */
-    private $mailFrom;
-    /**
-     * @var string
-     */
-    private $mailPass;
-    /**
-     * @var int
-     */
-    private $mailPort = 25;
-    /**
-     * @var bool
-     */
-    private $mailRequestsEnabled = false;
-    /**
-     * @var string
-     */
-    private $mailSecurity;
-    /**
-     * @var string
-     */
-    private $mailServer;
-    /**
-     * @var string
-     */
-    private $mailUser;
-    /**
-     * @var array
-     */
-    private $mailRecipients = [];
-    /**
-     * @var array
-     */
-    private $mailEvents = [];
-    /**
-     * @var bool
-     */
-    private $maintenance = false;
-    /**
-     * @var string
-     */
-    private $passwordSalt;
-    /**
-     * @var bool
-     */
-    private $resultsAsCards = false;
-    /**
-     * @var int
-     */
-    private $sessionTimeout = 300;
-    /**
-     * @var string
-     */
-    private $siteLang;
-    /**
-     * @var string
-     */
-    private $siteTheme = 'material-blue';
-    /**
-     * @var string
-     */
-    private $configVersion;
-    /**
-     * @var string
-     */
-    private $appVersion;
-    /**
-     * @var string
-     */
-    private $databaseVersion;
-    /**
-     * @var bool
-     */
-    private $wikiEnabled = false;
-    /**
-     * @var array
-     */
-    private $wikiFilter = [];
-    /**
-     * @var string
-     */
-    private $wikiPageurl;
-    /**
-     * @var string
-     */
-    private $wikiSearchurl;
-    /**
-     * @var int
-     */
-    private $configDate = 0;
-    /**
-     * @var bool
-     */
-    private $publinksImageEnabled = false;
-    /**
-     * @var string
-     */
-    private $backup_hash;
-    /**
-     * @var string
-     */
-    private $export_hash;
-    /**
-     * @var bool
-     */
-    private $httpsEnabled = false;
-    /**
-     * @var bool
-     */
-    private $syslogEnabled = false;
-    /**
-     * @var bool
-     */
-    private $syslogRemoteEnabled = false;
-    /**
-     * @var string
-     */
-    private $syslogServer;
-    /**
-     * @var int
-     */
-    private $syslogPort = 514;
-    /**
-     * @var bool
-     */
-    private $accountPassToImage = false;
-    /**
-     * @var string
-     */
-    private $configSaver;
-    /**
-     * @var bool
-     */
-    private $encryptSession = false;
-    /**
-     * @var bool
-     */
-    private $accountFullGroupAccess = false;
-    /**
-     * @var bool
-     */
-    private $authBasicEnabled = true;
-    /**
-     * @var bool
-     */
-    private $authBasicAutoLoginEnabled = true;
-    /**
-     * @var string
-     */
-    private $authBasicDomain;
-    /**
-     * @var int
-     */
-    private $ssoDefaultGroup;
-    /**
-     * @var int
-     */
-    private $ssoDefaultProfile;
-    /**
-     * @var bool
-     */
-    private $accountExpireEnabled = false;
-    /**
-     * @var int
-     */
-    private $accountExpireTime = 10368000;
-    /**
-     * @var bool
-     */
-    private $ldapTlsEnabled = false;
-    /**
-     * @var string
-     */
-    private $applicationUrl;
+    const PUBLIC_LINK_MAX_VIEWS = 3;
+    const PUBLIC_LINK_MAX_TIME = 600;
+    const ACCOUNT_COUNT = 12;
+    const DB_PORT = 3306;
+    const FILES_ALLOWED_SIZE = 1024;
+    const MAIL_PORT = 587;
+    const SESSION_TIMEOUT = 300;
+    const SITE_THEME = 'material-blue';
+    const SYSLOG_PORT = 514;
+    const ACCOUNT_EXPIRE_TIME = 10368000;
 
     /**
      * @return array
      */
-    public function getLogEvents()
+    public function getAttributes(): array
     {
-        return is_array($this->logEvents) ? $this->logEvents : [];
+        return $this->attributes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogEvents(): array
+    {
+        return $this->get('logEvents', []);
     }
 
     /**
      * @param array $logEvents
      */
-    public function setLogEvents(array $logEvents)
+    public function setLogEvents($logEvents)
     {
-        $this->logEvents = $logEvents;
+        $this->set('logEvents', $logEvents ?: []);
     }
 
     /**
      * @return boolean
      */
-    public function isDokuwikiEnabled()
+    public function isDokuwikiEnabled(): bool
     {
-        return $this->dokuwikiEnabled;
+        return $this->get('dokuwikiEnabled', false);
     }
 
     /**
@@ -437,7 +84,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiEnabled($dokuwikiEnabled)
     {
-        $this->dokuwikiEnabled = (bool)$dokuwikiEnabled;
+        $this->set('dokuwikiEnabled', (bool)$dokuwikiEnabled);
 
         return $this;
     }
@@ -447,7 +94,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDokuwikiUrl()
     {
-        return $this->dokuwikiUrl;
+        return $this->get('dokuwikiUrl');
     }
 
     /**
@@ -457,7 +104,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiUrl($dokuwikiUrl)
     {
-        $this->dokuwikiUrl = $dokuwikiUrl;
+        $this->set('dokuwikiUrl', $dokuwikiUrl);
 
         return $this;
     }
@@ -467,7 +114,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDokuwikiUrlBase()
     {
-        return $this->dokuwikiUrlBase;
+        return $this->get('dokuwikiUrlBase');
     }
 
     /**
@@ -477,7 +124,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiUrlBase($dokuwikiUrlBase)
     {
-        $this->dokuwikiUrlBase = $dokuwikiUrlBase;
+        $this->set('dokuwikiUrlBase', $dokuwikiUrlBase);
 
         return $this;
     }
@@ -487,7 +134,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDokuwikiUser()
     {
-        return $this->dokuwikiUser;
+        return $this->get('dokuwikiUser');
     }
 
     /**
@@ -497,7 +144,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiUser($dokuwikiUser)
     {
-        $this->dokuwikiUser = $dokuwikiUser;
+        $this->set('dokuwikiUser', $dokuwikiUser);
 
         return $this;
     }
@@ -507,7 +154,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDokuwikiPass()
     {
-        return $this->dokuwikiPass;
+        return $this->get('dokuwikiPass');
     }
 
     /**
@@ -517,7 +164,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiPass($dokuwikiPass)
     {
-        $this->dokuwikiPass = $dokuwikiPass;
+        $this->set('dokuwikiPass', $dokuwikiPass);
 
         return $this;
     }
@@ -527,7 +174,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDokuwikiNamespace()
     {
-        return $this->dokuwikiNamespace;
+        return $this->get('dokuwikiNamespace');
     }
 
     /**
@@ -537,7 +184,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDokuwikiNamespace($dokuwikiNamespace)
     {
-        $this->dokuwikiNamespace = $dokuwikiNamespace;
+        $this->set('dokuwikiNamespace', $dokuwikiNamespace);
 
         return $this;
     }
@@ -545,9 +192,9 @@ final class ConfigData implements JsonSerializable
     /**
      * @return int
      */
-    public function getLdapDefaultGroup()
+    public function getLdapDefaultGroup(): int
     {
-        return (int)$this->ldapDefaultGroup;
+        return (int)$this->get('ldapDefaultGroup');
     }
 
     /**
@@ -557,7 +204,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapDefaultGroup($ldapDefaultGroup)
     {
-        $this->ldapDefaultGroup = (int)$ldapDefaultGroup;
+        $this->set('ldapDefaultGroup', (int)$ldapDefaultGroup);
 
         return $this;
     }
@@ -565,9 +212,9 @@ final class ConfigData implements JsonSerializable
     /**
      * @return int
      */
-    public function getLdapDefaultProfile()
+    public function getLdapDefaultProfile(): int
     {
-        return (int)$this->ldapDefaultProfile;
+        return (int)$this->get('ldapDefaultProfile');
     }
 
     /**
@@ -577,7 +224,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapDefaultProfile($ldapDefaultProfile)
     {
-        $this->ldapDefaultProfile = (int)$ldapDefaultProfile;
+        $this->set('ldapDefaultProfile', (int)$ldapDefaultProfile);
 
         return $this;
     }
@@ -587,7 +234,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isProxyEnabled()
     {
-        return $this->proxyEnabled;
+        return $this->get('proxyEnabled', false);
     }
 
     /**
@@ -597,7 +244,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setProxyEnabled($proxyEnabled)
     {
-        $this->proxyEnabled = (bool)$proxyEnabled;
+        $this->set('proxyEnabled', (bool)$proxyEnabled);
 
         return $this;
     }
@@ -607,7 +254,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getProxyServer()
     {
-        return $this->proxyServer;
+        return $this->get('proxyServer');
     }
 
     /**
@@ -617,7 +264,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setProxyServer($proxyServer)
     {
-        $this->proxyServer = $proxyServer;
+        $this->set('proxyServer', $proxyServer);
 
         return $this;
     }
@@ -627,7 +274,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getProxyPort()
     {
-        return $this->proxyPort;
+        return $this->get('proxyPort', 8080);
     }
 
     /**
@@ -637,7 +284,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setProxyPort($proxyPort)
     {
-        $this->proxyPort = (int)$proxyPort;
+        $this->set('proxyPort', (int)$proxyPort);
 
         return $this;
     }
@@ -647,7 +294,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getProxyUser()
     {
-        return $this->proxyUser;
+        return $this->get('proxyUser');
     }
 
     /**
@@ -657,7 +304,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setProxyUser($proxyUser)
     {
-        $this->proxyUser = $proxyUser;
+        $this->set('proxyUser', $proxyUser);
 
         return $this;
     }
@@ -667,7 +314,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getProxyPass()
     {
-        return $this->proxyPass;
+        return $this->get('proxyPass');
     }
 
     /**
@@ -677,7 +324,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setProxyPass($proxyPass)
     {
-        $this->proxyPass = $proxyPass;
+        $this->set('proxyPass', $proxyPass);
 
         return $this;
     }
@@ -687,7 +334,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getPublinksMaxViews()
     {
-        return $this->publinksMaxViews;
+        return $this->get('publinksMaxViews', self::PUBLIC_LINK_MAX_VIEWS);
     }
 
 
@@ -698,7 +345,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setPublinksMaxViews($publinksMaxViews)
     {
-        $this->publinksMaxViews = (int)$publinksMaxViews;
+        $this->set('publinksMaxViews', (int)$publinksMaxViews);
 
         return $this;
     }
@@ -708,7 +355,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getPublinksMaxTime()
     {
-        return $this->publinksMaxTime;
+        return $this->get('publinksMaxTime', self::PUBLIC_LINK_MAX_TIME);
     }
 
     /**
@@ -718,7 +365,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setPublinksMaxTime($publinksMaxTime)
     {
-        $this->publinksMaxTime = (int)$publinksMaxTime;
+        $this->set('publinksMaxTime', (int)$publinksMaxTime);
 
         return $this;
     }
@@ -728,7 +375,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isSyslogEnabled()
     {
-        return $this->syslogEnabled;
+        return $this->get('syslogEnabled', false);
     }
 
     /**
@@ -738,7 +385,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSyslogEnabled($syslogEnabled)
     {
-        $this->syslogEnabled = (bool)$syslogEnabled;
+        $this->set('syslogEnabled', (bool)$syslogEnabled);
 
         return $this;
     }
@@ -748,7 +395,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isSyslogRemoteEnabled()
     {
-        return $this->syslogRemoteEnabled;
+        return $this->get('syslogRemoteEnabled', false);
     }
 
     /**
@@ -758,7 +405,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSyslogRemoteEnabled($syslogRemoteEnabled)
     {
-        $this->syslogRemoteEnabled = (bool)$syslogRemoteEnabled;
+        $this->set('syslogRemoteEnabled', (bool)$syslogRemoteEnabled);
 
         return $this;
     }
@@ -768,7 +415,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSyslogServer()
     {
-        return $this->syslogServer;
+        return $this->get('syslogServer');
     }
 
     /**
@@ -778,7 +425,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSyslogServer($syslogServer)
     {
-        $this->syslogServer = $syslogServer;
+        $this->set('syslogServer', $syslogServer);
 
         return $this;
     }
@@ -788,7 +435,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSyslogPort()
     {
-        return $this->syslogPort;
+        return $this->get('syslogPort', self::SYSLOG_PORT);
     }
 
     /**
@@ -798,7 +445,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSyslogPort($syslogPort)
     {
-        $this->syslogPort = (int)$syslogPort;
+        $this->set('syslogPort', (int)$syslogPort);
 
         return $this;
     }
@@ -808,7 +455,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getBackupHash()
     {
-        return $this->backup_hash;
+        return $this->get('backup_hash');
     }
 
     /**
@@ -818,7 +465,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setBackupHash($backup_hash)
     {
-        $this->backup_hash = $backup_hash;
+        $this->set('backup_hash', $backup_hash);
 
         return $this;
     }
@@ -828,7 +475,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getExportHash()
     {
-        return $this->export_hash;
+        return $this->get('export_hash');
     }
 
     /**
@@ -838,7 +485,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setExportHash($export_hash)
     {
-        $this->export_hash = $export_hash;
+        $this->set('export_hash', $export_hash);
 
         return $this;
     }
@@ -848,7 +495,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapBindUser()
     {
-        return $this->ldapBindUser;
+        return $this->get('ldapBindUser');
     }
 
     /**
@@ -858,7 +505,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapBindUser($ldapBindUser)
     {
-        $this->ldapBindUser = $ldapBindUser;
+        $this->set('ldapBindUser', $ldapBindUser);
 
         return $this;
     }
@@ -868,7 +515,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapProxyUser()
     {
-        return $this->ldapProxyUser;
+        return $this->get('ldapProxyUser');
     }
 
     /**
@@ -878,7 +525,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapProxyUser($ldapProxyUser)
     {
-        $this->ldapProxyUser = $ldapProxyUser;
+        $this->get('ldapProxyUser', $ldapProxyUser);
 
         return $this;
     }
@@ -888,7 +535,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getAccountCount()
     {
-        return $this->accountCount;
+        return $this->get('accountCount', self::ACCOUNT_COUNT);
     }
 
     /**
@@ -898,7 +545,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountCount($accountCount)
     {
-        $this->accountCount = (int)$accountCount;
+        $this->set('accountCount', (int)$accountCount);
 
         return $this;
     }
@@ -908,7 +555,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAccountLink()
     {
-        return $this->accountLink;
+        return $this->get('accountLink', true);
     }
 
     /**
@@ -918,7 +565,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountLink($accountLink)
     {
-        $this->accountLink = (bool)$accountLink;
+        $this->set('accountLink', (bool)$accountLink);
 
         return $this;
     }
@@ -928,7 +575,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isCheckUpdates()
     {
-        return $this->checkUpdates;
+        return $this->get('checkUpdates', false);
     }
 
     /**
@@ -938,7 +585,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setCheckUpdates($checkUpdates)
     {
-        $this->checkUpdates = (bool)$checkUpdates;
+        $this->set('checkUpdates', (bool)$checkUpdates);
 
         return $this;
     }
@@ -948,7 +595,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getConfigHash()
     {
-        return $this->configHash;
+        return $this->get('configHash');
     }
 
     /**
@@ -956,7 +603,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setConfigHash()
     {
-        $this->configHash = sha1(serialize($this));
+        $this->set('configHash', sha1(serialize($this->attributes)));
 
         return $this;
     }
@@ -966,7 +613,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbHost()
     {
-        return $this->dbHost;
+        return $this->get('dbHost');
     }
 
     /**
@@ -976,7 +623,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbHost($dbHost)
     {
-        $this->dbHost = $dbHost;
+        $this->set('dbHost', $dbHost);
 
         return $this;
     }
@@ -986,7 +633,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbName()
     {
-        return $this->dbName;
+        return $this->get('dbName');
     }
 
     /**
@@ -996,7 +643,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbName($dbName)
     {
-        $this->dbName = $dbName;
+        $this->set('dbName', $dbName);
 
         return $this;
     }
@@ -1006,7 +653,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbPass()
     {
-        return $this->dbPass;
+        return $this->get('dbPass');
     }
 
     /**
@@ -1016,7 +663,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbPass($dbPass)
     {
-        $this->dbPass = $dbPass;
+        $this->set('dbPass', $dbPass);
 
         return $this;
     }
@@ -1026,7 +673,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbUser()
     {
-        return $this->dbUser;
+        return $this->get('dbUser');
     }
 
     /**
@@ -1036,7 +683,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbUser($dbUser)
     {
-        $this->dbUser = $dbUser;
+        $this->set('dbUser', $dbUser);
 
         return $this;
     }
@@ -1046,7 +693,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isDebug()
     {
-        return $this->debug;
+        return $this->get('debug', false);
     }
 
     /**
@@ -1056,7 +703,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDebug($debug)
     {
-        $this->debug = (bool)$debug;
+        $this->set('debug', (bool)$debug);
 
         return $this;
     }
@@ -1066,7 +713,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isDemoEnabled()
     {
-        return $this->demoEnabled;
+        return $this->get('demoEnabled', false);
     }
 
     /**
@@ -1076,7 +723,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDemoEnabled($demoEnabled)
     {
-        $this->demoEnabled = (bool)$demoEnabled;
+        $this->set('demoEnabled', (bool)$demoEnabled);
 
         return $this;
     }
@@ -1084,9 +731,9 @@ final class ConfigData implements JsonSerializable
     /**
      * @return array
      */
-    public function getFilesAllowedExts()
+    public function getFilesAllowedExts(): array
     {
-        return (array)$this->filesAllowedExts;
+        return $this->get('filesAllowedExts', []);
     }
 
     /**
@@ -1094,7 +741,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedSize()
     {
-        return $this->filesAllowedSize;
+        return $this->get('filesAllowedSize', self::FILES_ALLOWED_SIZE);
     }
 
     /**
@@ -1104,7 +751,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setFilesAllowedSize($filesAllowedSize)
     {
-        $this->filesAllowedSize = (int)$filesAllowedSize;
+        $this->set('filesAllowedSize', (int)$filesAllowedSize);
 
         return $this;
     }
@@ -1114,7 +761,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isFilesEnabled()
     {
-        return $this->filesEnabled;
+        return $this->get('filesEnabled', true);
     }
 
     /**
@@ -1124,7 +771,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setFilesEnabled($filesEnabled)
     {
-        $this->filesEnabled = (bool)$filesEnabled;
+        $this->set('filesEnabled', (bool)$filesEnabled);
 
         return $this;
     }
@@ -1134,7 +781,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isGlobalSearch()
     {
-        return $this->globalSearch;
+        return $this->get('globalSearch', true);
     }
 
     /**
@@ -1144,7 +791,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setGlobalSearch($globalSearch)
     {
-        $this->globalSearch = (bool)$globalSearch;
+        $this->set('globalSearch', (bool)$globalSearch);
 
         return $this;
     }
@@ -1154,7 +801,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isInstalled()
     {
-        return $this->installed;
+        return $this->get('installed', false);
     }
 
     /**
@@ -1164,7 +811,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setInstalled($installed)
     {
-        $this->installed = (bool)$installed;
+        $this->set('installed', (bool)$installed);
 
         return $this;
     }
@@ -1174,7 +821,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapBase()
     {
-        return $this->ldapBase;
+        return $this->get('ldapBase');
     }
 
     /**
@@ -1184,7 +831,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapBase($ldapBase)
     {
-        $this->ldapBase = $ldapBase;
+        $this->set('ldapBase', $ldapBase);
 
         return $this;
     }
@@ -1194,7 +841,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isLdapEnabled()
     {
-        return $this->ldapEnabled;
+        return $this->get('ldapEnabled', false);
     }
 
     /**
@@ -1204,7 +851,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapEnabled($ldapEnabled)
     {
-        $this->ldapEnabled = (bool)$ldapEnabled;
+        $this->set('ldapEnabled', (bool)$ldapEnabled);
 
         return $this;
     }
@@ -1214,7 +861,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapGroup()
     {
-        return $this->ldapGroup;
+        return $this->get('ldapGroup');
     }
 
     /**
@@ -1224,7 +871,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapGroup($ldapGroup)
     {
-        $this->ldapGroup = $ldapGroup;
+        $this->set('ldapGroup', $ldapGroup);
 
         return $this;
     }
@@ -1234,7 +881,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapServer()
     {
-        return $this->ldapServer;
+        return $this->get('ldapServer');
     }
 
     /**
@@ -1244,7 +891,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapServer($ldapServer)
     {
-        $this->ldapServer = $ldapServer;
+        $this->set('ldapServer', $ldapServer);
 
         return $this;
     }
@@ -1254,7 +901,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isLogEnabled()
     {
-        return $this->logEnabled;
+        return $this->get('logEnabled', true);
     }
 
     /**
@@ -1264,7 +911,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLogEnabled($logEnabled)
     {
-        $this->logEnabled = (bool)$logEnabled;
+        $this->set('logEnabled', (bool)$logEnabled);
 
         return $this;
     }
@@ -1274,7 +921,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isMailAuthenabled()
     {
-        return $this->mailAuthenabled;
+        return $this->get('mailAuthenabled', false);
     }
 
     /**
@@ -1284,7 +931,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailAuthenabled($mailAuthenabled)
     {
-        $this->mailAuthenabled = (bool)$mailAuthenabled;
+        $this->set('mailAuthenabled', (bool)$mailAuthenabled);
 
         return $this;
     }
@@ -1294,7 +941,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isMailEnabled()
     {
-        return $this->mailEnabled;
+        return $this->get('mailEnabled', false);
     }
 
     /**
@@ -1304,7 +951,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailEnabled($mailEnabled)
     {
-        $this->mailEnabled = (bool)$mailEnabled;
+        $this->set('mailEnabled', (bool)$mailEnabled);
 
         return $this;
     }
@@ -1314,7 +961,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailFrom()
     {
-        return $this->mailFrom;
+        return $this->get('mailFrom');
     }
 
     /**
@@ -1324,7 +971,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailFrom($mailFrom)
     {
-        $this->mailFrom = $mailFrom;
+        $this->set('mailFrom', $mailFrom);
 
         return $this;
     }
@@ -1334,7 +981,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailPass()
     {
-        return $this->mailPass;
+        return $this->get('mailPass');
     }
 
     /**
@@ -1344,7 +991,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailPass($mailPass)
     {
-        $this->mailPass = $mailPass;
+        $this->set('mailPass', $mailPass);
 
         return $this;
     }
@@ -1354,7 +1001,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailPort()
     {
-        return $this->mailPort;
+        return $this->get('mailPort', self::MAIL_PORT);
     }
 
     /**
@@ -1364,7 +1011,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailPort($mailPort)
     {
-        $this->mailPort = (int)$mailPort;
+        $this->set('mailPort', (int)$mailPort);
 
         return $this;
     }
@@ -1374,7 +1021,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isMailRequestsEnabled()
     {
-        return $this->mailRequestsEnabled;
+        return $this->get('mailRequestsEnabled', false);
     }
 
     /**
@@ -1384,7 +1031,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailRequestsEnabled($mailRequestsEnabled)
     {
-        $this->mailRequestsEnabled = (bool)$mailRequestsEnabled;
+        $this->set('mailRequestsEnabled', (bool)$mailRequestsEnabled);
 
         return $this;
     }
@@ -1394,7 +1041,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailSecurity()
     {
-        return $this->mailSecurity;
+        return $this->get('mailSecurity');
     }
 
     /**
@@ -1404,7 +1051,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailSecurity($mailSecurity)
     {
-        $this->mailSecurity = $mailSecurity;
+        $this->set('mailSecurity', $mailSecurity);
 
         return $this;
     }
@@ -1414,7 +1061,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailServer()
     {
-        return $this->mailServer;
+        return $this->get('mailServer');
     }
 
     /**
@@ -1424,7 +1071,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailServer($mailServer)
     {
-        $this->mailServer = $mailServer;
+        $this->set('mailServer', $mailServer);
 
         return $this;
     }
@@ -1434,7 +1081,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailUser()
     {
-        return $this->mailUser;
+        return $this->get('mailUser');
     }
 
     /**
@@ -1444,7 +1091,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMailUser($mailUser)
     {
-        $this->mailUser = $mailUser;
+        $this->set('mailUser', $mailUser);
 
         return $this;
     }
@@ -1454,7 +1101,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isMaintenance()
     {
-        return (bool)$this->maintenance;
+        return $this->get('maintenance', false);
     }
 
     /**
@@ -1464,7 +1111,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setMaintenance($maintenance)
     {
-        $this->maintenance = (bool)$maintenance;
+        $this->set('maintenance', (bool)$maintenance);
 
         return $this;
     }
@@ -1474,7 +1121,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getPasswordSalt()
     {
-        return $this->passwordSalt;
+        return $this->get('passwordSalt');
     }
 
     /**
@@ -1484,7 +1131,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setPasswordSalt($passwordSalt)
     {
-        $this->passwordSalt = $passwordSalt;
+        $this->set('passwordSalt', $passwordSalt);
 
         return $this;
     }
@@ -1494,7 +1141,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isResultsAsCards()
     {
-        return $this->resultsAsCards;
+        return $this->get('resultsAsCards', false);
     }
 
     /**
@@ -1504,7 +1151,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setResultsAsCards($resultsAsCards)
     {
-        $this->resultsAsCards = (bool)$resultsAsCards;
+        $this->set('resultsAsCards', (bool)$resultsAsCards);
 
         return $this;
     }
@@ -1514,7 +1161,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSessionTimeout()
     {
-        return $this->sessionTimeout;
+        return $this->get('sessionTimeout', self::SESSION_TIMEOUT);
     }
 
     /**
@@ -1524,7 +1171,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSessionTimeout($sessionTimeout)
     {
-        $this->sessionTimeout = (int)$sessionTimeout;
+        $this->set('sessionTimeout', (int)$sessionTimeout);
 
         return $this;
     }
@@ -1534,7 +1181,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSiteLang()
     {
-        return $this->siteLang;
+        return $this->get('siteLang');
     }
 
     /**
@@ -1544,7 +1191,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSiteLang($siteLang)
     {
-        $this->siteLang = $siteLang;
+        $this->set('siteLang', $siteLang);
 
         return $this;
     }
@@ -1554,7 +1201,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSiteTheme()
     {
-        return $this->siteTheme;
+        return $this->get('siteTheme', self::SITE_THEME);
     }
 
     /**
@@ -1564,17 +1211,17 @@ final class ConfigData implements JsonSerializable
      */
     public function setSiteTheme($siteTheme)
     {
-        $this->siteTheme = $siteTheme;
+        $this->set('siteTheme', $siteTheme);
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getConfigVersion()
     {
-        return (string)$this->configVersion;
+        return (string)$this->get('configVersion');
     }
 
     /**
@@ -1584,7 +1231,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setConfigVersion($configVersion)
     {
-        $this->configVersion = $configVersion;
+        $this->set('configVersion', $configVersion);
 
         return $this;
     }
@@ -1594,7 +1241,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isWikiEnabled()
     {
-        return $this->wikiEnabled;
+        return $this->get('wikiEnabled', false);
     }
 
     /**
@@ -1604,7 +1251,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setWikiEnabled($wikiEnabled)
     {
-        $this->wikiEnabled = (bool)$wikiEnabled;
+        $this->set('wikiEnabled', (bool)$wikiEnabled);
 
         return $this;
     }
@@ -1614,7 +1261,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getWikiFilter()
     {
-        return is_array($this->wikiFilter) ? $this->wikiFilter : [];
+        return $this->get('wikiFilter', []);
     }
 
     /**
@@ -1624,7 +1271,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setWikiFilter($wikiFilter)
     {
-        $this->wikiFilter = $wikiFilter;
+        $this->set('wikiFilter', $wikiFilter ?: []);
 
         return $this;
     }
@@ -1634,7 +1281,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getWikiPageurl()
     {
-        return $this->wikiPageurl;
+        return $this->get('wikiPageurl');
     }
 
     /**
@@ -1644,7 +1291,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setWikiPageurl($wikiPageurl)
     {
-        $this->wikiPageurl = $wikiPageurl;
+        $this->set('wikiPageurl', $wikiPageurl);
 
         return $this;
     }
@@ -1654,7 +1301,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getWikiSearchurl()
     {
-        return $this->wikiSearchurl;
+        return $this->get('wikiSearchurl');
     }
 
     /**
@@ -1664,27 +1311,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setWikiSearchurl($wikiSearchurl)
     {
-        $this->wikiSearchurl = $wikiSearchurl;
-
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isLdapAds()
-    {
-        return $this->ldapAds;
-    }
-
-    /**
-     * @param boolean $ldapAds
-     *
-     * @return $this
-     */
-    public function setLdapAds($ldapAds)
-    {
-        $this->ldapAds = (bool)$ldapAds;
+        $this->set('wikiSearchurl', $wikiSearchurl);
 
         return $this;
     }
@@ -1694,7 +1321,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapBindPass()
     {
-        return $this->ldapBindPass;
+        return $this->get('ldapBindPass');
     }
 
     /**
@@ -1704,7 +1331,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapBindPass($ldapBindPass)
     {
-        $this->ldapBindPass = $ldapBindPass;
+        $this->set('ldapBindPass', $ldapBindPass);
 
         return $this;
     }
@@ -1714,7 +1341,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isPublinksImageEnabled()
     {
-        return $this->publinksImageEnabled;
+        return $this->get('publinksImageEnabled', false);
     }
 
     /**
@@ -1724,7 +1351,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setPublinksImageEnabled($publinksImageEnabled)
     {
-        $this->publinksImageEnabled = (bool)$publinksImageEnabled;
+        $this->set('publinksImageEnabled', (bool)$publinksImageEnabled);
 
         return $this;
     }
@@ -1734,7 +1361,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isHttpsEnabled()
     {
-        return $this->httpsEnabled;
+        return $this->get('httpsEnabled', false);
     }
 
     /**
@@ -1744,7 +1371,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setHttpsEnabled($httpsEnabled)
     {
-        $this->httpsEnabled = (bool)$httpsEnabled;
+        $this->set('httpsEnabled', (bool)$httpsEnabled);
 
         return $this;
     }
@@ -1754,7 +1381,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isChecknotices()
     {
-        return $this->checknotices;
+        return $this->get('checkNotices', false);
     }
 
     /**
@@ -1762,9 +1389,9 @@ final class ConfigData implements JsonSerializable
      *
      * @return $this
      */
-    public function setChecknotices($checknotices)
+    public function setCheckNotices($checknotices)
     {
-        $this->checknotices = $checknotices;
+        $this->set('checkNotices', $checknotices);
 
         return $this;
     }
@@ -1774,7 +1401,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAccountPassToImage()
     {
-        return $this->accountPassToImage;
+        return $this->get('accountPassToImage', false);
     }
 
     /**
@@ -1784,7 +1411,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountPassToImage($accountPassToImage)
     {
-        $this->accountPassToImage = (bool)$accountPassToImage;
+        $this->set('accountPassToImage', (bool)$accountPassToImage);
 
         return $this;
     }
@@ -1794,7 +1421,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getUpgradeKey()
     {
-        return $this->upgradeKey;
+        return $this->get('upgradeKey');
     }
 
     /**
@@ -1804,7 +1431,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setUpgradeKey($upgradeKey)
     {
-        $this->upgradeKey = $upgradeKey;
+        $this->set('upgradeKey', $upgradeKey);
 
         return $this;
     }
@@ -1814,7 +1441,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbPort()
     {
-        return $this->dbPort;
+        return $this->get('dbPort', self::DB_PORT);
     }
 
     /**
@@ -1824,7 +1451,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbPort($dbPort)
     {
-        $this->dbPort = (int)$dbPort;
+        $this->set('dbPort', (int)$dbPort);
 
         return $this;
     }
@@ -1834,7 +1461,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isPublinksEnabled()
     {
-        return $this->publinksEnabled;
+        return $this->get('publinksEnabled', false);
     }
 
     /**
@@ -1844,7 +1471,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setPublinksEnabled($publinksEnabled)
     {
-        $this->publinksEnabled = (bool)$publinksEnabled;
+        $this->set('publinksEnabled', (bool)$publinksEnabled);
 
         return $this;
     }
@@ -1859,7 +1486,7 @@ final class ConfigData implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return get_object_vars($this);
+        return $this->attributes;
     }
 
     /**
@@ -1867,7 +1494,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getConfigSaver()
     {
-        return $this->configSaver;
+        return $this->get('configSaver');
     }
 
     /**
@@ -1877,7 +1504,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setConfigSaver($configSaver)
     {
-        $this->configSaver = $configSaver;
+        $this->set('configSaver', $configSaver);
 
         return $this;
     }
@@ -1887,7 +1514,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDbSocket()
     {
-        return $this->dbSocket;
+        return $this->get('dbSocket');
     }
 
     /**
@@ -1895,7 +1522,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDbSocket($dbSocket)
     {
-        $this->dbSocket = $dbSocket;
+        $this->set('dbSocket', $dbSocket);
     }
 
     /**
@@ -1903,7 +1530,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isEncryptSession()
     {
-        return (bool)$this->encryptSession;
+        return (bool)$this->get('encryptSession', false);
     }
 
     /**
@@ -1913,7 +1540,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setEncryptSession($encryptSession)
     {
-        $this->encryptSession = (bool)$encryptSession;
+        $this->set('encryptSession', (bool)$encryptSession);
 
         return $this;
     }
@@ -1923,7 +1550,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAccountFullGroupAccess()
     {
-        return (bool)$this->accountFullGroupAccess;
+        return (bool)$this->get('accountFullGroupAccess', false);
     }
 
     /**
@@ -1933,7 +1560,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountFullGroupAccess($accountFullGroupAccess)
     {
-        $this->accountFullGroupAccess = (bool)$accountFullGroupAccess;
+        $this->set('accountFullGroupAccess', (bool)$accountFullGroupAccess);
 
         return $this;
     }
@@ -1943,7 +1570,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAuthBasicEnabled()
     {
-        return (bool)$this->authBasicEnabled;
+        return (bool)$this->get('authBasicEnabled', true);
     }
 
     /**
@@ -1951,7 +1578,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAuthBasicEnabled($authBasicEnabled)
     {
-        $this->authBasicEnabled = $authBasicEnabled;
+        $this->set('authBasicEnabled', $authBasicEnabled);
     }
 
     /**
@@ -1959,7 +1586,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getAuthBasicDomain()
     {
-        return $this->authBasicDomain;
+        return $this->get('authBasicDomain');
     }
 
     /**
@@ -1967,7 +1594,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAuthBasicDomain($authBasicDomain)
     {
-        $this->authBasicDomain = $authBasicDomain;
+        $this->set('authBasicDomain', $authBasicDomain);
     }
 
     /**
@@ -1975,7 +1602,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAuthBasicAutoLoginEnabled()
     {
-        return (bool)$this->authBasicAutoLoginEnabled;
+        return (bool)$this->get('authBasicAutoLoginEnabled', true);
     }
 
     /**
@@ -1983,7 +1610,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAuthBasicAutoLoginEnabled($authBasicAutoLoginEnabled)
     {
-        $this->authBasicAutoLoginEnabled = $authBasicAutoLoginEnabled;
+        $this->set('authBasicAutoLoginEnabled', $authBasicAutoLoginEnabled);
     }
 
     /**
@@ -1991,7 +1618,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSsoDefaultGroup()
     {
-        return $this->ssoDefaultGroup;
+        return $this->get('ssoDefaultGroup');
     }
 
     /**
@@ -1999,7 +1626,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSsoDefaultGroup($ssoDefaultGroup)
     {
-        $this->ssoDefaultGroup = $ssoDefaultGroup;
+        $this->set('ssoDefaultGroup', $ssoDefaultGroup);
     }
 
     /**
@@ -2007,7 +1634,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getSsoDefaultProfile()
     {
-        return $this->ssoDefaultProfile;
+        return $this->get('ssoDefaultProfile');
     }
 
     /**
@@ -2015,7 +1642,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setSsoDefaultProfile($ssoDefaultProfile)
     {
-        $this->ssoDefaultProfile = $ssoDefaultProfile;
+        $this->set('ssoDefaultProfile', $ssoDefaultProfile);
     }
 
     /**
@@ -2023,15 +1650,15 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailRecipients()
     {
-        return (array)$this->mailRecipients;
+        return $this->get('mailRecipients', []);
     }
 
     /**
      * @param array $mailRecipients
      */
-    public function setMailRecipients(array $mailRecipients)
+    public function setMailRecipients($mailRecipients)
     {
-        $this->mailRecipients = $mailRecipients;
+        $this->set('mailRecipients', $mailRecipients ?: []);
     }
 
     /**
@@ -2039,15 +1666,15 @@ final class ConfigData implements JsonSerializable
      */
     public function getMailEvents()
     {
-        return is_array($this->mailEvents) ? $this->mailEvents : [];
+        return $this->get('mailEvents', []);
     }
 
     /**
      * @param array $mailEvents
      */
-    public function setMailEvents(array $mailEvents)
+    public function setMailEvents($mailEvents)
     {
-        $this->mailEvents = $mailEvents;
+        $this->set('mailEvents', $mailEvents ?: []);
     }
 
     /**
@@ -2055,7 +1682,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getDatabaseVersion()
     {
-        return (string)$this->databaseVersion;
+        return (string)$this->get('databaseVersion');
     }
 
     /**
@@ -2065,7 +1692,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setDatabaseVersion($databaseVersion)
     {
-        $this->databaseVersion = $databaseVersion;
+        $this->set('databaseVersion', $databaseVersion);
 
         return $this;
     }
@@ -2075,7 +1702,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getConfigDate()
     {
-        return $this->configDate;
+        return (int)$this->get('configDate');
     }
 
     /**
@@ -2085,7 +1712,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setConfigDate($configDate)
     {
-        $this->configDate = (int)$configDate;
+        $this->set('configDate', (int)$configDate);
 
         return $this;
     }
@@ -2095,7 +1722,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isAccountExpireEnabled()
     {
-        return (int)$this->accountExpireEnabled;
+        return (bool)$this->get('accountExpireEnabled', false);
     }
 
     /**
@@ -2105,7 +1732,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountExpireEnabled($accountExpireEnabled)
     {
-        $this->accountExpireEnabled = $accountExpireEnabled;
+        $this->set('accountExpireEnabled', $accountExpireEnabled);
 
         return $this;
     }
@@ -2115,7 +1742,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getAccountExpireTime()
     {
-        return $this->accountExpireTime;
+        return $this->get('accountExpireTime', self::ACCOUNT_EXPIRE_TIME);
     }
 
     /**
@@ -2125,7 +1752,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAccountExpireTime($accountExpireTime)
     {
-        $this->accountExpireTime = (int)$accountExpireTime;
+        $this->set('accountExpireTime', (int)$accountExpireTime);
 
         return $this;
     }
@@ -2135,7 +1762,7 @@ final class ConfigData implements JsonSerializable
      */
     public function isLdapTlsEnabled(): bool
     {
-        return (bool)$this->ldapTlsEnabled;
+        return $this->get('ldapTlsEnabled', false);
     }
 
     /**
@@ -2143,7 +1770,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setLdapTlsEnabled(bool $ldapTlsEnabled)
     {
-        $this->ldapTlsEnabled = (int)$ldapTlsEnabled;
+        $this->set('ldapTlsEnabled', (int)$ldapTlsEnabled);
     }
 
     /**
@@ -2151,15 +1778,15 @@ final class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedMime(): array
     {
-        return (array)$this->filesAllowedMime;
+        return $this->get('filesAllowedMime', []);
     }
 
     /**
      * @param array $filesAllowedMime
      */
-    public function setFilesAllowedMime(array $filesAllowedMime)
+    public function setFilesAllowedMime($filesAllowedMime)
     {
-        $this->filesAllowedMime = $filesAllowedMime;
+        $this->set('filesAllowedMime', $filesAllowedMime ?: []);
     }
 
     /**
@@ -2167,15 +1794,15 @@ final class ConfigData implements JsonSerializable
      */
     public function getLdapType()
     {
-        return (int)$this->ldapType;
+        return (int)$this->get('ldapType');
     }
 
     /**
      * @param int $ldapType
      */
-    public function setLdapType(int $ldapType)
+    public function setLdapType($ldapType)
     {
-        $this->ldapType = $ldapType;
+        $this->set('ldapType', (int)$ldapType);
     }
 
     /**
@@ -2183,7 +1810,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getAppVersion()
     {
-        return $this->appVersion;
+        return $this->get('appVersion');
     }
 
     /**
@@ -2191,7 +1818,7 @@ final class ConfigData implements JsonSerializable
      */
     public function setAppVersion(string $appVersion)
     {
-        $this->appVersion = $appVersion;
+        $this->set('appVersion', $appVersion);
     }
 
     /**
@@ -2199,7 +1826,7 @@ final class ConfigData implements JsonSerializable
      */
     public function getApplicationUrl()
     {
-        return $this->applicationUrl;
+        return $this->get('applicationUrl');
     }
 
     /**
@@ -2207,6 +1834,71 @@ final class ConfigData implements JsonSerializable
      */
     public function setApplicationUrl(string $applicationUrl = null)
     {
-        $this->applicationUrl = $applicationUrl ? rtrim($applicationUrl, '/') : null;
+        $this->set('applicationUrl', $applicationUrl ? rtrim($applicationUrl, '/') : null);
     }
+
+    /**
+     * @return string
+     */
+    public function getLdapFilterUserObject()
+    {
+        return $this->get('ldapFilterUserObject');
+    }
+
+    /**
+     * @param string $filter
+     */
+    public function setLdapFilterUserObject($filter)
+    {
+        $this->set('ldapFilterUserObject', $filter);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLdapFilterGroupObject()
+    {
+        return $this->get('ldapFilterGroupObject');
+    }
+
+    /**
+     * @param string $filter
+     */
+    public function setLdapFilterGroupObject($filter)
+    {
+        $this->set('ldapFilterGroupObject', $filter);
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLdapFilterUserAttributes()
+    {
+        return $this->get('ldapFilterUserAttributes');
+    }
+
+    /**
+     * @param array $attributes
+     */
+    public function setLdapFilterUserAttributes($attributes)
+    {
+        $this->set('ldapFilterUserAttributes', $attributes ?: []);
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLdapFilterGroupAttributes()
+    {
+        return $this->get('ldapFilterGroupAttributes');
+    }
+
+    /**
+     * @param array $attributes
+     */
+    public function setLdapFilterGroupAttributes($attributes)
+    {
+        $this->set('ldapFilterGroupAttributes', $attributes ?: []);
+    }
+
 }

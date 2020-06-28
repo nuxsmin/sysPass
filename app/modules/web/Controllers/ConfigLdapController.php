@@ -84,6 +84,10 @@ final class ConfigLdapController extends SimpleControllerBase
                 $configData->setLdapDefaultGroup($ldapDefaultGroup);
                 $configData->setLdapDefaultProfile($ldapDefaultProfile);
                 $configData->setLdapBindUser($ldapParams->getBindDn());
+                $configData->setLdapFilterUserObject($ldapParams->getFilterUserObject());
+                $configData->setLdapFilterGroupObject($ldapParams->getFilterGroupObject());
+                $configData->setLdapFilterUserAttributes($ldapParams->getFilterUserAttributes());
+                $configData->setLdapFilterGroupAttributes($ldapParams->getFilterGroupAttributes());
 
                 if ($ldapParams->getBindPass() !== '***') {
                     $configData->setLdapBindPass($ldapParams->getBindPass());
@@ -124,15 +128,21 @@ final class ConfigLdapController extends SimpleControllerBase
             throw new ValidationException(__u('Wrong LDAP parameters'));
         }
 
-        return (new LdapParams())
-            ->setServer($data['server'])
-            ->setPort(isset($data['port']) ? $data['port'] : 389)
-            ->setSearchBase($this->request->analyzeString('ldap_base'))
-            ->setGroup($this->request->analyzeString('ldap_group'))
-            ->setBindDn($this->request->analyzeString('ldap_binduser'))
-            ->setBindPass($this->request->analyzeEncrypted('ldap_bindpass'))
-            ->setType($this->request->analyzeInt('ldap_server_type', LdapTypeInterface::LDAP_STD))
-            ->setTlsEnabled($this->request->analyzeBool('ldap_tls_enabled', false));
+        $params = new LdapParams();
+        $params->setServer($data['server']);
+        $params->setPort(isset($data['port']) ? $data['port'] : 389);
+        $params->setSearchBase($this->request->analyzeString('ldap_base'));
+        $params->setGroup($this->request->analyzeString('ldap_group'));
+        $params->setBindDn($this->request->analyzeString('ldap_binduser'));
+        $params->setBindPass($this->request->analyzeEncrypted('ldap_bindpass'));
+        $params->setType($this->request->analyzeInt('ldap_server_type', LdapTypeInterface::LDAP_STD));
+        $params->setTlsEnabled($this->request->analyzeBool('ldap_tls_enabled', false));
+        $params->setFilterUserObject($this->request->analyzeString('ldap_filter_user_object', null));
+        $params->setFilterGroupObject($this->request->analyzeString('ldap_filter_group_object', null));
+        $params->setFilterUserAttributes($this->request->analyzeArray('ldap_filter_user_attributes'));
+        $params->setFilterGroupAttributes($this->request->analyzeArray('ldap_filter_group_attributes'));
+
+        return $params;
     }
 
     /**
@@ -144,8 +154,14 @@ final class ConfigLdapController extends SimpleControllerBase
             $ldapParams = $this->getLdapParamsFromRequest();
 
             // Valores para la configuración de LDAP
-            if (!($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
+            if (!($ldapParams->getServer()
+                || $ldapParams->getSearchBase()
+                || $ldapParams->getBindDn())
+            ) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('Missing LDAP parameters')
+                );
             }
 
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
@@ -181,8 +197,14 @@ final class ConfigLdapController extends SimpleControllerBase
             $ldapParams = $this->getLdapParamsFromRequest();
 
             // Valores para la configuración de LDAP
-            if (!($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Missing LDAP parameters'));
+            if (!($ldapParams->getServer()
+                || $ldapParams->getSearchBase()
+                || $ldapParams->getBindDn())
+            ) {
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('Missing LDAP parameters')
+                );
             }
 
             $ldapCheckService = $this->dic->get(LdapCheckService::class);

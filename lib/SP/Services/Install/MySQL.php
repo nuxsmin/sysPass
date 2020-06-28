@@ -167,10 +167,21 @@ final class MySQL implements DatabaseSetupInterface
 
             $dbc = $this->mysqlHandler->getConnectionSimple();
 
-            $dbc->exec(sprintf($query, $dbc->quote($user), $this->installData->getDbAuthHost(), $dbc->quote($pass)));
+            $dbc->exec(
+                sprintf($query,
+                    $dbc->quote($user),
+                    $this->installData->getDbAuthHost(),
+                    $dbc->quote($pass))
+            );
 
-            if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                $dbc->exec(sprintf($query, $dbc->quote($user), $this->installData->getDbAuthHostDns(), $dbc->quote($pass)));
+            if (!empty($this->installData->getDbAuthHostDns())
+                && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                $dbc->exec(
+                    sprintf($query,
+                        $dbc->quote($user),
+                        $this->installData->getDbAuthHostDns(),
+                        $dbc->quote($pass))
+                );
             }
 
             $dbc->exec('FLUSH PRIVILEGES');

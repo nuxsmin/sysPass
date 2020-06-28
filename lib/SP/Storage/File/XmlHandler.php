@@ -117,14 +117,24 @@ final class XmlHandler implements XmlFileStorageInterface
         /** @var DOMElement $node */
         foreach ($nodeList as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                if (is_object($node->childNodes) && $node->childNodes->length > 1) {
-                    if ($node->hasAttribute('multiple') && (int)$node->getAttribute('multiple') === 1) {
+                if (is_object($node->childNodes)
+                    && $node->childNodes->length > 1
+                ) {
+                    if ($node->hasAttribute('multiple')
+                        && (int)$node->getAttribute('multiple') === 1
+                    ) {
                         $nodes[] = $this->readChildNodes($node->childNodes);
+
+                    } elseif ($node->hasAttribute('class')) {
+                        $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
+                        $nodes[$node->nodeName]['__class__'] = (string)$node->getAttribute('class');;
                     } else {
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                     }
                 } else {
-                    $val = is_numeric($node->nodeValue) && strpos($node->nodeValue, '.') === false ? (int)$node->nodeValue : $node->nodeValue;
+                    $val = is_numeric($node->nodeValue)
+                    && strpos($node->nodeValue, '.') === false
+                        ? (int)$node->nodeValue : $node->nodeValue;
 
                     if ($node->nodeName === 'item') {
                         $nodes[] = $val;
@@ -184,10 +194,10 @@ final class XmlHandler implements XmlFileStorageInterface
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
      * @param mixed   $items
-     * @param DOMNode $Node
+     * @param DOMNode $node
      * @param null    $type
      */
-    protected function writeChildNodes($items, DOMNode $Node, $type = null)
+    protected function writeChildNodes($items, DOMNode $node, $type = null)
     {
         foreach ($this->analyzeItems($items) as $key => $value) {
             if (is_int($key)) {
@@ -201,12 +211,13 @@ final class XmlHandler implements XmlFileStorageInterface
                 $this->writeChildNodes($value, $newNode, $key);
             } else if (is_object($value)) {
                 $newNode->setAttribute('class', get_class($value));
-                $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
+                $this->writeChildNodes($value, $newNode, $key);
+//                $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
             } else {
                 $newNode->appendChild($this->Dom->createTextNode(trim($value)));
             }
 
-            $Node->appendChild($newNode);
+            $node->appendChild($newNode);
         }
     }
 
@@ -216,7 +227,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @param mixed $items
      * @param bool  $serialize
      *
-     * @return array
+     * @return array|string
      */
     protected function analyzeItems($items, $serialize = false)
     {
@@ -244,15 +255,17 @@ final class XmlHandler implements XmlFileStorageInterface
     protected function analyzeObject($object)
     {
         $items = [];
-        $Reflection = new ReflectionObject($object);
+        $reflection = new ReflectionObject($object);
 
-        foreach ($Reflection->getProperties() as $property) {
+        foreach ($reflection->getProperties() as $property) {
             $property->setAccessible(true);
             $value = $property->getValue($object);
 
             if (is_bool($value)) {
                 $items[$property->getName()] = (int)$value;
-            } elseif (is_numeric($value) && strpos($value, '.') === false) {
+            } elseif (is_numeric($value)
+                && strpos($value, '.') === false
+            ) {
                 $items[$property->getName()] = (int)$value;
             } else {
                 $items[$property->getName()] = $value;

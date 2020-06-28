@@ -24,8 +24,6 @@
 
 namespace SP\Services\Config;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
 use RuntimeException;
 use SP\Config\ConfigData;
@@ -95,16 +93,13 @@ final class ConfigBackupService extends Service
 
     /**
      * @return ConfigData
-     * @throws ServiceException
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws FileException
+     * @throws ServiceException
      */
     public function restore()
     {
-        return $this->config->saveConfig(Util::unserialize(
-            ConfigData::class,
-            $this->getBackup())
+        return $this->config->saveConfig(
+            Util::unserialize(ConfigData::class, $this->getBackup())
         )->getConfigData();
     }
 

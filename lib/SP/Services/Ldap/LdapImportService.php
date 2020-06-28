@@ -176,7 +176,7 @@ final class LdapImportService extends Service
 
         if (empty($ldapImportParams->filter)) {
             $objects = $ldap->getLdapActions()
-                ->getObjects($ldap->getGroupMembershipFilter());
+                ->getObjects($ldap->getGroupMembershipIndirectFilter());
         } else {
             $objects = $ldap->getLdapActions()
                 ->getObjects($ldapImportParams->filter);

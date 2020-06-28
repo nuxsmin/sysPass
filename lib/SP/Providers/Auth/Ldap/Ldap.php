@@ -102,9 +102,6 @@ abstract class Ldap implements LdapInterface
             case LdapTypeInterface::LDAP_ADS:
                 return new LdapMsAds($ldapConnection, $eventDispatcher);
                 break;
-            case LdapTypeInterface::LDAP_AZURE;
-                return new LdapMsAzureAd($ldapConnection, $eventDispatcher);
-                break;
         }
 
         throw new LdapException(__u('LDAP type not set'));

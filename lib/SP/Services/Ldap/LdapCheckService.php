@@ -63,19 +63,34 @@ final class LdapCheckService extends Service
 
         $data = ['count' => 0, 'results' => []];
 
+        $indirectFilterItems = $this->ldapResultsMapper(
+            $ldapActions->getObjects(
+                $this->ldap->getGroupMembershipIndirectFilter(), ['dn'])
+        );
+
+        $directFilterItems = $this->ldapResultsMapper(
+            $ldapActions->getObjects(
+                $this->ldap->getGroupMembershipDirectFilter(),
+                ['member', 'memberUid', 'uniqueMember']),
+            ['member', 'memberUid', 'uniqueMember']
+        );
+
+        $userItems = array_unique(array_merge($indirectFilterItems, $directFilterItems));
+
         $data['results'][] = [
             'icon' => 'person',
-            'items' => $this->ldapResultsMapper(
-                $ldapActions->getObjects(
-                    $this->ldap->getGroupMembershipFilter(), ['dn']))
+            'items' => array_values($userItems)
         ];
 
         if ($includeGroups) {
+            $groupItems = $this->ldapResultsMapper(
+                $ldapActions->getObjects(
+                    $this->ldap->getGroupObjectFilter(), ['dn'])
+            );
+
             $data['results'][] = [
                 'icon' => 'group',
-                'items' => $this->ldapResultsMapper(
-                    $ldapActions->getObjects(
-                        $this->ldap->getGroupObjectFilter(), ['dn']))
+                'items' => $groupItems
             ];
         }
 
@@ -89,20 +104,26 @@ final class LdapCheckService extends Service
     /**
      * Obtener los datos de una búsqueda de LDAP de un atributo
      *
-     * @param array  $data
-     * @param string $attribute
+     * @param array $data
+     * @param array $attributes
      *
      * @return array
      */
-    public function ldapResultsMapper($data, $attribute = 'dn')
+    public function ldapResultsMapper($data, $attributes = ['dn'])
     {
         $out = [];
 
         foreach ($data as $result) {
             if (is_array($result)) {
                 foreach ($result as $ldapAttribute => $value) {
-                    if (strtolower($ldapAttribute) === $attribute) {
-                        $out[] = $value;
+                    if (in_array(strtolower($ldapAttribute), $attributes)) {
+                        if (is_array($value)) {
+                            unset($value['count']);
+
+                            $out = array_merge($out, $value);
+                        } else {
+                            $out[] = $value;
+                        }
                     }
                 }
             }
@@ -120,7 +141,8 @@ final class LdapCheckService extends Service
     public function getObjectsByFilter($filter)
     {
         $objects = $this->ldapResultsMapper(
-            $this->ldap->getLdapActions()->getObjects($filter, ['dn']));
+            $this->ldap->getLdapActions()->getObjects($filter, ['dn'])
+        );
 
         return [
             'count' => count($objects),

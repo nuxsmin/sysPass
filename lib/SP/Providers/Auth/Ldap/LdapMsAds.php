@@ -38,66 +38,82 @@ use SP\Http\Address;
  */
 final class LdapMsAds extends Ldap
 {
-    const FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectCategory=person)(objectClass=user)))';
-    const FILTER_GROUP_OBJECT = '(objectCategory=group)';
-    const FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
-    const FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
+    const DEFAULT_FILTER_USER_OBJECT = '(&(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectCategory=person)(objectClass=user)))';
+    const DEFAULT_FILTER_GROUP_OBJECT = '(objectCategory=group)';
+    const DEFAULT_FILTER_USER_ATTRIBUTES = ['samaccountname', 'cn', 'uid', 'userPrincipalName'];
+    const DEFAULT_FILTER_GROUP_ATTRIBUTES = ['memberOf', 'groupMembership', 'memberof:1.2.840.113556.1.4.1941:'];
 
     /**
-     * Devolver el filtro para comprobar la pertenecia al grupo
-     *
-     * @return string
+     * @inheritDoc
      * @throws SPException
      */
-    public function getGroupMembershipFilter(): string
+    public function getGroupMembershipIndirectFilter(): string
     {
+        $filter = $this->getUserObjectFilter();
+
         if (empty($this->ldapParams->getGroup())) {
-            return self::FILTER_USER_OBJECT;
+            return $filter;
+        }
+
+        if (empty($this->ldapParams->getFilterGroupAttributes())) {
+            $attributes = self::DEFAULT_FILTER_GROUP_ATTRIBUTES;
+        } else {
+            $attributes = $this->ldapParams->getFilterGroupAttributes();
         }
 
         return '(&(|'
             . LdapUtil::getAttributesForFilter(
-                self::FILTER_GROUP_ATTRIBUTES,
+                $attributes,
                 $this->getGroupDn())
             . ')'
-            . self::FILTER_USER_OBJECT
+            . $filter
             . ')';
     }
 
     /**
-     * Obtener el filtro para buscar el usuario
-     *
-     * @param string $userLogin
-     *
      * @return string
+     */
+    private function getUserObjectFilter()
+    {
+        if (empty($this->ldapParams->getFilterUserObject())) {
+            return self::DEFAULT_FILTER_USER_OBJECT;
+        }
+
+        return $this->ldapParams->getFilterUserObject();
+    }
+
+    /**
+     * O@inheritDoc
      */
     public function getUserDnFilter(string $userLogin): string
     {
+        if (empty($this->ldapParams->getFilterUserAttributes())) {
+            $attributes = self::DEFAULT_FILTER_USER_ATTRIBUTES;
+        } else {
+            $attributes = $this->ldapParams->getFilterUserAttributes();
+        }
+
         return '(&(|'
-            . LdapUtil::getAttributesForFilter(self::FILTER_USER_ATTRIBUTES, $userLogin)
+            . LdapUtil::getAttributesForFilter($attributes, $userLogin)
             . ')'
-            . self::FILTER_USER_OBJECT
+            . $this->getUserObjectFilter()
             . ')';
     }
 
     /**
-     * Devolver el filtro para objetos del tipo grupo
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getGroupObjectFilter(): string
     {
-        return self::FILTER_GROUP_OBJECT;
+        if (empty($this->ldapParams->getFilterGroupObject())) {
+            return self::DEFAULT_FILTER_GROUP_OBJECT;
+        }
+
+        return $this->ldapParams->getFilterGroupObject();
     }
 
     /**
-     * Buscar al usuario en un grupo.
-     *
-     * @param string $userDn
-     * @param string $userLogin
-     * @param array  $groupsDn
-     *
-     * @return bool
+     * @inheritDoc
      * @throws LdapException
      */
     public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool
@@ -130,9 +146,7 @@ final class LdapMsAds extends Ldap
     private function checkUserInGroupByFilter(string $userLogin, string $userDn): bool
     {
         $groupDn = $this->getGroupDn();
-        $filter = '(|'
-            . LdapUtil::getAttributesForFilter(self::FILTER_GROUP_ATTRIBUTES, $groupDn)
-            . ')';
+        $filter = $this->getGroupMembershipDirectFilter();
 
         $searchResults = $this->ldapActions->getObjects($filter, ['dn'], $userDn);
 
@@ -159,9 +173,24 @@ final class LdapMsAds extends Ldap
     }
 
     /**
-     * Obtener el servidor de LDAP a utilizar
-     *
-     * @return mixed
+     * @inheritDoc
+     * @throws LdapException
+     */
+    public function getGroupMembershipDirectFilter(string $userDn = null): string
+    {
+        if (empty($this->ldapParams->getFilterGroupAttributes())) {
+            $attributes = self::DEFAULT_FILTER_GROUP_ATTRIBUTES;
+        } else {
+            $attributes = $this->ldapParams->getFilterGroupAttributes();
+        }
+
+        return '(|'
+            . LdapUtil::getAttributesForFilter($attributes, $this->getGroupDn())
+            . ')';
+    }
+
+    /**
+     * @inheritDoc
      */
     protected function pickServer()
     {
