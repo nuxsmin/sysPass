@@ -29,19 +29,20 @@ use SP\Bootstrap;
 defined('APP_ROOT') || die();
 
 // Core PATHS
+define('DS', DIRECTORY_SEPARATOR);
 define('BASE_PATH', __DIR__);
-define('APP_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app');
-define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
-define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
-define('PUBLIC_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
-define('XML_SCHEMA', SQL_PATH . DIRECTORY_SEPARATOR . 'syspass.xsd');
+define('APP_PATH', APP_ROOT . DS . 'app');
+define('VENDOR_PATH', APP_ROOT . DS . 'vendor');
+define('SQL_PATH', APP_ROOT . DS . 'schemas');
+define('PUBLIC_PATH', APP_ROOT . DS . 'public');
+define('XML_SCHEMA', SQL_PATH . DS . 'syspass.xsd');
 
 // Start tracking the memory used
 $memInit = memory_get_usage();
 
-require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
-require VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php';
-require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
+require __DIR__ . DS . 'BaseFunctions.php';
+require VENDOR_PATH . DS . 'autoload.php';
+require __DIR__ . DS . 'SplClassLoader.php';
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
@@ -50,37 +51,37 @@ defined('APP_MODULE') || define('APP_MODULE', 'web');
 define('DEBUG', getenv('DEBUG') || false);
 
 define('CONFIG_PATH', getenv('CONFIG_PATH')
-    ?: APP_PATH . DIRECTORY_SEPARATOR . 'config');
-define('RESOURCES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'resources');
+    ?: APP_PATH . DS . 'config');
+define('RESOURCES_PATH', APP_PATH . DS . 'resources');
 
 // Setup config files
 define('CONFIG_FILE', getenv('CONFIG_FILE')
-    ?: CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
+    ?: CONFIG_PATH . DS . 'config.xml');
 define('ACTIONS_FILE', getenv('ACTIONS_FILE')
-    ?: RESOURCES_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+    ?: RESOURCES_PATH . DS . 'actions.xml');
 define('MIMETYPES_FILE', getenv('MIMETYPES_FILE')
-    ?: RESOURCES_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
-define('OLD_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
+    ?: RESOURCES_PATH . DS . 'mime.xml');
+define('OLD_CONFIG_FILE', CONFIG_PATH . DS . 'config.php');
 define('LOG_FILE', getenv('LOG_FILE')
-    ?: CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
-define('LOCK_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . '.lock');
+    ?: CONFIG_PATH . DS . 'syspass.log');
+define('LOCK_FILE', CONFIG_PATH . DS . '.lock');
 
 // Setup application paths
-define('MODULES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'modules');
-define('LOCALES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'locales');
+define('MODULES_PATH', APP_PATH . DS . 'modules');
+define('LOCALES_PATH', APP_PATH . DS . 'locales');
 define('BACKUP_PATH', getenv('BACKUP_PATH')
-    ?: APP_PATH . DIRECTORY_SEPARATOR . 'backup');
+    ?: APP_PATH . DS . 'backup');
 define('CACHE_PATH', getenv('CACHE_PATH')
-    ?: APP_PATH . DIRECTORY_SEPARATOR . 'cache');
+    ?: APP_PATH . DS . 'cache');
 define('TMP_PATH', getenv('TMP_PATH')
-    ?: APP_PATH . DIRECTORY_SEPARATOR . 'temp');
+    ?: APP_PATH . DS . 'temp');
 
 initModule(APP_MODULE);
 
 try {
     $builder = new ContainerBuilder();
-    $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
-    $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
+    $builder->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies');
+    $builder->addDefinitions(BASE_PATH . DS . 'Definitions.php');
 
     Bootstrap::run($builder->build());
 } catch (Exception $e) {

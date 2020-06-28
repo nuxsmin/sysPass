@@ -34,35 +34,30 @@ final class AuthResult
     /**
      * @var string
      */
-    public $auth;
+    public $authName;
     /**
      * @var AuthDataBase
      */
     public $data;
-    /**
-     * @var bool
-     */
-    public $authGranted = false;
 
     /**
      * AuthResult constructor.
      *
-     * @param string       $auth
+     * @param string       $authName
      * @param AuthDataBase $data
      */
-    public function __construct($auth, AuthDataBase $data)
+    public function __construct(string $authName, AuthDataBase $data)
     {
-        $this->auth = $auth;
+        $this->authName = $authName;
         $this->data = $data;
-        $this->authGranted = $data->isAuthGranted();
     }
 
     /**
      * @return string
      */
-    public function getAuth()
+    public function getAuthName()
     {
-        return $this->auth;
+        return $this->authName;
     }
 
     /**
@@ -71,13 +66,5 @@ final class AuthResult
     public function getData()
     {
         return $this->data;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAuthGranted()
-    {
-        return $this->authGranted;
     }
 }

@@ -24,6 +24,7 @@
 
 namespace SP\Providers\Auth\Ldap;
 
+use SP\Config\ConfigData;
 use SP\Core\Events\EventDispatcher;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
@@ -47,10 +48,6 @@ final class LdapAuth implements AuthInterface
      */
     protected $ldapAuthData;
     /**
-     * @var LdapParams
-     */
-    protected $ldapParams;
-    /**
      * @var EventDispatcher
      */
     protected $eventDispatcher;
@@ -62,17 +59,25 @@ final class LdapAuth implements AuthInterface
      * @var LdapInterface
      */
     private $ldap;
+    /**
+     * @var ConfigData
+     */
+    private $configData;
 
     /**
      * LdapBase constructor.
      *
      * @param LdapInterface   $ldap
      * @param EventDispatcher $eventDispatcher
+     * @param ConfigData      $configData
      */
-    public function __construct(LdapInterface $ldap, EventDispatcher $eventDispatcher)
+    public function __construct(LdapInterface $ldap,
+                                EventDispatcher $eventDispatcher,
+                                ConfigData $configData)
     {
         $this->ldap = $ldap;
         $this->eventDispatcher = $eventDispatcher;
+        $this->configData = $configData;
 
         $this->ldapAuthData = new LdapAuthData();
     }
@@ -111,7 +116,7 @@ final class LdapAuth implements AuthInterface
     public function authenticate(UserLoginData $userLoginData)
     {
         try {
-            $this->ldapAuthData->setAuthGranted($this->isAuthGranted());
+            $this->ldapAuthData->setAuthoritative($this->isAuthGranted());
             $this->ldapAuthData->setServer($this->ldap->getServer());
 
             $this->setUserLogin($userLoginData->getLoginUser());
@@ -139,7 +144,7 @@ final class LdapAuth implements AuthInterface
      */
     public function isAuthGranted()
     {
-        return true;
+        return !$this->configData->isLdapDatabaseEnabled();
     }
 
     /**

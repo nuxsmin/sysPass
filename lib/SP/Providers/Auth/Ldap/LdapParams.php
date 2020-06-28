@@ -317,5 +317,4 @@ final class LdapParams
 
         return $this;
     }
-
 }

@@ -79,7 +79,7 @@ final class Database implements AuthInterface
         $this->userLoginData = $userLoginData;
 
         $authData = new DatabaseAuthData();
-        $authData->setAuthGranted($this->isAuthGranted());
+        $authData->setAuthoritative($this->isAuthGranted());
         $authData->setAuthenticated($this->authUser());
 
         return $authData;

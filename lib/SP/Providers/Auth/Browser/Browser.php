@@ -69,7 +69,7 @@ final class Browser implements AuthInterface
     public function authenticate(UserLoginData $userLoginData)
     {
         $browserAuthData = new BrowserAuthData();
-        $browserAuthData->setAuthGranted($this->isAuthGranted());
+        $browserAuthData->setAuthoritative($this->isAuthGranted());
 
         if (!empty($userLoginData->getLoginUser()) && !empty($userLoginData->getLoginPass())) {
             return $browserAuthData->setAuthenticated($this->checkServerAuthUser($userLoginData->getLoginUser()));

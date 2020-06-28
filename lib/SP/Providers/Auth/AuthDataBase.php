@@ -54,7 +54,7 @@ abstract class AuthDataBase
     /**
      * @var bool
      */
-    protected $authGranted = false;
+    protected $authoritative = false;
     /**
      * @var bool
      */
@@ -149,19 +149,19 @@ abstract class AuthDataBase
      *
      * @return bool
      */
-    public function isAuthGranted()
+    public function isAuthoritative()
     {
-        return (bool)$this->authGranted;
+        return (bool)$this->authoritative;
     }
 
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @param bool $authGranted
+     * @param bool $authoritative
      */
-    public function setAuthGranted($authGranted)
+    public function setAuthoritative($authoritative)
     {
-        $this->authGranted = (bool)$authGranted;
+        $this->authoritative = (bool)$authoritative;
     }
 
     /**

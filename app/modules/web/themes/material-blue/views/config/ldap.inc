@@ -53,9 +53,7 @@ use SP\Mvc\View\Template;
                         <span class="mdl-list__item-primary-content">
                                 <span><?php echo __('Enable LDAP'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enables authentication against an LDAP server.'); ?>
-                                    <br>
-                                    <?php echo __('This method will use MySQL as fallback.'); ?>
+                                    <?php echo __('Enable authentication against an LDAP server.'); ?>
                                 </span>
                             </span>
                     </li>
@@ -64,16 +62,36 @@ use SP\Mvc\View\Template;
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="ldap_tls_enabled">
-                                <input type="checkbox" id="ldap_tls_enabled"
+                                <input type="checkbox"
+                                       id="ldap_tls_enabled"
                                        class="mdl-switch__input"
                                        name="ldap_tls_enabled" <?php echo $configData->isLdapTlsEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                                <span>TLS</span>
+                                <span><?php echo __('Use TLS'); ?></span>
                                 <span class="mdl-list__item-sub-title">
-                                    <?php echo __('Enables the connection over TLS'); ?>
+                                    <?php echo __('Enable the connection over TLS.'); ?>
+                                </span>
+                            </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="ldap_database_enabled">
+                                <input type="checkbox"
+                                       id="ldap_database_enabled"
+                                       class="mdl-switch__input"
+                                       name="ldap_database_enabled" <?php echo $configData->isLdapDatabaseEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('Database fallback'); ?></span>
+                                <span class="mdl-list__item-sub-title">
+                                    <?php echo __('Enable database backend as fallback when LDAP auth is not successful.'); ?>
                                 </span>
                             </span>
                     </li>
@@ -422,6 +440,17 @@ use SP\Mvc\View\Template;
         <tr>
             <td class="descField">
                 <?php echo __('User Attributes'); ?>
+
+                <div id="help-ldap_filter_user_attributes"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-ldap_filter_user_attributes">
+                    <p>
+                        <?php echo __('LDAP attributes to lookup the user login. Each attribute will be chained in an OR filter.'); ?>
+                    </p>
+                </div>
             </td>
             <td class="valField">
                 <div class="lowres-title"><?php echo __('User Attributes'); ?></div>
@@ -445,6 +474,17 @@ use SP\Mvc\View\Template;
         <tr>
             <td class="descField">
                 <?php echo __('Group Attributes'); ?>
+
+                <div id="help-ldap_filter_group_attributes"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
+                    <?php echo $icons->getIconHelp()->getIcon(); ?>
+                </div>
+                <div class="mdl-tooltip mdl-tooltip--large"
+                     for="help-ldap_filter_group_attributes">
+                    <p>
+                        <?php echo __('LDAP attributes to lookup the group name. Each attribute will be chained in an OR filter.'); ?>
+                    </p>
+                </div>
             </td>
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Group Attributes'); ?></div>

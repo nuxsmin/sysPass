@@ -50,7 +50,8 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
         '130.16020501',
         '200.17011202',
         '300.18111001',
-        '300.18112501'
+        '300.18112501',
+        '320.20062801',
     ];
     /**
      * @var ConfigData
@@ -241,6 +242,9 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
             case '300.18112501':
                 $this->upgrade_300_18112501($version);
                 break;
+            case '320.20062801':
+                $this->upgrade_320_20062801($version);
+                break;
         }
     }
 
@@ -324,6 +328,30 @@ final class UpgradeConfigService extends Service implements UpgradeInterface
                 $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
             } else {
                 $this->configData->setLdapType(LdapTypeInterface::LDAP_STD);
+            }
+
+            $this->configData->setConfigVersion($version);
+
+            $this->config->saveConfig($this->configData, false);
+
+            $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Update Configuration'))
+                    ->addDetail(__u('Version'), $version))
+            );
+        }
+    }
+
+    /**
+     * @param $version
+     *
+     * @throws FileException
+     */
+    private function upgrade_320_20062801($version)
+    {
+        if ($this->configData->isLdapEnabled()) {
+            if ($this->configData->get('ldapType') === LdapTypeInterface::LDAP_AZURE) {
+                $this->configData->setLdapType(LdapTypeInterface::LDAP_ADS);
             }
 
             $this->configData->setConfigVersion($version);

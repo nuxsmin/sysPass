@@ -89,6 +89,9 @@ final class ConfigLdapController extends SimpleControllerBase
                 $configData->setLdapFilterUserAttributes($ldapParams->getFilterUserAttributes());
                 $configData->setLdapFilterGroupAttributes($ldapParams->getFilterGroupAttributes());
 
+                $databaseEnabled = $this->request->analyzeBool('ldap_database_enabled', false);
+                $configData->setLdapDatabaseEnabled($databaseEnabled);
+
                 if ($ldapParams->getBindPass() !== '***') {
                     $configData->setLdapBindPass($ldapParams->getBindPass());
                 }

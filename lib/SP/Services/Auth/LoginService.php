@@ -156,10 +156,12 @@ final class LoginService extends Service
         if ($result !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
             foreach ($result as $authResult) {
-                if ($authResult->isAuthGranted() === true
-                    && $this->{$authResult->getAuth()}($authResult->getData()) === true
-                ) {
-                    break;
+                if (method_exists($this, $authResult->getAuthName())) {
+                    $granted = $this->{$authResult->getAuthName()}($authResult->getData());
+
+                    if ($granted) {
+                        break;
+                    }
                 }
             }
         } else {
@@ -541,8 +543,15 @@ final class LoginService extends Service
             }
 
             if ($authData->getStatusCode() === LdapCode::NO_SUCH_OBJECT
-                || $authData->isAuthGranted() === false
+                || $authData->isAuthoritative() === false
             ) {
+                $eventMessage->addDescription(__u('Non authoritative auth'));
+
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.ldap',
+                    new Event($this, $eventMessage)
+                );
+
                 return false;
             }
 
@@ -572,7 +581,14 @@ final class LoginService extends Service
         try {
             $userLoginRequest = new UserLoginRequest();
             $userLoginRequest->setLogin($this->userLoginData->getLoginUser());
-            $userLoginRequest->setPassword($this->userLoginData->getLoginPass());
+
+            if ($this->configData->isLdapDatabaseEnabled()) {
+                $userLoginRequest->setPassword($this->userLoginData->getLoginPass());
+            } else {
+                // Use a random password when database fallback is disabled
+                $userLoginRequest->setPassword(PasswordUtil::randomPassword());
+            }
+
             $userLoginRequest->setEmail($authData->getEmail());
             $userLoginRequest->setName($authData->getName());
             $userLoginRequest->setIsLdap(1);
@@ -615,7 +631,14 @@ final class LoginService extends Service
 
         // Autentificamos con la BBDD
         if ($authData->getAuthenticated() === false) {
-            if ($authData->isAuthGranted() === false) {
+            if ($authData->isAuthoritative() === false) {
+                $eventMessage->addDescription(__u('Non authoritative auth'));
+
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.database',
+                    new Event($this, $eventMessage)
+                );
+
                 return false;
             }
 
@@ -636,12 +659,10 @@ final class LoginService extends Service
             );
         }
 
-        if ($authData->getAuthenticated() === true) {
-            $this->eventDispatcher->notifyEvent(
-                'login.auth.database',
-                new Event($this, $eventMessage)
-            );
-        }
+        $this->eventDispatcher->notifyEvent(
+            'login.auth.database',
+            new Event($this, $eventMessage)
+        );
 
         return true;
     }
@@ -651,7 +672,7 @@ final class LoginService extends Service
      *
      * @param BrowserAuthData $authData
      *
-     * @return mixed
+     * @return bool
      * @throws AuthException
      */
     private function authBrowser(BrowserAuthData $authData)
@@ -665,7 +686,14 @@ final class LoginService extends Service
 
         // Comprobar si concide el login con la autentificación del servidor web
         if ($authData->getAuthenticated() === false) {
-            if ($authData->isAuthGranted() === false) {
+            if ($authData->isAuthoritative() === false) {
+                $eventMessage->addDescription(__u('Non authoritative auth'));
+
+                $this->eventDispatcher->notifyEvent(
+                    'login.auth.browser',
+                    new Event($this, $eventMessage)
+                );
+
                 return false;
             }
 
@@ -686,9 +714,7 @@ final class LoginService extends Service
             );
         }
 
-        if ($authData->getAuthenticated() === true
-            && $this->configData->isAuthBasicAutoLoginEnabled()
-        ) {
+        if ($this->configData->isAuthBasicAutoLoginEnabled()) {
             try {
                 $userLoginRequest = new UserLoginRequest();
                 $userLoginRequest->setLogin($this->userLoginData->getLoginUser());
@@ -704,8 +730,6 @@ final class LoginService extends Service
                     'login.auth.browser',
                     new Event($this, $eventMessage)
                 );
-
-                return true;
             } catch (Exception $e) {
                 throw new AuthException(
                     __u('Internal error'),
@@ -717,6 +741,6 @@ final class LoginService extends Service
             }
         }
 
-        return null;
+        return true;
     }
 }

@@ -1901,4 +1901,20 @@ final class ConfigData extends DataCollection implements JsonSerializable
         $this->set('ldapFilterGroupAttributes', $attributes ?: []);
     }
 
+    /**
+     * @return bool
+     */
+    public function isLdapDatabaseEnabled(): bool
+    {
+        return $this->get('ldapDatabaseEnabled', true);
+    }
+
+    /**
+     * @param bool $ldapDatabaseEnabled
+     */
+    public function setLdapDatabaseEnabled(bool $ldapDatabaseEnabled)
+    {
+        $this->set('ldapDatabaseEnabled', (int)$ldapDatabaseEnabled);
+    }
+
 }

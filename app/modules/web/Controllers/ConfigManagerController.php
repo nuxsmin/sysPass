@@ -244,8 +244,7 @@ final class ConfigManagerController extends ControllerBase
 
         $serverTypes = [
             LdapTypeInterface::LDAP_STD => 'Standard',
-            LdapTypeInterface::LDAP_ADS => 'Active Directory',
-            LdapTypeInterface::LDAP_AZURE => 'Azure Active Directory',
+            LdapTypeInterface::LDAP_ADS => 'Active Directory'
         ];
 
         $template->assign('serverTypes',
