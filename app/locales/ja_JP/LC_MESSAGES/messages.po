@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-29 01:28+0200\n"
-"PO-Revision-Date: 2020-09-08 01:55+0900\n"
+"PO-Revision-Date: 2020-09-09 22:34+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: language@syspass.org\n"
 "Language: ja_JP\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: app/modules/api/Controllers/AccountController.php:74
 msgid "Account displayed"
-msgstr ""
+msgstr "アカウントを表示"
 
 #: app/modules/api/Controllers/AccountController.php:75
 #: app/modules/api/Controllers/AccountController.php:107
@@ -80,7 +80,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:576
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:29
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: app/modules/api/Controllers/AccountController.php:76
 #: app/modules/api/Controllers/AccountController.php:108
@@ -122,13 +122,13 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:47
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #: app/modules/api/Controllers/AccountController.php:106
 #: app/modules/web/Controllers/AccountController.php:667
 #: app/modules/web/Controllers/AccountController.php:727
 msgid "Password viewed"
-msgstr ""
+msgstr "パスワードを表示しました"
 
 #: app/modules/api/Controllers/AccountController.php:142
 #: app/modules/api/Controllers/AccountController.php:148
@@ -139,21 +139,21 @@ msgstr ""
 #: app/modules/web/Controllers/UserPassResetController.php:220
 #: app/modules/web/Controllers/UserPassResetController.php:228
 msgid "Password updated"
-msgstr ""
+msgstr "パスワードを更新しました"
 
 #: app/modules/api/Controllers/AccountController.php:192
 #: app/modules/api/Controllers/AccountController.php:198
 #: app/modules/web/Controllers/AccountController.php:842
 #: app/modules/web/Controllers/AccountController.php:853
 msgid "Account created"
-msgstr ""
+msgstr "アカウントを作成しました"
 
 #: app/modules/api/Controllers/AccountController.php:243
 #: app/modules/api/Controllers/AccountController.php:249
 #: app/modules/web/Controllers/AccountController.php:891
 #: app/modules/web/Controllers/AccountController.php:902
 msgid "Account updated"
-msgstr ""
+msgstr "アカウントを更新しました"
 
 #: app/modules/api/Controllers/AccountController.php:318
 #: app/modules/api/Controllers/AccountController.php:324
@@ -164,36 +164,36 @@ msgstr ""
 #: app/modules/web/Controllers/AccountManagerController.php:156
 #: app/modules/web/Controllers/AccountManagerController.php:161
 msgid "Account removed"
-msgstr ""
+msgstr "アカウントを削除しました"
 
 #: app/modules/api/Controllers/CategoryController.php:66
 msgid "Category displayed"
-msgstr ""
+msgstr "カテゴリーを表示しました"
 
 #: app/modules/api/Controllers/CategoryController.php:95
 #: app/modules/api/Controllers/CategoryController.php:100
 #: app/modules/web/Controllers/CategoryController.php:280
 #: app/modules/web/Controllers/CategoryController.php:284
 msgid "Category added"
-msgstr ""
+msgstr "カテゴリーを追加しました"
 
 #: app/modules/api/Controllers/CategoryController.php:125
 #: app/modules/api/Controllers/CategoryController.php:130
 #: app/modules/web/Controllers/CategoryController.php:324
 #: app/modules/web/Controllers/CategoryController.php:328
 msgid "Category updated"
-msgstr ""
+msgstr "カテゴリーを更新しました"
 
 #: app/modules/api/Controllers/CategoryController.php:154
 #: app/modules/api/Controllers/CategoryController.php:159
 #: app/modules/web/Controllers/CategoryController.php:242
 #: app/modules/web/Controllers/CategoryController.php:246
 msgid "Category deleted"
-msgstr ""
+msgstr "カテゴリーを削除しました"
 
 #: app/modules/api/Controllers/ClientController.php:67
 msgid "Client displayed"
-msgstr ""
+msgstr "クライアントを表示しました"
 
 #: app/modules/api/Controllers/ClientController.php:97
 #: app/modules/api/Controllers/ClientController.php:102
@@ -201,55 +201,55 @@ msgstr ""
 #: app/modules/web/Controllers/ClientController.php:279
 #: lib/SP/Services/Import/KeepassImport.php:79
 msgid "Client added"
-msgstr ""
+msgstr "クライアントを追加しました"
 
 #: app/modules/api/Controllers/ClientController.php:128
 #: app/modules/api/Controllers/ClientController.php:133
 #: app/modules/web/Controllers/ClientController.php:315
 #: app/modules/web/Controllers/ClientController.php:319
 msgid "Client updated"
-msgstr ""
+msgstr "クライアントを更新しました"
 
 #: app/modules/api/Controllers/ClientController.php:157
 #: app/modules/api/Controllers/ClientController.php:162
 #: app/modules/web/Controllers/ClientController.php:239
 #: app/modules/web/Controllers/ClientController.php:243
 msgid "Client deleted"
-msgstr ""
+msgstr "クライアントを削除しました"
 
 #: app/modules/api/Controllers/ConfigController.php:59
 #: app/modules/web/Controllers/ConfigBackupController.php:70
 msgid "Application and database backup completed successfully"
-msgstr ""
+msgstr "アプリケーションとデーベースのバックアップが完了しました"
 
 #: app/modules/api/Controllers/ConfigController.php:60
 #: app/modules/api/Controllers/ConfigController.php:85
 #: app/modules/api/Controllers/Help/ConfigHelp.php:43
 #: app/modules/api/Controllers/Help/ConfigHelp.php:54
 msgid "Path"
-msgstr ""
+msgstr "Path"
 
 #: app/modules/api/Controllers/ConfigController.php:63
 #: app/modules/web/Controllers/ConfigBackupController.php:73
 msgid "Backup process finished"
-msgstr ""
+msgstr "バックアップが完了しました"
 
 #: app/modules/api/Controllers/ConfigController.php:84
 #: app/modules/web/Controllers/ConfigBackupController.php:98
 msgid "sysPass XML export"
-msgstr ""
+msgstr "sysPass XML export"
 
 #: app/modules/api/Controllers/ConfigController.php:93
 #: app/modules/api/Controllers/ConfigController.php:96
 #: app/modules/web/Controllers/ConfigBackupController.php:108
 #: app/modules/web/Controllers/ConfigBackupController.php:136
 msgid "Export process finished"
-msgstr ""
+msgstr "エクスポートが完了しました"
 
 #: app/modules/api/Controllers/ControllerBase.php:150
 #: lib/SP/Services/Api/ApiService.php:189
 msgid "Unauthorized access"
-msgstr ""
+msgstr "Unauthorized access"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:43
 #: app/modules/api/Controllers/Help/AccountHelp.php:54
@@ -257,17 +257,17 @@ msgstr ""
 #: app/modules/api/Controllers/Help/AccountHelp.php:105
 #: app/modules/api/Controllers/Help/AccountHelp.php:144
 msgid "Account Id"
-msgstr ""
+msgstr "アカウントID"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:55
 #: app/modules/api/Controllers/Help/AccountHelp.php:68
 #: app/modules/api/Controllers/Help/AccountHelp.php:81
 msgid "Token's password"
-msgstr ""
+msgstr "Token's password"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:56
 msgid "Send details in the response"
-msgstr ""
+msgstr "Send details in the response"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:69
 #: app/modules/api/Controllers/Help/AccountHelp.php:85
@@ -300,7 +300,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/login/index.inc:106
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:34
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:70
 #: app/modules/api/Controllers/Help/AccountHelp.php:91
@@ -312,7 +312,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/details.inc:96
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:274
 msgid "Password Expiry Date"
-msgstr ""
+msgstr "パスワードの有効期限"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:82
 #: app/modules/api/Controllers/Help/AccountHelp.php:106
@@ -322,7 +322,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:39
 #: app/modules/web/themes/material-blue/views/account/account.inc:88
 msgid "Account name"
-msgstr ""
+msgstr "アカウント名"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:83
 #: app/modules/api/Controllers/Help/AccountHelp.php:107
@@ -330,7 +330,7 @@ msgstr ""
 #: app/modules/api/Controllers/Help/CategoryHelp.php:66
 #: app/modules/api/Controllers/Help/CategoryHelp.php:91
 msgid "Category Id"
-msgstr ""
+msgstr "カテゴリーID"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:84
 #: app/modules/api/Controllers/Help/AccountHelp.php:108
@@ -338,21 +338,21 @@ msgstr ""
 #: app/modules/api/Controllers/Help/ClientHelp.php:67
 #: app/modules/api/Controllers/Help/ClientHelp.php:93
 msgid "Client Id"
-msgstr ""
+msgstr "クライアントID"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:124
 #: app/modules/web/themes/material-blue/views/account/account.inc:166
 msgid "Access user"
-msgstr ""
+msgstr "アクセスを許可するユーザー"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:110
 #: app/modules/web/themes/material-blue/views/account/account.inc:153
 msgid "Access URL or IP"
-msgstr ""
+msgstr "ウェブサイトのURL or IP"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:88
 #: app/modules/api/Controllers/Help/AccountHelp.php:111
@@ -360,7 +360,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:103
 #: app/modules/web/themes/material-blue/views/account/account.inc:233
 msgid "Notes about the account"
-msgstr ""
+msgstr "アカウントに関するメモ"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:89
 #: app/modules/api/Controllers/Help/AccountHelp.php:112
@@ -368,14 +368,14 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:131
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:35
 msgid "Private Account"
-msgstr ""
+msgstr "プライベートアカウント"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:246
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:55
 msgid "Private Account for Group"
-msgstr ""
+msgstr "プライベートグループアカウント"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
@@ -383,12 +383,12 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account.inc:285
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:19
 msgid "Linked Account"
-msgstr ""
+msgstr "関連するアカウント"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:93
 #: app/modules/api/Controllers/Help/AccountHelp.php:116
 msgid "Array with tags id"
-msgstr ""
+msgstr "タグID"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:94
 #: app/modules/api/Controllers/Help/AccountHelp.php:117
@@ -396,7 +396,7 @@ msgstr ""
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:67
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:93
 msgid "Group Id"
-msgstr ""
+msgstr "グループID"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:128
 #: app/modules/api/Controllers/Help/CategoryHelp.php:79
@@ -405,7 +405,7 @@ msgstr ""
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:81
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:34
 msgid "Text to search for"
-msgstr ""
+msgstr "検索"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:129
 #: app/modules/api/Controllers/Help/CategoryHelp.php:80
@@ -413,47 +413,47 @@ msgstr ""
 #: app/modules/api/Controllers/Help/TagHelp.php:78
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:82
 msgid "Number of results to display"
-msgstr ""
+msgstr "１ページあたりの表示数"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:130
 msgid "Category Id to filter on"
-msgstr ""
+msgstr "カテゴリーIDで検索"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:131
 msgid "Client Id to filter on"
-msgstr ""
+msgstr "クライアントIDで検索"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:132
 msgid "Array with tags id for filtering"
-msgstr ""
+msgstr "タグIDで検索"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:133
 msgid "Filtering operator"
-msgstr ""
+msgstr "Filtering operator"
 
 #: app/modules/api/Controllers/Help/CategoryHelp.php:54
 #: app/modules/api/Controllers/Help/CategoryHelp.php:67
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:37
 msgid "Category name"
-msgstr ""
+msgstr "カテゴリー名"
 
 #: app/modules/api/Controllers/Help/CategoryHelp.php:55
 #: app/modules/api/Controllers/Help/CategoryHelp.php:68
 #: app/modules/web/themes/material-blue/views/itemshow/category.inc:50
 msgid "Category description"
-msgstr ""
+msgstr "カテゴリーの説明"
 
 #: app/modules/api/Controllers/Help/ClientHelp.php:54
 #: app/modules/api/Controllers/Help/ClientHelp.php:68
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:37
 msgid "Client name"
-msgstr ""
+msgstr "クライアント名"
 
 #: app/modules/api/Controllers/Help/ClientHelp.php:55
 #: app/modules/api/Controllers/Help/ClientHelp.php:69
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:51
 msgid "Client description"
-msgstr ""
+msgstr "クライアントの説明"
 
 #: app/modules/api/Controllers/Help/ClientHelp.php:56
 #: app/modules/api/Controllers/Help/ClientHelp.php:70
@@ -462,87 +462,87 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:76
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:119
 msgid "Global"
-msgstr ""
+msgstr "グローバル"
 
 #: app/modules/api/Controllers/Help/TagHelp.php:43
 #: app/modules/api/Controllers/Help/TagHelp.php:65
 #: app/modules/api/Controllers/Help/TagHelp.php:89
 msgid "Tag Id"
-msgstr ""
+msgstr "タグID"
 
 #: app/modules/api/Controllers/Help/TagHelp.php:54
 #: app/modules/api/Controllers/Help/TagHelp.php:66
 #: app/modules/web/themes/material-blue/views/itemshow/tag.inc:36
 msgid "Tag name"
-msgstr ""
+msgstr "タグ名"
 
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:54
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:68
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:40
 msgid "Group name"
-msgstr ""
+msgstr "グループ名"
 
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:55
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:69
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:54
 msgid "Group description"
-msgstr ""
+msgstr "グループの説明"
 
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:56
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:70
 msgid "Array with users Id"
-msgstr ""
+msgstr "ユーザーID"
 
 #: app/modules/api/Controllers/TagController.php:65
 msgid "Tag displayed"
-msgstr ""
+msgstr "タグを表示しました"
 
 #: app/modules/api/Controllers/TagController.php:93
 #: app/modules/api/Controllers/TagController.php:98
 #: app/modules/web/Controllers/TagController.php:259
 msgid "Tag added"
-msgstr ""
+msgstr "タグを追加しました"
 
 #: app/modules/api/Controllers/TagController.php:122
 #: app/modules/api/Controllers/TagController.php:127
 #: app/modules/web/Controllers/TagController.php:294
 msgid "Tag updated"
-msgstr ""
+msgstr "タグを更新しました"
 
 #: app/modules/api/Controllers/TagController.php:151
 #: app/modules/api/Controllers/TagController.php:156
 #: app/modules/web/Controllers/TagController.php:229
 msgid "Tag removed"
-msgstr ""
+msgstr "タグを削除しました"
 
 #: app/modules/api/Controllers/UserGroupController.php:65
 msgid "Group viewed"
-msgstr ""
+msgstr "グループを表示しました"
 
 #: app/modules/api/Controllers/UserGroupController.php:95
 #: app/modules/api/Controllers/UserGroupController.php:100
 #: app/modules/web/Controllers/UserGroupController.php:290
 #: app/modules/web/Controllers/UserGroupController.php:294
 msgid "Group added"
-msgstr ""
+msgstr "グループを追加しました"
 
 #: app/modules/api/Controllers/UserGroupController.php:126
 #: app/modules/api/Controllers/UserGroupController.php:132
 #: app/modules/web/Controllers/UserGroupController.php:333
 #: app/modules/web/Controllers/UserGroupController.php:338
 msgid "Group updated"
-msgstr ""
+msgstr "グループを更新しました"
 
 #: app/modules/api/Controllers/UserGroupController.php:156
 #: app/modules/api/Controllers/UserGroupController.php:162
 #: app/modules/web/Controllers/UserGroupController.php:251
 #: app/modules/web/Controllers/UserGroupController.php:256
 msgid "Group deleted"
-msgstr ""
+msgstr "グループを削除しました"
 
 #: app/modules/api/Init.php:156
 msgid "Updating needed"
-msgstr ""
+msgstr "更新が必要です"
 
 #: app/modules/web/Controllers/AccountController.php:169
 #: app/modules/web/Controllers/AccountController.php:236
@@ -554,11 +554,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:32
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:67
 msgid "Account Details"
-msgstr ""
+msgstr "アカウントの詳細"
 
 #: app/modules/web/Controllers/AccountController.php:262
 msgid "Link viewed"
-msgstr ""
+msgstr "Link viewed"
 
 #: app/modules/web/Controllers/AccountController.php:263
 #: app/modules/web/Controllers/AccountController.php:668
@@ -582,51 +582,51 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:29
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:31
 msgid "Account"
-msgstr ""
+msgstr "アカウント"
 
 #: app/modules/web/Controllers/AccountController.php:265
 msgid "Agent"
-msgstr ""
+msgstr "エージェント"
 
 #: app/modules/web/Controllers/AccountController.php:266
 msgid "HTTPS"
-msgstr ""
+msgstr "HTTPS"
 
 #: app/modules/web/Controllers/AccountController.php:266
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
-msgstr ""
+msgstr "ON"
 
 #: app/modules/web/Controllers/AccountController.php:266
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 msgid "OFF"
-msgstr ""
+msgstr "OFF"
 
 #: app/modules/web/Controllers/AccountController.php:267
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #: app/modules/web/Controllers/AccountController.php:268
 #: app/modules/web/Controllers/AccountController.php:1084
 #: app/modules/web/Controllers/PublicLinkController.php:273
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:91
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: app/modules/web/Controllers/AccountController.php:301
 #: app/modules/web/Controllers/AccountController.php:353
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:276
 msgid "New Account"
-msgstr ""
+msgstr "アカウントの追加"
 
 #: app/modules/web/Controllers/AccountController.php:407
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:177
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:24
 msgid "Edit Account"
-msgstr ""
+msgstr "アカウントの編集"
 
 #: app/modules/web/Controllers/AccountController.php:462
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:334
@@ -636,25 +636,25 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
 msgid "Remove Account"
-msgstr ""
+msgstr "アカウントの削除"
 
 #: app/modules/web/Controllers/AccountController.php:515
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:156
 msgid "Edit Account Password"
-msgstr ""
+msgstr "アカウントのパスワードを変更"
 
 #: app/modules/web/Controllers/AccountController.php:771
 #: app/modules/web/Controllers/AccountController.php:808
 msgid "Password copied"
-msgstr ""
+msgstr "パスワードをコピーしました"
 
 #: app/modules/web/Controllers/AccountController.php:979
 #: app/modules/web/Controllers/AccountController.php:990
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:165
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:170
 msgid "Account restored"
-msgstr ""
+msgstr "アカウントを復元しました"
 
 #: app/modules/web/Controllers/AccountController.php:1019
 #: app/modules/web/Controllers/AccountController.php:1022
@@ -663,12 +663,12 @@ msgstr ""
 #: app/modules/web/Controllers/AccountManagerController.php:142
 #: app/modules/web/Controllers/AccountManagerController.php:145
 msgid "Accounts removed"
-msgstr ""
+msgstr "アカウントを削除しました"
 
 #: app/modules/web/Controllers/AccountController.php:1063
 #: app/modules/web/Forms/NotificationForm.php:106
 msgid "A description is needed"
-msgstr ""
+msgstr "説明を入力してください"
 
 #: app/modules/web/Controllers/AccountController.php:1079
 #: lib/SP/Providers/Notification/NotificationHandler.php:127
@@ -676,11 +676,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:49
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:51
 msgid "Request"
-msgstr ""
+msgstr "リクエスト"
 
 #: app/modules/web/Controllers/AccountController.php:1080
 msgid "Requester"
-msgstr ""
+msgstr "Requester"
 
 #: app/modules/web/Controllers/AccountController.php:1083
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
@@ -694,29 +694,29 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:72
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:82
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: app/modules/web/Controllers/AccountController.php:1099
 msgid "Request done"
-msgstr ""
+msgstr "リクエストを送信しました"
 
 #: app/modules/web/Controllers/AccountFavoriteController.php:57
 msgid "Favorite added"
-msgstr ""
+msgstr "お気に入りに追加しました"
 
 #: app/modules/web/Controllers/AccountFavoriteController.php:77
 msgid "Favorite deleted"
-msgstr ""
+msgstr "お気に入りから削除しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:83
 #: app/modules/web/Controllers/AccountFileController.php:146
 msgid "File does not exist"
-msgstr ""
+msgstr "ファイルが存在しません"
 
 #: app/modules/web/Controllers/AccountFileController.php:96
 #: app/modules/web/Controllers/AccountFileController.php:112
 msgid "File viewed"
-msgstr ""
+msgstr "ファイルを表示しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:97
 #: app/modules/web/Controllers/AccountFileController.php:113
@@ -731,11 +731,11 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:133
 #: app/modules/web/themes/material-blue/views/config/import.inc:80
 msgid "File"
-msgstr ""
+msgstr "ファイル"
 
 #: app/modules/web/Controllers/AccountFileController.php:126
 msgid "File not supported for preview"
-msgstr ""
+msgstr "このファイルはプレビューできません"
 
 #: app/modules/web/Controllers/AccountFileController.php:151
 #: app/modules/web/Controllers/ConfigBackupController.php:164
@@ -744,43 +744,43 @@ msgstr ""
 #: app/modules/web/Controllers/ConfigGeneralController.php:211
 #: app/modules/web/Controllers/ConfigGeneralController.php:252
 msgid "File downloaded"
-msgstr ""
+msgstr "ダウンロード"
 
 #: app/modules/web/Controllers/AccountFileController.php:197
 msgid "INVALID QUERY"
-msgstr ""
+msgstr "クエリーの文法エラー"
 
 #: app/modules/web/Controllers/AccountFileController.php:203
 msgid "There aren't any allowed MIME types"
-msgstr ""
+msgstr "このMIME typeは許可されていません"
 
 #: app/modules/web/Controllers/AccountFileController.php:218
 msgid "Invalid file"
-msgstr ""
+msgstr "不正なファイルです"
 
 #: app/modules/web/Controllers/AccountFileController.php:220
 #, php-format
 msgid "File: %s"
-msgstr ""
+msgstr "File: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:232
 msgid "File size exceeded"
-msgstr ""
+msgstr "ファイルが大きすぎます"
 
 #: app/modules/web/Controllers/AccountFileController.php:234
 #, php-format
 msgid "Maximum size: %d KB"
-msgstr ""
+msgstr "ファイルサイズの上限: %d KB"
 
 #: app/modules/web/Controllers/AccountFileController.php:240
 #: lib/SP/Services/Import/FileImport.php:106
 msgid "Internal error while reading the file"
-msgstr ""
+msgstr "ファイルの読み込みエラーです"
 
 #: app/modules/web/Controllers/AccountFileController.php:252
 #: app/modules/web/Controllers/AccountFileController.php:261
 msgid "File saved"
-msgstr ""
+msgstr "ファイルを保存しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:256
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:109
@@ -798,23 +798,23 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:31
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:39
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: app/modules/web/Controllers/AccountFileController.php:257
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:110
 msgid "Size"
-msgstr ""
+msgstr "Size"
 
 #: app/modules/web/Controllers/AccountFileController.php:295
 #: lib/SP/Services/Import/FileImport.php:95
 msgid "File type not allowed"
-msgstr ""
+msgstr "この種類のファイルは許可されていません"
 
 #: app/modules/web/Controllers/AccountFileController.php:297
 #: lib/SP/Services/Import/FileImport.php:97
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "MIME type: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:316
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:71
@@ -907,62 +907,62 @@ msgstr ""
 #: lib/SP/Core/Acl/UnauthorizedActionException.php:47
 #: lib/SP/Util/ErrorUtil.php:161
 msgid "You don't have permission to do this operation"
-msgstr ""
+msgstr "この操作を行う権限がありません"
 
 #: app/modules/web/Controllers/AccountFileController.php:379
 #: app/modules/web/Controllers/AccountFileController.php:382
 msgid "Files deleted"
-msgstr ""
+msgstr "ファイルを削除しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:387
 msgid "File deleted"
-msgstr ""
+msgstr "ファイルを削除しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:393
 msgid "File Deleted"
-msgstr ""
+msgstr "ファイルを削除しました"
 
 #: app/modules/web/Controllers/AccountFileController.php:431
 msgid "Files management disabled"
-msgstr ""
+msgstr "ファイル管理機能は使えません"
 
 #: app/modules/web/Controllers/AccountFileController.php:450
 msgid "There are no linked files for the account"
-msgstr ""
+msgstr "このアカウントに紐づいているファイルはありません"
 
 #: app/modules/web/Controllers/AccountManagerController.php:198
 #: app/modules/web/Controllers/AccountManagerController.php:201
 #: lib/SP/Services/Account/AccountCryptService.php:198
 msgid "Accounts updated"
-msgstr ""
+msgstr "アカウントを更新しました"
 
 #: app/modules/web/Controllers/AccountManagerController.php:223
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:199
 msgid "Bulk Update"
-msgstr ""
+msgstr "複数件更新"
 
 #: app/modules/web/Controllers/AuthTokenController.php:124
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:156
 msgid "New Authorization"
-msgstr ""
+msgstr "New Authorization"
 
 #: app/modules/web/Controllers/AuthTokenController.php:191
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:191
 msgid "Edit Authorization"
-msgstr ""
+msgstr "Edit Authorization"
 
 #: app/modules/web/Controllers/AuthTokenController.php:234
 #: app/modules/web/Controllers/AuthTokenController.php:237
 msgid "Authorizations deleted"
-msgstr ""
+msgstr "Authorizations deleted"
 
 #: app/modules/web/Controllers/AuthTokenController.php:247
 #: app/modules/web/Controllers/AuthTokenController.php:251
 msgid "Authorization deleted"
-msgstr ""
+msgstr "Authorization deleted"
 
 #: app/modules/web/Controllers/AuthTokenController.php:248
 #: app/modules/web/Controllers/AuthTokenController.php:324
@@ -970,44 +970,44 @@ msgstr ""
 #: app/modules/web/Controllers/AuthTokenController.php:376
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:72
 msgid "Authorization"
-msgstr ""
+msgstr "Authorization"
 
 #: app/modules/web/Controllers/AuthTokenController.php:285
 msgid "Authorization added"
-msgstr ""
+msgstr "Authorization added"
 
 #: app/modules/web/Controllers/AuthTokenController.php:323
 #: app/modules/web/Controllers/AuthTokenController.php:332
 #: app/modules/web/Controllers/AuthTokenController.php:339
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:71
 msgid "Authorization updated"
-msgstr ""
+msgstr "Authorization updated"
 
 #: app/modules/web/Controllers/AuthTokenController.php:367
 msgid "View Authorization"
-msgstr ""
+msgstr "View Authorization"
 
 #: app/modules/web/Controllers/AuthTokenController.php:375
 msgid "Authorization viewed"
-msgstr ""
+msgstr "Authorization viewed"
 
 #: app/modules/web/Controllers/CategoryController.php:120
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:152
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:153
 #: app/modules/web/themes/material-blue/views/account/account.inc:135
 msgid "New Category"
-msgstr ""
+msgstr "カテゴリの追加"
 
 #: app/modules/web/Controllers/CategoryController.php:186
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:170
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:171
 msgid "Edit Category"
-msgstr ""
+msgstr "カテゴリーの編集"
 
 #: app/modules/web/Controllers/CategoryController.php:229
 #: app/modules/web/Controllers/CategoryController.php:232
 msgid "Categories deleted"
-msgstr ""
+msgstr "カテゴリーの削除"
 
 #: app/modules/web/Controllers/CategoryController.php:243
 #: app/modules/web/Controllers/CategoryController.php:281
@@ -1026,53 +1026,53 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:61
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:63
 msgid "Category"
-msgstr ""
+msgstr "カテゴリー"
 
 #: app/modules/web/Controllers/CategoryController.php:356
 msgid "View Category"
-msgstr ""
+msgstr "カテゴリーを表示"
 
 #: app/modules/web/Controllers/ClientController.php:121
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
 #: app/modules/web/themes/material-blue/views/account/account.inc:109
 msgid "New Client"
-msgstr ""
+msgstr "クライアントを追加"
 
 #: app/modules/web/Controllers/ClientController.php:187
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
 msgid "Edit Client"
-msgstr ""
+msgstr "クライアントを編集"
 
 #: app/modules/web/Controllers/ClientController.php:228
 #: app/modules/web/Controllers/ClientController.php:231
 msgid "Clients deleted"
-msgstr ""
+msgstr "クライアントを削除"
 
 #: app/modules/web/Controllers/ClientController.php:347
 msgid "View Client"
-msgstr ""
+msgstr "クライアントを表示"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:74
 msgid "Maximum size per file is 16MB"
-msgstr ""
+msgstr "ファイルの最大サイズは16MBです"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:82
 msgid "Files enabled"
-msgstr ""
+msgstr "ファイルを有効化しました"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:87
 msgid "Files disabled"
-msgstr ""
+msgstr "ファイルを無効化しました"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:100
 msgid "Public links enabled"
-msgstr ""
+msgstr "共有リンクを有効化"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:105
 msgid "Public links disabled"
-msgstr ""
+msgstr "共有リンクを無効化"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:59
 #: app/modules/web/Controllers/ConfigBackupController.php:197
@@ -1088,18 +1088,18 @@ msgstr ""
 #: app/modules/web/Forms/UserForm.php:153
 #: app/modules/web/Forms/UserForm.php:171
 msgid "Ey, this is a DEMO!!"
-msgstr ""
+msgstr "これはデモです！"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:92
 #: app/modules/web/Controllers/UserPassResetController.php:203
 #: app/modules/web/Forms/AccountForm.php:136
 #: app/modules/web/Forms/UserForm.php:161
 msgid "Passwords do not match"
-msgstr ""
+msgstr "パスワードが一致しません"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
 msgid "Verification of exported data finished"
-msgstr ""
+msgstr "エクスポートが完了しました"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:124
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:124
@@ -1110,24 +1110,24 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/info.inc:61
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:41
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:125
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:128
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:21
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:106
 msgid "Encrypted"
-msgstr ""
+msgstr "Encrypted"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:125
 #: app/modules/web/themes/material-blue/views/config/info.inc:152
 msgid "Yes"
-msgstr ""
+msgstr "Yes"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:125
 #: app/modules/web/themes/material-blue/views/config/info.inc:152
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:126
 #: app/modules/web/Controllers/ConfigManagerController.php:203
@@ -1138,21 +1138,21 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:33
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:429
 msgid "Accounts"
-msgstr ""
+msgstr "アカウント"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:93
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:81
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:361
 msgid "Clients"
-msgstr ""
+msgstr "クライアント"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:128
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:94
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:80
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:327
 msgid "Categories"
-msgstr ""
+msgstr "カテゴリー"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:129
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
@@ -1161,19 +1161,19 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:109
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:344
 msgid "Tags"
-msgstr ""
+msgstr "タグ"
 
 #: app/modules/web/Controllers/ConfigDokuWikiController.php:66
 msgid "Missing DokuWiki parameters"
-msgstr ""
+msgstr "DokuWikiの文法ではありません"
 
 #: app/modules/web/Controllers/ConfigDokuWikiController.php:78
 msgid "DokuWiki enabled"
-msgstr ""
+msgstr "DokuWikiを有効化"
 
 #: app/modules/web/Controllers/ConfigDokuWikiController.php:83
 msgid "DokuWiki disabled"
-msgstr ""
+msgstr "DokuWikiを無効化"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:80
 #: app/modules/web/Controllers/ConfigEncryptionController.php:180
@@ -1183,7 +1183,7 @@ msgstr ""
 #: lib/SP/Services/User/UpdatedMasterPassException.php:46
 #: lib/SP/Util/ErrorUtil.php:165
 msgid "Master password updated"
-msgstr ""
+msgstr "マスターパスワードを更新しました"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:81
 #: app/modules/web/Controllers/ConfigEncryptionController.php:181
@@ -1191,197 +1191,199 @@ msgstr ""
 #: lib/SP/Services/User/UpdatedMasterPassException.php:46
 #: lib/SP/Util/ErrorUtil.php:166
 msgid "Please, restart the session for update it"
-msgstr ""
+msgstr "変更を適用するにはログインし直してください"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:88
 msgid "Master password not entered"
-msgstr ""
+msgstr "マスターパスワードが入力されていません"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:95
 msgid "The password update must be confirmed"
-msgstr ""
+msgstr "入力されたパスワードが一致しません"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:102
 msgid "Passwords are the same"
-msgstr ""
+msgstr "入力されたパスワードが一致しました"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:109
 msgid "Master passwords do not match"
-msgstr ""
+msgstr "マスターパスワードが一致しません"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:116
 msgid "The current master password does not match"
-msgstr ""
+msgstr "現在のマスターパスワードと一致しません"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:123
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "Maintenance mode not enabled"
-msgstr ""
+msgstr "メンテナンスモードが有効化されていません"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:124
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
+"他のユーザーがログインしていると予想外の変更が行われる可能性があるのでメンテ"
+"ナンスモードを有効化してください"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:174
 msgid "Error while saving the Master Password's hash"
-msgstr ""
+msgstr "マスターパスワードのハッシュを保存する時にエラーが発生しました"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:201
 #: app/modules/web/Controllers/ConfigEncryptionController.php:203
 msgid "Master password hash updated"
-msgstr ""
+msgstr "マスターパスワードのハッシュを更新しました"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:210
 msgid "Error while updating the master password hash"
-msgstr ""
+msgstr "マスターパスワードのハッシュを更新する時にエラーが発生しました"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:239
 #: app/modules/web/Controllers/ConfigEncryptionController.php:249
 #: app/modules/web/Controllers/ConfigEncryptionController.php:255
 msgid "Temporary password generated"
-msgstr ""
+msgstr "仮マスターパスワードの発行"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:240
 #: app/modules/web/Controllers/ConfigMailController.php:164
 #: app/modules/web/Controllers/ConfigMailController.php:170
 #: lib/SP/Services/Mail/MailService.php:150
 msgid "Email sent"
-msgstr ""
+msgstr "メールの送信"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:250
 #: lib/SP/Services/Mail/MailService.php:82
 #: lib/SP/Services/Mail/MailService.php:160
 msgid "Error while sending the email"
-msgstr ""
+msgstr "メールの送信ん失敗しました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:102
 msgid "Missing remote syslog parameters"
-msgstr ""
+msgstr "remote syslogの設定を確認してください"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:110
 msgid "Remote syslog enabled"
-msgstr ""
+msgstr "remote syslogを有効化しました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:115
 msgid "Remote syslog disabled"
-msgstr ""
+msgstr "remote syslogを無効にしました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:128
 msgid "Missing Proxy parameters "
-msgstr ""
+msgstr "Proxy設定を確認してください "
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:142
 msgid "Proxy enabled"
-msgstr ""
+msgstr "Proxyを有効化しました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:147
 msgid "Proxy disabled"
-msgstr ""
+msgstr "Proxyを無効にしました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:166
 msgid "Auth Basic enabled"
-msgstr ""
+msgstr "Basic認証を有効化しました"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:172
 msgid "Auth Basic disabled"
-msgstr ""
+msgstr "Basic認証を無効にしました"
 
 #: app/modules/web/Controllers/ConfigImportController.php:80
 msgid "Accounts imported"
-msgstr ""
+msgstr "アカウントのインポート"
 
 #: app/modules/web/Controllers/ConfigImportController.php:86
 #: app/modules/web/Controllers/ConfigLdapController.php:279
 msgid "Import finished"
-msgstr ""
+msgstr "インポートが完了しました"
 
 #: app/modules/web/Controllers/ConfigImportController.php:87
 #: app/modules/web/Controllers/ConfigImportController.php:94
 #: lib/SP/Services/Backup/FileBackupService.php:128
 #: lib/SP/Services/Export/XmlExportService.php:206
 msgid "Please check out the event log for more details"
-msgstr ""
+msgstr "詳細はevent logを確認してください"
 
 #: app/modules/web/Controllers/ConfigImportController.php:93
 msgid "No accounts were imported"
-msgstr ""
+msgstr "インポートできるアカウントがありません"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:76
 #: app/modules/web/Controllers/ConfigLdapController.php:152
 #: app/modules/web/Controllers/ConfigLdapController.php:191
 msgid "Missing LDAP parameters"
-msgstr ""
+msgstr "LDAP設定を確認してください"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:95
 msgid "LDAP enabled"
-msgstr ""
+msgstr "LDAPを有効化しました"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:100
 msgid "LDAP disabled"
-msgstr ""
+msgstr "LDAPを無効にしました"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:102
 #: app/modules/web/Controllers/ConfigMailController.php:114
 msgid "No changes"
-msgstr ""
+msgstr "変更はありません"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:126
 #: app/modules/web/Controllers/ConfigLdapController.php:257
 msgid "Wrong LDAP parameters"
-msgstr ""
+msgstr "LDAP設定を確認してください"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:162
 #: app/modules/web/Controllers/ConfigLdapController.php:207
 msgid "Results"
-msgstr ""
+msgstr "Results"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:167
 #: app/modules/web/Controllers/ConfigLdapController.php:213
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:99
 msgid "LDAP connection OK"
-msgstr ""
+msgstr "LDAP connection OK"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:168
 #: app/modules/web/Controllers/ConfigLdapController.php:214
 #, php-format
 msgid "Objects found: %d"
-msgstr ""
+msgstr "Objects found: %d"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:264
 msgid "LDAP Import"
-msgstr ""
+msgstr "LDAP Import"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:283
 msgid "There aren't any objects to synchronize"
-msgstr ""
+msgstr "There aren't any objects to synchronize"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:288
 msgid "LDAP users import finished"
-msgstr ""
+msgstr "LDAPからユーザーをインポートしました"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:290
 #, php-format
 msgid "Imported users: %d / %d"
-msgstr ""
+msgstr "Imported users: %d / %d"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:291
 #, php-format
 msgid "Errors: %d"
-msgstr ""
+msgstr "Errors: %d"
 
 #: app/modules/web/Controllers/ConfigMailController.php:77
 #: app/modules/web/Controllers/ConfigMailController.php:150
 msgid "Missing Mail parameters"
-msgstr ""
+msgstr "メール設定を確認してください"
 
 #: app/modules/web/Controllers/ConfigMailController.php:105
 msgid "Mail enabled"
-msgstr ""
+msgstr "メールを有効化しました"
 
 #: app/modules/web/Controllers/ConfigMailController.php:112
 msgid "Mail disabled"
-msgstr ""
+msgstr "メールを無効にしました"
 
 #: app/modules/web/Controllers/ConfigMailController.php:165
 #: lib/SP/Services/Mail/MailService.php:151
@@ -1390,7 +1392,7 @@ msgstr ""
 
 #: app/modules/web/Controllers/ConfigMailController.php:171
 msgid "Please, check your inbox"
-msgstr ""
+msgstr "届いたメールを確認してください"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:173
 #: app/modules/web/themes/material-blue/views/install/index.inc:144
@@ -1398,94 +1400,94 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:26
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:484
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:218
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:22
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:245
 msgid "LDAP"
-msgstr ""
+msgstr "LDAP"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:271
 #: app/modules/web/themes/material-blue/views/config/mail.inc:18
 msgid "Mail"
-msgstr ""
+msgstr "メール"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:312
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:501
 msgid "Encryption"
-msgstr ""
+msgstr "Encryption"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:340
 #: app/modules/web/themes/material-blue/views/config/backup.inc:68
 msgid "There aren't any backups available"
-msgstr ""
+msgstr "バックアップが作成されていません"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:350
 #: app/modules/web/themes/material-blue/views/config/backup.inc:142
 msgid "No export file found"
-msgstr ""
+msgstr "エクスポートできる項目がありません"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:353
 #: app/modules/web/themes/material-blue/views/config/backup.inc:31
 #: app/modules/web/themes/material-blue/views/config/backup.inc:86
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:518
 msgid "Backup"
-msgstr ""
+msgstr "Backup"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:376
 msgid "Import Accounts"
-msgstr ""
+msgstr "Import Accounts"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:398
 msgid "Not installed"
-msgstr ""
+msgstr "インストールされていません"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:408
 #: app/modules/web/themes/material-blue/inc/Icons.php:62
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:64
 msgid "Missing Wiki parameters"
-msgstr ""
+msgstr "Wikiの文法エラー"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:74
 msgid "Wiki enabled"
-msgstr ""
+msgstr "Wikiを有効化しました"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:79
 msgid "Wiki disabled"
-msgstr ""
+msgstr "Wikiを無効にしました"
 
 #: app/modules/web/Controllers/CustomFieldController.php:121
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:159
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:160
 msgid "New Field"
-msgstr ""
+msgstr "新規項目"
 
 #: app/modules/web/Controllers/CustomFieldController.php:185
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:178
 msgid "Edit Field"
-msgstr ""
+msgstr "項目の編集"
 
 #: app/modules/web/Controllers/CustomFieldController.php:223
 #: app/modules/web/Controllers/CustomFieldController.php:226
 msgid "Fields deleted"
-msgstr ""
+msgstr "項目の削除"
 
 #: app/modules/web/Controllers/CustomFieldController.php:232
 msgid "Field deleted"
-msgstr ""
+msgstr "項目の削除"
 
 #: app/modules/web/Controllers/CustomFieldController.php:264
 #: app/modules/web/Controllers/CustomFieldController.php:268
 msgid "Field added"
-msgstr ""
+msgstr "項目の追加"
 
 #: app/modules/web/Controllers/CustomFieldController.php:265
 #: app/modules/web/Controllers/CustomFieldController.php:306
@@ -1493,7 +1495,7 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:190
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:254
 msgid "Field"
-msgstr ""
+msgstr "項目"
 
 #: app/modules/web/Controllers/CustomFieldController.php:305
 #: app/modules/web/Controllers/CustomFieldController.php:309
@@ -1502,24 +1504,24 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:189
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:253
 msgid "Field updated"
-msgstr ""
+msgstr "項目を更新"
 
 #: app/modules/web/Controllers/CustomFieldController.php:337
 msgid "View Field"
-msgstr ""
+msgstr "項目を表示"
 
 #: app/modules/web/Controllers/ErrorController.php:109
 msgid "Application on maintenance"
-msgstr ""
+msgstr "現在メンテナンス中です"
 
 #: app/modules/web/Controllers/ErrorController.php:110
 msgid "It will be running shortly"
-msgstr ""
+msgstr "もうしばらくお待ちください"
 
 #: app/modules/web/Controllers/ErrorController.php:125
 #: lib/SP/Services/Install/MySQL.php:363
 msgid "Error while checking the database"
-msgstr ""
+msgstr "データベースのチェック時にエラーが見つかりました"
 
 #: app/modules/web/Controllers/ErrorController.php:126
 #: app/modules/web/Controllers/ErrorController.php:142
@@ -1532,7 +1534,7 @@ msgstr ""
 #: lib/SP/Util/ErrorUtil.php:170 lib/SP/Util/ErrorUtil.php:177
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:17
 msgid "Please contact to the administrator"
-msgstr ""
+msgstr "管理者に連絡して対応を依頼してください"
 
 #: app/modules/web/Controllers/ErrorController.php:141
 #: lib/SP/Services/Install/MySQL.php:99
@@ -1541,17 +1543,17 @@ msgstr ""
 #: lib/SP/Storage/Database/MySQLHandler.php:166
 #: lib/SP/Storage/Database/MySQLHandler.php:178
 msgid "Unable to connect to DB"
-msgstr ""
+msgstr "データベースにつながりません"
 
 #: app/modules/web/Controllers/EventlogController.php:134
 #: app/modules/web/Controllers/EventlogController.php:137
 msgid "Event log cleared"
-msgstr ""
+msgstr "Event logを削除します"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:89
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:90
 msgid "View Current"
-msgstr ""
+msgstr "現在"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:135
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:136
@@ -1579,7 +1581,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:60
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:231
 msgid "Back"
-msgstr ""
+msgstr "Back"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:196
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:197
@@ -1589,29 +1591,29 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:217
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:218
 msgid "Restore account from this point"
-msgstr ""
+msgstr "この時点のアカウントを復元する"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:237
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:238
 #: app/modules/web/themes/material-blue/inc/Icons.php:50
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:150
 msgid "Save"
-msgstr ""
+msgstr "Save"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:354
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:355
 msgid "Update Public Link"
-msgstr ""
+msgstr "共有リンクを更新しました"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:377
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:378
 msgid "Delete Public Link"
-msgstr ""
+msgstr "共有リンクを削除しました"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:397
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:398
 msgid "Create Public Link"
-msgstr ""
+msgstr "共有リンクを作成しました"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:418
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:419
@@ -1620,29 +1622,29 @@ msgstr ""
 #: app/modules/web/themes/material-blue/inc/Icons.php:33
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:81
 msgid "View password"
-msgstr ""
+msgstr "パスワードを表示"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:440
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:441
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:485
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:486
 msgid "Copy Password to Clipboard"
-msgstr ""
+msgstr "パスワードをコピー"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:508
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:509
 msgid "Copy Account"
-msgstr ""
+msgstr "アカウントを複製"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:75
 msgid "Account Password"
-msgstr ""
+msgstr "アカウントのパスワード"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:102
 #: lib/SP/Core/Acl/AccountPermissionException.php:46
 #: lib/SP/Util/ErrorUtil.php:153
 msgid "You don't have permission to access this account"
-msgstr ""
+msgstr "このアカウントにアクセスする権限がありません"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:186
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:187
@@ -1651,15 +1653,15 @@ msgstr ""
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:243
 msgid "Sort by Client"
-msgstr ""
+msgstr "クライアント名順"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:250
 msgid "Sort by Name"
-msgstr ""
+msgstr "名前順"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:257
 msgid "Sort by Category"
-msgstr ""
+msgstr "カテゴリー名順"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:263
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:107
@@ -1717,11 +1719,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:96
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:22
 msgid "User"
-msgstr ""
+msgstr "ユーザー"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:264
 msgid "Sort by Username"
-msgstr ""
+msgstr "ユーザー名順"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:270
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:61
@@ -1732,11 +1734,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account.inc:145
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:91
 msgid "URL / IP"
-msgstr ""
+msgstr "URL / IP"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:271
 msgid "Sort by URL / IP"
-msgstr ""
+msgstr "URL / IP順"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:79
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:80
@@ -1769,14 +1771,14 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:73
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:74
 msgid "Delete Selected"
-msgstr ""
+msgstr "選択項目を削除しました"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:116
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:184
 #: app/modules/web/themes/material-blue/views/account/details.inc:48
 #: app/modules/web/themes/material-blue/views/account/details.inc:50
 msgid "Owner"
-msgstr ""
+msgstr "オーナー"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:117
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:208
@@ -1785,16 +1787,16 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:93
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:95
 msgid "Main Group"
-msgstr ""
+msgstr "Main Group"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:149
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:145
 msgid "Search for Account"
-msgstr ""
+msgstr "アカウント検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:92
 msgid "Accounts (H)"
-msgstr ""
+msgstr "アカウントの変更履歴"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:107
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:127
@@ -1807,26 +1809,26 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:66
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:42
 msgid "Date"
-msgstr ""
+msgstr "日付"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:108
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:131
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:109
 msgid "Status"
-msgstr ""
+msgstr "ステータス"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:129
 msgid "Modified"
-msgstr ""
+msgstr "変更"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:130
 msgid "Removed"
-msgstr ""
+msgstr "削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:161
 msgid "Account Restore"
-msgstr ""
+msgstr "戻す"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:95
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:395
@@ -1838,79 +1840,79 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:46
 msgid "Action"
-msgstr ""
+msgstr "アクション"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:140
 msgid "Search for Token"
-msgstr ""
+msgstr "検索用のトークン"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:174
 msgid "View Authorization token"
-msgstr ""
+msgstr "トークンを表示する"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:207
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:208
 msgid "Delete Authorization"
-msgstr ""
+msgstr "許可を取り消す"
 
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:137
 msgid "Search for Category"
-msgstr ""
+msgstr "カテゴリーを検索する"
 
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:187
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:188
 msgid "Delete Category"
-msgstr ""
+msgstr "カテゴリーを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
 msgid "YES"
-msgstr ""
+msgstr "YES"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
 msgid "NO"
-msgstr ""
+msgstr "NO"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:140
 msgid "Search for Client"
-msgstr ""
+msgstr "クライアントを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:191
 msgid "Delete Client"
-msgstr ""
+msgstr "クライアントを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:95
 #: app/modules/web/themes/material-blue/views/account/account.inc:41
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:378
 msgid "Custom Fields"
-msgstr ""
+msgstr "カスタムフィールド"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:108
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:59
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:61
 msgid "Module"
-msgstr ""
+msgstr "モジュール"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:112
 msgid "Properties"
-msgstr ""
+msgstr "プロパティ"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:144
 msgid "Search for Field"
-msgstr ""
+msgstr "フィールドを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:194
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:195
 msgid "Delete Field"
-msgstr ""
+msgstr "フィールドを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
 #: app/modules/web/themes/material-blue/views/eventlog/index.inc:3
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:556
 msgid "Event Log"
-msgstr ""
+msgstr "Event Log"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
 #: app/modules/web/Controllers/ItemPresetController.php:307
@@ -1919,42 +1921,42 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/details.inc:103
 #: app/modules/web/themes/material-blue/views/account/details.inc:105
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:100
 msgid "Date / Time"
-msgstr ""
+msgstr "Date / Time"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:101
 msgid "Level"
-msgstr ""
+msgstr "Level"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:102
 msgid "Event"
-msgstr ""
+msgstr "Event"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:103
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:109
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:61
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:40
 msgid "Login"
-msgstr ""
+msgstr "ログイン"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:165
 msgid "Search for Events"
-msgstr ""
+msgstr "イベントを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:182
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:178
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:179
 msgid "Refresh"
-msgstr ""
+msgstr "Refresh"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
 msgid "Clear the event log out"
-msgstr ""
+msgstr "Event logをクリア"
 
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
 #: app/modules/web/themes/material-blue/views/account/account.inc:51
@@ -1962,33 +1964,33 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:167
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:446
 msgid "Files"
-msgstr ""
+msgstr "ファイル"
 
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:145
 msgid "Search for File"
-msgstr ""
+msgstr "ファイルを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:160
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:161
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:59
 msgid "View File"
-msgstr ""
+msgstr "ファイルを表示"
 
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:178
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:179
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:50
 msgid "Download File"
-msgstr ""
+msgstr "ファイルをダウンロード"
 
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:199
 #: app/modules/web/themes/material-blue/views/account/files-list.inc:42
 msgid "Delete File"
-msgstr ""
+msgstr "ファイルを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:97
 msgid "Preset Values"
-msgstr ""
+msgstr "プリセット"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:111
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:111
@@ -2015,7 +2017,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:164
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:166
 msgid "Group"
-msgstr ""
+msgstr "グループ"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:112
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:110
@@ -2026,17 +2028,17 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:146
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:148
 msgid "Profile"
-msgstr ""
+msgstr "プロファイル"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:113
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:96
 msgid "Priority"
-msgstr ""
+msgstr "プロパティー"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:114
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:137
 msgid "Forced"
-msgstr ""
+msgstr "Forced"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:148
 msgid "Search for Value"
@@ -2049,34 +2051,34 @@ msgstr ""
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:164
 msgid "New Permission Preset"
-msgstr ""
+msgstr "新規権限のプリセットを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:187
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:89
 msgid "Private Account Preset"
-msgstr ""
+msgstr "プライベートアカウントのプリセット"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:188
 msgid "New Private Account Preset"
-msgstr ""
+msgstr "新しいプライベートアカウントのプリセットを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:211
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:105
 msgid "Session Timeout Preset"
-msgstr ""
+msgstr "セッションの有効期限のプリセット"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:212
 msgid "New Session Timeout Preset"
-msgstr ""
+msgstr "新しいセッションの有効期限のプリセットを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:235
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:120
 msgid "Account Password Preset"
-msgstr ""
+msgstr "アカウントのパスワードのプリセット"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:236
 msgid "New Account Password Preset"
-msgstr ""
+msgstr "新しいアカウントのパスワードのプリセットを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:259
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:260
@@ -2094,7 +2096,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:119
 #: app/modules/web/themes/material-blue/views/notification/index.inc:3
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:129
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:44
@@ -2106,28 +2108,28 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:133
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:137
 msgid "Read"
-msgstr ""
+msgstr "Read"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:154
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:128
 msgid "Only Admins"
-msgstr ""
+msgstr "Only Admins"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:171
 msgid "Search for Notification"
-msgstr ""
+msgstr "通知を検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:187
 #: app/modules/web/Controllers/NotificationController.php:204
 msgid "New Notification"
-msgstr ""
+msgstr "新しい通知"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:204
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:205
 #: app/modules/web/Controllers/NotificationController.php:121
 msgid "View Notification"
-msgstr ""
+msgstr "通知を表示"
 
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:234
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
@@ -2149,21 +2151,21 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:332
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:3
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:108
 #: lib/SP/Plugin/PluginManager.php:208 lib/SP/Plugin/PluginManager.php:264
 #: lib/SP/Plugin/PluginManager.php:422
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:125
 msgid "Unavailable"
-msgstr ""
+msgstr "利用できません"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:141
 msgid "Search for Plugin"
-msgstr ""
+msgstr "プラグインを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:156
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:157
@@ -2174,12 +2176,12 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:174
 msgid "Enable"
-msgstr ""
+msgstr "Enable"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:192
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:193
 msgid "Disable"
-msgstr ""
+msgstr "Disable"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:211
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:212
@@ -2189,31 +2191,31 @@ msgstr ""
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:231
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:232
 msgid "Delete Plugin"
-msgstr ""
+msgstr "プラグインを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:96
 #: app/modules/web/themes/material-blue/views/account/account.inc:61
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:110
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:59
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:61
 msgid "Creation Date"
-msgstr ""
+msgstr "作成日"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:111
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:69
 msgid "Expiry Date "
-msgstr ""
+msgstr "有効期限"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:113
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:45
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:53
 msgid "Notify"
-msgstr ""
+msgstr "通知"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:114
 #: app/modules/web/themes/material-blue/views/account/details.inc:20
@@ -2222,54 +2224,54 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:83
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:85
 msgid "Visits"
-msgstr ""
+msgstr "閲覧者"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:151
 msgid "Search for Link"
-msgstr ""
+msgstr "共有リンクを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:166
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:167
 msgid "New Link"
-msgstr ""
+msgstr "共有リンクを発行"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:184
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:185
 #: app/modules/web/Controllers/PublicLinkController.php:381
 msgid "View Link"
-msgstr ""
+msgstr "共有リンクを閲覧"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:200
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:201
 msgid "Renew Link"
-msgstr ""
+msgstr "共有リンクを再発行"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:217
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:218
 msgid "Delete Link"
-msgstr ""
+msgstr "共有リンクを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:135
 msgid "Search for Tag"
-msgstr ""
+msgstr "タグを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:150
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:151
 #: app/modules/web/Controllers/TagController.php:118
 #: app/modules/web/themes/material-blue/views/account/account.inc:253
 msgid "New Tag"
-msgstr ""
+msgstr "新規タグを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:168
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:169
 #: app/modules/web/Controllers/TagController.php:180
 msgid "Edit Tag"
-msgstr ""
+msgstr "タグを編集"
 
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:185
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:186
 msgid "Delete Tag"
-msgstr ""
+msgstr "タグを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:88
 msgid "Tracks"
@@ -2297,33 +2299,33 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:276
 msgid "Users"
-msgstr ""
+msgstr "ユーザー"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
 msgid "Search for User"
-msgstr ""
+msgstr "ユーザーを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:163
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:164
 #: app/modules/web/Controllers/UserController.php:126
 msgid "New User"
-msgstr ""
+msgstr "新規ユーザーを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:181
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:182
 #: app/modules/web/Controllers/UserController.php:213
 msgid "Edit User"
-msgstr ""
+msgstr "ユーザーを編集"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:198
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:199
 msgid "Delete User"
-msgstr ""
+msgstr "ユーザーを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:215
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:216
 msgid "View User Details"
-msgstr ""
+msgstr "ユーザー情報を表示"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:232
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:233
@@ -2340,89 +2342,89 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:61
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:293
 msgid "Groups"
-msgstr ""
+msgstr "グループ"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:138
 msgid "Search for Group"
-msgstr ""
+msgstr "グループを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:153
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:154
 #: app/modules/web/Controllers/UserGroupController.php:127
 msgid "New Group"
-msgstr ""
+msgstr "新規グループを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:171
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
 #: app/modules/web/Controllers/UserGroupController.php:366
 msgid "View Group"
-msgstr ""
+msgstr "グループを表示"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:189
 #: app/modules/web/Controllers/UserGroupController.php:200
 msgid "Edit Group"
-msgstr ""
+msgstr "グループを編集"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:205
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:206
 msgid "Delete Group"
-msgstr ""
+msgstr "グループを削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:95
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:310
 msgid "Profiles"
-msgstr ""
+msgstr "プロファイル"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:136
 msgid "Search for Profile"
-msgstr ""
+msgstr "プロファイルを検索"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:151
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:152
 #: app/modules/web/Controllers/UserProfileController.php:121
 msgid "New Profile"
-msgstr ""
+msgstr "新規プロファイルを作成"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:169
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:170
 msgid "View Profile Details"
-msgstr ""
+msgstr "プロファイルの詳細を表示"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:187
 #: app/modules/web/Controllers/UserProfileController.php:190
 msgid "Edit Profile"
-msgstr ""
+msgstr "プロファイルを編集"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:203
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:204
 msgid "Delete Profile"
-msgstr ""
+msgstr "プロファイルを削除"
 
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:263
 #: app/modules/web/themes/material-blue/inc/Icons.php:57
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:346
 #: app/modules/web/themes/material-blue/inc/Icons.php:60
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:31
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:37
 msgid "Configuration"
-msgstr ""
+msgstr "設定"
 
 #: app/modules/web/Controllers/InstallController.php:60
 msgid "Module unavailable"
-msgstr ""
+msgstr "利用できるモジュールがありません"
 
 #: app/modules/web/Controllers/InstallController.php:61
 msgid "Without this module the application could not run correctly"
-msgstr ""
+msgstr "sysPassの動作に必要なモジュールが不足しています"
 
 #: app/modules/web/Controllers/InstallController.php:90
 msgid "Installation finished"
-msgstr ""
+msgstr "インストールが完了しました"
 
 #: app/modules/web/Controllers/ItemPresetController.php:85
 msgid "Display Value"
@@ -2454,107 +2456,107 @@ msgstr ""
 
 #: app/modules/web/Controllers/ItemsController.php:140
 msgid "There aren't any pending notifications"
-msgstr ""
+msgstr "お知らせはありません"
 
 #: app/modules/web/Controllers/ItemsController.php:141
 #, php-format
 msgid "There are pending notifications: %d"
-msgstr ""
+msgstr "お知らせが%d件あります"
 
 #: app/modules/web/Controllers/LoginController.php:125
 msgid "Logout session"
-msgstr ""
+msgstr "ログアウト"
 
 #: app/modules/web/Controllers/LoginController.php:127
 msgid "Inactive time"
-msgstr ""
+msgstr "ログイン時間"
 
 #: app/modules/web/Controllers/LoginController.php:128
 msgid "Total time"
-msgstr ""
+msgstr "合計時間"
 
 #: app/modules/web/Controllers/NotificationController.php:278
 #: app/modules/web/Controllers/NotificationController.php:281
 msgid "Notifications deleted"
-msgstr ""
+msgstr "通知を削除"
 
 #: app/modules/web/Controllers/NotificationController.php:293
 #: app/modules/web/Controllers/NotificationController.php:297
 msgid "Notification deleted"
-msgstr ""
+msgstr "通知を削除しました"
 
 #: app/modules/web/Controllers/NotificationController.php:294
 #: app/modules/web/Controllers/NotificationController.php:329
 #: lib/SP/Providers/Notification/NotificationHandler.php:158
 msgid "Notification"
-msgstr ""
+msgstr "通知"
 
 #: app/modules/web/Controllers/NotificationController.php:328
 #: app/modules/web/Controllers/NotificationController.php:332
 msgid "Notification read"
-msgstr ""
+msgstr "既読にする"
 
 #: app/modules/web/Controllers/NotificationController.php:362
 #: app/modules/web/Controllers/NotificationController.php:365
 msgid "Notification created"
-msgstr ""
+msgstr "通知を作成しました"
 
 #: app/modules/web/Controllers/NotificationController.php:399
 #: app/modules/web/Controllers/NotificationController.php:402
 msgid "Notification updated"
-msgstr ""
+msgstr "通知を更新しました"
 
 #: app/modules/web/Controllers/PluginController.php:214
 #: app/modules/web/Controllers/PluginController.php:217
 msgid "Plugin enabled"
-msgstr ""
+msgstr "プラグインを有効化しました"
 
 #: app/modules/web/Controllers/PluginController.php:243
 #: app/modules/web/Controllers/PluginController.php:246
 #: lib/SP/Plugin/PluginManager.php:233 lib/SP/Plugin/PluginManager.php:441
 msgid "Plugin disabled"
-msgstr ""
+msgstr "プラグインを無効にしました"
 
 #: app/modules/web/Controllers/PluginController.php:273
 #: app/modules/web/Controllers/PluginController.php:276
 msgid "Plugin reset"
-msgstr ""
+msgstr "プラグインをリセット"
 
 #: app/modules/web/Controllers/PluginController.php:307
 msgid "Plugins deleted"
-msgstr ""
+msgstr "プラグインを削除しました"
 
 #: app/modules/web/Controllers/PluginController.php:313
 msgid "Plugin deleted"
-msgstr ""
+msgstr "プラグインを削除しました"
 
 #: app/modules/web/Controllers/PublicLinkController.php:124
 msgid "New Public Link"
-msgstr ""
+msgstr "共有リンクを発行しました"
 
 #: app/modules/web/Controllers/PublicLinkController.php:194
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:90
 msgid "Link updated"
-msgstr ""
+msgstr "共有リンクを更新しました"
 
 #: app/modules/web/Controllers/PublicLinkController.php:220
 msgid "Edit Public Link"
-msgstr ""
+msgstr "共有リンクを編集"
 
 #: app/modules/web/Controllers/PublicLinkController.php:261
 #: app/modules/web/Controllers/PublicLinkController.php:264
 msgid "Links deleted"
-msgstr ""
+msgstr "共有リンクを削除しました"
 
 #: app/modules/web/Controllers/PublicLinkController.php:272
 #: app/modules/web/Controllers/PublicLinkController.php:276
 msgid "Link deleted"
-msgstr ""
+msgstr "共有リンクを削除しました"
 
 #: app/modules/web/Controllers/PublicLinkController.php:306
 #: app/modules/web/Controllers/PublicLinkController.php:345
 msgid "Link created"
-msgstr ""
+msgstr "共有リンクを発行しました"
 
 #: app/modules/web/Controllers/StatusController.php:95
 msgid "Version unavailable"
@@ -2566,11 +2568,11 @@ msgstr ""
 
 #: app/modules/web/Controllers/TagController.php:221
 msgid "Tags deleted"
-msgstr ""
+msgstr "タグを削除しました"
 
 #: app/modules/web/Controllers/TagController.php:322
 msgid "View Tag"
-msgstr ""
+msgstr "タグを表示"
 
 #: app/modules/web/Controllers/TrackController.php:121
 msgid "Track unlocked"
@@ -2586,7 +2588,7 @@ msgstr ""
 
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:73
 msgid "Error while saving the configuration"
-msgstr ""
+msgstr "設定を保存中にエラーが発生しました"
 
 #: app/modules/web/Controllers/Traits/ItemTrait.php:135
 #: app/modules/web/Controllers/Traits/ItemTrait.php:196
@@ -2614,11 +2616,11 @@ msgstr ""
 #: lib/SP/Services/Import/XmlFileImport.php:82
 #: lib/SP/Services/User/UserPassService.php:237
 msgid "Internal error"
-msgstr ""
+msgstr "Internal error"
 
 #: app/modules/web/Controllers/Traits/ItemTrait.php:192
 msgid "Error while updating custom field's data"
-msgstr ""
+msgstr "カスタムフィールドを更新中にエラーが発生しました"
 
 #: app/modules/web/Controllers/UpgradeController.php:72
 msgid "The updating need to be confirmed"
@@ -2626,16 +2628,16 @@ msgstr ""
 
 #: app/modules/web/Controllers/UpgradeController.php:79
 msgid "Wrong security code"
-msgstr ""
+msgstr "セキュリティーコードが一致しません"
 
 #: app/modules/web/Controllers/UpgradeController.php:105
 #: app/modules/web/themes/material-blue/views/login/index.inc:96
 msgid "Application successfully updated"
-msgstr ""
+msgstr "アプリケーションのアップデートが完了しました"
 
 #: app/modules/web/Controllers/UpgradeController.php:106
 msgid "You will be redirected to log in within 5 seconds"
-msgstr ""
+msgstr "５秒後にログイン画面に移ります"
 
 #: app/modules/web/Controllers/UserController.php:250
 #: app/modules/web/Controllers/UserController.php:381
@@ -2643,36 +2645,36 @@ msgstr ""
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:72
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:261
 msgid "Password Change"
-msgstr ""
+msgstr "パスワードを変更"
 
 #: app/modules/web/Controllers/UserController.php:294
 #: app/modules/web/Controllers/UserController.php:298
 msgid "Users deleted"
-msgstr ""
+msgstr "ユーザーを削除"
 
 #: app/modules/web/Controllers/UserController.php:306
 #: app/modules/web/Controllers/UserController.php:311
 msgid "User deleted"
-msgstr ""
+msgstr "ユーザーを削除"
 
 #: app/modules/web/Controllers/UserController.php:345
 #: app/modules/web/Controllers/UserController.php:351
 msgid "User added"
-msgstr ""
+msgstr "ユーザーを追加"
 
 #: app/modules/web/Controllers/UserController.php:412
 #: app/modules/web/Controllers/UserController.php:419
 msgid "User updated"
-msgstr ""
+msgstr "ユーザーを更新"
 
 #: app/modules/web/Controllers/UserController.php:488
 msgid "View User"
-msgstr ""
+msgstr "ユーザーを表示"
 
 #: app/modules/web/Controllers/UserGroupController.php:240
 #: app/modules/web/Controllers/UserGroupController.php:243
 msgid "Groups deleted"
-msgstr ""
+msgstr "グループを削除しました"
 
 #: app/modules/web/Controllers/UserPassResetController.php:98
 msgid "Wrong data"
@@ -2680,7 +2682,7 @@ msgstr ""
 
 #: app/modules/web/Controllers/UserPassResetController.php:103
 msgid "Unable to reset the password"
-msgstr ""
+msgstr "パスワードリセットはできません"
 
 #: app/modules/web/Controllers/UserPassResetController.php:114
 msgid "Password Recovery"
@@ -2692,56 +2694,56 @@ msgstr ""
 
 #: app/modules/web/Controllers/UserPassResetController.php:125
 msgid "Request sent"
-msgstr ""
+msgstr "リクエストを送信"
 
 #: app/modules/web/Controllers/UserPassResetController.php:126
 msgid "You will receive an email to complete the request shortly."
-msgstr ""
+msgstr "リクエストの完了まであと少しです。届いたメールを確認してください。"
 
 #: app/modules/web/Controllers/UserPassResetController.php:149
 #: lib/SP/Services/Api/ApiService.php:99
 #: lib/SP/Services/Auth/LoginService.php:147
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:110
 msgid "Attempts exceeded"
-msgstr ""
+msgstr "試行回数を超えました"
 
 #: app/modules/web/Controllers/UserPassResetController.php:199
 #: app/modules/web/Forms/AuthTokenForm.php:101
 #: app/modules/web/Forms/UserForm.php:157
 msgid "Password cannot be blank"
-msgstr ""
+msgstr "パスワードを空欄にすることはできません"
 
 #: app/modules/web/Controllers/UserProfileController.php:230
 #: app/modules/web/Controllers/UserProfileController.php:233
 msgid "Profiles deleted"
-msgstr ""
+msgstr "プロファイルを削除しました"
 
 #: app/modules/web/Controllers/UserProfileController.php:242
 #: app/modules/web/Controllers/UserProfileController.php:247
 msgid "Profile deleted"
-msgstr ""
+msgstr "プロファイルを削除しました"
 
 #: app/modules/web/Controllers/UserProfileController.php:282
 #: app/modules/web/Controllers/UserProfileController.php:286
 msgid "Profile added"
-msgstr ""
+msgstr "プロファイルを作成しました"
 
 #: app/modules/web/Controllers/UserProfileController.php:325
 #: app/modules/web/Controllers/UserProfileController.php:330
 msgid "Profile updated"
-msgstr ""
+msgstr "プロファイルを更新しました"
 
 #: app/modules/web/Controllers/UserProfileController.php:358
 msgid "View Profile"
-msgstr ""
+msgstr "プロファイルを表示"
 
 #: app/modules/web/Controllers/UserSettingsGeneralController.php:78
 msgid "Preferences updated"
-msgstr ""
+msgstr "設定を更新しました"
 
 #: app/modules/web/Controllers/UserSettingsManagerController.php:98
 msgid "Preferences"
-msgstr ""
+msgstr "設定"
 
 #: app/modules/web/Forms/AccountForm.php:132
 msgid "A key is needed"
@@ -2749,36 +2751,36 @@ msgstr ""
 
 #: app/modules/web/Forms/AccountForm.php:172
 msgid "An account name needed"
-msgstr ""
+msgstr "アカウント名を空欄にすることはできません"
 
 #: app/modules/web/Forms/AccountForm.php:176
 #: app/modules/web/Forms/ClientForm.php:84
 msgid "A client name needed"
-msgstr ""
+msgstr "クライアント名を空欄にすることはできません"
 
 #: app/modules/web/Forms/AccountForm.php:180
 msgid "A category is needed"
-msgstr ""
+msgstr "カテゴリー名を空欄にすることはできません"
 
 #: app/modules/web/Forms/AuthTokenForm.php:91
 msgid "User not set"
-msgstr ""
+msgstr "ユーザーが選択されていません"
 
 #: app/modules/web/Forms/AuthTokenForm.php:95
 msgid "Action not set"
-msgstr ""
+msgstr "アクションが選択されていません"
 
 #: app/modules/web/Forms/CategoryForm.php:83
 msgid "A category name needed"
-msgstr ""
+msgstr "カテゴリー名を空欄にすることはできません"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:87
 msgid "Field name not set"
-msgstr ""
+msgstr "フィールド名を空欄にすることはできません"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:91
 msgid "Field type not set"
-msgstr ""
+msgstr "フィールドタイプを空欄にすることはできません"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:95
 msgid "Field module not set"
@@ -2790,7 +2792,7 @@ msgstr ""
 
 #: app/modules/web/Forms/ItemsPresetForm.php:133
 msgid "There aren't any defined permissions"
-msgstr ""
+msgstr "権限設定を空欄にすることはできません"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:182
 msgid "Invalid regular expression"
@@ -2798,7 +2800,7 @@ msgstr ""
 
 #: app/modules/web/Forms/ItemsPresetForm.php:208
 msgid "An element of type user, group or profile need to be set"
-msgstr ""
+msgstr "ユーザー・グループ・プロファイルのいずれかを設定してください"
 
 #: app/modules/web/Forms/NotificationForm.php:98
 msgid "A component is needed"
@@ -2806,39 +2808,39 @@ msgstr ""
 
 #: app/modules/web/Forms/NotificationForm.php:102
 msgid "A type is needed"
-msgstr ""
+msgstr "Typeを空欄にすることはできません"
 
 #: app/modules/web/Forms/NotificationForm.php:112
 msgid "A target  is needed"
-msgstr ""
+msgstr "ターゲットを空欄にすることはできません"
 
 #: app/modules/web/Forms/PublicLinkForm.php:85
 msgid "An account is needed"
-msgstr ""
+msgstr "アカウントを空欄にすることはできません"
 
 #: app/modules/web/Forms/TagForm.php:82
 msgid "A tag name is needed"
-msgstr ""
+msgstr "タグ名を空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:111
 msgid "An username is needed"
-msgstr ""
+msgstr "ユーザー名を空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:115
 msgid "A login is needed"
-msgstr ""
+msgstr "ログインが必要です"
 
 #: app/modules/web/Forms/UserForm.php:119
 msgid "A profile is needed"
-msgstr ""
+msgstr "プロファイルを空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:123
 msgid "A group is needed"
-msgstr ""
+msgstr "グループを空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:127
 msgid "An email is needed"
-msgstr ""
+msgstr "メールアドレスを空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:179
 msgid "Unable to delete, user in use"
@@ -2846,20 +2848,20 @@ msgstr ""
 
 #: app/modules/web/Forms/UserGroupForm.php:84
 msgid "A group name is needed"
-msgstr ""
+msgstr "グループ名を空欄にすることはできません"
 
 #: app/modules/web/Forms/UserProfileForm.php:116
 msgid "A profile name is needed"
-msgstr ""
+msgstr "プロファイル名を空欄にすることはできません"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:31
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:47
 msgid "Add"
-msgstr ""
+msgstr "Add"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:32
 msgid "View Details"
-msgstr ""
+msgstr "View Details"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:34
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:76
@@ -2872,7 +2874,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:97
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:116
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:35
 #: app/modules/web/themes/material-blue/inc/Icons.php:65
@@ -2882,145 +2884,147 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:235
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:150
 msgid "Delete"
-msgstr ""
+msgstr "Delete"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:36
 msgid "Change Password"
-msgstr ""
+msgstr "Change Password"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:37
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:221
 msgid "Application Admin"
-msgstr ""
+msgstr "Application Admin"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:38
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:240
 msgid "Accounts Admin"
-msgstr ""
+msgstr "Accounts Admin"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:39
 msgid "LDAP User"
-msgstr ""
+msgstr "LDAP User"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:40
 #: app/modules/web/themes/material-blue/views/config/mail.inc:159
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:280
 msgid "Disabled"
-msgstr ""
+msgstr "Disabled"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:41
 msgid "Enabled"
-msgstr ""
+msgstr "Enabled"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:42
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:198
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:58
 msgid "Update"
-msgstr ""
+msgstr "Update"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:43
 msgid "Copy"
-msgstr ""
+msgstr "Copy"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:45
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:97
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:49
 msgid "Restore"
-msgstr ""
+msgstr "Restore"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:51
 msgid "Help"
-msgstr ""
+msgstr "Help"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
 msgid "Clear"
-msgstr ""
+msgstr "Clear"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:53
 msgid "Perform"
-msgstr ""
+msgstr "Perform"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:54
 msgid "Download"
-msgstr ""
+msgstr "Download"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:55
 msgid "Warning"
-msgstr ""
+msgstr "Warning"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:56
 msgid "Check"
-msgstr ""
+msgstr "Check"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:63
 msgid "Critical"
-msgstr ""
+msgstr "Critical"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:66
 msgid "Previous page"
-msgstr ""
+msgstr "Previous page"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:67
 msgid "Next page"
-msgstr ""
+msgstr "Next page"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:68
 msgid "First page"
-msgstr ""
+msgstr "First page"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:69
 msgid "Last page"
-msgstr ""
+msgstr "Last page"
 
 #: lib/SP/Bootstrap.php:293
 #, php-format
 msgid "Required PHP version >= %s <= %s"
-msgstr ""
+msgstr "Required PHP version >= %s <= %s"
 
 #: lib/SP/Bootstrap.php:295
 msgid "Please update the PHP version to run sysPass"
 msgstr ""
+"お使いのサーバーはsysPassの推奨PHPバージョンを満たしていません。PHPのアップ"
+"デートを検討してください"
 
 #: lib/SP/Config/ConfigUtil.php:102
 msgid "'/app/config' directory does not exist."
-msgstr ""
+msgstr "'/app/config' ディレクトリが存在しません。"
 
 #: lib/SP/Config/ConfigUtil.php:108
 msgid "Unable to write into '/app/config' directory"
-msgstr ""
+msgstr "'/app/config' ディレクトリに書き込むことができませんでした"
 
 #: lib/SP/Config/ConfigUtil.php:117
 msgid "'/app/config' directory permissions are wrong"
-msgstr ""
+msgstr "'/app/config' ディレクトリのパーミッション設定が間違っています"
 
 #: lib/SP/Config/ConfigUtil.php:119
 #, php-format
 msgid "Current: %s - Needed: 750"
-msgstr ""
+msgstr "Current: %s - Needed: 750"
 
 #: lib/SP/Core/Acl/Acl.php:294 lib/SP/Services/Auth/LoginService.php:660
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: lib/SP/Core/Acl/Acl.php:299
 msgid "Access denied"
-msgstr ""
+msgstr "Access denied"
 
 #: lib/SP/Core/Acl/Actions.php:177
 msgid "Action not found"
-msgstr ""
+msgstr "Action not found"
 
 #: lib/SP/Core/Acl/UnauthorizedPageException.php:46
 #: lib/SP/Util/ErrorUtil.php:157
 msgid "You don't have permission to access this page"
-msgstr ""
+msgstr "このページにアクセスする権限がありません"
 
 #: lib/SP/Core/Context/ContextBase.php:73
 msgid "Unable to change password value"
-msgstr ""
+msgstr "パスワードを変更することはできませんん"
 
 #: lib/SP/Core/Context/ContextBase.php:103
 #: lib/SP/Core/Context/ContextBase.php:126
@@ -3090,31 +3094,31 @@ msgstr ""
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:71
 #, php-format
 msgid "Password needs to be %d characters long"
-msgstr ""
+msgstr "パスワードは%d文字以上にしてください"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:77
 msgid "Password does not contain the required characters"
-msgstr ""
+msgstr "パスワードに必要な文字種が含まれていません"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:82
 msgid "Password needs to contain letters"
-msgstr ""
+msgstr "パスワードにはアルファベットを含める必要があります"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:86
 msgid "Password needs to contain lower case letters"
-msgstr ""
+msgstr "パスワードには小文字を含める必要があります"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:90
 msgid "Password needs to contain upper case letters"
-msgstr ""
+msgstr "パスワードには大文字を含める必要があります"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:95
 msgid "Password needs to contain numbers"
-msgstr ""
+msgstr "パスワードには数字を含める必要があります"
 
 #: lib/SP/Mvc/Controller/Validators/PasswordValidator.php:99
 msgid "Password needs to contain symbols"
-msgstr ""
+msgstr "パスワードには記号を含める必要がります"
 
 #: lib/SP/Mvc/Model/QueryCondition.php:73
 msgid "Invalid filter type"
