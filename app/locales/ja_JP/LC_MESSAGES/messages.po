@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-29 01:28+0200\n"
-"PO-Revision-Date: 2020-09-09 22:34+0900\n"
+"PO-Revision-Date: 2020-09-11 22:08+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: language@syspass.org\n"
 "Language: ja_JP\n"
@@ -1487,7 +1487,7 @@ msgstr "項目の削除"
 #: app/modules/web/Controllers/CustomFieldController.php:264
 #: app/modules/web/Controllers/CustomFieldController.php:268
 msgid "Field added"
-msgstr "項目の追加"
+msgstr "カスタムフィールドを作成しました"
 
 #: app/modules/web/Controllers/CustomFieldController.php:265
 #: app/modules/web/Controllers/CustomFieldController.php:306
@@ -2208,7 +2208,7 @@ msgstr "作成日"
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:69
 msgid "Expiry Date "
-msgstr "有効期限"
+msgstr "有効期限 "
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:113
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:45
@@ -3141,46 +3141,46 @@ msgstr ""
 
 #: lib/SP/Mvc/View/Template.php:357
 msgid "Template does not contain files"
-msgstr ""
+msgstr "テンプレートにファイルが含まれていません"
 
 #: lib/SP/Plugin/PluginManager.php:194
 #, php-format
 msgid "Plugin version not compatible (%s)"
-msgstr ""
+msgstr "このバージョンのsysPassとプラグインの互換性がありません (%s)"
 
 #: lib/SP/Plugin/PluginManager.php:206 lib/SP/Plugin/PluginManager.php:262
 #, php-format
 msgid "Unable to load the \"%s\" plugin"
-msgstr ""
+msgstr "プラグイン “%s” の読み込みに失敗しました"
 
 #: lib/SP/Plugin/PluginManager.php:297
 msgid "Plugin available"
-msgstr ""
+msgstr "プラグインを有効化"
 
 #: lib/SP/Plugin/PluginManager.php:308
 msgid "Plugin unavailable"
-msgstr ""
+msgstr "プラグインを無効化"
 
 #: lib/SP/Plugin/PluginManager.php:341
 msgid "Plugin loaded"
-msgstr ""
+msgstr "プラグインを読み込み"
 
 #: lib/SP/Plugin/PluginManager.php:366
 msgid "New Plugin"
-msgstr ""
+msgstr "新規プラグイン"
 
 #: lib/SP/Plugin/PluginManager.php:394
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "プラグインの更新"
 
 #: lib/SP/Plugin/PluginManager.php:411
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "プラグインの更新が完了しました"
 
 #: lib/SP/Plugin/PluginManager.php:420
 #, php-format
 msgid "Unable to upgrade the \"%s\" plugin"
-msgstr ""
+msgstr "プラグイン \"%s\" の更新に失敗しました"
 
 #: lib/SP/Providers/Auth/AuthProvider.php:220
 msgid "Method unavailable"
@@ -3227,7 +3227,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/mail.inc:69
 #: app/modules/web/themes/material-blue/views/config/mail.inc:78
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:174
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:176
@@ -3260,52 +3260,52 @@ msgstr ""
 #: lib/SP/Providers/Mail/MailHandler.php:153
 #, php-format
 msgid "Event: %s"
-msgstr ""
+msgstr "Event: %s"
 
 #: lib/SP/Providers/Mail/MailHandler.php:161
 #: lib/SP/Providers/Mail/MailHandler.php:163
 #, php-format
 msgid "Performed by: %s (%s)"
-msgstr ""
+msgstr "Performed by: %s (%s)"
 
 #: lib/SP/Providers/Mail/MailHandler.php:166
 #, php-format
 msgid "IP Address: %s"
-msgstr ""
+msgstr "IP Address: %s"
 
 #: lib/SP/Providers/Mail/MailProvider.php:94
 msgid "Unable to initialize"
-msgstr ""
+msgstr "初期化できませんでした"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:80
 msgid "Error while saving file"
-msgstr ""
+msgstr "ファイルの保存時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:282
 msgid "Error while deleting the file"
-msgstr ""
+msgstr "ファイルの削除にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:305
 #: lib/SP/Services/Account/AccountFileService.php:149
 msgid "Error while deleting the files"
-msgstr ""
+msgstr "ファイルの削除にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:144
 msgid "Error while updating history"
-msgstr ""
+msgstr "ファイル履歴の更新にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:163
 #: lib/SP/Repositories/Account/AccountRepository.php:323
 #: lib/SP/Services/Account/AccountHistoryService.php:195
 msgid "Error while deleting the account"
-msgstr ""
+msgstr "アカウントの削除にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:293
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:316
 #: lib/SP/Repositories/Account/AccountRepository.php:503
 #: lib/SP/Services/Account/AccountService.php:647
 msgid "Error while deleting the accounts"
-msgstr ""
+msgstr "アカウント削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:437
 #: lib/SP/Repositories/Account/AccountRepository.php:237
@@ -3314,113 +3314,113 @@ msgstr ""
 #: lib/SP/Services/Account/AccountHistoryService.php:236
 #: lib/SP/Services/User/UserService.php:334
 msgid "Error while updating the password"
-msgstr ""
+msgstr "パスワードの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:202
 msgid "Error while creating the account"
-msgstr ""
+msgstr "アカウント作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:303
 #: lib/SP/Services/Account/AccountService.php:613
 msgid "Error on restoring the account"
-msgstr ""
+msgstr "アカウント復元時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:384
 #: lib/SP/Repositories/Account/AccountRepository.php:433
 msgid "Error while updating the account"
-msgstr ""
+msgstr "アカウント更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:453
 #: lib/SP/Repositories/Account/AccountRepository.php:625
 #: lib/SP/Services/Account/AccountHistoryService.php:78
 msgid "Error while retrieving account's data"
-msgstr ""
+msgstr "アカウントのデータ復元時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToFavoriteRepository.php:74
 msgid "Error while adding favorite"
-msgstr ""
+msgstr "お気に入り追加時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToFavoriteRepository.php:94
 msgid "Error while deleting favorite"
-msgstr ""
+msgstr "お気に入り解除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToTagRepository.php:97
 msgid "Error while removing the account's tags"
-msgstr ""
+msgstr "タグを外す時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToTagRepository.php:118
 msgid "Error while adding the account's tags"
-msgstr ""
+msgstr "タグを追加する時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:109
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:142
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:194
 msgid "Error while deleting the account's groups"
-msgstr ""
+msgstr "グループへの追加時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:167
 msgid "Error while updating the secondary groups"
-msgstr ""
+msgstr "グループからの解除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:79
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:135
 msgid "Error while deleting the account users"
-msgstr ""
+msgstr "ユーザーの解除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:106
 msgid "Error while updating the account users"
-msgstr ""
+msgstr "ユーザーの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:224
 #: lib/SP/Repositories/AuthToken/AuthTokenRepository.php:312
 msgid "The authorization already exist"
-msgstr ""
+msgstr "すでに許可されています"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:61
 msgid "Duplicated category"
-msgstr ""
+msgstr "このカテゴリーはすでに存在します"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:71
 msgid "Error while creating the category"
-msgstr ""
+msgstr "カテゴリー追加時にエラーが発生しました"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:110
 msgid "Duplicated category name"
-msgstr ""
+msgstr "このカテゴリー名はすでに存在します"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:128
 msgid "Error while updating the category"
-msgstr ""
+msgstr "カテゴリーの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:256
 msgid "Error while deleting the categories"
-msgstr ""
+msgstr "カテゴリーの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:278
 msgid "Error while deleting the category"
-msgstr ""
+msgstr "カテゴリーの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:63
 #: lib/SP/Repositories/Client/ClientRepository.php:117
 msgid "Duplicated client"
-msgstr ""
+msgstr "すでにこのクライアントは存在しています"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:81
 msgid "Error while creating the client"
-msgstr ""
+msgstr "クライアント作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:137
 msgid "Error while updating the client"
-msgstr ""
+msgstr "クライアント更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:265
 #: lib/SP/Services/Client/ClientService.php:132
 msgid "Error while deleting the clients"
-msgstr ""
+msgstr "クライアントの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:284
 msgid "Error while deleting the client"
-msgstr ""
+msgstr "クライアントの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:346
 msgid "Wrong filter"
@@ -3428,25 +3428,25 @@ msgstr ""
 
 #: lib/SP/Repositories/CustomField/CustomFieldDefRepository.php:78
 msgid "Error while creating the custom field"
-msgstr ""
+msgstr "カスタフィールドの作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/CustomField/CustomFieldDefRepository.php:121
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:170
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:198
 msgid "Error while updating the custom field"
-msgstr ""
+msgstr "カスタムフィールドの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/CustomField/CustomFieldDefRepository.php:162
 msgid "Custom field not found"
-msgstr ""
+msgstr "カスタムフィ－ルドが存在しません"
 
 #: lib/SP/Repositories/CustomField/CustomFieldDefRepository.php:242
 msgid "Error while removing the custom fields"
-msgstr ""
+msgstr "かスタムフィールドの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/CustomField/CustomFieldDefRepository.php:262
 msgid "Error while removing the custom field"
-msgstr ""
+msgstr "カスタムフィールドの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/CustomField/CustomFieldTypeRepository.php:63
 msgid "Error while creating the field type"
@@ -3467,40 +3467,40 @@ msgstr ""
 
 #: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:79
 msgid "Error while creating the permission"
-msgstr ""
+msgstr "言言の設定j"
 
 #: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:118
 msgid "Error while updating the permission"
-msgstr ""
+msgstr "権限の設定時にエラーが発生しました"
 
 #: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:137
 msgid "Error while removing the permission"
-msgstr ""
+msgstr "権限の解除時にエラーが発生しました"
 
 #: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:262
 msgid "Error while removing the permissions"
-msgstr ""
+msgstr "権限の解除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:80
 msgid "Error while adding the notification"
-msgstr ""
+msgstr "通知を追加する時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:120
 #: lib/SP/Repositories/Notification/NotificationRepository.php:479
 msgid "Error while updating the notification"
-msgstr ""
+msgstr "通知を更新する時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:139
 #: lib/SP/Repositories/Notification/NotificationRepository.php:158
 msgid "Error while deleting the notification"
-msgstr ""
+msgstr "通知の削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:181
 #: lib/SP/Repositories/Notification/NotificationRepository.php:304
 #: lib/SP/Services/Notification/NotificationService.php:144
 #: lib/SP/Services/Notification/NotificationService.php:163
 msgid "Error while deleting the notifications"
-msgstr ""
+msgstr "通知の削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:214
 msgid "Error while retrieving notification"
@@ -3516,21 +3516,21 @@ msgstr ""
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:68
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "プラグイン追加時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:97
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "プラグイイン更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:116
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:136
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:242
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "プラグイン削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:70
 msgid "Error while adding the plugin"
-msgstr ""
+msgstr "プラグイン追加時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:106
 #: lib/SP/Repositories/Plugin/PluginRepository.php:354
@@ -3539,33 +3539,33 @@ msgstr ""
 #: lib/SP/Repositories/Plugin/PluginRepository.php:414
 #: lib/SP/Repositories/Plugin/PluginRepository.php:433
 msgid "Error while updating the plugin"
-msgstr ""
+msgstr "プラグイン更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:217
 #: lib/SP/Services/Plugin/PluginService.php:139
 msgid "Error while deleting the plugins"
-msgstr ""
+msgstr "プラグイン削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:237
 msgid "Error while deleting the plugin"
-msgstr ""
+msgstr "プラグイン削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:64
 msgid "Error while removing the link"
-msgstr ""
+msgstr "関連するアカウント削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:256
 msgid "Link already created"
-msgstr ""
+msgstr "このアカウントはすでに追加済みです"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:283
 msgid "Error while creating the link"
-msgstr ""
+msgstr "関連するアカウント削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:342
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:390
 msgid "Error while updating the link"
-msgstr ""
+msgstr "関連するアカウント更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:425
 msgid "Error while renewing link"
@@ -3580,24 +3580,24 @@ msgstr ""
 #: lib/SP/Repositories/Tag/TagRepository.php:60
 #: lib/SP/Repositories/Tag/TagRepository.php:108
 msgid "Duplicated tag"
-msgstr ""
+msgstr "このタグはすでに追加されています"
 
 #: lib/SP/Repositories/Tag/TagRepository.php:69
 msgid "Error while creating the tag"
-msgstr ""
+msgstr "タグ作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/Tag/TagRepository.php:118
 msgid "Error while updating the tag"
-msgstr ""
+msgstr "タグ更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/Tag/TagRepository.php:243
 #: lib/SP/Services/Tag/TagService.php:132
 msgid "Error while removing the tags"
-msgstr ""
+msgstr "タグ削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Tag/TagRepository.php:262
 msgid "Error while removing the tag"
-msgstr ""
+msgstr "タグ削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:68
 msgid "Error while creating track"
@@ -3641,11 +3641,11 @@ msgstr ""
 #: lib/SP/Repositories/User/UserRepository.php:678
 #: lib/SP/Services/User/UserService.php:313
 msgid "Error while updating the user"
-msgstr ""
+msgstr "ユーザーの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/User/UserRepository.php:185
 msgid "Error while deleting the user"
-msgstr ""
+msgstr "ユーザーの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/User/UserRepository.php:235
 #: lib/SP/Repositories/User/UserRepository.php:552
@@ -3655,63 +3655,63 @@ msgstr ""
 #: lib/SP/Repositories/User/UserRepository.php:354
 #: lib/SP/Services/User/UserService.php:212
 msgid "Error while deleting the users"
-msgstr ""
+msgstr "ユーザーの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/User/UserRepository.php:475
 msgid "Error while creating the user"
-msgstr ""
+msgstr "ユーザーの作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/User/UserRepository.php:698
 msgid "Error while updating the preferences"
-msgstr ""
+msgstr "設定の更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:62
 msgid "Error while deleting the group"
-msgstr ""
+msgstr "グループの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:306
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:351
 msgid "Duplicated group name"
-msgstr ""
+msgstr "この名前のグループはすでに存在しています"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:315
 msgid "Error while creating the group"
-msgstr ""
+msgstr "グループ作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:361
 msgid "Error while updating the group"
-msgstr ""
+msgstr "グループの更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserGroup/UserToUserGroupRepository.php:111
 msgid "Error while deleting the group users"
-msgstr ""
+msgstr "グループの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserGroup/UserToUserGroupRepository.php:143
 msgid "Error while setting users in the group"
-msgstr ""
+msgstr "グループへユーザーを追加する時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:79
 msgid "Error while removing the profile"
-msgstr ""
+msgstr "プロファイルの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:181
 #: lib/SP/Services/UserProfile/UserProfileService.php:119
 msgid "Error while removing the profiles"
-msgstr ""
+msgstr "プロファイルの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:230
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:275
 msgid "Duplicated profile name"
-msgstr ""
+msgstr "この名前のプロファイルはすでに存在します"
 
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:239
 msgid "Error while creating the profile"
-msgstr ""
+msgstr "プロファイルの作成時にエラーが発生しました"
 
 #: lib/SP/Repositories/UserProfile/UserProfileRepository.php:288
 #: lib/SP/Services/UserProfile/UserProfileService.php:146
 msgid "Error while updating the profile"
-msgstr ""
+msgstr "プロファイルの更新時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountCryptService.php:74
 #: lib/SP/Services/Account/AccountCryptService.php:81
@@ -3721,79 +3721,79 @@ msgstr ""
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:88
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:113
 msgid "Update Master Password"
-msgstr ""
+msgstr "マスターパスワードの更新"
 
 #: lib/SP/Services/Account/AccountCryptService.php:94
 msgid "Error while updating the accounts' passwords"
-msgstr ""
+msgstr "パスワードの更新時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountCryptService.php:120
 msgid "Error while retrieving the accounts' passwords"
-msgstr ""
+msgstr "パスワードの復元時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountCryptService.php:144
 #, php-format
 msgid "Accounts updated: %d / %d"
-msgstr ""
+msgstr "Accounts updated: %d / %d"
 
 #: lib/SP/Services/Account/AccountCryptService.php:153
 #, php-format
 msgid "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
-msgstr ""
+msgstr "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
 
 #: lib/SP/Services/Account/AccountCryptService.php:163
 msgid "The record's master password does not match"
-msgstr ""
+msgstr "データベース上のマスターパスワードのハッシュ値と一致しません"
 
 #: lib/SP/Services/Account/AccountCryptService.php:188
 #: lib/SP/Services/Account/AccountCryptService.php:193
 msgid "Error while updating the account's password"
-msgstr ""
+msgstr "パスワードの更新時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountCryptService.php:199
 msgid "Errors"
-msgstr ""
+msgstr "エラー"
 
 #: lib/SP/Services/Account/AccountCryptService.php:217
 #: lib/SP/Services/Account/AccountCryptService.php:224
 msgid "Update Master Password (H)"
-msgstr ""
+msgstr "マスターパスワードの変更履歴"
 
 #: lib/SP/Services/Account/AccountCryptService.php:240
 msgid "Error while updating the accounts' passwords in history"
-msgstr ""
+msgstr "パスワード履歴の更新時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountFileService.php:168
 msgid "File not found"
-msgstr ""
+msgstr "ファイルが存在しません"
 
 #: lib/SP/Services/Account/AccountService.php:170
 #: lib/SP/Services/Account/AccountService.php:630
 msgid "Account not found"
-msgstr ""
+msgstr "アカウントが存在しません"
 
 #: lib/SP/Services/Account/AccountService.php:240
 msgid "Master password not set"
-msgstr ""
+msgstr "マスターパスワ－ドが入力されていません"
 
 #: lib/SP/Services/Account/AccountService.php:303
 #: lib/SP/Services/Account/AccountService.php:703
 #: lib/SP/Services/Account/AccountService.php:758
 msgid "The account doesn't exist"
-msgstr ""
+msgstr "アカウントが存在しません"
 
 #: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:234
 msgid "Invalid data"
-msgstr ""
+msgstr "Invalid data"
 
 #: lib/SP/Services/Api/ApiRequest.php:88
 msgid "Invalid format"
-msgstr ""
+msgstr "Invalid format"
 
 #: lib/SP/Services/Api/ApiService.php:155
 msgid "Wrong parameters"
-msgstr ""
+msgstr "Wrong parameters"
 
 #: lib/SP/Services/Auth/LoginService.php:169
 #: lib/SP/Services/Auth/LoginService.php:495
@@ -3803,36 +3803,37 @@ msgstr ""
 #: lib/SP/Services/Auth/LoginService.php:675
 #: lib/SP/Services/Auth/LoginService.php:683
 msgid "Wrong login"
-msgstr ""
+msgstr "Wrong login"
 
 #: lib/SP/Services/Auth/LoginService.php:237
 #: lib/SP/Services/Auth/LoginService.php:244
 msgid "User disabled"
-msgstr ""
+msgstr "ユーザーを無効化"
 
 #: lib/SP/Services/Auth/LoginService.php:296
 msgid "Using temporary password"
-msgstr ""
+msgstr "仮パスワードを利用する"
 
 #: lib/SP/Services/Auth/LoginService.php:309
 #: lib/SP/Services/Auth/LoginService.php:315
 #: lib/SP/Services/Auth/LoginService.php:335
 #: lib/SP/Services/Auth/LoginService.php:341
 msgid "Wrong master password"
-msgstr ""
+msgstr "マスターパスワードが一致しません"
 
 #: lib/SP/Services/Auth/LoginService.php:357
 msgid "Your previous password is needed"
-msgstr ""
+msgstr "前のマスターパスワードが必要です"
 
 #: lib/SP/Services/Auth/LoginService.php:369
 msgid "The Master Password either is not saved or is wrong"
 msgstr ""
+"マスターパスワードが未設定か入力されたマスターパスワ－ドが間違っています"
 
 #: lib/SP/Services/Auth/LoginService.php:491
 #: lib/SP/Services/Auth/LoginService.php:569
 msgid "LDAP Server"
-msgstr ""
+msgstr "LDAP Server"
 
 #: lib/SP/Services/Auth/LoginService.php:513
 #: lib/SP/Services/Auth/LoginService.php:521
@@ -3842,26 +3843,26 @@ msgstr ""
 #: lib/SP/Services/Auth/LoginService.php:529
 #: lib/SP/Services/Auth/LoginService.php:537
 msgid "User has no associated groups"
-msgstr ""
+msgstr "ユーザーはどのグループにも属していません"
 
 #: lib/SP/Services/Auth/LoginService.php:665
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:18
 msgid "Authentication"
-msgstr ""
+msgstr "Authentication"
 
 #: lib/SP/Services/AuthToken/AuthTokenService.php:146
 #: lib/SP/Services/AuthToken/AuthTokenService.php:284
 #: lib/SP/Services/AuthToken/AuthTokenService.php:298
 msgid "Token not found"
-msgstr ""
+msgstr "トークンがありません"
 
 #: lib/SP/Services/AuthToken/AuthTokenService.php:165
 msgid "Error while removing the tokens"
-msgstr ""
+msgstr "トークン削除時にエラーが発生しました"
 
 #: lib/SP/Services/Backup/FileBackupService.php:108
 msgid "Make Backup"
-msgstr ""
+msgstr "バックアップの作成"
 
 #: lib/SP/Services/Backup/FileBackupService.php:115
 msgid "Error while doing the backup in compatibility mode"
@@ -3869,69 +3870,69 @@ msgstr ""
 
 #: lib/SP/Services/Backup/FileBackupService.php:126
 msgid "Error while doing the backup"
-msgstr ""
+msgstr "バックアップ作成時にエラーが発生しました"
 
 #: lib/SP/Services/Backup/FileBackupService.php:147
 #, php-format
 msgid "Unable to create the backups directory (\"%s\")"
-msgstr ""
+msgstr "このディレクトリにはバックアップを作成できません (\"%s\")"
 
 #: lib/SP/Services/Backup/FileBackupService.php:152
 msgid "Please, check the backup directory permissions"
-msgstr ""
+msgstr "“backup”ディレクトリのパーミッションを確認してください"
 
 #: lib/SP/Services/Backup/FileBackupService.php:226
 msgid "Copying database"
-msgstr ""
+msgstr "データベースのコピー"
 
 #: lib/SP/Services/Backup/FileBackupService.php:358
 #: lib/SP/Services/Backup/FileBackupService.php:382
 msgid "Copying application"
-msgstr ""
+msgstr "アプリケーションのコピー"
 
 #: lib/SP/Services/Backup/FileBackupService.php:377
 msgid "This operation is only available on Linux environments"
-msgstr ""
+msgstr "この操作はLinux以外の環境ではできません"
 
 #: lib/SP/Services/Category/CategoryService.php:81
 #: lib/SP/Services/Category/CategoryService.php:102
 #: lib/SP/Services/Category/CategoryService.php:119
 msgid "Category not found"
-msgstr ""
+msgstr "カテゴリーが存在しません"
 
 #: lib/SP/Services/Category/CategoryService.php:138
 msgid "Error while deleting categories"
-msgstr ""
+msgstr "カテゴリー削除時にエラーが発生しました"
 
 #: lib/SP/Services/Client/ClientService.php:81
 #: lib/SP/Services/Client/ClientService.php:100
 #: lib/SP/Services/Client/ClientService.php:115
 msgid "Client not found"
-msgstr ""
+msgstr "クライアントが存在しません"
 
 #: lib/SP/Services/Config/ConfigBackupService.php:121
 #: lib/SP/Services/Config/ConfigBackupService.php:128
 msgid "Unable to restore the configuration"
-msgstr ""
+msgstr "設定を復元することはできません"
 
 #: lib/SP/Services/Config/ConfigService.php:71
 #: lib/SP/Services/Config/ConfigService.php:156
 #, php-format
 msgid "Parameter not found (%s)"
-msgstr ""
+msgstr "Parameter not found (%s)"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:109
 msgid "Generate temporary password"
-msgstr ""
+msgstr "仮パスワードを発行する"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:116
 msgid "Error while generating the temporary password"
-msgstr ""
+msgstr "仮パスワードの発行時にエラーが発生しました"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:137
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:187
 msgid "Temporary password expired"
-msgstr ""
+msgstr "仮パスワードの有効期限"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:166
 msgid "Error while checking the temporary password"
@@ -3940,31 +3941,33 @@ msgstr ""
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:238
 #, php-format
 msgid "%s Master Password"
-msgstr ""
+msgstr "%s マスターパスワード"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:239
 msgid ""
 "A new sysPass master password has been generated, so next time you log into "
 "the application it will be requested."
 msgstr ""
+"マスターパスワードが変更されました。次回ログイン時に新しいマスターパスワード"
+"の入力が必要になります。"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:240
 #, php-format
 msgid "The new Master Password is: %s"
-msgstr ""
+msgstr "新しいマスターパスワードは %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:241
 #, php-format
 msgid "This password will be valid until: %s"
-msgstr ""
+msgstr "このパスワードの有効期限は%sです"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:242
 msgid "Please, don't forget to log in as soon as possible to save the changes."
-msgstr ""
+msgstr "パスワード変更後はできるだけすみやかに再度ログインしてください。"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:73
 msgid "There aren't any data from custom fields"
-msgstr ""
+msgstr "カスタムフィールドは存在しません"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:81
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:89
@@ -3981,15 +3984,15 @@ msgstr ""
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:141
 msgid "Error while updating the custom fields data"
-msgstr ""
+msgstr "カスタムフィールドの更新時にエラーが発生しました"
 
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:114
 msgid "Field not found"
-msgstr ""
+msgstr "フィールドが見つかりませんでした"
 
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:135
 msgid "Error while deleting the fields"
-msgstr ""
+msgstr "フィールドの削除時にエラーが発生しました"
 
 #: lib/SP/Services/CustomField/CustomFieldTypeService.php:86
 msgid "Field type not found"
@@ -3999,36 +4002,36 @@ msgstr ""
 #: lib/SP/Storage/File/FileCacheBase.php:98
 #, php-format
 msgid "Unable to create the directory (%s)"
-msgstr ""
+msgstr "ディレクトリーが作成できませんでした (%s)"
 
 #: lib/SP/Services/Export/XmlExportService.php:204
 msgid "Error while exporting"
-msgstr ""
+msgstr "エクスポート時にエラーが発生しました"
 
 #: lib/SP/Services/Export/XmlExportService.php:271
 msgid "Exporting categories"
-msgstr ""
+msgstr "カテゴリーをエクスポート中"
 
 #: lib/SP/Services/Export/XmlExportService.php:383
 msgid "Exporting clients"
-msgstr ""
+msgstr "クライアントをエクスポート中"
 
 #: lib/SP/Services/Export/XmlExportService.php:429
 msgid "Exporting tags"
-msgstr ""
+msgstr "タグをエクスポート中"
 
 #: lib/SP/Services/Export/XmlExportService.php:473
 msgid "Exporting accounts"
-msgstr ""
+msgstr "アカウントをエクスポート中"
 
 #: lib/SP/Services/Export/XmlExportService.php:583
 msgid "Error while creating the XML file"
-msgstr ""
+msgstr "XMLファイルを作成中"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:112
 #: lib/SP/Services/Import/XmlFileImport.php:84
 msgid "Unable to process the XML file"
-msgstr ""
+msgstr "XMLファイルを作成できません"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:183
 #: lib/SP/Services/Import/SyspassImport.php:181
@@ -4057,94 +4060,99 @@ msgstr ""
 #: lib/SP/Services/Import/CsvImportBase.php:184
 #, php-format
 msgid "Please, check the CSV file format in line %s"
-msgstr ""
+msgstr "CSV ファイルの%s行目のフォーマットが破損しています"
 
 #: lib/SP/Services/Import/CsvImportBase.php:164
 #: lib/SP/Services/Import/KeepassImport.php:105
 #: lib/SP/Services/Import/SyspassImport.php:392
 msgid "Account imported"
-msgstr ""
+msgstr "アカウントをインポートしました"
 
 #: lib/SP/Services/Import/CsvImportBase.php:172
 msgid "Error while importing the account"
-msgstr ""
+msgstr "アカウントのインポート時にエラーが発生しました"
 
 #: lib/SP/Services/Import/CsvImportBase.php:173
 msgid "Error while processing line"
-msgstr ""
+msgstr "処理中にエラーが発生しました"
 
 #: lib/SP/Services/Import/FileImport.php:83
 msgid "File successfully uploaded"
-msgstr ""
+msgstr "ファイルのアップロードが完了しました"
 
 #: lib/SP/Services/Import/FileImport.php:85
 msgid "Please check the web server user permissions"
-msgstr ""
+msgstr "webサーバーの所有者権限設定を確認してください"
 
 #: lib/SP/Services/Import/FileImport.php:108
 msgid "Please, check PHP configuration for upload files"
-msgstr ""
+msgstr "ファイルアップロードに関するPHP設定を確認してください"
 
 #: lib/SP/Services/Import/ImportService.php:100
 #, php-format
 msgid "Mime type not supported (\"%s\")"
-msgstr ""
+msgstr "このMIME Typeはサポートしていません(“%s”)"
 
 #: lib/SP/Services/Import/ImportService.php:102
 msgid "Please, check the file format"
-msgstr ""
+msgstr "ファイルのフォーマットを確認してください"
 
 #: lib/SP/Services/Import/ImportTrait.php:111
 msgid "Category Id not set. Unable to import account."
 msgstr ""
+"カテゴリーIDが設定されていないためアカウントをインポートできませんでした。"
 
 #: lib/SP/Services/Import/ImportTrait.php:115
 msgid "Client Id not set. Unable to import account."
 msgstr ""
+"クライアントIDが設定されていないためアカウントをインポートできませんでした。"
 
 #: lib/SP/Services/Import/KeepassImport.php:60
 msgid "KeePass XML Import"
-msgstr ""
+msgstr "KeePassのXMLファイルをインポートする"
 
 #: lib/SP/Services/Import/KeepassImport.php:93
 #: lib/SP/Services/Import/SyspassImport.php:216
 msgid "Category imported"
-msgstr ""
+msgstr "カテゴリーをインポートしました"
 
 #: lib/SP/Services/Import/SyspassImport.php:63
 msgid "sysPass XML Import"
-msgstr ""
+msgstr "sysPassのXMLファイルをインポートする"
 
 #: lib/SP/Services/Import/SyspassImport.php:74
 msgid "Encryption password not set"
-msgstr ""
+msgstr "パスワードが設定されていません"
 
 #: lib/SP/Services/Import/SyspassImport.php:167
 msgid "Data unencrypted"
-msgstr ""
+msgstr "データが暗号化されていません"
 
 #: lib/SP/Services/Import/SyspassImport.php:182
 msgid ""
 "If you are importing an exported file from the same origin, the data could "
 "be compromised."
 msgstr ""
+"異なるオリジンで生成されたデータをインポートするとデータが破損する場合があり"
+"ます。"
 
 #: lib/SP/Services/Import/SyspassImport.php:255
 #: lib/SP/Services/Import/SyspassImport.php:295
 msgid "Client imported"
-msgstr ""
+msgstr "クライアントをインポートしました"
 
 #: lib/SP/Services/Import/SyspassImport.php:331
 msgid "Tag imported"
-msgstr ""
+msgstr "タグをインポートしました"
 
 #: lib/SP/Services/Import/XmlFileImport.php:108
 msgid "XML file not supported"
-msgstr ""
+msgstr "XMLファイルに対応していません"
 
 #: lib/SP/Services/Import/XmlFileImport.php:110
 msgid "Unable to guess the application which data was exported from"
 msgstr ""
+"このデータをエクスポートしたアプリケーションの種類が判別できませんでした"
 
 #: lib/SP/Services/Import/XmlImport.php:101
 msgid "Format not detected"
@@ -4172,7 +4180,7 @@ msgstr ""
 
 #: lib/SP/Services/Install/Installer.php:111
 msgid "Please, enter the admin username"
-msgstr ""
+msgstr "adminユーザー名を入力してください"
 
 #: lib/SP/Services/Install/Installer.php:113
 msgid "Admin user to log into the application"
@@ -4180,67 +4188,67 @@ msgstr ""
 
 #: lib/SP/Services/Install/Installer.php:118
 msgid "Please, enter the admin's password"
-msgstr ""
+msgstr "adminユーザーのパスワードを入力してください"
 
 #: lib/SP/Services/Install/Installer.php:120
 msgid "Application administrator's password"
-msgstr ""
+msgstr "アプリケーション管理者のパスワードを入力してください"
 
 #: lib/SP/Services/Install/Installer.php:125
 msgid "Please, enter the Master Password"
-msgstr ""
+msgstr "マスターパスワードを入力してください"
 
 #: lib/SP/Services/Install/Installer.php:127
 msgid "Master password to encrypt the passwords"
-msgstr ""
+msgstr "マスターパスワードにより全てのパスワードが暗号化された形で保存されます"
 
 #: lib/SP/Services/Install/Installer.php:132
 msgid "Master password too short"
-msgstr ""
+msgstr "マスターパスワードが短すぎます"
 
 #: lib/SP/Services/Install/Installer.php:134
 msgid "The Master Password length need to be at least 11 characters"
-msgstr ""
+msgstr "マスターパスワードは11文字以上にしてください"
 
 #: lib/SP/Services/Install/Installer.php:139
 msgid "Please, enter the database user"
-msgstr ""
+msgstr "データベース接続のためのユーザー名を入力してください"
 
 #: lib/SP/Services/Install/Installer.php:141
 msgid "An user with database administrative rights"
-msgstr ""
+msgstr "データベースの管理者権限を持つユーザー"
 
 #: lib/SP/Services/Install/Installer.php:146
 msgid "Please, enter the database password"
-msgstr ""
+msgstr "データベース接続のためのパスワードを入力してください"
 
 #: lib/SP/Services/Install/Installer.php:148
 msgid "Database administrator's password"
-msgstr ""
+msgstr "データベースの管理者権限を持つユーザーのパスワードを入力してください"
 
 #: lib/SP/Services/Install/Installer.php:153
 msgid "Please, enter the database name"
-msgstr ""
+msgstr "データベース名を入力してください"
 
 #: lib/SP/Services/Install/Installer.php:155
 msgid "Application database name. eg. syspass"
-msgstr ""
+msgstr "sysPassで利用するデータベースです(例: sysPass)"
 
 #: lib/SP/Services/Install/Installer.php:160
 msgid "Database name cannot contain \".\""
-msgstr ""
+msgstr "データベース名に「.」を含めることはできません"
 
 #: lib/SP/Services/Install/Installer.php:162
 msgid "Please, remove dots in database name"
-msgstr ""
+msgstr "データベース名にピリオドを含めることはできません"
 
 #: lib/SP/Services/Install/Installer.php:167
 msgid "Please, enter the database server"
-msgstr ""
+msgstr "データベースのホスト名を入力してください"
 
 #: lib/SP/Services/Install/Installer.php:169
 msgid "Server where the database will be installed"
-msgstr ""
+msgstr "データベースがインストールされているサーバーのホスト名"
 
 #: lib/SP/Services/Install/Installer.php:324
 #: lib/SP/Services/Install/Installer.php:375
@@ -4249,16 +4257,16 @@ msgstr ""
 
 #: lib/SP/Services/Install/Installer.php:365
 msgid "Error while creating 'admin' user"
-msgstr ""
+msgstr "adminユーザー作成中にエラーが発生しました"
 
 #: lib/SP/Services/Install/MySQL.php:135
 #, php-format
 msgid "Unable to check the sysPass user (%s)"
-msgstr ""
+msgstr "ユーザーのチェック時中にエラーが発生しました(%s)"
 
 #: lib/SP/Services/Install/MySQL.php:137
 msgid "Please, check the DB connection user rights"
-msgstr ""
+msgstr "データベースとのコネクションを確認してください"
 
 #: lib/SP/Services/Install/MySQL.php:181
 #, php-format
@@ -4267,34 +4275,34 @@ msgstr ""
 
 #: lib/SP/Services/Install/MySQL.php:201
 msgid "The database already exists"
-msgstr ""
+msgstr "この名前のデータベースはすでに存在しています"
 
 #: lib/SP/Services/Install/MySQL.php:203
 msgid "Please, enter a new database or delete the existing one"
-msgstr ""
+msgstr "異なるデータベース名を使用するか、既存のデータベースを削除してください"
 
 #: lib/SP/Services/Install/MySQL.php:213 lib/SP/Services/Install/MySQL.php:329
 #: lib/SP/Services/Install/MySQL.php:341
 #, php-format
 msgid "Error while creating the DB ('%s')"
-msgstr ""
+msgstr "データベース作成時にエラーが発生しました(%s)"
 
 #: lib/SP/Services/Install/MySQL.php:215 lib/SP/Services/Install/MySQL.php:239
 msgid "Please check the database user permissions"
-msgstr ""
+msgstr "データベースのパーミッションを確認してください"
 
 #: lib/SP/Services/Install/MySQL.php:237
 #, php-format
 msgid "Error while setting the database permissions ('%s')"
-msgstr ""
+msgstr "データベースのパーミッション設定時にエラーが発生しました(%s)"
 
 #: lib/SP/Services/Install/MySQL.php:251
 msgid "The database does not exist"
-msgstr ""
+msgstr "データベースが存在しません"
 
 #: lib/SP/Services/Install/MySQL.php:253
 msgid "You need to create it and assign the needed permissions"
-msgstr ""
+msgstr "データベースに適切なパーミッションを持ったユーザーを作成してください"
 
 #: lib/SP/Services/Install/MySQL.php:309
 #, php-format
@@ -4306,14 +4314,16 @@ msgid ""
 "Unable to use the database to create the structure. Please check the "
 "permissions and it does not exist."
 msgstr ""
+"データベースの構築に失敗しました。適切なパーミッションが設定されているか確認"
+"してください。"
 
 #: lib/SP/Services/Install/MySQL.php:331
 msgid "Error while creating database structure."
-msgstr ""
+msgstr "データベース構築時にエラーが発生しました。"
 
 #: lib/SP/Services/Install/MySQL.php:365
 msgid "Please, try the installation again"
-msgstr ""
+msgstr "もういちど最初からインストール作業を行ってください"
 
 #: lib/SP/Services/ItemPreset/ItemPresetService.php:86
 #: lib/SP/Services/ItemPreset/ItemPresetService.php:107
@@ -4332,31 +4342,33 @@ msgstr ""
 #: lib/SP/Services/Ldap/LdapImportService.php:133
 #: lib/SP/Services/Ldap/LdapImportService.php:222
 msgid "Imported from LDAP"
-msgstr ""
+msgstr "LDAPをインポートしました"
 
 #: lib/SP/Services/Mail/MailService.php:67
 msgid "Mail test"
-msgstr ""
+msgstr "メールのテスト"
 
 #: lib/SP/Services/Mail/MailService.php:68
 msgid ""
 "This is a test email in order to verify that the configuration is working "
 "right."
 msgstr ""
+"本メールはsysPassのメール設定が正しく機能しているかを確認するためのテストメー"
+"ルです。"
 
 #: lib/SP/Services/Notification/NotificationService.php:106
 #: lib/SP/Services/Notification/NotificationService.php:125
 #: lib/SP/Services/Notification/NotificationService.php:184
 #: lib/SP/Services/Notification/NotificationService.php:214
 msgid "Notification not found"
-msgstr ""
+msgstr "通知はありません"
 
 #: lib/SP/Services/Plugin/PluginDataService.php:103
 #: lib/SP/Services/Plugin/PluginDataService.php:127
 #: lib/SP/Services/Plugin/PluginDataService.php:171
 #: lib/SP/Services/Plugin/PluginDataService.php:189
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "プラグインデータがありません"
 
 #: lib/SP/Services/Plugin/PluginService.php:94
 #: lib/SP/Services/Plugin/PluginService.php:155
@@ -4367,7 +4379,7 @@ msgstr ""
 #: lib/SP/Services/Plugin/PluginService.php:260
 #: lib/SP/Services/Plugin/PluginService.php:277
 msgid "Plugin not found"
-msgstr ""
+msgstr "プラグインはありません"
 
 #: lib/SP/Services/PublicLink/PublicLinkService.php:129
 #: lib/SP/Services/PublicLink/PublicLinkService.php:152
@@ -4376,36 +4388,36 @@ msgstr ""
 #: lib/SP/Services/PublicLink/PublicLinkService.php:339
 #: lib/SP/Services/PublicLink/PublicLinkService.php:360
 msgid "Link not found"
-msgstr ""
+msgstr "関連しているアカウントはありません"
 
 #: lib/SP/Services/PublicLink/PublicLinkService.php:245
 msgid "Error while removing the links"
-msgstr ""
+msgstr "関連するアカウントを解除する時にエラーが発生しました"
 
 #: lib/SP/Services/Service.php:111
 msgid "Rollback"
-msgstr ""
+msgstr "Rollback"
 
 #: lib/SP/Services/Service.php:117
 msgid "Unable to start a transaction"
-msgstr ""
+msgstr "トランザクションを開始できません"
 
 #: lib/SP/Services/Service.php:135 lib/SP/Services/Service.php:142
 msgid "Error while retrieving master password from context"
-msgstr ""
+msgstr "マスターパスワードの復元時にエラーが発生しました"
 
 #: lib/SP/Services/Service.php:162 lib/SP/Services/Service.php:166
 msgid "Error while setting master password in context"
-msgstr ""
+msgstr "マスターパスワードの設定時にエラーが発生しました"
 
 #: lib/SP/Services/Tag/TagService.php:81 lib/SP/Services/Tag/TagService.php:100
 #: lib/SP/Services/Tag/TagService.php:117
 msgid "Tag not found"
-msgstr ""
+msgstr "タグが見つかりません"
 
 #: lib/SP/Services/Task/TaskService.php:85
 msgid "Unable to create the lock file"
-msgstr ""
+msgstr "ロックファイルが生成できません"
 
 #: lib/SP/Services/Task/TaskService.php:94
 msgid "Task not set within wait time"
@@ -4413,13 +4425,13 @@ msgstr ""
 
 #: lib/SP/Services/Task/TaskService.php:183
 msgid "Waiting for progress updating ..."
-msgstr ""
+msgstr "アップデート中です、しばらくお待ちください…"
 
 #: lib/SP/Services/Track/TrackService.php:94
 #: lib/SP/Services/Track/TrackService.php:108
 #: lib/SP/Services/Track/TrackService.php:135
 msgid "Track not found"
-msgstr ""
+msgstr "トラックがありません"
 
 #: lib/SP/Services/Track/TrackService.php:169
 #, php-format
@@ -4428,31 +4440,31 @@ msgstr ""
 
 #: lib/SP/Services/Track/TrackService.php:170
 msgid "Seconds"
-msgstr ""
+msgstr "秒"
 
 #: lib/SP/Services/Track/TrackService.php:215
 msgid "IP address not set"
-msgstr ""
+msgstr "IPアドレスがありません"
 
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:72
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:95
 msgid "Update Application"
-msgstr ""
+msgstr "アプリケーションのアップデート"
 
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:79
 msgid "Error while applying the application update"
-msgstr ""
+msgstr "アプリケーションのアプデートを開始できませんでした"
 
 #: lib/SP/Services/Upgrade/UpgradeAppService.php:81
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:104
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:112
 msgid "Please, check the event log for more details"
-msgstr ""
+msgstr "event logを確認してください"
 
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:56
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:86
 msgid "API authorizations update"
-msgstr ""
+msgstr "API認証の更新"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:81
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:215
@@ -4460,33 +4472,33 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:310
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:335
 msgid "Update Configuration"
-msgstr ""
+msgstr "設定の更新"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:93
 msgid "Parameter"
-msgstr ""
+msgstr "パラメ－ター"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:132
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:136
 msgid "Error while updating the configuration"
-msgstr ""
+msgstr "設定の更新時にエラーが発生しました"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:287
 msgid "MIME type set for this extension"
-msgstr ""
+msgstr "この拡張子に設定されたMIME Type"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:288
 msgid "MIME type"
-msgstr ""
+msgstr "MIME Type"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:289
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:298
 msgid "Extension"
-msgstr ""
+msgstr "Extension"
 
 #: lib/SP/Services/Upgrade/UpgradeConfigService.php:297
 msgid "MIME type not found for this extension"
-msgstr ""
+msgstr "この拡張子に対応するMIME Typeが見つかりませんでした"
 
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:58
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:89
@@ -4497,12 +4509,12 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:222
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:268
 msgid "Custom fields update"
-msgstr ""
+msgstr "カスタムフィールドの更新"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:95
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:126
 msgid "Update DB"
-msgstr ""
+msgstr "データベースの更新"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:102
 msgid "Error while applying an auxiliary update"
@@ -4512,78 +4524,78 @@ msgstr ""
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:181
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:185
 msgid "Error while updating the database"
-msgstr ""
+msgstr "データベースの更新中にエラーが発生しました"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:158
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:160
 msgid "Update file does not contain data"
-msgstr ""
+msgstr "アップロードされたファイルにデータがありません"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:191
 msgid "Database updating was completed successfully."
-msgstr ""
+msgstr "データベースは正常に更新されました。"
 
 #: lib/SP/Services/Upgrade/UpgradePlugin.php:49
 #: lib/SP/Services/Upgrade/UpgradePlugin.php:58
 msgid "Plugins upgrade"
-msgstr ""
+msgstr "プラグインのアップデート"
 
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:57
 #: lib/SP/Services/Upgrade/UpgradePublicLink.php:103
 msgid "Public links update"
-msgstr ""
+msgstr "共有リンクの再発行"
 
 #: lib/SP/Services/User/UserPassService.php:261
 #: lib/SP/Services/User/UserService.php:126
 #: lib/SP/Services/User/UserService.php:157
 #: lib/SP/Services/User/UserService.php:176
 msgid "User does not exist"
-msgstr ""
+msgstr "ユーザーが存在しません"
 
 #: lib/SP/Services/User/UserService.php:195
 msgid "User not found"
-msgstr ""
+msgstr "ユーザーが見つかりません"
 
 #: lib/SP/Services/UserGroup/UserGroupService.php:85
 #: lib/SP/Services/UserGroup/UserGroupService.php:103
 #: lib/SP/Services/UserGroup/UserGroupService.php:192
 #: lib/SP/Services/UserGroup/UserToUserGroupService.php:61
 msgid "Group not found"
-msgstr ""
+msgstr "グループが見つかりません"
 
 #: lib/SP/Services/UserGroup/UserGroupService.php:120
 msgid "Error while deleting the groups"
-msgstr ""
+msgstr "グループ削除時にエラーが発生しました"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:73
 msgid "A request for changing your user password has been done."
-msgstr ""
+msgstr "ユーザーパスワードの変更リクエストが完了しました。"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:75
 msgid "In order to complete the process, please go to this URL:"
-msgstr ""
+msgstr "処理が完了しました。以下のURLにアクセスしてください:"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:79
 msgid "If you have not requested this action, please dismiss this message."
-msgstr ""
+msgstr "この操作に見覚えがない場合はこのままこのメッセージを閉じてください。"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:94
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:162
 msgid "Wrong hash or expired"
-msgstr ""
+msgstr "ハッシュが一致しないもしくは、有効期限切れです"
 
 #: lib/SP/Services/UserProfile/UserProfileService.php:70
 #: lib/SP/Services/UserProfile/UserProfileService.php:102
 msgid "Profile not found"
-msgstr ""
+msgstr "プロファイルが見つかりません"
 
 #: lib/SP/Services/Wiki/DokuWikiApi.php:69
 msgid "Authentication error"
-msgstr ""
+msgstr "認証エラー"
 
 #: lib/SP/Services/Wiki/DokuWikiApiBase.php:198
 msgid "Error while doing the query"
-msgstr ""
+msgstr "検索中にエラーが発生しました"
 
 #: lib/SP/Services/Wiki/DokuWikiApiBase.php:230
 msgid "Connection URL not set"
@@ -4600,7 +4612,7 @@ msgstr ""
 #: lib/SP/Storage/Database/MySQLHandler.php:101
 #: lib/SP/Storage/Database/MySQLHandler.php:168
 msgid "Please, check the connection parameters"
-msgstr ""
+msgstr "接続設定を確認してください"
 
 #: lib/SP/Storage/Database/QueryData.php:338
 msgid "Error while querying"
@@ -4655,7 +4667,7 @@ msgstr ""
 #: lib/SP/Storage/File/FileHandler.php:276
 #, php-format
 msgid "File not found (%s)"
-msgstr ""
+msgstr "ファイルが見つかりませんでした(%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
@@ -4703,41 +4715,43 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:80
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:141
 msgid "User preferences"
-msgstr ""
+msgstr "ユーザー設定"
 
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:84
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:87
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:163
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:166
 msgid "Sign Out"
-msgstr ""
+msgstr "サインアウト"
 
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:179
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:60
 msgid "Demo"
-msgstr ""
+msgstr "デモ"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:49
 msgid "Tells whether the connection uses HTTPS or not."
-msgstr ""
+msgstr "接続にHTTPSを利用しているかを通知します。"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:49
 msgid ""
 "Passwords sent from forms are encrypted using PKI, the remain data don't."
 msgstr ""
+"ブラウザからサーバーに送信されるパスワードはすべてPKIで暗号化された後に送信さ"
+"れますが、パスワード以外の情報はそのまま送信されます。"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:74
 msgid "Help :: FAQ :: Changelog"
-msgstr ""
+msgstr "Help :: FAQ :: Changelog"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:79
 msgid "A cygnux.org project"
-msgstr ""
+msgstr "A cygnux.org project"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:8
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:13
 msgid "Special parameters"
-msgstr ""
+msgstr "Special parameters"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:15
 msgid ""
@@ -4796,7 +4810,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/_partials/no_records_found.inc:13
 #: app/modules/web/themes/material-blue/views/account/search-index.inc:22
 msgid "No records found"
-msgstr ""
+msgstr "該当するものはありません"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:100
 #: app/modules/web/themes/material-blue/views/account/account.inc:186
@@ -4808,7 +4822,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:76
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:46
 msgid "Password (repeat)"
-msgstr ""
+msgstr "Password (repeat)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:128
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:168
@@ -4816,7 +4830,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account.inc:311
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:288
 msgid "Select date"
-msgstr ""
+msgstr "日付選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:26
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:160
@@ -4824,20 +4838,20 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/account.inc:303
 #: app/modules/web/themes/material-blue/views/account/account.inc:305
 msgid "History"
-msgstr ""
+msgstr "履歴"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:37
 #: app/modules/web/themes/material-blue/views/account/account.inc:56
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:32
 msgid "Details"
-msgstr ""
+msgstr "詳細"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:91
 #: app/modules/web/themes/material-blue/views/account/account.inc:126
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:53
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:67
 msgid "Select Category"
-msgstr ""
+msgstr "カテゴリーを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:144
 #: app/modules/web/themes/material-blue/views/account/account-link.inc:93
@@ -4846,7 +4860,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:182
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:189
 msgid "Notes"
-msgstr ""
+msgstr "メモ"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:181
 #: app/modules/web/themes/material-blue/views/account/account.inc:326
@@ -4855,7 +4869,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:314
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:316
 msgid "Last Modification"
-msgstr ""
+msgstr "最終編集"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:33
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:66
@@ -4865,7 +4879,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:68
 msgid "Select Users"
-msgstr ""
+msgstr "選択中のユーザー"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:43
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:47
@@ -4877,7 +4891,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:79
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:64
 msgid "View"
-msgstr ""
+msgstr "表示"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:105
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:138
@@ -4886,7 +4900,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:68
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:86
 msgid "Select Groups"
-msgstr ""
+msgstr "グループを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:188
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:126
@@ -4897,7 +4911,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:100
 msgid "Select User"
-msgstr ""
+msgstr "ユーザーを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:212
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:306
@@ -4908,80 +4922,80 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:66
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:171
 msgid "Select Group"
-msgstr ""
+msgstr "グループを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:236
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:201
 msgid "Private"
-msgstr ""
+msgstr "プライベート"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:254
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:218
 msgid "Private for Group"
-msgstr ""
+msgstr "プライベートグループ"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:21
 msgid "Request Account Modification"
-msgstr ""
+msgstr "アカウントの修正をリクエスト"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:65
 msgid "Request description"
-msgstr ""
+msgstr "リクエストの概要"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:87
 msgid "Send"
-msgstr ""
+msgstr "送信"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:46
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:145
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:30
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:236
 msgid "Permissions"
-msgstr ""
+msgstr "Permissions"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:100
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:51
 msgid "Select Client"
-msgstr ""
+msgstr "クライアントを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:245
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:113
 msgid "Select Tags"
-msgstr ""
+msgstr "タグを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:294
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:35
 msgid "Select Account"
-msgstr ""
+msgstr "アカウントを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/account.inc:336
 #: app/modules/web/themes/material-blue/views/account/account.inc:340
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:206
 msgid "Public Link"
-msgstr ""
+msgstr "共有リンク"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:348
 #: app/modules/web/themes/material-blue/views/account/account.inc:350
 #: app/modules/web/themes/material-blue/views/account/account.inc:354
 msgid "Direct Link"
-msgstr ""
+msgstr "ダイレクトリンク"
 
 #: app/modules/web/themes/material-blue/views/account/details.inc:28
 #: app/modules/web/themes/material-blue/views/account/details.inc:30
 msgid "Date Added"
-msgstr ""
+msgstr "日付を追加しました"
 
 #: app/modules/web/themes/material-blue/views/account/details.inc:66
 #: app/modules/web/themes/material-blue/views/account/details.inc:68
 msgid "Date Modified"
-msgstr ""
+msgstr "日付を変更しました"
 
 #: app/modules/web/themes/material-blue/views/account/details.inc:74
 #: app/modules/web/themes/material-blue/views/account/details.inc:76
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #: app/modules/web/themes/material-blue/views/account/details.inc:84
 #: app/modules/web/themes/material-blue/views/account/details.inc:86
@@ -4991,76 +5005,77 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/account/files.inc:45
 msgid "Drop files here (max. 5) or click to select"
 msgstr ""
+"ファイルをドラッグアンドドロップ(Max 5 files) / クリックしてファイルを選択"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:47
 #, php-format
 msgid "Maximum file size: %d MB"
-msgstr ""
+msgstr "最大ファイルサイズ: %d MB"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:44
 msgid "Search in Wiki"
-msgstr ""
+msgstr "Wiki検索"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:95
 #, php-format
 msgid "Open link to: %s"
-msgstr ""
+msgstr "Open link to: %s"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:123
 msgid "Password Expired"
-msgstr ""
+msgstr "パスワードの有効期限"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:137
 msgid "Private Account (Group)"
-msgstr ""
+msgstr "プライベートアカウント(グループ)"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:162
 msgid "Delete Favorite"
-msgstr ""
+msgstr "お気に入りの解除"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:172
 msgid "Mark as Favorite"
-msgstr ""
+msgstr "お気に入りに追加"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:195
 msgid "Attachments"
-msgstr ""
+msgstr "添付"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:208
 msgid "Expiry Date"
-msgstr ""
+msgstr "有効期限"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:222
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:233
 msgid "Link to Wiki"
-msgstr ""
+msgstr "Wikiへのリンク"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:225
 msgid "View at Wiki"
-msgstr ""
+msgstr "Wikiを表示"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:70
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:76
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:254
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:255
 msgid "Global search"
-msgstr ""
+msgstr "Global search"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:89
 msgid "Display All"
-msgstr ""
+msgstr "Display All"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:96
 msgid "Show Favorites"
-msgstr ""
+msgstr "お気に入りを表示"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:101
 msgid "Favorites Filtering"
-msgstr ""
+msgstr "お気に入りから検索"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:120
 msgid "Accounts per page"
-msgstr ""
+msgstr "1画面あたりの表示数"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:128
 msgid "More Filters"
@@ -5068,23 +5083,23 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:134
 msgid "Select Tag"
-msgstr ""
+msgstr "タグの選択"
 
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:30
 msgid "Copy Username"
-msgstr ""
+msgstr "ユーザー名をコピー"
 
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:48
 msgid "Copy Password"
-msgstr ""
+msgstr "パスワードをコピー"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:26
 msgid "Data will be encrypted after saving"
-msgstr ""
+msgstr "データは暗号化処理をした後保存されます"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:31
 msgid "Data will be unencrypted after saving"
-msgstr ""
+msgstr "データは暗号化されずに保存されます"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:18
 #: app/modules/web/themes/material-blue/views/config/backup.inc:18
@@ -5093,79 +5108,82 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:17
 #, php-format
 msgid "The '%s' extension is unavailable"
-msgstr ""
+msgstr "“%s” プラグインが動作していません"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:23
 msgid "This extension is needed to display passwords as images"
 msgstr ""
+"このプラグインはパスワードを文字ではなく画像として表示するために必要です"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:36
 msgid "Searching"
-msgstr ""
+msgstr "検索中"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:42
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:62
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:64
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:84
 msgid "Results per page"
-msgstr ""
+msgstr "Results per page"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:48
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:70
 msgid "Number of results per page to display when performing a search."
-msgstr ""
+msgstr "1画面あたりの検索結果の表示数。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:82
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:35
 msgid "Accounts password expiry"
-msgstr ""
+msgstr "アカウントのパスワードの有効期限"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:83
 msgid "Enables the accounts password expiry date."
-msgstr ""
+msgstr "アカウントのパスワードに有効期限を設定しました。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:91
 msgid "Password expiry time"
-msgstr ""
+msgstr "パスワードの有効期限"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:97
 msgid "Number of days for account's password expiry date."
-msgstr ""
+msgstr "パスワードの有効期限。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:109
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:43
 msgid "Expire time (days)"
-msgstr ""
+msgstr "有効期限(日)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:128
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:103
 msgid "Account name as link"
-msgstr ""
+msgstr "アカウント名のリンク"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:129
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:105
 msgid "Enables to use the account name as a link to account details."
-msgstr ""
+msgstr "アカウント名をリンクにする。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:145
 msgid "Global searches"
-msgstr ""
+msgstr "グローバル検索"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:146
 msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
 "able to display the account details if they don't have permission."
 msgstr ""
+"全てのアカウントから検索できますが、アカウントの詳細を閲覧できるのは権限を"
+"持ったユーザーのみです。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:162
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:166
 msgid "Image to show password"
-msgstr ""
+msgstr "パスワードを画像で表示する"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:164
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:168
 msgid "Generate an image with a text of the account password."
-msgstr ""
+msgstr "パスワードを文字ではなく画像として表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:166
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:170
@@ -5173,20 +5191,22 @@ msgid ""
 "Useful for environments where copying a password to clipboard is a security "
 "risk."
 msgstr ""
+"パスワードをクリップボードにコピーすることは、場合によってはセキュリティーリ"
+"スクにつながります。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:183
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:175
 msgid "Results like Cards"
-msgstr ""
+msgstr "カード表示"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:185
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:177
 msgid "Displays account's search results on a card like format."
-msgstr ""
+msgstr "アカウントを四角いカードスタイルで表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:202
 msgid "Secondary Groups Access"
-msgstr ""
+msgstr "Secondary Groups Access"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:204
 msgid "Grants access to users that are included in secondary groups."
@@ -5201,160 +5221,174 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:217
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:412
 msgid "Public Links"
-msgstr ""
+msgstr "共有リンク"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:236
 msgid "Enable Public Links"
-msgstr ""
+msgstr "共有リンクを有効化"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:238
 msgid "Enables the ability to create public links to view an account's details"
-msgstr ""
+msgstr "共有リンク機能を有効化します"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:240
 msgid "Linked accounts will be visible by anyone that have the link."
-msgstr ""
+msgstr "共有リンクを知っている全てのユーザーがアクセスできるようになります。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:242
 msgid ""
 "In order to create links, users must have activated the option on their "
 "profiles."
 msgstr ""
+"共有リンクを作成するには各ユーザーの個人設定から有効化する必要があります。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:259
 msgid "Use an image for password"
-msgstr ""
+msgstr "パスワードを画像で表示する"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:261
 msgid "The account password is shown as image."
-msgstr ""
+msgstr "アカウントのパスワードを文字ではなく画像で表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:270
 msgid "Expire time"
-msgstr ""
+msgstr "有効期限"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:281
 msgid "Expire time (minutes)"
-msgstr ""
+msgstr "有効期限(分)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:287
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:298
 msgid "Maximum visits"
-msgstr ""
+msgstr "最大閲覧数"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:325
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
 msgid "Files management"
-msgstr ""
+msgstr "ファイル管理"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:326
 msgid "Enables the uploading and downloading of accounts files."
-msgstr ""
+msgstr "ファイルのアップロード・ダウンロード機能を有効化します。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:348
 msgid "Allowed MIME types"
-msgstr ""
+msgstr "このMIME Typeを許可する"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:340
 msgid "Allowed file MIME types for uploading."
-msgstr ""
+msgstr "このMIME Typeのアップロードは許可されています。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:343
 msgid ""
 "In order to add more MIME types, you need to add them into mime.xml file "
 "within the config directory."
 msgstr ""
+"MIME Typebの設定を変更するには“config”ディレクトリ内の”mime.xml”ファイルを編"
+"集してください。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:365
 msgid "Maximum file size"
-msgstr ""
+msgstr "最大ファイルサイズ"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:371
 msgid "Sets the maximum file size for uploading."
-msgstr ""
+msgstr "アップロードできる最大ファイルサイズ。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:375
 msgid "Absolute maximum is 16MB."
-msgstr ""
+msgstr "設定できる上限値は16MBです。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:388
 msgid "Maximum file size in kilobytes"
-msgstr ""
+msgstr "最大ファイルサイズはKB(キロバイト)で設定してください"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:23
 msgid "This extension is needed to build the application's backup files"
 msgstr ""
+"このエクステンションはアプリケーションのバックアップを作成するために必要です"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:37
 #: app/modules/web/themes/material-blue/views/config/backup.inc:40
 #: app/modules/web/themes/material-blue/views/config/backup.inc:118
 #: app/modules/web/themes/material-blue/views/config/backup.inc:121
 msgid "Result"
-msgstr ""
+msgstr "Result"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:48
 #: app/modules/web/themes/material-blue/views/config/backup.inc:51
 #: app/modules/web/themes/material-blue/views/config/backup.inc:129
 #: app/modules/web/themes/material-blue/views/config/backup.inc:132
 msgid "Download Current"
-msgstr ""
+msgstr "ダウンロード"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:58
 msgid "DB Backup"
-msgstr ""
+msgstr "DB Backup"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:65
 msgid "sysPass Backup"
-msgstr ""
+msgstr "sysPass Backup"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:88
 msgid ""
 "The backup allows you to save and download sysPass database and application "
 "files including its configuration."
 msgstr ""
+"sysPassのアプリケーション構成とデータベースのバックアップファイルを作成・ダウ"
+"ンロードできます。"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:90
 msgid ""
 "With this method it's possible to either save all sysPass data in another "
 "place or use it to make the application portable."
 msgstr ""
+"sysPass全体のバックアップを作成し、別の場所に同じsysPassサーバーを構築するこ"
+"とやそのままUSBなどにコピーしてオフラインで利用することができます。"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:109
 #: app/modules/web/themes/material-blue/views/config/backup.inc:197
 msgid "Export Accounts"
-msgstr ""
+msgstr "Export Accounts"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:149
 #: app/modules/web/themes/material-blue/views/config/backup.inc:157
 msgid "Export Password"
-msgstr ""
+msgstr "Export Password"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:163
 #: app/modules/web/themes/material-blue/views/config/backup.inc:172
 msgid "Export Password (repeat)"
-msgstr ""
+msgstr "Export Password (repeat)"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:199
 msgid ""
 "The accounts export allows you to save the accounts and their data in XML "
 "format to be imported in another sysPass instance."
 msgstr ""
+"アカウント情報をXML形式でエクスポートして、他のsysPassにインポートすることが"
+"できます。"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:201
 msgid "Exported items are accounts, clients, categories and tags."
-msgstr ""
+msgstr "アカウント・クライアント・カテゴリー・タグをエクスポートします。"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:203
 msgid ""
 "Accounts' password are exported in an encrypted way for better security."
 msgstr ""
+"エクスポート時に全てのアカウントのパスワードは暗号化された状態でエクスポート"
+"されます。"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:205
 msgid ""
 "It's possible to set an export password to save all the encrypted data in "
 "the XML file."
 msgstr ""
+"エクスポートパスワードを用いて全てのデータを暗号化した状態でXMLファイルにエク"
+"スポートすることができます。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:24
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:173
@@ -5365,48 +5399,51 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/login/index.inc:62
 #: app/modules/web/themes/material-blue/views/login/index.inc:110
 msgid "Master Password"
-msgstr ""
+msgstr "マスターパスワード"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:31
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:34
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:219
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:222
 msgid "Last change"
-msgstr ""
+msgstr "最終変更"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:42
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:51
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:148
 msgid "Current Master Password"
-msgstr ""
+msgstr "Current Master Password"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:57
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:66
 msgid "New Master Password"
-msgstr ""
+msgstr "New Master Password"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:72
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:81
 msgid "New Master Password (repeat)"
-msgstr ""
+msgstr "New Master Password (repeat)"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:96
 msgid "You should save the new password on a secure place"
-msgstr ""
+msgstr "パスワードは安全な方法で保存されます"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:100
 msgid "All accounts passwords will be encrypted again."
-msgstr ""
+msgstr "保存されている全てのパスワードを再暗号化します。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:104
 msgid "Users will need to enter the new Master Password."
 msgstr ""
+"全てのユーザーはログイン時に新しいマスターパスワードの入力を求められるように"
+"なります。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:108
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:136
 #, php-format
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr ""
+"現在%s個目のアカウントを処理中です。処理の完了までしばらくお待ちください。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:126
 msgid "Do not modify accounts"
@@ -5414,7 +5451,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:128
 msgid "Sets a new Master Password without re-encrypting the accounts."
-msgstr ""
+msgstr "アカウントを再暗号化せずにマスターパスワードを変更します。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:145
 msgid "Confirm change"
@@ -5425,18 +5462,23 @@ msgid ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
 msgstr ""
+"上記の説明を全て読みマスターパスワードを変更することによって起こる影響を理解"
+"した上で処理を行ってください。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:175
 msgid ""
 "The Master Password is used to encrypt sysPass accounts passwords and keep "
 "them safe."
 msgstr ""
+"マスターパスワードはsysPassのアカウント情報を暗号化する際に用いられます。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:177
 msgid ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
 msgstr ""
+"パスワードには英数字のほか記号を含めるなど複雑なものにすることをおすすめしま"
+"す。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:179
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:138
@@ -5446,17 +5488,17 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:189
 msgid "Update master password hash"
-msgstr ""
+msgstr "マスターパスワードのハッシュを再生成"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:209
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:349
 msgid "Temporary Password"
-msgstr ""
+msgstr "仮パスワード"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:224
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:239
 msgid "Not generated"
-msgstr ""
+msgstr "生成されていません"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:229
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:232
@@ -5475,11 +5517,11 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:287
 msgid "Send email"
-msgstr ""
+msgstr "メールを送信する"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:289
 msgid "Sends an email to all users or only to those whose group is selected."
-msgstr ""
+msgstr "全てのユーザーまたは、選択したグループに"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:351
 msgid ""
@@ -5487,40 +5529,43 @@ msgid ""
 "to enter it during login. By this way there is no need to tell them the real "
 "Master Password."
 msgstr ""
+"本来ならばsysPassを利用する全てのユーザーにマスターパスワードを教えなければな"
+"りませんが、期限付きの仮マスターパスワードを利用すれば本当のマスターパスワー"
+"ドの代わりにこれを教えればいいので安心して利用できます。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:358
 msgid "Generate"
-msgstr ""
+msgstr "生成"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:37
 msgid "Use Auth Basic"
-msgstr ""
+msgstr "Basic認証"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:38
 msgid "Use Auth Basic for authorizing accesses to the application"
-msgstr ""
+msgstr "Basic認証でアプリケーションにアクセスできるようにします"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:54
 msgid "Use Auth Basic SSO"
-msgstr ""
+msgstr "SSO"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:55
 msgid "Use auto-login through Auth Basic"
-msgstr ""
+msgstr "Basic認証を用いて自動ログインする"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:63
 msgid "Domain"
-msgstr ""
+msgstr "Domain"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:68
 msgid ""
 "The domain will be added to sysPass user name for checking against the Auth "
 "Basic one."
-msgstr ""
+msgstr "Basic認証のためのドメイン設定"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:79
 msgid "Domain name"
-msgstr ""
+msgstr "ドメイン名"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:85
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:96
@@ -5529,22 +5574,25 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:270
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:281
 msgid "Default Group"
-msgstr ""
+msgstr "Default Group"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:91
 msgid "Sets the default users group for newly created SSO users"
 msgstr ""
+"新しく作成したSSOユーザーが自動的に追加されるデフォルトユーザーグループを設定"
+"します"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:111
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:122
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:296
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:307
 msgid "Default Profile"
-msgstr ""
+msgstr "デフォルトプロファイル"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:117
 msgid "Sets the default profile for the newly created SSO users."
 msgstr ""
+"SSOから追加されたユーザーは全てこのデフォルトプロファイルが適用されます。"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:18
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:110
@@ -5554,27 +5602,27 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:78
 #: app/modules/web/themes/material-blue/views/plugin/plugin.inc:80
 msgid "Events"
-msgstr ""
+msgstr "Events"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:37
 msgid "Enable event log"
-msgstr ""
+msgstr "Enable event log"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:38
 msgid "Saves the actions done by the application."
-msgstr ""
+msgstr "アプリケーションの動作を保存します"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:53
 msgid "Enable Syslog"
-msgstr ""
+msgstr "Enable Syslog"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:69
 msgid "Enable Remote Syslog"
-msgstr ""
+msgstr "Enable Remote Syslog"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:88
 msgid "Hostname or IP address"
-msgstr ""
+msgstr "Hostname or IP address"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:94
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:104
@@ -5582,44 +5630,45 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/mail.inc:84
 #: app/modules/web/themes/material-blue/views/config/mail.inc:94
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:17
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:36
 msgid "Use Proxy"
-msgstr ""
+msgstr "Use Proxy"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:37
 msgid "Use a proxy server for checking out for updates and notifications."
 msgstr ""
+"sysPassとメール通知を行う際にプロキシサーバ－を経由させることができます。"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:54
 msgid "Proxy server"
-msgstr ""
+msgstr "Proxy server"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:70
 msgid "Proxy server port"
-msgstr ""
+msgstr "Proxy server port"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:85
 msgid "Proxy server user"
-msgstr ""
+msgstr "Proxy server user"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:100
 msgid "Proxy server password"
-msgstr ""
+msgstr "Proxy server password"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:23
 msgid "This extension is needed to check for sysPass updates and notices"
-msgstr ""
+msgstr "このエクステンションはsysPassの更新と通知機能のために必要です。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:31
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:21
 msgid "Site"
-msgstr ""
+msgstr "Site"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:37
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:51
@@ -5630,116 +5679,131 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:33
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:35
 msgid "Language"
-msgstr ""
+msgstr "言語"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:42
 msgid ""
 "Sets the global app language. You can set a per user language on preferences."
 msgstr ""
+"sysPass全体の言語設定です、これの他にユーザー自身の個人設定から表示される言語"
+"を変更することもできます。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:46
 msgid ""
 "To improve/add translations, you can get involved at https://poeditor.com/"
 "join/project/fmlsBuugyv"
 msgstr ""
+"探している言語がありませんか？よろしければこちらから翻訳に協力してくださいま"
+"せんか？https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:65
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:75
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:48
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:50
 msgid "Visual Theme"
-msgstr ""
+msgstr "テーマ"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:70
 msgid ""
 "Sets the global application visual theme. You can set a per user visual "
 "theme on preferences."
 msgstr ""
+"sysPass全体のテーマを設定です。これの他にユーザー自身の個人設定からもテーマを"
+"変更することができます。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:89
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 msgid "Session timeout (s)"
-msgstr ""
+msgstr "セッションの有効期限(秒)"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:107
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:123
 msgid "Application URL"
-msgstr ""
+msgstr "Application URL"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:112
 msgid ""
 "Sets the application URL when accessing through a reverse proxy or load "
 "balancer."
 msgstr ""
+"sysPassにアクセスできるURLを設定してください、リバースプロキシやロードバラン"
+"サを用いている場合に必要な設定です。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:142
 msgid "Force HTTPS"
-msgstr ""
+msgstr "Force HTTPS"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:143
 msgid "It forces the use of HTTPS on all the connections"
-msgstr ""
+msgstr "HTTP通信を全てHTTPSにリダイレクトします"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:158
 msgid "Enable debug"
-msgstr ""
+msgstr "デバッグを有効化"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:159
 msgid ""
 "Displays some information about application configuration and performance."
-msgstr ""
+msgstr "アプリケーションの構成と動作に関する詳細情報を表示するようになります。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:174
 msgid "Maintenance mode"
-msgstr ""
+msgstr "メンテナンスモード"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:175
 msgid ""
 "In this mode nobody can log into the application. To disable it, you need to "
 "either modify the configuration file or unset on the site tab."
 msgstr ""
+"このモードを有効化したユーザー以外は誰もログインできなくなります、メンテナン"
+"スモードを解除するには設定から無効化する、もしくは”config”ディレクトリ内の設"
+"定ファイルから直接メンテナンスモードを無効化してください。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:190
 msgid "Check for updates"
-msgstr ""
+msgstr "アップデートを確認"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:191
 msgid "Check for application updates (only for administrators)."
-msgstr ""
+msgstr "新しいsysPassがないか確認をします(adminユーザーのみが実行できます)。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:206
 msgid "Check for notifications"
-msgstr ""
+msgstr "通知を確認"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:207
 msgid ""
 "Check if there are either sysPass security or warning notices (only for "
 "administrators)."
 msgstr ""
+"sysPassにセキュリティー上の問題が見つかった場合adminユーザーに通知が届きま"
+"す。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:222
 msgid "Encrypt Session"
-msgstr ""
+msgstr "セッションを暗号化"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:224
 msgid "Encrypt PHP session data"
-msgstr ""
+msgstr "PHPのセッションを暗号化します"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:225
 msgid ""
 "This feature increases the PHP sessions security, because the stored data "
 "won't be readable."
 msgstr ""
+"PHPのセッション情報を暗号化することでより安全にsysPassを利用することができま"
+"す。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:18
 #: app/modules/web/themes/material-blue/views/config/import.inc:113
 msgid "CSV/XML Import"
-msgstr ""
+msgstr "CSV/XML Import"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:24
 #: app/modules/web/themes/material-blue/views/config/import.inc:35
 msgid "Default User"
-msgstr ""
+msgstr "Default User"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:30
 msgid "Sets the default user for the accounts imported."
@@ -5751,65 +5815,77 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:83
 msgid "Drop files here or click to select"
-msgstr ""
+msgstr "ファイルをドラッグ＆ドロップするか、クリックして選択してください"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
 msgid ""
 "Allows to import Accounts, Categories and Clients from XML or CSV files."
 msgstr ""
+"アカウント・カテゴリー。クライアントをXML / CSVファイルからインポートすること"
+"を許可する。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid "Supported XML file formats are: sysPass, KeePass and KeePassX"
-msgstr ""
+msgstr "sysPass, KeePass, KeePassX形式のXMLファイルに対応しています"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:119
 msgid "Drag & Drop the file into the import zone or click over the arrow."
-msgstr ""
+msgstr "ファイルをドラッグ&ドロップしてください"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:121
 msgid ""
 "For KeePass or KeePassX files, client name will be KeePass or KeePassX and "
 "category name like groups name."
 msgstr ""
+"KeePass/KeePassXからアカウントをインポートした際に自動的にKeePass/KeePassXと"
+"いうカテゴリーが追加されます。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:123
 msgid "The CSV import file requires the following format:"
-msgstr ""
+msgstr "読み込ませるCSVファイルのラベルは以下のようにしてください。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:125
 msgid ""
 "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
 "\"notes\""
 msgstr ""
+"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
+"\"notes\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:127
 msgid ""
 "In all cases, if the client or category do not exist they will be created "
 "automatically."
 msgstr ""
+"インポート時にsysPassに存在しないカテゴリー名・クライアント名は自動的に"
+"sysPassに追加されます。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:135
 msgid "XML"
-msgstr ""
+msgstr "XML"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:141
 #: app/modules/web/themes/material-blue/views/config/import.inc:156
 msgid "Import Password"
-msgstr ""
+msgstr "Import Password"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:146
 msgid "It's only needed for sysPass XML files that have been encrypted."
 msgstr ""
+"暗号化オプションを用いてsysPassからエクスポートしたXMLファイルの場合はエクス"
+"ポート時に指定したエクスポートパスワードが必要です。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:168
 msgid ""
 "It's only needed for sysPass XML files that have been encrypted with a "
 "different master password from the current one."
 msgstr ""
+"これはエクスポート後マスターパスワードを変更した場合など、エクスポート時と現"
+"在のsysPassのマスターパスワードが異なるときに必要です。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:186
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:192
 #: app/modules/web/themes/material-blue/views/config/import.inc:208
@@ -5818,7 +5894,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:198
 msgid "It's only needed for CSV files."
-msgstr ""
+msgstr "対応しているのはCSVファイルのみです。"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:20
 msgid "Application Information"
@@ -5827,25 +5903,25 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/info.inc:26
 #: app/modules/web/themes/material-blue/views/config/info.inc:29
 msgid "sysPass version"
-msgstr ""
+msgstr "sysPass version"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:42
 #: app/modules/web/themes/material-blue/views/config/info.inc:45
 msgid "Database"
-msgstr ""
+msgstr "データベース"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:56
 #: app/modules/web/themes/material-blue/views/config/info.inc:59
 msgid "PHP"
-msgstr ""
+msgstr "PHP"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:63
 msgid "Extensions"
-msgstr ""
+msgstr "拡張機能"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:67
 msgid "Unavailable extensions"
-msgstr ""
+msgstr "拡張機能が利用できません"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:71
 msgid "Used Memory"
@@ -5853,7 +5929,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:75
 msgid "Download rate"
-msgstr ""
+msgstr "ダウンロード速度"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:78
 msgid "OP Cache"
@@ -5862,72 +5938,74 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/info.inc:97
 #: app/modules/web/themes/material-blue/views/config/info.inc:100
 msgid "Configuration Backup"
-msgstr ""
+msgstr "設定のバックアップ"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:110
 #: app/modules/web/themes/material-blue/views/config/info.inc:192
 #, php-format
 msgid "Download %s"
-msgstr ""
+msgstr "Download %s"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:124
 msgid "Tells whether the language is available or not."
-msgstr ""
+msgstr "利用可能な言語を表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:128
 msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 msgstr ""
+"お使いのサーバーのsystem localesに対象の言語が存在する必要があります。詳細は"
+"Wikiを確認してください。"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:140
 #: app/modules/web/themes/material-blue/views/config/info.inc:150
 msgid "Encrypted Session"
-msgstr ""
+msgstr "暗号化済みセッション"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:145
 msgid "Tells whether the session data are encrypted in the server side or not"
-msgstr ""
+msgstr "セッションの暗号化状況を表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:157
 #: app/modules/web/themes/material-blue/views/config/info.inc:160
 msgid "Loaded Plugins"
-msgstr ""
+msgstr "ロード済みのプラグイン"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:183
 #: app/modules/web/themes/material-blue/views/config/info.inc:186
 msgid "Log file"
-msgstr ""
+msgstr "ログファイル"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:23
 msgid "This extension is needed to connect to the LDAP server"
-msgstr ""
+msgstr "LDAPさーばーに接続するための機能拡張です"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:54
 msgid "Enable LDAP"
-msgstr ""
+msgstr "LDAPが有効です"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:56
 msgid "Enables authentication against an LDAP server."
-msgstr ""
+msgstr "LDAPサーバーを用いた認証を有効化します。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:58
 msgid "This method will use MySQL as fallback."
-msgstr ""
+msgstr "有効化できない場合はMySQLを用いた認証に切り替わります。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:76
 msgid "Enables the connection over TLS"
-msgstr ""
+msgstr "TLSで暗号化する"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:85
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:87
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:91
 msgid "Server Type"
-msgstr ""
+msgstr "Server Type"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:108
 msgid "Hostname or IP address of LDAP server."
-msgstr ""
+msgstr "LDAPサーバーのホスト名 or IPアドレス"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:112
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:145
@@ -5935,7 +6013,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:248
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:130
 msgid "Examples:"
-msgstr ""
+msgstr "例:"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:135
 msgid "Bind User"
@@ -5943,7 +6021,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:141
 msgid "User to connect to LDAP service."
-msgstr ""
+msgstr "LDAPサーバに接続するためのユーザー。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:167
 msgid "Bind Password"
@@ -5951,7 +6029,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:173
 msgid "LDAP connection user's password"
-msgstr ""
+msgstr "LDAPサーバーに接続するためのパスワード"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:194
 msgid ""
