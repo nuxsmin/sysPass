@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-29 01:28+0200\n"
-"PO-Revision-Date: 2020-09-13 00:53+0900\n"
+"PO-Revision-Date: 2020-09-13 16:17+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: language@syspass.org\n"
 "Language: ja_JP\n"
@@ -345,7 +345,7 @@ msgstr "クライアントID"
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:124
 #: app/modules/web/themes/material-blue/views/account/account.inc:166
 msgid "Access user"
-msgstr "アクセスを許可するユーザー"
+msgstr "ログインユーザー名"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:87
 #: app/modules/api/Controllers/Help/AccountHelp.php:110
@@ -619,7 +619,7 @@ msgstr "Link"
 #: app/modules/web/Controllers/AccountController.php:353
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:276
 msgid "New Account"
-msgstr "アカウントの追加"
+msgstr "新規アカウントの作成"
 
 #: app/modules/web/Controllers/AccountController.php:407
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
@@ -636,7 +636,7 @@ msgstr "アカウントの編集"
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
 msgid "Remove Account"
-msgstr "アカウントの削除"
+msgstr "アカウントを削除"
 
 #: app/modules/web/Controllers/AccountController.php:515
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:155
@@ -1026,7 +1026,7 @@ msgstr "カテゴリーの削除"
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:61
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:63
 msgid "Category"
-msgstr "カテゴリー"
+msgstr "Category"
 
 #: app/modules/web/Controllers/CategoryController.php:356
 msgid "View Category"
@@ -1719,7 +1719,7 @@ msgstr "カテゴリー名順"
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:96
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:22
 msgid "User"
-msgstr "ユーザー"
+msgstr "User"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:264
 msgid "Sort by Username"
@@ -2017,7 +2017,7 @@ msgstr "プリセット"
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:164
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:166
 msgid "Group"
-msgstr "グループ"
+msgstr "Group"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:112
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:110
@@ -2299,7 +2299,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:276
 msgid "Users"
-msgstr "ユーザー"
+msgstr "Users"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:148
 msgid "Search for User"
@@ -2939,7 +2939,7 @@ msgstr "Help"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
 msgid "Clear"
-msgstr "Clear"
+msgstr "クリア"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:53
 msgid "Perform"
@@ -4731,14 +4731,15 @@ msgstr "デモ"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:49
 msgid "Tells whether the connection uses HTTPS or not."
-msgstr "接続にHTTPSを利用しているかを通知します。"
+msgstr "赤く表示される場合はHTTPS通信ではありません。"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:49
 msgid ""
 "Passwords sent from forms are encrypted using PKI, the remain data don't."
 msgstr ""
 "ブラウザからサーバーに送信されるパスワードはすべてPKIで暗号化された後に送信さ"
-"れますが、パスワード以外の情報はそのまま送信されます。"
+"れますが、HTTPの場合はパスワード以外の情報だけはそのまま送信されます。HTTPSの"
+"場合は全ての情報が暗号化されています。"
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:74
 msgid "Help :: FAQ :: Changelog"
@@ -4751,61 +4752,66 @@ msgstr "A cygnux.org project"
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:8
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:13
 msgid "Special parameters"
-msgstr "Special parameters"
+msgstr "高度な検索"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:15
 msgid ""
 "You could use either one or several special parameters separated by blank "
 "spaces"
 msgstr ""
+"以下の検索クエリで高度な検索ができます、各クエリをスペースで区切ると複数条件"
+"で検索できます。"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:17
 msgid "Search for accounts which 'login' has access rights"
 msgstr ""
+"‘login’というユーザー名のアカウントがアクセスできるアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:18
 msgid "Get the accounts in which user login \"login\" is the owner"
-msgstr ""
+msgstr "‘login’という名前のユーザーが作成したアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:19
 msgid "Search for accounts which 'group_name' has access rights"
-msgstr ""
+msgstr "‘group_name’という名前のグループがアクセスできるアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:20
 msgid "Get the accounts in which main group \"group_name\" is set"
 msgstr ""
+"‘group_name’という名前のグループをmain groupに設定しているアカウントを検索し"
+"ます"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:21
 msgid "Search for accounts which contain a file with the name 'file_name'"
-msgstr ""
+msgstr "‘file_name’という名前のファイルが添付されているアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:22
 msgid "Search for accounts by client name"
-msgstr ""
+msgstr "クライアント名でアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:23
 msgid "Search for accounts by category name"
-msgstr ""
+msgstr "カテゴリー名でアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:24
 msgid "Returns the account for the given ID"
-msgstr ""
+msgstr "アカウントIDでアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:25
 msgid "Search for accounts name by regular expression"
-msgstr ""
+msgstr "正規表現でアカウント名を検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:26
 msgid "Search for accounts with expired password"
-msgstr ""
+msgstr "有効期限が切れたアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:27
 msgid "Get private accounts for current user"
-msgstr ""
+msgstr "ログインしているユーザー自身のプライベートアカウントを検索します"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:28
 msgid "Operator for special parameters"
-msgstr ""
+msgstr "高度な検索に使える検索クエリ"
 
 #: app/modules/web/themes/material-blue/views/_partials/no_records_found.inc:13
 #: app/modules/web/themes/material-blue/views/account/search-index.inc:22
@@ -4951,7 +4957,7 @@ msgstr "送信"
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:30
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:236
 msgid "Permissions"
-msgstr "Permissions"
+msgstr "権限"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:100
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:43
@@ -4967,7 +4973,7 @@ msgstr "タグを選択"
 #: app/modules/web/themes/material-blue/views/account/account.inc:294
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:35
 msgid "Select Account"
-msgstr "アカウントを選択"
+msgstr "アカウント"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/account.inc:336
@@ -5071,7 +5077,7 @@ msgstr "お気に入りを表示"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:101
 msgid "Favorites Filtering"
-msgstr "お気に入りから検索"
+msgstr "お気に入り済みのアカウントを表示"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:120
 msgid "Accounts per page"
@@ -5079,7 +5085,7 @@ msgstr "1画面あたりの表示数"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:128
 msgid "More Filters"
-msgstr ""
+msgstr "詳細検索"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:134
 msgid "Select Tag"
@@ -5521,7 +5527,7 @@ msgstr "メールを送信する"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:289
 msgid "Sends an email to all users or only to those whose group is selected."
-msgstr "全てのユーザーまたは、選択したグループに"
+msgstr "全てのユーザーまたは、選択したグループにメールを送信します。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:351
 msgid ""
@@ -5561,7 +5567,7 @@ msgstr "Domain"
 msgid ""
 "The domain will be added to sysPass user name for checking against the Auth "
 "Basic one."
-msgstr "Basic認証のためのドメイン設定"
+msgstr "Basic認証のためのドメイン設定。"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:79
 msgid "Domain name"
@@ -5610,7 +5616,7 @@ msgstr "Enable event log"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:38
 msgid "Saves the actions done by the application."
-msgstr "アプリケーションの動作を保存します"
+msgstr "アプリケーションの動作を保存します。"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:53
 msgid "Enable Syslog"
@@ -5663,7 +5669,7 @@ msgstr "Proxy server password"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:23
 msgid "This extension is needed to check for sysPass updates and notices"
-msgstr "このエクステンションはsysPassの更新と通知機能のために必要です。"
+msgstr "このエクステンションはsysPassの更新と通知機能のために必要です"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:31
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:21
@@ -5830,7 +5836,7 @@ msgstr "sysPass, KeePass, KeePassX形式のXMLファイルに対応していま�
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:119
 msgid "Drag & Drop the file into the import zone or click over the arrow."
-msgstr "ファイルをドラッグ&ドロップしてください"
+msgstr "ファイルをドラッグ&ドロップしてください。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:121
 msgid ""
@@ -5965,7 +5971,7 @@ msgstr "暗号化済みセッション"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:145
 msgid "Tells whether the session data are encrypted in the server side or not"
-msgstr "セッションの暗号化状況を表示します。"
+msgstr "セッションの暗号化状況を表示します"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:157
 #: app/modules/web/themes/material-blue/views/config/info.inc:160
@@ -6005,7 +6011,7 @@ msgstr "Server Type"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:108
 msgid "Hostname or IP address of LDAP server."
-msgstr "LDAPサーバーのホスト名 or IPアドレス"
+msgstr "LDAPサーバーのホスト名 or IPアドレス。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:112
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:145
@@ -6100,7 +6106,7 @@ msgstr "グループ名引数"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:438
 msgid "Defines the attribute for the user group name when importing."
-msgstr "インポート時にユーザーグループ名を引数で指定する"
+msgstr "インポート時にユーザーグループ名を引数で指定する。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:455
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:471
@@ -6109,7 +6115,7 @@ msgstr "フィルター"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:461
 msgid "Filter for importing LDAP users or groups."
-msgstr "LDAPユーザーのフィルタリング"
+msgstr "LDAPユーザーのフィルタリング。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:502
 msgid "Import users from LDAP"
@@ -6365,7 +6371,7 @@ msgstr "クライアントが全てのユーザーに表示されるかどうか
 msgid ""
 "By default, clients assigned to accounts only will be visible by users who "
 "are granted to access to the accounts."
-msgstr "デフォルトでは権限が付与されたユーザーのみが閲覧できます"
+msgstr "デフォルトでは権限が付与されたユーザーのみが閲覧できます。"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:39
 msgid "Field name"
@@ -6694,7 +6700,7 @@ msgstr "パスワードを忘れた場合"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:42
 msgid "Updated"
-msgstr "更新しました"
+msgstr "最新のバージョンです"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:49
 msgid "Error while checking for updates"
@@ -6877,7 +6883,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:214
 msgid "Displays the additional filters selection on the accounts search."
-msgstr "詳しい検索"
+msgstr "詳しい検索。"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:20
 msgid "View Wiki"
