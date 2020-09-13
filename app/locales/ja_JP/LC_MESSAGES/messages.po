@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-29 01:28+0200\n"
-"PO-Revision-Date: 2020-09-13 16:17+0900\n"
+"PO-Revision-Date: 2020-09-13 16:28+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: language@syspass.org\n"
 "Language: ja_JP\n"
@@ -368,14 +368,14 @@ msgstr "アカウントに関するメモ"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:131
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:35
 msgid "Private Account"
-msgstr "プライベートアカウント"
+msgstr "Private Account"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:246
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:55
 msgid "Private Account for Group"
-msgstr "プライベートグループアカウント"
+msgstr "Private Group Account"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
@@ -619,7 +619,7 @@ msgstr "Link"
 #: app/modules/web/Controllers/AccountController.php:353
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:276
 msgid "New Account"
-msgstr "新規アカウントの作成"
+msgstr "新規アカウントの登録"
 
 #: app/modules/web/Controllers/AccountController.php:407
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:176
@@ -2342,7 +2342,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:61
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:293
 msgid "Groups"
-msgstr "グループ"
+msgstr "Groups"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:138
 msgid "Search for Group"
@@ -4885,7 +4885,7 @@ msgstr "最終編集"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-permission.inc:43
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:68
 msgid "Select Users"
-msgstr "選択中のユーザー"
+msgstr "ユーザーを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:43
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:47
@@ -4933,12 +4933,12 @@ msgstr "グループを選択"
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:236
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:201
 msgid "Private"
-msgstr "プライベート"
+msgstr "プライベートアカウント"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:254
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:218
 msgid "Private for Group"
-msgstr "プライベートグループ"
+msgstr "プライベートグループアカウント"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:21
 msgid "Request Account Modification"
@@ -4973,7 +4973,7 @@ msgstr "タグを選択"
 #: app/modules/web/themes/material-blue/views/account/account.inc:294
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:35
 msgid "Select Account"
-msgstr "アカウント"
+msgstr "アカウントを選択"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:334
 #: app/modules/web/themes/material-blue/views/account/account.inc:336
@@ -5033,7 +5033,7 @@ msgstr "パスワードの有効期限"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:137
 msgid "Private Account (Group)"
-msgstr "プライベートアカウント(グループ)"
+msgstr "Private Account (Group)"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:162
 msgid "Delete Favorite"
