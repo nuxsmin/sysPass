@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-20 18:55+0900\n"
+"PO-Revision-Date: 2020-09-20 22:04+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -4903,31 +4903,24 @@ msgid "Password options"
 msgstr "Options"
 
 #: app/resources/strings.js.inc:54
-#, fuzzy
 msgid "Generate random password"
-msgstr "仮パスワードを発行する"
+msgstr "ランダムなパスワードを生成"
 
 #: app/resources/strings.js.inc:55
-#, fuzzy
 msgid "Complexity"
-msgstr ""
-"[FIX] Fixed wrong behavior when setting password complexity length. Thanks "
-"to @andrucha97 for the feedback. Closes #1280"
+msgstr "生成するパスワードの強度設定"
 
 #: app/resources/strings.js.inc:56
-#, fuzzy
 msgid "Reset"
-msgstr "パスワードリセットはできません"
+msgstr "リセット"
 
 #: app/resources/strings.js.inc:57
-#, fuzzy
 msgid "Password strength level"
-msgstr "Level"
+msgstr "パスワードの強度"
 
 #: app/resources/strings.js.inc:58
-#, fuzzy
 msgid "Show Password"
-msgstr "パスワードを画像で表示する"
+msgstr "パスワードを表示"
 
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
 #: app/resources/strings.js.inc:59
