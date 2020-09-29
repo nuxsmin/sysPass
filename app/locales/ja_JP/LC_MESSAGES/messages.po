@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 00:23+0900\n"
+"PO-Revision-Date: 2020-09-30 00:45+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -2191,7 +2191,7 @@ msgstr "通知を表示"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
 #: app/resources/actions.xml:841
 msgid "Checkout Notification"
-msgstr "Checkout Notification"
+msgstr "通知を確認する"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
@@ -2199,26 +2199,26 @@ msgstr "Checkout Notification"
 #: app/modules/web/Controllers/NotificationController.php:230
 #: app/resources/actions.xml:829
 msgid "Edit Notification"
-msgstr "Edit Notification"
+msgstr "通知を編集"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:269
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:270
 #: app/resources/actions.xml:835
 msgid "Delete Notification"
-msgstr "Delete Notification"
+msgstr "通知を削除"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:96
 #: app/modules/web/Controllers/Helpers/LayoutHelper.php:330
 #: app/modules/web/themes/material-blue/views/plugin/index.inc:1
 msgid "Plugins"
-msgstr "Plugins"
+msgstr "プラグイン"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:108
 #: lib/SP/Plugin/PluginManager.php:206 lib/SP/Plugin/PluginManager.php:262
 #: lib/SP/Plugin/PluginManager.php:420
 msgid "Plugin"
-msgstr "Plugin"
+msgstr "プラグイン"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:125
 msgid "Unavailable"
@@ -2236,7 +2236,7 @@ msgstr "プラグインを検索"
 #: app/modules/web/Controllers/PluginController.php:141
 #: app/resources/actions.xml:541
 msgid "View Plugin"
-msgstr "View Plugin"
+msgstr "プラグイン情報"
 
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:174
@@ -2251,7 +2251,7 @@ msgstr "Disable"
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:211
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:212
 msgid "Reset Data"
-msgstr "Reset Data"
+msgstr "リセット"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:231
@@ -2522,7 +2522,7 @@ msgstr "検索"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:27
 #: app/resources/actions.xml:691
 msgid "Configuration"
-msgstr "Configuration"
+msgstr "設定"
 
 #: app/modules/web/Controllers/InstallController.php:59
 msgid "Module unavailable"
@@ -4957,25 +4957,23 @@ msgstr "Select Action"
 
 #: app/resources/strings.js.inc:68
 msgid "Accept"
-msgstr ""
+msgstr "Accept"
 
 #: app/resources/strings.js.inc:69
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel"
 
 #: app/resources/strings.js.inc:70
-#, fuzzy
 msgid "Password Copied into Clipboard"
-msgstr "パスワードをコピーしました"
+msgstr "パスワードをクリップボードへしました"
 
 #: app/resources/strings.js.inc:71
 msgid "Error while copying to clipboard"
-msgstr ""
+msgstr "クリップボードへのコピーに失敗しました"
 
 #: app/resources/strings.js.inc:73
-#, fuzzy
 msgid "Send notifies?"
-msgstr "送信"
+msgstr "通知を送りますか？"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
@@ -5003,7 +5001,7 @@ msgstr "お気に入りを表示"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
 #: app/resources/strings.js.inc:78
 msgid "Display All"
-msgstr "Display All"
+msgstr "全て表示"
 
 #: app/resources/strings.js.inc:81
 #, fuzzy
@@ -5018,7 +5016,7 @@ msgstr ""
 
 #: app/resources/strings.js.inc:83
 msgid "This action will reset all plugin data. Do you want to continue?"
-msgstr ""
+msgstr "初期化すると戻せません、プラグインを初期化しますか？"
 
 #: app/resources/strings.js.inc:84
 msgid "This process could take some time long. Do you wish to continue?"
