@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 00:50+0900\n"
+"PO-Revision-Date: 2020-09-30 01:25+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -5432,7 +5432,7 @@ msgstr "アカウントのパスワードの有効期限"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:70
 msgid "Enables the accounts password expiry date."
-msgstr "アカウントのパスワードに有効期限を設定しました。"
+msgstr "アカウントのパスワードを定期的に再設定させることができます。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:78
 msgid "Password expiry time"
@@ -5450,12 +5450,12 @@ msgstr "有効期限(日)"
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:111
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:90
 msgid "Account name as link"
-msgstr "アカウント名のリンク"
+msgstr "アカウント名リンク"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
 msgid "Enables to use the account name as a link to account details."
-msgstr "アカウント名をリンクにする。"
+msgstr "アカウント名をクリック可能なリンクにします。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:127
 msgid "Global searches"
@@ -5466,8 +5466,9 @@ msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
 "able to display the account details if they don't have permission."
 msgstr ""
-"全てのアカウントから検索できますが、アカウントの詳細を閲覧できるのは権限を"
-"持ったユーザーのみです。"
+"アカウント名だけが権限のないユーザーを含めた全てのユーザーの検索結果に表示さ"
+"れるようになります。アカウントの詳細を閲覧できるのは権限を持ったユーザーのみ"
+"です。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:143
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:154
@@ -5485,8 +5486,9 @@ msgid ""
 "Useful for environments where copying a password to clipboard is a security "
 "risk."
 msgstr ""
-"パスワードをクリップボードにコピーすることは、場合によってはセキュリティーリ"
-"スクにつながります。"
+"パスワードが画像で表示されるため、クリップボードへコピーすることができなくな"
+"ります。クリップボードを通じてパスワードが流出することを防げるかもしれませ"
+"ん。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:163
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:158
@@ -5500,19 +5502,21 @@ msgstr "アカウントを四角いカードスタイルで表示します。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:181
 msgid "Secondary Groups Access"
-msgstr "Secondary Groups Access"
+msgstr "セカンダリグループに所属するユーザーからのアクセスを許可する"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:183
 msgid "Grants access to users that are included in secondary groups."
-msgstr "Grants access to users that are included in secondary groups."
+msgstr ""
+"アカウント情報のセカンダリーグループに設定したグループに所属するユーザーから"
+"のアクセスを許可するか設定できます。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:185
 msgid ""
 "By default, user in a secondary group is granted if the secondary group is "
 "set as user's main group."
 msgstr ""
-"By default, user in a secondary group is granted if the secondary group is "
-"set as user's main group."
+"デフォルトではアカウントのセカンダリグループに設定したグループをメイングルー"
+"プにするユーザーがアクセスできるようになっています。"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:196
@@ -6013,7 +6017,7 @@ msgstr "Force HTTPS"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:137
 msgid "It forces the use of HTTPS on all the connections"
-msgstr "HTTP通信を全てHTTPSにリダイレクトします"
+msgstr "HTTP通信を全てHTTPSにリダイレクトします。"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:152
 msgid "Enable debug"
@@ -6491,7 +6495,7 @@ msgstr "Wikiリンクを有効化"
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:36
 msgid ""
 "Enables the option to add a link to search for results in an external Wiki."
-msgstr "Wikiから検索リンクを有効化するにはこのオプションを有効化します。"
+msgstr "外部のwikiを検索するリンクを追加できます。"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:44
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:71
@@ -6500,11 +6504,11 @@ msgstr "Wiki search URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:49
 msgid "URL that Wiki uses for making an entry searching."
-msgstr "URL that Wiki uses for making an entry searching."
+msgstr "外部wikiの検索リンクを設定してください。"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:53
 msgid "The client's name is used as parameter."
-msgstr "The client's name is used as parameter."
+msgstr "このURLにクライアント名を連結したリンクを生成します。"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:77
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:104
@@ -6513,11 +6517,11 @@ msgstr "Wiki page URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:82
 msgid "URL that Wiki uses for accessing to the entry details."
-msgstr "URL that Wiki uses for accessing to the entry details."
+msgstr "外部wikiの記事へのリンクを生成します。"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:86
 msgid "Account's name is used as parameter of Wiki search variable."
-msgstr "Account's name is used as parameter of Wiki search variable."
+msgstr "アカウント名を連結したリンクを生成します。"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:110
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:124
@@ -6526,7 +6530,7 @@ msgstr "Account name prefix"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:115
 msgid "Prefix to determine which accounts have a link to the Wiki."
-msgstr "Prefix to determine which accounts have a link to the Wiki."
+msgstr "どのアカウントでwikiへのリンクを生成するかを指定する接頭辞。"
 
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:17
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:19
