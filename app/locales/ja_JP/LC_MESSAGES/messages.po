@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 01:29+0900\n"
+"PO-Revision-Date: 2020-09-30 01:32+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -6403,12 +6403,12 @@ msgid ""
 "Allows users to request for either modifications to existing accounts or "
 "access to accounts which they have no rights on."
 msgstr ""
-"ユーザーからアカウントの情報の変更リクエスト・アクセス権限リクエストを受け取"
-"れるようになります。"
+"ユーザーは管理者などにアカウントの情報の変更リクエスト・アクセス権限リクエス"
+"トを送れるようになります。"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:97
 msgid "Enable Authentication"
-msgstr "認証を有効化"
+msgstr "認証を使用する"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:132
 #: app/modules/web/themes/material-blue/views/config/mail.inc:135
