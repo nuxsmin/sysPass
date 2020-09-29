@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 01:25+0900\n"
+"PO-Revision-Date: 2020-09-30 01:29+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -6322,15 +6322,15 @@ msgstr "Search base"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:190
 msgid "LDAP base to perform the LDAP users search."
-msgstr "LDAP base to perform the LDAP users search."
+msgstr "LDAPユーザー検索を実行するためのLDAPベース。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:220
 msgid "LDAP group which user must belong to for granting to log in."
-msgstr "LDAP group which user must belong to for granting to log in."
+msgstr "ログインを許可するためにユーザーが属している必要があるLDAPグループ。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:224
 msgid "This group needs to be placed in the LDAP search base."
-msgstr "This group needs to be placed in the LDAP search base."
+msgstr "このグループがLDAPベース内に存在する必要があります。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:253
 msgid "Sets the default users group for newly created LDAP users"
@@ -6356,7 +6356,7 @@ msgstr "Login Attribute"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:341
 msgid "Defines the attribute for the user's login when importing."
-msgstr "Defines the attribute for the user's login when importing."
+msgstr "インポート時のユーザーのログインの属性を設定します。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:359
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:369
@@ -6365,11 +6365,11 @@ msgstr "Name Attribute"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:364
 msgid "Defines the attribute for the user's name when importing."
-msgstr "Defines the attribute for the user's name when importing."
+msgstr "インポート時のユーザー名の属性を設定します。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:394
 msgid "Import Groups"
-msgstr "インポートグループ"
+msgstr "Import Groups"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:403
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:413
