@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 00:45+0900\n"
+"PO-Revision-Date: 2020-09-30 00:50+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -5902,7 +5902,7 @@ msgstr "Enable event log"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:31
 msgid "Saves the actions done by the application."
-msgstr "アプリケーションの動作を保存します。"
+msgstr "アプリケーションログを保存します。"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:45
 msgid "Enable Syslog"
@@ -5934,8 +5934,7 @@ msgstr "Use Proxy"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:31
 msgid "Use a proxy server for checking out for updates and notifications."
-msgstr ""
-"sysPassとメール通知を行う際にプロキシサーバ－を経由させることができます。"
+msgstr "メール通知などsysPassから通信を行うときのプロキシ設定。"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:47
 msgid "Proxy server"
