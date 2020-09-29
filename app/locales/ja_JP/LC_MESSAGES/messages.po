@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-21 00:25+0900\n"
+"PO-Revision-Date: 2020-09-30 00:23+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -595,7 +595,7 @@ msgstr "HTTPS"
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
 msgid "ON"
-msgstr ""
+msgstr "ON"
 
 #: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
@@ -681,7 +681,7 @@ msgstr "リクエスト"
 
 #: app/modules/web/Controllers/AccountController.php:1069
 msgid "Requester"
-msgstr "Requester"
+msgstr ""
 
 #: app/modules/web/Controllers/AccountController.php:1072
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
@@ -959,12 +959,12 @@ msgstr "Edit Authorization"
 #: app/modules/web/Controllers/AuthTokenController.php:224
 #: app/modules/web/Controllers/AuthTokenController.php:227
 msgid "Authorizations deleted"
-msgstr "Authorizations deleted"
+msgstr ""
 
 #: app/modules/web/Controllers/AuthTokenController.php:237
 #: app/modules/web/Controllers/AuthTokenController.php:241
 msgid "Authorization deleted"
-msgstr "Authorization deleted"
+msgstr ""
 
 #: app/modules/web/Controllers/AuthTokenController.php:238
 #: app/modules/web/Controllers/AuthTokenController.php:314
@@ -976,22 +976,22 @@ msgstr "Authorization(認可)"
 
 #: app/modules/web/Controllers/AuthTokenController.php:275
 msgid "Authorization added"
-msgstr "Authorization added"
+msgstr ""
 
 #: app/modules/web/Controllers/AuthTokenController.php:313
 #: app/modules/web/Controllers/AuthTokenController.php:322
 #: app/modules/web/Controllers/AuthTokenController.php:329
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
 msgid "Authorization updated"
-msgstr "Authorization updated"
+msgstr ""
 
 #: app/modules/web/Controllers/AuthTokenController.php:357
 msgid "View Authorization"
-msgstr "View Authorization"
+msgstr ""
 
 #: app/modules/web/Controllers/AuthTokenController.php:365
 msgid "Authorization viewed"
-msgstr "Authorization viewed"
+msgstr ""
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:109
@@ -1000,7 +1000,7 @@ msgstr "Authorization viewed"
 #: app/modules/web/themes/material-blue/views/account/account.inc:129
 #: app/resources/actions.xml:307
 msgid "New Category"
-msgstr "カテゴリの追加"
+msgstr "新規カテゴリの作成"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:175
@@ -1131,7 +1131,7 @@ msgstr "Version"
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:17
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:90
 msgid "Encrypted"
-msgstr "Encrypted"
+msgstr "暗号化"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:123
 #: app/modules/web/themes/material-blue/views/config/info.inc:146
@@ -1141,7 +1141,7 @@ msgstr "Yes"
 #: app/modules/web/Controllers/ConfigBackupController.php:123
 #: app/modules/web/themes/material-blue/views/config/info.inc:146
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigBackupController.php:124
@@ -1154,21 +1154,21 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:394
 #: app/resources/actions.xml:13
 msgid "Accounts"
-msgstr "Accounts"
+msgstr "アカウント"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:125
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:93
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:76
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:330
 msgid "Clients"
-msgstr "Clients"
+msgstr "クライアント"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:126
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:94
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:75
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:298
 msgid "Categories"
-msgstr "Categories"
+msgstr "カテゴリー"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:127
 #: app/modules/web/Controllers/Helpers/Grid/TagGrid.php:94
@@ -1177,7 +1177,7 @@ msgstr "Categories"
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:94
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:314
 msgid "Tags"
-msgstr "Tags"
+msgstr "タグ"
 
 #: app/modules/web/Controllers/ConfigDokuWikiController.php:65
 msgid "Missing DokuWiki parameters"
@@ -1473,7 +1473,7 @@ msgstr "Wikiを無効にしました"
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:159
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:160
 msgid "New Field"
-msgstr "新規項目"
+msgstr "新規カスタムフィールドの作成"
 
 #: app/modules/web/Controllers/CustomFieldController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:177
@@ -1847,7 +1847,7 @@ msgstr "削除"
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:161
 #: app/resources/actions.xml:187 app/resources/actions.xml:811
 msgid "Account Restore"
-msgstr "戻す"
+msgstr "アカウントを復元"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:95
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:362
@@ -2076,7 +2076,7 @@ msgstr "プロファイル"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:113
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:83
 msgid "Priority"
-msgstr "プロパティー"
+msgstr "優先度"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:114
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:120
@@ -2092,7 +2092,7 @@ msgstr "Search for Value"
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:163
 #: app/modules/web/Controllers/Helpers/ItemPresetHelper.php:67
 msgid "Permission Preset"
-msgstr "権限Preset"
+msgstr "権限のプリセット"
 
 #: app/modules/web/Controllers/Helpers/Grid/ItemPresetGrid.php:164
 msgid "New Permission Preset"
@@ -2292,7 +2292,7 @@ msgstr "通知"
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:73
 #: app/modules/web/themes/material-blue/views/itemshow/public_link.inc:75
 msgid "Visits"
-msgstr "閲覧者"
+msgstr "閲覧回数"
 
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:151
 msgid "Search for Link"
@@ -2355,7 +2355,7 @@ msgstr "Tracks"
 
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:101
 msgid "Date Unlocked"
-msgstr "Date Unlocked"
+msgstr "ログイン日時"
 
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:102
 msgid "Source"
@@ -2546,7 +2546,7 @@ msgstr "Display Value"
 #: app/modules/web/Controllers/ItemPresetController.php:209
 #: app/resources/actions.xml:871
 msgid "New Value"
-msgstr "New Value"
+msgstr ""
 
 #: app/modules/web/Controllers/ItemPresetController.php:283
 #: app/modules/web/Controllers/ItemPresetController.php:286
@@ -4841,9 +4841,8 @@ msgid "MIME type not allowed"
 msgstr "このMIME Typeを許可する"
 
 #: app/resources/strings.js.inc:46
-#, fuzzy
 msgid "Clear the event log out?"
-msgstr "Event logをクリア"
+msgstr "Event logをクリアしますか？"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:301
@@ -4949,7 +4948,7 @@ msgstr "記号"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
 #: app/resources/strings.js.inc:64
 msgid "Length"
-msgstr "Length"
+msgstr "長さ"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
 #: app/resources/strings.js.inc:65
@@ -5065,9 +5064,8 @@ msgid "sysPass Notices"
 msgstr ""
 
 #: app/resources/strings.js.inc:96
-#, fuzzy
 msgid "Clear the tracks out?"
-msgstr "Event logをクリア"
+msgstr "trackをクリアしますか？"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
@@ -5314,7 +5312,7 @@ msgstr "ダイレクトリンク"
 #: app/modules/web/themes/material-blue/views/account/details.inc:22
 #: app/modules/web/themes/material-blue/views/account/details.inc:24
 msgid "Date Added"
-msgstr "日付を追加しました"
+msgstr "追加日"
 
 #: app/modules/web/themes/material-blue/views/account/details.inc:60
 #: app/modules/web/themes/material-blue/views/account/details.inc:62
@@ -5329,7 +5327,7 @@ msgstr "Editor"
 #: app/modules/web/themes/material-blue/views/account/details.inc:78
 #: app/modules/web/themes/material-blue/views/account/details.inc:80
 msgid "Password Date"
-msgstr "Password Date"
+msgstr "パスワード設定日時"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:37
 msgid "Drop files here (max. 5) or click to select"
@@ -6652,7 +6650,7 @@ msgstr "フィールドの概要"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:80
 msgid "Required"
-msgstr "Required"
+msgstr "必須"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
@@ -7148,69 +7146,58 @@ msgstr "アカウントの検索"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:25
-#, fuzzy
 msgid "Requests"
-msgstr "メールのリクエストを有効化"
+msgstr "リクエスト"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:31
-#, fuzzy
 msgid "Favorites"
-msgstr "お気に入りを表示"
+msgstr "お気に入り"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:43
-#, fuzzy
 msgid "Items and Customizations"
-msgstr "**Items**"
+msgstr "アイテムとそのカスタマイズ"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:49
-#, fuzzy
 msgid "Categories Management"
 msgstr "カテゴリー管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:55
-#, fuzzy
 msgid "Customers Management"
 msgstr "カスタマー管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:61
-#, fuzzy
 msgid "API Authorizations Management"
 msgstr "API認証管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:67
-#, fuzzy
 msgid "Custom Fields Management"
 msgstr "カスタムフィールド管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:79
-#, fuzzy
 msgid "Files Management"
 msgstr "ファイル管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:85
-#, fuzzy
 msgid "Accounts Management"
 msgstr "アカウント管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:91
-#, fuzzy
 msgid "Tags Management"
 msgstr "タグ管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:97
-#, fuzzy
 msgid "Plugins Management"
-msgstr "プラグインで機能を追加することができます"
+msgstr "プラグイン管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:103
@@ -7219,33 +7206,28 @@ msgstr "ユーザーとアクセス管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:109
-#, fuzzy
 msgid "Security and Audit"
-msgstr "セキュリティー"
+msgstr "セキュリティーと異常検知"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:115
-#, fuzzy
 msgid "Users Management"
 msgstr "ユーザー管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:121
-#, fuzzy
 msgid "Groups Management"
 msgstr "グループ管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:127
-#, fuzzy
 msgid "Profiles Management"
 msgstr "プロファイル管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:145
-#, fuzzy
 msgid "Clear Events"
-msgstr "クリア"
+msgstr "イベントのクリア"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:151 app/resources/actions.xml:481
@@ -7254,21 +7236,18 @@ msgstr "アカウント情報の表示"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:211 app/resources/actions.xml:469
-#, fuzzy
 msgid "Upload File"
-msgstr "ファイル"
+msgstr "ファイルのアップロード"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:229
-#, fuzzy
 msgid "Search for Files"
-msgstr "検索"
+msgstr "ファイル検索"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:235
-#, fuzzy
 msgid "List Files"
-msgstr "ファイル"
+msgstr "ファイル一覧"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:283
@@ -7513,39 +7492,33 @@ msgstr "Track unlocked"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:907
-#, fuzzy
 msgid "Clear the tracks out"
-msgstr "Tracks cleared out"
+msgstr "trackをクリア"
 
 #. (itstool) path: strings/text
 #: app/config/strings.xml:4
 msgid "Color"
-msgstr ""
+msgstr "カラー"
 
 #. (itstool) path: strings/text
 #: app/config/strings.xml:5
-#, fuzzy
 msgid "Number"
-msgstr "１ページあたりの表示数"
+msgstr "数字"
 
 #. (itstool) path: strings/text
 #: app/config/strings.xml:6
 msgid "Phone"
-msgstr ""
+msgstr "電話番号"
 
 #. (itstool) path: strings/text
 #: app/config/strings.xml:7
-#, fuzzy
 msgid "Text Area"
-msgstr ""
-"[FIX] Wrong encoding in text area. Thanks to @pierrehenrymuller for the "
-"feedback. Closes #1296"
+msgstr "テキストエリア"
 
 #. (itstool) path: strings/text
 #: app/config/strings.xml:8
-#, fuzzy
 msgid "Text"
-msgstr "text"
+msgstr "テキスト"
 
 #: app/modules/web/Controllers/AccountFileController.php:192
 #, fuzzy
