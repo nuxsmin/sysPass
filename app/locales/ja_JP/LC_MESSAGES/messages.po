@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 01:32+0900\n"
+"PO-Revision-Date: 2020-09-30 11:39+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -5724,7 +5724,7 @@ msgstr "New Master Password (repeat)"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:91
 msgid "You should save the new password on a secure place"
-msgstr "パスワードは安全な方法で保存されます"
+msgstr "新しいマスターパスワードを忘れないようにしてください。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:95
 msgid "All accounts passwords will be encrypted again."
@@ -5740,7 +5740,8 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 msgid "It will be updated %s accounts. This process could take some time long."
 msgstr ""
-"現在%s個目のアカウントを処理中です。処理の完了までしばらくお待ちください。"
+"現在%d個のアカウントが保存されています。マスターパスワードを変更すると情報を"
+"再暗号化するためアカウント数が多いと処理に時間がかかることがあります。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
@@ -5748,19 +5749,19 @@ msgstr "Do not modify accounts"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:123
 msgid "Sets a new Master Password without re-encrypting the accounts."
-msgstr "アカウントを再暗号化せずにマスターパスワードを変更します。"
+msgstr "アカウントを再暗号化せずにマスターパスワードの変更のみを行います。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:140
 msgid "Confirm change"
-msgstr "Confirm change"
+msgstr "マスターパスワードを変更する"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:142
 msgid ""
 "Confirm the master password change after you have been read all the above "
 "warnings."
 msgstr ""
-"上記の説明を全て読みマスターパスワードを変更することによって起こる影響を理解"
-"した上で処理を行ってください。"
+"上記の説明を全て読み、マスターパスワードを変更することによって起こる影響を理"
+"解した上でこの項目をONにしてマスターパスワードの変更処理を行ってください。"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:170
 msgid ""
@@ -5799,12 +5800,12 @@ msgstr "生成されていません"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:224
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:227
 msgid "Valid until"
-msgstr "Valid until"
+msgstr "有効期限"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:240
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:243
 msgid "Attempts"
-msgstr "Attempts"
+msgstr "入力回数"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:250
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:262
