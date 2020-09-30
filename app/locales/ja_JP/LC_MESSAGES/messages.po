@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 11:39+0900\n"
+"PO-Revision-Date: 2020-09-30 12:18+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -1442,11 +1442,11 @@ msgstr "エクスポートできる項目がありません"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:478
 #: app/resources/actions.xml:739
 msgid "Backup"
-msgstr "Backup"
+msgstr "バックアップ"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:365
 msgid "Import Accounts"
-msgstr "Import Accounts"
+msgstr "アカウントのインポート"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:387
 msgid "Not installed"
@@ -6090,11 +6090,12 @@ msgstr "Default User"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:23
 msgid "Sets the default user for the accounts imported."
-msgstr "Sets the default user for the accounts imported."
+msgstr ""
+"アカウントをインポートしたときのオーナーとなるユーザーを指定してください。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:50
 msgid "Sets the default group for the accounts imported."
-msgstr "Sets the default group for the accounts imported."
+msgstr "アカウントをインポートしたときのグループを指定してください。"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:75
 msgid "Drop files here or click to select"
@@ -6200,11 +6201,11 @@ msgstr "PHP"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:57
 msgid "Extensions"
-msgstr "拡張機能"
+msgstr "Extensions"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
-msgstr "拡張機能が利用できません"
+msgstr "Unavailable extensions"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
@@ -6212,7 +6213,7 @@ msgstr "Used Memory"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:69
 msgid "Download rate"
-msgstr "ダウンロード速度"
+msgstr "Download rate"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:72
 msgid "OP Cache"
