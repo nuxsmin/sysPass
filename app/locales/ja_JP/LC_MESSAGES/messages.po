@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 12:18+0900\n"
+"PO-Revision-Date: 2020-09-30 15:56+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -2191,7 +2191,7 @@ msgstr "通知を表示"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:235
 #: app/resources/actions.xml:841
 msgid "Checkout Notification"
-msgstr "通知を確認する"
+msgstr "通知を既読にする"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:252
@@ -2546,7 +2546,7 @@ msgstr "Display Value"
 #: app/modules/web/Controllers/ItemPresetController.php:209
 #: app/resources/actions.xml:871
 msgid "New Value"
-msgstr ""
+msgstr "New Value"
 
 #: app/modules/web/Controllers/ItemPresetController.php:283
 #: app/modules/web/Controllers/ItemPresetController.php:286
@@ -4428,9 +4428,8 @@ msgstr ""
 "ルです。"
 
 #: lib/SP/Services/Mail/MailService.php:186
-#, fuzzy
 msgid "Mail service unavailable"
-msgstr "メール"
+msgstr "メールは利用できません"
 
 #: lib/SP/Services/Notification/NotificationService.php:102
 #: lib/SP/Services/Notification/NotificationService.php:121
@@ -7096,10 +7095,9 @@ msgstr "アカウント順で並び替え"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:124
 msgid "Navigation bar on top"
-msgstr "ナビゲーションバーは画面上部にあります"
+msgstr "ナビゲーションバーを上部に表示"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
-#, fuzzy
 msgid "Dysplays a navigation bar on top of the search results."
 msgstr "検索結果の上にナビゲーションバーを表示します。"
 
@@ -7109,7 +7107,7 @@ msgstr "表示・非表示"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:143
 msgid "Always display hidden actions on the accounts search page."
-msgstr "アカウント検索ページで表示・非表示を切り替えることを許可します。"
+msgstr "検索結果に非表示設定のアカウントも含めて表示するようになります。"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:175
 msgid "In-App Notifications"
@@ -7117,15 +7115,15 @@ msgstr "アプリ内通知"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:177
 msgid "Enables the active In-App notifications polling"
-msgstr "アプリ内通知を確認します"
+msgstr "アプリ内で通知を表示します。"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:192
 msgid "Show Filters"
-msgstr "Show Filters"
+msgstr "詳細検索の表示"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:194
 msgid "Displays the additional filters selection on the accounts search."
-msgstr "詳しい検索。"
+msgstr "詳細検索画面を常に表示します。"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:16
@@ -7565,10 +7563,13 @@ msgid "Allowed file extensions for uploading."
 msgstr "このMIME Typeのアップロードは許可されています。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:315
+#, fuzzy
 msgid ""
 "Write the extension and press enter to add. Remember to save the "
 "configuration."
 msgstr ""
+"Write the extension and press enter to add. Remember to save the "
+"configuration."
 
 #: lib/SP/Providers/Auth/Ldap/Ldap.php:110
 msgid "LDAP type not set"
