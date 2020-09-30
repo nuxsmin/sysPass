@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "POT-Creation-Date: 2019-04-21 15:54+0200\n"
-"PO-Revision-Date: 2020-09-30 15:56+0900\n"
+"PO-Revision-Date: 2020-09-30 17:26+0900\n"
 "Last-Translator: magcho <mail@magcho.com>\n"
 "Language-Team: nuxsmin@syspass.org <nuxsmin@syspass.org>\n"
 "Language: ja_JP\n"
@@ -248,7 +248,7 @@ msgstr "エクスポートが完了しました"
 #: app/modules/api/Controllers/ControllerBase.php:146
 #: lib/SP/Services/Api/ApiService.php:186
 msgid "Unauthorized access"
-msgstr "Unauthorized access"
+msgstr "アクセスが許可されていません"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:43
 #: app/modules/api/Controllers/Help/AccountHelp.php:54
@@ -428,7 +428,7 @@ msgstr "タグIDで検索"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:133
 msgid "Filtering operator"
-msgstr "Filtering operator"
+msgstr "詳細検索に使える文法"
 
 #: app/modules/api/Controllers/Help/CategoryHelp.php:54
 #: app/modules/api/Controllers/Help/CategoryHelp.php:67
@@ -681,7 +681,7 @@ msgstr "リクエスト"
 
 #: app/modules/web/Controllers/AccountController.php:1069
 msgid "Requester"
-msgstr ""
+msgstr "リクエスト送信者"
 
 #: app/modules/web/Controllers/AccountController.php:1072
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:107
@@ -959,12 +959,12 @@ msgstr "Edit Authorization"
 #: app/modules/web/Controllers/AuthTokenController.php:224
 #: app/modules/web/Controllers/AuthTokenController.php:227
 msgid "Authorizations deleted"
-msgstr ""
+msgstr "権限を削除"
 
 #: app/modules/web/Controllers/AuthTokenController.php:237
 #: app/modules/web/Controllers/AuthTokenController.php:241
 msgid "Authorization deleted"
-msgstr ""
+msgstr "権限を削除"
 
 #: app/modules/web/Controllers/AuthTokenController.php:238
 #: app/modules/web/Controllers/AuthTokenController.php:314
@@ -976,22 +976,22 @@ msgstr "Authorization(認可)"
 
 #: app/modules/web/Controllers/AuthTokenController.php:275
 msgid "Authorization added"
-msgstr ""
+msgstr "権限を追加"
 
 #: app/modules/web/Controllers/AuthTokenController.php:313
 #: app/modules/web/Controllers/AuthTokenController.php:322
 #: app/modules/web/Controllers/AuthTokenController.php:329
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
 msgid "Authorization updated"
-msgstr ""
+msgstr "権限を追加"
 
 #: app/modules/web/Controllers/AuthTokenController.php:357
 msgid "View Authorization"
-msgstr ""
+msgstr "権限を表示"
 
 #: app/modules/web/Controllers/AuthTokenController.php:365
 msgid "Authorization viewed"
-msgstr ""
+msgstr "権限を表示"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:109
@@ -1896,7 +1896,7 @@ msgstr "YES"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:123
 #: app/resources/strings.js.inc:67
 msgid "NO"
-msgstr ""
+msgstr "NO"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:140
@@ -2707,7 +2707,7 @@ msgstr "Tracks cleared out"
 
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:68
 msgid "Configuration updated"
-msgstr "Configuration updated"
+msgstr "設定の更新"
 
 #: app/modules/web/Controllers/Traits/ConfigTrait.php:72
 msgid "Error while saving the configuration"
@@ -2874,7 +2874,7 @@ msgstr "設定"
 
 #: app/modules/web/Forms/AccountForm.php:129
 msgid "A key is needed"
-msgstr "A key is needed"
+msgstr "keyを入力してください"
 
 #: app/modules/web/Forms/AccountForm.php:169
 msgid "An account name needed"
@@ -2911,7 +2911,7 @@ msgstr "フィールドタイプを空欄にすることはできません"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:95
 msgid "Field module not set"
-msgstr "Field module not set"
+msgstr "モジュールが設定されていません"
 
 #: app/modules/web/Forms/ItemsPresetForm.php:116
 msgid "Value type not set or incorrect"
@@ -2931,7 +2931,7 @@ msgstr "ユーザー・グループ・プロファイルのいずれかを設定
 
 #: app/modules/web/Forms/NotificationForm.php:98
 msgid "A component is needed"
-msgstr "A component is needed"
+msgstr "componentを入力してください"
 
 #: app/modules/web/Forms/NotificationForm.php:102
 msgid "A type is needed"
@@ -2970,6 +2970,7 @@ msgid "An email is needed"
 msgstr "メールアドレスを空欄にすることはできません"
 
 #: app/modules/web/Forms/UserForm.php:179
+#, fuzzy
 msgid "Unable to delete, user in use"
 msgstr "Unable to delete, user in use"
 
@@ -3015,17 +3016,17 @@ msgstr "Delete"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:37
 msgid "Change Password"
-msgstr "Change Password"
+msgstr "パスワードの変更"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:38
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:200
 msgid "Application Admin"
-msgstr "Application Admin"
+msgstr "アプリケーション管理者"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:39
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:218
 msgid "Accounts Admin"
-msgstr "Accounts Admin"
+msgstr "アカウント管理"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:40
 msgid "LDAP User"
@@ -3049,7 +3050,7 @@ msgstr "Update"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:44
 msgid "Copy"
-msgstr "Copy"
+msgstr "コピー"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:46
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:84
@@ -3087,6 +3088,7 @@ msgid "Check"
 msgstr "Check"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:64
+#, fuzzy
 msgid "Critical"
 msgstr "Critical"
 
@@ -3117,19 +3119,16 @@ msgstr ""
 "デートを検討してください"
 
 #: lib/SP/Config/ConfigUtil.php:94
-#, fuzzy
 msgid "\"/config\" directory does not exist."
-msgstr "'/app/config' ディレクトリが存在しません。"
+msgstr "'/config' ディレクトリが存在しません。"
 
 #: lib/SP/Config/ConfigUtil.php:100
-#, fuzzy
 msgid "Unable to write into \"/config\" directory"
-msgstr "'/app/config' ディレクトリに書き込むことができませんでした"
+msgstr "'/config' ディレクトリに書き込むことができませんでした"
 
 #: lib/SP/Config/ConfigUtil.php:109
-#, fuzzy
 msgid "\"/config\" directory permissions are wrong"
-msgstr "'/app/config' ディレクトリのパーミッション設定が間違っています"
+msgstr "‘/config' ディレクトリのパーミッション設定が間違っています"
 
 #: lib/SP/Config/ConfigUtil.php:119
 msgid "Current: %s - Needed: 750"
@@ -3142,11 +3141,11 @@ msgstr "N/A"
 
 #: lib/SP/Core/Acl/Acl.php:299
 msgid "Access denied"
-msgstr "Access denied"
+msgstr "アクセスできませんでした。"
 
 #: lib/SP/Core/Acl/Actions.php:176
 msgid "Action not found"
-msgstr "Action not found"
+msgstr "Actionがありません"
 
 #: lib/SP/Core/Acl/UnauthorizedPageException.php:45
 #: lib/SP/Util/ErrorUtil.php:156
@@ -3159,6 +3158,7 @@ msgstr "パスワードを変更することはできませんん"
 
 #: lib/SP/Core/Context/ContextBase.php:103
 #: lib/SP/Core/Context/ContextBase.php:126
+#, fuzzy
 msgid "Context already initialized"
 msgstr "Context already initialized"
 
@@ -3167,6 +3167,7 @@ msgid "Invalid context"
 msgstr "Invalid context"
 
 #: lib/SP/Core/Context/ContextBase.php:154
+#, fuzzy
 msgid "Context not initialized"
 msgstr "Context not initialized"
 
@@ -3175,16 +3176,18 @@ msgid "Session cannot be initialized"
 msgstr "Session cannot be initialized"
 
 #: lib/SP/Core/Crypt/OldCrypt.php:178
+#, fuzzy
 msgid "Crypto module cannot be loaded"
 msgstr "Crypto module cannot be loaded"
 
 #: lib/SP/Core/Crypt/OldCrypt.php:190
+#, fuzzy
 msgid "Error while creating the encrypted data"
 msgstr "Error while creating the encrypted data"
 
 #: lib/SP/Core/Events/Event.php:57
 msgid "An object is needed"
-msgstr "An object is needed"
+msgstr "objectを入力してください"
 
 #: lib/SP/Core/Events/EventDispatcherBase.php:85
 msgid "Observer not initialized"
@@ -3195,6 +3198,7 @@ msgid "Invalid icons class"
 msgstr "Invalid icons class"
 
 #: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
+#, fuzzy
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Unable to retrieve \"%s\" template: %s"
 
@@ -3259,10 +3263,12 @@ msgid "Wrong object type"
 msgstr "Wrong object type"
 
 #: lib/SP/Mvc/View/Template.php:303 lib/SP/Mvc/View/Template.php:367
+#, fuzzy
 msgid "Unable to retrieve \"%s\" variable"
 msgstr "Unable to retrieve \"%s\" variable"
 
 #: lib/SP/Mvc/View/Template.php:336
+#, fuzzy
 msgid "Unable to unset \"%s\" variable"
 msgstr "Unable to unset \"%s\" variable"
 
@@ -3305,16 +3311,19 @@ msgstr "Method already initialized"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:121
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:128
+#, fuzzy
 msgid "Error while searching the group RDN"
 msgstr "Error while searching the group RDN"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:231
+#, fuzzy
 msgid "Error while searching the user on LDAP"
 msgstr "Error while searching the user on LDAP"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:287
+#, fuzzy
 msgid "Error while searching objects in base DN"
 msgstr "Error while searching objects in base DN"
 
@@ -3322,6 +3331,7 @@ msgstr "Error while searching objects in base DN"
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:149
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:213
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:218
+#, fuzzy
 msgid "Unable to connect to LDAP server"
 msgstr "Unable to connect to LDAP server"
 
@@ -3345,10 +3355,12 @@ msgstr "LDAP parameters are not set"
 
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:256
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:262
+#, fuzzy
 msgid "Connection error (BIND)"
 msgstr "Connection error (BIND)"
 
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:326
+#, fuzzy
 msgid "Error while disconnecting from LDAP server"
 msgstr "Error while disconnecting from LDAP server"
 
@@ -3551,19 +3563,23 @@ msgid "Error while removing the custom field"
 msgstr "カスタムフィールドの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/CustomField/CustomFieldTypeRepository.php:61
+#, fuzzy
 msgid "Error while creating the field type"
 msgstr "Error while creating the field type"
 
 #: lib/SP/Repositories/CustomField/CustomFieldTypeRepository.php:97
+#, fuzzy
 msgid "Error while updating the field type"
 msgstr "Error while updating the field type"
 
 #: lib/SP/Repositories/CustomField/CustomFieldTypeRepository.php:179
 #: lib/SP/Repositories/CustomField/CustomFieldTypeRepository.php:198
+#, fuzzy
 msgid "Error while deleting the field type"
 msgstr "Error while deleting the field type"
 
 #: lib/SP/Repositories/EventLog/EventlogRepository.php:53
+#, fuzzy
 msgid "Error while clearing the event log out"
 msgstr "Error while clearing the event log out"
 
@@ -3605,6 +3621,7 @@ msgid "Error while deleting the notifications"
 msgstr "通知の削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Notification/NotificationRepository.php:213
+#, fuzzy
 msgid "Error while retrieving notification"
 msgstr "Error while retrieving notification"
 
@@ -3613,6 +3630,7 @@ msgstr "Error while retrieving notification"
 #: lib/SP/Repositories/Notification/NotificationRepository.php:548
 #: lib/SP/Repositories/Notification/NotificationRepository.php:582
 #: lib/SP/Repositories/Notification/NotificationRepository.php:615
+#, fuzzy
 msgid "Error while retrieving the notifications"
 msgstr "Error while retrieving the notifications"
 
@@ -3656,12 +3674,14 @@ msgid "Error while updating the link"
 msgstr "関連するアカウント更新時にエラーが発生しました"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:424
+#, fuzzy
 msgid "Error while renewing link"
 msgstr "Error while renewing link"
 
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:466
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:507
 #: lib/SP/Repositories/PublicLink/PublicLinkRepository.php:528
+#, fuzzy
 msgid "Error while retrieving the link"
 msgstr "Error while retrieving the link"
 
@@ -3688,31 +3708,38 @@ msgid "Error while removing the tag"
 msgstr "タグ削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:68
+#, fuzzy
 msgid "Error while creating track"
 msgstr "Error while creating track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:85
+#, fuzzy
 msgid "Error while removing the track"
 msgstr "Error while removing the track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:102
+#, fuzzy
 msgid "Error while updating the track"
 msgstr "Error while updating the track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:118
+#, fuzzy
 msgid "Error while clearing tracks out"
 msgstr "Error while clearing tracks out"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:146
+#, fuzzy
 msgid "Error while retrieving the track"
 msgstr "Error while retrieving the track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:169
 #: lib/SP/Repositories/Track/TrackRepository.php:202
+#, fuzzy
 msgid "Error while retrieving the tracks"
 msgstr "Error while retrieving the tracks"
 
 #: lib/SP/Repositories/User/UserPassRecoverRepository.php:86
+#, fuzzy
 msgid "Error while generating the recovering hash"
 msgstr "Error while generating the recovering hash"
 
@@ -3737,6 +3764,7 @@ msgstr "ユーザーの削除時にエラーが発生しました"
 
 #: lib/SP/Repositories/User/UserRepository.php:234
 #: lib/SP/Repositories/User/UserRepository.php:551
+#, fuzzy
 msgid "Error while retrieving the user's data"
 msgstr "Error while retrieving the user's data"
 
@@ -3821,7 +3849,7 @@ msgstr "パスワードの復元時にエラーが発生しました"
 
 #: lib/SP/Services/Account/AccountCryptService.php:141
 msgid "Accounts updated: %d / %d"
-msgstr "Accounts updated: %d / %d"
+msgstr "更新済みのアカウント: %d / %d"
 
 #: lib/SP/Services/Account/AccountCryptService.php:150
 msgid "Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)"
@@ -3924,7 +3952,7 @@ msgstr "LDAP Server"
 #: lib/SP/Services/Auth/LoginService.php:505
 #: lib/SP/Services/Auth/LoginService.php:513
 msgid "Account expired"
-msgstr "Account expired"
+msgstr "有効期限"
 
 #: lib/SP/Services/Auth/LoginService.php:521
 #: lib/SP/Services/Auth/LoginService.php:529
@@ -3951,6 +3979,7 @@ msgid "Make Backup"
 msgstr "バックアップの作成"
 
 #: lib/SP/Services/Backup/FileBackupService.php:107
+#, fuzzy
 msgid "Error while doing the backup in compatibility mode"
 msgstr "Error while doing the backup in compatibility mode"
 
@@ -4019,13 +4048,13 @@ msgid "Temporary password expired"
 msgstr "仮パスワードの有効期限"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:160
+#, fuzzy
 msgid "Error while checking the temporary password"
 msgstr "Error while checking the temporary password"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:213
-#, fuzzy
 msgid "Master Password %s"
-msgstr "新しいマスターパスワードは %s"
+msgstr "マスターパスワード %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
@@ -4116,6 +4145,7 @@ msgstr "XMLファイルを作成できません"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:181
 #: lib/SP/Services/Import/SyspassImport.php:177
+#, fuzzy
 msgid "Error while checking integrity hash"
 msgstr "Error while checking integrity hash"
 
@@ -4233,7 +4263,7 @@ msgstr ""
 
 #: lib/SP/Services/Import/XmlImport.php:98
 msgid "Format not detected"
-msgstr "Format not detected"
+msgstr "文法エラー"
 
 #: lib/SP/Services/Import/XmlImport.php:106
 msgid "Not implemented"
@@ -4251,6 +4281,7 @@ msgstr "Invalid XML format"
 
 #: lib/SP/Services/Import/XmlImportBase.php:121
 #: lib/SP/Services/Import/XmlImportTrait.php:70
+#, fuzzy
 msgid "\"%s\" node doesn't exist"
 msgstr "\"%s\" node doesn't exist"
 
@@ -4260,7 +4291,7 @@ msgstr "adminユーザー名を入力してください"
 
 #: lib/SP/Services/Install/Installer.php:107
 msgid "Admin user to log into the application"
-msgstr "Admin user to log into the application"
+msgstr "アプリケーションにログインするための管理者ユーザー"
 
 #: lib/SP/Services/Install/Installer.php:112
 msgid "Please, enter the admin's password"
@@ -4344,6 +4375,7 @@ msgid "Please, check the DB connection user rights"
 msgstr "データベースとのコネクションを確認してください"
 
 #: lib/SP/Services/Install/MySQL.php:181
+#, fuzzy
 msgid "Error while creating the MySQL connection user '%s'"
 msgstr "Error while creating the MySQL connection user '%s'"
 
@@ -4377,6 +4409,7 @@ msgid "You need to create it and assign the needed permissions"
 msgstr "データベースに適切なパーミッションを持ったユーザーを作成してください"
 
 #: lib/SP/Services/Install/MySQL.php:309
+#, fuzzy
 msgid "Error while selecting '%s' database (%s)"
 msgstr "Error while selecting '%s' database (%s)"
 
@@ -4402,6 +4435,7 @@ msgid "Value not found"
 msgstr "Value not found"
 
 #: lib/SP/Services/ItemPreset/ItemPresetService.php:188
+#, fuzzy
 msgid "Error while deleting the values"
 msgstr "Error while deleting the values"
 
@@ -4578,6 +4612,7 @@ msgid "Update DB"
 msgstr "データベースの更新"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:101
+#, fuzzy
 msgid "Error while applying an auxiliary update"
 msgstr "Error while applying an auxiliary update"
 
@@ -4654,10 +4689,12 @@ msgid "Error while doing the query"
 msgstr "検索中にエラーが発生しました"
 
 #: lib/SP/Services/Wiki/DokuWikiApiBase.php:228
+#, fuzzy
 msgid "Connection URL not set"
 msgstr "Connection URL not set"
 
 #: lib/SP/Storage/Database/Database.php:131
+#, fuzzy
 msgid "Blank query"
 msgstr "Blank query"
 
@@ -4671,44 +4708,54 @@ msgid "Please, check the connection parameters"
 msgstr "接続設定を確認してください"
 
 #: lib/SP/Storage/Database/QueryData.php:338 app/resources/strings.js.inc:26
+#, fuzzy
 msgid "Error while querying"
 msgstr "Error while querying"
 
 #: lib/SP/Storage/File/FileCachePacked.php:45
+#, fuzzy
 msgid "Error while decompressing the file data (%s)"
 msgstr "Error while decompressing the file data (%s)"
 
 #: lib/SP/Storage/File/FileCachePacked.php:51
+#, fuzzy
 msgid "Error while retrieving the data"
 msgstr "Error while retrieving the data"
 
 #: lib/SP/Storage/File/FileCachePacked.php:70
+#, fuzzy
 msgid "Error while compressing the file data (%s)"
 msgstr "Error while compressing the file data (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:76
 #: lib/SP/Storage/File/FileHandler.php:165
+#, fuzzy
 msgid "Unable to read/write the file (%s)"
 msgstr "Unable to read/write the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:101
+#, fuzzy
 msgid "Unable to open the file (%s)"
 msgstr "Unable to open the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:119
+#, fuzzy
 msgid "Unable to obtain a lock (%s)"
 msgstr "Unable to obtain a lock (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:134
 #: lib/SP/Storage/File/FileHandler.php:148
+#, fuzzy
 msgid "Unable to read from file (%s)"
 msgstr "Unable to read from file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:207
+#, fuzzy
 msgid "Unable to close the file (%s)"
 msgstr "Unable to close the file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:261
+#, fuzzy
 msgid "Unable to write in file (%s)"
 msgstr "Unable to write in file (%s)"
 
@@ -4718,10 +4765,12 @@ msgstr "ファイルが見つかりませんでした(%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
+#, fuzzy
 msgid "Unable to read/write file (%s)"
 msgstr "Unable to read/write file (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:328
+#, fuzzy
 msgid "Unable to delete file (%s)"
 msgstr "Unable to delete file (%s)"
 
@@ -4738,6 +4787,7 @@ msgid "Socket not initialized"
 msgstr "Socket not initialized"
 
 #: lib/SP/Util/Connection.php:164
+#, fuzzy
 msgid "Error while sending the data"
 msgstr "Error while sending the data"
 
@@ -4747,63 +4797,56 @@ msgstr "Option unavailable"
 
 #: lib/SP/Util/ErrorUtil.php:168 lib/SP/Util/ErrorUtil.php:175
 msgid "An exception occured"
-msgstr "An exception occured"
+msgstr "例外が発生しました"
 
 #: lib/SP/Util/ImageUtil.php:65
 msgid "Invalid image"
 msgstr "Invalid image"
 
 #: app/resources/strings.js.inc:27
-#, fuzzy
 msgid "There was an error"
-msgstr "認証エラー"
+msgstr "エラーが発生しました"
 
 #: app/resources/strings.js.inc:28 app/resources/strings.js.inc:86
-#, fuzzy
 msgid "Session finished"
-msgstr "インポートが完了しました"
+msgstr "セッションが終了しました"
 
 #: app/resources/strings.js.inc:29
 msgid "Delete account?"
 msgstr "アカウントを削除しますか？"
 
 #: app/resources/strings.js.inc:30
-#, fuzzy
 msgid "Delete user?"
-msgstr "ユーザーを削除"
+msgstr "ユーザーを削除しますか？"
 
 #: app/resources/strings.js.inc:31
 msgid "You should save configuration in order to take effect"
-msgstr ""
+msgstr "保存するまで、有効化されません。"
 
 #: app/resources/strings.js.inc:32
-#, fuzzy
 msgid "Generated Password"
-msgstr "仮マスターパスワードの発行"
+msgstr "パスワードを生成"
 
 #: app/resources/strings.js.inc:33
-#, fuzzy
 msgid "High level"
-msgstr "Level"
+msgstr "High level"
 
 #: app/resources/strings.js.inc:34
 #, fuzzy
 msgid "Average level"
-msgstr "Level"
+msgstr "Average level"
 
 #: app/resources/strings.js.inc:35
-#, fuzzy
 msgid "Low level"
-msgstr "Level"
+msgstr "Low level"
 
 #: app/resources/strings.js.inc:36
-#, fuzzy
 msgid "Very High level"
-msgstr "Level"
+msgstr "Very High level"
 
 #: app/resources/strings.js.inc:37
 msgid "You should use at least 8 characters"
-msgstr ""
+msgstr "8文字以上にしてください"
 
 #: app/resources/strings.js.inc:38
 msgid "Delete item?"
@@ -4816,28 +4859,24 @@ msgid "Page not found"
 msgstr "Page not found"
 
 #: app/resources/strings.js.inc:41
-#, fuzzy
 msgid "Delete file?"
-msgstr "ファイルを削除"
+msgstr "ファイルを削除しますか？"
 
 #: app/resources/strings.js.inc:42
 msgid "Your browser does not support HTML5 file uploads"
-msgstr ""
+msgstr "お使いのブラウザはHTML5によるファイルアップロードに対応していません"
 
 #: app/resources/strings.js.inc:43
-#, fuzzy
 msgid "Too many files"
-msgstr "マスターパスワードが短すぎます"
+msgstr "ファイルが多すぎます"
 
 #: app/resources/strings.js.inc:44
-#, fuzzy
 msgid "File size not allowed"
 msgstr "ファイルが大きすぎます"
 
 #: app/resources/strings.js.inc:45
-#, fuzzy
 msgid "MIME type not allowed"
-msgstr "このMIME Typeを許可する"
+msgstr "このMIME Typeを許可されていません"
 
 #: app/resources/strings.js.inc:46
 msgid "Clear the event log out?"
@@ -4987,9 +5026,8 @@ msgid "Delete Favorite"
 msgstr "お気に入りの解除"
 
 #: app/resources/strings.js.inc:76
-#, fuzzy
 msgid "Clear Selection"
-msgstr "クリア"
+msgstr "選択したものをクリア"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
@@ -5003,15 +5041,13 @@ msgid "Display All"
 msgstr "全て表示"
 
 #: app/resources/strings.js.inc:81
-#, fuzzy
 msgid "Now"
-msgstr ""
-"インストール時と同様にフォルダの所有者とパーミッション変更を行ってください"
+msgstr "Now"
 
 #: app/resources/strings.js.inc:82
 msgid ""
 "This process will import the detected LDAP users. Would you like to continue?"
-msgstr ""
+msgstr "検出されたLDAPユーザーをインポートしますか？"
 
 #: app/resources/strings.js.inc:83
 msgid "This action will reset all plugin data. Do you want to continue?"
@@ -5019,11 +5055,11 @@ msgstr "初期化すると戻せません、プラグインを初期化します
 
 #: app/resources/strings.js.inc:84
 msgid "This process could take some time long. Do you wish to continue?"
-msgstr ""
+msgstr "この処理には時間がかかる場合があります、続行しますか？"
 
 #: app/resources/strings.js.inc:87
 msgid "Performing task. Please, do not close browser's window/tab."
-msgstr ""
+msgstr "処理中です、この画面を閉じないでください。"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:98
 #: app/resources/strings.js.inc:88
@@ -5033,18 +5069,20 @@ msgstr "英字"
 #: app/resources/strings.js.inc:89
 msgid "Cookies disabled. Application won't work properly."
 msgstr ""
+"ブラウザのcookieが無効になっています。無効に設定されているとアプリケーション"
+"が正しく動作しないことがあります。"
 
 #: app/resources/strings.js.inc:90
 msgid "Clipboard not supported by your browser."
-msgstr ""
+msgstr "お使いのブラウザはクリップボード機能をサポートしていません。"
 
 #: app/resources/strings.js.inc:91
 msgid "Performing auto-login"
-msgstr ""
+msgstr "ログイン情報を記憶"
 
 #: app/resources/strings.js.inc:92
 msgid "There is a more recent version of {0} plugin ({1})"
-msgstr ""
+msgstr "プラグイン「{0}」にアップデートがあります({1})"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:30
 #: app/resources/strings.js.inc:93
@@ -5058,7 +5096,7 @@ msgstr "アップデート中時にエラーが発生しました"
 
 #: app/resources/strings.js.inc:95
 msgid "sysPass Notices"
-msgstr ""
+msgstr "sysPass通知"
 
 #: app/resources/strings.js.inc:96
 msgid "Clear the tracks out?"
@@ -5401,7 +5439,7 @@ msgstr "データは暗号化されずに保存されます"
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:12
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:12
 msgid "The '%s' extension is unavailable"
-msgstr "“%s” プラグインが動作していません"
+msgstr "エクステンション「%s」が動作していません"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:16
 msgid "This extension is needed to display passwords as images"
@@ -5709,7 +5747,7 @@ msgstr "最終変更"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:46
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:142
 msgid "Current Master Password"
-msgstr "Current Master Password"
+msgstr "現在のマスターパスワード"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:52
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:61
@@ -5851,7 +5889,7 @@ msgstr "Basic認証を用いて自動ログインする"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:54
 msgid "Domain"
-msgstr "Domain"
+msgstr "ドメイン"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:59
 msgid ""
@@ -6181,7 +6219,7 @@ msgstr "対応しているのはCSVファイルのみです。"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:14
 msgid "Application Information"
-msgstr "Application Information"
+msgstr "アプリケーション情報"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:20
 #: app/modules/web/themes/material-blue/views/config/info.inc:23
@@ -6204,7 +6242,7 @@ msgstr "Extensions"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
-msgstr "Unavailable extensions"
+msgstr "利用できないエクステンション"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
@@ -6276,13 +6314,12 @@ msgid "This method will use MySQL as fallback."
 msgstr "有効化できない場合はMySQLを用いた認証に切り替わります。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:65
-#, fuzzy
 msgid "Active Directory"
-msgstr "LDAP directory (OpenLDAP, eDirectory, Active Directory, freeIPA, etc)"
+msgstr "Active Directory"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables Active Directory LDAP connection mode."
-msgstr ""
+msgstr "Active DirectoryLDAP接続モードの有効化。"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables the connection over TLS"
@@ -6301,6 +6338,7 @@ msgid "Examples:"
 msgstr "例:"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:124
+#, fuzzy
 msgid "Bind User"
 msgstr "Bind User"
 
@@ -6418,9 +6456,8 @@ msgstr "セキュリティー"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
-#, fuzzy
 msgid "Recipient email address"
-msgstr "送信元アドレス"
+msgstr "送信先アドレス"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
 #: app/modules/web/themes/material-blue/views/config/mail.inc:165
@@ -6527,7 +6564,7 @@ msgstr "アカウント名を連結したリンクを生成します。"
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:110
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:124
 msgid "Account name prefix"
-msgstr "Account name prefix"
+msgstr "アカウント名のプレフィックス"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:115
 msgid "Prefix to determine which accounts have a link to the Wiki."
@@ -6604,6 +6641,7 @@ msgstr "Others"
 
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:66
+#, fuzzy
 msgid "Creator"
 msgstr "Creator"
 
@@ -6670,7 +6708,7 @@ msgstr "小文字"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:31
 msgid "Accounts will be only visible by the user."
-msgstr "Accounts will be only visible by the user."
+msgstr "メイングループに設定されているユーザーのみが閲覧できます。"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:33
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:52
@@ -6698,16 +6736,17 @@ msgid ""
 "Assignment priority if values match with others assigned by user, group or "
 "profile."
 msgstr ""
-"Assignment priority if values match with others assigned by user, group or "
-"profile."
+"値がユーザー、グループ、またはプロファイルによって割り当てられた他の値と一致"
+"する場合、どのプロファイルの優先度を設定できます。"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:100
+#, fuzzy
 msgid "Assignment Priority"
 msgstr "Assignment Priority"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:122
 msgid "Enforces the values to be set either on creating or updating an item."
-msgstr "Enforces the values to be set either on creating or updating an item."
+msgstr "アイテムの作成時・更新時にこの値で上書きします。"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:124
 msgid "Values will be merged with the existing ones."
@@ -6730,7 +6769,7 @@ msgstr "Use"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:44
 msgid "Full username"
-msgstr "Full username"
+msgstr "フルネーム"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:58
 msgid "Session login"
@@ -6785,9 +6824,10 @@ msgstr "利用したアカウント"
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:548
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:550
 msgid "Used by"
-msgstr ""
+msgstr "Used by"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:108
+#, fuzzy
 msgid "(*) Listed in group"
 msgstr "(*) Listed in group"
 
@@ -6953,7 +6993,7 @@ msgstr "DB Update"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:22
 msgid "Application Update"
-msgstr "Application Update"
+msgstr "アプリケーションのアプデート"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:29
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:28
@@ -6980,23 +7020,23 @@ msgstr "If items IDs are not set, they will be created."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:74
 msgid "Enter a valid user ID for the accounts"
-msgstr "Enter a valid user ID for the accounts"
+msgstr "有効なユーザーIDを入力してください"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:85
 msgid "Enter a valid category ID for the accounts"
-msgstr "Enter a valid category ID for the accounts"
+msgstr "有効なカテゴリーIDを入力してください"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:96
 msgid "Enter a valid client ID for the accounts"
-msgstr "Enter a valid client ID for the accounts"
+msgstr "有効なクライアントIDを入力してください"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:108
 msgid "Enter a valid group ID for the users"
-msgstr "Enter a valid group ID for the users"
+msgstr "有効なグループIDを入力してください"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:118
 msgid "Enter a valid profile ID for the users"
-msgstr "Enter a valid profile ID for the users"
+msgstr "有効なプロフィールIDを入力してください"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:128
 msgid ""
@@ -7252,244 +7292,203 @@ msgstr "ファイル一覧"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:283
-#, fuzzy
 msgid "Add Wiki"
-msgstr "Add"
+msgstr "Add Wiki"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:289
-#, fuzzy
 msgid "Edit Wiki"
-msgstr "Edit"
+msgstr "Edit Wiki"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:295
-#, fuzzy
 msgid "Delete Wiki"
-msgstr "Delete"
+msgstr "Delete Wiki"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:361
-#, fuzzy
 msgid "New API Token"
-msgstr "User's API token"
+msgstr "New API Token"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:367
-#, fuzzy
 msgid "View API Token"
-msgstr "User's API token"
+msgstr "View API Token"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:373
-#, fuzzy
 msgid "Edit API Token"
-msgstr "User's API token"
+msgstr "Edit API Token"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:379
-#, fuzzy
 msgid "Delete API Token"
-msgstr "User's API token"
+msgstr "Delete API Token"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:385
-#, fuzzy
 msgid "Search for API Token"
-msgstr "User's API token"
+msgstr "Search for API Token"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:391
-#, fuzzy
 msgid "New Custom Field"
-msgstr "カスタムフィ－ルドが存在しません"
+msgstr "新規カスタムフィ－ルドの作成"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:397
-#, fuzzy
 msgid "Show Custom Field"
-msgstr "カスタフィールドの作成時にエラーが発生しました"
+msgstr "カスタフィールドを表示"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:403
-#, fuzzy
 msgid "Edit Custom Field"
-msgstr "カスタムフィ－ルドが存在しません"
+msgstr "カスタムフィ－ルドの編集"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:409
-#, fuzzy
 msgid "Delete Custom Field"
-msgstr "カスタムフィ－ルドが存在しません"
+msgstr "カスタムフィ－ルドの削除"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:415
-#, fuzzy
 msgid "Search for Custom Field"
-msgstr "フィールドを検索"
+msgstr "カスタムフィールドを検索"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:427
-#, fuzzy
 msgid "Show Public Link"
 msgstr "共有リンク"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:445
-#, fuzzy
 msgid "Search for Public Link"
 msgstr "共有リンクを検索"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:553
-#, fuzzy
 msgid "Enable Plugin"
-msgstr "Enable"
+msgstr "Enable Plugin"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:559
-#, fuzzy
 msgid "Disable Plugin"
-msgstr "Disable"
+msgstr "Disable Plugin"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:565
-#, fuzzy
 msgid "Reset Plugin"
 msgstr "プラグインをリセット"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:601
-#, fuzzy
 msgid "Edit User Password"
 msgstr "パスワードの編集"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:673
-#, fuzzy
 msgid "User Configuration"
-msgstr "設定"
+msgstr "ユーザー設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:679
-#, fuzzy
 msgid "General Preferences"
-msgstr "設定"
+msgstr "一般設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:703
-#, fuzzy
 msgid "Accounts Configuration"
-msgstr "アカウントの設定ができます"
+msgstr "アカウントの設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:709
-#, fuzzy
 msgid "Wiki Configuration"
-msgstr "Wikiの設定ができます"
+msgstr "Wikiの設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:715
-#, fuzzy
 msgid "Encryption Configuration"
-msgstr "暗号化"
+msgstr "暗号化設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:721
-#, fuzzy
 msgid "Update Hash"
-msgstr "マスターパスワードのハッシュを再生成"
+msgstr "ハッシュの再生成"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:727
 msgid "Temporary Master Password"
-msgstr ""
+msgstr "仮マスターパスワード"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:733
-#, fuzzy
 msgid "Backup Configuration"
 msgstr "設定のバックアップ"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:745
-#, fuzzy
 msgid "Import Configuration"
-msgstr "Configuration"
+msgstr "設定をインポート"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:751
-#, fuzzy
 msgid "CSV Import"
-msgstr "読み込ませるCSVファイルのラベルは以下のようにしてください。"
+msgstr "CSV Import"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:757
-#, fuzzy
 msgid "XML Import"
-msgstr "CSV/XML Import"
+msgstr "XML Import"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:763
-#, fuzzy
 msgid "Export Configuration"
-msgstr "設定"
+msgstr "設定のエクスポート"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:769
-#, fuzzy
 msgid "Export"
-msgstr "Export Accounts"
+msgstr "Export"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:775
-#, fuzzy
 msgid "Email Configuration"
-msgstr ""
-"General - サイト・アカウント・Wiki・LDAP・メールに冠する全ての設定を変更する"
-"ことを許可します"
+msgstr "メール設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:781
-#, fuzzy
 msgid "LDAP Configuration"
-msgstr "LDAPの設定ができます"
+msgstr "LDAPの設定"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:787
-#, fuzzy
 msgid "LDAP synchronization"
-msgstr "LDAP方式の場合"
+msgstr "LDAP synchronization"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:793
-#, fuzzy
 msgid "Account Management (H)"
-msgstr "マスターパスワードの変更履歴"
+msgstr "アカウント管理(H)"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:823
-#, fuzzy
 msgid "Create Notification"
-msgstr "通知"
+msgstr "通知の作成"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:853
-#, fuzzy
 msgid "Preset Values Management"
-msgstr "プリセット"
+msgstr "プリセットの管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:889
-#, fuzzy
 msgid "Tracks Management"
-msgstr "Tracks"
+msgstr "Track管理"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:901
-#, fuzzy
 msgid "Unlock track"
-msgstr "Track unlocked"
+msgstr "Unlock track"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:907
@@ -7522,54 +7521,45 @@ msgid "Text"
 msgstr "テキスト"
 
 #: app/modules/web/Controllers/AccountFileController.php:192
-#, fuzzy
 msgid "There aren't any allowed extensions"
-msgstr "このMIME typeは許可されていません"
+msgstr "このエクステンションは許可されていません"
 
 #: app/modules/web/Controllers/AccountFileController.php:211
-#, fuzzy
 msgid "Extension: %s"
-msgstr "“%s” プラグインが動作していません"
+msgstr "Extension: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:226
-#, fuzzy
 msgid "Maximum size: %s"
 msgstr "最大ファイルサイズ"
 
 #: lib/SP/Services/Import/FileImport.php:102
-#, fuzzy
 msgid "Please, check the file extension"
-msgstr "ファイルのフォーマットを確認してください"
+msgstr "ファイルを確認してください"
 
 #: lib/SP/Storage/File/FileCachePacked.php:144
-#, fuzzy
 msgid "Data not loaded"
-msgstr "ロード済みのプラグイン"
+msgstr "データを読み込んでいません"
 
 #: app/config/strings.js.inc:45
-#, fuzzy
 msgid "Extension not allowed"
-msgstr "Extension"
+msgstr "Extension not allowed"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:307
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:320
-#, fuzzy
 msgid "Allowed file extensions"
-msgstr "この種類のファイルは許可されていません"
+msgstr "この種類のファイルは利用できます"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:312
-#, fuzzy
 msgid "Allowed file extensions for uploading."
-msgstr "このMIME Typeのアップロードは許可されています。"
+msgstr "このMIME Typeのファイルはアップロードできます。"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:315
-#, fuzzy
 msgid ""
 "Write the extension and press enter to add. Remember to save the "
 "configuration."
 msgstr ""
-"Write the extension and press enter to add. Remember to save the "
-"configuration."
+"エクステンションを記述し、Enterキーを押して追加します。 構成を保存することを"
+"忘れないでください。"
 
 #: lib/SP/Providers/Auth/Ldap/Ldap.php:110
 msgid "LDAP type not set"
