@@ -198,7 +198,7 @@ use SP\Mvc\View\Template;
                                for="check_notices_enabled">
                             <input type="checkbox" id="check_notices_enabled"
                                    class="mdl-switch__input"
-                                   name="check_notices_enabled" <?php echo $configData->isChecknotices() ? 'checked' : ''; ?>/>
+                                   name="check_notices_enabled" <?php echo $configData->isCheckNotices() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
 

@@ -75,7 +75,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
-    public function load($node = 'root')
+    public function load($node = 'root'): XmlFileStorageInterface
     {
         $this->fileHandler->checkIsReadable();
         $this->fileHandler->getFileSize(true);
@@ -110,7 +110,7 @@ final class XmlHandler implements XmlFileStorageInterface
      *
      * @return array
      */
-    protected function readChildNodes(DOMNodeList $nodeList)
+    protected function readChildNodes(DOMNodeList $nodeList): array
     {
         $nodes = [];
 
@@ -132,9 +132,14 @@ final class XmlHandler implements XmlFileStorageInterface
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                     }
                 } else {
-                    $val = is_numeric($node->nodeValue)
-                    && strpos($node->nodeValue, '.') === false
-                        ? (int)$node->nodeValue : $node->nodeValue;
+                    $val = null;
+
+                    if (is_numeric($node->nodeValue)
+                        && strpos($node->nodeValue, '.') === false) {
+                        $val = (int)$node->nodeValue;
+                    } else if (!empty($node->nodeValue)) {
+                        $val = $node->nodeValue;
+                    }
 
                     if ($node->nodeName === 'item') {
                         $nodes[] = $val;
@@ -170,7 +175,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
-    public function save($data, $node = 'root')
+    public function save($data, $node = 'root'): XmlFileStorageInterface
     {
         $this->fileHandler->checkIsWritable();
 

@@ -101,8 +101,10 @@ class ConfigBackupServiceTest extends TestCase
 
         $this->assertEquals($configData->getConfigVersion(), $data->getConfigVersion());
 
-        $config = $dic->get(Config::class);
-        $this->assertEquals($data->getConfigHash(), $config->loadConfigFromFile()->getConfigHash());
+        $config = $dic->get(Config::class)->loadConfigFromFile();
+
+        $this->assertEquals($config->getConfigVersion(), $data->getConfigVersion());
+        $this->assertGreaterThanOrEqual($config->getConfigDate(), $data->getConfigDate());
 
     }
 }

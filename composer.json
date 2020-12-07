@@ -19,7 +19,7 @@
   },
   "require": {
     "roave/security-advisories": "dev-master",
-    "php": "~7.0 || ~7.1 || ~7.2 || ~7.3",
+    "php": "~7.2 || ~7.3 || ~7.4",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",

@@ -83,7 +83,7 @@ class ConfigTest extends TestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function testLoadClass()
+    public function testLoadClass(): Config
     {
         $config = self::$dic->get(Config::class);
 
@@ -102,7 +102,7 @@ class ConfigTest extends TestCase
      *
      * @throws FileException
      */
-    public function testSaveConfig($config)
+    public function testSaveConfig(Config $config)
     {
         $config->saveConfig($config->getConfigData(), false);
 
@@ -116,9 +116,8 @@ class ConfigTest extends TestCase
      * @depends testLoadClass
      *
      * @param Config $config
-     *
      */
-    public function testLoadConfig($config)
+    public function testLoadConfig(Config $config)
     {
         $this->assertInstanceOf(ConfigData::class, $config->loadConfig());
     }
@@ -130,7 +129,7 @@ class ConfigTest extends TestCase
      *
      * @param Config $config
      */
-    public function testUpdateConfig($config)
+    public function testUpdateConfig(Config $config)
     {
         $config->updateConfig($config->getConfigData());
 
@@ -147,7 +146,7 @@ class ConfigTest extends TestCase
      * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public function testGenerateUpgradeKey($config)
+    public function testGenerateUpgradeKey(Config $config)
     {
         $config->generateUpgradeKey();
 

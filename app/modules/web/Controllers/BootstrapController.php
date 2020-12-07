@@ -63,7 +63,7 @@ final class BootstrapController extends SimpleControllerBase
             'app_root' => Bootstrap::$WEBURI,
             'max_file_size' => $this->configData->getFilesAllowedSize(),
             'check_updates' => $checkStatus && $this->configData->isCheckUpdates(),
-            'check_notices' => $checkStatus && $this->configData->isChecknotices(),
+            'check_notices' => $checkStatus && $this->configData->isCheckNotices(),
             'check_notifications' => $this->getNotificationsEnabled(),
             'timezone' => date_default_timezone_get(),
             'debug' => DEBUG || $this->configData->isDebug(),

@@ -123,6 +123,8 @@ function setupContext()
 
     $userData = new UserLoginResponse();
     $userData->setId(1);
+    $userData->setLogin('Admin');
+    $userData->setUserGroupName('Admins');
     $userData->setUserGroupId(1);
     $userData->setIsAdminApp(1);
     $userData->setLastUpdate(time());

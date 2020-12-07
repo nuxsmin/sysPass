@@ -293,7 +293,7 @@ final class Request
      *
      * @return array|null
      */
-    public function analyzeArray(string $param, callable $mapper = null, $default = null)
+    public function analyzeArray(string $param, callable $mapper = null, $default = null): ?array
     {
         $requestValue = $this->params->get($param);
 
@@ -334,12 +334,12 @@ final class Request
     }
 
     /**
-     * @param string $param
-     * @param int    $default
+     * @param string   $param
+     * @param int|null $default
      *
      * @return int
      */
-    public function analyzeInt(string $param, int $default = null)
+    public function analyzeInt(string $param, int $default = null): ?int
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -364,7 +364,7 @@ final class Request
      *
      * @return bool
      */
-    public function analyzeBool(string $param, bool $default = null)
+    public function analyzeBool(string $param, bool $default = null): bool
     {
         if (!$this->params->exists($param)) {
             return (bool)$default;

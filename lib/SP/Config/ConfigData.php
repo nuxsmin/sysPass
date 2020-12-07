@@ -62,9 +62,9 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param array $logEvents
+     * @param array|null $logEvents
      */
-    public function setLogEvents($logEvents)
+    public function setLogEvents(?array $logEvents)
     {
         $this->set('logEvents', $logEvents ?: []);
     }
@@ -78,11 +78,11 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param boolean $dokuwikiEnabled
+     * @param bool|null $dokuwikiEnabled
      *
      * @return $this
      */
-    public function setDokuwikiEnabled($dokuwikiEnabled)
+    public function setDokuwikiEnabled(?bool $dokuwikiEnabled): ConfigData
     {
         $this->set('dokuwikiEnabled', (bool)$dokuwikiEnabled);
 
@@ -90,19 +90,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDokuwikiUrl()
+    public function getDokuwikiUrl(): ?string
     {
         return $this->get('dokuwikiUrl');
     }
 
     /**
-     * @param string $dokuwikiUrl
+     * @param string|null $dokuwikiUrl
      *
      * @return $this
      */
-    public function setDokuwikiUrl($dokuwikiUrl)
+    public function setDokuwikiUrl(?string $dokuwikiUrl): ConfigData
     {
         $this->set('dokuwikiUrl', $dokuwikiUrl);
 
@@ -110,19 +110,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDokuwikiUrlBase()
+    public function getDokuwikiUrlBase(): ?string
     {
         return $this->get('dokuwikiUrlBase');
     }
 
     /**
-     * @param string $dokuwikiUrlBase
+     * @param string|null $dokuwikiUrlBase
      *
      * @return $this
      */
-    public function setDokuwikiUrlBase($dokuwikiUrlBase)
+    public function setDokuwikiUrlBase(?string $dokuwikiUrlBase): ConfigData
     {
         $this->set('dokuwikiUrlBase', $dokuwikiUrlBase);
 
@@ -130,19 +130,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDokuwikiUser()
+    public function getDokuwikiUser(): ?string
     {
         return $this->get('dokuwikiUser');
     }
 
     /**
-     * @param string $dokuwikiUser
+     * @param string|null $dokuwikiUser
      *
      * @return $this
      */
-    public function setDokuwikiUser($dokuwikiUser)
+    public function setDokuwikiUser(?string $dokuwikiUser): ConfigData
     {
         $this->set('dokuwikiUser', $dokuwikiUser);
 
@@ -150,19 +150,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDokuwikiPass()
+    public function getDokuwikiPass(): ?string
     {
         return $this->get('dokuwikiPass');
     }
 
     /**
-     * @param string $dokuwikiPass
+     * @param string|null $dokuwikiPass
      *
      * @return $this
      */
-    public function setDokuwikiPass($dokuwikiPass)
+    public function setDokuwikiPass(?string $dokuwikiPass): ConfigData
     {
         $this->set('dokuwikiPass', $dokuwikiPass);
 
@@ -170,19 +170,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDokuwikiNamespace()
+    public function getDokuwikiNamespace(): ?string
     {
         return $this->get('dokuwikiNamespace');
     }
 
     /**
-     * @param string $dokuwikiNamespace
+     * @param string|null $dokuwikiNamespace
      *
      * @return $this
      */
-    public function setDokuwikiNamespace($dokuwikiNamespace)
+    public function setDokuwikiNamespace(?string $dokuwikiNamespace): ConfigData
     {
         $this->set('dokuwikiNamespace', $dokuwikiNamespace);
 
@@ -198,11 +198,11 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param int $ldapDefaultGroup
+     * @param int|null $ldapDefaultGroup
      *
      * @return $this
      */
-    public function setLdapDefaultGroup($ldapDefaultGroup)
+    public function setLdapDefaultGroup(?int $ldapDefaultGroup): ConfigData
     {
         $this->set('ldapDefaultGroup', (int)$ldapDefaultGroup);
 
@@ -218,11 +218,11 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param int $ldapDefaultProfile
+     * @param int|null $ldapDefaultProfile
      *
      * @return $this
      */
-    public function setLdapDefaultProfile($ldapDefaultProfile)
+    public function setLdapDefaultProfile(?int $ldapDefaultProfile): ConfigData
     {
         $this->set('ldapDefaultProfile', (int)$ldapDefaultProfile);
 
@@ -232,17 +232,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return boolean
      */
-    public function isProxyEnabled()
+    public function isProxyEnabled(): bool
     {
         return $this->get('proxyEnabled', false);
     }
 
     /**
-     * @param boolean $proxyEnabled
+     * @param boolean|null $proxyEnabled
      *
      * @return $this
      */
-    public function setProxyEnabled($proxyEnabled)
+    public function setProxyEnabled(?bool $proxyEnabled): ConfigData
     {
         $this->set('proxyEnabled', (bool)$proxyEnabled);
 
@@ -250,19 +250,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProxyServer()
+    public function getProxyServer(): ?string
     {
         return $this->get('proxyServer');
     }
 
     /**
-     * @param string $proxyServer
+     * @param string|null $proxyServer
      *
      * @return $this
      */
-    public function setProxyServer($proxyServer)
+    public function setProxyServer(?string $proxyServer): ConfigData
     {
         $this->set('proxyServer', $proxyServer);
 
@@ -272,17 +272,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getProxyPort()
+    public function getProxyPort(): int
     {
         return $this->get('proxyPort', 8080);
     }
 
     /**
-     * @param int $proxyPort
+     * @param int|null $proxyPort
      *
      * @return $this
      */
-    public function setProxyPort($proxyPort)
+    public function setProxyPort(?int $proxyPort): ConfigData
     {
         $this->set('proxyPort', (int)$proxyPort);
 
@@ -290,19 +290,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProxyUser()
+    public function getProxyUser(): ?string
     {
         return $this->get('proxyUser');
     }
 
     /**
-     * @param string $proxyUser
+     * @param string|null $proxyUser
      *
      * @return $this
      */
-    public function setProxyUser($proxyUser)
+    public function setProxyUser(?string $proxyUser): ConfigData
     {
         $this->set('proxyUser', $proxyUser);
 
@@ -310,19 +310,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProxyPass()
+    public function getProxyPass(): ?string
     {
         return $this->get('proxyPass');
     }
 
     /**
-     * @param string $proxyPass
+     * @param string|null $proxyPass
      *
      * @return $this
      */
-    public function setProxyPass($proxyPass)
+    public function setProxyPass(?string $proxyPass): ConfigData
     {
         $this->set('proxyPass', $proxyPass);
 
@@ -332,18 +332,18 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getPublinksMaxViews()
+    public function getPublinksMaxViews(): int
     {
         return $this->get('publinksMaxViews', self::PUBLIC_LINK_MAX_VIEWS);
     }
 
 
     /**
-     * @param int $publinksMaxViews
+     * @param int|null $publinksMaxViews
      *
      * @return $this
      */
-    public function setPublinksMaxViews($publinksMaxViews)
+    public function setPublinksMaxViews(?int $publinksMaxViews): ConfigData
     {
         $this->set('publinksMaxViews', (int)$publinksMaxViews);
 
@@ -353,17 +353,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getPublinksMaxTime()
+    public function getPublinksMaxTime(): int
     {
         return $this->get('publinksMaxTime', self::PUBLIC_LINK_MAX_TIME);
     }
 
     /**
-     * @param int $publinksMaxTime
+     * @param int|null $publinksMaxTime
      *
      * @return $this
      */
-    public function setPublinksMaxTime($publinksMaxTime)
+    public function setPublinksMaxTime(?int $publinksMaxTime): ConfigData
     {
         $this->set('publinksMaxTime', (int)$publinksMaxTime);
 
@@ -373,17 +373,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return boolean
      */
-    public function isSyslogEnabled()
+    public function isSyslogEnabled(): bool
     {
         return $this->get('syslogEnabled', false);
     }
 
     /**
-     * @param boolean $syslogEnabled
+     * @param boolean|null $syslogEnabled
      *
      * @return $this
      */
-    public function setSyslogEnabled($syslogEnabled)
+    public function setSyslogEnabled(?bool $syslogEnabled): ConfigData
     {
         $this->set('syslogEnabled', (bool)$syslogEnabled);
 
@@ -393,17 +393,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return boolean
      */
-    public function isSyslogRemoteEnabled()
+    public function isSyslogRemoteEnabled(): bool
     {
         return $this->get('syslogRemoteEnabled', false);
     }
 
     /**
-     * @param boolean $syslogRemoteEnabled
+     * @param boolean|null $syslogRemoteEnabled
      *
      * @return $this
      */
-    public function setSyslogRemoteEnabled($syslogRemoteEnabled)
+    public function setSyslogRemoteEnabled(?bool $syslogRemoteEnabled): ConfigData
     {
         $this->set('syslogRemoteEnabled', (bool)$syslogRemoteEnabled);
 
@@ -411,19 +411,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSyslogServer()
+    public function getSyslogServer(): ?string
     {
         return $this->get('syslogServer');
     }
 
     /**
-     * @param string $syslogServer
+     * @param string|null $syslogServer
      *
      * @return $this
      */
-    public function setSyslogServer($syslogServer)
+    public function setSyslogServer(?string $syslogServer): ConfigData
     {
         $this->set('syslogServer', $syslogServer);
 
@@ -433,17 +433,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getSyslogPort()
+    public function getSyslogPort(): int
     {
         return $this->get('syslogPort', self::SYSLOG_PORT);
     }
 
     /**
-     * @param int $syslogPort
+     * @param int|null $syslogPort
      *
      * @return $this
      */
-    public function setSyslogPort($syslogPort)
+    public function setSyslogPort(?int $syslogPort): ConfigData
     {
         $this->set('syslogPort', (int)$syslogPort);
 
@@ -451,19 +451,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getBackupHash()
+    public function getBackupHash(): ?string
     {
         return $this->get('backup_hash');
     }
 
     /**
-     * @param string $backup_hash
+     * @param string|null $backup_hash
      *
      * @return $this
      */
-    public function setBackupHash($backup_hash)
+    public function setBackupHash(?string $backup_hash): ConfigData
     {
         $this->set('backup_hash', $backup_hash);
 
@@ -471,19 +471,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getExportHash()
+    public function getExportHash(): ?string
     {
         return $this->get('export_hash');
     }
 
     /**
-     * @param string $export_hash
+     * @param string|null $export_hash
      *
      * @return $this
      */
-    public function setExportHash($export_hash)
+    public function setExportHash(?string $export_hash): ConfigData
     {
         $this->set('export_hash', $export_hash);
 
@@ -491,19 +491,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapBindUser()
+    public function getLdapBindUser(): ?string
     {
         return $this->get('ldapBindUser');
     }
 
     /**
-     * @param string $ldapBindUser
+     * @param string|null $ldapBindUser
      *
      * @return $this
      */
-    public function setLdapBindUser($ldapBindUser)
+    public function setLdapBindUser(?string $ldapBindUser): ConfigData
     {
         $this->set('ldapBindUser', $ldapBindUser);
 
@@ -511,39 +511,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
-     */
-    public function getLdapProxyUser()
-    {
-        return $this->get('ldapProxyUser');
-    }
-
-    /**
-     * @param string $ldapProxyUser
-     *
-     * @return $this
-     */
-    public function setLdapProxyUser($ldapProxyUser)
-    {
-        $this->get('ldapProxyUser', $ldapProxyUser);
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
-    public function getAccountCount()
+    public function getAccountCount(): int
     {
         return $this->get('accountCount', self::ACCOUNT_COUNT);
     }
 
     /**
-     * @param int $accountCount
+     * @param int|null $accountCount
      *
      * @return $this
      */
-    public function setAccountCount($accountCount)
+    public function setAccountCount(?int $accountCount): ConfigData
     {
         $this->set('accountCount', (int)$accountCount);
 
@@ -553,17 +533,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return boolean
      */
-    public function isAccountLink()
+    public function isAccountLink(): bool
     {
         return $this->get('accountLink', true);
     }
 
     /**
-     * @param boolean $accountLink
+     * @param bool|null $accountLink
      *
      * @return $this
      */
-    public function setAccountLink($accountLink)
+    public function setAccountLink(?bool $accountLink): ConfigData
     {
         $this->set('accountLink', (bool)$accountLink);
 
@@ -571,19 +551,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isCheckUpdates()
+    public function isCheckUpdates(): bool
     {
         return $this->get('checkUpdates', false);
     }
 
     /**
-     * @param boolean $checkUpdates
+     * @param bool|null $checkUpdates
      *
      * @return $this
      */
-    public function setCheckUpdates($checkUpdates)
+    public function setCheckUpdates(?bool $checkUpdates): ConfigData
     {
         $this->set('checkUpdates', (bool)$checkUpdates);
 
@@ -601,7 +581,7 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * Generates a hash from current config options
      */
-    public function setConfigHash()
+    public function setConfigHash(): ConfigData
     {
         $this->set('configHash', sha1(serialize($this->attributes)));
 
@@ -609,19 +589,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbHost()
+    public function getDbHost(): ?string
     {
         return $this->get('dbHost');
     }
 
     /**
-     * @param string $dbHost
+     * @param string|null $dbHost
      *
      * @return $this
      */
-    public function setDbHost($dbHost)
+    public function setDbHost(?string $dbHost): ConfigData
     {
         $this->set('dbHost', $dbHost);
 
@@ -629,19 +609,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbName()
+    public function getDbName(): ?string
     {
         return $this->get('dbName');
     }
 
     /**
-     * @param string $dbName
+     * @param string|null $dbName
      *
      * @return $this
      */
-    public function setDbName($dbName)
+    public function setDbName(?string $dbName): ConfigData
     {
         $this->set('dbName', $dbName);
 
@@ -649,19 +629,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbPass()
+    public function getDbPass(): ?string
     {
         return $this->get('dbPass');
     }
 
     /**
-     * @param string $dbPass
+     * @param string|null $dbPass
      *
      * @return $this
      */
-    public function setDbPass($dbPass)
+    public function setDbPass(?string $dbPass): ConfigData
     {
         $this->set('dbPass', $dbPass);
 
@@ -669,19 +649,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbUser()
+    public function getDbUser(): ?string
     {
         return $this->get('dbUser');
     }
 
     /**
-     * @param string $dbUser
+     * @param string|null $dbUser
      *
      * @return $this
      */
-    public function setDbUser($dbUser)
+    public function setDbUser(?string $dbUser): ConfigData
     {
         $this->set('dbUser', $dbUser);
 
@@ -689,19 +669,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isDebug()
+    public function isDebug(): bool
     {
         return $this->get('debug', false);
     }
 
     /**
-     * @param boolean $debug
+     * @param bool|null $debug
      *
      * @return $this
      */
-    public function setDebug($debug)
+    public function setDebug(?bool $debug): ConfigData
     {
         $this->set('debug', (bool)$debug);
 
@@ -709,19 +689,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isDemoEnabled()
+    public function isDemoEnabled(): bool
     {
         return $this->get('demoEnabled', false);
     }
 
     /**
-     * @param boolean $demoEnabled
+     * @param bool|null $demoEnabled
      *
      * @return $this
      */
-    public function setDemoEnabled($demoEnabled)
+    public function setDemoEnabled(?bool $demoEnabled): ConfigData
     {
         $this->set('demoEnabled', (bool)$demoEnabled);
 
@@ -739,17 +719,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getFilesAllowedSize()
+    public function getFilesAllowedSize(): int
     {
         return $this->get('filesAllowedSize', self::FILES_ALLOWED_SIZE);
     }
 
     /**
-     * @param int $filesAllowedSize
+     * @param int|null $filesAllowedSize
      *
      * @return $this
      */
-    public function setFilesAllowedSize($filesAllowedSize)
+    public function setFilesAllowedSize(?int $filesAllowedSize): ConfigData
     {
         $this->set('filesAllowedSize', (int)$filesAllowedSize);
 
@@ -757,19 +737,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isFilesEnabled()
+    public function isFilesEnabled(): bool
     {
         return $this->get('filesEnabled', true);
     }
 
     /**
-     * @param boolean $filesEnabled
+     * @param bool|null $filesEnabled
      *
      * @return $this
      */
-    public function setFilesEnabled($filesEnabled)
+    public function setFilesEnabled(?bool $filesEnabled): ConfigData
     {
         $this->set('filesEnabled', (bool)$filesEnabled);
 
@@ -777,19 +757,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isGlobalSearch()
+    public function isGlobalSearch(): bool
     {
         return $this->get('globalSearch', true);
     }
 
     /**
-     * @param boolean $globalSearch
+     * @param bool|null $globalSearch
      *
      * @return $this
      */
-    public function setGlobalSearch($globalSearch)
+    public function setGlobalSearch(?bool $globalSearch): ConfigData
     {
         $this->set('globalSearch', (bool)$globalSearch);
 
@@ -797,19 +777,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         return $this->get('installed', false);
     }
 
     /**
-     * @param boolean $installed
+     * @param bool|null $installed
      *
      * @return $this
      */
-    public function setInstalled($installed)
+    public function setInstalled(?bool $installed): ConfigData
     {
         $this->set('installed', (bool)$installed);
 
@@ -817,19 +797,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapBase()
+    public function getLdapBase(): ?string
     {
         return $this->get('ldapBase');
     }
 
     /**
-     * @param string $ldapBase
+     * @param string|null $ldapBase
      *
      * @return $this
      */
-    public function setLdapBase($ldapBase)
+    public function setLdapBase(?string $ldapBase): ConfigData
     {
         $this->set('ldapBase', $ldapBase);
 
@@ -837,19 +817,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isLdapEnabled()
+    public function isLdapEnabled(): bool
     {
         return $this->get('ldapEnabled', false);
     }
 
     /**
-     * @param boolean $ldapEnabled
+     * @param bool|null $ldapEnabled
      *
      * @return $this
      */
-    public function setLdapEnabled($ldapEnabled)
+    public function setLdapEnabled(?bool $ldapEnabled): ConfigData
     {
         $this->set('ldapEnabled', (bool)$ldapEnabled);
 
@@ -857,19 +837,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapGroup()
+    public function getLdapGroup(): ?string
     {
         return $this->get('ldapGroup');
     }
 
     /**
-     * @param string $ldapGroup
+     * @param string|null $ldapGroup
      *
      * @return $this
      */
-    public function setLdapGroup($ldapGroup)
+    public function setLdapGroup(?string $ldapGroup): ConfigData
     {
         $this->set('ldapGroup', $ldapGroup);
 
@@ -877,19 +857,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapServer()
+    public function getLdapServer(): ?string
     {
         return $this->get('ldapServer');
     }
 
     /**
-     * @param string $ldapServer
+     * @param string|null $ldapServer
      *
      * @return $this
      */
-    public function setLdapServer($ldapServer)
+    public function setLdapServer(?string $ldapServer): ConfigData
     {
         $this->set('ldapServer', $ldapServer);
 
@@ -897,19 +877,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isLogEnabled()
+    public function isLogEnabled(): bool
     {
         return $this->get('logEnabled', true);
     }
 
     /**
-     * @param boolean $logEnabled
+     * @param bool|null $logEnabled
      *
      * @return $this
      */
-    public function setLogEnabled($logEnabled)
+    public function setLogEnabled(?bool $logEnabled): ConfigData
     {
         $this->set('logEnabled', (bool)$logEnabled);
 
@@ -917,19 +897,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isMailAuthenabled()
+    public function isMailAuthenabled(): bool
     {
         return $this->get('mailAuthenabled', false);
     }
 
     /**
-     * @param boolean $mailAuthenabled
+     * @param bool|null $mailAuthenabled
      *
      * @return $this
      */
-    public function setMailAuthenabled($mailAuthenabled)
+    public function setMailAuthenabled(?bool $mailAuthenabled): ConfigData
     {
         $this->set('mailAuthenabled', (bool)$mailAuthenabled);
 
@@ -937,19 +917,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isMailEnabled()
+    public function isMailEnabled(): bool
     {
         return $this->get('mailEnabled', false);
     }
 
     /**
-     * @param boolean $mailEnabled
+     * @param bool|null $mailEnabled
      *
      * @return $this
      */
-    public function setMailEnabled($mailEnabled)
+    public function setMailEnabled(?bool $mailEnabled): ConfigData
     {
         $this->set('mailEnabled', (bool)$mailEnabled);
 
@@ -957,19 +937,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMailFrom()
+    public function getMailFrom(): ?string
     {
         return $this->get('mailFrom');
     }
 
     /**
-     * @param string $mailFrom
+     * @param string|null $mailFrom
      *
      * @return $this
      */
-    public function setMailFrom($mailFrom)
+    public function setMailFrom(?string $mailFrom): ConfigData
     {
         $this->set('mailFrom', $mailFrom);
 
@@ -977,19 +957,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMailPass()
+    public function getMailPass(): ?string
     {
         return $this->get('mailPass');
     }
 
     /**
-     * @param string $mailPass
+     * @param string|null $mailPass
      *
      * @return $this
      */
-    public function setMailPass($mailPass)
+    public function setMailPass(?string $mailPass): ConfigData
     {
         $this->set('mailPass', $mailPass);
 
@@ -999,17 +979,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getMailPort()
+    public function getMailPort(): int
     {
         return $this->get('mailPort', self::MAIL_PORT);
     }
 
     /**
-     * @param int $mailPort
+     * @param int|null $mailPort
      *
      * @return $this
      */
-    public function setMailPort($mailPort)
+    public function setMailPort(?int $mailPort): ConfigData
     {
         $this->set('mailPort', (int)$mailPort);
 
@@ -1017,19 +997,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isMailRequestsEnabled()
+    public function isMailRequestsEnabled(): bool
     {
         return $this->get('mailRequestsEnabled', false);
     }
 
     /**
-     * @param boolean $mailRequestsEnabled
+     * @param bool|null $mailRequestsEnabled
      *
      * @return $this
      */
-    public function setMailRequestsEnabled($mailRequestsEnabled)
+    public function setMailRequestsEnabled(?bool $mailRequestsEnabled): ConfigData
     {
         $this->set('mailRequestsEnabled', (bool)$mailRequestsEnabled);
 
@@ -1037,19 +1017,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMailSecurity()
+    public function getMailSecurity(): ?string
     {
         return $this->get('mailSecurity');
     }
 
     /**
-     * @param string $mailSecurity
+     * @param string|null $mailSecurity
      *
      * @return $this
      */
-    public function setMailSecurity($mailSecurity)
+    public function setMailSecurity(?string $mailSecurity): ConfigData
     {
         $this->set('mailSecurity', $mailSecurity);
 
@@ -1057,19 +1037,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMailServer()
+    public function getMailServer(): ?string
     {
         return $this->get('mailServer');
     }
 
     /**
-     * @param string $mailServer
+     * @param string|null $mailServer
      *
      * @return $this
      */
-    public function setMailServer($mailServer)
+    public function setMailServer(?string $mailServer): ConfigData
     {
         $this->set('mailServer', $mailServer);
 
@@ -1077,19 +1057,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMailUser()
+    public function getMailUser(): ?string
     {
         return $this->get('mailUser');
     }
 
     /**
-     * @param string $mailUser
+     * @param string|null $mailUser
      *
      * @return $this
      */
-    public function setMailUser($mailUser)
+    public function setMailUser(?string $mailUser): ConfigData
     {
         $this->set('mailUser', $mailUser);
 
@@ -1097,19 +1077,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isMaintenance()
+    public function isMaintenance(): bool
     {
         return $this->get('maintenance', false);
     }
 
     /**
-     * @param boolean $maintenance
+     * @param bool|null $maintenance
      *
      * @return $this
      */
-    public function setMaintenance($maintenance)
+    public function setMaintenance(?bool $maintenance): ConfigData
     {
         $this->set('maintenance', (bool)$maintenance);
 
@@ -1117,19 +1097,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPasswordSalt()
+    public function getPasswordSalt(): ?string
     {
         return $this->get('passwordSalt');
     }
 
     /**
-     * @param string $passwordSalt
+     * @param string|null $passwordSalt
      *
      * @return $this
      */
-    public function setPasswordSalt($passwordSalt)
+    public function setPasswordSalt(?string $passwordSalt): ConfigData
     {
         $this->set('passwordSalt', $passwordSalt);
 
@@ -1137,19 +1117,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isResultsAsCards()
+    public function isResultsAsCards(): bool
     {
         return $this->get('resultsAsCards', false);
     }
 
     /**
-     * @param boolean $resultsAsCards
+     * @param bool|null $resultsAsCards
      *
      * @return $this
      */
-    public function setResultsAsCards($resultsAsCards)
+    public function setResultsAsCards(?bool $resultsAsCards): ConfigData
     {
         $this->set('resultsAsCards', (bool)$resultsAsCards);
 
@@ -1159,17 +1139,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getSessionTimeout()
+    public function getSessionTimeout(): int
     {
         return $this->get('sessionTimeout', self::SESSION_TIMEOUT);
     }
 
     /**
-     * @param int $sessionTimeout
+     * @param int|null $sessionTimeout
      *
      * @return $this
      */
-    public function setSessionTimeout($sessionTimeout)
+    public function setSessionTimeout(?int $sessionTimeout): ConfigData
     {
         $this->set('sessionTimeout', (int)$sessionTimeout);
 
@@ -1177,19 +1157,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSiteLang()
+    public function getSiteLang(): ?string
     {
         return $this->get('siteLang');
     }
 
     /**
-     * @param string $siteLang
+     * @param string|null $siteLang
      *
      * @return $this
      */
-    public function setSiteLang($siteLang)
+    public function setSiteLang(?string $siteLang): ConfigData
     {
         $this->set('siteLang', $siteLang);
 
@@ -1199,17 +1179,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return string
      */
-    public function getSiteTheme()
+    public function getSiteTheme(): string
     {
         return $this->get('siteTheme', self::SITE_THEME);
     }
 
     /**
-     * @param string $siteTheme
+     * @param string|null $siteTheme
      *
      * @return $this
      */
-    public function setSiteTheme($siteTheme)
+    public function setSiteTheme(?string $siteTheme): ConfigData
     {
         $this->set('siteTheme', $siteTheme);
 
@@ -1217,19 +1197,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getConfigVersion()
+    public function getConfigVersion(): ?string
     {
         return (string)$this->get('configVersion');
     }
 
     /**
-     * @param string $configVersion
+     * @param string|null $configVersion
      *
      * @return $this
      */
-    public function setConfigVersion($configVersion)
+    public function setConfigVersion(?string $configVersion): ConfigData
     {
         $this->set('configVersion', $configVersion);
 
@@ -1237,19 +1217,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isWikiEnabled()
+    public function isWikiEnabled(): bool
     {
         return $this->get('wikiEnabled', false);
     }
 
     /**
-     * @param boolean $wikiEnabled
+     * @param bool|null $wikiEnabled
      *
      * @return $this
      */
-    public function setWikiEnabled($wikiEnabled)
+    public function setWikiEnabled(?bool $wikiEnabled): ConfigData
     {
         $this->set('wikiEnabled', (bool)$wikiEnabled);
 
@@ -1259,17 +1239,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return array
      */
-    public function getWikiFilter()
+    public function getWikiFilter(): array
     {
         return $this->get('wikiFilter', []);
     }
 
     /**
-     * @param array $wikiFilter
+     * @param array|null $wikiFilter
      *
      * @return $this
      */
-    public function setWikiFilter($wikiFilter)
+    public function setWikiFilter(?array $wikiFilter): ConfigData
     {
         $this->set('wikiFilter', $wikiFilter ?: []);
 
@@ -1277,19 +1257,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWikiPageurl()
+    public function getWikiPageurl(): ?string
     {
         return $this->get('wikiPageurl');
     }
 
     /**
-     * @param string $wikiPageurl
+     * @param string|null $wikiPageurl
      *
      * @return $this
      */
-    public function setWikiPageurl($wikiPageurl)
+    public function setWikiPageurl(?string $wikiPageurl): ConfigData
     {
         $this->set('wikiPageurl', $wikiPageurl);
 
@@ -1297,19 +1277,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWikiSearchurl()
+    public function getWikiSearchurl(): ?string
     {
         return $this->get('wikiSearchurl');
     }
 
     /**
-     * @param string $wikiSearchurl
+     * @param string|null $wikiSearchurl
      *
      * @return $this
      */
-    public function setWikiSearchurl($wikiSearchurl)
+    public function setWikiSearchurl(?string $wikiSearchurl): ConfigData
     {
         $this->set('wikiSearchurl', $wikiSearchurl);
 
@@ -1317,19 +1297,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapBindPass()
+    public function getLdapBindPass(): ?string
     {
         return $this->get('ldapBindPass');
     }
 
     /**
-     * @param string $ldapBindPass
+     * @param string|null $ldapBindPass
      *
      * @return $this
      */
-    public function setLdapBindPass($ldapBindPass)
+    public function setLdapBindPass(?string $ldapBindPass): ConfigData
     {
         $this->set('ldapBindPass', $ldapBindPass);
 
@@ -1337,19 +1317,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isPublinksImageEnabled()
+    public function isPublinksImageEnabled(): bool
     {
         return $this->get('publinksImageEnabled', false);
     }
 
     /**
-     * @param boolean $publinksImageEnabled
+     * @param bool|null $publinksImageEnabled
      *
      * @return $this
      */
-    public function setPublinksImageEnabled($publinksImageEnabled)
+    public function setPublinksImageEnabled(?bool $publinksImageEnabled): ConfigData
     {
         $this->set('publinksImageEnabled', (bool)$publinksImageEnabled);
 
@@ -1357,19 +1337,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isHttpsEnabled()
+    public function isHttpsEnabled(): bool
     {
         return $this->get('httpsEnabled', false);
     }
 
     /**
-     * @param boolean $httpsEnabled
+     * @param bool|null $httpsEnabled
      *
      * @return $this
      */
-    public function setHttpsEnabled($httpsEnabled)
+    public function setHttpsEnabled(?bool $httpsEnabled): ConfigData
     {
         $this->set('httpsEnabled', (bool)$httpsEnabled);
 
@@ -1377,39 +1357,39 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isChecknotices()
+    public function isCheckNotices(): bool
     {
         return $this->get('checkNotices', false);
     }
 
     /**
-     * @param boolean $checknotices
+     * @param bool|null $checknotices
      *
      * @return $this
      */
-    public function setCheckNotices($checknotices)
+    public function setCheckNotices(?bool $checknotices): ConfigData
     {
-        $this->set('checkNotices', $checknotices);
+        $this->set('checkNotices', (bool)$checknotices);
 
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isAccountPassToImage()
+    public function isAccountPassToImage(): bool
     {
         return $this->get('accountPassToImage', false);
     }
 
     /**
-     * @param boolean $accountPassToImage
+     * @param bool|null $accountPassToImage
      *
      * @return $this
      */
-    public function setAccountPassToImage($accountPassToImage)
+    public function setAccountPassToImage(?bool $accountPassToImage): ConfigData
     {
         $this->set('accountPassToImage', (bool)$accountPassToImage);
 
@@ -1417,19 +1397,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUpgradeKey()
+    public function getUpgradeKey(): ?string
     {
         return $this->get('upgradeKey');
     }
 
     /**
-     * @param string $upgradeKey
+     * @param string|null $upgradeKey
      *
      * @return $this
      */
-    public function setUpgradeKey($upgradeKey)
+    public function setUpgradeKey(?string $upgradeKey): ConfigData
     {
         $this->set('upgradeKey', $upgradeKey);
 
@@ -1439,17 +1419,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getDbPort()
+    public function getDbPort(): int
     {
         return $this->get('dbPort', self::DB_PORT);
     }
 
     /**
-     * @param int $dbPort
+     * @param int|null $dbPort
      *
      * @return $this
      */
-    public function setDbPort($dbPort)
+    public function setDbPort(?int $dbPort): ConfigData
     {
         $this->set('dbPort', (int)$dbPort);
 
@@ -1457,19 +1437,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isPublinksEnabled()
+    public function isPublinksEnabled(): bool
     {
         return $this->get('publinksEnabled', false);
     }
 
     /**
-     * @param boolean $publinksEnabled
+     * @param bool|null $publinksEnabled
      *
      * @return $this
      */
-    public function setPublinksEnabled($publinksEnabled)
+    public function setPublinksEnabled(?bool $publinksEnabled): ConfigData
     {
         $this->set('publinksEnabled', (bool)$publinksEnabled);
 
@@ -1498,11 +1478,11 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param string $configSaver
+     * @param string|null $configSaver
      *
      * @return $this
      */
-    public function setConfigSaver($configSaver)
+    public function setConfigSaver(?string $configSaver): ConfigData
     {
         $this->set('configSaver', $configSaver);
 
@@ -1510,17 +1490,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbSocket()
+    public function getDbSocket(): ?string
     {
         return $this->get('dbSocket');
     }
 
     /**
-     * @param string $dbSocket
+     * @param string|null $dbSocket
      */
-    public function setDbSocket($dbSocket)
+    public function setDbSocket(?string $dbSocket)
     {
         $this->set('dbSocket', $dbSocket);
     }
@@ -1528,17 +1508,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return bool
      */
-    public function isEncryptSession()
+    public function isEncryptSession(): bool
     {
         return (bool)$this->get('encryptSession', false);
     }
 
     /**
-     * @param bool $encryptSession
+     * @param bool|null $encryptSession
      *
      * @return $this
      */
-    public function setEncryptSession($encryptSession)
+    public function setEncryptSession(?bool $encryptSession): ConfigData
     {
         $this->set('encryptSession', (bool)$encryptSession);
 
@@ -1548,17 +1528,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return bool
      */
-    public function isAccountFullGroupAccess()
+    public function isAccountFullGroupAccess(): bool
     {
         return (bool)$this->get('accountFullGroupAccess', false);
     }
 
     /**
-     * @param bool $accountFullGroupAccess
+     * @param bool|null $accountFullGroupAccess
      *
      * @return $this
      */
-    public function setAccountFullGroupAccess($accountFullGroupAccess)
+    public function setAccountFullGroupAccess(?bool $accountFullGroupAccess): ConfigData
     {
         $this->set('accountFullGroupAccess', (bool)$accountFullGroupAccess);
 
@@ -1568,31 +1548,31 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return bool
      */
-    public function isAuthBasicEnabled()
+    public function isAuthBasicEnabled(): bool
     {
         return (bool)$this->get('authBasicEnabled', true);
     }
 
     /**
-     * @param bool $authBasicEnabled
+     * @param bool|null $authBasicEnabled
      */
-    public function setAuthBasicEnabled($authBasicEnabled)
+    public function setAuthBasicEnabled(?bool $authBasicEnabled)
     {
-        $this->set('authBasicEnabled', $authBasicEnabled);
+        $this->set('authBasicEnabled', (bool)$authBasicEnabled);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAuthBasicDomain()
+    public function getAuthBasicDomain(): ?string
     {
         return $this->get('authBasicDomain');
     }
 
     /**
-     * @param string $authBasicDomain
+     * @param string|null $authBasicDomain
      */
-    public function setAuthBasicDomain($authBasicDomain)
+    public function setAuthBasicDomain(?string $authBasicDomain)
     {
         $this->set('authBasicDomain', $authBasicDomain);
     }
@@ -1600,47 +1580,47 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return bool
      */
-    public function isAuthBasicAutoLoginEnabled()
+    public function isAuthBasicAutoLoginEnabled(): bool
     {
         return (bool)$this->get('authBasicAutoLoginEnabled', true);
     }
 
     /**
-     * @param bool $authBasicAutoLoginEnabled
+     * @param bool|null $authBasicAutoLoginEnabled
      */
-    public function setAuthBasicAutoLoginEnabled($authBasicAutoLoginEnabled)
+    public function setAuthBasicAutoLoginEnabled(?bool $authBasicAutoLoginEnabled)
     {
         $this->set('authBasicAutoLoginEnabled', $authBasicAutoLoginEnabled);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getSsoDefaultGroup()
+    public function getSsoDefaultGroup(): ?int
     {
         return $this->get('ssoDefaultGroup');
     }
 
     /**
-     * @param int $ssoDefaultGroup
+     * @param int|null $ssoDefaultGroup
      */
-    public function setSsoDefaultGroup($ssoDefaultGroup)
+    public function setSsoDefaultGroup(?int $ssoDefaultGroup)
     {
         $this->set('ssoDefaultGroup', $ssoDefaultGroup);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getSsoDefaultProfile()
+    public function getSsoDefaultProfile(): ?int
     {
         return $this->get('ssoDefaultProfile');
     }
 
     /**
-     * @param int $ssoDefaultProfile
+     * @param int|null $ssoDefaultProfile
      */
-    public function setSsoDefaultProfile($ssoDefaultProfile)
+    public function setSsoDefaultProfile(?int $ssoDefaultProfile)
     {
         $this->set('ssoDefaultProfile', $ssoDefaultProfile);
     }
@@ -1648,15 +1628,15 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return array
      */
-    public function getMailRecipients()
+    public function getMailRecipients(): array
     {
         return $this->get('mailRecipients', []);
     }
 
     /**
-     * @param array $mailRecipients
+     * @param array|null $mailRecipients
      */
-    public function setMailRecipients($mailRecipients)
+    public function setMailRecipients(?array $mailRecipients)
     {
         $this->set('mailRecipients', $mailRecipients ?: []);
     }
@@ -1664,15 +1644,15 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return array
      */
-    public function getMailEvents()
+    public function getMailEvents(): array
     {
         return $this->get('mailEvents', []);
     }
 
     /**
-     * @param array $mailEvents
+     * @param array|null $mailEvents
      */
-    public function setMailEvents($mailEvents)
+    public function setMailEvents(?array $mailEvents)
     {
         $this->set('mailEvents', $mailEvents ?: []);
     }
@@ -1680,17 +1660,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return string
      */
-    public function getDatabaseVersion()
+    public function getDatabaseVersion(): string
     {
         return (string)$this->get('databaseVersion');
     }
 
     /**
-     * @param string $databaseVersion
+     * @param string|null $databaseVersion
      *
      * @return ConfigData
      */
-    public function setDatabaseVersion($databaseVersion)
+    public function setDatabaseVersion(?string $databaseVersion): ConfigData
     {
         $this->set('databaseVersion', $databaseVersion);
 
@@ -1700,7 +1680,7 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getConfigDate()
+    public function getConfigDate(): int
     {
         return (int)$this->get('configDate');
     }
@@ -1710,7 +1690,7 @@ final class ConfigData extends DataCollection implements JsonSerializable
      *
      * @return $this
      */
-    public function setConfigDate($configDate)
+    public function setConfigDate(int $configDate): ConfigData
     {
         $this->set('configDate', (int)$configDate);
 
@@ -1720,19 +1700,19 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return bool
      */
-    public function isAccountExpireEnabled()
+    public function isAccountExpireEnabled(): bool
     {
         return (bool)$this->get('accountExpireEnabled', false);
     }
 
     /**
-     * @param bool $accountExpireEnabled
+     * @param bool|null $accountExpireEnabled
      *
      * @return ConfigData
      */
-    public function setAccountExpireEnabled($accountExpireEnabled)
+    public function setAccountExpireEnabled(?bool $accountExpireEnabled): ConfigData
     {
-        $this->set('accountExpireEnabled', $accountExpireEnabled);
+        $this->set('accountExpireEnabled', (bool)$accountExpireEnabled);
 
         return $this;
     }
@@ -1740,17 +1720,17 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getAccountExpireTime()
+    public function getAccountExpireTime(): int
     {
         return $this->get('accountExpireTime', self::ACCOUNT_EXPIRE_TIME);
     }
 
     /**
-     * @param int $accountExpireTime
+     * @param int|null $accountExpireTime
      *
      * @return ConfigData
      */
-    public function setAccountExpireTime($accountExpireTime)
+    public function setAccountExpireTime(?int $accountExpireTime): ConfigData
     {
         $this->set('accountExpireTime', (int)$accountExpireTime);
 
@@ -1766,9 +1746,9 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param bool $ldapTlsEnabled
+     * @param bool|null $ldapTlsEnabled
      */
-    public function setLdapTlsEnabled(bool $ldapTlsEnabled)
+    public function setLdapTlsEnabled(?bool $ldapTlsEnabled)
     {
         $this->set('ldapTlsEnabled', (int)$ldapTlsEnabled);
     }
@@ -1782,9 +1762,9 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param array $filesAllowedMime
+     * @param array|null $filesAllowedMime
      */
-    public function setFilesAllowedMime($filesAllowedMime)
+    public function setFilesAllowedMime(?array $filesAllowedMime)
     {
         $this->set('filesAllowedMime', $filesAllowedMime ?: []);
     }
@@ -1792,15 +1772,15 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return int
      */
-    public function getLdapType()
+    public function getLdapType(): int
     {
         return (int)$this->get('ldapType');
     }
 
     /**
-     * @param int $ldapType
+     * @param int|null $ldapType
      */
-    public function setLdapType($ldapType)
+    public function setLdapType(?int $ldapType)
     {
         $this->set('ldapType', (int)$ldapType);
     }
@@ -1808,63 +1788,63 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return string
      */
-    public function getAppVersion()
+    public function getAppVersion(): string
     {
         return $this->get('appVersion');
     }
 
     /**
-     * @param string $appVersion
+     * @param string|null $appVersion
      */
-    public function setAppVersion(string $appVersion)
+    public function setAppVersion(?string $appVersion)
     {
         $this->set('appVersion', $appVersion);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getApplicationUrl()
+    public function getApplicationUrl(): ?string
     {
         return $this->get('applicationUrl');
     }
 
     /**
-     * @param string $applicationUrl
+     * @param string|null $applicationUrl
      */
-    public function setApplicationUrl(string $applicationUrl = null)
+    public function setApplicationUrl(?string $applicationUrl)
     {
         $this->set('applicationUrl', $applicationUrl ? rtrim($applicationUrl, '/') : null);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapFilterUserObject()
+    public function getLdapFilterUserObject(): ?string
     {
         return $this->get('ldapFilterUserObject');
     }
 
     /**
-     * @param string $filter
+     * @param string|null $filter
      */
-    public function setLdapFilterUserObject($filter)
+    public function setLdapFilterUserObject(?string $filter)
     {
         $this->set('ldapFilterUserObject', $filter);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLdapFilterGroupObject()
+    public function getLdapFilterGroupObject(): ?string
     {
         return $this->get('ldapFilterGroupObject');
     }
 
     /**
-     * @param string $filter
+     * @param string|null $filter
      */
-    public function setLdapFilterGroupObject($filter)
+    public function setLdapFilterGroupObject(?string $filter)
     {
         $this->set('ldapFilterGroupObject', $filter);
     }
@@ -1872,15 +1852,15 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return array|null
      */
-    public function getLdapFilterUserAttributes()
+    public function getLdapFilterUserAttributes(): ?array
     {
         return $this->get('ldapFilterUserAttributes');
     }
 
     /**
-     * @param array $attributes
+     * @param array|null $attributes
      */
-    public function setLdapFilterUserAttributes($attributes)
+    public function setLdapFilterUserAttributes(?array $attributes)
     {
         $this->set('ldapFilterUserAttributes', $attributes ?: []);
     }
@@ -1888,15 +1868,15 @@ final class ConfigData extends DataCollection implements JsonSerializable
     /**
      * @return array|null
      */
-    public function getLdapFilterGroupAttributes()
+    public function getLdapFilterGroupAttributes(): ?array
     {
         return $this->get('ldapFilterGroupAttributes');
     }
 
     /**
-     * @param array $attributes
+     * @param array|null $attributes
      */
-    public function setLdapFilterGroupAttributes($attributes)
+    public function setLdapFilterGroupAttributes(?array $attributes)
     {
         $this->set('ldapFilterGroupAttributes', $attributes ?: []);
     }
@@ -1910,9 +1890,9 @@ final class ConfigData extends DataCollection implements JsonSerializable
     }
 
     /**
-     * @param bool $ldapDatabaseEnabled
+     * @param bool|null $ldapDatabaseEnabled
      */
-    public function setLdapDatabaseEnabled(bool $ldapDatabaseEnabled)
+    public function setLdapDatabaseEnabled(?bool $ldapDatabaseEnabled)
     {
         $this->set('ldapDatabaseEnabled', (int)$ldapDatabaseEnabled);
     }

@@ -281,7 +281,7 @@ final class LdapParams
     /**
      * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }

@@ -63,7 +63,7 @@ final class ConfigUtil
      *
      * @return array
      */
-    public static function mailAddressesAdapter($mailAddresses)
+    public static function mailAddressesAdapter(string $mailAddresses): array
     {
         if (empty($mailAddresses)) {
             return [];

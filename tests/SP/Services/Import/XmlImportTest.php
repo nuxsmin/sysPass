@@ -28,6 +28,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use SP\Core\Context\ContextException;
+use SP\Core\Exceptions\SPException;
 use SP\Services\Import\FileImport;
 use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
@@ -68,6 +69,7 @@ class XmlImportTest extends DatabaseTestCase
     /**
      * @throws ImportException
      * @throws FileException
+     * @throws SPException
      */
     public function testDoImport()
     {

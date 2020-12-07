@@ -120,7 +120,7 @@ final class Util
      * @author Samuel Levy <sam+nospam@samuellevy.com>
      *
      */
-    public static function boolval($in, $strict = false)
+    public static function boolval($in, $strict = false): bool
     {
         $in = is_string($in) ? strtolower($in) : $in;
 

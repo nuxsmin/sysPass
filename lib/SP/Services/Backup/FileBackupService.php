@@ -54,6 +54,8 @@ defined('APP_ROOT') || die();
  */
 final class FileBackupService extends Service
 {
+    private const BACKUP_EXCLUDE_REGEX = '#^(?!.*(backup|cache|temp|vendor|tests))(.*)$#i';
+
     /**
      * @var ConfigData
      */
@@ -351,7 +353,7 @@ final class FileBackupService extends Service
      * @throws CheckException
      * @throws FileException
      */
-    private function backupApp()
+    private function backupApp(): bool
     {
         $this->eventDispatcher->notifyEvent('run.backup.process',
             new Event($this, EventMessage::factory()
@@ -359,7 +361,8 @@ final class FileBackupService extends Service
         );
 
         $archive = new ArchiveHandler($this->backupFileApp, $this->extensionChecker);
-        $archive->compressDirectory(APP_ROOT, '#^(?!(.*backup))(.*)$#i');
+
+        $archive->compressDirectory(APP_ROOT, self::BACKUP_EXCLUDE_REGEX);
 
         return true;
     }

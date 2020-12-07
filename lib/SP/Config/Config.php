@@ -150,7 +150,7 @@ final class Config
     /**
      * @return bool
      */
-    private function isCacheExpired()
+    private function isCacheExpired(): bool
     {
         try {
             return $this->fileCache->isExpiredDate($this->fileStorage->getFileHandler()->getFileTime());
@@ -165,7 +165,7 @@ final class Config
      * @return ConfigData
      * @throws FileException
      */
-    public function loadConfigFromFile()
+    public function loadConfigFromFile(): ConfigData
     {
         return $this->configMapper($this->fileStorage->load('config')->getItems());
     }
@@ -177,7 +177,7 @@ final class Config
      *
      * @return ConfigData
      */
-    private function configMapper(array $items)
+    private function configMapper(array $items): ConfigData
     {
         $configData = new ConfigData();
 
@@ -202,7 +202,7 @@ final class Config
      * @return Config
      * @throws FileException
      */
-    public function saveConfig(ConfigData $configData, $backup = true)
+    public function saveConfig(ConfigData $configData, $backup = true): Config
     {
         if ($backup) {
             $this->dic->get(ConfigBackupService::class)
@@ -226,7 +226,7 @@ final class Config
     /**
      * @return int
      */
-    public static function getTimeUpdated()
+    public static function getTimeUpdated(): int
     {
         return self::$timeUpdated;
     }
@@ -238,7 +238,7 @@ final class Config
      *
      * @return Config
      */
-    public function updateConfig(ConfigData $configData)
+    public function updateConfig(ConfigData $configData): Config
     {
         $configData->setConfigDate(time());
         $configData->setConfigSaver($this->context->getUserData()->getLogin());
@@ -258,7 +258,7 @@ final class Config
      *
      * @return ConfigData
      */
-    public function loadConfig($reload = false)
+    public function loadConfig($reload = false): ConfigData
     {
         try {
             $configData = $this->fileCache->load();
@@ -284,7 +284,7 @@ final class Config
     /**
      * @return ConfigData
      */
-    public function getConfigData()
+    public function getConfigData(): ConfigData
     {
         return clone $this->configData;
     }
@@ -294,7 +294,7 @@ final class Config
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */
-    public function generateUpgradeKey()
+    public function generateUpgradeKey(): Config
     {
         if (empty($this->configData->getUpgradeKey())) {
             logger('Generating upgrade key');
