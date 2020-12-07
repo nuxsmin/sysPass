@@ -111,7 +111,7 @@ final class MySQLHandler implements DBStorageInterface
 
                 // Set prepared statement emulation depending on server version
                 $serverVersion = $this->db->getAttribute(PDO::ATTR_SERVER_VERSION);
-                $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, version_compare($serverVersion, '5.1.17', '<'));
+                $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
                 $this->dbStatus = self::STATUS_OK;
             } catch (Exception $e) {
