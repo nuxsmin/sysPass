@@ -73,15 +73,30 @@ abstract class DatabaseTestCase extends TestCase
 
     protected static function loadFixtures()
     {
+        $dbServer = getenv('DB_SERVER');
+        $dbUser = getenv('DB_USER');
+        $dbPass = getenv('DB_PASS');
+        $dbName = getenv('DB_NAME');
+
         foreach (FIXTURE_FILES as $file) {
-            $cmd = sprintf(
-                'mysql -h %s -u %s -p%s %s < %s',
-                getenv('DB_SERVER'),
-                getenv('DB_USER'),
-                getenv('DB_PASS'),
-                getenv('DB_NAME'),
-                $file
-            );
+            if (!empty($dbPass)) {
+                $cmd = sprintf(
+                    'mysql -h %s -u %s -p%s %s < %s',
+                    $dbServer,
+                    $dbUser,
+                    $dbPass,
+                    $dbName,
+                    $file
+                );
+            } else {
+                $cmd = sprintf(
+                    'mysql -h %s -u %s %s < %s',
+                    $dbServer,
+                    $dbUser,
+                    $dbName,
+                    $file
+                );
+            }
 
             exec($cmd, $output, $res);
 
