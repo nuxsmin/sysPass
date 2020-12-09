@@ -175,7 +175,8 @@ final class MySQL implements DatabaseSetupInterface
             );
 
             if (!empty($this->installData->getDbAuthHostDns())
-                && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
+            ) {
                 $dbc->exec(
                     sprintf($query,
                         $dbc->quote($user),
@@ -242,7 +243,9 @@ final class MySQL implements DatabaseSetupInterface
                         $dbc->quote($this->installData->getDbAuthHost()))
                 );
 
-                if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
+                if (!empty($this->installData->getDbAuthHostDns())
+                    && $this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()
+                ) {
                     $dbc->exec(sprintf(
                             $query,
                             $this->installData->getDbName(),
