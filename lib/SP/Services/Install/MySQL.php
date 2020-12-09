@@ -230,12 +230,22 @@ final class MySQL implements DatabaseSetupInterface
             }
 
             try {
-                $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@`%s`';
+                $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@%s';
 
-                $dbc->exec(sprintf($query, $this->installData->getDbName(), $dbc->quote($this->configData->getDbUser()), $this->installData->getDbAuthHost()));
+                $dbc->exec(sprintf(
+                    $query,
+                    $this->installData->getDbName(),
+                    $dbc->quote($this->configData->getDbUser()),
+                    $dbc->quote($this->installData->getDbAuthHost()))
+                );
 
                 if ($this->installData->getDbAuthHost() !== $this->installData->getDbAuthHostDns()) {
-                    $dbc->exec(sprintf($query, $this->installData->getDbName(), $dbc->quote($this->configData->getDbUser()), $this->installData->getDbAuthHostDns()));
+                    $dbc->exec(sprintf(
+                        $query,
+                        $this->installData->getDbName(),
+                        $dbc->quote($this->configData->getDbUser()),
+                        $dbc->quote($this->installData->getDbAuthHostDns()))
+                    );
                 }
 
                 $dbc->exec('FLUSH PRIVILEGES');
