@@ -57,14 +57,11 @@ class PluginDataServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_plugin.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(PluginDataService::class);
@@ -143,11 +140,11 @@ class PluginDataServiceTest extends DatabaseTestCase
     {
         self::$service->delete('Authenticator');
 
-        $this->assertTableRowCount('PluginData', 2);
+        $this->assertEquals(2, self::getRowCount('PluginData'));
 
         self::$service->delete('DokuWiki');
 
-        $this->assertTableRowCount('PluginData', 1);
+        $this->assertEquals(1, self::getRowCount('PluginData'));
     }
 
     /**

@@ -54,14 +54,11 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_itemPreset.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(ItemPresetRepository::class);
@@ -75,7 +72,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(3, self::$repository->deleteByIdBatch([1, 2, 3, 10]));
 
-        $this->assertEquals(2, $this->conn->getRowCount('ItemPreset'));
+        $this->assertEquals(2, self::getRowCount('ItemPreset'));
 
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
     }
@@ -92,7 +89,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->delete(10));
 
-        $this->assertEquals(3, $this->conn->getRowCount('ItemPreset'));
+        $this->assertEquals(3, self::getRowCount('ItemPreset'));
     }
 
     /**
@@ -245,7 +242,7 @@ class ItemPresetRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $count = $this->conn->getRowCount('ItemPreset');
+        $count = self::getRowCount('ItemPreset');
 
         $result = self::$repository->getAll();
         $this->assertEquals($count, $result->getNumRows());

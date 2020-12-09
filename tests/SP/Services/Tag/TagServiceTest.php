@@ -58,14 +58,11 @@ class TagServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_tag.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(TagService::class);
@@ -78,7 +75,7 @@ class TagServiceTest extends DatabaseTestCase
     {
         self::$service->deleteByIdBatch([1, 2, 3]);
 
-        $this->assertEquals(0, $this->conn->getRowCount('Tag'));
+        $this->assertEquals(0, self::getRowCount('Tag'));
 
         $this->expectException(ServiceException::class);
 
@@ -96,7 +93,7 @@ class TagServiceTest extends DatabaseTestCase
 
         self::$service->delete(2);
 
-        $this->assertEquals(1, $this->conn->getRowCount('Tag'));
+        $this->assertEquals(1, self::getRowCount('Tag'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -218,7 +215,7 @@ class TagServiceTest extends DatabaseTestCase
 
         $this->assertEquals($tagData->name, $data->getName());
 
-        $this->assertEquals(4, $this->conn->getRowCount('Tag'));
+        $this->assertEquals(4, self::getRowCount('Tag'));
     }
 
     /**

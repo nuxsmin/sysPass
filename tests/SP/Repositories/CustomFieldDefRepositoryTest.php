@@ -56,14 +56,11 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(CustomFieldDefRepository::class);
@@ -131,7 +128,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     public function testDeleteByIdBatch()
     {
         $this->assertEquals(1, self::$repository->deleteByIdBatch([3, 4]));
-        $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
+        $this->assertEquals(2, self::getRowCount('CustomFieldDefinition'));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
         $this->expectException(ConstraintException::class);
@@ -257,9 +254,9 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
         $result = self::$repository->search($itemSearchData);
         $data = $result->getDataAsArray();
 
-        $this->assertEquals(2, $result->getNumRows());
-        $this->assertEquals(2, $result->getTotalNumRows());
-        $this->assertCount(2, $data);
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertEquals(1, $result->getTotalNumRows());
+        $this->assertCount(1, $data);
         $this->assertInstanceOf(CustomFieldDefinitionData::class, $data[0]);
         $this->assertEquals(2, $data[0]->id);
         $this->assertEquals('password', $data[0]->typeName);
@@ -280,7 +277,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->delete(3));
         $this->assertEquals(0, self::$repository->delete(10));
-        $this->assertEquals(2, $this->conn->getRowCount('CustomFieldDefinition'));
+        $this->assertEquals(2, self::getRowCount('CustomFieldDefinition'));
 
         $this->expectException(ConstraintException::class);
 
@@ -290,7 +287,7 @@ class CustomFieldDefRepositoryTest extends DatabaseTestCase
     /**
      * Performs operation returned by getSetUpOperation().
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

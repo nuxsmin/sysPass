@@ -54,14 +54,11 @@ class TrackRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_track.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(TrackRepository::class);
@@ -75,7 +72,7 @@ class TrackRepositoryTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$repository->delete(1));
 
-        $this->assertEquals(5, $this->conn->getRowCount('Track'));
+        $this->assertEquals(5, self::getRowCount('Track'));
 
         $this->assertEquals(0, self::$repository->delete(10));
     }

@@ -56,14 +56,11 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
      * @throws DependencyException
      * @throws SPException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_userGroup.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(UserToUserGroupService::class);
@@ -95,9 +92,8 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
 
         $data = self::$service->getGroupsForUser(2);
 
-        $this->assertCount(2, $data);
+        $this->assertCount(1, $data);
         $this->assertEquals(1, $data[0]->userGroupId);
-        $this->assertEquals(3, $data[1]->userGroupId);
 
         $data = self::$service->getGroupsForUser(10);
 
@@ -170,11 +166,11 @@ class UserToUserGroupServiceTest extends DatabaseTestCase
         $this->assertEquals(2, $data[1]->getUserGroupId());
         $this->assertEquals(3, $data[1]->getUserId());
 
-        $data = self::$service->getById(3);
+        $data = self::$service->getById(1);
 
         $this->assertCount(1, $data);
 
-        $this->assertEquals(3, $data[0]->getUserGroupId());
+        $this->assertEquals(1, $data[0]->getUserGroupId());
         $this->assertEquals(2, $data[0]->getUserId());
 
         $this->expectException(NoSuchItemException::class);

@@ -48,7 +48,7 @@ class VaultTest extends TestCase
      *
      * @throws EnvironmentIsBrokenException
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->key = PasswordUtil::generateRandomBytes();
     }

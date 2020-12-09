@@ -64,7 +64,7 @@ class SecureKeyCookieTest extends TestCase
             $data = $this->cookie->sign($text, $cypher);
 
             $this->assertNotEmpty($data);
-            $this->assertContains(';', $data);
+            $this->assertStringContainsString(';', $data);
             $this->assertEquals($text, $this->cookie->getCookieData($data, $cypher));
         }
     }
@@ -94,7 +94,7 @@ class SecureKeyCookieTest extends TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->cookie = SecureKeyCookie::factory(new Request(\Klein\Request::createFromGlobals()));
     }

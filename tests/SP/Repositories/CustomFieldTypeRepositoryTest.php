@@ -53,14 +53,11 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(CustomFieldTypeRepository::class);
@@ -72,11 +69,11 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $countBefore = $this->conn->getRowCount('CustomFieldType');
+        $countBefore = self::getRowCount('CustomFieldType');
 
         $this->assertEquals(2, self::$repository->deleteByIdBatch([3, 4, 100]));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
-        $this->assertEquals($countBefore - 2, $this->conn->getRowCount('CustomFieldType'));
+        $this->assertEquals($countBefore - 2, self::getRowCount('CustomFieldType'));
 
         $this->expectException(ConstraintException::class);
 
@@ -89,11 +86,11 @@ class CustomFieldTypeRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $countBefore = $this->conn->getRowCount('CustomFieldType');
+        $countBefore = self::getRowCount('CustomFieldType');
 
         $this->assertEquals(1, self::$repository->delete(3));
         $this->assertEquals(0, self::$repository->delete(100));
-        $this->assertEquals($countBefore - 1, $this->conn->getRowCount('CustomFieldType'));
+        $this->assertEquals($countBefore - 1, self::getRowCount('CustomFieldType'));
 
         $this->expectException(ConstraintException::class);
 

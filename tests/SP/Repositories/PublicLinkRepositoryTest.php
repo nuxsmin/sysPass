@@ -58,14 +58,11 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(PublicLinkRepository::class);
@@ -82,8 +79,9 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $data = $result->getData();
 
         $this->assertEquals(1, $result->getNumRows());
-        $this->assertEquals(1, $data->getId());
-        $this->assertEquals(pack('H*', '646134633934396166303637386334353130313363626137633133626463396137636135383731383034663137343134306636626161653236346464'), $data->getHash());
+        $this->assertEquals(3, $data->getId());
+        $this->assertEquals(1, $data->getUserId());
+        $this->assertEquals(pack('H*', '616337343462363934383832336362303531343534366335363739383163653466653732343064663339363832366439396632346664396131333434'), $data->getHash());
 
         $result = self::$repository->getHashForItem(3);
         $this->assertEquals(0, $result->getNumRows());
@@ -108,13 +106,13 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertInstanceOf(PublicLinkListData::class, $data[0]);
         $this->assertEquals(2, $data[0]->getId());
         $this->assertEquals(1, $data[0]->getItemId());
-        $this->assertEquals(pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635'), $data[0]->getHash());
+        $this->assertEquals(pack('H*', '636564333430306561313730363139616437643235383934383862366236303734376561393966313265323230663561393130656465366438333466'), $data[0]->getHash());
         $this->assertNotEmpty($data[0]->getData());
         $this->assertEquals(1, $data[0]->getUserId());
         $this->assertEquals(1, $data[0]->getTypeId());
         $this->assertEquals(0, $data[0]->isNotify());
         $this->assertEquals(1529228863, $data[0]->getDateAdd());
-        $this->assertEquals(1529229463, $data[0]->getDateExpire());
+        $this->assertEquals(1532280825, $data[0]->getDateExpire());
         $this->assertEquals(0, $data[0]->getDateUpdate());
         $this->assertEquals(0, $data[0]->getCountViews());
         $this->assertEquals(3, $data[0]->getMaxCountViews());
@@ -132,7 +130,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $result->getNumRows());
         $this->assertCount(1, $data);
         $this->assertInstanceOf(PublicLinkListData::class, $data[0]);
-        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals(3, $data[0]->getId());
         $this->assertEquals(2, $data[0]->getItemId());
 
         $itemSearchData->setSeachString('');
@@ -151,7 +149,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, self::$repository->deleteByIdBatch([1, 2, 3]));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('PublicLink'));
+        $this->assertEquals(0, self::getRowCount('PublicLink'));
     }
 
     /**
@@ -176,12 +174,12 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $data->setDateAdd(time());
         $data->setMaxCountViews(3);
 
-        $this->assertEquals(3, self::$repository->create($data)->getLastId());
+        $this->assertEquals(4, self::$repository->create($data)->getLastId());
 
         /** @var PublicLinkListData $resultData */
-        $resultData = self::$repository->getById(3)->getData();
+        $resultData = self::$repository->getById(4)->getData();
 
-        $this->assertEquals(3, $resultData->getId());
+        $this->assertEquals(4, $resultData->getId());
         $this->assertEquals($data->getItemId(), $resultData->getItemId());
         $this->assertEquals($data->getHash(), $resultData->getHash());
         $this->assertEquals($data->getData(), $resultData->getData());
@@ -198,7 +196,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $data->setItemId(3);
+        $data->setItemId(10);
 
         self::$repository->create($data);
     }
@@ -217,13 +215,13 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertInstanceOf(PublicLinkListData::class, $data);
         $this->assertEquals(2, $data->getId());
         $this->assertEquals(1, $data->getItemId());
-        $this->assertEquals(pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635'), $data->getHash());
+        $this->assertEquals(pack('H*', '636564333430306561313730363139616437643235383934383862366236303734376561393966313265323230663561393130656465366438333466'), $data->getHash());
         $this->assertNotEmpty($data->getData());
         $this->assertEquals(1, $data->getUserId());
         $this->assertEquals(1, $data->getTypeId());
         $this->assertEquals(0, $data->isNotify());
         $this->assertEquals(1529228863, $data->getDateAdd());
-        $this->assertEquals(1529229463, $data->getDateExpire());
+        $this->assertEquals(1532280825, $data->getDateExpire());
         $this->assertEquals(0, $data->getDateUpdate());
         $this->assertEquals(0, $data->getCountViews());
         $this->assertEquals(3, $data->getMaxCountViews());
@@ -232,7 +230,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals('Google', $data->getAccountName());
         $this->assertEquals('admin', $data->getUserLogin());
 
-        $this->assertEquals(0, self::$repository->getById(3)->getNumRows());
+        $this->assertEquals(0, self::$repository->getById(10)->getNumRows());
     }
 
     /**
@@ -241,11 +239,11 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $this->assertEquals(1, self::$repository->delete(1));
         $this->assertEquals(1, self::$repository->delete(2));
-        $this->assertEquals(0, self::$repository->delete(3));
+        $this->assertEquals(1, self::$repository->delete(3));
+        $this->assertEquals(0, self::$repository->delete(4));
 
-        $this->assertEquals(0, $this->conn->getRowCount('PublicLink'));
+        $this->assertEquals(0, self::getRowCount('PublicLink'));
     }
 
     /**
@@ -254,7 +252,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
      */
     public function testAddLinkView()
     {
-        $hash = pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635');
+        $hash = pack('H*', '636564333430306561313730363139616437643235383934383862366236303734376561393966313265323230663561393130656465366438333466');
 
         $useInfo = [
             'who' => SELF_IP_ADDRESS,
@@ -284,7 +282,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
      */
     public function testGetByHash()
     {
-        $hash = pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635');
+        $hash = pack('H*', '636564333430306561313730363139616437643235383934383862366236303734376561393966313265323230663561393130656465366438333466');
 
         $result = self::$repository->getByHash($hash);
         /** @var PublicLinkData $data */
@@ -300,7 +298,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $data->getTypeId());
         $this->assertEquals(0, $data->isNotify());
         $this->assertEquals(1529228863, $data->getDateAdd());
-        $this->assertEquals(1529229463, $data->getDateExpire());
+        $this->assertEquals(1532280825, $data->getDateExpire());
         $this->assertEquals(0, $data->getDateUpdate());
         $this->assertEquals(0, $data->getCountViews());
         $this->assertEquals(3, $data->getMaxCountViews());
@@ -323,23 +321,17 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $data->setDateExpire(time() + 3600);
         $data->setMaxCountViews(6);
         $data->setData('data_new');
-        $data->setId(1);
+        $data->setId(2);
 
         $this->assertEquals(1, self::$repository->refresh($data));
 
         /** @var PublicLinkListData $resultData */
-        $resultData = self::$repository->getById(1)->getData();
+        $resultData = self::$repository->getById(2)->getData();
 
         $this->assertEquals($data->getHash(), $resultData->getHash());
         $this->assertEquals($data->getDateExpire(), $resultData->getDateExpire());
         $this->assertEquals($data->getMaxCountViews(), $resultData->getMaxCountViews());
         $this->assertEquals($data->getData(), $resultData->getData());
-
-        $this->expectException(ConstraintException::class);
-
-        $data->setId(2);
-
-        self::$repository->refresh($data);
     }
 
     /**
@@ -376,24 +368,24 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $result->getNumRows());
 
         $this->assertInstanceOf(PublicLinkListData::class, $data[0]);
-        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals(2, $data[0]->getId());
 
         $this->assertInstanceOf(PublicLinkListData::class, $data[1]);
-        $this->assertEquals(2, $data[1]->getId());
-        $this->assertEquals(1, $data[1]->getItemId());
-        $this->assertEquals(pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635'), $data[1]->getHash());
+        $this->assertEquals(3, $data[1]->getId());
+        $this->assertEquals(2, $data[1]->getItemId());
+        $this->assertEquals(pack('H*', '616337343462363934383832336362303531343534366335363739383163653466653732343064663339363832366439396632346664396131333434'), $data[1]->getHash());
         $this->assertNotEmpty($data[1]->getData());
         $this->assertEquals(1, $data[1]->getUserId());
         $this->assertEquals(1, $data[1]->getTypeId());
         $this->assertEquals(0, $data[1]->isNotify());
-        $this->assertEquals(1529228863, $data[1]->getDateAdd());
-        $this->assertEquals(1529229463, $data[1]->getDateExpire());
+        $this->assertEquals(1529276100, $data[1]->getDateAdd());
+        $this->assertEquals(1532280828, $data[1]->getDateExpire());
         $this->assertEquals(0, $data[1]->getDateUpdate());
         $this->assertEquals(0, $data[1]->getCountViews());
         $this->assertEquals(3, $data[1]->getMaxCountViews());
         $this->assertEquals(0, $data[1]->getTotalCountViews());
         $this->assertNull($data[1]->getUseInfo());
-        $this->assertEquals('Google', $data[1]->getAccountName());
+        $this->assertEquals('Apple', $data[1]->getAccountName());
         $this->assertEquals('admin', $data[1]->getUserLogin());
 
         $this->assertEquals(0, self::$repository->getByIdBatch([])->getNumRows());
@@ -412,24 +404,24 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $result->getNumRows());
 
         $this->assertInstanceOf(PublicLinkListData::class, $data[0]);
-        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals(2, $data[0]->getId());
 
         $this->assertInstanceOf(PublicLinkListData::class, $data[1]);
-        $this->assertEquals(2, $data[1]->getId());
-        $this->assertEquals(1, $data[1]->getItemId());
-        $this->assertEquals(pack('H*', '313065363937306666653833623531393234356635333433333732626366663433376461623565356134386238326131653238636131356235346635'), $data[1]->getHash());
+        $this->assertEquals(3, $data[1]->getId());
+        $this->assertEquals(2, $data[1]->getItemId());
+        $this->assertEquals(pack('H*', '616337343462363934383832336362303531343534366335363739383163653466653732343064663339363832366439396632346664396131333434'), $data[1]->getHash());
         $this->assertNotEmpty($data[1]->getData());
         $this->assertEquals(1, $data[1]->getUserId());
         $this->assertEquals(1, $data[1]->getTypeId());
         $this->assertEquals(0, $data[1]->isNotify());
-        $this->assertEquals(1529228863, $data[1]->getDateAdd());
-        $this->assertEquals(1529229463, $data[1]->getDateExpire());
+        $this->assertEquals(1529276100, $data[1]->getDateAdd());
+        $this->assertEquals(1532280828, $data[1]->getDateExpire());
         $this->assertEquals(0, $data[1]->getDateUpdate());
         $this->assertEquals(0, $data[1]->getCountViews());
         $this->assertEquals(3, $data[1]->getMaxCountViews());
         $this->assertEquals(0, $data[1]->getTotalCountViews());
         $this->assertNull($data[1]->getUseInfo());
-        $this->assertEquals('Google', $data[1]->getAccountName());
+        $this->assertEquals('Apple', $data[1]->getAccountName());
         $this->assertEquals('admin', $data[1]->getUserLogin());
     }
 
@@ -442,8 +434,8 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
     public function testUpdate()
     {
         $data = new PublicLinkData();
-        $data->setId(1);
-        $data->setItemId(2);
+        $data->setId(2);
+        $data->setItemId(3);
         $data->setHash(PasswordUtil::generateRandomBytes());
         $data->setData('data');
         $data->setUserId(2);
@@ -456,9 +448,9 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->update($data));
 
         /** @var PublicLinkListData $resultData */
-        $resultData = self::$repository->getById(1)->getData();
+        $resultData = self::$repository->getById(2)->getData();
 
-        $this->assertEquals(1, $resultData->getId());
+        $this->assertEquals(2, $resultData->getId());
         $this->assertEquals($data->getItemId(), $resultData->getItemId());
         $this->assertEquals($data->getHash(), $resultData->getHash());
         $this->assertEquals($data->getData(), $resultData->getData());
@@ -471,7 +463,7 @@ class PublicLinkRepositoryTest extends DatabaseTestCase
 
         $this->expectException(ConstraintException::class);
 
-        $data->setItemId(1);
+        $data->setItemId(2);
 
         self::$repository->update($data);
     }

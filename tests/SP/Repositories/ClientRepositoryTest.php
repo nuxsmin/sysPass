@@ -58,14 +58,11 @@ class ClientRepositoryTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(ClientRepository::class);
@@ -79,7 +76,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetByName()
     {
-        $this->assertNull(self::$repository->getByName('Amazon')->getData());
+        $this->assertNull(self::$repository->getByName('Spotify')->getData());
 
         $data = self::$repository->getByName('Google')->getData();
 
@@ -158,7 +155,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $count = $this->conn->getRowCount('Client');
+        $count = self::getRowCount('Client');
 
         $results = self::$repository->getAll();
         /** @var ClientData[] $data */
@@ -167,13 +164,16 @@ class ClientRepositoryTest extends DatabaseTestCase
         $this->assertCount($count, $data);
 
         $this->assertInstanceOf(ClientData::class, $data[0]);
-        $this->assertEquals('Apple', $data[0]->getName());
+        $this->assertEquals('Amazon', $data[0]->getName());
 
         $this->assertInstanceOf(ClientData::class, $data[1]);
-        $this->assertEquals('Google', $data[1]->getName());
+        $this->assertEquals('Apple', $data[1]->getName());
 
         $this->assertInstanceOf(ClientData::class, $data[2]);
-        $this->assertEquals('Microsoft', $data[2]->getName());
+        $this->assertEquals('Google', $data[2]->getName());
+
+        $this->assertInstanceOf(ClientData::class, $data[3]);
+        $this->assertEquals('Microsoft', $data[3]->getName());
     }
 
     /**
@@ -216,11 +216,11 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $countBefore = $this->conn->getRowCount('Client');
+        $countBefore = self::getRowCount('Client');
 
-        $this->assertEquals(1, self::$repository->deleteByIdBatch([3]));
+        $this->assertEquals(1, self::$repository->deleteByIdBatch([4]));
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 
@@ -238,7 +238,7 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $countBefore = $this->conn->getRowCount('Client');
+        $countBefore = self::getRowCount('Client');
 
         $data = new ClientData();
         $data->name = 'Cliente prueba';
@@ -254,7 +254,7 @@ class ClientRepositoryTest extends DatabaseTestCase
         $this->assertEquals($data->name, $result->getName());
         $this->assertEquals($data->isGlobal, $result->getIsGlobal());
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
         $this->assertEquals($countBefore + 1, $countAfter);
 
@@ -271,11 +271,11 @@ class ClientRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $countBefore = $this->conn->getRowCount('Client');
+        $countBefore = self::getRowCount('Client');
 
-        $this->assertEquals(1, self::$repository->delete(3));
+        $this->assertEquals(1, self::$repository->delete(4));
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 
@@ -294,7 +294,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     public function testGetByIdBatch()
     {
         $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3]));
-        $this->assertCount(3, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
+        $this->assertCount(4, self::$repository->getByIdBatch([1, 2, 3, 4, 5]));
         $this->assertCount(0, self::$repository->getByIdBatch([]));
     }
 
@@ -307,6 +307,6 @@ class ClientRepositoryTest extends DatabaseTestCase
         $filter = new QueryCondition();
         $filter->addFilter('Account.isPrivate = 0');
 
-        $this->assertEquals(3, self::$repository->getAllForFilter($filter)->getNumRows());
+        $this->assertEquals(4, self::$repository->getAllForFilter($filter)->getNumRows());
     }
 }

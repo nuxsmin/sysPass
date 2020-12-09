@@ -62,14 +62,11 @@ class NotificationServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_notification.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         self::$context = $dic->get(ContextInterface::class);
 
@@ -456,7 +453,7 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$service->deleteAdminBatch([]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('Notification'));
+        $this->assertEquals(0, self::getRowCount('Notification'));
 
         $this->expectException(ServiceException::class);
 
@@ -470,11 +467,11 @@ class NotificationServiceTest extends DatabaseTestCase
      */
     public function testDeleteAdmin()
     {
-        $countBefore = $this->conn->getRowCount('Notification');
+        $countBefore = self::getRowCount('Notification');
 
         self::$service->deleteAdmin(3);
 
-        $this->assertEquals($countBefore - 1, $this->conn->getRowCount('Notification'));
+        $this->assertEquals($countBefore - 1, self::getRowCount('Notification'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -548,7 +545,7 @@ class NotificationServiceTest extends DatabaseTestCase
     {
         self::$service->delete(3);
 
-        $this->assertEquals(2, $this->conn->getRowCount('Notification'));
+        $this->assertEquals(2, self::getRowCount('Notification'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -566,7 +563,7 @@ class NotificationServiceTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$service->deleteByIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('Notification'));
+        $this->assertEquals(1, self::getRowCount('Notification'));
 
         $this->expectException(ServiceException::class);
 

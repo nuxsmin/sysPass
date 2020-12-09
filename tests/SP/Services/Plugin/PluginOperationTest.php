@@ -59,14 +59,11 @@ class PluginOperationTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_plugin.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$pluginOperation = function ($name) use ($dic) {
@@ -143,13 +140,13 @@ class PluginOperationTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $this->assertTableRowCount('PluginData', 4);
+        $this->assertEquals(4, self::getRowCount('PluginData'));
 
         /** @var PluginOperation $pluginOperation */
         $pluginOperation = self::$pluginOperation->call($this, 'Authenticator');
         $pluginOperation->delete(1);
 
-        $this->assertTableRowCount('PluginData', 3);
+        $this->assertEquals(3, self::getRowCount('PluginData'));
     }
 
     /**

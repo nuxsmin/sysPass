@@ -59,7 +59,7 @@ class ConfigTest extends TestCase
     /**
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$dic = setupContext();
 
@@ -70,7 +70,7 @@ class ConfigTest extends TestCase
     /**
      * This method is called after the last test of this test class is run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         // Restore to the initial state
         saveResource('config', 'config.xml', self::$currentConfig);

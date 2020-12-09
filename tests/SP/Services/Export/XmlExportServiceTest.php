@@ -59,16 +59,14 @@ class XmlExportServiceTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         array_map('unlink', glob(TMP_PATH . DIRECTORY_SEPARATOR . '*.xml'));
 
         $dic = setupContext();
 
-        self::$dataset = 'syspass_import.xml';
+        self::$loadFixtures = true;
 
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
         self::$xmlExportService = $dic->get(XmlExportService::class);
         self::$xmlVerifyService = $dic->get(XmlVerifyService::class);
     }
@@ -115,9 +113,9 @@ class XmlExportServiceTest extends DatabaseTestCase
         $this->assertArrayHasKey('Category', $nodes);
         $this->assertArrayHasKey('Client', $nodes);
         $this->assertArrayHasKey('Tag', $nodes);
-        $this->assertEquals(2, $nodes['Account']);
+        $this->assertEquals(4, $nodes['Account']);
         $this->assertEquals(3, $nodes['Category']);
-        $this->assertEquals(3, $nodes['Client']);
+        $this->assertEquals(4, $nodes['Client']);
         $this->assertEquals(3, $nodes['Tag']);
     }
 

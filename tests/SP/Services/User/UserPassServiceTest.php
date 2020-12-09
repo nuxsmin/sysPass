@@ -68,14 +68,11 @@ class UserPassServiceTest extends DatabaseTestCase
      * @throws DependencyException
      * @throws SPException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_user.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(UserPassService::class);

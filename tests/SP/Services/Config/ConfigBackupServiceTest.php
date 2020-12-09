@@ -47,7 +47,7 @@ class ConfigBackupServiceTest extends TestCase
 {
     protected static $currentConfig;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$currentConfig = getResource('config', 'config.xml');
     }
@@ -55,7 +55,7 @@ class ConfigBackupServiceTest extends TestCase
     /**
      * This method is called after the last test of this test class is run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         saveResource('config', 'config.xml', self::$currentConfig);
         recreateDir(CACHE_PATH);

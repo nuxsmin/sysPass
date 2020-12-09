@@ -58,14 +58,11 @@ class AccountFileServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountFile.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(AccountFileService::class);
@@ -123,7 +120,7 @@ class AccountFileServiceTest extends DatabaseTestCase
         $this->assertEquals($data->getContent(), $resultData->getContent());
         $this->assertEquals('no_thumb', $resultData->getThumb());
 
-        $this->assertEquals(5, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(5, self::getRowCount('AccountFile'));
     }
 
     /**
@@ -314,7 +311,7 @@ class AccountFileServiceTest extends DatabaseTestCase
             ->delete(1)
             ->delete(3);
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(1, self::getRowCount('AccountFile'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -331,7 +328,7 @@ class AccountFileServiceTest extends DatabaseTestCase
         $this->assertEquals(2, self::$service->deleteByIdBatch([1, 3]));
         $this->assertEquals(0, self::$service->deleteByIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(1, self::getRowCount('AccountFile'));
 
         $this->expectException(ServiceException::class);
 

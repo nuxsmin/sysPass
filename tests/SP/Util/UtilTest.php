@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Util;
+namespace SP\Tests\Util;
 
 use PHPUnit\Framework\TestCase;
 use SP\Util\Util;
@@ -37,7 +37,7 @@ class UtilTest extends TestCase
     /**
      * This method is called after the last test of this test class is run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         ini_set('memory_limit', -1);
     }

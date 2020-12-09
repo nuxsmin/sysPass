@@ -56,7 +56,7 @@ class TemporaryMasterPassServiceTest extends TestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public function setUp()
+    public function setUp(): void
     {
         $dic = setupContext();
 

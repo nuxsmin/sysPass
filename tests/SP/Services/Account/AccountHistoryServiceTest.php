@@ -60,14 +60,11 @@ class AccountHistoryServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountHistory.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(AccountHistoryService::class);
@@ -105,7 +102,7 @@ class AccountHistoryServiceTest extends DatabaseTestCase
         $result = self::$service->create(new AccountHistoryCreateDto(10, true, false, PasswordUtil::generateRandomBytes()));
         $this->assertEquals(0, $result);
 
-        $this->assertEquals(7, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(7, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -189,7 +186,7 @@ class AccountHistoryServiceTest extends DatabaseTestCase
 
         self::$service->delete(1);
 
-        $this->assertEquals(3, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(3, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -201,7 +198,7 @@ class AccountHistoryServiceTest extends DatabaseTestCase
         $this->assertEquals(3, self::$service->deleteByIdBatch([1, 3, 4, 5]));
         $this->assertEquals(0, self::$service->deleteByIdBatch([]));
 
-        $this->assertEquals(2, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(2, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -258,6 +255,6 @@ class AccountHistoryServiceTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$service->deleteByAccountIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(1, self::getRowCount('AccountHistory'));
     }
 }

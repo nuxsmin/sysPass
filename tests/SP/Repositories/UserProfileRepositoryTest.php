@@ -59,14 +59,11 @@ class UserProfileRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(UserProfileRepository::class);
@@ -159,7 +156,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $result = self::$repository->delete(3);
 
         $this->assertEquals(1, $result);
-        $this->assertEquals(2, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(2, self::getRowCount('UserProfile'));
 
         $this->expectException(ConstraintException::class);
 
@@ -201,7 +198,7 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $result = self::$repository->create($data);
 
         $this->assertEquals($data->getId(), $result);
-        $this->assertEquals(4, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(4, self::getRowCount('UserProfile'));
 
         /** @var UserProfileData $resultData */
         $resultData = self::$repository->getById($result)->getData();

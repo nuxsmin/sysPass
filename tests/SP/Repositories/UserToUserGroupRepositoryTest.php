@@ -52,14 +52,11 @@ class UserToUserGroupRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_userGroup.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(UserToUserGroupRepository::class);
@@ -82,13 +79,12 @@ class UserToUserGroupRepositoryTest extends DatabaseTestCase
 
         $result = self::$repository->getGroupsForUser(2);
 
-        $this->assertEquals(2, $result->getNumRows());
+        $this->assertEquals(1, $result->getNumRows());
 
         $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $data);
+        $this->assertCount(1, $data);
         $this->assertEquals(1, $data[0]->userGroupId);
-        $this->assertEquals(3, $data[1]->userGroupId);
 
         $this->assertEquals(0, self::$repository->getGroupsForUser(10)->getNumRows());
     }
@@ -146,12 +142,12 @@ class UserToUserGroupRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $data[1]->getUserGroupId());
         $this->assertEquals(3, $data[1]->getUserId());
 
-        $data = self::$repository->getById(3)->getDataAsArray();
+        $data = self::$repository->getById(1)->getDataAsArray();
 
         $this->assertCount(1, $data);
 
         $this->assertInstanceOf(UserToUserGroupData::class, $data[0]);
-        $this->assertEquals(3, $data[0]->getUserGroupId());
+        $this->assertEquals(1, $data[0]->getUserGroupId());
         $this->assertEquals(2, $data[0]->getUserId());
 
         $this->assertEquals(0, self::$repository->getById(10)->getNumRows());

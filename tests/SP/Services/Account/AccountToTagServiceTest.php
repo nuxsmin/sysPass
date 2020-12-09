@@ -51,14 +51,11 @@ class AccountToTagServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(AccountToTagService::class);
@@ -70,7 +67,7 @@ class AccountToTagServiceTest extends DatabaseTestCase
      */
     public function testGetTagsByAccountId()
     {
-        $this->assertCount(1, self::$service->getTagsByAccountId(1));
+        $this->assertCount(2, self::$service->getTagsByAccountId(1));
         $this->assertCount(0, self::$service->getTagsByAccountId(10));
     }
 }

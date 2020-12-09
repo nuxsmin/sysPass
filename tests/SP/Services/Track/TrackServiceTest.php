@@ -57,14 +57,11 @@ class TrackServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_track.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(TrackService::class);
@@ -79,7 +76,7 @@ class TrackServiceTest extends DatabaseTestCase
     {
         self::$service->delete(1);
 
-        $this->assertEquals(5, $this->conn->getRowCount('Track'));
+        $this->assertEquals(5, self::getRowCount('Track'));
 
         $this->expectException(NoSuchItemException::class);
 

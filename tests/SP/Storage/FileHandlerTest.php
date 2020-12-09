@@ -96,15 +96,26 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar un archivo válido
      *
-     * @doesNotPerformAssertions
      * @throws FileException
      */
     public function testCheckFileExists()
     {
+        $this->markTestSkipped();
+
         (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkFileExists();
 
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Comprobar un archivo válido
+     *
+     * @throws FileException
+     */
+    public function testCheckFileDoesNotExists()
+    {
         $this->expectException(FileException::class);
 
         (new FileHandler(self::$missingFile))
@@ -143,7 +154,6 @@ class FileHandlerTest extends TestCase
     /**
      * Comprobar si es posible leer el archivo
      *
-     * @doesNotPerformAssertions
      * @throws FileException
      */
     public function testCheckIsReadable()
@@ -151,6 +161,8 @@ class FileHandlerTest extends TestCase
         (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkIsReadable();
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -162,6 +174,6 @@ class FileHandlerTest extends TestCase
     {
         (new FileHandler(self::$validFile))->delete();
 
-        $this->assertFileNotExists(self::$validFile);
+        $this->assertFileDoesNotExist(self::$validFile);
     }
 }

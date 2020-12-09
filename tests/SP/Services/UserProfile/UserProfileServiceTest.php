@@ -60,14 +60,11 @@ class UserProfileServiceTest extends DatabaseTestCase
      * @throws DependencyException
      * @throws SPException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(UserProfileService::class);
@@ -188,7 +185,7 @@ class UserProfileServiceTest extends DatabaseTestCase
     {
         $this->assertEquals(1, self::$service->deleteByIdBatch([3]));
 
-        $this->assertEquals(2, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(2, self::getRowCount('UserProfile'));
     }
 
     /**
@@ -202,7 +199,7 @@ class UserProfileServiceTest extends DatabaseTestCase
 
         self::$service->deleteByIdBatch([1, 2]);
 
-        $this->assertEquals(3, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(3, self::getRowCount('UserProfile'));
     }
 
     /**
@@ -216,7 +213,7 @@ class UserProfileServiceTest extends DatabaseTestCase
 
         self::$service->deleteByIdBatch([3, 10]);
 
-        $this->assertEquals(2, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(2, self::getRowCount('UserProfile'));
     }
 
     /**
@@ -245,7 +242,7 @@ class UserProfileServiceTest extends DatabaseTestCase
     {
         self::$service->delete(3);
 
-        $this->assertEquals(2, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(2, self::getRowCount('UserProfile'));
 
         $this->expectException(ConstraintException::class);
 
@@ -271,7 +268,7 @@ class UserProfileServiceTest extends DatabaseTestCase
 
         $this->assertEquals($data->getId(), $result);
 
-        $this->assertEquals(4, $this->conn->getRowCount('UserProfile'));
+        $this->assertEquals(4, self::getRowCount('UserProfile'));
 
         $this->assertEquals($data, self::$service->getById($result));
     }

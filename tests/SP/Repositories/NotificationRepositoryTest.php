@@ -54,14 +54,11 @@ class NotificationRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(NotificationRepository::class);
@@ -73,10 +70,10 @@ class NotificationRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteAdmin()
     {
-        $countBefore = $this->conn->getRowCount('Notification');
+        $countBefore = self::getRowCount('Notification');
 
         $this->assertEquals(1, self::$repository->deleteAdmin(3));
-        $this->assertEquals($countBefore - 1, $this->conn->getRowCount('Notification'));
+        $this->assertEquals($countBefore - 1, self::getRowCount('Notification'));
     }
 
     /**
@@ -86,7 +83,7 @@ class NotificationRepositoryTest extends DatabaseTestCase
     public function testDeleteAdminBatch()
     {
         $this->assertEquals(3, self::$repository->deleteAdminBatch([1, 2, 3, 5]));
-        $this->assertEquals(0, $this->conn->getRowCount('Notification'));
+        $this->assertEquals(0, self::getRowCount('Notification'));
     }
 
     /**
@@ -404,7 +401,7 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, self::$repository->deleteByIdBatch([1, 2, 3, 4]));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('Notification'));
+        $this->assertEquals(1, self::getRowCount('Notification'));
     }
 
     /**

@@ -53,7 +53,7 @@ class XmlHandlerTest extends TestCase
      */
     protected $items;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml';
         self::$xmlHandler = new XmlHandler(new FileHandler($file));

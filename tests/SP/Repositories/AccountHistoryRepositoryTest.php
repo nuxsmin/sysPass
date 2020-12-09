@@ -58,14 +58,11 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountHistory.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(AccountHistoryRepository::class);
@@ -81,7 +78,7 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->delete(3));
         $this->assertEquals(1, self::$repository->delete(4));
 
-        $this->assertEquals(3, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(3, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -160,7 +157,7 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
         $result = self::$repository->create(new AccountHistoryCreateDto(10, true, false, PasswordUtil::generateRandomBytes()));
         $this->assertEquals(0, $result);
 
-        $this->assertEquals(7, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(7, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -195,7 +192,7 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
         $this->assertEquals(3, self::$repository->deleteByIdBatch([1, 3, 4, 5]));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
-        $this->assertEquals(2, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(2, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -258,6 +255,6 @@ class AccountHistoryRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->deleteByAccountIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(1, self::getRowCount('AccountHistory'));
     }
 }

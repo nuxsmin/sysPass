@@ -55,14 +55,11 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(AccountToTagRepository::class);
@@ -76,7 +73,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      */
     public function testGetTagsByAccountId()
     {
-        $this->assertEquals(1, self::$repository->getTagsByAccountId(1)->getNumRows());
+        $this->assertEquals(2, self::$repository->getTagsByAccountId(1)->getNumRows());
         $this->assertEquals(0, self::$repository->getTagsByAccountId(10)->getNumRows());
     }
 
@@ -90,9 +87,9 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
     {
         $accountRequest = new AccountRequest();
         $accountRequest->id = 1;
-        $accountRequest->tags = [2, 3];
+        $accountRequest->tags = [3];
 
-        $this->assertEquals(2, self::$repository->add($accountRequest));
+        $this->assertEquals(1, self::$repository->add($accountRequest));
 
         $result = self::$repository->getTagsByAccountId($accountRequest->id);
         $data = $result->getDataAsArray();
@@ -122,7 +119,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByAccountId()
     {
-        $this->assertEquals(1, self::$repository->deleteByAccountId(1));
+        $this->assertEquals(2, self::$repository->deleteByAccountId(1));
 
         $this->assertEquals(0, self::$repository->getTagsByAccountId(1)->getNumRows());
 

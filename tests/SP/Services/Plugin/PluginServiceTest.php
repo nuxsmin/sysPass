@@ -57,14 +57,11 @@ class PluginServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_plugin.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(PluginService::class);
@@ -112,7 +109,7 @@ class PluginServiceTest extends DatabaseTestCase
     {
         self::$service->deleteByIdBatch([1, 2]);
 
-        $this->assertEquals(1, $this->conn->getRowCount('Plugin'));
+        $this->assertEquals(1, self::getRowCount('Plugin'));
 
         $this->expectException(ServiceException::class);
 
@@ -185,7 +182,7 @@ class PluginServiceTest extends DatabaseTestCase
     {
         self::$service->delete(1);
 
-        $this->assertEquals(2, $this->conn->getRowCount('Plugin'));
+        $this->assertEquals(2, self::getRowCount('Plugin'));
 
         $this->expectException(NoSuchItemException::class);
 

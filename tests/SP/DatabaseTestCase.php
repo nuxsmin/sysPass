@@ -25,12 +25,8 @@
 namespace SP\Tests;
 
 use PDO;
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Exceptions\SPException;
-use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseException;
 
 /**
  * Class DatabaseBaseTest
@@ -41,51 +37,75 @@ use SP\Storage\Database\DatabaseConnectionData;
  */
 abstract class DatabaseTestCase extends TestCase
 {
-    use TestCaseTrait;
-
     /**
-     * @var DatabaseConnectionData
+     * @var bool
      */
-    protected static $databaseConnectionData;
-    /**
-     * @var string
-     */
-    protected static $dataset = 'syspass.xml';
+    protected static $loadFixtures = false;
     /**
      * @var PDO
      */
-    private static $pdo;
-    /**
-     * @var DefaultConnection
-     */
-    protected $conn;
+    private static $conn;
 
     /**
-     * Returns the test database connection.
+     * @param string $table
      *
-     * @return DefaultConnection
-     * @throws SPException
+     * @return int
      */
-    final public function getConnection()
+    protected static function getRowCount(string $table): int
     {
-        if ($this->conn === null) {
-            if (self::$pdo === null) {
-                self::$pdo = getDbHandler()->getConnection();
-            }
-
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, 'syspass');
+        if (!self::$conn) {
+            return 0;
         }
 
-        return $this->conn;
+        $sql = sprintf('SELECT count(*) FROM `%s`', $table);
+
+        return (int)self::$conn->query($sql)->fetchColumn();
     }
 
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
+    protected function setUp(): void
     {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . self::$dataset);
+        parent::setUp();
+
+        if (self::$loadFixtures) {
+            self::loadFixtures();
+        }
     }
+
+    protected static function loadFixtures()
+    {
+        foreach (FIXTURE_FILES as $file) {
+            $cmd = sprintf(
+                'mysql -h %s -u %s -p%s %s < %s',
+                getenv('DB_SERVER'),
+                getenv('DB_USER'),
+                getenv('DB_PASS'),
+                getenv('DB_NAME'),
+                $file
+            );
+
+            exec($cmd, $output, $res);
+
+            if ($res !== 0) {
+                error_log(sprintf('Cannot load fixtures from: %s', $file));
+                error_log(sprintf('CMD: %s', $cmd));
+                error_log(print_r($output, true));
+
+                exit(1);
+            }
+
+            printf('Fixtures loaded from: %s' . PHP_EOL, $file);
+        }
+
+        if (!self::$conn) {
+            try {
+                self::$conn = getDbHandler()->getConnection();
+            } catch (DatabaseException $e) {
+                processException($e);
+
+                exit(1);
+            }
+        }
+    }
+
+
 }

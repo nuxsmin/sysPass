@@ -53,6 +53,10 @@ define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
 define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
 
 define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
+define('FIXTURE_FILES', [
+    RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
+    RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql'
+]);
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
@@ -85,7 +89,7 @@ if (!function_exists('\gettext')) {
      *
      * @return string
      */
-    function gettext($str)
+    function gettext($str): string
     {
         return $str;
     }
@@ -106,7 +110,7 @@ function getRealIpAddress()
  * @throws ContextException
  * @throws Exception
  */
-function setupContext()
+function setupContext(): Container
 {
     // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
     // para la aplicación
@@ -144,7 +148,7 @@ function setupContext()
  *
  * @return MySQLHandler
  */
-function getDbHandler(DatabaseConnectionData $connectionData = null)
+function getDbHandler(DatabaseConnectionData $connectionData = null): MySQLHandler
 {
     if ($connectionData === null) {
         // Establecer configuración de conexión con la BBDD
@@ -164,7 +168,7 @@ function getDbHandler(DatabaseConnectionData $connectionData = null)
  *
  * @return string
  */
-function getResource($dir, $file)
+function getResource($dir, $file): string
 {
     return file_get_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
 }
@@ -176,7 +180,7 @@ function getResource($dir, $file)
  *
  * @return string
  */
-function saveResource($dir, $file, $data)
+function saveResource($dir, $file, $data): string
 {
     return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }

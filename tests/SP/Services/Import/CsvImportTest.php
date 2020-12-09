@@ -40,7 +40,6 @@ use SP\Services\Import\CsvImport;
 use SP\Services\Import\FileImport;
 use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
@@ -58,18 +57,13 @@ class CsvImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws NotFoundException
      * @throws ContextException
-     * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$dic = setupContext();
 
-        self::$dataset = 'syspass_import.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = self::$dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
     }
 
     /**
@@ -110,19 +104,20 @@ class CsvImportTest extends DatabaseTestCase
     {
         // Checkout categories
         $this->assertEquals('CSV Category 1', self::$dic->get(CategoryService::class)->getByName('CSV Category 1')->getName());
-        $this->assertEquals(4, $this->conn->getRowCount('Category'));
+        $this->assertEquals(4, self::getRowCount('Category'));
 
         // Checkout clients
         $this->assertEquals('CSV Client 1', self::$dic->get(ClientService::class)->getByName('CSV Client 1')->getName());
-        $this->assertEquals(4, $this->conn->getRowCount('Client'));
+        $this->assertEquals(5, self::getRowCount('Client'));
 
         // Checkout accounts
         $accountService = self::$dic->get(AccountService::class);
 
         // 1st account
-        $data = $accountService->getById(3)->getAccountVData();
+        $expectedId = 5;
+        $data = $accountService->getById($expectedId)->getAccountVData();
 
-        $this->assertEquals(3, $data->getId());
+        $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 1', $data->getName());
         $this->assertEquals('CSV Client 1', $data->getClientName());
         $this->assertEquals('CSV Category 1', $data->getCategoryName());
@@ -135,10 +130,10 @@ class CsvImportTest extends DatabaseTestCase
         $this->assertEquals('csv_pass1', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         // 2nd account
+        $expectedId = 6;
+        $data = $accountService->getById($expectedId)->getAccountVData();
 
-        $data = $accountService->getById(4)->getAccountVData();
-
-        $this->assertEquals(4, $data->getId());
+        $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 2', $data->getName());
         $this->assertEquals('Google', $data->getClientName());
         $this->assertEquals('Linux', $data->getCategoryName());
@@ -151,9 +146,10 @@ class CsvImportTest extends DatabaseTestCase
         $this->assertEquals('csv_pass2', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         // 3rd account
-        $data = $accountService->getById(5)->getAccountVData();
+        $expectedId = 7;
+        $data = $accountService->getById($expectedId)->getAccountVData();
 
-        $this->assertEquals(5, $data->getId());
+        $this->assertEquals($expectedId, $data->getId());
         $this->assertEquals('Test CSV 3', $data->getName());
         $this->assertEquals('Apple', $data->getClientName());
         $this->assertEquals('SSH', $data->getCategoryName());
@@ -165,7 +161,7 @@ class CsvImportTest extends DatabaseTestCase
 
         $this->assertEquals('csv_pass3', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
-        $this->assertEquals(6, $this->conn->getRowCount('Account'));
+        $this->assertEquals(8, self::getRowCount('Account'));
     }
 
     /**

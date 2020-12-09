@@ -55,14 +55,11 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(AccountToUserRepository::class);
@@ -210,7 +207,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, false));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
+        $this->assertEquals(1, self::getRowCount('AccountToUser'));
     }
 
     /**
@@ -226,7 +223,7 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->deleteByAccountId(10));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
+        $this->assertEquals(1, self::getRowCount('AccountToUser'));
     }
 
     /**
@@ -318,6 +315,6 @@ class AccountToUserRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->deleteTypeByAccountId(10, true));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountToUser'));
+        $this->assertEquals(1, self::getRowCount('AccountToUser'));
     }
 }

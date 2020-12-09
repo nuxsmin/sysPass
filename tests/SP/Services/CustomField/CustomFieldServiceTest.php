@@ -59,14 +59,11 @@ class CustomFieldServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_customField.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$service = $dic->get(CustomFieldService::class);
@@ -80,7 +77,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
     {
         $this->assertEquals(3, self::$service->deleteCustomFieldDefinitionDataBatch([1, 2, 3]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
         $this->assertEquals(0, self::$service->deleteCustomFieldDefinitionDataBatch([]));
     }
@@ -132,7 +129,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $this->assertEquals(1, self::$service->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
         $this->assertEquals(0, self::$service->deleteCustomFieldDataBatch([], ActionsInterface::CATEGORY));
 
@@ -189,7 +186,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         $this->assertEquals(true, self::$service->updateOrCreateData($data));
 
-        $this->assertEquals(5, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(5, self::getRowCount('CustomFieldData'));
     }
 
     /**
@@ -310,7 +307,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertEquals(1, self::$service->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
         $this->assertEquals(1, self::$service->deleteCustomFieldData(1, ActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
         $this->assertEquals(0, self::$service->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
 
@@ -329,7 +326,7 @@ class CustomFieldServiceTest extends DatabaseTestCase
         $this->assertEquals(1, self::$service->deleteCustomFieldDefinitionData(2));
         $this->assertEquals(0, self::$service->deleteCustomFieldDefinitionData(3));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
     }
 
     /**
@@ -400,6 +397,6 @@ class CustomFieldServiceTest extends DatabaseTestCase
 
         self::$service->create($data);
 
-        $this->assertEquals(4, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(4, self::getRowCount('CustomFieldData'));
     }
 }

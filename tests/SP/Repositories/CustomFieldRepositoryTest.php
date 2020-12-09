@@ -53,14 +53,11 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(CustomFieldRepository::class);
@@ -72,11 +69,11 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteCustomFieldDataBatch()
     {
-        $this->assertEquals(1, self::$repository->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::ACCOUNT));
+        $this->assertEquals(2, self::$repository->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::ACCOUNT));
 
         $this->assertEquals(1, self::$repository->deleteCustomFieldDataBatch([1, 2, 3], ActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
         $this->assertEquals(0, self::$repository->deleteCustomFieldDataBatch([], ActionsInterface::CATEGORY));
 
@@ -135,12 +132,12 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     public function testGetAllEncrypted()
     {
         $result = self::$repository->getAllEncrypted();
-        $this->assertEquals(1, $result->getNumRows());
+        $this->assertEquals(2, $result->getNumRows());
 
         /** @var CustomFieldData[] $data */
         $data = $result->getDataAsArray();
 
-        $this->assertCount(1, $data);
+        $this->assertCount(2, $data);
         $this->assertInstanceOf(CustomFieldData::class, $data[0]);
         $this->assertEquals(1, $data[0]->getItemId());
         $this->assertEquals(ActionsInterface::ACCOUNT, $data[0]->getModuleId());
@@ -153,9 +150,9 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteCustomFieldDefinitionDataBatch()
     {
-        $this->assertEquals(2, self::$repository->deleteCustomFieldDefinitionDataBatch([1, 2, 3]));
+        $this->assertEquals(3, self::$repository->deleteCustomFieldDefinitionDataBatch([1, 2, 3]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
 
         $this->assertEquals(0, self::$repository->deleteCustomFieldDefinitionDataBatch([]));
     }
@@ -167,11 +164,11 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
     public function testGetAll()
     {
         $result = self::$repository->getAll();
-        $this->assertEquals(2, $result->getNumRows());
+        $this->assertEquals(3, $result->getNumRows());
 
         $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $data);
+        $this->assertCount(3, $data);
         $this->assertInstanceOf(CustomFieldData::class, $data[0]);
         $this->assertInstanceOf(CustomFieldData::class, $data[1]);
     }
@@ -185,9 +182,9 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->deleteCustomFieldData(1, ActionsInterface::ACCOUNT));
         $this->assertEquals(1, self::$repository->deleteCustomFieldData(1, ActionsInterface::CATEGORY));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(1, self::getRowCount('CustomFieldData'));
 
-        $this->assertEquals(0, self::$repository->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
+        $this->assertEquals(1, self::$repository->deleteCustomFieldData(2, ActionsInterface::ACCOUNT));
 
         $this->assertEquals(0, self::$repository->deleteCustomFieldData(2, ActionsInterface::CATEGORY));
 
@@ -234,8 +231,8 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $data[0]->typeId);
         $this->assertEquals('text', $data[0]->typeName);
         $this->assertEquals('Texto', $data[0]->typeText);
-        $this->assertNull($data[0]->data);
-        $this->assertNull($data[0]->key);
+        $this->assertNotNull($data[0]->data);
+        $this->assertNotNull($data[0]->key);
 
         $result = self::$repository->getForModuleAndItemId(ActionsInterface::ACCOUNT, 3);
 
@@ -247,17 +244,17 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $data = $result->getDataAsArray();
 
         $this->assertCount(2, $data);
-        $this->assertEquals('RSA', $data[0]->definitionName);
-        $this->assertEquals(2, $data[0]->definitionId);
+        $this->assertEquals('SSL', $data[0]->definitionName);
+        $this->assertEquals(3, $data[0]->definitionId);
         $this->assertEquals(ActionsInterface::CATEGORY, $data[0]->moduleId);
         $this->assertEquals(0, $data[0]->required);
         $this->assertEquals(0, $data[0]->showInList);
         $this->assertEquals(null, $data[0]->help);
-        $this->assertEquals(0, $data[0]->isEncrypted);
-        $this->assertEquals(2, $data[0]->typeId);
-        $this->assertEquals('password', $data[0]->typeName);
-        $this->assertEquals('Clave', $data[0]->typeText);
-        $this->assertNotEmpty($data[0]->data);
+        $this->assertEquals(1, $data[0]->isEncrypted);
+        $this->assertEquals(10, $data[0]->typeId);
+        $this->assertEquals('textarea', $data[0]->typeName);
+        $this->assertEquals('Área de Texto', $data[0]->typeText);
+        $this->assertNull($data[0]->data);
         $this->assertNull($data[0]->key);
 
         $result = self::$repository->getForModuleAndItemId(ActionsInterface::CATEGORY, 2);
@@ -266,16 +263,16 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $data = $result->getDataAsArray();
 
         $this->assertCount(2, $data);
-        $this->assertEquals('RSA', $data[0]->definitionName);
-        $this->assertEquals(2, $data[0]->definitionId);
+        $this->assertEquals('SSL', $data[0]->definitionName);
+        $this->assertEquals(3, $data[0]->definitionId);
         $this->assertEquals(ActionsInterface::CATEGORY, $data[0]->moduleId);
         $this->assertEquals(0, $data[0]->required);
         $this->assertEquals(0, $data[0]->showInList);
         $this->assertEquals(null, $data[0]->help);
-        $this->assertEquals(0, $data[0]->isEncrypted);
-        $this->assertEquals(2, $data[0]->typeId);
-        $this->assertEquals('password', $data[0]->typeName);
-        $this->assertEquals('Clave', $data[0]->typeText);
+        $this->assertEquals(1, $data[0]->isEncrypted);
+        $this->assertEquals(10, $data[0]->typeId);
+        $this->assertEquals('textarea', $data[0]->typeName);
+        $this->assertEquals('Área de Texto', $data[0]->typeText);
         $this->assertNull($data[0]->data);
         $this->assertNull($data[0]->key);
 
@@ -299,7 +296,7 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $data->setData('cuenta');
         $data->setKey('nan');
 
-        $this->assertEquals(3, self::$repository->create($data));
+        $this->assertEquals(4, self::$repository->create($data));
 
         $data = new CustomFieldData();
         $data->setId(2);
@@ -308,7 +305,7 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
         $data->setData('categoria');
         $data->setKey('nan');
 
-        $this->assertEquals(4, self::$repository->create($data));
+        $this->assertEquals(5, self::$repository->create($data));
 
         $this->expectException(ConstraintException::class);
 
@@ -338,7 +335,7 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
 
         self::$repository->create($data);
 
-        $this->assertEquals(4, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(4, self::getRowCount('CustomFieldData'));
     }
 
     /**
@@ -347,10 +344,10 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteCustomFieldDefinitionData()
     {
-        $this->assertEquals(1, self::$repository->deleteCustomFieldDefinitionData(1));
+        $this->assertEquals(2, self::$repository->deleteCustomFieldDefinitionData(1));
         $this->assertEquals(1, self::$repository->deleteCustomFieldDefinitionData(2));
 
-        $this->assertEquals(0, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(0, self::getRowCount('CustomFieldData'));
     }
 
     /**
@@ -407,6 +404,6 @@ class CustomFieldRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals(0, self::$repository->update($data));
 
-        $this->assertEquals(2, $this->conn->getRowCount('CustomFieldData'));
+        $this->assertEquals(3, self::getRowCount('CustomFieldData'));
     }
 }

@@ -44,7 +44,7 @@ class FileCacheTest extends TestCase
     /**
      * This method is called before the first test of this test class is run.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$data = [];
         $i = 0;

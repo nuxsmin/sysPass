@@ -58,14 +58,11 @@ class CategoryServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$service = $dic->get(CategoryService::class);
@@ -131,7 +128,7 @@ class CategoryServiceTest extends DatabaseTestCase
      */
     public function testGetAllBasic()
     {
-        $count = $this->conn->getRowCount('Category');
+        $count = self::getRowCount('Category');
 
         $data = self::$service->getAllBasic();
 
@@ -154,11 +151,11 @@ class CategoryServiceTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $countBefore = $this->conn->getRowCount('Category');
+        $countBefore = self::getRowCount('Category');
 
         $this->assertEquals(1, self::$service->deleteByIdBatch([3]));
 
-        $countAfter = $this->conn->getRowCount('Category');
+        $countAfter = self::getRowCount('Category');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 
@@ -177,7 +174,7 @@ class CategoryServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $countBefore = $this->conn->getRowCount('Category');
+        $countBefore = self::getRowCount('Category');
 
         $data = new CategoryData();
         $data->name = 'Categoría prueba';
@@ -191,7 +188,7 @@ class CategoryServiceTest extends DatabaseTestCase
         $this->assertEquals($data->name, $result->getName());
         $this->assertEquals($data->description, $result->getDescription());
 
-        $countAfter = $this->conn->getRowCount('Category');
+        $countAfter = self::getRowCount('Category');
 
         $this->assertEquals($countBefore + 1, $countAfter);
 
@@ -259,11 +256,11 @@ class CategoryServiceTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $countBefore = $this->conn->getRowCount('Category');
+        $countBefore = self::getRowCount('Category');
 
         self::$service->delete(3);
 
-        $countAfter = $this->conn->getRowCount('Category');
+        $countAfter = self::getRowCount('Category');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 

@@ -62,18 +62,13 @@ class KeepassImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws NotFoundException
      * @throws ContextException
-     * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$dic = setupContext();
 
-        self::$dataset = 'syspass_import.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = self::$dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
     }
 
     /**
@@ -120,14 +115,14 @@ class KeepassImportTest extends DatabaseTestCase
         $this->assertEquals('Servers', $categoryService->getByName('Servers')->getName());
         $this->assertEquals('General', $categoryService->getByName('General')->getName());
 
-        $this->assertEquals(11, $this->conn->getRowCount('Category'));
+        $this->assertEquals(11, self::getRowCount('Category'));
 
         // Checkout clients
         $client = self::$dic->get(ClientService::class)->getByName('KeePass');
 
         $this->assertEquals('KeePass', $client->getName());
 
-        $this->assertEquals(4, $this->conn->getRowCount('Client'));
+        $this->assertEquals(5, self::getRowCount('Client'));
 
         // Checkout accounts
         $accountService = self::$dic->get(AccountService::class);
@@ -141,7 +136,7 @@ class KeepassImportTest extends DatabaseTestCase
 
         $this->assertCount(5, $data);
 
-        $this->assertEquals(3, $data[0]->getId());
+        $this->assertEquals(5, $data[0]->getId());
         $this->assertEquals(1, $data[0]->getUserId());
         $this->assertEquals(2, $data[0]->getUserGroupId());
         $this->assertEquals('DC1', $data[0]->getName());
@@ -157,7 +152,7 @@ class KeepassImportTest extends DatabaseTestCase
 
         // 2nd account
 
-        $this->assertEquals(4, $data[1]->getId());
+        $this->assertEquals(6, $data[1]->getId());
         $this->assertEquals(1, $data[1]->getUserId());
         $this->assertEquals(2, $data[1]->getUserGroupId());
         $this->assertEquals('debian', $data[1]->getName());
@@ -172,7 +167,7 @@ class KeepassImportTest extends DatabaseTestCase
         $this->assertEquals('TKr321zqCZhgbzmmAX13', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
         // 3rd account
-        $this->assertEquals(5, $data[2]->getId());
+        $this->assertEquals(7, $data[2]->getId());
         $this->assertEquals(1, $data[2]->getUserId());
         $this->assertEquals(2, $data[2]->getUserGroupId());
         $this->assertEquals('proxy', $data[2]->getName());
@@ -186,18 +181,18 @@ class KeepassImportTest extends DatabaseTestCase
 
         $this->assertEquals('TKr321zqCZhgbzmmAX13', Crypt::decrypt($pass->getPass(), $pass->getKey(), '12345678900'));
 
-        $this->assertEquals(6, $data[3]->getId());
+        $this->assertEquals(8, $data[3]->getId());
         $this->assertEquals(1, $data[3]->getUserId());
         $this->assertEquals(2, $data[3]->getUserGroupId());
         $this->assertEquals('Sample Entry', $data[3]->getName());
         $this->assertEquals('NewDatabase', $data[3]->getCategoryName());
 
-        $this->assertEquals(7, $data[4]->getId());
+        $this->assertEquals(9, $data[4]->getId());
         $this->assertEquals(1, $data[4]->getUserId());
         $this->assertEquals(2, $data[4]->getUserGroupId());
         $this->assertEquals('Sample Entry #2', $data[4]->getName());
         $this->assertEquals('NewDatabase', $data[4]->getCategoryName());
 
-        $this->assertEquals(7, $this->conn->getRowCount('Account'));
+        $this->assertEquals(9, self::getRowCount('Account'));
     }
 }

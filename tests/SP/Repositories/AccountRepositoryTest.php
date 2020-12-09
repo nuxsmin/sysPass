@@ -66,14 +66,11 @@ class AccountRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_account.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(AccountRepository::class);
@@ -87,18 +84,18 @@ class AccountRepositoryTest extends DatabaseTestCase
     public function testDelete()
     {
         // Comprobar registros iniciales
-        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+        $this->assertEquals(4, self::getRowCount('Account'));
 
         // Eliminar un registro y comprobar el total de registros
         $this->assertEquals(1, self::$repository->delete(1));
-        $this->assertEquals(1, $this->conn->getRowCount('Account'));
+        $this->assertEquals(3, self::getRowCount('Account'));
 
         // Eliminar un registro no existente
         $this->assertEquals(0, self::$repository->delete(100));
 
         // Eliminar un registro y comprobar el total de registros
         $this->assertEquals(1, self::$repository->delete(2));
-        $this->assertEquals(0, $this->conn->getRowCount('Account'));
+        $this->assertEquals(2, self::getRowCount('Account'));
     }
 
     /**
@@ -109,7 +106,7 @@ class AccountRepositoryTest extends DatabaseTestCase
     {
         $this->assertTrue(self::$repository->editRestore(3, 1));
 
-        $this->assertEquals(5, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(5, self::getRowCount('AccountHistory'));
 
         $this->assertEquals(0, self::$repository->editRestore(1, 1));
     }
@@ -238,12 +235,12 @@ class AccountRepositoryTest extends DatabaseTestCase
     public function testDeleteByIdBatch()
     {
         // Comprobar registros iniciales
-        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+        $this->assertEquals(4, self::getRowCount('Account'));
 
         $this->assertEquals(2, self::$repository->deleteByIdBatch([1, 2, 100]));
 
         // Comprobar registros tras eliminación
-        $this->assertEquals(0, $this->conn->getRowCount('Account'));
+        $this->assertEquals(2, self::getRowCount('Account'));
     }
 
     /**
@@ -327,16 +324,20 @@ class AccountRepositoryTest extends DatabaseTestCase
     {
         $result = self::$repository->getAll();
 
-        $this->assertEquals(2, $result->getNumRows());
+        $this->assertEquals(4, $result->getNumRows());
 
         /** @var AccountData[] $data */
         $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $data);
+        $this->assertCount(4, $data);
         $this->assertInstanceOf(AccountData::class, $data[0]);
         $this->assertEquals(1, $data[0]->getId());
         $this->assertInstanceOf(AccountData::class, $data[1]);
         $this->assertEquals(2, $data[1]->getId());
+        $this->assertInstanceOf(AccountData::class, $data[2]);
+        $this->assertEquals(3, $data[2]->getId());
+        $this->assertInstanceOf(AccountData::class, $data[3]);
+        $this->assertEquals(4, $data[3]->getId());
     }
 
     /**
@@ -389,7 +390,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetTotalNumAccounts()
     {
-        $this->assertEquals(7, self::$repository->getTotalNumAccounts()->num);
+        $this->assertEquals(9, self::$repository->getTotalNumAccounts()->num);
     }
 
     /**
@@ -429,7 +430,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $queryCondition = new QueryCondition();
         $queryCondition->addFilter('Account.isPrivate = 1');
 
-        $this->assertCount(0, self::$repository->getForUser($queryCondition)->getDataAsArray());
+        $this->assertCount(1, self::$repository->getForUser($queryCondition)->getDataAsArray());
     }
 
     /**
@@ -440,7 +441,7 @@ class AccountRepositoryTest extends DatabaseTestCase
      */
     public function testGetAccountsPassData()
     {
-        $this->assertCount(2, self::$repository->getAccountsPassData());
+        $this->assertCount(4, self::$repository->getAccountsPassData());
     }
 
     /**
@@ -471,12 +472,12 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->pass = Crypt::encrypt('1234', $accountRequest->key, self::SECURE_KEY_PASSWORD);
 
         // Comprobar registros iniciales
-        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+        $this->assertEquals(4, self::getRowCount('Account'));
 
         self::$repository->create($accountRequest);
 
         // Comprobar registros finales
-        $this->assertEquals(3, $this->conn->getRowCount('Account'));
+        $this->assertEquals(5, self::getRowCount('Account'));
     }
 
     /**
@@ -591,7 +592,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertEquals(0, $response->getNumRows());
+        $this->assertEquals(1, $response->getNumRows());
 
         // Comprobar las etiquetas
         $searchFilter->reset();
@@ -600,12 +601,13 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         $response = self::$repository->getByFilter($searchFilter, new QueryCondition());
 
-        $this->assertEquals(1, $response->getNumRows());
+        $this->assertEquals(2, $response->getNumRows());
 
         /** @var AccountSearchVData[] $data */
         $data = $response->getDataAsArray();
 
-        $this->assertEquals(1, $data[0]->getId());
+        $this->assertEquals(2, $data[0]->getId());
+        $this->assertEquals(1, $data[1]->getId());
     }
 
     /**

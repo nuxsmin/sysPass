@@ -59,14 +59,11 @@ class TagRepositoryTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(TagRepository::class);
@@ -131,7 +128,7 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $count = $this->conn->getRowCount('Tag');
+        $count = self::getRowCount('Tag');
 
         $results = self::$repository->getAll();
 
@@ -187,7 +184,7 @@ class TagRepositoryTest extends DatabaseTestCase
         $this->assertEquals(0, self::$repository->deleteByIdBatch([4]));
         $this->assertEquals(3, self::$repository->deleteByIdBatch([1, 2, 3]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('Tag'));
+        $this->assertEquals(0, self::getRowCount('Tag'));
     }
 
     /**
@@ -198,7 +195,7 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $countBefore = $this->conn->getRowCount('Tag');
+        $countBefore = self::getRowCount('Tag');
 
         $tagData = new TagData();
         $tagData->name = 'Core';
@@ -210,7 +207,7 @@ class TagRepositoryTest extends DatabaseTestCase
 
         $this->assertEquals($tagData->name, $data->getName());
 
-        $countAfter = $this->conn->getRowCount('Tag');
+        $countAfter = self::getRowCount('Tag');
 
         $this->assertEquals($countBefore + 1, $countAfter);
     }
@@ -223,11 +220,11 @@ class TagRepositoryTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $countBefore = $this->conn->getRowCount('Tag');
+        $countBefore = self::getRowCount('Tag');
 
         $this->assertEquals(1, self::$repository->delete(3));
 
-        $countAfter = $this->conn->getRowCount('Tag');
+        $countAfter = self::getRowCount('Tag');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 

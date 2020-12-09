@@ -19,18 +19,18 @@
   },
   "require": {
     "roave/security-advisories": "dev-master",
-    "php": "~7.2 || ~7.3 || ~7.4",
+    "php": "~7.3 || ~7.4",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^2.0",
-    "klein/klein": "~2.1",
+    "klein/klein": "^2.1",
     "php-di/php-di": "^6.0",
-    "doctrine/common": "~v2.7",
-    "guzzlehttp/guzzle": "~6.3",
+    "doctrine/common": "^v2.7",
+    "guzzlehttp/guzzle": "^6.3",
     "monolog/monolog": "^1.23",
-    "symfony/debug" : "~v3.4",
-    "vlucas/phpdotenv" : "~v4.1",
+    "symfony/debug" : "^v3.4",
+    "vlucas/phpdotenv" : "^v4.1",
     "ext-pdo": "*",
     "ext-dom": "*",
     "ext-gd": "*",
@@ -43,13 +43,12 @@
     "league/fractal": "^0.18.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6",
-    "phpunit/dbunit": "^3",
-    "fzaninotto/faker": "~v1.8",
-    "fabpot/goutte": "~v3.2",
+    "phpunit/phpunit": "^9",
+    "fzaninotto/faker": "^v1.8",
+    "fabpot/goutte": "^v3.2",
     "syspass/extension-installer-plugin": "dev-develop",
     "syspass/plugin-authenticator": "dev-develop",
-    "nikic/php-parser": "~v4.1"
+    "nikic/php-parser": "^v4.1"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.1.0",

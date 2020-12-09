@@ -89,14 +89,11 @@ class AccountAclServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountAcl.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         self::$context = $dic->get(ContextInterface::class);
 
@@ -437,14 +434,15 @@ class AccountAclServiceTest extends DatabaseTestCase
         $this->checkViewFiles($accountAclDto);
 
         $accountAclDto = $this->setUpAccountEnvironment(2, 2, 2);
+        $should = ['view' => true, 'edit' => false];
 
-        $this->checkView($accountAclDto);
-        $this->checkViewPass($accountAclDto);
-        $this->checkDelete($accountAclDto);
-        $this->checkEditPass($accountAclDto);
-        $this->checkEditAndRestore($accountAclDto);
-        $this->checkPermissions($accountAclDto);
-        $this->checkViewFiles($accountAclDto);
+        $this->checkView($accountAclDto, $should);
+        $this->checkViewPass($accountAclDto, $should);
+        $this->checkDelete($accountAclDto, $should);
+        $this->checkEditPass($accountAclDto, $should);
+        $this->checkEditAndRestore($accountAclDto, $should);
+        $this->checkPermissions($accountAclDto, $should);
+        $this->checkViewFiles($accountAclDto, $should);
 
         $accountAclDto = $this->setUpAccountEnvironment(2, 3, 3);
         $should = ['view' => true, 'edit' => false];

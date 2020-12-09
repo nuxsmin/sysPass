@@ -881,7 +881,7 @@ class AclTest extends TestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $dic = setupContext();
 

@@ -65,7 +65,7 @@ final class DatabaseConnectionData
      */
     public static function getFromConfig(ConfigData $configData)
     {
-        return (new static())
+        return (new DatabaseConnectionData())
             ->setDbHost($configData->getDbHost())
             ->setDbName($configData->getDbName())
             ->setDbUser($configData->getDbUser())

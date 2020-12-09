@@ -58,14 +58,11 @@ class ItemPresetServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_itemPreset.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(ItemPresetService::class);
@@ -133,7 +130,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
      */
     public function testGetAll()
     {
-        $count = $this->conn->getRowCount('ItemPreset');
+        $count = self::getRowCount('ItemPreset');
 
         $result = self::$service->getAll();
         $this->assertCount($count, $result);
@@ -221,7 +218,7 @@ class ItemPresetServiceTest extends DatabaseTestCase
             ->delete(3)
             ->delete(4);
 
-        $this->assertEquals(3, $this->conn->getRowCount('ItemPreset'));
+        $this->assertEquals(3, self::getRowCount('ItemPreset'));
     }
 
     /**

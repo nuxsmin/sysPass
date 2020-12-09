@@ -518,7 +518,6 @@ final class PublicLinkRepository extends Repository implements RepositoryItemInt
      * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
-     * @todo Update tests to include userId
      */
     public function getHashForItem($itemId)
     {

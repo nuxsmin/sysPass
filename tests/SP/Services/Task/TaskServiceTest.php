@@ -26,6 +26,7 @@ namespace SP\Tests\Services\Task;
 
 use PHPUnit\Framework\TestCase;
 use SP\Core\Context\ContextException;
+use SP\Services\ServiceException;
 use SP\Services\Task\Task;
 use SP\Services\Task\TaskFactory;
 use SP\Services\Task\TaskService;
@@ -44,6 +45,7 @@ class TaskServiceTest extends TestCase
     /**
      * @throws FileException
      * @throws ContextException
+     * @throws ServiceException
      */
     public function testTrackStatus()
     {
@@ -97,8 +99,8 @@ class TaskServiceTest extends TestCase
             sleep(1);
         }
 
-        $this->assertFileNotExists($task->getFileTask()->getFile());
-        $this->assertFileNotExists($task->getFileOut()->getFile());
+        $this->assertFileDoesNotExist($task->getFileTask()->getFile());
+        $this->assertFileDoesNotExist($task->getFileOut()->getFile());
     }
 
     /**

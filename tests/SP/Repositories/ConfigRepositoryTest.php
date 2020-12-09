@@ -52,14 +52,11 @@ class ConfigRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_config.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(ConfigRepository::class);
@@ -126,7 +123,7 @@ class ConfigRepositoryTest extends DatabaseTestCase
     {
         $result = self::$repository->getAll();
 
-        $this->assertEquals($this->conn->getRowCount('Config'), $result->getNumRows());
+        $this->assertEquals(self::getRowCount('Config'), $result->getNumRows());
 
         $data = $result->getDataAsArray();
 

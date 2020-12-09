@@ -49,9 +49,9 @@ class FileBackupServiceTest extends TestCase
     {
         $dic = setupContext();
         $service = $dic->get(FileBackupService::class);
-        $service->doBackup(RESOURCE_DIR);
+        $service->doBackup(TMP_PATH);
 
-        $this->assertFileExists(FileBackupService::getAppBackupFilename(RESOURCE_DIR, $service->getHash(), true));
-        $this->assertFileExists(FileBackupService::getDbBackupFilename(RESOURCE_DIR, $service->getHash(), true));
+        $this->assertFileExists(FileBackupService::getAppBackupFilename(TMP_PATH, $service->getHash(), true));
+        $this->assertFileExists(FileBackupService::getDbBackupFilename(TMP_PATH, $service->getHash(), true));
     }
 }

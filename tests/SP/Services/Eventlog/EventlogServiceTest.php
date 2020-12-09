@@ -55,14 +55,11 @@ class EventlogServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_eventlog.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(EventlogService::class);
@@ -77,7 +74,7 @@ class EventlogServiceTest extends DatabaseTestCase
     {
         self::$service->clear();
 
-        $this->assertEquals(0, $this->conn->getRowCount('EventLog'));
+        $this->assertEquals(0, self::getRowCount('EventLog'));
     }
 
     /**
@@ -138,11 +135,11 @@ class EventlogServiceTest extends DatabaseTestCase
         $eventlogData->setIpAddress('127.0.0.1');
         $eventlogData->setDescription('Prueba');
 
-        $countBefore = $this->conn->getRowCount('EventLog');
+        $countBefore = self::getRowCount('EventLog');
 
         self::$service->create($eventlogData);
 
-        $countAfter = $this->conn->getRowCount('EventLog');
+        $countAfter = self::getRowCount('EventLog');
 
         $this->assertEquals($countBefore + 1, $countAfter);
 

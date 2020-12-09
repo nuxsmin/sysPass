@@ -69,14 +69,11 @@ class PublicLinkServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_publicLink.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(PublicLinkService::class);
@@ -309,7 +306,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
         self::$service->delete(2);
         self::$service->delete(3);
 
-        $this->assertEquals(0, $this->conn->getRowCount('PublicLink'));
+        $this->assertEquals(0, self::getRowCount('PublicLink'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -346,7 +343,7 @@ class PublicLinkServiceTest extends DatabaseTestCase
     {
         $this->assertEquals(2, self::$service->deleteByIdBatch([2, 3]));
 
-        $this->assertEquals(0, $this->conn->getRowCount('PublicLink'));
+        $this->assertEquals(0, self::getRowCount('PublicLink'));
 
         $this->expectException(ServiceException::class);
 

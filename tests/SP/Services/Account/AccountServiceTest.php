@@ -81,16 +81,13 @@ class AccountServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_account.xml';
+        self::$loadFixtures = true;
 
         self::$context = $dic->get(ContextInterface::class);
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el servicio
         self::$service = $dic->get(AccountService::class);
@@ -127,9 +124,11 @@ class AccountServiceTest extends DatabaseTestCase
         $accountRequest->userGroupsView = [2, 3];
         $accountRequest->userGroupsEdit = [2];
 
-        $this->assertEquals(3, self::$service->create($accountRequest));
+        $expectedId = 5;
 
-        $result = self::$service->getById(3);
+        $this->assertEquals($expectedId, self::$service->create($accountRequest));
+
+        $result = self::$service->getById($expectedId);
 
         self::$service->withTagsById($result);
         self::$service->withUsersById($result);
@@ -137,7 +136,7 @@ class AccountServiceTest extends DatabaseTestCase
 
         $data = $result->getAccountVData();
 
-        $this->assertEquals(3, $result->getId());
+        $this->assertEquals($expectedId, $result->getId());
         $this->assertEquals($accountRequest->name, $data->getName());
         $this->assertEquals($accountRequest->login, $data->getLogin());
         $this->assertEquals($accountRequest->url, $data->getUrl());
@@ -173,7 +172,7 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals(3, $groups[1]->getId());
         $this->assertEquals(0, (int)$groups[1]->isEdit);
 
-        $data = self::$service->getPasswordForId(3);
+        $data = self::$service->getPasswordForId($expectedId);
 
         $this->assertEquals('1234abc', Crypt::decrypt($data->getPass(), $data->getKey(), self::SECURE_KEY_PASSWORD));
     }
@@ -184,13 +183,13 @@ class AccountServiceTest extends DatabaseTestCase
     public function testDelete()
     {
         // Comprobar registros iniciales
-        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+        $this->assertEquals(4, self::getRowCount('Account'));
 
         // Eliminar registros y comprobar el total de registros
         self::$service->delete(1);
         self::$service->delete(2);
 
-        $this->assertEquals(0, $this->conn->getRowCount('Account'));
+        $this->assertEquals(2, self::getRowCount('Account'));
 
         $this->expectException(NoSuchItemException::class);
 
@@ -227,7 +226,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testGetTotalNumAccounts()
     {
-        $this->assertEquals(7, self::$service->getTotalNumAccounts());
+        $this->assertEquals(9, self::$service->getTotalNumAccounts());
     }
 
     /**
@@ -260,7 +259,7 @@ class AccountServiceTest extends DatabaseTestCase
      */
     public function testGetAccountsPassData()
     {
-        $this->assertCount(2, self::$service->getAccountsPassData());
+        $this->assertCount(4, self::$service->getAccountsPassData());
     }
 
     /**
@@ -275,7 +274,7 @@ class AccountServiceTest extends DatabaseTestCase
         self::$service->editRestore(1, 1);
         self::$service->editRestore(3, 10);
 
-        $this->assertEquals(6, $this->conn->getRowCount('AccountHistory'));
+        $this->assertEquals(6, self::getRowCount('AccountHistory'));
     }
 
     /**
@@ -618,7 +617,7 @@ class AccountServiceTest extends DatabaseTestCase
     public function testUpdateNotFound()
     {
         $accountRequest = new AccountRequest();
-        $accountRequest->id = 3;
+        $accountRequest->id = 10;
 
         $this->expectException(NoSuchItemException::class);
 
@@ -654,12 +653,12 @@ class AccountServiceTest extends DatabaseTestCase
     public function testDeleteByIdBatch()
     {
         // Comprobar registros iniciales
-        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+        $this->assertEquals(4, self::getRowCount('Account'));
 
         self::$service->deleteByIdBatch([1, 2, 100]);
 
         // Comprobar registros tras eliminación
-        $this->assertEquals(0, $this->conn->getRowCount('Account'));
+        $this->assertEquals(2, self::getRowCount('Account'));
 
         $this->expectException(ServiceException::class);
 
@@ -732,7 +731,7 @@ class AccountServiceTest extends DatabaseTestCase
         /** @var AccountSearchVData[] $result */
         $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
-        $this->assertCount(0, $result);
+        $this->assertCount(1, $result);
 
         // Comprobar las etiquetas
         $searchFilter->reset();
@@ -742,8 +741,8 @@ class AccountServiceTest extends DatabaseTestCase
         /** @var AccountSearchVData[] $result */
         $result = self::$service->getByFilter($searchFilter)->getDataAsArray();
 
-        $this->assertCount(1, $result);
-        $this->assertEquals(1, $result[0]->getId());
+        $this->assertCount(2, $result);
+        $this->assertEquals(2, $result[0]->getId());
     }
 
     /**
@@ -847,11 +846,15 @@ class AccountServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getAllBasic();
 
-        $this->assertCount(2, $data);
+        $this->assertCount(4, $data);
         $this->assertInstanceOf(AccountData::class, $data[0]);
         $this->assertEquals(1, $data[0]->getId());
         $this->assertInstanceOf(AccountData::class, $data[1]);
         $this->assertEquals(2, $data[1]->getId());
+        $this->assertInstanceOf(AccountData::class, $data[2]);
+        $this->assertEquals(3, $data[2]->getId());
+        $this->assertInstanceOf(AccountData::class, $data[3]);
+        $this->assertEquals(4, $data[3]->getId());
     }
 
     /**
@@ -861,9 +864,11 @@ class AccountServiceTest extends DatabaseTestCase
     {
         $data = self::$accountHistoryService->getById(7);
 
-        $this->assertEquals(3, self::$service->createFromHistory($data));
+        $expectedId = 5;
 
-        $result = self::$service->getById(3);
+        $this->assertEquals($expectedId, self::$service->createFromHistory($data));
+
+        $result = self::$service->getById($expectedId);
         $resultData = $result->getAccountVData();
 
         $this->assertEquals($data->getName(), $resultData->getName());
@@ -879,7 +884,7 @@ class AccountServiceTest extends DatabaseTestCase
         $this->assertEquals($data->getIsPrivate(), $resultData->getIsPrivate());
         $this->assertEquals($data->getIsPrivateGroup(), $resultData->getIsPrivateGroup());
 
-        $resultData = self::$service->getPasswordForId(3);
+        $resultData = self::$service->getPasswordForId($expectedId);
 
         $this->assertEquals($data->getPass(), $resultData->getPass());
         $this->assertEquals($data->getKey(), $resultData->getKey());

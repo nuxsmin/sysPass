@@ -33,7 +33,6 @@ use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountFileRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -54,14 +53,11 @@ class AccountFileRepositoryTest extends DatabaseTestCase
      * @throws NotFoundException
      * @throws ContextException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_accountFile.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el repositorio
         self::$repository = $dic->get(AccountFileRepository::class);
@@ -77,7 +73,7 @@ class AccountFileRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, self::$repository->delete(3));
         $this->assertEquals(0, self::$repository->delete(10));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(1, self::getRowCount('AccountFile'));
     }
 
     /**
@@ -89,7 +85,7 @@ class AccountFileRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, self::$repository->deleteByIdBatch([1, 3, 10]));
         $this->assertEquals(0, self::$repository->deleteByIdBatch([]));
 
-        $this->assertEquals(1, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(1, self::getRowCount('AccountFile'));
     }
 
     /**
@@ -193,7 +189,7 @@ class AccountFileRepositoryTest extends DatabaseTestCase
         $this->assertEquals($data->getContent(), $resultData->getContent());
         $this->assertEquals($data->getThumb(), $resultData->getThumb());
 
-        $this->assertEquals(4, $this->conn->getRowCount('AccountFile'));
+        $this->assertEquals(4, self::getRowCount('AccountFile'));
     }
 
     /**

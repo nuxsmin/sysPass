@@ -71,14 +71,11 @@ class UserServiceTest extends DatabaseTestCase
      * @throws DependencyException
      * @throws SPException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass_user.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(UserService::class);
@@ -94,7 +91,7 @@ class UserServiceTest extends DatabaseTestCase
     {
         $data = self::$service->getAllBasic();
 
-        $this->assertCount(4, $data);
+        $this->assertCount(5, $data);
         $this->assertInstanceOf(UserData::class, $data[0]);
         $this->assertEquals('admin', $data[0]->getLogin());
     }
@@ -121,7 +118,7 @@ class UserServiceTest extends DatabaseTestCase
 
         $result = self::$service->createOnLogin($data);
 
-        $this->assertEquals(5, $result);
+        $this->assertEquals(6, $result);
 
         /** @var UserData $resultData */
         $resultData = self::$service->getById($result);
@@ -143,7 +140,7 @@ class UserServiceTest extends DatabaseTestCase
 
         $result = self::$service->createOnLogin($data);
 
-        $this->assertEquals(6, $result);
+        $this->assertEquals(7, $result);
 
         /** @var UserData $resultData */
         $resultData = self::$service->getById($result);
@@ -358,7 +355,7 @@ class UserServiceTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $this->assertEquals(2, self::$service->deleteByIdBatch([3, 4]));
+        $this->assertEquals(2, self::$service->deleteByIdBatch([4, 5]));
 
         $this->expectException(ConstraintException::class);
 
@@ -655,9 +652,9 @@ class UserServiceTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        self::$service->delete(3);
+        self::$service->delete(4);
 
-        $this->assertEquals(3, $this->conn->getRowCount('User'));
+        $this->assertEquals(4, self::getRowCount('User'));
     }
 
     /**

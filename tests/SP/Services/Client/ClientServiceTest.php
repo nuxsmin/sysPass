@@ -64,14 +64,11 @@ class ClientServiceTest extends DatabaseTestCase
      * @throws ContextException
      * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $dic = setupContext();
 
-        self::$dataset = 'syspass.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
 
         // Inicializar el servicio
         self::$service = $dic->get(ClientService::class);
@@ -118,20 +115,23 @@ class ClientServiceTest extends DatabaseTestCase
      */
     public function testGetAllBasic()
     {
-        $count = $this->conn->getRowCount('Client');
+        $count = self::getRowCount('Client');
 
         $results = self::$service->getAllBasic();
 
         $this->assertCount($count, $results);
 
         $this->assertInstanceOf(ClientData::class, $results[0]);
-        $this->assertEquals('Apple', $results[0]->getName());
+        $this->assertEquals('Amazon', $results[0]->getName());
 
         $this->assertInstanceOf(ClientData::class, $results[1]);
-        $this->assertEquals('Google', $results[1]->getName());
+        $this->assertEquals('Apple', $results[1]->getName());
 
         $this->assertInstanceOf(ClientData::class, $results[2]);
-        $this->assertEquals('Microsoft', $results[2]->getName());
+        $this->assertEquals('Google', $results[2]->getName());
+
+        $this->assertInstanceOf(ClientData::class, $results[3]);
+        $this->assertEquals('Microsoft', $results[3]->getName());
     }
 
     /**
@@ -162,7 +162,7 @@ class ClientServiceTest extends DatabaseTestCase
      */
     public function testGetAllForUserAdmin()
     {
-        $this->assertCount(3, self::$service->getAllForUser());
+        $this->assertCount(4, self::$service->getAllForUser());
     }
 
     /**
@@ -176,7 +176,7 @@ class ClientServiceTest extends DatabaseTestCase
 
         self::$setupUser->call($this, $userData);
 
-        $this->assertCount(1, self::$service->getAllForUser());
+        $this->assertCount(2, self::$service->getAllForUser());
     }
 
     /**
@@ -200,9 +200,9 @@ class ClientServiceTest extends DatabaseTestCase
         $this->assertEquals($data->name, $result->getName());
         $this->assertEquals($data->isGlobal, $result->getIsGlobal());
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
-        $this->assertEquals(4, $countAfter);
+        $this->assertEquals(5, $countAfter);
 
         $this->expectException(DuplicatedItemException::class);
 
@@ -216,11 +216,11 @@ class ClientServiceTest extends DatabaseTestCase
      */
     public function testDeleteByIdBatch()
     {
-        $countBefore = $this->conn->getRowCount('Client');
+        $countBefore = self::getRowCount('Client');
 
-        self::$service->deleteByIdBatch([3]);
+        self::$service->deleteByIdBatch([4]);
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 
@@ -259,7 +259,7 @@ class ClientServiceTest extends DatabaseTestCase
 
         $this->expectException(NoSuchItemException::class);
 
-        self::$service->getByName('Amazon');
+        self::$service->getByName('Spotify');
     }
 
     /**
@@ -267,11 +267,11 @@ class ClientServiceTest extends DatabaseTestCase
      */
     public function testDelete()
     {
-        $countBefore = $this->conn->getRowCount('Client');
+        $countBefore = self::getRowCount('Client');
 
-        self::$service->delete(3);
+        self::$service->delete(4);
 
-        $countAfter = $this->conn->getRowCount('Client');
+        $countAfter = self::getRowCount('Client');
 
         $this->assertEquals($countBefore - 1, $countAfter);
 

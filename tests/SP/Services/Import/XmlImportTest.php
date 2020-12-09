@@ -52,18 +52,13 @@ class XmlImportTest extends DatabaseTestCase
     protected static $dic;
 
     /**
-     * @throws NotFoundException
      * @throws ContextException
-     * @throws DependencyException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$dic = setupContext();
 
-        self::$dataset = 'syspass_import.xml';
-
-        // Datos de conexión a la BBDD
-        self::$databaseConnectionData = self::$dic->get(DatabaseConnectionData::class);
+        self::$loadFixtures = true;
     }
 
     /**
