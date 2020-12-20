@@ -312,8 +312,10 @@ final class FileBackupService extends Service
                 foreach ($row as $value) {
                     if (is_numeric($value)) {
                         $fileHandler->write($value);
-                    } else {
+                    } elseif ($value) {
                         $fileHandler->write($databaseUtil->escape($value));
+                    } else {
+                        $fileHandler->write(null);
                     }
 
                     if ($field < $numColumns) {

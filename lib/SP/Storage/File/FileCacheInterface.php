@@ -43,12 +43,12 @@ interface FileCacheInterface
      * @return FileCacheInterface
      * @throws FileException
      */
-    public function save($data);
+    public function save($data): FileCacheInterface;
 
     /**
-     * @return mixed
+     * @return FileCacheInterface
      */
-    public function delete();
+    public function delete(): FileCacheInterface;
 
     /**
      * Returns whether the file is expired
@@ -67,7 +67,7 @@ interface FileCacheInterface
      * @return bool
      * @throws FileException
      */
-    public function isExpiredDate($date): bool;
+    public function isExpiredDate(int $date): bool;
 
     /**
      * @return bool

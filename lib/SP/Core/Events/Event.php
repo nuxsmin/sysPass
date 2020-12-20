@@ -46,12 +46,11 @@ final class Event
     /**
      * Event constructor.
      *
-     * @param object       $source
-     * @param EventMessage $eventMessage
+     * @param object            $source
+     * @param EventMessage|null $eventMessage
      *
-     * @throws InvalidArgumentException
      */
-    public function __construct($source, EventMessage $eventMessage = null)
+    public function __construct(object $source, EventMessage $eventMessage = null)
     {
         if (!is_object($source)) {
             throw new InvalidArgumentException(__u('An object is needed'));
@@ -67,7 +66,7 @@ final class Event
      * @return mixed
      * @throws InvalidClassException
      */
-    public function getSource($type = null)
+    public function getSource($type = null): object
     {
         if ($type !== null
             && ($source = get_class($this->source)) !== $type

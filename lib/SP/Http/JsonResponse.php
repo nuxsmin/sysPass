@@ -74,9 +74,9 @@ final class JsonResponse implements JsonSerializable
     /**
      * JsonResponse constructor.
      *
-     * @param string $description
+     * @param string|null $description
      */
-    public function __construct(string $description = null)
+    public function __construct(?string $description = null)
     {
         $this->description = $description;
     }
@@ -84,7 +84,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -94,7 +94,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setStatus($status)
+    public function setStatus(int $status): JsonResponse
     {
         $this->status = (int)$status;
 
@@ -104,7 +104,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -114,7 +114,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setDescription($description)
+    public function setDescription(string $description): JsonResponse
     {
         $this->description = __($description);
 
@@ -124,7 +124,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
@@ -134,7 +134,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setAction($action)
+    public function setAction(string $action): JsonResponse
     {
         $this->action = $action;
 
@@ -144,7 +144,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -154,7 +154,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setData($data)
+    public function setData($data): JsonResponse
     {
         $this->data = $data;
 
@@ -164,7 +164,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return array
      */
-    public function getMessages()
+    public function getMessages(): array
     {
         return $this->messages;
     }
@@ -174,7 +174,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setMessages(array $messages)
+    public function setMessages(array $messages): JsonResponse
     {
         $this->messages = array_map('__', $messages);
 
@@ -184,7 +184,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return string
      */
-    public function getContainer()
+    public function getContainer(): string
     {
         return $this->container;
     }
@@ -194,7 +194,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setContainer($container)
+    public function setContainer(string $container): JsonResponse
     {
         $this->container = $container;
 
@@ -204,7 +204,7 @@ final class JsonResponse implements JsonSerializable
     /**
      * @return string
      */
-    public function getCsrf()
+    public function getCsrf(): string
     {
         return $this->csrf;
     }
@@ -214,7 +214,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function setCsrf($csrf)
+    public function setCsrf(string $csrf): JsonResponse
     {
         $this->csrf = $csrf;
 
@@ -222,22 +222,22 @@ final class JsonResponse implements JsonSerializable
     }
 
     /**
-     * @param $message
+     * @param string $message
      *
      * @return JsonResponse
      */
-    public function addMessage($message)
+    public function addMessage(string $message): JsonResponse
     {
         $this->messages[] = __($message);
         return $this;
     }
 
     /**
-     * @param $param
+     * @param mixed $param
      *
      * @return $this
      */
-    public function addParam($param)
+    public function addParam($param): JsonResponse
     {
         if (is_numeric($param)) {
             $param = (int)$param;
@@ -266,7 +266,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return array
      */
-    public function getJsonArray()
+    public function getJsonArray(): array
     {
         $out = [];
 
@@ -282,7 +282,7 @@ final class JsonResponse implements JsonSerializable
      *
      * @return JsonResponse
      */
-    public function clear()
+    public function clear(): JsonResponse
     {
         $this->status = 0;
         $this->action = '';

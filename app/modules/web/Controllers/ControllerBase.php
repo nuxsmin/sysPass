@@ -94,7 +94,6 @@ abstract class ControllerBase
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws SessionTimeout
      */
     public final function __construct(Container $container, $actionName)
     {
@@ -158,6 +157,8 @@ abstract class ControllerBase
 
     /**
      * @return void
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     private function handleSessionTimeout()
     {
@@ -193,7 +194,7 @@ abstract class ControllerBase
     /**
      * Renderizar los datos de la plantilla y devolverlos
      */
-    protected function render()
+    protected function render(): string
     {
         try {
             return $this->view->render();

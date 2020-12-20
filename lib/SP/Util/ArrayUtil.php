@@ -37,11 +37,16 @@ final class ArrayUtil
      * @param array  $array
      * @param string $property Nombre de la propiedad
      * @param string $value    Valor de la propiedad
-     * @param object $default  Valor por defecto
+     * @param null   $default  Valor por defecto
      *
      * @return false|object
      */
-    public static function searchInObject(array $array, $property, $value, $default = null)
+    public static function searchInObject(
+        array $array,
+        string $property,
+        string $value,
+        $default = null
+    )
     {
         foreach ($array as $object) {
             if (is_object($object)
@@ -64,7 +69,7 @@ final class ArrayUtil
      *
      * @return bool
      */
-    public static function checkInObjectArrayMethod(array $objectArray, $method, $value)
+    public static function checkInObjectArrayMethod(array $objectArray, string $method, $value)
     {
         foreach ($objectArray as $object) {
             if (is_callable([$object, $method]) && $object->$method() === $value) {
@@ -84,7 +89,7 @@ final class ArrayUtil
      *
      * @return bool
      */
-    public static function checkInObjectArray(array $objectArray, $property, $value)
+    public static function checkInObjectArray(array $objectArray, string $property, $value)
     {
         if (empty($objectArray)) {
             return false;

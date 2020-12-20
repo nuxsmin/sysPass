@@ -42,7 +42,7 @@ interface ConnectionInterface
      *
      * @return resource
      */
-    public function getSocket($type);
+    public function getSocket(int $type);
 
     /**
      * Cerrar un socket
@@ -56,7 +56,7 @@ interface ConnectionInterface
      *
      * @return string
      */
-    public function getSocketError();
+    public function getSocketError(): string;
 
     /**
      * Enviar un mensaje al socket
@@ -65,5 +65,5 @@ interface ConnectionInterface
      *
      * @return mixed
      */
-    public function send($message);
+    public function send(string $message);
 }

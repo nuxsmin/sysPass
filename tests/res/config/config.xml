@@ -13,8 +13,8 @@
   <authBasicEnabled>1</authBasicEnabled>
   <checkNotices></checkNotices>
   <checkUpdates></checkUpdates>
-  <configDate>1607515367</configDate>
-  <configHash>db50628d8b3b8881576df1c12e328566232f71db</configHash>
+  <configDate>1608465113</configDate>
+  <configHash>6075dd007ba509336b4861de65598f8a6247a1ab</configHash>
   <configSaver>Admin</configSaver>
   <configVersion></configVersion>
   <databaseVersion></databaseVersion>
@@ -33,7 +33,7 @@
   <dokuwikiUrlBase></dokuwikiUrlBase>
   <dokuwikiUser></dokuwikiUser>
   <encryptSession></encryptSession>
-  <export_hash>dfc07f6c7ca205ffcc8982585a430dd3ca83b494</export_hash>
+  <export_hash>dd2e9ad4d908b2d3ae913298530ae7030ca09a4b</export_hash>
   <filesAllowedMime/>
   <filesAllowedSize>1024</filesAllowedSize>
   <filesEnabled>1</filesEnabled>

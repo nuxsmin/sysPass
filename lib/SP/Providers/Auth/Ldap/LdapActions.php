@@ -105,7 +105,7 @@ final class LdapActions
      * @return array Groups' DN
      * @throws LdapException
      */
-    public function searchGroupsDn(string $groupFilter)
+    public function searchGroupsDn(string $groupFilter): array
     {
         $filter = '(&(cn='
             . ldap_escape($this->getGroupFromParams(), null, LDAP_ESCAPE_FILTER)
@@ -156,13 +156,17 @@ final class LdapActions
     /**
      * Devolver los resultados de una paginación
      *
-     * @param string $filter     Filtro a utilizar
-     * @param array  $attributes Atributos a devolver
-     * @param string $searchBase
+     * @param string      $filter     Filtro a utilizar
+     * @param array|null  $attributes Atributos a devolver
+     * @param string|null $searchBase
      *
      * @return bool|array
      */
-    protected function getResults($filter, array $attributes = null, $searchBase = null)
+    protected function getResults(
+        string $filter,
+        ?array $attributes = null,
+        ?string $searchBase = null
+    )
     {
         $cookie = '';
         $results = [];
@@ -216,7 +220,7 @@ final class LdapActions
      * @return AttributeCollection
      * @throws LdapException
      */
-    public function getAttributes(string $filter)
+    public function getAttributes(string $filter): AttributeCollection
     {
         $searchResults = $this->getObjects($filter);
 
@@ -264,14 +268,18 @@ final class LdapActions
     /**
      * Obtener los objetos según el filtro indicado
      *
-     * @param string $filter
-     * @param array  $attributes
-     * @param string $searchBase
+     * @param string      $filter
+     * @param array       $attributes
+     * @param string|null $searchBase
      *
      * @return array
      * @throws LdapException
      */
-    public function getObjects($filter, array $attributes = self::USER_ATTRIBUTES, $searchBase = null)
+    public function getObjects(
+        string $filter,
+        array $attributes = self::USER_ATTRIBUTES,
+        ?string $searchBase = null
+    )
     {
         $searchResults = $this->getResults($filter, $attributes, $searchBase);
 

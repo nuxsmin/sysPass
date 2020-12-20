@@ -103,9 +103,9 @@ final class LdapParams
     }
 
     /**
-     * @param string $filterUserObject
+     * @param string|null $filterUserObject
      */
-    public function setFilterUserObject(string $filterUserObject = null)
+    public function setFilterUserObject(?string $filterUserObject = null)
     {
         if (!empty($filterUserObject)) {
             $this->filterUserObject = $filterUserObject;
@@ -121,9 +121,9 @@ final class LdapParams
     }
 
     /**
-     * @param string $filterGroupObject
+     * @param string|null $filterGroupObject
      */
-    public function setFilterGroupObject(string $filterGroupObject = null)
+    public function setFilterGroupObject(?string $filterGroupObject = null)
     {
         if (!empty($filterGroupObject)) {
             $this->filterGroupObject = $filterGroupObject;
@@ -139,9 +139,9 @@ final class LdapParams
     }
 
     /**
-     * @param array $filterUserAttributes
+     * @param array|null $filterUserAttributes
      */
-    public function setFilterUserAttributes(array $filterUserAttributes = null)
+    public function setFilterUserAttributes(?array $filterUserAttributes = null)
     {
         $this->filterUserAttributes = $filterUserAttributes;
     }
@@ -155,9 +155,9 @@ final class LdapParams
     }
 
     /**
-     * @param array $filterGroupAttributes
+     * @param array|null $filterGroupAttributes
      */
-    public function setFilterGroupAttributes(array $filterGroupAttributes = null)
+    public function setFilterGroupAttributes(?array $filterGroupAttributes = null)
     {
         $this->filterGroupAttributes = $filterGroupAttributes;
     }
@@ -165,7 +165,7 @@ final class LdapParams
     /**
      * @return int
      */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
@@ -175,7 +175,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setPort($port)
+    public function setPort(int $port): LdapParams
     {
         $this->port = $port;
 
@@ -185,7 +185,7 @@ final class LdapParams
     /**
      * @return string
      */
-    public function getSearchBase()
+    public function getSearchBase(): ?string
     {
         return $this->searchBase;
     }
@@ -195,7 +195,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setSearchBase($searchBase)
+    public function setSearchBase(string $searchBase): LdapParams
     {
         $this->searchBase = $searchBase;
         return $this;
@@ -204,7 +204,7 @@ final class LdapParams
     /**
      * @return string
      */
-    public function getBindDn()
+    public function getBindDn(): ?string
     {
         return $this->bindDn;
     }
@@ -214,7 +214,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setBindDn($bindDn)
+    public function setBindDn(string $bindDn): LdapParams
     {
         $this->bindDn = $bindDn;
         return $this;
@@ -223,7 +223,7 @@ final class LdapParams
     /**
      * @return string
      */
-    public function getBindPass()
+    public function getBindPass(): ?string
     {
         return $this->bindPass;
     }
@@ -233,7 +233,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setBindPass($bindPass)
+    public function setBindPass(string $bindPass): LdapParams
     {
         $this->bindPass = $bindPass;
         return $this;
@@ -242,7 +242,7 @@ final class LdapParams
     /**
      * @return string
      */
-    public function getGroup()
+    public function getGroup(): ?string
     {
         return $this->group;
     }
@@ -252,16 +252,16 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setGroup($group)
+    public function setGroup(string $group): LdapParams
     {
         $this->group = $group;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServer()
+    public function getServer(): ?string
     {
         return $this->server;
     }
@@ -271,7 +271,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setServer($server)
+    public function setServer(string $server): LdapParams
     {
         $this->server = $server;
 
@@ -281,7 +281,7 @@ final class LdapParams
     /**
      * @return int
      */
-    public function getType(): int
+    public function getType(): ?int
     {
         return $this->type;
     }
@@ -291,7 +291,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setType($type)
+    public function setType($type): LdapParams
     {
         $this->type = (int)$type;
 
@@ -311,7 +311,7 @@ final class LdapParams
      *
      * @return LdapParams
      */
-    public function setTlsEnabled(bool $tlsEnabled)
+    public function setTlsEnabled(bool $tlsEnabled): LdapParams
     {
         $this->tlsEnabled = $tlsEnabled;
 

@@ -40,10 +40,10 @@ define('LOG_FORMAT_OWN', '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}
  *
  * A more advanced event logging should be handled through EventDispatcher
  *
- * @param mixed  $data
- * @param string $type
+ * @param mixed       $data
+ * @param string|null $type
  */
-function logger($data, $type = 'DEBUG')
+function logger($data, ?string $type = 'DEBUG')
 {
     if (!DEBUG && $type === 'DEBUG') {
         return;
@@ -88,7 +88,7 @@ function printLastCallers()
  *
  * @return string
  */
-function getLastCaller($skip = 2)
+function getLastCaller($skip = 2): string
 {
     $callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
 
@@ -104,7 +104,7 @@ function getLastCaller($skip = 2)
  *
  * @return string
  */
-function formatStackTrace(Throwable $e)
+function formatStackTrace(Throwable $e): string
 {
     $out = [];
 
@@ -156,11 +156,11 @@ function processException(\Exception $exception)
 }
 
 /**
- * @param $trace
+ * @param array $trace
  *
  * @return string
  */
-function formatTrace($trace)
+function formatTrace(array $trace): string
 {
     $btLine = [];
     $i = 0;
@@ -185,7 +185,7 @@ function formatTrace($trace)
  *
  * @return string
  */
-function __($message, $translate = true)
+function __(string $message, $translate = true): string
 {
     return $translate === true && $message !== '' && mb_strlen($message) < 4096 ? gettext($message) : $message;
 }
@@ -198,7 +198,7 @@ function __($message, $translate = true)
  *
  * @return string
  */
-function __u($message)
+function __u(string $message): string
 {
     return $message;
 }
@@ -212,7 +212,7 @@ function __u($message)
  *
  * @return string
  */
-function _t($domain, $message, $translate = true)
+function _t(string $domain, string $message, bool $translate = true): string
 {
     return $translate === true && $message !== '' && mb_strlen($message) < 4096 ? dgettext($domain, $message) : $message;
 }
@@ -224,7 +224,7 @@ function _t($domain, $message, $translate = true)
  *
  * @return string
  */
-function mb_ucfirst($string)
+function mb_ucfirst($string): string
 {
     return mb_strtoupper(mb_substr($string, 0, 1));
 }

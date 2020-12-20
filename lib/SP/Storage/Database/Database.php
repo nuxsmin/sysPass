@@ -81,7 +81,7 @@ final class Database implements DatabaseInterface
     /**
      * @return int
      */
-    public function getNumRows()
+    public function getNumRows(): int
     {
         return $this->numRows;
     }
@@ -89,23 +89,23 @@ final class Database implements DatabaseInterface
     /**
      * @return int
      */
-    public function getNumFields()
+    public function getNumFields(): int
     {
         return $this->numFields;
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getLastResult()
+    public function getLastResult(): ?array
     {
         return $this->lastResult;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLastId()
+    public function getLastId(): ?int
     {
         return $this->lastId;
     }
@@ -113,7 +113,7 @@ final class Database implements DatabaseInterface
     /**
      * @return DBStorageInterface
      */
-    public function getDbHandler()
+    public function getDbHandler(): DBStorageInterface
     {
         return $this->dbHandler;
     }
@@ -126,7 +126,7 @@ final class Database implements DatabaseInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function doSelect(QueryData $queryData, $fullCount = false)
+    public function doSelect(QueryData $queryData, $fullCount = false): QueryResult
     {
         if ($queryData->getQuery() === '') {
             throw new QueryException($queryData->getOnErrorMessage(), QueryException::ERROR, __u('Blank query'));
@@ -202,7 +202,11 @@ final class Database implements DatabaseInterface
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function prepareQueryData(QueryData $queryData, $isCount = false, array $options = [])
+    private function prepareQueryData(
+        QueryData $queryData,
+        bool $isCount = false,
+        array $options = []
+    ): PDOStatement
     {
         $query = $queryData->getQuery();
         $params = $queryData->getParams();
@@ -265,7 +269,7 @@ final class Database implements DatabaseInterface
      *
      * @return array
      */
-    private function getParamsForCount(QueryData $queryData)
+    private function getParamsForCount(QueryData $queryData): array
     {
         $countSelect = substr_count($queryData->getSelect(), '?');
         $countFrom = substr_count($queryData->getFrom(), '?');
@@ -294,12 +298,12 @@ final class Database implements DatabaseInterface
     /**
      * Obtener el número de filas de una consulta realizada
      *
-     * @param $queryData QueryData Los datos de la consulta
+     * @param QueryData $queryData Los datos de la consulta
      *
      * @return int Número de files de la consulta
      * @throws SPException
      */
-    public function getFullRowCount(QueryData $queryData)
+    public function getFullRowCount(QueryData $queryData): int
     {
         if ($queryData->getQueryCount() === '') {
             return 0;
@@ -317,13 +321,16 @@ final class Database implements DatabaseInterface
      *
      * @param QueryData $queryData
      * @param array     $options
-     * @param bool      $buffered Set buffered behavior (useful for big datasets)
+     * @param bool|null $buffered Set buffered behavior (useful for big datasets)
      *
      * @return PDOStatement
      * @throws ConstraintException
-     * @throws QueryException
+     * @throws QueryException|DatabaseException
      */
-    public function doQueryRaw(QueryData $queryData, array $options = [], bool $buffered = null)
+    public function doQueryRaw(
+        QueryData $queryData,
+        array $options = [],
+        ?bool $buffered = null): PDOStatement
     {
         if ($buffered === false
             && $this->dbHandler instanceof MySQLHandler
@@ -333,7 +340,7 @@ final class Database implements DatabaseInterface
                 ->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         }
 
-        return $this->prepareQueryData($queryData, $options);
+        return $this->prepareQueryData($queryData, false, $options);
     }
 
     /**
@@ -341,7 +348,7 @@ final class Database implements DatabaseInterface
      *
      * @return bool
      */
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         $conn = $this->dbHandler->getConnection();
 
@@ -364,7 +371,7 @@ final class Database implements DatabaseInterface
      *
      * @return bool
      */
-    public function endTransaction()
+    public function endTransaction(): bool
     {
         $conn = $this->dbHandler->getConnection();
 
@@ -381,7 +388,7 @@ final class Database implements DatabaseInterface
      *
      * @return bool
      */
-    public function rollbackTransaction()
+    public function rollbackTransaction(): bool
     {
         $conn = $this->dbHandler->getConnection();
 
@@ -394,13 +401,14 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return array
      */
-    public function getColumnsForTable($table): array
+    public function getColumnsForTable(string $table): array
     {
-        $conn = $this->dbHandler->getConnection()->query("SELECT * FROM $table LIMIT 0");
+        $conn = $this->dbHandler->getConnection()
+            ->query("SELECT * FROM `$table` LIMIT 0");
         $columns = [];
 
         for ($i = 0; $i < $conn->columnCount(); $i++) {

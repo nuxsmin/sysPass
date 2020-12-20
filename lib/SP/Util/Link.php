@@ -46,7 +46,12 @@ final class Link
      *
      * @return string
      */
-    public static function getDeepLink(int $itemId, int $actionId, ConfigData $configData, bool $useUI = false)
+    public static function getDeepLink(
+        int $itemId,
+        int $actionId,
+        ConfigData $configData,
+        bool $useUI = false
+    ): string
     {
         $route = Acl::getActionRoute($actionId) . '/' . $itemId;
 

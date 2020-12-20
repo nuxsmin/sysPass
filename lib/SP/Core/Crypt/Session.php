@@ -42,7 +42,7 @@ final class Session
      * @return string
      * @throws CryptoException
      */
-    public static function getSessionKey(SessionContext $sessionContext)
+    public static function getSessionKey(SessionContext $sessionContext): string
     {
         return $sessionContext->getVault()->getData(self::getKey($sessionContext));
     }
@@ -52,7 +52,7 @@ final class Session
      *
      * @return string
      */
-    private static function getKey(SessionContext $sessionContext)
+    private static function getKey(SessionContext $sessionContext): string
     {
         return session_id() . $sessionContext->getSidStartTime();
     }

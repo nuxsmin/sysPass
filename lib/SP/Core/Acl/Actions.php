@@ -144,7 +144,7 @@ final class Actions
      * @return ActionData[]
      * @throws FileException
      */
-    protected function load()
+    protected function load(): array
     {
         return $this->xmlFileStorage->load('actions')->getItems();
     }
@@ -166,12 +166,12 @@ final class Actions
     /**
      * Returns an action by id
      *
-     * @param $id
+     * @param int $id
      *
      * @return ActionData
      * @throws ActionNotFoundException
      */
-    public function getActionById($id)
+    public function getActionById(int $id): ActionData
     {
         if (!isset($this->actions[$id])) {
             throw new ActionNotFoundException(__u('Action not found'));

@@ -84,7 +84,7 @@ final class Minify
      *
      * @return $this
      */
-    public function setBase($path, $checkPath = false)
+    public function setBase(string $path, $checkPath = false): Minify
     {
         $this->base = $checkPath === true ? Request::getSecureAppPath($path) : $path;
 
@@ -176,7 +176,7 @@ final class Minify
      *
      * @return string Con el hash
      */
-    private function getEtag()
+    private function getEtag(): string
     {
         $md5Sum = '';
 
@@ -194,7 +194,7 @@ final class Minify
      *
      * @return string
      */
-    private function jsCompress($buffer)
+    private function jsCompress(string $buffer): string
     {
         $regexReplace = [
             '#/\*[^*]*\*+([^/][^*]*\*+)*/#',
@@ -208,12 +208,12 @@ final class Minify
     }
 
     /**
-     * @param      $files
-     * @param bool $minify
+     * @param string $files
+     * @param bool   $minify
      *
      * @return Minify
      */
-    public function addFilesFromString($files, $minify = true)
+    public function addFilesFromString(string $files, bool $minify = true): Minify
     {
         if (strrpos($files, ',')) {
             $files = explode(',', $files);
@@ -231,13 +231,17 @@ final class Minify
     /**
      * Añadir un archivo
      *
-     * @param string $file
-     * @param bool   $minify Si es necesario reducir
-     * @param string $base
+     * @param string      $file
+     * @param bool        $minify Si es necesario reducir
+     * @param string|null $base
      *
      * @return $this
      */
-    public function addFile($file, $minify = true, $base = null)
+    public function addFile(
+        string $file,
+        bool $minify = true,
+        ?string $base = null
+    ): Minify
     {
         if ($base === null) {
             $base = $this->base;
@@ -268,7 +272,7 @@ final class Minify
      *
      * @return bool
      */
-    private function needsMinify($file)
+    private function needsMinify(string $file): bool
     {
         return !preg_match('/\.min|pack\.css|js/', $file);
     }
@@ -279,7 +283,7 @@ final class Minify
      *
      * @return Minify
      */
-    public function addFiles(array $files, $minify = true)
+    public function addFiles(array $files, bool $minify = true): Minify
     {
         foreach ($files as $filename) {
             $this->processFile($filename, $minify);
@@ -289,10 +293,10 @@ final class Minify
     }
 
     /**
-     * @param      $file
-     * @param bool $minify
+     * @param string $file
+     * @param bool   $minify
      */
-    protected function processFile($file, $minify = true)
+    protected function processFile(string $file, bool $minify = true)
     {
         $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
 
@@ -312,11 +316,11 @@ final class Minify
     /**
      * Añadir un recurso desde URL
      *
-     * @param $url
+     * @param string $url
      *
      * @return $this
      */
-    public function addUrl($url)
+    public function addUrl(string $url): Minify
     {
         $this->files[] = array(
             'type' => 'url',
@@ -336,7 +340,7 @@ final class Minify
      *
      * @return $this
      */
-    public function setType($type)
+    public function setType(int $type): Minify
     {
         $this->type = (int)$type;
 

@@ -68,31 +68,36 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @return array
      */
-    public function getDataRowSourcesWithIcon()
+    public function getDataRowSourcesWithIcon(): array
     {
         return $this->sourcesWithIcon;
     }
 
     /**
-     * @param string   $source
-     * @param bool     $isMethod
-     * @param callable $filter
-     * @param bool     $truncate
+     * @param string        $source
+     * @param bool          $isMethod
+     * @param callable|null $filter
+     * @param bool          $truncate
      */
-    public function addDataRowSource($source, $isMethod = false, callable $filter = null, $truncate = true)
+    public function addDataRowSource(
+        string $source,
+        ?bool $isMethod = false,
+        ?callable $filter = null,
+        ?bool $truncate = true
+    )
     {
         $this->sources[] = [
             'name' => $source,
-            'isMethod' => $isMethod,
+            'isMethod' => (bool)$isMethod,
             'filter' => $filter,
-            'truncate' => $truncate
+            'truncate' => (bool)$truncate
         ];
     }
 
     /**
      * @param $id string
      */
-    public function setDataRowSourceId($id)
+    public function setDataRowSourceId(string $id)
     {
         $this->sourceId = $id;
     }
@@ -100,7 +105,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @return array
      */
-    public function getDataRowSources()
+    public function getDataRowSources(): array
     {
         return $this->sources;
     }
@@ -108,7 +113,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @return string
      */
-    public function getDataRowSourceId()
+    public function getDataRowSourceId(): string
     {
         return $this->sourceId;
     }
@@ -116,7 +121,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     /**
      * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -135,7 +140,11 @@ abstract class DataGridDataBase implements DataGridDataInterface
      * @param IconInterface $icon
      * @param mixed         $value Valor para mostrar el icono
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
+    public function addDataRowSourceWithIcon(
+        string $source,
+        IconInterface $icon,
+        int $value = 1
+    )
     {
         $this->sourcesWithIcon[] = [
             'field' => $source,
@@ -149,7 +158,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      *
      * @return int
      */
-    public function getDataCount()
+    public function getDataCount(): int
     {
         return $this->dataCount;
     }

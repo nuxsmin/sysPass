@@ -56,7 +56,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function getHistoryForAccount($id)
+    public function getHistoryForAccount($id): QueryResult
     {
         $query = /** @lang SQL */
             'SELECT AH.id,
@@ -86,7 +86,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function create($dto)
+    public function create($dto): int
     {
         $queryData = new QueryData();
         $query = /** @lang SQL */
@@ -151,7 +151,7 @@ final class AccountHistoryRepository extends Repository implements RepositoryIte
      *
      * @param int $id
      *
-     * @return bool Los ids de las cuentas eliminadas
+     * @return int Los ids de las cuentas eliminadas
      * @throws ConstraintException
      * @throws QueryException
      */

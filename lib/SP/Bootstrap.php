@@ -452,9 +452,9 @@ final class Bootstrap
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public static function run(Container $container, $module = APP_MODULE)
+    public static function run(Container $container, string $module = APP_MODULE)
     {
-        $bs = new static($container);
+        $bs = new Bootstrap($container);
 
         switch ($module) {
             case 'web':

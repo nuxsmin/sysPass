@@ -167,7 +167,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return string
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
@@ -177,7 +177,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setId($id)
+    public function setId(string $id): DataGridBase
     {
         $this->id = $id;
 
@@ -187,7 +187,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return DataGridHeader|DataGridHeaderSort|DataGridHeaderInterface
      */
-    public function getHeader()
+    public function getHeader(): DataGridHeaderInterface
     {
         return $this->header;
     }
@@ -197,7 +197,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setHeader(DataGridHeaderInterface $header)
+    public function setHeader(DataGridHeaderInterface $header): DataGridBase
     {
         $this->header = $header;
 
@@ -217,7 +217,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setData(DataGridDataInterface $data)
+    public function setData(DataGridDataInterface $data): DataGridBase
     {
         $this->data = $data;
 
@@ -230,7 +230,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function addDataAction(DataGridActionInterface $action, $isMenu = false)
+    public function addDataAction(DataGridActionInterface $action, $isMenu = false): DataGridInterface
     {
         if ($isMenu === false) {
             $this->actions[] = $action;
@@ -252,7 +252,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return DataGridActionInterface[]
      */
-    public function getDataActions()
+    public function getDataActions(): array
     {
         return $this->actions;
     }
@@ -260,7 +260,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return $this
      */
-    public function getGrid()
+    public function getGrid(): DataGridInterface
     {
         return $this;
     }
@@ -269,14 +269,13 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
      *
      * @return $this
      */
-    public function setDataHeaderTemplate($template, $base = null)
+    public function setDataHeaderTemplate(string $template): DataGridBase
     {
         try {
-            $this->headerTemplate = $this->checkTemplate($template, $base);
+            $this->headerTemplate = $this->checkTemplate($template);
         } catch (FileNotFoundException $e) {
             processException($e);
         }
@@ -287,13 +286,13 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Comprobar si existe una plantilla y devolver la ruta completa
      *
-     * @param      $template
-     * @param null $base
+     * @param string      $template
+     * @param string|null $base
      *
      * @return string
      * @throws FileNotFoundException
      */
-    protected function checkTemplate($template, $base = null)
+    protected function checkTemplate(string $template, ?string $base = null): string
     {
         $template = null === $base ? $template . '.inc' : $base . DIRECTORY_SEPARATOR . $template . '.inc';
         $file = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
@@ -310,7 +309,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return string
      */
-    public function getDataHeaderTemplate()
+    public function getDataHeaderTemplate(): string
     {
         return $this->headerTemplate;
     }
@@ -322,7 +321,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setDataActionsTemplate($template)
+    public function setDataActionsTemplate(string $template): DataGridBase
     {
         try {
             $this->actionsTemplate = $this->checkTemplate($template);
@@ -336,9 +335,9 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Devolver la plantilla utilizada para las acciones
      *
-     * @return string
+     * @return string|null
      */
-    public function getDataActionsTemplate()
+    public function getDataActionsTemplate(): ?string
     {
         return $this->actionsTemplate;
     }
@@ -346,12 +345,12 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Establecer la plantilla utilizada para el paginador
      *
-     * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string      $template El nombre de la plantilla a utilizar
+     * @param string|null $base
      *
      * @return $this
      */
-    public function setDataPagerTemplate($template, $base = null)
+    public function setDataPagerTemplate(string $template, ?string $base = null): DataGridBase
     {
         try {
             $this->pagerTemplate = $this->checkTemplate($template, $base);
@@ -365,20 +364,20 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Devolver la plantilla utilizada para el paginador
      *
-     * @return string
+     * @return string|null
      */
-    public function getDataPagerTemplate()
+    public function getDataPagerTemplate(): ?string
     {
         return $this->pagerTemplate;
     }
 
     /**
-     * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string      $template El nombre de la plantilla a utilizar
+     * @param string|null $base
      *
      * @return mixed
      */
-    public function setDataRowTemplate($template, $base = null)
+    public function setDataRowTemplate(string $template, ?string $base = null)
     {
         try {
             $this->rowsTemplate = $this->checkTemplate($template, $base);
@@ -390,9 +389,9 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDataRowTemplate()
+    public function getDataRowTemplate(): ?string
     {
         return $this->rowsTemplate;
     }
@@ -400,9 +399,9 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Devolver el paginador
      *
-     * @return DataGridPagerInterface
+     * @return DataGridPagerInterface|null
      */
-    public function getPager()
+    public function getPager(): ?DataGridPagerInterface
     {
         return $this->pager;
     }
@@ -414,7 +413,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return $this
      */
-    public function setPager(DataGridPagerInterface $pager)
+    public function setPager(DataGridPagerInterface $pager): DataGridBase
     {
         $this->pager = $pager;
 
@@ -424,7 +423,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Actualizar los datos del paginador
      */
-    public function updatePager()
+    public function updatePager(): DataGridInterface
     {
         if ($this->pager instanceof DataGridPagerInterface) {
             $this->pager->setTotalRows($this->data->getDataCount());
@@ -436,17 +435,17 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return int
      */
-    public function getTime()
+    public function getTime(): int
     {
         return abs($this->time);
     }
 
     /**
-     * @param int $time
+     * @param int|float $time
      *
      * @return $this
      */
-    public function setTime($time)
+    public function setTime($time): DataGridInterface
     {
         $this->time = $time;
 
@@ -458,7 +457,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return DataGridActionInterface[]
      */
-    public function getDataActionsMenu()
+    public function getDataActionsMenu(): array
     {
         return $this->actionsMenu;
     }
@@ -470,7 +469,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return DataGridActionInterface[]
      */
-    public function getDataActionsFiltered($filter)
+    public function getDataActionsFiltered($filter): array
     {
         $actions = [];
 
@@ -490,7 +489,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @return DataGridActionInterface[]
      */
-    public function getDataActionsMenuFiltered($filter)
+    public function getDataActionsMenuFiltered($filter): array
     {
         $actions = [];
 
@@ -504,9 +503,9 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDataTableTemplate()
+    public function getDataTableTemplate(): ?string
     {
         return $this->tableTemplate;
     }
@@ -531,7 +530,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return int
      */
-    public function getDataActionsMenuCount()
+    public function getDataActionsMenuCount(): int
     {
         return $this->actionsMenuCount;
     }
@@ -539,7 +538,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * @return int
      */
-    public function getDataActionsCount()
+    public function getDataActionsCount(): int
     {
         return $this->actionsCount;
     }

@@ -77,7 +77,11 @@ final class LdapConnection implements LdapConnectionInterface
      * @param EventDispatcher $eventDispatcher
      * @param bool            $debug
      */
-    public function __construct(LdapParams $ldapParams, EventDispatcher $eventDispatcher, $debug = false)
+    public function __construct(
+        LdapParams $ldapParams,
+        EventDispatcher $eventDispatcher,
+        bool $debug = false
+    )
     {
         $this->ldapParams = $ldapParams;
         $this->eventDispatcher = $eventDispatcher;
@@ -163,7 +167,7 @@ final class LdapConnection implements LdapConnectionInterface
      *
      * @throws LdapException
      */
-    public function checkParams()
+    public function checkParams(): bool
     {
         if (empty($this->ldapParams->getSearchBase())
             || empty($this->getServer())
@@ -175,6 +179,8 @@ final class LdapConnection implements LdapConnectionInterface
 
             throw new LdapException(__u('LDAP parameters are not set'));
         }
+
+        return true;
     }
 
     /**
@@ -190,16 +196,13 @@ final class LdapConnection implements LdapConnectionInterface
      *
      * @return LdapConnection
      */
-    public function setServer(string $server)
+    public function setServer(string $server): LdapConnectionInterface
     {
         $this->server = $server;
 
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getServerUri(): string
     {
         $server = $this->getServer();
@@ -246,11 +249,11 @@ final class LdapConnection implements LdapConnectionInterface
     /**
      * Registrar error de LDAP y devolver el mensaje de error
      *
-     * @param $ldapHandler
+     * @param resource $ldapHandler
      *
      * @return string
      */
-    public static function getLdapErrorMessage($ldapHandler)
+    public static function getLdapErrorMessage($ldapHandler): string
     {
         return sprintf('%s (%d)', ldap_error($ldapHandler), ldap_errno($ldapHandler));
     }
@@ -258,8 +261,8 @@ final class LdapConnection implements LdapConnectionInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn   con el DN del usuario
-     * @param string $bindPass con la clave del usuario
+     * @param string|null $bindDn   con el DN del usuario
+     * @param string|null $bindPass con la clave del usuario
      *
      * @return bool
      * @throws LdapException
@@ -291,7 +294,7 @@ final class LdapConnection implements LdapConnectionInterface
     /**
      * @return int
      */
-    public function getErrorCode()
+    public function getErrorCode(): int
     {
         if (is_resource($this->ldapHandler)) {
             return ldap_errno($this->ldapHandler);

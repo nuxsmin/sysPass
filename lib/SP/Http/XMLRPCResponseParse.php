@@ -58,7 +58,7 @@ abstract class XMLRPCResponseParse
      *
      * @throws InvalidArgumentException
      */
-    public function __construct($xml)
+    public function __construct(string $xml)
     {
         try {
             $this->xml = $xml;
@@ -81,7 +81,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    public function getError()
+    public function getError(): array
     {
         return $this->parseNodes($this->root->getElementsByTagName('fault'));
     }
@@ -94,7 +94,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    private function parseNodes(DOMNodeList $nodes)
+    private function parseNodes(DOMNodeList $nodes): array
     {
         if ($nodes->length > 0) {
             foreach ($nodes as $node) {
@@ -129,7 +129,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    private function parseStruct(DOMElement $xmlStruct)
+    private function parseStruct(DOMElement $xmlStruct): array
     {
         $dataStruct = [];
         $nStruct = 0;
@@ -185,7 +185,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    private function parseArray(DOMElement $xmlArray)
+    private function parseArray(DOMElement $xmlArray): array
     {
         $arrayData = [];
 
@@ -214,7 +214,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    private function parseValues(DOMElement $xmlValues)
+    private function parseValues(DOMElement $xmlValues): array
     {
         $valuesData = [];
 
@@ -240,7 +240,7 @@ abstract class XMLRPCResponseParse
      *
      * @return array
      */
-    private function parseFault(DOMElement $xmlFault)
+    private function parseFault(DOMElement $xmlFault): array
     {
         $faultData = [];
 
@@ -263,7 +263,7 @@ abstract class XMLRPCResponseParse
     /**
      * Obtener los datos de la respuesta
      */
-    public function parseParams()
+    public function parseParams(): array
     {
         $this->parseNodes($this->root->getElementsByTagName('params'));
 
@@ -275,7 +275,7 @@ abstract class XMLRPCResponseParse
      *
      * @return string
      */
-    public function getXml()
+    public function getXml(): string
     {
         return $this->xml;
     }

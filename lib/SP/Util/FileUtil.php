@@ -48,7 +48,7 @@ final class FileUtil
      * @throws FileNotFoundException
      * @see https://stackoverflow.com/a/7288067
      */
-    public static function rmdir_recursive($dir)
+    public static function rmdir_recursive($dir): bool
     {
         if (!is_dir($dir)) {
             throw new FileNotFoundException('Directory does not exist');
@@ -69,7 +69,7 @@ final class FileUtil
      *
      * @return bool
      */
-    public static function isImage(FileData $fileData)
+    public static function isImage(FileData $fileData): bool
     {
         return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
     }

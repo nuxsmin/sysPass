@@ -41,7 +41,7 @@ interface LdapConnectionInterface
      *
      * @return bool
      */
-    public function checkParams();
+    public function checkParams(): bool;
 
     /**
      * @return resource
@@ -58,12 +58,12 @@ interface LdapConnectionInterface
     public function connect(): bool;
 
     /**
-     * @param string $bindDn
-     * @param string $bindPass
+     * @param string|null $bindDn
+     * @param string|null $bindPass
      *
      * @return bool
      */
-    public function bind(string $bindDn = null, string $bindPass = null): bool;
+    public function bind(?string $bindDn = null, ?string $bindPass = null): bool;
 
     /**
      * @return bool
@@ -85,5 +85,5 @@ interface LdapConnectionInterface
      *
      * @return LdapConnectionInterface
      */
-    public function setServer(string $server);
+    public function setServer(string $server): LdapConnectionInterface;
 }

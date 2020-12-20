@@ -52,7 +52,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
      * @return AccountForm
      * @throws ValidationException

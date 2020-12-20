@@ -35,10 +35,10 @@ final class ImageIcon extends IconBase
 {
     /**
      * @param string $icon
-     * @param string $class
-     * @param string $title
+     * @param null   $class
+     * @param null   $title
      */
-    public function __construct($icon, $class = null, $title = null)
+    public function __construct(string $icon, $class = null, $title = null)
     {
         $this->setIcon($icon);
         $this->setClass($class);

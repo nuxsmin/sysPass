@@ -189,13 +189,6 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $this->assertEquals(2, $data[0]->getId());
         $this->assertEquals('Global', $data[0]->getType());
 
-        $itemSearchData->setSeachString('');
-
-        $result = self::$repository->search($itemSearchData);
-
-        $this->assertEquals(3, $result->getNumRows());
-        $this->assertCount(3, $result->getDataAsArray());
-
         $itemSearchData->setSeachString('Accounts');
 
         $result = self::$repository->search($itemSearchData);
@@ -210,6 +203,13 @@ class NotificationRepositoryTest extends DatabaseTestCase
         $this->assertEquals('Accounts', $data[1]->getComponent());
         $this->assertEquals(1529145158, $data[2]->getDate());
         $this->assertEquals('Accounts', $data[2]->getComponent());
+
+        $itemSearchData->setSeachString(null);
+
+        $result = self::$repository->search($itemSearchData);
+
+        $this->assertEquals(3, $result->getNumRows());
+        $this->assertCount(3, $result->getDataAsArray());
     }
 
     /**

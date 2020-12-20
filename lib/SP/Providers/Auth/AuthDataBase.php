@@ -61,9 +61,9 @@ abstract class AuthDataBase
     protected $failed = false;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -71,15 +71,15 @@ abstract class AuthDataBase
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -87,15 +87,15 @@ abstract class AuthDataBase
     /**
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail(string $email)
     {
         $this->email = $email;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getAuthenticated()
+    public function getAuthenticated(): ?int
     {
         return $this->authenticated;
     }
@@ -105,7 +105,7 @@ abstract class AuthDataBase
      *
      * @return $this
      */
-    public function setAuthenticated($authenticated = null)
+    public function setAuthenticated(?bool $authenticated = null): AuthDataBase
     {
         $this->authenticated = $authenticated !== null ? (bool)$authenticated : null;
 
@@ -113,9 +113,9 @@ abstract class AuthDataBase
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getServer()
+    public function getServer(): ?string
     {
         return $this->server;
     }
@@ -123,7 +123,7 @@ abstract class AuthDataBase
     /**
      * @param string $server
      */
-    public function setServer($server)
+    public function setServer(string $server)
     {
         $this->server = $server;
     }
@@ -131,7 +131,7 @@ abstract class AuthDataBase
     /**
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return (int)$this->statusCode;
     }
@@ -139,7 +139,7 @@ abstract class AuthDataBase
     /**
      * @param int $statusCode
      */
-    public function setStatusCode($statusCode)
+    public function setStatusCode(int $statusCode)
     {
         $this->statusCode = (int)$statusCode;
     }
@@ -149,7 +149,7 @@ abstract class AuthDataBase
      *
      * @return bool
      */
-    public function isAuthoritative()
+    public function isAuthoritative(): bool
     {
         return (bool)$this->authoritative;
     }
@@ -159,15 +159,15 @@ abstract class AuthDataBase
      *
      * @param bool $authoritative
      */
-    public function setAuthoritative($authoritative)
+    public function setAuthoritative(bool $authoritative)
     {
         $this->authoritative = (bool)$authoritative;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isFailed()
+    public function isFailed(): ?bool
     {
         return $this->failed;
     }
@@ -175,7 +175,7 @@ abstract class AuthDataBase
     /**
      * @param bool $failed
      */
-    public function setFailed($failed)
+    public function setFailed(bool $failed)
     {
         $this->failed = $failed;
     }

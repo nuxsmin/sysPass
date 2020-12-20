@@ -44,7 +44,7 @@ final class SyslogHandler extends LoggerBase
      *
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return LogInterface::EVENTS;
     }
@@ -54,7 +54,7 @@ final class SyslogHandler extends LoggerBase
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): string
     {
         return $this->events;
     }

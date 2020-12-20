@@ -51,7 +51,7 @@ final class Message
     /**
      * @return int
      */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
@@ -59,15 +59,15 @@ final class Message
     /**
      * @param int $type
      */
-    public function setType($type)
+    public function setType(int $type)
     {
         $this->type = $type;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -75,15 +75,15 @@ final class Message
     /**
      * @param string $description
      */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getHint()
+    public function getHint(): ?string
     {
         return $this->hint;
     }
@@ -91,7 +91,7 @@ final class Message
     /**
      * @param string $hint
      */
-    public function setHint($hint)
+    public function setHint(string $hint)
     {
         $this->hint = $hint;
     }

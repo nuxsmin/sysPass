@@ -87,7 +87,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function updateEvent($eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event)
     {
         if (strpos($eventType, 'database.') !== false) {
             return;
@@ -132,7 +132,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): ?string
     {
         return $this->events;
     }
@@ -142,7 +142,7 @@ final class DatabaseLogHandler extends Provider implements EventReceiver
      *
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return LogInterface::EVENTS;
     }

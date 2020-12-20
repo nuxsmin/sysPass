@@ -46,12 +46,12 @@ final class PasswordUtil
     /**
      * Generate a ramdom password
      *
-     * @param int $length Password length
-     * @param int $flags  Password chars included and checking strength flags
+     * @param int      $length Password length
+     * @param int|null $flags  Password chars included and checking strength flags
      *
      * @return string
      */
-    public static function randomPassword($length = 16, int $flags = null)
+    public static function randomPassword(int $length = 16, int $flags = null): string
     {
         if ($flags === null) {
             $flags = self::FLAG_PASSWORD_SPECIAL | self::FLAG_PASSWORD_NUMBER | self::FLAG_PASSWORD_STRENGTH;
@@ -112,7 +112,7 @@ final class PasswordUtil
      *
      * @return array
      */
-    public static function checkStrength(array $pass)
+    public static function checkStrength(array $pass): array
     {
         $charsUpper = strtoupper(self::CHARS);
         $strength = ['lower' => 0, 'upper' => 0, 'special' => 0, 'number' => 0];
@@ -135,7 +135,7 @@ final class PasswordUtil
      * @return string
      * @throws EnvironmentIsBrokenException
      */
-    public static function generateRandomBytes($length = 30)
+    public static function generateRandomBytes(int $length = 30): string
     {
         return Encoding::binToHex(Core::secureRandom($length));
     }

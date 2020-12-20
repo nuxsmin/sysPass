@@ -97,15 +97,15 @@ final class AccountAclService extends Service
     /**
      * Obtener la ACL de una cuenta
      *
-     * @param int           $actionId
-     * @param AccountAclDto $accountAclDto
-     * @param bool          $isHistory
+     * @param int                $actionId
+     * @param AccountAclDto|null $accountAclDto
+     * @param bool               $isHistory
      *
      * @return AccountAcl
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getAcl($actionId, AccountAclDto $accountAclDto = null, $isHistory = false)
+    public function getAcl($actionId, ?AccountAclDto $accountAclDto = null, $isHistory = false)
     {
         $this->accountAcl = new AccountAcl($actionId, $isHistory);
         $this->accountAcl->setShowPermission(self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile()));

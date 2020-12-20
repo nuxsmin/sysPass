@@ -75,7 +75,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
-    public function load($node = 'root'): XmlFileStorageInterface
+    public function load(string $node = 'root'): XmlFileStorageInterface
     {
         $this->fileHandler->checkIsReadable();
         $this->fileHandler->getFileSize(true);
@@ -175,7 +175,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @throws FileException
      * @throws RuntimeException
      */
-    public function save($data, $node = 'root'): XmlFileStorageInterface
+    public function save($data, string $node = 'root'): XmlFileStorageInterface
     {
         $this->fileHandler->checkIsWritable();
 
@@ -314,7 +314,7 @@ final class XmlHandler implements XmlFileStorageInterface
      * @return string
      * @throws FileException
      */
-    public function getPathValue($path)
+    public function getPathValue(string $path):string
     {
         $this->fileHandler->checkIsReadable();
         $this->fileHandler->getFileSize(true);

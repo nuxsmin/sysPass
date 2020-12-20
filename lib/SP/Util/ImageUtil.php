@@ -57,7 +57,7 @@ final class ImageUtil
      * @return bool|string
      * @throws InvalidImageException
      */
-    public function createThumbnail($image)
+    public function createThumbnail(string $image)
     {
         $im = @imagecreatefromstring($image);
 
@@ -97,7 +97,7 @@ final class ImageUtil
      *
      * @return bool|string
      */
-    public function convertText($text)
+    public function convertText(string $text)
     {
         $width = strlen($text) * 10;
 

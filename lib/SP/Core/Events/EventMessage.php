@@ -79,13 +79,13 @@ final class EventMessage implements MessageInterface
      * Establece los detalles de la acción realizada
      *
      * @param $key   string
-     * @param $value string
+     * @param $value string|null
      *
      * @return $this
      */
-    public function addDetail($key, $value)
+    public function addDetail(string $key, ?string $value): EventMessage
     {
-        if ($value === '' || $key === '') {
+        if (empty($value) || empty($key)) {
             return $this;
         }
 
@@ -103,7 +103,7 @@ final class EventMessage implements MessageInterface
      *
      * @return string
      */
-    private function formatString($string)
+    private function formatString(string $string): string
     {
         return strip_tags($string);
     }
@@ -115,7 +115,7 @@ final class EventMessage implements MessageInterface
      *
      * @return $this
      */
-    public function addDescription($description = '')
+    public function addDescription($description = ''): EventMessage
     {
         $this->description[] = $this->formatString($description);
 
@@ -131,7 +131,7 @@ final class EventMessage implements MessageInterface
      *
      * @return string
      */
-    public function composeText($delimiter = PHP_EOL)
+    public function composeText(string $delimiter = PHP_EOL): string
     {
         if ($this->descriptionCounter === 0 && $this->detailsCounter === 0) {
             return '';
@@ -153,7 +153,7 @@ final class EventMessage implements MessageInterface
      *
      * @return string
      */
-    public function getDescription(FormatterInterface $formatter, $translate = false)
+    public function getDescription(FormatterInterface $formatter, $translate = false): string
     {
         if ($this->descriptionCounter === 0) {
             return '';
@@ -170,7 +170,7 @@ final class EventMessage implements MessageInterface
      *
      * @return string
      */
-    public function getDetails(FormatterInterface $formatter, bool $translate = false)
+    public function getDetails(FormatterInterface $formatter, bool $translate = false): string
     {
         if ($this->detailsCounter === 0) {
             return '';
@@ -192,9 +192,9 @@ final class EventMessage implements MessageInterface
     /**
      * Componer un mensaje en formato HTML
      *
-     * @return mixed
+     * @return string
      */
-    public function composeHtml()
+    public function composeHtml(): string
     {
         $formatter = new HtmlFormatter();
 
@@ -209,7 +209,7 @@ final class EventMessage implements MessageInterface
     /**
      * @return int
      */
-    public function getDescriptionCounter()
+    public function getDescriptionCounter(): int
     {
         return $this->descriptionCounter;
     }
@@ -217,7 +217,7 @@ final class EventMessage implements MessageInterface
     /**
      * @return int
      */
-    public function getDetailsCounter()
+    public function getDetailsCounter(): int
     {
         return $this->detailsCounter;
     }
@@ -225,18 +225,18 @@ final class EventMessage implements MessageInterface
     /**
      * @return array
      */
-    public function getExtra()
+    public function getExtra(): array
     {
         return $this->extra;
     }
 
     /**
-     * @param       $type
-     * @param array $data
+     * @param string $type
+     * @param array  $data
      *
      * @return EventMessage
      */
-    public function setExtra($type, array $data)
+    public function setExtra(string $type, array $data): EventMessage
     {
         if (isset($this->extra[$type])) {
             $this->extra[$type] = array_merge($this->extra[$type], $data);
@@ -255,7 +255,7 @@ final class EventMessage implements MessageInterface
      *
      * @return EventMessage
      */
-    public function addExtra($type, $data)
+    public function addExtra(string $type, $data): EventMessage
     {
         if (isset($this->extra[$type])
             && in_array($data, $this->extra[$type])

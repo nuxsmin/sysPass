@@ -72,7 +72,7 @@ final class PluginOperation
      * @throws QueryException
      * @throws ServiceException
      */
-    public function create(int $itemId, $data)
+    public function create(int $itemId, $data): int
     {
         $itemData = new PluginDataModel();
         $itemData->setName($this->pluginName);
@@ -93,7 +93,7 @@ final class PluginOperation
      * @throws QueryException
      * @throws ServiceException
      */
-    public function update(int $itemId, $data)
+    public function update(int $itemId, $data): int
     {
         $itemData = new PluginDataModel();
         $itemData->setName($this->pluginName);

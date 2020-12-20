@@ -35,6 +35,16 @@ use SP\Services\User\UserLoginResponse;
 final class StatelessContext extends ContextBase
 {
     /**
+     * Establece los datos del usuario en la sesión.
+     *
+     * @param UserLoginResponse|null $userLoginResponse
+     */
+    public function setUserData(UserLoginResponse $userLoginResponse = null)
+    {
+        $this->setContextKey('userData', $userLoginResponse);
+    }
+
+    /**
      * Establecer una variable de sesión
      *
      * @param string $key   El nombre de la variable
@@ -56,21 +66,11 @@ final class StatelessContext extends ContextBase
     }
 
     /**
-     * Establece los datos del usuario en la sesión.
-     *
-     * @param UserLoginResponse $userLoginResponse
-     */
-    public function setUserData(UserLoginResponse $userLoginResponse = null)
-    {
-        $this->setContextKey('userData', $userLoginResponse);
-    }
-
-    /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
      * @return ProfileData
      */
-    public function getUserProfile()
+    public function getUserProfile(): ?ProfileData
     {
         return $this->getContextKey('userProfile');
     }
@@ -109,7 +109,7 @@ final class StatelessContext extends ContextBase
      *
      * @return bool
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return !empty($this->getUserData()->getLogin());
     }
@@ -119,7 +119,7 @@ final class StatelessContext extends ContextBase
      *
      * @return UserLoginResponse
      */
-    public function getUserData()
+    public function getUserData(): ?UserLoginResponse
     {
         return $this->getContextKey('userData', new UserLoginResponse());
     }
@@ -139,7 +139,7 @@ final class StatelessContext extends ContextBase
      *
      * @return string
      */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->getContextKey('locale');
     }
@@ -149,7 +149,7 @@ final class StatelessContext extends ContextBase
      *
      * @return bool
      */
-    public function getAppStatus()
+    public function getAppStatus(): ?bool
     {
         return $this->getContextKey('status');
     }
@@ -159,7 +159,7 @@ final class StatelessContext extends ContextBase
      *
      * @param string $status
      */
-    public function setAppStatus($status)
+    public function setAppStatus(string $status)
     {
         $this->setContextKey('status', $status);
     }
@@ -169,7 +169,7 @@ final class StatelessContext extends ContextBase
      *
      * @return bool
      */
-    public function resetAppStatus()
+    public function resetAppStatus(): ?bool
     {
         return $this->setContextKey('status', null);
     }
@@ -188,7 +188,7 @@ final class StatelessContext extends ContextBase
      *
      * @param int $time
      */
-    public function setConfigTime($time)
+    public function setConfigTime(int $time)
     {
         $this->setContextKey('configTime', (int)$time);
     }
@@ -198,7 +198,7 @@ final class StatelessContext extends ContextBase
      *
      * @return int
      */
-    public function getConfigTime()
+    public function getConfigTime(): int
     {
         return $this->getContextKey('configTime');
     }
@@ -206,7 +206,7 @@ final class StatelessContext extends ContextBase
     /**
      * @return null
      */
-    public function getAccountsCache()
+    public function getAccountsCache(): ?array
     {
         return null;
     }

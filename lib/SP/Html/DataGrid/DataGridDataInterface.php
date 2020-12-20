@@ -44,28 +44,33 @@ interface DataGridDataInterface
      * @param callable|null $filter
      * @param bool          $truncate
      */
-    public function addDataRowSource($source, $isMethod = false, callable $filter = null, $truncate = true);
+    public function addDataRowSource(
+        string $source,
+        bool $isMethod = false,
+        callable $filter = null,
+        bool $truncate = true
+    );
 
     /**
      * Devolver los orígenes de datos de la consulta
      *
      * @return array
      */
-    public function getDataRowSources();
+    public function getDataRowSources(): array;
 
     /**
      * Establecer el origen de datos utilizado como Id de los elementos
      *
      * @param $id string
      */
-    public function setDataRowSourceId($id);
+    public function setDataRowSourceId(string $id);
 
     /**
      * Devolver el origen de datos utilizado como Id de los elementos
      *
      * @return string
      */
-    public function getDataRowSourceId();
+    public function getDataRowSourceId(): string;
 
     /**
      * Establecer los datos de la consulta
@@ -79,7 +84,7 @@ interface DataGridDataInterface
      *
      * @return array
      */
-    public function getData();
+    public function getData(): array;
 
     /**
      * Establecer los orígenes de datos que se muestran con iconos
@@ -88,19 +93,23 @@ interface DataGridDataInterface
      * @param       $icon   IconInterface
      * @param mixed $value  Valor para mostrar el icono
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1);
+    public function addDataRowSourceWithIcon(
+        string $source,
+        IconInterface $icon,
+        int $value = 1
+    );
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos
      *
      * @return array
      */
-    public function getDataRowSourcesWithIcon();
+    public function getDataRowSourcesWithIcon(): array;
 
     /**
      * Devolver el número de elementos obtenidos
      *
      * @return int
      */
-    public function getDataCount();
+    public function getDataCount(): int;
 }

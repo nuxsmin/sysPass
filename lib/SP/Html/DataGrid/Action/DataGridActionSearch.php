@@ -60,7 +60,7 @@ final class DataGridActionSearch extends DataGridActionBase
     /**
      * @return string
      */
-    public function getOnSubmit()
+    public function getOnSubmit(): string
     {
         $args = [];
 
@@ -74,7 +74,7 @@ final class DataGridActionSearch extends DataGridActionBase
     /**
      * @param string $onSubmitFunction
      */
-    public function setOnSubmitFunction($onSubmitFunction)
+    public function setOnSubmitFunction(string $onSubmitFunction)
     {
         $this->onSubmitFunction = $onSubmitFunction;
     }
@@ -82,7 +82,7 @@ final class DataGridActionSearch extends DataGridActionBase
     /**
      * @param array $args
      */
-    public function setOnSubmitArgs($args)
+    public function setOnSubmitArgs(array $args)
     {
         $this->onSubmitArgs[] = $args;
     }

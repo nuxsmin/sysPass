@@ -34,12 +34,12 @@ final class DateUtil
     /**
      * Returns date string from UNIX timestamp
      *
-     * @param        $date
+     * @param mixed  $date
      * @param string $format
      *
      * @return false|string
      */
-    public static function getDateFromUnix($date, $format = 'Y-m-d H:i')
+    public static function getDateFromUnix($date, string $format = 'Y-m-d H:i')
     {
         return is_numeric($date) ? date($format, $date) : $date;
     }

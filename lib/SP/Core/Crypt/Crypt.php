@@ -41,12 +41,12 @@ final class Crypt
      *
      * @param string     $data
      * @param string|Key $securedKey
-     * @param string     $password
+     * @param null       $password
      *
      * @return string
      * @throws CryptoException
      */
-    public static function encrypt($data, $securedKey, $password = null)
+    public static function encrypt(string $data, $securedKey, $password = null)
     {
         try {
             if ($securedKey instanceof Key) {
@@ -73,7 +73,7 @@ final class Crypt
      * @return string|Key
      * @throws CryptoException
      */
-    public static function unlockSecuredKey($key, $password, $useAscii = true)
+    public static function unlockSecuredKey(string $key, string $password, $useAscii = true)
     {
         try {
             if ($useAscii) {
@@ -93,12 +93,12 @@ final class Crypt
      *
      * @param string                            $data
      * @param string|Key|KeyProtectedByPassword $securedKey
-     * @param string                            $password
+     * @param null                              $password
      *
      * @return string
      * @throws CryptoException
      */
-    public static function decrypt($data, $securedKey, $password = null)
+    public static function decrypt(string $data, $securedKey, $password = null)
     {
         try {
             if ($securedKey instanceof Key) {
@@ -129,7 +129,7 @@ final class Crypt
      * @return string|KeyProtectedByPassword
      * @throws CryptoException
      */
-    public static function makeSecuredKey($password, $useAscii = true)
+    public static function makeSecuredKey(string $password, $useAscii = true)
     {
         try {
             if ($useAscii) {

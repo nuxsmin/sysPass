@@ -66,7 +66,7 @@ final class HtmlFormatter implements FormatterInterface
      *
      * @return string
      */
-    private function buildLink(string $text)
+    private function buildLink(string $text): string
     {
         if (preg_match('#^https?://.*$#', $text, $matches)) {
             return sprintf('<a href="%s">%s</a>', $matches[0], Html::truncate($matches[0], 30));

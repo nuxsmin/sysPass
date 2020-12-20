@@ -34,54 +34,54 @@ interface PluginInterface extends PluginEventReceiver
     /**
      * Devuelve el tipo de plugin
      *
-     * @return string
+     * @return string|null
      */
-    public function getType();
+    public function getType(): ?string;
 
     /**
      * Devuelve el directorio base del plugin
      *
-     * @return string
+     * @return string|null
      */
-    public function getBase();
+    public function getBase(): ?string;
 
     /**
      * Devuelve el directorio del tema usado
      *
-     * @return mixed
+     * @return string|null
      */
-    public function getThemeDir();
+    public function getThemeDir(): ?string;
 
     /**
      * Devuelve el autor del plugin
      *
-     * @return string
+     * @return string|null
      */
-    public function getAuthor();
+    public function getAuthor(): ?string;
 
     /**
      * Devuelve la versión del plugin
      *
-     * @return array
+     * @return array|null
      */
-    public function getVersion();
+    public function getVersion(): ?array;
 
     /**
      * Devuelve la versión compatible de sysPass
      *
-     * @return array
+     * @return array|null
      */
-    public function getCompatibleVersion();
+    public function getCompatibleVersion(): ?array;
 
     /**
      * Devuelve el nombre del plugin
      *
-     * @return string
+     * @return string|null
      */
-    public function getName();
+    public function getName(): ?string;
 
     /**
-     * @return mixed
+     * @return mixed|null
      */
     public function getData();
 
@@ -98,7 +98,7 @@ interface PluginInterface extends PluginEventReceiver
     /**
      * @param int $enabled
      */
-    public function setEnabled($enabled);
+    public function setEnabled(int $enabled);
 
     /**
      * @param string          $version

@@ -147,11 +147,11 @@ final class Util
      *
      * @param string        $dstClass Destination class name
      * @param string|object $serialized
-     * @param string        $srcClass Old class name for removing from private methods
+     * @param string|null   $srcClass Old class name for removing from private methods
      *
      * @return mixed
      */
-    public static function unserialize($dstClass, $serialized, $srcClass = null)
+    public static function unserialize(string $dstClass, $serialized, ?string $srcClass = null)
     {
         if (!is_object($serialized)) {
             $match = preg_match_all('/O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
@@ -220,7 +220,7 @@ final class Util
      *
      * @throws FileException
      */
-    public static function lockApp($userId, $subject)
+    public static function lockApp($userId, string $subject)
     {
         $data = ['time' => time(), 'userId' => (int)$userId, 'subject' => $subject];
 
@@ -235,7 +235,7 @@ final class Util
      *
      * @return bool
      */
-    public static function unlockApp()
+    public static function unlockApp(): bool
     {
         logger('Application unlocked');
 
@@ -245,12 +245,13 @@ final class Util
     /**
      * Comprueba si la aplicación está bloqueada
      *
-     * @return mixed
+     * @return bool|string
      */
     public static function getAppLock()
     {
         try {
             $file = new FileHandler(LOCK_FILE);
+
             return json_decode($file->readToString());
         } catch (FileException $e) {
             return false;
@@ -266,7 +267,7 @@ final class Util
      *
      * @return array Con el tiempo estimado y los elementos por segundo
      */
-    public static function getETA($startTime, $numItems, $totalItems)
+    public static function getETA($startTime, $numItems, $totalItems): array
     {
         if ($numItems > 0 && $totalItems > 0) {
             $runtime = time() - $startTime;
@@ -286,7 +287,7 @@ final class Util
      *
      * @return array
      */
-    public static function itemsIdAdapter(string $itemsId, $delimiter = ','): array
+    public static function itemsIdAdapter(string $itemsId, string $delimiter = ','): array
     {
         return array_map(function ($value) {
             return intval($value);

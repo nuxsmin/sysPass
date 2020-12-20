@@ -40,7 +40,7 @@ final class Filter
      *
      * @return mixed
      */
-    public static function safeSearchString($string)
+    public static function safeSearchString(string $string)
     {
         return str_replace(['/', '[', '\\', ']', '%', '{', '}', '*', '$'], '', (string)$string);
     }
@@ -50,7 +50,7 @@ final class Filter
      *
      * @return string
      */
-    public static function getEmail($value): string
+    public static function getEmail(string $value): string
     {
         return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
     }
@@ -76,7 +76,7 @@ final class Filter
     }
 
     /**
-     * @param $value
+     * @param string|int $value
      *
      * @return int
      */
@@ -86,11 +86,11 @@ final class Filter
     }
 
     /**
-     * @param $value
+     * @param string|null $value
      *
      * @return string
      */
-    public static function getString($value): string
+    public static function getString(?string $value): string
     {
         return filter_var(trim($value), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }

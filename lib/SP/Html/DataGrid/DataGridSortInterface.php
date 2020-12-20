@@ -39,47 +39,47 @@ interface DataGridSortInterface
     /**
      * @return int
      */
-    public function getSortKey();
+    public function getSortKey(): int;
 
     /**
      * @param $key int
      */
-    public function setSortKey($key);
+    public function setSortKey(int $key);
 
     /**
      * @return string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
      * @param $title string
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * @return string
      */
-    public function getName();
+    public function getName(): string;
 
     /**
      * @param $name string
      */
-    public function setName($name);
+    public function setName(string $name);
 
     /**
      * @return string
      */
-    public function getClass();
+    public function getClass(): string;
 
     /**
      * @param $class string
      */
-    public function setClass($class);
+    public function setClass(string $class);
 
     /**
-     * @return IconInterface
+     * @return IconInterface|null
      */
-    public function getIconUp();
+    public function getIconUp(): ?IconInterface;
 
     /**
      * @param IconInterface $icon
@@ -87,9 +87,9 @@ interface DataGridSortInterface
     public function setIconUp(IconInterface $icon);
 
     /**
-     * @return IconInterface
+     * @return IconInterface|null
      */
-    public function getIconDown();
+    public function getIconDown(): ?IconInterface;
 
     /**
      * @param IconInterface $icon

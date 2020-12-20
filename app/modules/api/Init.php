@@ -79,7 +79,7 @@ final class Init extends ModuleBase
      * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public function initialize($controller)
+    public function initialize(string $controller)
     {
         logger(__FUNCTION__);
 

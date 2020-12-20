@@ -353,7 +353,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setFrom('Notification');
         $queryData->setOrder('`date` DESC');
 
-        if ($itemSearchData->getSeachString() !== '') {
+        if (!empty($itemSearchData->getSeachString())) {
             $queryData->setWhere('type LIKE ? OR component LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
@@ -380,7 +380,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchForUserId(ItemSearchData $itemSearchData, $userId)
+    public function searchForUserId(ItemSearchData $itemSearchData, int $userId): QueryResult
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
@@ -389,9 +389,10 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setOrder('`date` DESC');
 
         $queryCondition = new QueryCondition();
-        $queryCondition->addFilter('userId = ?', [$userId]);
-        $queryCondition->addFilter('(userId IS NULL AND onlyAdmin = 0)');
-        $queryCondition->addFilter('sticky = 1');
+        $queryCondition
+            ->addFilter('userId = ?', [$userId])
+            ->addFilter('(userId IS NULL AND onlyAdmin = 0)')
+            ->addFilter('sticky = 1');
 
         if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere(
@@ -424,7 +425,7 @@ final class NotificationRepository extends Repository implements RepositoryItemI
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchForAdmin(ItemSearchData $itemSearchData, $userId)
+    public function searchForAdmin(ItemSearchData $itemSearchData, int $userId)
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(NotificationData::class);
@@ -433,9 +434,10 @@ final class NotificationRepository extends Repository implements RepositoryItemI
         $queryData->setOrder('`date` DESC');
 
         $queryCondition = new QueryCondition();
-        $queryCondition->addFilter('userId = ?', [$userId]);
-        $queryCondition->addFilter('onlyAdmin = 1');
-        $queryCondition->addFilter('sticky = 1');
+        $queryCondition
+            ->addFilter('userId = ?', [$userId])
+            ->addFilter('onlyAdmin = 1')
+            ->addFilter('sticky = 1');
 
         if ($itemSearchData->getSeachString() !== '') {
             $queryData->setWhere(

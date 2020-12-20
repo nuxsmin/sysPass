@@ -85,7 +85,7 @@ final class LdapAuth implements AuthInterface
     /**
      * @return LdapAuthData
      */
-    public function getLdapAuthData()
+    public function getLdapAuthData(): ?LdapAuthData
     {
         return $this->ldapAuthData;
     }
@@ -93,7 +93,7 @@ final class LdapAuth implements AuthInterface
     /**
      * @return string
      */
-    public function getUserLogin()
+    public function getUserLogin(): ?string
     {
         return $this->userLogin;
     }
@@ -101,7 +101,7 @@ final class LdapAuth implements AuthInterface
     /**
      * @param string $userLogin
      */
-    public function setUserLogin($userLogin)
+    public function setUserLogin(string $userLogin)
     {
         $this->userLogin = strtolower($userLogin);
     }
@@ -142,7 +142,7 @@ final class LdapAuth implements AuthInterface
      *
      * @return boolean
      */
-    public function isAuthGranted()
+    public function isAuthGranted(): bool
     {
         return !$this->configData->isLdapDatabaseEnabled();
     }
@@ -155,7 +155,7 @@ final class LdapAuth implements AuthInterface
      * @return LdapAuthData con los atributos disponibles y sus valores
      * @throws LdapException
      */
-    public function getAttributes(string $userLogin)
+    public function getAttributes(string $userLogin): LdapAuthData
     {
         $attributes = $this->ldap->getLdapActions()
             ->getAttributes($this->ldap->getUserDnFilter($userLogin));
@@ -172,8 +172,11 @@ final class LdapAuth implements AuthInterface
 
         $mail = $attributes->get('mail');
 
+        if ($mail !== null) {
+            $this->ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
+        }
+
         $this->ldapAuthData->setDn($attributes->get('dn'));
-        $this->ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
         $this->ldapAuthData->setExpire($attributes->get('expire'));
 
         $this->ldapAuthData->setInGroup(

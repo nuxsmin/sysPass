@@ -84,7 +84,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -92,7 +92,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @param string $type
      */
-    public function setType($type)
+    public function setType(string $type)
     {
         $this->type = $type;
     }
@@ -100,7 +100,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @return string
      */
-    public function getThemeDir()
+    public function getThemeDir(): ?string
     {
         return $this->themeDir;
     }
@@ -116,7 +116,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @return int
      */
-    public function getEnabled()
+    public function getEnabled(): int
     {
         return (int)$this->enabled;
     }
@@ -124,7 +124,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @param int $enabled
      */
-    public function setEnabled($enabled)
+    public function setEnabled(int $enabled)
     {
         $this->enabled = (int)$enabled;
     }
@@ -165,7 +165,7 @@ abstract class PluginBase implements PluginInterface
     /**
      * @return string
      */
-    public function getBase()
+    public function getBase(): ?string
     {
         return $this->base;
     }

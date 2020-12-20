@@ -50,7 +50,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
     /**
      * @return DataGridSortInterface[]
      */
-    public function getSortFields()
+    public function getSortFields(): array
     {
         return $this->sortFields;
     }
@@ -58,15 +58,15 @@ final class DataGridHeaderSort extends DataGridHeaderBase
     /**
      * @return DataGridActionInterface[]
      */
-    public function getActions()
+    public function getActions(): array
     {
         return $this->actions;
     }
 
     /**
-     * @param DataGridActionInterface[] $action
+     * @param DataGridActionInterface $action
      */
-    public function addAction($action)
+    public function addAction(DataGridActionInterface  $action)
     {
         if (null === $this->actions) {
             $this->actions = new SplObjectStorage();
@@ -80,7 +80,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
      *
      * @return $this
      */
-    public function addSortField($field)
+    public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
     {
         if (null === $this->sortFields) {
             $this->sortFields = new SplObjectStorage();

@@ -82,7 +82,7 @@ final class Request
     /**
      * @return DataCollection
      */
-    private function getParamsByMethod()
+    private function getParamsByMethod(): DataCollection
     {
         if ($this->request->method('GET')) {
             $this->method = 'GET';
@@ -105,12 +105,12 @@ final class Request
     /**
      * Devuelve un nombre de archivo seguro
      *
-     * @param string $file
-     * @param string $base
+     * @param string      $file
+     * @param string|null $base
      *
      * @return string
      */
-    public static function getSecureAppFile(string $file, string $base = null)
+    public static function getSecureAppFile(string $file, ?string $base = null): string
     {
         return basename(self::getSecureAppPath($file, $base));
     }
@@ -118,12 +118,12 @@ final class Request
     /**
      * Devolver una ruta segura para
      *
-     * @param string $path
-     * @param string $base
+     * @param string      $path
+     * @param string|null $base
      *
      * @return string
      */
-    public static function getSecureAppPath(string $path, string $base = null)
+    public static function getSecureAppPath(string $path, ?string $base = null): string
     {
         if ($base === null) {
             $base = APP_ROOT;
@@ -165,7 +165,7 @@ final class Request
     /**
      * @return string[]|null
      */
-    public function getForwardedFor()
+    public function getForwardedFor(): ?array
     {
         // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
         $forwarded = $this->headers->get('HTTP_FORWARDED');
@@ -201,7 +201,7 @@ final class Request
      *
      * @return bool
      */
-    public function checkReload()
+    public function checkReload(): bool
     {
         return $this->headers->get('Cache-Control') === 'max-age=0';
     }
@@ -212,7 +212,7 @@ final class Request
      *
      * @return string|null
      */
-    public function analyzeEmail(string $param, string $default = null)
+    public function analyzeEmail(string $param, ?string $default = null): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -228,7 +228,7 @@ final class Request
      *
      * @return string
      */
-    public function analyzeEncrypted(string $param)
+    public function analyzeEncrypted(string $param): string
     {
         $encryptedData = $this->analyzeString($param);
 
@@ -257,12 +257,12 @@ final class Request
     }
 
     /**
-     * @param $param
-     * @param $default
+     * @param string      $param
+     * @param string|null $default
      *
      * @return string|null
      */
-    public function analyzeString(string $param, string $default = null)
+    public function analyzeString(string $param, ?string $default = null): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -272,12 +272,12 @@ final class Request
     }
 
     /**
-     * @param $param
-     * @param $default
+     * @param string      $param
+     * @param string|null $default
      *
      * @return string|null
      */
-    public function analyzeUnsafeString(string $param, string $default = null)
+    public function analyzeUnsafeString(string $param, ?string $default = null): ?string
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -317,7 +317,7 @@ final class Request
      *
      * @return bool
      */
-    public function isJson()
+    public function isJson(): bool
     {
         return strpos($this->headers->get('Accept'), 'application/json') !== false;
     }
@@ -327,7 +327,7 @@ final class Request
      *
      * @return bool
      */
-    public function isAjax()
+    public function isAjax(): bool
     {
         return $this->headers->get('X-Requested-With') === 'XMLHttpRequest'
             || $this->analyzeInt('isAjax', 0) === 1;
@@ -339,7 +339,7 @@ final class Request
      *
      * @return int
      */
-    public function analyzeInt(string $param, int $default = null): ?int
+    public function analyzeInt(string $param, ?int $default = null): ?int
     {
         if (!$this->params->exists($param)) {
             return $default;
@@ -353,7 +353,7 @@ final class Request
      *
      * @return array|null
      */
-    public function getFile(string $file)
+    public function getFile(string $file): ?array
     {
         return $this->request->files()->get($file);
     }
@@ -364,7 +364,7 @@ final class Request
      *
      * @return bool
      */
-    public function analyzeBool(string $param, bool $default = null): bool
+    public function analyzeBool(string $param, ?bool $default = null): bool
     {
         if (!$this->params->exists($param)) {
             return (bool)$default;
@@ -374,12 +374,12 @@ final class Request
     }
 
     /**
-     * @param string $key
-     * @param string $param Checks the signature only for the given param
+     * @param string      $key
+     * @param string|null $param Checks the signature only for the given param
      *
      * @throws SPException
      */
-    public function verifySignature(string $key, string $param = null)
+    public function verifySignature(string $key, ?string $param = null)
     {
         $result = false;
         $hash = $this->params->get('h');
@@ -445,7 +445,7 @@ final class Request
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
      * @return array|null
      */
-    public function getForwardedData()
+    public function getForwardedData(): ?array
     {
         $forwarded = $this->getHeader('HTTP_FORWARDED');
 
@@ -484,7 +484,7 @@ final class Request
      *
      * @return array|null
      */
-    public function getXForwardedData()
+    public function getXForwardedData(): ?array
     {
         $forwardedHost = $this->getHeader('HTTP_X_FORWARDED_HOST');
         $forwardedProto = $this->getHeader('HTTP_X_FORWARDED_PROTO');

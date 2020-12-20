@@ -87,7 +87,7 @@ final class DatabaseUtil
      *
      * @return bool
      */
-    public function checkDatabaseTables($dbName)
+    public function checkDatabaseTables(string $dbName): bool
     {
         try {
             $tables = implode(',', array_map(function ($value) {
@@ -113,7 +113,7 @@ final class DatabaseUtil
     /**
      * @return bool
      */
-    public function checkDatabaseConnection()
+    public function checkDatabaseConnection(): bool
     {
         try {
             $this->DBStorage->getConnection();
@@ -131,7 +131,7 @@ final class DatabaseUtil
      *
      * @return array
      */
-    public function getDBinfo()
+    public function getDBinfo(): array
     {
         $dbinfo = [];
 
@@ -164,7 +164,7 @@ final class DatabaseUtil
      *
      * @return string con la cadena escapada
      */
-    public function escape($str)
+    public function escape(string $str): string
     {
         try {
             return $this->DBStorage->getConnection()->quote(trim($str));

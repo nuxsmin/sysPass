@@ -53,9 +53,9 @@ final class Vault
     /**
      * @return static
      */
-    public static function getInstance()
+    public static function getInstance(): Vault
     {
-        return new static();
+        return new Vault();
     }
 
     /**
@@ -67,7 +67,7 @@ final class Vault
      * @return Vault
      * @throws CryptoException
      */
-    public function reKey($newSeed, $oldSeed)
+    public function reKey(string $newSeed, string $oldSeed): Vault
     {
         $this->timeUpdated = time();
         $sessionMPass = $this->getData($oldSeed);
@@ -85,7 +85,7 @@ final class Vault
      * @return string
      * @throws CryptoException
      */
-    public function getData($key)
+    public function getData(string $key): string
     {
         return Crypt::decrypt($this->data, $this->key, $key);
     }
@@ -99,7 +99,7 @@ final class Vault
      * @return $this
      * @throws CryptoException
      */
-    public function saveData($data, $key)
+    public function saveData($data, string $key): Vault
     {
         if ($this->timeSet === 0) {
             $this->timeSet = time();
@@ -114,7 +114,7 @@ final class Vault
     /**
      * @return int
      */
-    public function getTimeSet()
+    public function getTimeSet(): int
     {
         return $this->timeSet;
     }
@@ -122,7 +122,7 @@ final class Vault
     /**
      * @return int
      */
-    public function getTimeUpdated()
+    public function getTimeUpdated(): int
     {
         return $this->timeUpdated;
     }
@@ -130,7 +130,7 @@ final class Vault
     /**
      * Serializaes the current object
      */
-    public function getSerialized()
+    public function getSerialized(): string
     {
         return serialize($this);
     }

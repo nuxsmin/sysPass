@@ -83,12 +83,12 @@ final class Template
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string $name Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
+     * @param string      $name Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
      * @return bool
      */
-    public function addContentTemplate($name, $base = null)
+    public function addContentTemplate(string $name, ?string $base = null)
     {
         try {
             $template = $this->checkTemplate($name, $base);
@@ -103,14 +103,14 @@ final class Template
     /**
      * Comprobar si un archivo de plantilla existe y se puede leer
      *
-     * @param string $template Con el nombre del archivo
-     * @param string $base     Directorio base para la plantilla
+     * @param string      $template Con el nombre del archivo
+     * @param string|null $base     Directorio base para la plantilla
      *
      * @return string La ruta al archivo de la plantilla
      *
      * @throws FileNotFoundException
      */
-    private function checkTemplate($template, $base = null)
+    private function checkTemplate(string $template, ?string $base = null): string
     {
         $base = null !== $base ? $base : (null !== $this->base ? $this->base : null);
 
@@ -141,7 +141,7 @@ final class Template
      * @param string $file Con el nombre del archivo
      * @param string $name Nombre de la plantilla
      */
-    private function setContentTemplate($file, $name)
+    private function setContentTemplate(string $file, string $name)
     {
         $this->contentTemplates[$name] = $file;
     }
@@ -149,11 +149,11 @@ final class Template
     /**
      * Removes a template from the stack
      *
-     * @param $name
+     * @param string $name
      *
      * @return Template
      */
-    public function removeTemplate($name)
+    public function removeTemplate(string $name): Template
     {
         unset($this->templates[$name]);
 
@@ -163,11 +163,11 @@ final class Template
     /**
      * Removes a template from the stack
      *
-     * @param $name
+     * @param string $name
      *
      * @return Template
      */
-    public function removeContentTemplate($name)
+    public function removeContentTemplate(string $name): Template
     {
         unset($this->contentTemplates[$name]);
 
@@ -183,7 +183,7 @@ final class Template
      *
      * @return mixed|string
      */
-    public function replaceTemplate($src, $dst, $base)
+    public function replaceTemplate(string $src, string $dst, string $base)
     {
         try {
             if (isset($this->contentTemplates[$dst])) {
@@ -199,9 +199,9 @@ final class Template
     /**
      * Add partial template
      *
-     * @param $partial
+     * @param string $partial
      */
-    public function addPartial($partial)
+    public function addPartial(string $partial)
     {
         $this->addTemplate($partial, self::PARTIALS_DIR);
     }
@@ -209,12 +209,12 @@ final class Template
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string $name Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
+     * @param string      $name Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
      * @return bool
      */
-    public function addTemplate($name, $base = null)
+    public function addTemplate(string $name, ?string $base = null)
     {
         try {
             $template = $this->checkTemplate($name, $base);
@@ -232,7 +232,7 @@ final class Template
      * @param string $file Con el nombre del archivo
      * @param string $name Nombre de la plantilla
      */
-    private function setTemplate($file, $name)
+    private function setTemplate(string $file, string $name)
     {
         $this->templates[$name] = $file;
     }
@@ -244,7 +244,7 @@ final class Template
      *
      * @return bool
      */
-    public function includePartial($file)
+    public function includePartial(string $file)
     {
         return $this->includeTemplate($file, self::PARTIALS_DIR);
     }
@@ -252,12 +252,12 @@ final class Template
     /**
      * Añadir una nueva plantilla dentro de una plantilla
      *
-     * @param string $file Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
+     * @param string      $file Con el nombre del archivo de plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
      * @return bool
      */
-    public function includeTemplate($file, $base = null)
+    public function includeTemplate(string $file, ?string $base = null)
     {
         try {
             return $this->checkTemplate($file, $base);
@@ -273,7 +273,7 @@ final class Template
      *
      * @return null
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->get($name);
     }
@@ -285,7 +285,7 @@ final class Template
      * @param string $name  Nombre del atributo
      * @param string $value Valor del atributo
      */
-    public function __set($name, $value)
+    public function __set(string $name, string $value)
     {
         $this->vars->set($name, $value);
     }
@@ -293,11 +293,11 @@ final class Template
     /**
      * Returns a variable value
      *
-     * @param $name
+     * @param string $name
      *
      * @return mixed
      */
-    public function get($name)
+    public function get(string $name)
     {
         if (!$this->vars->exists($name)) {
             logger(sprintf(__('Unable to retrieve "%s" variable'), $name), 'ERROR');
@@ -317,7 +317,7 @@ final class Template
      *
      * @return bool
      */
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return $this->vars->exists($name);
     }
@@ -330,7 +330,7 @@ final class Template
      *
      * @return $this
      */
-    public function __unset($name)
+    public function __unset(string $name): Template
     {
         if (!$this->vars->exists($name)) {
             logger(sprintf(__('Unable to unset "%s" variable'), $name));
@@ -351,7 +351,7 @@ final class Template
      * @return string Con el contenido del buffer de salida
      * @throws FileNotFoundException
      */
-    public function render()
+    public function render(): string
     {
         if (empty($this->templates)) {
             throw new FileNotFoundException(__('Template does not contain files'));
@@ -393,12 +393,12 @@ final class Template
     /**
      * Anexar el valor de la variable al array de la misma en el array de variables
      *
-     * @param      $name  string nombre de la variable
-     * @param      $value mixed valor de la variable
-     * @param      $index string índice del array
-     * @param null $scope string ámbito de la variable
+     * @param string      $name  nombre de la variable
+     * @param mixed       $value valor de la variable
+     * @param string|null $scope string ámbito de la variable
+     * @param int|null    $index string índice del array
      */
-    public function append($name, $value, $scope = null, $index = null)
+    public function append(string $name, $value, ?string $scope = null, int $index = null)
     {
         if (null !== $scope) {
             $name = $scope . '_' . $name;
@@ -418,7 +418,7 @@ final class Template
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetTemplates()
+    public function resetTemplates(): Template
     {
         $this->templates = [];
 
@@ -428,7 +428,7 @@ final class Template
     /**
      * Reset de las plantillas añadidas
      */
-    public function resetContentTemplates()
+    public function resetContentTemplates(): Template
     {
         $this->contentTemplates = [];
 
@@ -446,7 +446,7 @@ final class Template
     /**
      * @return string
      */
-    public function getBase()
+    public function getBase(): string
     {
         return $this->base;
     }
@@ -454,7 +454,7 @@ final class Template
     /**
      * @param string $base
      */
-    public function setBase($base)
+    public function setBase(string $base)
     {
         $this->base = $base;
     }
@@ -462,7 +462,7 @@ final class Template
     /**
      * @return ThemeInterface
      */
-    public function getTheme()
+    public function getTheme(): ThemeInterface
     {
         return $this->theme;
     }
@@ -478,7 +478,7 @@ final class Template
     /**
      * @return array
      */
-    public function getContentTemplates()
+    public function getContentTemplates(): array
     {
         return $this->contentTemplates;
     }
@@ -486,7 +486,7 @@ final class Template
     /**
      * @return bool
      */
-    public function hashContentTemplates()
+    public function hasContentTemplates(): bool
     {
         return count($this->contentTemplates) > 0;
     }
@@ -494,7 +494,7 @@ final class Template
     /**
      * @return array
      */
-    public function getTemplates()
+    public function getTemplates(): array
     {
         return $this->templates;
     }
@@ -504,7 +504,7 @@ final class Template
      *
      * @return $this
      */
-    public function upgrade()
+    public function upgrade(): Template
     {
         if (count($this->templates) > 0) {
             $this->contentTemplates = $this->templates;
@@ -520,11 +520,11 @@ final class Template
     /**
      * Crear la variable y asignarle un valor en el array de variables
      *
-     * @param      $name  string nombre de la variable
-     * @param      $value mixed valor de la variable
-     * @param null $scope string ámbito de la variable
+     * @param string      $name  nombre de la variable
+     * @param mixed       $value valor de la variable
+     * @param string|null $scope string ámbito de la variable
      */
-    public function assign($name, $value = '', $scope = null)
+    public function assign(string $name, $value = '', ?string $scope = null)
     {
         if (null !== $scope) {
             $name = $scope . '_' . $name;
@@ -536,7 +536,7 @@ final class Template
     /**
      * @return bool
      */
-    public function isUpgraded()
+    public function isUpgraded(): bool
     {
         return $this->upgraded;
     }

@@ -162,9 +162,9 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * Generate the CSRF token if not set
      *
-     * @return bool
+     * @return string|null
      */
-    private function getCSRF()
+    private function getCSRF(): ?string
     {
         logger(sprintf('CSRF key (get): %s', $this->session->getCSRF()));
 

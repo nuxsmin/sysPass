@@ -43,7 +43,7 @@ final class DataGridTab extends DataGridBase
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -53,7 +53,7 @@ final class DataGridTab extends DataGridBase
      *
      * @return DataGridTab
      */
-    public function setTitle($title)
+    public function setTitle(string $title): DataGridTab
     {
         $this->title = $title;
 

@@ -39,19 +39,19 @@ interface EventReceiver extends SplObserver
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
      */
-    public function updateEvent($eventType, Event $event);
+    public function updateEvent(string $eventType, Event $event);
 
     /**
      * Devuelve los eventos que implementa el observador
      *
      * @return array
      */
-    public function getEvents();
+    public function getEvents(): array;
 
     /**
      * Devuelve los eventos que implementa el observador en formato cadena
      *
-     * @return string
+     * @return string|null
      */
-    public function getEventsString();
+    public function getEventsString(): ?string;
 }

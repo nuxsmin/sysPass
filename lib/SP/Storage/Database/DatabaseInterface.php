@@ -53,7 +53,7 @@ interface DatabaseInterface
      *
      * @return PDOStatement
      */
-    public function doQueryRaw(QueryData $queryData);
+    public function doQueryRaw(QueryData $queryData): PDOStatement;
 
     /**
      * Returns the total number of records
@@ -62,58 +62,58 @@ interface DatabaseInterface
      *
      * @return int Records count
      */
-    public function getFullRowCount(QueryData $queryData);
+    public function getFullRowCount(QueryData $queryData): int;
 
     /**
      * @return DBStorageInterface
      */
-    public function getDbHandler();
+    public function getDbHandler(): DBStorageInterface;
 
     /**
      * @return int
      */
-    public function getNumRows();
+    public function getNumRows(): int;
 
     /**
      * @return int
      */
-    public function getNumFields();
+    public function getNumFields(): int;
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getLastResult();
+    public function getLastResult(): ?array;
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getLastId();
+    public function getLastId(): ?int;
 
     /**
      * Iniciar una transacción
      *
      * @return bool
      */
-    public function beginTransaction();
+    public function beginTransaction(): bool;
 
     /**
      * Finalizar una transacción
      *
      * @return bool
      */
-    public function endTransaction();
+    public function endTransaction(): bool;
 
     /**
      * Rollback de una transacción
      *
      * @return bool
      */
-    public function rollbackTransaction();
+    public function rollbackTransaction(): bool;
 
     /**
-     * @param $table
+     * @param string $table
      *
      * @return array
      */
-    public function getColumnsForTable($table): array;
+    public function getColumnsForTable(string $table): array;
 }

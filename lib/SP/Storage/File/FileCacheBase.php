@@ -42,7 +42,7 @@ abstract class FileCacheBase implements FileCacheInterface
      *
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = new FileHandler($path);
     }
@@ -52,7 +52,7 @@ abstract class FileCacheBase implements FileCacheInterface
      *
      * @return FileCacheBase
      */
-    public static function factory($path)
+    public static function factory($path): FileCacheBase
     {
         return new static($path);
     }
@@ -80,7 +80,7 @@ abstract class FileCacheBase implements FileCacheInterface
      * @return bool
      * @throws FileException
      */
-    public function isExpiredDate($date): bool
+    public function isExpiredDate(int $date): bool
     {
         $this->path->checkFileExists();
 
@@ -103,7 +103,7 @@ abstract class FileCacheBase implements FileCacheInterface
      * @return FileCacheInterface
      * @throws FileException
      */
-    public function delete()
+    public function delete(): FileCacheInterface
     {
         $this->path->delete();
 

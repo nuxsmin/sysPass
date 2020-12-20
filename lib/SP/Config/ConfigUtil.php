@@ -41,7 +41,7 @@ final class ConfigUtil
      *
      * @return array
      */
-    public static function filesExtsAdapter($filesAllowedExts)
+    public static function filesExtsAdapter(string $filesAllowedExts)
     {
         if (empty($filesAllowedExts)) {
             return [];

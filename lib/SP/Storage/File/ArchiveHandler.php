@@ -85,7 +85,7 @@ final class ArchiveHandler
      * @throws CheckException
      * @throws FileException
      */
-    public function compressDirectory(string $directory, string $regex = null)
+    public function compressDirectory(string $directory, ?string $regex = null)
     {
         $this->extensionChecker->checkPharAvailable(true);
 

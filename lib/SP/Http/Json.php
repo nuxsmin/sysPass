@@ -24,6 +24,8 @@
 
 namespace SP\Http;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Klein\Klein;
 use Klein\Response;
 use SP\Bootstrap;
@@ -62,15 +64,17 @@ final class Json
      *
      * @return Json
      */
-    public static function factory(Response $response)
+    public static function factory(Response $response): Json
     {
         return new self($response);
     }
 
     /**
      * @return Json
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public static function fromDic()
+    public static function fromDic(): Json
     {
         return new self(Bootstrap::getContainer()->get(Klein::class)->response());
     }
@@ -80,9 +84,9 @@ final class Json
      *
      * @param $data mixed
      *
-     * @return mixed
+     * @return string
      */
-    public static function safeJson(&$data)
+    public static function safeJson(&$data): string
     {
         if (is_array($data) || is_object($data)) {
             array_walk_recursive($data,
@@ -130,7 +134,7 @@ final class Json
      *
      * @return bool
      */
-    public function returnRawJson(string $data)
+    public function returnRawJson(string $data): bool
     {
         return $this->response
             ->header('Content-type', 'application/json; charset=utf-8')
@@ -146,7 +150,7 @@ final class Json
      *
      * @return bool
      */
-    public function returnJson(JsonResponse $jsonResponse)
+    public function returnJson(JsonResponse $jsonResponse): bool
     {
         $this->response->header('Content-type', 'application/json; charset=utf-8');
 
@@ -171,7 +175,7 @@ final class Json
      * @return string La cadena en formato JSON
      * @throws SPException
      */
-    public static function getJson($data, $flags = 0)
+    public static function getJson($data, int $flags = 0): string
     {
         $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR | $flags);
 

@@ -43,7 +43,7 @@ class UUIDCookie extends Cookie
      *
      * @return UUIDCookie
      */
-    public static function factory(Request $request)
+    public static function factory(Request $request): UUIDCookie
     {
         return new self(self::COOKIE_NAME, $request);
     }
@@ -55,7 +55,7 @@ class UUIDCookie extends Cookie
      *
      * @return string|false
      */
-    public function createCookie($signKey)
+    public function createCookie(string $signKey)
     {
         $uuid = uniqid('', true);
 
@@ -73,7 +73,7 @@ class UUIDCookie extends Cookie
      *
      * @return false|string
      */
-    public function loadCookie($signKey)
+    public function loadCookie(string $signKey)
     {
         $data = $this->getCookie();
 

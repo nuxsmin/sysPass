@@ -38,29 +38,29 @@ interface DBStorageInterface
      *
      * @return PDO
      */
-    public function getConnection();
+    public function getConnection(): PDO;
 
     /**
      * Obtener una conexión PDO sin seleccionar la BD
      *
      * @return PDO
      */
-    public function getConnectionSimple();
+    public function getConnectionSimple(): PDO;
 
     /**
      * Devolcer el estado de la BD
      *
      * @return int
      */
-    public function getDbStatus();
-
-    /**
-     * @return mixed
-     */
-    public function getConnectionUri();
+    public function getDbStatus(): int;
 
     /**
      * @return string
      */
-    public function getDatabaseName();
+    public function getConnectionUri(): string;
+
+    /**
+     * @return string|null
+     */
+    public function getDatabaseName(): ?string;
 }

@@ -92,9 +92,9 @@ final class DatabaseConnectionData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbHost()
+    public function getDbHost(): ?string
     {
         return $this->dbHost;
     }
@@ -104,35 +104,35 @@ final class DatabaseConnectionData
      *
      * @return DatabaseConnectionData
      */
-    public function setDbHost($dbHost)
+    public function setDbHost(string $dbHost): DatabaseConnectionData
     {
         $this->dbHost = $dbHost;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbSocket()
+    public function getDbSocket(): ?string
     {
         return $this->dbSocket;
     }
 
     /**
-     * @param string $dbSocket
+     * @param string|null $dbSocket
      *
      * @return DatabaseConnectionData
      */
-    public function setDbSocket($dbSocket)
+    public function setDbSocket(?string $dbSocket): DatabaseConnectionData
     {
         $this->dbSocket = $dbSocket;
         return $this;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getDbPort()
+    public function getDbPort(): ?int
     {
         return $this->dbPort;
     }
@@ -142,16 +142,16 @@ final class DatabaseConnectionData
      *
      * @return DatabaseConnectionData
      */
-    public function setDbPort($dbPort)
+    public function setDbPort(int $dbPort): DatabaseConnectionData
     {
         $this->dbPort = $dbPort;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbName()
+    public function getDbName(): ?string
     {
         return $this->dbName;
     }
@@ -161,16 +161,16 @@ final class DatabaseConnectionData
      *
      * @return DatabaseConnectionData
      */
-    public function setDbName($dbName)
+    public function setDbName(string $dbName): DatabaseConnectionData
     {
         $this->dbName = $dbName;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbUser()
+    public function getDbUser(): ?string
     {
         return $this->dbUser;
     }
@@ -180,16 +180,16 @@ final class DatabaseConnectionData
      *
      * @return DatabaseConnectionData
      */
-    public function setDbUser($dbUser)
+    public function setDbUser(string $dbUser): DatabaseConnectionData
     {
         $this->dbUser = $dbUser;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDbPass()
+    public function getDbPass(): ?string
     {
         return $this->dbPass;
     }
@@ -199,7 +199,7 @@ final class DatabaseConnectionData
      *
      * @return DatabaseConnectionData
      */
-    public function setDbPass($dbPass)
+    public function setDbPass(string $dbPass): DatabaseConnectionData
     {
         $this->dbPass = $dbPass;
         return $this;

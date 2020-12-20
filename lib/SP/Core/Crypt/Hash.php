@@ -44,7 +44,7 @@ final class Hash
      *
      * @return bool
      */
-    public static function checkHashKey($key, $hash)
+    public static function checkHashKey(string $key, string $hash): bool
     {
         return password_verify(self::getKey($key), $hash);
     }
@@ -57,7 +57,7 @@ final class Hash
      *
      * @return string
      */
-    private static function getKey(&$key, $isCheck = true)
+    private static function getKey(string &$key, $isCheck = true): string
     {
         if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
             $key = hash('sha256', $key);
@@ -77,7 +77,7 @@ final class Hash
      *
      * @return string con el hash de la clave
      */
-    public static function hashKey($key)
+    public static function hashKey(string $key): string
     {
         return password_hash(self::getKey($key, false), PASSWORD_BCRYPT);
     }
@@ -91,7 +91,7 @@ final class Hash
      *
      * @return bool
      */
-    public static function checkMessage($message, $key, $hash)
+    public static function checkMessage($message, $key, $hash): bool
     {
         return hash_equals($hash, self::signMessage($message, $key));
     }
@@ -104,7 +104,7 @@ final class Hash
      *
      * @return string
      */
-    public static function signMessage($message, $key)
+    public static function signMessage($message, $key): string
     {
         return hash_hmac('sha256', $message, $key);
     }

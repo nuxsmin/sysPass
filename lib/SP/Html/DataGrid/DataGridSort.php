@@ -50,7 +50,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @var array
      */
-    private $class = array();
+    private $class = [];
     /**
      * @var IconInterface
      */
@@ -63,7 +63,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return int
      */
-    public function getSortKey()
+    public function getSortKey(): int
     {
         return $this->sortKey;
     }
@@ -73,7 +73,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setSortKey($key)
+    public function setSortKey(int $key)
     {
         $this->sortKey = $key;
 
@@ -83,7 +83,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -93,7 +93,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): DataGridSort
     {
         $this->title = $title;
 
@@ -103,7 +103,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -113,7 +113,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): DataGridSort
     {
         $this->name = $name;
 
@@ -123,7 +123,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return implode(' ', $this->class);
     }
@@ -133,7 +133,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setClass($class)
+    public function setClass(string $class): DataGridSort
     {
         $this->class[] = $class;
 
@@ -143,7 +143,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return IconInterface
      */
-    public function getIconUp()
+    public function getIconUp(): ?IconInterface
     {
         return $this->iconUp;
     }
@@ -153,7 +153,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setIconUp(IconInterface $icon)
+    public function setIconUp(IconInterface $icon): DataGridSort
     {
         $this->iconUp = $icon;
 
@@ -163,7 +163,7 @@ final class DataGridSort implements DataGridSortInterface
     /**
      * @return IconInterface
      */
-    public function getIconDown()
+    public function getIconDown(): ?IconInterface
     {
         return $this->iconDown;
     }
@@ -173,7 +173,7 @@ final class DataGridSort implements DataGridSortInterface
      *
      * @return $this
      */
-    public function setIconDown(IconInterface $icon)
+    public function setIconDown(IconInterface $icon): DataGridSort
     {
         $this->iconDown = $icon;
 

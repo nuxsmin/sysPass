@@ -64,7 +64,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      *
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return self::EVENTS;
     }
@@ -74,7 +74,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      *
      * @return string
      */
-    public function getEventsString()
+    public function getEventsString(): string
     {
         return $this->events;
     }
@@ -102,7 +102,7 @@ final class NotificationHandler extends Provider implements EventReceiver
      * @param string $eventType Nombre del evento
      * @param Event  $event     Objeto del evento
      */
-    public function updateEvent($eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event)
     {
         switch ($eventType) {
             case 'request.account':

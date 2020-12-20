@@ -46,12 +46,12 @@ final class QueryCondition
     protected $param = [];
 
     /**
-     * @param string $query
-     * @param array  $params
+     * @param string     $query
+     * @param array|null $params
      *
      * @return QueryCondition
      */
-    public function addFilter($query, array $params = null)
+    public function addFilter(string $query, ?array $params = null): QueryCondition
     {
         $this->query[] = "($query)";
 
@@ -67,7 +67,7 @@ final class QueryCondition
      *
      * @return string|null
      */
-    public function getFilters($type = self::CONDITION_AND)
+    public function getFilters(string $type = self::CONDITION_AND): ?string
     {
         if ($type !== self::CONDITION_AND && $type !== self::CONDITION_OR) {
             throw new RuntimeException(__u('Invalid filter type'));
@@ -79,7 +79,7 @@ final class QueryCondition
     /**
      * @return bool
      */
-    public function hasFilters()
+    public function hasFilters(): bool
     {
         return !empty($this->query);
     }
@@ -87,7 +87,7 @@ final class QueryCondition
     /**
      * @return array
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->param;
     }
@@ -95,7 +95,7 @@ final class QueryCondition
     /**
      * @return int
      */
-    public function getFiltersCount()
+    public function getFiltersCount(): int
     {
         return count($this->query);
     }

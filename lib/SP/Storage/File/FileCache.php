@@ -46,7 +46,7 @@ final class FileCache extends FileCacheBase
      * @return FileCacheInterface
      * @throws FileException
      */
-    public function save($data)
+    public function save($data): FileCacheInterface
     {
         $this->createPath();
 

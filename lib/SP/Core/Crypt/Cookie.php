@@ -49,7 +49,7 @@ abstract class Cookie
      * @param string  $cookieName
      * @param Request $request
      */
-    protected function __construct($cookieName, Request $request)
+    protected function __construct(string $cookieName, Request $request)
     {
         $this->cookieName = $cookieName;
         $this->request = $request;
@@ -63,7 +63,7 @@ abstract class Cookie
      *
      * @return string
      */
-    public final function sign($data, $cypher)
+    public final function sign(string $data, string $cypher): string
     {
         $data = base64_encode($data);
 
@@ -78,7 +78,7 @@ abstract class Cookie
      *
      * @return bool|string
      */
-    public final function getCookieData($data, $cypher)
+    public final function getCookieData(string $data, string $cypher)
     {
         if (strpos($data, ';') === false) {
             return false;
@@ -102,11 +102,11 @@ abstract class Cookie
     /**
      * Sets cookie data
      *
-     * @param $data
+     * @param string $data
      *
      * @return bool
      */
-    protected function setCookie($data)
+    protected function setCookie(string $data): bool
     {
         // Do not try to set cookies when testing
         if (APP_MODULE === 'tests') {

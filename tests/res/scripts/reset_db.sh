@@ -36,6 +36,13 @@ do_import() {
   fi
 }
 
+restart_db_container() {
+  echo "Restarting DB container ..."
+
+  docker restart ${DB_CONTAINER_NAME}
+  sleep 15
+}
+
 get_db_host() {
   DB_HOST=$(docker inspect ${DB_CONTAINER_NAME} --format {{.NetworkSettings.Networks.bridge.IPAddress}})
 
@@ -94,6 +101,8 @@ while getopts ":hs:d:p:C:" OPTIONS; do
 
     echo "Database container name: ${DB_CONTAINER_NAME}"
 
+    # Avoid memory leaks
+    restart_db_container
     get_db_host
     ;;
   :)

@@ -56,7 +56,7 @@ final class SecureKeyCookie extends Cookie
      *
      * @return SecureKeyCookie
      */
-    public static function factory(Request $request)
+    public static function factory(Request $request): SecureKeyCookie
     {
         $self = new self(self::COOKIE_NAME, $request);
         $self->cypher = $self->getCypher();
@@ -69,7 +69,7 @@ final class SecureKeyCookie extends Cookie
      *
      * @return string
      */
-    public function getCypher()
+    public function getCypher(): string
     {
         return sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
     }
@@ -144,7 +144,7 @@ final class SecureKeyCookie extends Cookie
      * @throws CryptoException
      * @throws EnvironmentIsBrokenException
      */
-    public function generateSecuredData()
+    public function generateSecuredData(): Vault
     {
         $this->securedKey = Key::createNewRandomKey();
 
@@ -155,7 +155,7 @@ final class SecureKeyCookie extends Cookie
     /**
      * @return Key
      */
-    public function getSecuredKey()
+    public function getSecuredKey(): Key
     {
         return $this->securedKey;
     }

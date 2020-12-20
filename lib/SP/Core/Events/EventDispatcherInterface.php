@@ -36,8 +36,8 @@ interface EventDispatcherInterface extends SplSubject
     /**
      * Notificar a los observadores y establecer el estado
      *
-     * @param string $event  Nombre del evento
-     * @param Event  $object Objeto del evento
+     * @param string $eventName  Nombre del evento
+     * @param Event  $event Objeto del evento
      */
-    public function notifyEvent($event, Event $object);
+    public function notifyEvent(string $eventName, Event $event);
 }

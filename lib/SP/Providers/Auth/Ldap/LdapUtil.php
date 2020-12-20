@@ -38,7 +38,7 @@ final class LdapUtil
      *
      * @return string
      */
-    public static function escapeLdapDN($dn)
+    public static function escapeLdapDN(string $dn): string
     {
         $chars = [
             '/(,)(?!uid|cn|ou|dc)/i',
@@ -56,7 +56,7 @@ final class LdapUtil
      *
      * @param string $group
      *
-     * @return bool
+     * @return bool|string
      */
     public static function getGroupName(string $group)
     {
@@ -73,7 +73,7 @@ final class LdapUtil
      *
      * @return string
      */
-    public static function getAttributesForFilter(array $attributes, $value): string
+    public static function getAttributesForFilter(array $attributes, string $value): string
     {
         $value = ldap_escape((string)$value, null, LDAP_ESCAPE_FILTER);
 

@@ -45,28 +45,28 @@ interface ContextInterface
      *
      * @param int $time
      */
-    public function setConfigTime($time);
+    public function setConfigTime(int $time);
 
     /**
      * Devolver la hora de carga de la configuración
      *
      * @return int
      */
-    public function getConfigTime();
+    public function getConfigTime(): int;
 
     /**
      * Establece los datos del usuario en la sesión.
      *
-     * @param UserLoginResponse $userLoginResponse
+     * @param UserLoginResponse|null $userLoginResponse
      */
-    public function setUserData(UserLoginResponse $userLoginResponse = null);
+    public function setUserData(?UserLoginResponse $userLoginResponse = null);
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
      *
-     * @return ProfileData
+     * @return ProfileData|null
      */
-    public function getUserProfile();
+    public function getUserProfile(): ?ProfileData;
 
     /**
      * Establece el objeto de perfil de usuario en la sesión.
@@ -80,14 +80,14 @@ interface ContextInterface
      *
      * @return bool
      */
-    public function isLoggedIn();
+    public function isLoggedIn(): bool;
 
     /**
      * Devuelve los datos del usuario en la sesión.
      *
-     * @return UserLoginResponse
+     * @return UserLoginResponse|null
      */
-    public function getUserData();
+    public function getUserData(): ?UserLoginResponse;
 
     /**
      * Establecer el lenguaje de la sesión
@@ -99,35 +99,35 @@ interface ContextInterface
     /**
      * Devuelve el lenguaje de la sesión
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocale();
+    public function getLocale(): ?string;
 
     /**
      * Devuelve el estado de la aplicación
      *
-     * @return bool
+     * @return bool|null
      */
-    public function getAppStatus();
+    public function getAppStatus(): ?bool;
 
     /**
      * Establecer el estado de la aplicación
      *
      * @param string $status
      */
-    public function setAppStatus($status);
+    public function setAppStatus(string $status);
 
     /**
      * Reset del estado de la aplicación
      *
-     * @return bool
+     * @return bool|null
      */
-    public function resetAppStatus();
+    public function resetAppStatus(): ?bool;
 
     /**
      * @return AccountCache[]|null
      */
-    public function getAccountsCache();
+    public function getAccountsCache(): ?array;
 
     /**
      * Sets an arbitrary key in the trasient collection.

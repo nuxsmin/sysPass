@@ -55,33 +55,37 @@ class ItemSearchData
     public $order = self::ORDER_ASC;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSeachString()
+    public function getSeachString(): ?string
     {
         return $this->seachString;
     }
 
     /**
-     * @param string $seachString
+     * @param string|null $seachString
      */
-    public function setSeachString($seachString)
+    public function setSeachString(?string $seachString)
     {
-        $this->seachString = Filter::safeSearchString($seachString);
+        if ($seachString) {
+            $this->seachString = Filter::safeSearchString($seachString);
+        } else {
+            $this->seachString = null;
+        }
     }
 
     /**
      * @return int
      */
-    public function getLimitStart()
+    public function getLimitStart(): int
     {
         return $this->limitStart;
     }
 
     /**
-     * @param int $limitStart
+     * @param int|null $limitStart
      */
-    public function setLimitStart($limitStart)
+    public function setLimitStart(?int $limitStart)
     {
         $this->limitStart = (int)$limitStart;
     }
@@ -89,15 +93,15 @@ class ItemSearchData
     /**
      * @return int
      */
-    public function getLimitCount()
+    public function getLimitCount(): int
     {
         return $this->limitCount;
     }
 
     /**
-     * @param int $limitCount
+     * @param int|null $limitCount
      */
-    public function setLimitCount($limitCount)
+    public function setLimitCount(?int $limitCount)
     {
         $this->limitCount = (int)$limitCount;
     }
@@ -105,15 +109,15 @@ class ItemSearchData
     /**
      * @return string
      */
-    public function getOrder()
+    public function getOrder(): string
     {
         return $this->order;
     }
 
     /**
-     * @param string $order
+     * @param string|null $order
      */
-    public function setOrder($order)
+    public function setOrder(?string $order)
     {
         $this->order = $order;
     }

@@ -67,7 +67,7 @@ final class CSRF
     /**
      * Check for CSRF token on POST requests
      */
-    public function check()
+    public function check(): bool
     {
         $method = strtoupper($this->request->getMethod());
         $with = $this->request->getHeader('X-Requested-With');
@@ -98,7 +98,7 @@ final class CSRF
      *
      * @return string
      */
-    private function getKey()
+    private function getKey(): string
     {
         return sha1($this->request->getHeader('User-Agent') . $this->request->getClientAddress());
     }

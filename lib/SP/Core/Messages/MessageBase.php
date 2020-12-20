@@ -97,7 +97,7 @@ abstract class MessageBase implements MessageInterface
      *
      * @return MessageBase
      */
-    public function addDescription($description)
+    public function addDescription(string $description)
     {
         $this->description[] = $description;
 

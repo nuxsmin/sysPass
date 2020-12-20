@@ -37,7 +37,7 @@ interface XmlFileStorageInterface
      * @return XmlFileStorageInterface
      * @throws FileException
      */
-    public function load($node = '');
+    public function load(string $node = ''): XmlFileStorageInterface;
 
     /**
      * @param mixed  $data Data to be saved
@@ -46,7 +46,7 @@ interface XmlFileStorageInterface
      * @return XmlFileStorageInterface
      * @throws FileException
      */
-    public function save($data, $node = '');
+    public function save($data, string $node = ''): XmlFileStorageInterface;
 
     /**
      * @return mixed
@@ -61,7 +61,7 @@ interface XmlFileStorageInterface
      * @return string
      * @throws FileException
      */
-    public function getPathValue($path);
+    public function getPathValue(string $path): string;
 
     /**
      * @return FileHandler

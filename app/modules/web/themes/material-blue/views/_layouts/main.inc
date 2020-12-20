@@ -37,7 +37,7 @@ use SP\Mvc\View\Template;
         <?php
         if ($_getvar('useFixedHeader')):
             include $this->includePartial('fixed-header');
-        elseif ($this->hashContentTemplates()):
+        elseif ($this->hasContentTemplates()):
             foreach ($this->getContentTemplates() as $template):
                 include $template;
             endforeach;

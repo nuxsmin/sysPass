@@ -70,7 +70,7 @@ final class LdapStd extends Ldap
     /**
      * @return string
      */
-    private function getUserObjectFilter()
+    private function getUserObjectFilter(): string
     {
         if (empty($this->ldapParams->getFilterUserObject())) {
             return self::DEFAULT_FILTER_USER_OBJECT;
@@ -154,7 +154,7 @@ final class LdapStd extends Ldap
     /**
      * @inheritDoc
      */
-    public function getGroupMembershipDirectFilter(string $userDn = null): string
+    public function getGroupMembershipDirectFilter(?string $userDn = null): string
     {
         $groupName = ldap_escape($this->getGroupFromParams(), null, LDAP_ESCAPE_FILTER);
         $member = $userDn !== null ? ldap_escape($userDn, null, LDAP_ESCAPE_FILTER) : '*';

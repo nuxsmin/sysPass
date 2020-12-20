@@ -38,7 +38,7 @@ final class Client
      *
      * @return array
      */
-    public static function getOptions(ConfigData $configData)
+    public static function getOptions(ConfigData $configData): array
     {
         $options = [
             'timeout' => 10,

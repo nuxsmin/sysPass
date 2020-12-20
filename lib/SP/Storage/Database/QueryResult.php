@@ -59,9 +59,9 @@ final class QueryResult
     /**
      * QueryResult constructor.
      *
-     * @param array $data
+     * @param array|null $data
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if ($data !== null) {
             $this->data = $data;
@@ -75,7 +75,7 @@ final class QueryResult
      *
      * @return QueryResult
      */
-    public static function fromResults(array $data, $totalNumRows = null)
+    public static function fromResults(array $data, $totalNumRows = null): QueryResult
     {
         $result = new self($data);
 
@@ -87,11 +87,9 @@ final class QueryResult
     }
 
     /**
-     * @param string $class
-     *
      * @return mixed|null
      */
-    public function getData(string $class = null)
+    public function getData()
     {
         if ($this->numRows === 1) {
             return $this->data[0];
@@ -131,7 +129,7 @@ final class QueryResult
      *
      * @return QueryResult
      */
-    public function setTotalNumRows(int $totalNumRows)
+    public function setTotalNumRows(int $totalNumRows): QueryResult
     {
         $this->totalNumRows = $totalNumRows;
 
@@ -151,7 +149,7 @@ final class QueryResult
      *
      * @return QueryResult
      */
-    public function setStatusCode(int $statusCode)
+    public function setStatusCode(int $statusCode): QueryResult
     {
         $this->statusCode = $statusCode;
 
@@ -171,7 +169,7 @@ final class QueryResult
      *
      * @return QueryResult
      */
-    public function setAffectedNumRows(int $affectedNumRows)
+    public function setAffectedNumRows(int $affectedNumRows): QueryResult
     {
         $this->affectedNumRows = $affectedNumRows;
 
@@ -191,7 +189,7 @@ final class QueryResult
      *
      * @return QueryResult
      */
-    public function setLastId(int $lastId)
+    public function setLastId(int $lastId): QueryResult
     {
         $this->lastId = $lastId;
 

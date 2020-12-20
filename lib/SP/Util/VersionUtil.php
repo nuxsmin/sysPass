@@ -38,7 +38,7 @@ final class VersionUtil
      *
      * @return string
      */
-    public static function getVersionStringNormalized()
+    public static function getVersionStringNormalized(): string
     {
         return implode('', Installer::VERSION) . '.' . Installer::BUILD;
     }
@@ -51,7 +51,7 @@ final class VersionUtil
      *
      * @return bool True if $currentVersion is lower than $upgradeableVersion
      */
-    public static function checkVersion($currentVersion, $upgradeableVersion)
+    public static function checkVersion(string $currentVersion, $upgradeableVersion): bool
     {
         if (is_array($upgradeableVersion)) {
             $upgradeableVersion = array_pop($upgradeableVersion);
@@ -84,7 +84,7 @@ final class VersionUtil
      *
      * @return string
      */
-    public static function normalizeVersionForCompare($versionIn)
+    public static function normalizeVersionForCompare($versionIn): string
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {
@@ -131,7 +131,7 @@ final class VersionUtil
      *
      * @return array con el número de versión
      */
-    public static function getVersionArray($retBuild = false)
+    public static function getVersionArray($retBuild = false): array
     {
         $version = array_values(Installer::VERSION);
 
@@ -149,7 +149,7 @@ final class VersionUtil
      *
      * @return array
      */
-    public static function getVersionArrayNormalized()
+    public static function getVersionArrayNormalized(): array
     {
         return [implode('', Installer::VERSION), Installer::BUILD];
     }

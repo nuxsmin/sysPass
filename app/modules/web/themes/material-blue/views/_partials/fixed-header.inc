@@ -186,7 +186,7 @@ use SP\Mvc\View\Template;
     <main class="mdl-layout__content">
         <div id="content"
              data-page="<?php echo $_getvar('contentPage', ''); ?>">
-            <?php if ($this->hashContentTemplates()):
+            <?php if ($this->hasContentTemplates()):
                 foreach ($this->getContentTemplates() as $template):
                     include $template;
                 endforeach;

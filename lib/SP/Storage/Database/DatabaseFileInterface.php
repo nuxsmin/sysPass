@@ -38,5 +38,5 @@ interface DatabaseFileInterface
      *
      * @return array
      */
-    public function parse($delimiter = ';');
+    public function parse($delimiter = ';'): array;
 }

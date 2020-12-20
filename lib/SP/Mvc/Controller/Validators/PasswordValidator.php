@@ -54,7 +54,7 @@ final class PasswordValidator implements ValidatorInterface
      *
      * @return PasswordValidator
      */
-    public static function factory(Password $password)
+    public static function factory(Password $password): PasswordValidator
     {
         return new self($password);
     }

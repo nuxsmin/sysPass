@@ -63,7 +63,7 @@ final class SyspassImport extends XmlImportBase implements ImportInterface
                     ->addDescription(__u('sysPass XML Import')))
             );
 
-            if ($this->importParams->getImportMasterPwd() !== '') {
+            if (!empty($this->importParams->getImportMasterPwd())) {
                 $this->mPassValidHash = Hash::checkHashKey(
                     $this->importParams->getImportMasterPwd(),
                     $this->configService->getByParam('masterPwd')

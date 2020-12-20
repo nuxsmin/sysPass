@@ -69,11 +69,11 @@ final class Acl implements ActionsInterface
     /**
      * Returns action route
      *
-     * @param $actionId
+     * @param string $actionId
      *
      * @return string
      */
-    public static function getActionRoute($actionId)
+    public static function getActionRoute(string $actionId): string
     {
         try {
             return self::$action !== null ? self::$action->getActionById($actionId)->getRoute() : '';
@@ -93,7 +93,7 @@ final class Acl implements ActionsInterface
      * @return string
      * @internal param bool $shortName Si se devuelve el nombre corto de la acción
      */
-    public static function getActionInfo($actionId, $translate = true)
+    public static function getActionInfo(int $actionId, $translate = true): string
     {
         try {
             $text = self::$action->getActionById($actionId)->getText();
@@ -113,7 +113,7 @@ final class Acl implements ActionsInterface
      *
      * @return bool
      */
-    public function checkUserAccess($action, $userId = 0)
+    public function checkUserAccess(int $action, $userId = 0): bool
     {
         if (!($userProfile = $this->context->getUserProfile())) {
             return false;

@@ -36,7 +36,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function hasLetters(string $string)
+    public static function hasLetters(string $string): bool
     {
         return preg_match('#[a-z]+#i', $string) === 1;
     }
@@ -46,7 +46,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function hasNumbers(string $string)
+    public static function hasNumbers(string $string): bool
     {
         return preg_match('#[\d]+#', $string) === 1;
     }
@@ -56,7 +56,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function hasUpper(string $string)
+    public static function hasUpper(string $string): bool
     {
         return preg_match('#[A-Z]+#', $string) === 1;
     }
@@ -66,7 +66,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function hasLower(string $string)
+    public static function hasLower(string $string): bool
     {
         return preg_match('#[a-z]+#', $string) === 1;
     }
@@ -76,7 +76,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function hasSymbols(string $string)
+    public static function hasSymbols(string $string): bool
     {
         return preg_match('#[$-/:-?{-~!"^_`\[\]]+#', $string) === 1;
     }
@@ -87,7 +87,7 @@ final class Validator
      *
      * @return bool
      */
-    public static function matchRegex(string $string, string $regex)
+    public static function matchRegex(string $string, string $regex): bool
     {
         return preg_match('#' . str_replace('#', '\#', $regex) . '#', $string) === 1;
     }
@@ -97,8 +97,8 @@ final class Validator
      *
      * @return bool
      */
-    public static function isRegex(string $regex)
+    public static function isRegex(string $regex): bool
     {
-        return @preg_match('#' . str_replace('#', '\#', $regex) . '#', null);
+        return @preg_match('#' . str_replace('#', '\#', $regex) . '#', null) !== false;
     }
 }

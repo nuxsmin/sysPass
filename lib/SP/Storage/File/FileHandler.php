@@ -66,7 +66,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function write($data)
+    public function write($data): FileHandler
     {
         if (!is_resource($this->handle)) {
             $this->open('wb');
@@ -84,12 +84,12 @@ final class FileHandler
      *
      * @param string $mode
      *
-     * @param bool   $lock
+     * @param bool|null   $lock
      *
      * @return resource
      * @throws FileException
      */
-    public function open($mode = 'r', $lock = false)
+    public function open(string $mode = 'r', ?bool $lock = false)
     {
         $this->handle = @fopen($this->file, $mode);
 
@@ -111,7 +111,7 @@ final class FileHandler
      *
      * @throws FileException
      */
-    private function lock($mode = LOCK_EX)
+    private function lock(int $mode = LOCK_EX)
     {
         $this->locked = flock($this->handle, $mode);
 
@@ -159,7 +159,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function save($data)
+    public function save(string $data): FileHandler
     {
         if (file_put_contents($this->file, $data, LOCK_EX) === false) {
             throw new FileException(sprintf(__('Unable to read/write the file (%s)'), $this->file));
@@ -174,7 +174,7 @@ final class FileHandler
      * @return string Data read from file
      * @throws FileException
      */
-    public function read()
+    public function read(): string
     {
         if (!is_resource($this->handle)) {
             $this->open('rb');
@@ -197,7 +197,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function close()
+    public function close(): FileHandler
     {
         if ($this->locked) {
             $this->unlock();
@@ -219,12 +219,12 @@ final class FileHandler
     }
 
     /**
-     * @param callable $chunker
-     * @param float    $rate
+     * @param callable|null $chunker
+     * @param float|null    $rate
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, float $rate = null)
+    public function readChunked(callable $chunker = null, ?float $rate = null)
     {
         $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
 
@@ -255,7 +255,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function checkIsWritable()
+    public function checkIsWritable(): FileHandler
     {
         if (!is_writable($this->file) && @touch($this->file) === false) {
             throw new FileException(sprintf(__('Unable to write in file (%s)'), $this->file));
@@ -270,7 +270,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function checkFileExists()
+    public function checkFileExists(): FileHandler
     {
         if (!file_exists($this->file)) {
             throw new FileException(sprintf(__('File not found (%s)'), $this->file));
@@ -309,7 +309,7 @@ final class FileHandler
      *
      * @return FileHandler
      */
-    public function clearCache()
+    public function clearCache(): FileHandler
     {
         clearstatcache(true, $this->file);
 
@@ -322,7 +322,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function delete()
+    public function delete(): FileHandler
     {
         if (@unlink($this->file) === false) {
             throw new FileException(sprintf(__('Unable to delete file (%s)'), $this->file));
@@ -350,7 +350,7 @@ final class FileHandler
      * @return FileHandler
      * @throws FileException
      */
-    public function checkIsReadable()
+    public function checkIsReadable(): FileHandler
     {
         if (!is_readable($this->file)) {
             throw new FileException(sprintf(__('Unable to read/write file (%s)'), $this->file));

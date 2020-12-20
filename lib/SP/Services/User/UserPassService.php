@@ -255,7 +255,7 @@ final class UserPassService extends Service
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function migrateUserPassById($id, $userPass)
+    public function migrateUserPassById($id, string $userPass)
     {
         if ($this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass))) === 0) {
             throw new NoSuchItemException(__u('User does not exist'));

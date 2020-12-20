@@ -57,7 +57,7 @@ final class MySQLFileParser implements DatabaseFileInterface
      * @return array
      * @throws FileException
      */
-    public function parse($delimiter = ';')
+    public function parse($delimiter = ';'): array
     {
         $queries = [];
         $query = '';

@@ -93,7 +93,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkCurlAvailable($exception = false)
+    public function checkCurlAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('curl', $exception);
     }
@@ -107,7 +107,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkIsAvailable(string $extension, $exception = false)
+    public function checkIsAvailable(string $extension, bool $exception = false): bool
     {
         $result = in_array(strtolower($extension), $this->available);
 
@@ -126,7 +126,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkLdapAvailable($exception = false)
+    public function checkLdapAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('ldap', $exception);
     }
@@ -139,7 +139,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkSimpleXmlAvailable($exception = false)
+    public function checkSimpleXmlAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('simplexml', $exception);
     }
@@ -152,7 +152,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkXmlAvailable($exception = false)
+    public function checkXmlAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('xml', $exception);
     }
@@ -165,7 +165,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkPharAvailable($exception = false)
+    public function checkPharAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('phar', $exception);
     }
@@ -178,7 +178,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkJsonAvailable($exception = false)
+    public function checkJsonAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('json', $exception);
     }
@@ -191,7 +191,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkPdoAvailable($exception = false)
+    public function checkPdoAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('pdo', $exception);
     }
@@ -204,7 +204,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkGettextAvailable($exception = false)
+    public function checkGettextAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('gettext', $exception);
     }
@@ -217,7 +217,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkOpenSslAvailable($exception = false)
+    public function checkOpenSslAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('openssl', $exception);
     }
@@ -230,7 +230,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkGdAvailable($exception = false)
+    public function checkGdAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('gd', $exception);
     }
@@ -243,7 +243,7 @@ final class PhpExtensionChecker
      * @return bool
      * @throws CheckException
      */
-    public function checkMbstringAvailable($exception = false)
+    public function checkMbstringAvailable(bool $exception = false): bool
     {
         return $this->checkIsAvailable('mbstring', $exception);
     }
@@ -269,7 +269,7 @@ final class PhpExtensionChecker
      *
      * @return array
      */
-    public function getMissing()
+    public function getMissing(): array
     {
         return array_filter(self::EXTENSIONS, function ($k) {
             return !in_array($k, $this->available);

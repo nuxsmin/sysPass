@@ -36,7 +36,7 @@ final class NotificationMessage extends MessageBase
      *
      * @return string
      */
-    public function composeHtml()
+    public function composeHtml(): string
     {
         $formatter = new HtmlFormatter();
 
@@ -77,7 +77,7 @@ final class NotificationMessage extends MessageBase
      *
      * @return string
      */
-    public function composeText($delimiter = PHP_EOL)
+    public function composeText(string $delimiter = PHP_EOL): string
     {
         $parts = [];
 

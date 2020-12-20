@@ -115,7 +115,7 @@ final class Language
      *
      * @return array
      */
-    public static function getAvailableLanguages()
+    public static function getAvailableLanguages(): array
     {
         return self::$langs;
     }
@@ -146,7 +146,7 @@ final class Language
      *
      * @return string
      */
-    private function getUserLang()
+    private function getUserLang(): string
     {
         $userData = $this->context->getUserData();
 
@@ -157,7 +157,7 @@ final class Language
      * Establece el lenguaje de la aplicación.
      * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
      */
-    private function getGlobalLang()
+    private function getGlobalLang(): string
     {
         return $this->configData->getSiteLang() ?: $this->getBrowserLang();
     }
@@ -167,7 +167,7 @@ final class Language
      *
      * @return string
      */
-    private function getBrowserLang()
+    private function getBrowserLang(): string
     {
         $lang = $this->request->getHeader('Accept-Language');
 
@@ -179,7 +179,7 @@ final class Language
      *
      * @param string $lang El lenguaje a utilizar
      */
-    public static function setLocales($lang)
+    public static function setLocales(string $lang)
     {
         $lang .= '.utf8';
 
@@ -233,7 +233,7 @@ final class Language
      *
      * @return bool
      */
-    private function checkLangFile($lang)
+    private function checkLangFile(string $lang)
     {
         return file_exists(LOCALES_PATH . DIRECTORY_SEPARATOR . $lang);
     }

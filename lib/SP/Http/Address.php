@@ -60,7 +60,7 @@ final class Address
      * @return string
      * @throws InvalidArgumentException
      */
-    public static function fromBinary(string $address)
+    public static function fromBinary(string $address): string
     {
         $stringAddress = @inet_ntop($address);
 
@@ -81,7 +81,7 @@ final class Address
      * @return array
      * @throws InvalidArgumentException
      */
-    public static function parse4(string $address)
+    public static function parse4(string $address): array
     {
         if (preg_match(self::PATTERN_IP_ADDRESS, $address, $matches)) {
             return $matches;
@@ -118,9 +118,9 @@ final class Address
      *
      * @param int $bits
      *
-     * @return int
+     * @return string
      */
-    public static function cidrToDec(int $bits)
+    public static function cidrToDec(int $bits): string
     {
         return long2ip(-1 << (32 - $bits));
     }

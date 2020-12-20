@@ -103,7 +103,7 @@ final class MailProvider extends Provider
     /**
      * @return bool
      */
-    public function isDebug()
+    public function isDebug(): bool
     {
         return $this->debug;
     }
@@ -111,7 +111,7 @@ final class MailProvider extends Provider
     /**
      * @param bool $debug
      */
-    public function setDebug($debug)
+    public function setDebug(bool $debug)
     {
         $this->debug = (bool)$debug;
     }

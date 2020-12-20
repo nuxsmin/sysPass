@@ -73,7 +73,7 @@ final class LdapMsAds extends Ldap
     /**
      * @return string
      */
-    private function getUserObjectFilter()
+    private function getUserObjectFilter(): string
     {
         if (empty($this->ldapParams->getFilterUserObject())) {
             return self::DEFAULT_FILTER_USER_OBJECT;
@@ -176,7 +176,7 @@ final class LdapMsAds extends Ldap
      * @inheritDoc
      * @throws LdapException
      */
-    public function getGroupMembershipDirectFilter(string $userDn = null): string
+    public function getGroupMembershipDirectFilter(?string $userDn = null): string
     {
         if (empty($this->ldapParams->getFilterGroupAttributes())) {
             $attributes = self::DEFAULT_FILTER_GROUP_ATTRIBUTES;

@@ -75,7 +75,7 @@ final class MySQLHandler implements DBStorageInterface
      *
      * @return int
      */
-    public function getDbStatus()
+    public function getDbStatus(): int
     {
         return $this->dbStatus;
     }
@@ -87,7 +87,7 @@ final class MySQLHandler implements DBStorageInterface
      * @return PDO
      * @throws DatabaseException
      */
-    public function getConnection()
+    public function getConnection(): PDO
     {
         if (!$this->db) {
             if (null === $this->connectionData->getDbUser()
@@ -131,7 +131,7 @@ final class MySQLHandler implements DBStorageInterface
     /**
      * @return string
      */
-    public function getConnectionUri()
+    public function getConnectionUri(): string
     {
         $dsn = ['charset=utf8'];
 
@@ -158,7 +158,7 @@ final class MySQLHandler implements DBStorageInterface
      * @return PDO
      * @throws DatabaseException
      */
-    public function getConnectionSimple()
+    public function getConnectionSimple(): PDO
     {
         if (!$this->db) {
             if (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket()) {
@@ -188,9 +188,9 @@ final class MySQLHandler implements DBStorageInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDatabaseName()
+    public function getDatabaseName(): ?string
     {
         return $this->connectionData->getDbName();
     }

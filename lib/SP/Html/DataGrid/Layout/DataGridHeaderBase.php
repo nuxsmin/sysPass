@@ -49,7 +49,7 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
     /**
      * @param $header string
      */
-    public function addHeader($header)
+    public function addHeader(string $header)
     {
         $this->headers[] = $header;
 
@@ -68,7 +68,7 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }

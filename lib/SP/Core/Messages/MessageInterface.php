@@ -38,12 +38,12 @@ interface MessageInterface
      *
      * @return string
      */
-    public function composeText($delimiter = PHP_EOL);
+    public function composeText(string $delimiter = PHP_EOL): string;
 
     /**
      * Componer un mensaje en formato HTML
      *
-     * @return mixed
+     * @return string
      */
-    public function composeHtml();
+    public function composeHtml(): string;
 }

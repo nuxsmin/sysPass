@@ -107,7 +107,7 @@ final class PluginManager
      *
      * @return array
      */
-    public static function getPlugins()
+    public static function getPlugins(): array
     {
         if (is_dir(PLUGINS_PATH)) {
             $dir = dir(PLUGINS_PATH);
@@ -134,7 +134,7 @@ final class PluginManager
             return $plugins;
         }
 
-        return  [];
+        return [];
     }
 
     /**
@@ -145,7 +145,7 @@ final class PluginManager
      *
      * @return PluginInterface
      */
-    public function getPlugin($name, bool $initialize = false)
+    public function getPlugin(string $name, bool $initialize = false): ?PluginInterface
     {
         if (isset(self::$pluginsAvailable[$name])) {
             $plugin = $this->loadPluginClass(
@@ -172,7 +172,7 @@ final class PluginManager
      *
      * @return PluginInterface
      */
-    private function loadPluginClass(string $name, string $namespace)
+    private function loadPluginClass(string $name, string $namespace): ?PluginInterface
     {
         $pluginName = ucfirst($name);
 
@@ -224,7 +224,7 @@ final class PluginManager
      * @throws NoSuchItemException
      * @throws QueryException
      */
-    public function checkCompatibility(PluginInterface $plugin)
+    public function checkCompatibility(PluginInterface $plugin): bool
     {
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
         $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
@@ -248,7 +248,7 @@ final class PluginManager
      *
      * @return bool
      */
-    private function initPlugin(PluginInterface $plugin)
+    private function initPlugin(PluginInterface $plugin): bool
     {
         try {
             $pluginModel = $this->pluginService->getByName($plugin->getName());
@@ -455,7 +455,7 @@ final class PluginManager
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getEnabledPlugins()
+    public function getEnabledPlugins(): ?array
     {
         if ($this->enabledPlugins !== null) {
             return $this->enabledPlugins;
@@ -475,7 +475,7 @@ final class PluginManager
      *
      * @return PluginInterface[]
      */
-    public function getLoadedPlugins()
+    public function getLoadedPlugins(): array
     {
         return $this->loadedPlugins;
     }
@@ -485,7 +485,7 @@ final class PluginManager
      *
      * @return string[]
      */
-    public function getDisabledPlugins()
+    public function getDisabledPlugins(): array
     {
         return $this->disabledPlugins;
     }

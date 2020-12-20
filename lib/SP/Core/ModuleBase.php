@@ -88,10 +88,8 @@ abstract class ModuleBase
 
     /**
      * @param string $controller
-     *
-     * @return mixed
      */
-    abstract public function initialize($controller);
+    abstract public function initialize(string $controller);
 
     /**
      * Comprobar si el modo mantenimiento está activado
@@ -101,7 +99,7 @@ abstract class ModuleBase
      *
      * @return bool
      */
-    public function checkMaintenanceMode(ContextInterface $context)
+    public function checkMaintenanceMode(ContextInterface $context): bool
     {
         if ($this->configData->isMaintenance()) {
             Bootstrap::$LOCK = Util::getAppLock();

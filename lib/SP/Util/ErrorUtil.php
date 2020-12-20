@@ -80,12 +80,17 @@ final class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template $view
-     * @param int      $type int con el tipo de error
-     * @param bool     $render
-     * @param null     $replace
+     * @param Template    $view
+     * @param int         $type int con el tipo de error
+     * @param bool        $render
+     * @param string|null $replace
      */
-    public static function showErrorInView(Template $view, $type, $render = true, $replace = null)
+    public static function showErrorInView(
+        Template $view,
+        int $type,
+        bool $render = true,
+        ?string $replace = null
+    )
     {
         self::addErrorTemplate($view, $replace);
 
@@ -118,14 +123,14 @@ final class ErrorUtil
         if ($replace === null) {
             $view->resetTemplates();
 
-            if ($view->hashContentTemplates()) {
+            if ($view->hasContentTemplates()) {
                 $view->resetContentTemplates();
                 $view->addContentTemplate('error', Template::PARTIALS_DIR);
             } else {
                 $view->addTemplate('error', Template::PARTIALS_DIR);
             }
         } else {
-            if ($view->hashContentTemplates()) {
+            if ($view->hasContentTemplates()) {
                 $view->removeContentTemplate($replace);
                 $view->addContentTemplate('error', Template::PARTIALS_DIR);
             } else {
@@ -142,7 +147,7 @@ final class ErrorUtil
      *
      * @return mixed
      */
-    protected static function getErrorTypes($type)
+    protected static function getErrorTypes($type): array
     {
         $errorTypes = [
             self::ERR_UNAVAILABLE => [

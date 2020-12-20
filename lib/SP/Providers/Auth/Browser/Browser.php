@@ -96,9 +96,9 @@ final class Browser implements AuthInterface
     /**
      * Indica si es requerida para acceder a la aplicación
      *
-     * @return boolean
+     * @return bool
      */
-    public function isAuthGranted()
+    public function isAuthGranted(): bool
     {
         return $this->configData->isAuthBasicAutoLoginEnabled();
     }
@@ -110,7 +110,7 @@ final class Browser implements AuthInterface
      *
      * @return bool|null
      */
-    public function checkServerAuthUser($login)
+    public function checkServerAuthUser(string $login): ?bool
     {
         $domain = $this->configData->getAuthBasicDomain();
         $authUser = $this->getServerAuthUser();
@@ -127,7 +127,7 @@ final class Browser implements AuthInterface
      *
      * @return string
      */
-    public function getServerAuthUser()
+    public function getServerAuthUser(): ?string
     {
         $authUser = $this->request->getServer('PHP_AUTH_USER');
 
@@ -149,7 +149,7 @@ final class Browser implements AuthInterface
      *
      * @return string|null
      */
-    protected function getAuthPass()
+    protected function getAuthPass(): ?string
     {
         $authPass = $this->request->getServer('PHP_AUTH_PW');
 

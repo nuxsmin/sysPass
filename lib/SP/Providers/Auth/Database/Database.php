@@ -90,7 +90,7 @@ final class Database implements AuthInterface
      *
      * @return boolean
      */
-    public function isAuthGranted()
+    public function isAuthGranted(): bool
     {
         return true;
     }
@@ -103,15 +103,19 @@ final class Database implements AuthInterface
      *
      * @return bool
      */
-    protected function authUser()
+    protected function authUser(): bool
     {
         try {
             $userLoginResponse = UserService::mapUserLoginResponse($this->userService->getByLogin($this->userLoginData->getLoginUser()));
 
             $this->userLoginData->setUserLoginResponse($userLoginResponse);
 
-            if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser($userLoginResponse)) {
-                return $this->userPassService->migrateUserPassById($userLoginResponse->getId(), $this->userLoginData->getLoginPass());
+            if ($userLoginResponse->getIsMigrate()
+                && $this->checkMigrateUser($userLoginResponse)
+            ) {
+                $this->userPassService->migrateUserPassById($userLoginResponse->getId(), $this->userLoginData->getLoginPass());
+
+                return true;
             }
 
             return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
@@ -127,7 +131,7 @@ final class Database implements AuthInterface
      *
      * @return bool
      */
-    protected function checkMigrateUser(UserLoginResponse $userLoginResponse)
+    protected function checkMigrateUser(UserLoginResponse $userLoginResponse): bool
     {
         return ($userLoginResponse->getPass() === sha1($userLoginResponse->getHashSalt() . $this->userLoginData->getLoginPass())
             || $userLoginResponse->getPass() === md5($this->userLoginData->getLoginPass())

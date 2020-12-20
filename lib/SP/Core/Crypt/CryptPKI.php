@@ -119,7 +119,7 @@ final class CryptPKI
      * @return string
      * @throws FileException
      */
-    public function encryptRSA($data)
+    public function encryptRSA(string $data): string
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $this->rsa->loadKey($this->getPublicKey(), RSA::PUBLIC_FORMAT_PKCS1);
@@ -133,7 +133,7 @@ final class CryptPKI
      * @return string
      * @throws FileException
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKeyFile
             ->checkFileExists()
@@ -145,10 +145,10 @@ final class CryptPKI
      *
      * @param string $data los datos a desencriptar
      *
-     * @return string
+     * @return string|false
      * @throws FileException
      */
-    public function decryptRSA($data)
+    public function decryptRSA(string $data)
     {
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
@@ -162,7 +162,7 @@ final class CryptPKI
      * @return string
      * @throws FileException
      */
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
         return $this->privateKeyFile
             ->checkFileExists()

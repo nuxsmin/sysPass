@@ -73,7 +73,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function updateEvent($eventType, Event $event)
+    public function updateEvent(string $eventType, Event $event)
     {
         $this->language->setAppLocales();
 
@@ -111,7 +111,11 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @return array
      */
-    final protected function formatContext($message, $address, $user): array
+    final protected function formatContext(
+        string $message,
+        string $address,
+        string $user
+    ): array
     {
         return [
             'message' => trim($message),

@@ -36,30 +36,30 @@ interface IconInterface
     /**
      * @param $title
      */
-    public function setTitle($title);
+    public function setTitle(string $title);
 
     /**
      * @return string
      */
-    public function getTitle();
+    public function getTitle(): string;
 
     /**
-     * @param $class
+     * @param string $class
      */
-    public function setClass($class);
-
-    /**
-     * @return string
-     */
-    public function getClass();
+    public function setClass(string $class);
 
     /**
      * @return string
      */
-    public function getIcon();
+    public function getClass(): string;
 
     /**
-     * @param $icon
+     * @return string
      */
-    public function setIcon($icon);
+    public function getIcon(): string;
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon(string $icon);
 }

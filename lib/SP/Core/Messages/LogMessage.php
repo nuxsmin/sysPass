@@ -56,7 +56,7 @@ final class LogMessage extends MessageBase
      *
      * @return $this
      */
-    public function addDetails($key, $value)
+    public function addDetails(string $key, string $value)
     {
         if ($value === '' || $key === '') {
             return $this;
@@ -75,7 +75,7 @@ final class LogMessage extends MessageBase
      *
      * @return string
      */
-    private function formatString($string)
+    private function formatString(string $string): string
     {
         return strip_tags($string);
     }
@@ -87,7 +87,7 @@ final class LogMessage extends MessageBase
      *
      * @return $this
      */
-    public function addDescription($description = '')
+    public function addDescription(string $description = ''): LogMessage
     {
         $this->description[] = $this->formatString($description);
 
@@ -112,7 +112,7 @@ final class LogMessage extends MessageBase
      *
      * @return string
      */
-    public function composeText($delimiter = PHP_EOL)
+    public function composeText(string $delimiter = PHP_EOL): string
     {
         $formatter = new TextFormatter();
 
@@ -130,7 +130,7 @@ final class LogMessage extends MessageBase
      *
      * @return string
      */
-    public function getAction($translate = false)
+    public function getAction(bool $translate = false): string
     {
         return $translate ? __($this->action) : $this->action;
     }
@@ -142,7 +142,7 @@ final class LogMessage extends MessageBase
      *
      * @return $this
      */
-    public function setAction($action)
+    public function setAction(string $action): LogMessage
     {
         $this->action = $this->formatString($action);
 
@@ -186,9 +186,9 @@ final class LogMessage extends MessageBase
     /**
      * Componer un mensaje en formato HTML
      *
-     * @return mixed
+     * @return string
      */
-    public function composeHtml()
+    public function composeHtml(): string
     {
         $formatter = new HtmlFormatter();
 
@@ -216,7 +216,7 @@ final class LogMessage extends MessageBase
     /**
      * Restablecer la variable de detalles
      */
-    public function resetDetails()
+    public function resetDetails(): LogMessage
     {
         $this->details = [];
         $this->detailsCounter = 0;

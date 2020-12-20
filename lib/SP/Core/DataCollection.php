@@ -84,7 +84,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return boolean
      */
-    public function exists($key)
+    public function exists(string $key): bool
     {
         // Don't use "isset", since it returns false for null values
         return array_key_exists($key, $this->attributes);
@@ -117,7 +117,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return mixed
      */
-    public function get($key, $default_val = null)
+    public function get(string $key, $default_val = null)
     {
         if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
@@ -154,7 +154,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return DataCollection
      */
-    public function set($key, $value)
+    public function set(string $key, $value): DataCollection
     {
         $this->attributes[$key] = $value;
 
@@ -185,7 +185,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return void
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         unset($this->attributes[$key]);
     }
@@ -212,7 +212,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return DataCollection
      */
-    public function clear()
+    public function clear(): DataCollection
     {
         return $this->replace();
     }
@@ -224,7 +224,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return DataCollection
      */
-    public function replace(array $attributes = array())
+    public function replace(array $attributes = array()): DataCollection
     {
         $this->attributes = $attributes;
 
@@ -236,7 +236,7 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return boolean
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->attributes);
     }
@@ -251,7 +251,6 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return mixed
      * @see get()
-     *
      */
     public function __get($key)
     {
@@ -269,7 +268,6 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return void
      * @see set()
-     *
      */
     public function __set($key, $value)
     {
@@ -286,7 +284,6 @@ abstract class DataCollection implements IteratorAggregate, ArrayAccess, Countab
      *
      * @return boolean
      * @see exists()
-     *
      */
     public function __isset($key)
     {

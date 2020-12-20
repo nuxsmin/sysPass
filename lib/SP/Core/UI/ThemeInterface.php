@@ -43,7 +43,7 @@ interface ThemeInterface
      *
      * @return array Con la información del tema
      */
-    public function getThemesAvailable();
+    public function getThemesAvailable(): array;
 
     /**
      * Obtener la información del tema desde el archivo de información
@@ -56,30 +56,30 @@ interface ThemeInterface
      *          'css' => array
      *  )
      */
-    public function getThemeInfo();
+    public function getThemeInfo(): array;
 
     /**
      * @return string
      */
-    public function getThemeUri();
+    public function getThemeUri(): string;
 
     /**
      * @return string
      */
-    public function getThemePath();
+    public function getThemePath(): string;
 
     /**
      * @return string
      */
-    public function getThemeName();
+    public function getThemeName(): string;
 
     /**
      * @return ThemeIcons
      */
-    public function getIcons();
+    public function getIcons(): ThemeIcons;
 
     /**
      * @return string
      */
-    public function getViewsPath();
+    public function getViewsPath(): string;
 }

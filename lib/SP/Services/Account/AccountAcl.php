@@ -159,7 +159,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setUserInGroups(bool $userInGroups)
+    public function setUserInGroups(bool $userInGroups): AccountAcl
     {
         $this->userInGroups = $userInGroups;
 
@@ -179,7 +179,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setUserInUsers(bool $userInUsers)
+    public function setUserInUsers(bool $userInUsers): AccountAcl
     {
         $this->userInUsers = $userInUsers;
 
@@ -199,7 +199,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setResultView(bool $resultView)
+    public function setResultView(bool $resultView): AccountAcl
     {
         $this->resultView = $resultView;
 
@@ -219,7 +219,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setResultEdit(bool $resultEdit)
+    public function setResultEdit(bool $resultEdit): AccountAcl
     {
         $this->resultEdit = $resultEdit;
 
@@ -241,7 +241,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowDetails(bool $showDetails)
+    public function setShowDetails(bool $showDetails): AccountAcl
     {
         $this->showDetails = $showDetails;
 
@@ -262,7 +262,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowPass(bool $showPass)
+    public function setShowPass(bool $showPass): AccountAcl
     {
         $this->showPass = $showPass;
 
@@ -285,7 +285,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowFiles(bool $showFiles)
+    public function setShowFiles(bool $showFiles): AccountAcl
     {
         $this->showFiles = $this->resultView && $showFiles;
 
@@ -310,7 +310,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowViewPass(bool $showViewPass)
+    public function setShowViewPass(bool $showViewPass): AccountAcl
     {
         $this->showViewPass = $this->resultView && $showViewPass;
 
@@ -332,7 +332,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowSave(bool $showSave)
+    public function setShowSave(bool $showSave): AccountAcl
     {
         $this->showSave = $showSave;
 
@@ -354,7 +354,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowEdit(bool $showEdit)
+    public function setShowEdit(bool $showEdit): AccountAcl
     {
         $this->showEdit = $this->resultEdit && $showEdit && !$this->isHistory;
 
@@ -376,7 +376,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowEditPass(bool $showEditPass)
+    public function setShowEditPass(bool $showEditPass): AccountAcl
     {
         $this->showEditPass = $this->resultEdit && $showEditPass && !$this->isHistory;
 
@@ -399,7 +399,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowDelete(bool $showDelete)
+    public function setShowDelete(bool $showDelete): AccountAcl
     {
         $this->showDelete = $this->resultEdit && $showDelete;
 
@@ -419,7 +419,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowRestore(bool $showRestore)
+    public function setShowRestore(bool $showRestore): AccountAcl
     {
         $this->showRestore = $this->resultEdit && $showRestore;
 
@@ -439,7 +439,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowLink(bool $showLink)
+    public function setShowLink(bool $showLink): AccountAcl
     {
         $this->showLink = $showLink;
 
@@ -461,7 +461,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowHistory(bool $showHistory)
+    public function setShowHistory(bool $showHistory): AccountAcl
     {
         $this->showHistory = $showHistory;
 
@@ -489,7 +489,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setActionId($actionId)
+    public function setActionId($actionId): AccountAcl
     {
         $this->actionId = (int)$actionId;
 
@@ -509,7 +509,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setTime($time)
+    public function setTime($time): AccountAcl
     {
         $this->time = (int)$time;
 
@@ -519,11 +519,11 @@ final class AccountAcl
     /**
      * Comprueba los permisos de acceso a una cuenta.
      *
-     * @param null $actionId
+     * @param int $actionId
      *
      * @return bool
      */
-    public function checkAccountAccess($actionId)
+    public function checkAccountAccess(int $actionId): bool
     {
         if ($this->compiledAccountAccess === false) {
             return false;
@@ -559,7 +559,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setModified($modified)
+    public function setModified(bool $modified): AccountAcl
     {
         $this->modified = $modified;
 
@@ -579,7 +579,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowView(bool $showView)
+    public function setShowView(bool $showView): AccountAcl
     {
         $this->showView = $this->resultView && $showView;
 
@@ -602,7 +602,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowCopy(bool $showCopy)
+    public function setShowCopy(bool $showCopy): AccountAcl
     {
         $this->showCopy = $this->resultView && $showCopy;
 
@@ -622,7 +622,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setShowPermission(bool $showPermission)
+    public function setShowPermission(bool $showPermission): AccountAcl
     {
         $this->showPermission = $showPermission;
 
@@ -642,7 +642,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setAccountId($accountId)
+    public function setAccountId($accountId): AccountAcl
     {
         $this->accountId = (int)$accountId;
 
@@ -662,7 +662,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setIsHistory(bool $isHistory)
+    public function setIsHistory(bool $isHistory): AccountAcl
     {
         $this->isHistory = $isHistory;
 
@@ -682,7 +682,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setCompiledShowAccess($compiledShowAccess)
+    public function setCompiledShowAccess(bool $compiledShowAccess): AccountAcl
     {
         $this->compiledShowAccess = (bool)$compiledShowAccess;
 
@@ -702,7 +702,7 @@ final class AccountAcl
      *
      * @return AccountAcl
      */
-    public function setCompiledAccountAccess($compiledAccountAccess)
+    public function setCompiledAccountAccess(bool $compiledAccountAccess): AccountAcl
     {
         $this->compiledAccountAccess = (bool)$compiledAccountAccess;
 

@@ -34,11 +34,11 @@ defined('APP_ROOT') || die();
 final class FontIcon extends IconBase
 {
     /**
-     * @param string $icon
-     * @param string $class
-     * @param string $title
+     * @param string      $icon
+     * @param string|null $class
+     * @param string|null $title
      */
-    public function __construct($icon, $class = null, $title = null)
+    public function __construct(string $icon, ?string $class = null, ?string $title = null)
     {
         $this->setIcon($icon);
         $this->setClass($class);
@@ -50,7 +50,7 @@ final class FontIcon extends IconBase
      *
      * @return string
      */
-    public function getClassButton()
+    public function getClassButton(): string
     {
         return str_replace('-text--', '--', $this->getClass());
     }

@@ -53,11 +53,11 @@ interface LdapInterface
     /**
      * Return the filter to check the group membership from group's attributes
      *
-     * @param string $userDn
+     * @param string|null $userDn
      *
      * @return string
      */
-    public function getGroupMembershipDirectFilter(string $userDn = null): string;
+    public function getGroupMembershipDirectFilter(?string $userDn = null): string;
 
     /**
      * Buscar al usuario en un grupo.
@@ -85,12 +85,12 @@ interface LdapInterface
     public function connect();
 
     /**
-     * @param string $bindDn
-     * @param string $bindPass
+     * @param string|null $bindDn
+     * @param string|null $bindPass
      *
      * @return bool
      */
-    public function bind(string $bindDn = null, string $bindPass = null): bool;
+    public function bind(?string $bindDn = null, ?string $bindPass = null): bool;
 
     /**
      * @return LdapActions

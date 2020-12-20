@@ -53,17 +53,17 @@ final class AuthResult
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAuthName()
+    public function getAuthName(): ?string
     {
         return $this->authName;
     }
 
     /**
-     * @return AuthDataBase
+     * @return AuthDataBase|null
      */
-    public function getData()
+    public function getData(): ?AuthDataBase
     {
         return $this->data;
     }

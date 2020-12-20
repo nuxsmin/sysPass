@@ -53,7 +53,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @return string
      */
-    public function getDn()
+    public function getDn(): ?string
     {
         return $this->dn;
     }
@@ -61,7 +61,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param string $dn
      */
-    public function setDn($dn)
+    public function setDn(string $dn)
     {
         $this->dn = $dn;
     }
@@ -69,7 +69,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @return int
      */
-    public function getExpire()
+    public function getExpire(): int
     {
         return (int)$this->expire;
     }
@@ -85,7 +85,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @return boolean
      */
-    public function isInGroup()
+    public function isInGroup(): bool
     {
         return $this->inGroup;
     }
@@ -93,7 +93,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param boolean $inGroup
      */
-    public function setInGroup($inGroup)
+    public function setInGroup(bool $inGroup)
     {
         $this->inGroup = $inGroup;
     }
@@ -101,7 +101,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @return string
      */
-    public function getGroupDn()
+    public function getGroupDn(): ?string
     {
         return $this->groupDn;
     }
@@ -109,7 +109,7 @@ final class LdapAuthData extends AuthDataBase
     /**
      * @param string $groupDn
      */
-    public function setGroupDn($groupDn)
+    public function setGroupDn(string $groupDn)
     {
         $this->groupDn = $groupDn;
     }

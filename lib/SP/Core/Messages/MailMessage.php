@@ -44,7 +44,7 @@ final class MailMessage extends MessageBase implements MessageInterface
      *
      * @return string
      */
-    public function composeHtml()
+    public function composeHtml(): string
     {
         $formatter = new HtmlFormatter();
 
@@ -75,7 +75,7 @@ final class MailMessage extends MessageBase implements MessageInterface
      *
      * @return string
      */
-    public function composeText($delimiter = PHP_EOL)
+    public function composeText(string $delimiter = PHP_EOL): string
     {
         $formatter = new TextFormatter($delimiter);
 

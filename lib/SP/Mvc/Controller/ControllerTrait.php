@@ -25,6 +25,8 @@
 namespace SP\Mvc\Controller;
 
 use Closure;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
@@ -46,7 +48,7 @@ trait ControllerTrait
     /**
      * @return string
      */
-    protected function getControllerName()
+    protected function getControllerName(): string
     {
         $class = static::class;
 
@@ -59,6 +61,9 @@ trait ControllerTrait
      * @param Request    $request
      * @param ConfigData $configData
      * @param Closure    $onRedirect
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function sessionLogout(Request $request, ConfigData $configData, Closure $onRedirect)
     {
@@ -111,7 +116,7 @@ trait ControllerTrait
      * @throws SPException
      * @deprecated
      */
-    protected function checkSecurityToken($previousToken, Request $request)
+    protected function checkSecurityToken(string $previousToken, Request $request)
     {
         if ($request->analyzeString('h') !== null
             && $request->analyzeString('from') === null

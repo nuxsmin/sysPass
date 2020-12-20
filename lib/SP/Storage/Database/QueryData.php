@@ -44,11 +44,7 @@ final class QueryData
     /**
      * @var string
      */
-    protected $mapClassName = '';
-    /**
-     * @var DataModelBase
-     */
-    protected $mapClass;
+    protected $mapClassName;
     /**
      * @var bool
      */
@@ -56,35 +52,31 @@ final class QueryData
     /**
      * @var string
      */
-    protected $select = '';
+    protected $select;
     /**
      * @var string
      */
-    protected $from = '';
+    protected $from;
     /**
      * @var string
      */
-    protected $where = '';
+    protected $where;
     /**
      * @var string
      */
-    protected $groupBy = '';
+    protected $groupBy;
+    /**
+     * @var string|null
+     */
+    protected $order;
     /**
      * @var string
      */
-    protected $order = '';
+    protected $limit;
     /**
      * @var string
      */
-    protected $limit = '';
-    /**
-     * @var string
-     */
-    protected $queryCount = '';
-    /**
-     * @var int
-     */
-    protected $queryNumRows = 0;
+    protected $queryCount;
     /**
      * @var int Código de estado tras realizar la consulta
      */
@@ -112,7 +104,7 @@ final class QueryData
     /**
      * @return array
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
@@ -130,7 +122,7 @@ final class QueryData
     /**
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         if (empty($this->query)) {
             return $this->select . ' ' . $this->from . ' ' . $this->where . ' ' . $this->groupBy . ' ' . $this->order . ' ' . $this->limit;
@@ -148,9 +140,9 @@ final class QueryData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMapClassName()
+    public function getMapClassName(): ?string
     {
         return $this->mapClassName;
     }
@@ -158,7 +150,7 @@ final class QueryData
     /**
      * @param string $mapClassName
      */
-    public function setMapClassName($mapClassName)
+    public function setMapClassName(string $mapClassName)
     {
         $this->mapClassName = $mapClassName;
     }
@@ -166,7 +158,7 @@ final class QueryData
     /**
      * @return bool
      */
-    public function isUseKeyPair()
+    public function isUseKeyPair(): bool
     {
         return $this->useKeyPair;
     }
@@ -174,15 +166,15 @@ final class QueryData
     /**
      * @param boolean $useKeyPair
      */
-    public function setUseKeyPair($useKeyPair)
+    public function setUseKeyPair(bool $useKeyPair)
     {
-        $this->useKeyPair = (bool)$useKeyPair;
+        $this->useKeyPair = $useKeyPair;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSelect()
+    public function getSelect(): ?string
     {
         return $this->select;
     }
@@ -190,15 +182,15 @@ final class QueryData
     /**
      * @param string $select
      */
-    public function setSelect($select)
+    public function setSelect(string $select)
     {
         $this->select = 'SELECT ' . $select;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getOrder()
+    public function getOrder(): ?string
     {
         return $this->order;
     }
@@ -206,7 +198,7 @@ final class QueryData
     /**
      * @param string $order
      */
-    public function setOrder($order)
+    public function setOrder(string $order)
     {
         if (!empty($order)) {
             $this->order = 'ORDER BY ' . $order;
@@ -214,9 +206,9 @@ final class QueryData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLimit()
+    public function getLimit(): ?string
     {
         return $this->limit;
     }
@@ -225,7 +217,7 @@ final class QueryData
      * @param string     $limit
      * @param array|null $params
      */
-    public function setLimit($limit, array $params = null)
+    public function setLimit(string $limit, ?array $params = null)
     {
         if (!empty($limit)) {
             $this->limit = 'LIMIT ' . $limit;
@@ -249,7 +241,7 @@ final class QueryData
     /**
      * @return string
      */
-    public function getQueryCount()
+    public function getQueryCount(): string
     {
         if (empty($this->queryCount)) {
             return 'SELECT COUNT(*) ' . $this->from . ' ' . $this->where;
@@ -259,9 +251,9 @@ final class QueryData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFrom()
+    public function getFrom(): ?string
     {
         return $this->from;
     }
@@ -269,7 +261,7 @@ final class QueryData
     /**
      * @param string $from
      */
-    public function setFrom($from)
+    public function setFrom(string $from)
     {
         if (!empty($from)) {
             $this->from = 'FROM ' . $from;
@@ -277,9 +269,9 @@ final class QueryData
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getWhere()
+    public function getWhere(): ?string
     {
         return $this->where;
     }
@@ -299,41 +291,9 @@ final class QueryData
     }
 
     /**
-     * @return int
-     */
-    public function getQueryNumRows()
-    {
-        return (int)$this->queryNumRows;
-    }
-
-    /**
-     * @param int $queryNumRows
-     */
-    public function setQueryNumRows($queryNumRows)
-    {
-        $this->queryNumRows = (int)$queryNumRows;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQueryStatus()
-    {
-        return $this->queryStatus;
-    }
-
-    /**
-     * @param int $queryStatus
-     */
-    public function setQueryStatus($queryStatus)
-    {
-        $this->queryStatus = $queryStatus;
-    }
-
-    /**
      * @return string
      */
-    public function getOnErrorMessage()
+    public function getOnErrorMessage(): string
     {
         return $this->onErrorMessage ?: __u('Error while querying');
     }
@@ -341,13 +301,13 @@ final class QueryData
     /**
      * @param string $onErrorMessage
      */
-    public function setOnErrorMessage($onErrorMessage)
+    public function setOnErrorMessage(string $onErrorMessage)
     {
         $this->onErrorMessage = $onErrorMessage;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getGroupBy()
     {
@@ -357,7 +317,7 @@ final class QueryData
     /**
      * @param string $groupBy
      */
-    public function setGroupBy($groupBy)
+    public function setGroupBy(string $groupBy)
     {
         if (!empty($groupBy)) {
             $this->groupBy = 'GROUP BY ' . $groupBy;

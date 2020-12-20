@@ -64,7 +64,7 @@ abstract class GridBase extends HelperBase implements GridInterface
      *
      * @return DataGridInterface
      */
-    public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData)
+    public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData): DataGridInterface
     {
         $dataGrid->getPager()
             ->setLimitStart($itemSearchData->getLimitStart())
@@ -83,7 +83,7 @@ abstract class GridBase extends HelperBase implements GridInterface
      *
      * @return DataGridPager
      */
-    final protected function getPager(DataGridActionSearch $sourceAction)
+    final protected function getPager(DataGridActionSearch $sourceAction): DataGridPager
     {
         $gridPager = new DataGridPager();
         $gridPager->setSourceAction($sourceAction);

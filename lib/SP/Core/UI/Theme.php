@@ -96,7 +96,12 @@ final class Theme implements ThemeInterface
      * @param ContextInterface   $context
      * @param FileCacheInterface $fileCache
      */
-    public function __construct($module, Config $config, ContextInterface $context, FileCacheInterface $fileCache)
+    public function __construct(
+        string $module,
+        Config $config,
+        ContextInterface $context,
+        FileCacheInterface $fileCache
+    )
     {
         $this->configData = $config->getConfigData();
         $this->context = $context;
@@ -131,9 +136,9 @@ final class Theme implements ThemeInterface
     /**
      * Obtener el tema visual del usuario
      *
-     * @return string
+     * @return string|null
      */
-    protected function getUserTheme()
+    protected function getUserTheme(): ?string
     {
         return $this->context->isLoggedIn() ? $this->context->getUserData()->getPreferences()->getTheme() : null;
     }
@@ -141,7 +146,7 @@ final class Theme implements ThemeInterface
     /**
      * Devolver el tema visual de sysPass desde la configuración
      */
-    protected function getGlobalTheme()
+    protected function getGlobalTheme(): string
     {
         return $this->configData->getSiteTheme();
     }
@@ -152,7 +157,7 @@ final class Theme implements ThemeInterface
      * @return ThemeIcons
      * @throws InvalidClassException
      */
-    private function initIcons()
+    private function initIcons(): ThemeIcons
     {
         try {
             if ($this->context->getAppStatus() !== SessionContext::APP_STATUS_RELOADED
@@ -200,7 +205,7 @@ final class Theme implements ThemeInterface
      *
      * @return array Con la información del tema
      */
-    public function getThemesAvailable()
+    public function getThemesAvailable(): array
     {
         $themesAvailable = [];
 
@@ -234,12 +239,16 @@ final class Theme implements ThemeInterface
      *          'css' => array
      *  )
      */
-    public function getThemeInfo()
+    public function getThemeInfo(): array
     {
         $themeFile = $this->themePathFull . DIRECTORY_SEPARATOR . 'index.php';
 
         if (file_exists($themeFile)) {
-            return include $themeFile;
+            $themeInfo = include $themeFile;
+
+            if (is_array($themeInfo)) {
+                return $themeInfo;
+            }
         }
 
         return [];
@@ -248,7 +257,7 @@ final class Theme implements ThemeInterface
     /**
      * @return string
      */
-    public function getThemeUri()
+    public function getThemeUri(): string
     {
         return $this->themeUri;
     }
@@ -256,7 +265,7 @@ final class Theme implements ThemeInterface
     /**
      * @return string
      */
-    public function getThemePath()
+    public function getThemePath(): string
     {
         return $this->themePath;
     }
@@ -264,7 +273,7 @@ final class Theme implements ThemeInterface
     /**
      * @return string
      */
-    public function getThemeName()
+    public function getThemeName(): string
     {
         return $this->themeName;
     }
@@ -272,7 +281,7 @@ final class Theme implements ThemeInterface
     /**
      * @return ThemeIcons
      */
-    public function getIcons()
+    public function getIcons(): ThemeIcons
     {
         return clone $this->icons;
     }
@@ -280,7 +289,7 @@ final class Theme implements ThemeInterface
     /**
      * @return string
      */
-    public function getViewsPath()
+    public function getViewsPath(): string
     {
         return $this->viewsPath;
     }

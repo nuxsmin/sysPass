@@ -62,9 +62,9 @@ final class Connection implements ConnectionInterface
 
     /**
      * @param $host string El host a conectar
-     * @param $port string El puerto a conectar
+     * @param $port int El puerto a conectar
      */
-    public function __construct($host, $port)
+    public function __construct(string $host, int $port)
     {
         $this->host = gethostbyname($host);
         $this->port = $port;
@@ -78,12 +78,9 @@ final class Connection implements ConnectionInterface
      * @return resource
      * @throws SPException
      */
-    public function getSocket($type)
+    public function getSocket(int $type)
     {
         switch ($type) {
-            case self::TYPE_TCP:
-                $this->socket = $this->getTCPSocket();
-                break;
             case self::TYPE_UDP:
                 $this->socket = $this->getUDPSocket();
                 break;
@@ -102,17 +99,6 @@ final class Connection implements ConnectionInterface
     }
 
     /**
-     * Obtener un socket del tipo TCP
-     *
-     * @return resource
-     */
-    private function getTCPSocket()
-    {
-        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
-//        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-    }
-
-    /**
      * Obtener un socket del tipo UDP
      *
      * @return resource
@@ -124,11 +110,22 @@ final class Connection implements ConnectionInterface
     }
 
     /**
+     * Obtener un socket del tipo TCP
+     *
+     * @return resource
+     */
+    private function getTCPSocket()
+    {
+        return stream_socket_client('tcp://' . $this->host . ':' . $this->port, $this->errorno, $this->errorstr, self::SOCKET_TIMEOUT);
+//        return @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    }
+
+    /**
      * Obtener el último error del socket
      *
      * @return string
      */
-    public function getSocketError()
+    public function getSocketError(): string
     {
         return sprintf('%s (%d)', $this->errorstr, $this->errorno);
 //        return socket_strerror(socket_last_error($this->_socket));
@@ -151,7 +148,7 @@ final class Connection implements ConnectionInterface
      * @return int|bool
      * @throws SPException
      */
-    public function send($message)
+    public function send(string $message)
     {
         if (!is_resource($this->socket)) {
             throw new SPException(__u('Socket not initialized'), SPException::WARNING);

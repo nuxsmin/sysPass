@@ -151,7 +151,7 @@ final class Init extends ModuleBase
      * @throws NoSuchItemException
      * @throws Exception
      */
-    public function initialize($controller)
+    public function initialize(string $controller)
     {
         logger(__METHOD__);
 
@@ -318,7 +318,7 @@ final class Init extends ModuleBase
      *
      * @throws FileException
      */
-    private function checkUpgrade()
+    private function checkUpgrade(): bool
     {
         UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
 
@@ -376,7 +376,7 @@ final class Init extends ModuleBase
      *
      * @return int con el tiempo en segundos
      */
-    private function getSessionLifeTime()
+    private function getSessionLifeTime(): int
     {
         $timeout = $this->context->getSessionTimeout();
 
@@ -396,7 +396,7 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @param int $default
+     * @param int|null $default
      *
      * @return int
      * @throws ConstraintException
@@ -404,7 +404,7 @@ final class Init extends ModuleBase
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    private function getSessionTimeoutForUser(int $default = null)
+    private function getSessionTimeoutForUser(?int $default = null): ?int
     {
         if ($this->context->isLoggedIn()) {
             $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT);

@@ -127,12 +127,12 @@ abstract class Ldap implements LdapInterface
     }
 
     /**
-     * @param string $bindDn
-     * @param string $bindPass
+     * @param string|null $bindDn
+     * @param string|null $bindPass
      *
      * @return bool
      */
-    public function bind(string $bindDn = null, string $bindPass = null): bool
+    public function bind(?string $bindDn = null, ?string $bindPass = null): bool
     {
         return $this->ldapConnection->bind($bindDn, $bindPass);
     }
