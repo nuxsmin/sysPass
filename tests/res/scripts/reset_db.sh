@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB_HOST=$(docker inspect syspass-db-test --format {{.NetworkSettings.Networks.bridge.IPAddress}})
+DB_HOST=$(docker inspect ${DB_CONTAINER} --format {{.NetworkSettings.Networks.bridge.IPAddress}})
 
 if [[ -z "${DB_HOST}" ]]; then
     echo "Unknown host"

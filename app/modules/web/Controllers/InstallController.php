@@ -49,6 +49,12 @@ final class InstallController extends ControllerBase
      */
     public function indexAction()
     {
+        if ($this->configData->isInstalled()) {
+            $this->router->response()
+                ->redirect('index.php?r=login');
+            return;
+        }
+
         $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getPublicLayout('index', 'install');
 
