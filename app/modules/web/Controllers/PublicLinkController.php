@@ -40,6 +40,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -92,13 +93,12 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -108,7 +108,9 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -138,12 +140,12 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Sets view data for displaying public link's data
      *
-     * @param $publicLinkId
+     * @param int|null $publicLinkId
      *
      * @throws ContainerExceptionInterface
      * @throws SPException
      */
-    protected function setViewData($publicLinkId = null)
+    protected function setViewData(?int $publicLinkId = null)
     {
         $this->view->addTemplate('public_link', 'itemshow');
 
@@ -173,8 +175,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function refreshAction($id)
+    public function refreshAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_REFRESH)) {
@@ -198,11 +202,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_EDIT)) {
@@ -230,11 +236,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_DELETE)) {
@@ -275,7 +283,9 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -310,8 +320,10 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
      * @param int $notify
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveCreateFromAccountAction($accountId, $notify)
+    public function saveCreateFromAccountAction(int $accountId, int $notify)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_CREATE)) {
@@ -341,9 +353,9 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         throw new RuntimeException('Not implemented');
     }
@@ -351,11 +363,13 @@ final class PublicLinkController extends ControllerBase implements CrudControlle
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PUBLICLINK_VIEW)) {

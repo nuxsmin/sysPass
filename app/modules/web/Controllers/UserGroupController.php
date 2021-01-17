@@ -36,6 +36,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -94,13 +95,12 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -110,7 +110,9 @@ final class UserGroupController extends ControllerBase implements CrudController
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -140,14 +142,17 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Sets view data for displaying user group's data
      *
-     * @param $userGroupId
+     * @param int|null $userGroupId
      *
      * @throws ConstraintException
-     * @throws QueryException
-     * @throws ServiceException
+     * @throws DependencyException
      * @throws NoSuchItemException
+     * @throws NotFoundException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
-    protected function setViewData($userGroupId = null)
+    protected function setViewData(?int $userGroupId = null)
     {
         $this->view->addTemplate('user_group', 'itemshow');
 
@@ -179,11 +184,13 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
@@ -211,11 +218,13 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::GROUP_DELETE)) {
@@ -258,7 +267,9 @@ final class UserGroupController extends ControllerBase implements CrudController
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -297,11 +308,13 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::GROUP_EDIT)) {
@@ -339,11 +352,13 @@ final class UserGroupController extends ControllerBase implements CrudController
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::GROUP_VIEW)) {

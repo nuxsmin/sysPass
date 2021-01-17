@@ -36,7 +36,6 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\ItemPreset\ItemPresetRequest;
 use SP\Services\ItemPreset\ItemPresetService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

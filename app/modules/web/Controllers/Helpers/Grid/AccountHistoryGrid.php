@@ -136,7 +136,7 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         $gridActionSearch = new DataGridActionSearch();
         $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_HISTORY_SEARCH);
@@ -152,7 +152,7 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRestoreAction()
+    private function getRestoreAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_RESTORE);
@@ -169,7 +169,7 @@ final class AccountHistoryGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_HISTORY_DELETE);

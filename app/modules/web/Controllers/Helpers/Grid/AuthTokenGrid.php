@@ -130,7 +130,7 @@ final class AuthTokenGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -147,7 +147,7 @@ final class AuthTokenGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAction()
+    private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_CREATE);
@@ -165,7 +165,7 @@ final class AuthTokenGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_VIEW);
@@ -182,7 +182,7 @@ final class AuthTokenGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEditAction()
+    private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_EDIT);
@@ -199,7 +199,7 @@ final class AuthTokenGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::AUTHTOKEN_DELETE);

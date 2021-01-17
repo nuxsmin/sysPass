@@ -36,6 +36,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -93,7 +94,7 @@ final class AuthTokenController extends ControllerBase implements CrudController
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -106,7 +107,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -136,13 +139,16 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Sets view data for displaying auth token's data
      *
-     * @param $authTokenId
+     * @param int|null $authTokenId
      *
      * @throws ConstraintException
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws QueryException
+     * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData($authTokenId = null)
+    protected function setViewData(?int $authTokenId = null)
     {
         $this->view->addTemplate('auth_token', 'itemshow');
 
@@ -169,11 +175,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
@@ -202,11 +210,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_DELETE)) {
@@ -249,7 +259,9 @@ final class AuthTokenController extends ControllerBase implements CrudController
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -285,11 +297,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_EDIT)) {
@@ -337,11 +351,13 @@ final class AuthTokenController extends ControllerBase implements CrudController
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::AUTHTOKEN_VIEW)) {

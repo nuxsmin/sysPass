@@ -63,7 +63,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPermissionView(ItemPresetData $itemPresetData)
     {
-        $accountPermission = $itemPresetData->hydrate(AccountPermission::class, 'data') ?: new AccountPermission();
+        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?: new AccountPermission();
 
         $this->view->assign('typeTemplate', 'item_preset-permission');
         $this->view->assign('presetName', __('Permission Preset'));
@@ -83,7 +83,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPrivateView(ItemPresetData $itemPresetData)
     {
-        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class, 'data') ?: new AccountPrivate();
+        $accountPrivate = $itemPresetData->hydrate(AccountPrivate::class) ?: new AccountPrivate();
 
         $this->view->assign('typeTemplate', 'item_preset-private');
         $this->view->assign('presetName', __('Private Account Preset'));
@@ -99,7 +99,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeSessionTimeoutView(ItemPresetData $itemPresetData)
     {
-        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class, 'data') ?: new SessionTimeout($this->request->getClientAddress(), 3600);
+        $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class) ?: new SessionTimeout($this->request->getClientAddress(), 3600);
 
         $this->view->assign('typeTemplate', 'item_preset-session_timeout');
         $this->view->assign('presetName', __('Session Timeout Preset'));
@@ -114,7 +114,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPasswordView(ItemPresetData $itemPresetData)
     {
-        $password = $itemPresetData->hydrate(Password::class, 'data') ?: new Password;
+        $password = $itemPresetData->hydrate(Password::class) ?: new Password;
 
         $this->view->assign('typeTemplate', 'item_preset-password');
         $this->view->assign('presetName', __('Account Password Preset'));

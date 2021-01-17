@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -42,9 +44,11 @@ final class ConfigAccountController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $configData = $this->config->getConfigData();
 
@@ -77,7 +81,7 @@ final class ConfigAccountController extends SimpleControllerBase
             if ($configData->isFilesEnabled() === false) {
                 $eventMessage->addDescription(__u('Files enabled'));
             }
-        } elseif ($filesEnabled === false && $configData->isFilesEnabled()) {
+        } elseif ($configData->isFilesEnabled()) {
             $configData->setFilesEnabled(false);
 
             $eventMessage->addDescription(__u('Files disabled'));
@@ -86,7 +90,7 @@ final class ConfigAccountController extends SimpleControllerBase
         // Public Links
         $pubLinksEnabled = $this->request->analyzeBool('publiclinks_enabled', false);
 
-        if ($pubLinksEnabled === true) {
+        if ($pubLinksEnabled) {
             $configData->setPublinksEnabled(true);
             $configData->setPublinksImageEnabled($this->request->analyzeBool('publiclinks_image_enabled', false));
             $configData->setPublinksMaxTime($this->request->analyzeInt('publiclinks_maxtime', 10) * 60);
@@ -95,7 +99,7 @@ final class ConfigAccountController extends SimpleControllerBase
             if ($configData->isPublinksEnabled() === false) {
                 $eventMessage->addDescription(__u('Public links enabled'));
             }
-        } elseif ($pubLinksEnabled === false && $configData->isPublinksEnabled()) {
+        } elseif ($configData->isPublinksEnabled()) {
             $configData->setPublinksEnabled(false);
 
             $eventMessage->addDescription(__u('Public links disabled'));
@@ -117,6 +121,8 @@ final class ConfigAccountController extends SimpleControllerBase
     /**
      * @return bool
      * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

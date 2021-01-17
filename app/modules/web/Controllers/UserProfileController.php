@@ -37,6 +37,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -88,13 +89,12 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -104,7 +104,9 @@ final class UserProfileController extends ControllerBase implements CrudControll
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -134,14 +136,17 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Sets view data for displaying user profile's data
      *
-     * @param $profileId
+     * @param int|null $profileId
      *
      * @throws ConstraintException
-     * @throws QueryException
-     * @throws ServiceException
+     * @throws DependencyException
      * @throws NoSuchItemException
+     * @throws NotFoundException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
-    protected function setViewData($profileId = null)
+    protected function setViewData(?int $profileId = null)
     {
         $this->view->addTemplate('user_profile', 'itemshow');
 
@@ -169,11 +174,13 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
@@ -201,11 +208,13 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PROFILE_DELETE)) {
@@ -250,7 +259,9 @@ final class UserProfileController extends ControllerBase implements CrudControll
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -289,11 +300,13 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PROFILE_EDIT)) {
@@ -331,11 +344,13 @@ final class UserProfileController extends ControllerBase implements CrudControll
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PROFILE_VIEW)) {

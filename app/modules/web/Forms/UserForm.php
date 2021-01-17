@@ -47,12 +47,12 @@ final class UserForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
-     * @return UserForm
+     * @return UserForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::USER_CREATE:
@@ -135,7 +135,7 @@ final class UserForm extends FormBase implements FormInterface
     /**
      * @return bool
      */
-    private function isDemo()
+    private function isDemo(): bool
     {
         return $this->configData->isDemoEnabled()
             && $this->itemId === 2 // FIXME: Ugly!!

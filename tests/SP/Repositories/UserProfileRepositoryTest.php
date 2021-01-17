@@ -35,7 +35,6 @@ use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\UserProfile\UserProfileRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

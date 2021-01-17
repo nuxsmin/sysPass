@@ -34,6 +34,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -66,7 +67,7 @@ final class TrackController extends ControllerBase
      * @throws UnauthorizedActionException
      * @throws SPException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
         if (!$this->acl->checkUserAccess(Acl::TRACK_SEARCH)) {
             throw new UnauthorizedActionException(UnauthorizedActionException::ERROR);
@@ -82,13 +83,12 @@ final class TrackController extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -103,8 +103,10 @@ final class TrackController extends ControllerBase
      * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function unlockAction($id)
+    public function unlockAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TRACK_UNLOCK)) {
@@ -129,8 +131,10 @@ final class TrackController extends ControllerBase
      * Clears tracks
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function clearAction()
+    public function clearAction(): bool
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TRACK_CLEAR)) {

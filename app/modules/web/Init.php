@@ -285,7 +285,7 @@ final class Init extends ModuleBase
      *
      * @throws Exception
      */
-    private function initSession($encrypt = false)
+    private function initSession(bool $encrypt = false)
     {
         if ($encrypt === true
             && Bootstrap::$checkPhpVersion
@@ -307,7 +307,7 @@ final class Init extends ModuleBase
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      */
-    private function checkInstalled()
+    private function checkInstalled(): bool
     {
         return $this->configData->isInstalled()
             && $this->router->request()->param('r') !== 'install/index';
@@ -398,7 +398,7 @@ final class Init extends ModuleBase
     /**
      * @param int|null $default
      *
-     * @return int
+     * @return int|null
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws NoSuchPropertyException

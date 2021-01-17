@@ -36,7 +36,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function view()
+    public static function view(): array
     {
         return
             [
@@ -49,7 +49,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function viewPass()
+    public static function viewPass(): array
     {
         return
             [
@@ -62,7 +62,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function editPass()
+    public static function editPass(): array
     {
         return
             [
@@ -76,7 +76,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function create()
+    public static function create(): array
     {
         return
             [
@@ -100,7 +100,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function edit()
+    public static function edit(): array
     {
         return
             [
@@ -123,7 +123,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function search()
+    public static function search(): array
     {
         return
             [
@@ -139,7 +139,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function delete()
+    public static function delete(): array
     {
         return
             [

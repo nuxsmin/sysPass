@@ -36,6 +36,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\CustomFieldGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -93,7 +94,7 @@ final class CustomFieldController extends ControllerBase implements CrudControll
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -103,13 +104,18 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_CREATE)) {
-                return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+                return $this->returnJsonResponse(
+                    JsonResponse::JSON_ERROR,
+                    __u('You don\'t have permission to do this operation')
+                );
             }
 
             $this->view->assign('header', __('New Field'));
@@ -133,13 +139,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Sets view data for displaying custom field's data
      *
-     * @param $customFieldId
+     * @param int|null $customFieldId
      *
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData($customFieldId = null)
+    protected function setViewData(?int $customFieldId = null)
     {
         $this->view->addTemplate('custom_field', 'itemshow');
 
@@ -163,11 +169,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
@@ -195,11 +203,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_DELETE)) {
@@ -231,7 +241,9 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -268,11 +280,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_EDIT)) {
@@ -307,11 +321,13 @@ final class CustomFieldController extends ControllerBase implements CrudControll
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CUSTOMFIELD_VIEW)) {

@@ -36,7 +36,7 @@ final class ConfigHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function backup()
+    public static function backup(): array
     {
         return
             [
@@ -47,7 +47,7 @@ final class ConfigHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function export()
+    public static function export(): array
     {
         return
             [

@@ -48,7 +48,9 @@ final class UserSettingsGeneralController extends SimpleControllerBase
     protected $userService;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveAction()
     {

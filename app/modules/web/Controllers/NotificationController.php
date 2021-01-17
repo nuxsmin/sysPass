@@ -35,6 +35,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\NotificationData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -86,13 +87,12 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -104,11 +104,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_VIEW)) {
@@ -135,13 +137,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * Sets view data for displaying notification's data
      *
-     * @param $notificationId
+     * @param int|null $notificationId
      *
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData($notificationId = null)
+    protected function setViewData(?int $notificationId = null)
     {
         $this->view->addTemplate('notification');
 
@@ -185,7 +187,9 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -215,11 +219,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {
@@ -247,11 +253,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if ($id === null) {
@@ -296,11 +304,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * Check action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function checkAction($id)
+    public function checkAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_CHECK)) {
@@ -327,7 +337,9 @@ final class NotificationController extends ControllerBase implements CrudControl
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -360,11 +372,13 @@ final class NotificationController extends ControllerBase implements CrudControl
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::NOTIFICATION_EDIT)) {

@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
@@ -46,8 +48,13 @@ trait JsonTrait
      * @param array|null $messages    Untranslated massages array of strings
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    protected function returnJsonResponse($status, $description, array $messages = null)
+    protected function returnJsonResponse(
+        int $status,
+        string $description,
+        array $messages = null): bool
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
@@ -63,14 +70,20 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param mixed  $data
-     * @param int    $status      Status code
-     * @param string $description Untranslated description string
-     * @param array  $messages
+     * @param mixed      $data
+     * @param int        $status      Status code
+     * @param null       $description Untranslated description string
+     * @param array|null $messages
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    protected function returnJsonResponseData($data, $status = JsonResponse::JSON_SUCCESS, $description = null, array $messages = null)
+    protected function returnJsonResponseData(
+        $data,
+        $status = JsonResponse::JSON_SUCCESS,
+        $description = null,
+        array $messages = null): bool
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
@@ -94,8 +107,12 @@ trait JsonTrait
      * @param int       $status Status code
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    protected function returnJsonResponseException(Exception $exception, $status = JsonResponse::JSON_ERROR)
+    protected function returnJsonResponseException(
+        Exception $exception,
+        int $status = JsonResponse::JSON_ERROR): bool
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);

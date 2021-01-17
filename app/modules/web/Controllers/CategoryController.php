@@ -36,6 +36,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -87,13 +88,12 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -103,7 +103,9 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -133,14 +135,17 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * Sets view data for displaying category's data
      *
-     * @param $categoryId
+     * @param int|null $categoryId
      *
      * @throws ConstraintException
-     * @throws QueryException
-     * @throws ServiceException
+     * @throws DependencyException
      * @throws NoSuchItemException
+     * @throws NotFoundException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
-    protected function setViewData($categoryId = null)
+    protected function setViewData(?int $categoryId = null)
     {
         $this->view->addTemplate('category', 'itemshow');
 
@@ -165,11 +170,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
@@ -198,11 +205,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_DELETE)) {
@@ -245,7 +254,9 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -285,11 +296,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_EDIT)) {
@@ -327,11 +340,13 @@ final class CategoryController extends ControllerBase implements CrudControllerI
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CATEGORY_VIEW)) {

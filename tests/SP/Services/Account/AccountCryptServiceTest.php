@@ -36,7 +36,6 @@ use SP\Services\Account\AccountCryptService;
 use SP\Services\Account\AccountService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

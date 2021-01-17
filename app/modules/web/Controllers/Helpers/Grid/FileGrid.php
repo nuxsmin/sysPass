@@ -135,7 +135,7 @@ final class FileGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -152,7 +152,7 @@ final class FileGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_VIEW);
@@ -170,7 +170,7 @@ final class FileGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDownloadAction()
+    private function getDownloadAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DOWNLOAD);
@@ -190,7 +190,7 @@ final class FileGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_FILE_DELETE);

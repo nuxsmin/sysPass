@@ -51,12 +51,12 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
-     * @return ItemsPresetForm
+     * @return ItemsPresetForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::ITEMPRESET_CREATE:
@@ -121,7 +121,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return AccountPermission
      * @throws ValidationException
      */
-    private function makePermissionPreset()
+    private function makePermissionPreset(): AccountPermission
     {
         $accountPermission = new AccountPermission();
         $accountPermission->setUsersView($this->request->analyzeArray('users_view', null, []));
@@ -139,7 +139,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     /**
      * @return AccountPrivate
      */
-    private function makePrivatePreset()
+    private function makePrivatePreset(): AccountPrivate
     {
         $accountPrivate = new AccountPrivate();
         $accountPrivate->setPrivateUser($this->request->analyzeBool('private_user_enabled', false));
@@ -152,7 +152,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return SessionTimeout
      * @throws ValidationException
      */
-    private function makeSessionTimeoutPreset()
+    private function makeSessionTimeoutPreset(): SessionTimeout
     {
         try {
             return new SessionTimeout(
@@ -168,7 +168,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return Password
      * @throws ValidationException
      */
-    private function makePasswordPreset()
+    private function makePasswordPreset(): Password
     {
         $password = new Password();
         $password->setLength($this->request->analyzeInt('length', 1));

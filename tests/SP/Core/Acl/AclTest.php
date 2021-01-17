@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Core\Acl;
+namespace SP\Tests\Core\Acl;
 
 use DI\DependencyException;
 use DI\NotFoundException;

@@ -152,7 +152,7 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -169,7 +169,7 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRefrestAction()
+    private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TRACK_SEARCH);
@@ -188,7 +188,7 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getClearAction()
+    private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TRACK_CLEAR);
@@ -206,7 +206,7 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getUnlockAction()
+    private function getUnlockAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::TRACK_UNLOCK);

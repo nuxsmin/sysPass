@@ -44,12 +44,12 @@ final class PublicLinkForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
      * @return PublicLinkForm
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::PUBLICLINK_CREATE:

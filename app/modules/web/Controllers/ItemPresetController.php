@@ -38,6 +38,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ItemPresetData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
 use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
@@ -68,11 +69,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_VIEW)) {
@@ -99,18 +102,18 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * Sets view data for displaying permissions' data
      *
-     * @param int    $id
-     * @param string $type
+     * @param int|null    $id
+     * @param string|null $type
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
+     * @throws DependencyException
      * @throws InvalidArgumentException
-     * @throws NoSuchPropertyException
-     * @throws QueryException
      * @throws NoSuchItemException
+     * @throws NoSuchPropertyException
+     * @throws NotFoundException
+     * @throws QueryException
      */
-    protected function setViewData(int $id = null, string $type = null)
+    protected function setViewData(?int $id = null, ?string $type = null)
     {
         $this->view->addTemplate('item_preset', 'itemshow');
 
@@ -176,13 +179,12 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -195,7 +197,9 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -232,11 +236,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {
@@ -264,11 +270,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_DELETE)) {
@@ -307,7 +315,9 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -346,11 +356,13 @@ final class ItemPresetController extends ControllerBase implements CrudControlle
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::ITEMPRESET_EDIT)) {

@@ -42,7 +42,6 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\Util;
 use stdClass;

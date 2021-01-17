@@ -61,7 +61,7 @@ final class TaskController
     /**
      * @param string $taskId
      */
-    public function trackStatusAction($taskId)
+    public function trackStatusAction(string $taskId)
     {
         $response = $this->router->response();
         $response->header('Content-Type', 'text/event-stream');
@@ -85,11 +85,11 @@ final class TaskController
     }
 
     /**
-     * @param $taskId
+     * @param string $taskId
      *
      * @throws FileException
      */
-    public function testTaskAction($taskId)
+    public function testTaskAction(string $taskId)
     {
         $task = TaskFactory::create($taskId, $taskId);
 

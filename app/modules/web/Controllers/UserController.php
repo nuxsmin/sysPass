@@ -38,6 +38,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -94,13 +95,12 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -110,7 +110,9 @@ final class UserController extends ControllerBase implements CrudControllerInter
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -140,12 +142,12 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Sets view data for displaying user's data
      *
-     * @param $userId
+     * @param int|null $userId
      *
      * @throws SPException
      * @throws ContainerExceptionInterface
      */
-    protected function setViewData($userId = null)
+    protected function setViewData(?int $userId = null)
     {
         $this->view->addTemplate('user', 'itemshow');
 
@@ -193,11 +195,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
@@ -225,11 +229,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Edit user's pass action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editPassAction($id)
+    public function editPassAction(int $id)
     {
         try {
             // Comprobar si el usuario a modificar es distinto al de la sesión
@@ -262,11 +268,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::USER_DELETE)) {
@@ -310,7 +318,9 @@ final class UserController extends ControllerBase implements CrudControllerInter
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -373,11 +383,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT)) {
@@ -417,11 +429,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditPassAction($id)
+    public function saveEditPassAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::USER_EDIT_PASS, $id)) {
@@ -456,11 +470,13 @@ final class UserController extends ControllerBase implements CrudControllerInter
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::USER_VIEW)) {

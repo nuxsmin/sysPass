@@ -35,7 +35,6 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

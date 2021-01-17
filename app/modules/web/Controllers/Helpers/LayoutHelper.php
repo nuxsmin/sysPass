@@ -59,12 +59,12 @@ final class LayoutHelper extends HelperBase
     /**
      * Sets a full layout page
      *
-     * @param string $page Page/view name
-     * @param Acl    $acl
+     * @param string   $page Page/view name
+     * @param Acl|null $acl
      *
      * @return LayoutHelper
      */
-    public function getFullLayout($page, Acl $acl = null)
+    public function getFullLayout(string $page, Acl $acl = null): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->assign('useFixedHeader', true);
@@ -367,7 +367,7 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getPublicLayout($template, $page = '')
+    public function getPublicLayout(string $template, string $page = ''): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
@@ -387,7 +387,7 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getCustomLayout($template, $page = '')
+    public function getCustomLayout(string $template, string $page = ''): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);

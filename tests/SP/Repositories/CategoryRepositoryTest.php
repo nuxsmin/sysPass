@@ -34,7 +34,6 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Repositories\DuplicatedItemException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

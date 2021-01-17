@@ -33,7 +33,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\DataModel\TrackData;
 use SP\Repositories\Track\TrackRepository;
 use SP\Repositories\Track\TrackRequest;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

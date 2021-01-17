@@ -53,14 +53,14 @@ final class ItemsController extends SimpleControllerBase
     /**
      * Devolver las cuentas visibles por el usuario
      *
-     * @param int $accountId
+     * @param int|null $accountId
      *
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function accountsUserAction($accountId = null)
+    public function accountsUserAction(?int $accountId = null)
     {
         $outItems = [];
 

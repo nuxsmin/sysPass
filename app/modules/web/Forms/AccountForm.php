@@ -54,13 +54,13 @@ final class AccountForm extends FormBase implements FormInterface
      *
      * @param int $action
      *
-     * @return AccountForm
+     * @return AccountForm|FormInterface
      * @throws ValidationException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACCOUNT_EDIT_PASS:
@@ -214,7 +214,7 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @param ContainerInterface $dic
      */
-    protected function initialize($dic)
+    protected function initialize(ContainerInterface $dic)
     {
         $this->accountPresetService = $dic->get(AccountPresetService::class);
         $this->accountRequest = new AccountRequest();

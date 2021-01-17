@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -42,9 +44,11 @@ final class ConfigDokuWikiController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
@@ -87,6 +91,8 @@ final class ConfigDokuWikiController extends SimpleControllerBase
     /**
      * @return bool
      * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

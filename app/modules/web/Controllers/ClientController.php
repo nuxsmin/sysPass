@@ -37,6 +37,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -88,13 +89,12 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -104,7 +104,9 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -134,14 +136,17 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * Sets view data for displaying client's data
      *
-     * @param $clientId
+     * @param int|null $clientId
      *
      * @throws ConstraintException
-     * @throws QueryException
-     * @throws ServiceException
+     * @throws DependencyException
      * @throws NoSuchItemException
+     * @throws NotFoundException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
-    protected function setViewData($clientId = null)
+    protected function setViewData(?int $clientId = null)
     {
         $this->view->addTemplate('client', 'itemshow');
 
@@ -166,11 +171,13 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
@@ -198,11 +205,13 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CLIENT_DELETE)) {
@@ -242,7 +251,9 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -282,11 +293,13 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CLIENT_EDIT)) {
@@ -322,11 +335,13 @@ final class ClientController extends ControllerBase implements CrudControllerInt
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::CLIENT_VIEW)) {

@@ -55,11 +55,14 @@ final class AccountActionsDto
     /**
      * AccountActionsDto constructor.
      *
-     * @param int $accountId
-     * @param int $accountHistoryId
-     * @param int $accountParentId
+     * @param int|null  $accountId
+     * @param int|null $accountHistoryId
+     * @param int|null $accountParentId
      */
-    public function __construct($accountId, $accountHistoryId = null, $accountParentId = null)
+    public function __construct(
+        ?int $accountId,
+        ?int $accountHistoryId = null,
+        ?int $accountParentId = null)
     {
         $this->accountId = $accountId;
         $this->accountHistoryId = $accountHistoryId;
@@ -67,25 +70,25 @@ final class AccountActionsDto
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getAccountId()
+    public function getAccountId(): ?int
     {
         return $this->accountId;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getAccountHistoryId()
+    public function getAccountHistoryId(): ?int
     {
         return $this->accountHistoryId;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getAccountParentId()
+    public function getAccountParentId(): ?int
     {
         return $this->accountParentId;
     }
@@ -93,7 +96,7 @@ final class AccountActionsDto
     /**
      * @return bool
      */
-    public function isHistory()
+    public function isHistory(): bool
     {
         return $this->accountHistoryId !== null && $this->accountHistoryId > 0;
     }
@@ -101,7 +104,7 @@ final class AccountActionsDto
     /**
      * @return bool
      */
-    public function isLinked()
+    public function isLinked(): bool
     {
         return $this->accountParentId !== null && $this->accountParentId > 0;
     }
@@ -109,7 +112,7 @@ final class AccountActionsDto
     /**
      * @return int
      */
-    public function getPublicLinkId()
+    public function getPublicLinkId(): int
     {
         return $this->publicLinkId;
     }
@@ -123,9 +126,9 @@ final class AccountActionsDto
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPublicLinkCreatorId()
+    public function getPublicLinkCreatorId(): ?int
     {
         return $this->publicLinkCreatorId;
     }

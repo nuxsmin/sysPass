@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Services\UserPassRecover;
+namespace SP\Tests\Services\UserPassRecover;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
@@ -33,7 +33,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Services\ServiceException;
 use SP\Services\UserPassRecover\UserPassRecoverService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;

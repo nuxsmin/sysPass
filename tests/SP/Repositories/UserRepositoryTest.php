@@ -39,7 +39,6 @@ use SP\DataModel\UserPreferencesData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\User\UpdatePassRequest;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

@@ -49,7 +49,7 @@ trait ConfigTrait
      *
      * @return bool
      */
-    protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null)
+    protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null): bool
     {
         try {
             if ($configData->isDemoEnabled()) {

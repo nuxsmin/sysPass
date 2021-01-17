@@ -80,9 +80,11 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
-     * requestAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveRequestAction()
+    public function saveRequestAction(): bool
     {
         try {
             $this->checkTracking();
@@ -161,12 +163,12 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
-     * @param null $hash
+     * @param string|null $hash
      *
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function resetAction($hash = null)
+    public function resetAction(?string $hash = null)
     {
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('reset', strtolower($this->controllerName));
@@ -181,9 +183,11 @@ final class UserPassResetController extends ControllerBase
     }
 
     /**
-     * saveResetAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveResetAction()
+    public function saveResetAction(): bool
     {
         try {
             $this->checkTracking();

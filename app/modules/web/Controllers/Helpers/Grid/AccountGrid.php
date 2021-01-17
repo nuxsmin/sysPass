@@ -140,7 +140,7 @@ final class AccountGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         $gridActionSearch = new DataGridActionSearch();
         $gridActionSearch->setId(ActionsInterface::ACCOUNTMGR_SEARCH);
@@ -156,7 +156,7 @@ final class AccountGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    public function getViewAction()
+    public function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNT_VIEW);
@@ -173,7 +173,7 @@ final class AccountGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_DELETE);
@@ -190,7 +190,7 @@ final class AccountGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    public function getBulkEditAction()
+    public function getBulkEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ACCOUNTMGR_BULK_EDIT);

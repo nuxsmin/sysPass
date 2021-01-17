@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Services\UserProfile;
+namespace SP\Tests\Services\UserProfile;
 
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -37,7 +37,6 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\ServiceException;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

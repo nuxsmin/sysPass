@@ -62,7 +62,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
      * @throws ServiceException
      * @throws SPException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $mastePassService = $this->dic->get(MasterPassService::class);
 
@@ -183,8 +183,12 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * Refresh master password hash
+     *
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function refreshAction()
+    public function refreshAction(): bool
     {
         try {
             if ($this->config->getConfigData()->isDemoEnabled()) {
@@ -210,8 +214,12 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * Create a temporary master pass
+     *
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveTempAction()
+    public function saveTempAction(): bool
     {
         try {
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
@@ -259,6 +267,8 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws SessionTimeout
      */
     protected function initialize()

@@ -43,12 +43,12 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
-     * @return CustomFieldDefForm
+     * @return CustomFieldDefForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::CUSTOMFIELD_CREATE:

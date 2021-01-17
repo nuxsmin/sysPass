@@ -35,6 +35,7 @@ use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -85,13 +86,12 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -101,7 +101,9 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     }
 
     /**
-     * Create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function createAction()
     {
@@ -131,13 +133,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * Sets view data for displaying tag's data
      *
-     * @param $tagId
+     * @param int|null $tagId
      *
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData($tagId = null)
+    protected function setViewData(?int $tagId = null)
     {
         $this->view->addTemplate('tag', 'itemshow');
 
@@ -159,11 +161,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
@@ -191,11 +195,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TAG_DELETE)) {
@@ -229,7 +235,9 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -260,11 +268,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TAG_EDIT)) {
@@ -293,11 +303,13 @@ final class TagController extends ControllerBase implements CrudControllerInterf
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::TAG_VIEW)) {

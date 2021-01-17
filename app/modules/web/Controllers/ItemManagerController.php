@@ -142,7 +142,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getCategoriesList()
+    protected function getCategoriesList(): DataGridTab
     {
         return $this->dic->get(CategoryGrid::class)
             ->getGrid($this->dic->get(CategoryService::class)->search($this->itemSearchData))
@@ -158,7 +158,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getTagsList()
+    protected function getTagsList(): DataGridTab
     {
         return $this->dic->get(TagGrid::class)
             ->getGrid($this->dic->get(TagService::class)->search($this->itemSearchData))
@@ -174,7 +174,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getClientsList()
+    protected function getClientsList(): DataGridTab
     {
         return $this->dic->get(ClientGrid::class)
             ->getGrid($this->dic->get(ClientService::class)->search($this->itemSearchData))
@@ -190,7 +190,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getCustomFieldsList()
+    protected function getCustomFieldsList(): DataGridTab
     {
         return $this->dic->get(CustomFieldGrid::class)
             ->getGrid($this->dic->get(CustomFieldDefService::class)->search($this->itemSearchData))
@@ -206,7 +206,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getAccountFilesList()
+    protected function getAccountFilesList(): DataGridTab
     {
         return $this->dic->get(FileGrid::class)
             ->getGrid($this->dic->get(AccountFileService::class)->search($this->itemSearchData))
@@ -222,7 +222,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getAccountsList()
+    protected function getAccountsList(): DataGridTab
     {
         return $this->dic->get(AccountGrid::class)
             ->getGrid($this->dic->get(AccountService::class)->search($this->itemSearchData))
@@ -238,7 +238,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getAccountsHistoryList()
+    protected function getAccountsHistoryList(): DataGridTab
     {
         return $this->dic->get(AccountHistoryGrid::class)
             ->getGrid($this->dic->get(AccountHistoryService::class)->search($this->itemSearchData))
@@ -254,7 +254,7 @@ final class ItemManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getItemPresetList()
+    protected function getItemPresetList(): DataGridTab
     {
         return $this->dic->get(ItemPresetGrid::class)
             ->getGrid($this->dic->get(ItemPresetService::class)->search($this->itemSearchData))
@@ -264,7 +264,7 @@ final class ItemManagerController extends ControllerBase
     /**
      * @return TabsGridHelper
      */
-    public function getTabsGridHelper()
+    public function getTabsGridHelper(): TabsGridHelper
     {
         return $this->tabsGridHelper;
     }

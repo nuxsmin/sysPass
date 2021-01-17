@@ -38,7 +38,6 @@ use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;

@@ -38,7 +38,6 @@ use SP\Repositories\NoSuchItemException;
 use SP\Services\User\UserLoginResponse;
 use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

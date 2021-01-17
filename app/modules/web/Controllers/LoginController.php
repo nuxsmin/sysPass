@@ -52,7 +52,7 @@ final class LoginController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function loginAction()
+    public function loginAction(): bool
     {
         try {
             $loginService = $this->dic->get(LoginService::class);

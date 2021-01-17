@@ -43,12 +43,12 @@ final class CategoryForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
-     * @return CategoryForm
+     * @return CategoryForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::CATEGORY_CREATE:

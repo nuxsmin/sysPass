@@ -86,7 +86,7 @@ final class EventlogController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): EventlogController
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -105,7 +105,7 @@ final class EventlogController extends ControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
         if (!$this->acl->checkUserAccess(Acl::EVENTLOG_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
@@ -118,9 +118,11 @@ final class EventlogController extends ControllerBase
     }
 
     /**
-     * clearAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function clearAction()
+    public function clearAction(): bool
     {
         try {
             $this->eventLogService->clear();

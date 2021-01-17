@@ -108,7 +108,7 @@ final class SecurityManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getEventlogList()
+    protected function getEventlogList(): DataGridTab
     {
         return $this->dic->get(EventlogGrid::class)
             ->getGrid($this->dic->get(EventlogService::class)->search($this->itemSearchData))
@@ -124,7 +124,7 @@ final class SecurityManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getTracksList()
+    protected function getTracksList(): DataGridTab
     {
         return $this->dic->get(TrackGrid::class)
             ->getGrid($this->dic->get(TrackService::class)->search($this->itemSearchData))
@@ -134,7 +134,7 @@ final class SecurityManagerController extends ControllerBase
     /**
      * @return TabsGridHelper
      */
-    public function getTabsGridHelper()
+    public function getTabsGridHelper(): TabsGridHelper
     {
         return $this->tabsGridHelper;
     }

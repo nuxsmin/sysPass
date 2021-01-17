@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -54,9 +56,11 @@ final class ConfigLdapController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         try {
             $eventMessage = EventMessage::factory();
@@ -99,7 +103,7 @@ final class ConfigLdapController extends SimpleControllerBase
                 if ($configData->isLdapEnabled() === false) {
                     $eventMessage->addDescription(__u('LDAP enabled'));
                 }
-            } elseif ($ldapEnabled === false && $configData->isLdapEnabled()) {
+            } elseif ($configData->isLdapEnabled()) {
                 $configData->setLdapEnabled(false);
 
                 $eventMessage->addDescription(__u('LDAP disabled'));
@@ -123,7 +127,7 @@ final class ConfigLdapController extends SimpleControllerBase
      * @return LdapParams
      * @throws ValidationException
      */
-    protected function getLdapParamsFromRequest()
+    protected function getLdapParamsFromRequest(): LdapParams
     {
         $data = LdapParams::getServerAndPort($this->request->analyzeString('ldap_server'));
 
@@ -149,9 +153,11 @@ final class ConfigLdapController extends SimpleControllerBase
     }
 
     /**
-     * checkAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function checkAction()
+    public function checkAction(): bool
     {
         try {
             $ldapParams = $this->getLdapParamsFromRequest();
@@ -192,9 +198,11 @@ final class ConfigLdapController extends SimpleControllerBase
     }
 
     /**
-     * checkAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function checkImportAction()
+    public function checkImportAction(): bool
     {
         try {
             $ldapParams = $this->getLdapParamsFromRequest();
@@ -247,7 +255,7 @@ final class ConfigLdapController extends SimpleControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function importAction()
+    public function importAction(): bool
     {
         try {
             if ($this->configData->isDemoEnabled()) {
@@ -318,6 +326,8 @@ final class ConfigLdapController extends SimpleControllerBase
     /**
      * @return bool
      * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

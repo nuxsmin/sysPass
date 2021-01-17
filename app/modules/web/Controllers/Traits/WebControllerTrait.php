@@ -102,7 +102,7 @@ trait WebControllerTrait
      *
      * @return null|string
      */
-    final protected function getSignedUriFromRequest()
+    final protected function getSignedUriFromRequest(): ?string
     {
         if (!$this->setup) {
             return null;

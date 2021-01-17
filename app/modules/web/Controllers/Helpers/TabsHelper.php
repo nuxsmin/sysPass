@@ -48,7 +48,7 @@ final class TabsHelper extends HelperBase
      * @param string $route
      * @param int    $activeTab
      */
-    public function renderTabs($route, $activeTab = 0)
+    public function renderTabs(string $route, $activeTab = 0)
     {
         $this->view->addTemplate('datatabs', 'common');
 

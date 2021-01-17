@@ -124,7 +124,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getUsersList()
+    protected function getUsersList(): DataGridTab
     {
         return $this->dic->get(UserGrid::class)
             ->getGrid($this->dic->get(UserService::class)->search($this->itemSearchData))
@@ -140,7 +140,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getUsersGroupList()
+    protected function getUsersGroupList(): DataGridTab
     {
         return $this->dic->get(UserGroupGrid::class)
             ->getGrid($this->dic->get(UserGroupService::class)->search($this->itemSearchData))
@@ -156,7 +156,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getUsersProfileList()
+    protected function getUsersProfileList(): DataGridTab
     {
         return $this->dic->get(UserProfileGrid::class)
             ->getGrid($this->dic->get(UserProfileService::class)->search($this->itemSearchData))
@@ -172,7 +172,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getAuthTokensList()
+    protected function getAuthTokensList(): DataGridTab
     {
         return $this->dic->get(AuthTokenGrid::class)
             ->getGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))
@@ -188,7 +188,7 @@ final class AccessManagerController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getPublicLinksList()
+    protected function getPublicLinksList(): DataGridTab
     {
         return $this->dic->get(PublicLinkGrid::class)
             ->getGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))
@@ -198,7 +198,7 @@ final class AccessManagerController extends ControllerBase
     /**
      * @return TabsGridHelper
      */
-    public function getTabsGridHelper()
+    public function getTabsGridHelper(): TabsGridHelper
     {
         return $this->tabsGridHelper;
     }

@@ -84,7 +84,12 @@ abstract class HelperBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
+    final public function __construct(
+        Template $template,
+        Config $config,
+        ContextInterface $context,
+        EventDispatcher $eventDispatcher,
+        Container $container)
     {
         $this->dic = $container;
         $this->request = $this->dic->get(Request::class);

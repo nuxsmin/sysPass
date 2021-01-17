@@ -125,7 +125,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -142,7 +142,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_VIEW);
@@ -160,7 +160,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEnableAction()
+    private function getEnableAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_ENABLE);
@@ -179,7 +179,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDisableAction()
+    private function getDisableAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_DISABLE);
@@ -198,7 +198,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getResetAction()
+    private function getResetAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_RESET);
@@ -217,7 +217,7 @@ final class PluginGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PLUGIN_DELETE);

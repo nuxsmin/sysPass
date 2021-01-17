@@ -82,7 +82,7 @@ final class AccountSearchHelper extends HelperBase
     /**
      * @param boolean $isAjax
      */
-    public function setIsAjax($isAjax)
+    public function setIsAjax(bool $isAjax)
     {
         $this->isAjax = $isAjax;
     }
@@ -177,7 +177,7 @@ final class AccountSearchHelper extends HelperBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function getGrid()
+    private function getGrid(): DataGrid
     {
         $icons = $this->view->getTheme()->getIcons();
 
@@ -212,7 +212,7 @@ final class AccountSearchHelper extends HelperBase
 
         $dataGrid = new DataGrid($this->view->getTheme());
         $dataGrid->setId('gridSearch');
-        $dataGrid->setDataHeaderTemplate('search-header', $this->view->getBase());
+        $dataGrid->setDataHeaderTemplate('search-header');
         $dataGrid->setDataRowTemplate('search-rows', $this->view->getBase());
         $dataGrid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $dataGrid->setHeader($this->getHeaderSort());
@@ -234,7 +234,7 @@ final class AccountSearchHelper extends HelperBase
      *
      * @return DataGridHeaderSort
      */
-    private function getHeaderSort()
+    private function getHeaderSort(): DataGridHeaderSort
     {
         $icons = $this->view->getTheme()->getIcons();
 
@@ -327,7 +327,7 @@ final class AccountSearchHelper extends HelperBase
      *
      * @return AccountSearchFilter
      */
-    private function getFilters()
+    private function getFilters(): AccountSearchFilter
     {
         $accountSearchFilter = $this->context->getSearchFilters();
 

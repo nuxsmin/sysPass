@@ -114,7 +114,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     }
 
     /**
-     * Search action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function searchAction()
     {
@@ -144,7 +146,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             $this->view->addTemplate('account');
@@ -199,7 +201,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewLinkAction($hash)
+    public function viewLinkAction(string $hash)
     {
         try {
             $layoutHelper = $this->dic->get(LayoutHelper::class);
@@ -322,7 +324,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function copyAction($id)
+    public function copyAction(int $id)
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -374,7 +376,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function editAction($id)
+    public function editAction(int $id)
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -423,12 +425,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Delete action
      *
-     * @param int $id Account's ID
+     * @param int|null $id Account's ID
      *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -479,7 +479,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function editPassAction($id)
+    public function editPassAction(int $id)
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -530,7 +530,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function viewHistoryAction($id)
+    public function viewHistoryAction(int $id)
     {
         try {
             $accountHistoryService = $this->dic->get(AccountHistoryService::class);
@@ -581,7 +581,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function requestAccessAction($id)
+    public function requestAccessAction(int $id)
     {
         try {
             $accountHelper = $this->dic->get(AccountHelper::class);
@@ -620,8 +620,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $parentId
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewPassAction($id, $parentId = 0)
+    public function viewPassAction(int $id, int $parentId = 0)
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
@@ -662,7 +664,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    private function getPasswordPreset()
+    private function getPasswordPreset(): ?Password
     {
         $itemPreset = $this->dic->get(ItemPresetService::class)
             ->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
@@ -680,8 +682,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewPassHistoryAction($id)
+    public function viewPassHistoryAction(int $id)
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
@@ -728,7 +732,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ServiceException
      * @throws SPException
      */
-    public function copyPassAction($id)
+    public function copyPassAction(int $id)
     {
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
@@ -763,7 +767,7 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @throws ServiceException
      * @throws SPException
      */
-    public function copyPassHistoryAction($id)
+    public function copyPassHistoryAction(int $id)
     {
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
@@ -783,7 +787,8 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     }
 
     /**
-     * Saves copy action
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCopyAction()
     {
@@ -791,7 +796,9 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     }
 
     /**
-     * Saves create action
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function saveCreateAction()
     {
@@ -834,11 +841,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves edit action
      *
-     * @param $id Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditAction($id)
+    public function saveEditAction(int $id)
     {
         try {
             $form = new AccountForm($this->dic, $id);
@@ -881,11 +890,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves edit action
      *
-     * @param $id Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditPassAction($id)
+    public function saveEditPassAction(int $id): bool
     {
         try {
             $form = new AccountForm($this->dic, $id);
@@ -928,8 +939,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id        Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveEditRestoreAction($historyId, $id)
+    public function saveEditRestoreAction(int $historyId, int $id): bool
     {
         try {
             $this->accountService->editRestore($historyId, $id);
@@ -966,8 +979,10 @@ final class AccountController extends ControllerBase implements CrudControllerIn
      * @param int $id Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveDeleteAction($id)
+    public function saveDeleteAction(int $id): bool
     {
         try {
             if ($id === null) {
@@ -1010,11 +1025,13 @@ final class AccountController extends ControllerBase implements CrudControllerIn
     /**
      * Saves a request action
      *
-     * @param $id Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveRequestAction($id)
+    public function saveRequestAction(int $id): bool
     {
         try {
             $description = $this->request->analyzeString('description');

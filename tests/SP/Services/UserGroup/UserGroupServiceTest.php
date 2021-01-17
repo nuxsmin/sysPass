@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Services\UserGroup;
+namespace SP\Tests\Services\UserGroup;
 
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -36,7 +36,6 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\ServiceException;
 use SP\Services\UserGroup\UserGroupService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

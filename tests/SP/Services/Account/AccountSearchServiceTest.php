@@ -38,7 +38,6 @@ use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountSearchItem;
 use SP\Services\Account\AccountSearchService;
 use SP\Services\User\UserLoginResponse;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\QueryResult;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;

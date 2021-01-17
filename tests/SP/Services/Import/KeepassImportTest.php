@@ -44,7 +44,6 @@ use SP\Services\Import\ImportException;
 use SP\Services\Import\ImportParams;
 use SP\Services\Import\KeepassImport;
 use SP\Services\Import\XmlFileImport;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;

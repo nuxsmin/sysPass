@@ -104,7 +104,7 @@ abstract class ControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public final function __construct(Container $container, $actionName)
+    public final function __construct(Container $container, string $actionName)
     {
         $this->dic = $container;
         $this->context = $container->get(StatelessContext::class);
@@ -126,7 +126,7 @@ abstract class ControllerBase
     /**
      * @return string
      */
-    final protected function getControllerName()
+    final protected function getControllerName(): string
     {
         $class = static::class;
 
@@ -136,7 +136,7 @@ abstract class ControllerBase
     /**
      * @return bool
      */
-    protected function isAuthenticated()
+    protected function isAuthenticated(): bool
     {
         return $this->isAuthenticated;
     }
@@ -147,7 +147,7 @@ abstract class ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
-    final protected function setupApi($actionId)
+    final protected function setupApi(int $actionId)
     {
         $this->apiService->setup($actionId);
 

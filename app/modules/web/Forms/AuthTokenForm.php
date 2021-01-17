@@ -48,12 +48,12 @@ final class AuthTokenForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
      *
-     * @return AuthTokenForm
+     * @return AuthTokenForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validate(int $action): FormInterface
     {
         switch ($action) {
             case ActionsInterface::AUTHTOKEN_CREATE:
@@ -105,7 +105,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
     /**
      * @return bool
      */
-    public function isRefresh()
+    public function isRefresh(): bool
     {
         return $this->refresh;
     }

@@ -63,9 +63,9 @@ abstract class FormBase
      * FormBase constructor.
      *
      * @param ContainerInterface $container
-     * @param int                $itemId
+     * @param int|null           $itemId
      */
-    public function __construct(ContainerInterface $container, $itemId = null)
+    public function __construct(ContainerInterface $container, ?int $itemId = null)
     {
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();

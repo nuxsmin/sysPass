@@ -81,7 +81,7 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
     /**
      * @return DataTab
      */
-    private function getUserPreferences()
+    private function getUserPreferences(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('usersettings');
@@ -90,8 +90,16 @@ final class UserSettingsManagerController extends ControllerBase implements Exte
         $userData = $this->session->getUserData();
         $userPreferences = $userData->getPreferences();
 
-        $template->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([$userPreferences->getLang() ?: $this->configData->getSiteLang()]));
-        $template->assign('themes', SelectItemAdapter::factory($this->theme->getThemesAvailable())->getItemsFromArraySelected([$userPreferences->getTheme() ?: $this->configData->getSiteTheme()]));
+        $template->assign('langs',
+            SelectItemAdapter::factory(
+                Language::getAvailableLanguages()
+            )->getItemsFromArraySelected([$userPreferences->getLang() ?: $this->configData->getSiteLang()])
+        );
+        $template->assign('themes',
+            SelectItemAdapter::factory(
+                $this->theme->getThemesAvailable()
+            )->getItemsFromArraySelected([$userPreferences->getTheme() ?: $this->configData->getSiteTheme()])
+        );
         $template->assign('userPreferences', $userPreferences);
         $template->assign('route', 'userSettingsGeneral/save');
 

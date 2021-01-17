@@ -43,6 +43,8 @@ final class StatusController extends SimpleControllerBase
 {
     use JsonTrait;
 
+    const TAG_VERSION_REGEX = '/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/';
+
     /**
      * checkReleaseAction
      *
@@ -50,7 +52,7 @@ final class StatusController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function checkReleaseAction()
+    public function checkReleaseAction(): bool
     {
         try {
             $this->extensionChecker->checkCurlAvailable(true);
@@ -72,7 +74,7 @@ final class StatusController extends SimpleControllerBase
                     // $updateInfo[0]->published_at
                     // $updateInfo[0]->html_url
 
-                    if (preg_match('/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/', $requestData->tag_name, $matches)) {
+                    if (preg_match(self::TAG_VERSION_REGEX, $requestData->tag_name, $matches)) {
                         $pubVersion = $matches['major'] . $matches['minor'] . $matches['patch'] . '.' . $matches['build'];
 
                         if (VersionUtil::checkVersion(VersionUtil::getVersionStringNormalized(), $pubVersion)) {
@@ -109,7 +111,7 @@ final class StatusController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function checkNoticesAction()
+    public function checkNoticesAction(): bool
     {
         try {
             $this->extensionChecker->checkCurlAvailable(true);

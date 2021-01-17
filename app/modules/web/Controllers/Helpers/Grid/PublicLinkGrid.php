@@ -141,7 +141,7 @@ final class PublicLinkGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -158,7 +158,7 @@ final class PublicLinkGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAction()
+    private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_CREATE);
@@ -176,7 +176,7 @@ final class PublicLinkGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_VIEW);
@@ -193,7 +193,7 @@ final class PublicLinkGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRefreshAction()
+    private function getRefreshAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_REFRESH);
@@ -209,7 +209,7 @@ final class PublicLinkGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::PUBLICLINK_DELETE);

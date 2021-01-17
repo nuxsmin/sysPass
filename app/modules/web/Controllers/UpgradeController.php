@@ -62,7 +62,9 @@ final class UpgradeController extends ControllerBase
     }
 
     /**
-     * upgradeAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function upgradeAction()
     {

@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -42,9 +44,11 @@ final class ConfigWikiController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
@@ -69,7 +73,7 @@ final class ConfigWikiController extends SimpleControllerBase
             if ($configData->isWikiEnabled() === false) {
                 $eventMessage->addDescription(__u('Wiki enabled'));
             }
-        } elseif ($wikiEnabled === false && $configData->isWikiEnabled()) {
+        } elseif ($configData->isWikiEnabled()) {
             $configData->setWikiEnabled(false);
 
             $eventMessage->addDescription(__u('Wiki disabled'));
@@ -82,6 +86,8 @@ final class ConfigWikiController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws SessionTimeout
      */
     protected function initialize()

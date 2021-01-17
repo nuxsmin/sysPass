@@ -37,7 +37,6 @@ use SP\DataModel\CustomFieldData;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\CustomField\CustomFieldService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Tests\Services\Account\AccountCryptServiceTest;
 use function SP\Tests\setupContext;

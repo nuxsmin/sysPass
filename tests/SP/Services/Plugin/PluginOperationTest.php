@@ -36,7 +36,6 @@ use SP\Plugin\PluginOperation;
 use SP\Repositories\NoSuchItemException;
 use SP\Services\Plugin\PluginDataService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

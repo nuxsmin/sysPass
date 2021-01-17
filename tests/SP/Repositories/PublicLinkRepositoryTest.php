@@ -36,7 +36,6 @@ use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\PublicLink\PublicLinkRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use function SP\Tests\setupContext;

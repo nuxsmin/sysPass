@@ -36,9 +36,8 @@ use SP\Util\Util;
 trait SerializedModel
 {
     /**
-     * @param string $class
-     *
-     * @param string $property
+     * @param string|null $class
+     * @param string      $property
      *
      * @return mixed|null
      * @throws NoSuchPropertyException

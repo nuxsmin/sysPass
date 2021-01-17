@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -52,7 +54,7 @@ final class ConfigImportController extends SimpleControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function importAction()
+    public function importAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
@@ -102,6 +104,8 @@ final class ConfigImportController extends SimpleControllerBase
     /**
      * @return bool
      * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

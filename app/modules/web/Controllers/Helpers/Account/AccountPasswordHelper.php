@@ -66,7 +66,7 @@ final class AccountPasswordHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordView(AccountPassData $accountData, bool $useImage)
+    public function getPasswordView(AccountPassData $accountData, bool $useImage): array
     {
         $this->checkActionAccess();
 
@@ -116,15 +116,25 @@ final class AccountPasswordHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getPasswordClear(AccountPassData $accountData)
+    public function getPasswordClear(AccountPassData $accountData): string
     {
         $this->checkActionAccess();
 
         if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
-            throw new HelperException(__('Master password updated') . '<br>' . __('Please, restart the session for update it'));
+            throw new HelperException(
+                __('Master password updated')
+                . '<br>'
+                . __('Please, restart the session for update it')
+            );
         }
 
-        return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
+        return trim(
+            Crypt::decrypt(
+            $accountData->getPass(),
+            $accountData->getKey(),
+            CryptSession::getSessionKey($this->context)
+            )
+        );
     }
 
     /**

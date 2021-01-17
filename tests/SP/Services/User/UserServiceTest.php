@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Services\User;
+namespace SP\Tests\Services\User;
 
 use Defuse\Crypto\Exception\CryptoException;
 use DI\DependencyException;
@@ -41,7 +41,6 @@ use SP\Repositories\NoSuchItemException;
 use SP\Services\ServiceException;
 use SP\Services\User\UserLoginRequest;
 use SP\Services\User\UserService;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

@@ -34,6 +34,7 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -88,13 +89,12 @@ final class PluginController extends ControllerBase
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -113,7 +113,7 @@ final class PluginController extends ControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function searchAction()
+    public function searchAction(): bool
     {
         if (!$this->acl->checkUserAccess(Acl::PLUGIN_SEARCH)) {
             return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
@@ -128,11 +128,13 @@ final class PluginController extends ControllerBase
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_VIEW)) {
@@ -159,7 +161,7 @@ final class PluginController extends ControllerBase
     /**
      * Sets view data for displaying items's data
      *
-     * @param $pluginId
+     * @param int|null $pluginId
      *
      * @throws DependencyException
      * @throws NotFoundException
@@ -167,7 +169,7 @@ final class PluginController extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData($pluginId = null)
+    protected function setViewData(?int $pluginId = null)
     {
         $this->view->addTemplate('plugin');
 
@@ -191,11 +193,13 @@ final class PluginController extends ControllerBase
     /**
      * enableAction
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function enableAction($id)
+    public function enableAction(int $id)
     {
         try {
             $this->pluginService->toggleEnabled($id, 1);
@@ -218,11 +222,13 @@ final class PluginController extends ControllerBase
     /**
      * disableAction
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function disableAction($id)
+    public function disableAction(int $id)
     {
         try {
             $this->pluginService->toggleEnabled($id, 0);
@@ -245,11 +251,13 @@ final class PluginController extends ControllerBase
     /**
      * resetAction
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function resetAction($id)
+    public function resetAction(int $id)
     {
         try {
             $pluginModel = $this->pluginService->getById($id);
@@ -273,11 +281,13 @@ final class PluginController extends ControllerBase
     /**
      * resetAction
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id)
+    public function deleteAction(?int $id = null)
     {
         try {
             if (!$this->acl->checkUserAccess(Acl::PLUGIN_DELETE)) {

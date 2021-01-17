@@ -36,6 +36,37 @@ use SP\Html\Minify;
  */
 final class ResourceController extends SimpleControllerBase
 {
+    const CSS_MIN_FILES = [
+        'reset.min.css',
+        'jquery-ui.min.css',
+        'jquery-ui.structure.min.css',
+        'material-icons.min.css',
+        'toastr.min.css',
+        'magnific-popup.min.css'
+    ];
+    const JS_MIN_FILES = [
+        'jquery-3.3.1.min.js',
+        'jquery.fileDownload.min.js',
+        'clipboard.min.js',
+        'selectize.min.js',
+        'selectize-plugins.min.js',
+        'zxcvbn-async.min.js',
+        'jsencrypt.min.js',
+        'spark-md5.min.js',
+        'moment.min.js',
+        'moment-timezone.min.js',
+        'toastr.min.js',
+        'jquery.magnific-popup.min.js',
+        'eventsource.min.js'];
+    const JS_APP_MIN_FILES = [
+        'app.min.js',
+        'app-config.min.js',
+        'app-triggers.min.js',
+        'app-actions.min.js',
+        'app-requests.min.js',
+        'app-util.min.js',
+        'app-main.min.js'];
+
     /**
      * @var Minify
      */
@@ -58,14 +89,7 @@ final class ResourceController extends SimpleControllerBase
         } else {
             $this->minify->setType(Minify::FILETYPE_CSS)
                 ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'css')
-                ->addFiles([
-                    'reset.min.css',
-                    'jquery-ui.min.css',
-                    'jquery-ui.structure.min.css',
-                    'material-icons.min.css',
-                    'toastr.min.css',
-                    'magnific-popup.min.css'
-                ], false)
+                ->addFiles(self::CSS_MIN_FILES, false)
                 ->addFile('fonts.min.css', false, PUBLIC_PATH . DIRECTORY_SEPARATOR . 'css')
                 ->getMinified();
         }
@@ -92,32 +116,12 @@ final class ResourceController extends SimpleControllerBase
                 $this->minify->setType(Minify::FILETYPE_JS)
                     ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'js');
 
-                $this->minify->addFiles([
-                    'jquery-3.3.1.min.js',
-                    'jquery.fileDownload.min.js',
-                    'clipboard.min.js',
-                    'selectize.min.js',
-                    'selectize-plugins.min.js',
-                    'zxcvbn-async.min.js',
-                    'jsencrypt.min.js',
-                    'spark-md5.min.js',
-                    'moment.min.js',
-                    'moment-timezone.min.js',
-                    'toastr.min.js',
-                    'jquery.magnific-popup.min.js',
-                    'eventsource.min.js'], false);
+                $this->minify->addFiles(self::JS_MIN_FILES, false);
             } elseif ($group === 1) {
                 $this->minify->setType(Minify::FILETYPE_JS)
                     ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
 
-                $this->minify->addFiles([
-                    'app.min.js',
-                    'app-config.min.js',
-                    'app-triggers.min.js',
-                    'app-actions.min.js',
-                    'app-requests.min.js',
-                    'app-util.min.js',
-                    'app-main.min.js'], false);
+                $this->minify->addFiles(self::JS_APP_MIN_FILES, false);
             }
 
             $this->minify->getMinified();

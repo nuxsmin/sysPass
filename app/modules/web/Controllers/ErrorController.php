@@ -98,7 +98,7 @@ final class ErrorController
     }
 
     /**
-     * databaseErrorAction
+     * maintenanceErrorAction
      */
     public function maintenanceErrorAction()
     {
@@ -130,7 +130,7 @@ final class ErrorController
     }
 
     /**
-     * databaseErrorAction
+     * databaseConnectionAction
      */
     public function databaseConnectionAction()
     {

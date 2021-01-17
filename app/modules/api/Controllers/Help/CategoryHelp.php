@@ -36,7 +36,7 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function view()
+    public static function view(): array
     {
         return
             [
@@ -49,7 +49,7 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function create()
+    public static function create(): array
     {
         return
             [
@@ -61,7 +61,7 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function edit()
+    public static function edit(): array
     {
         return
             [
@@ -74,7 +74,7 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function search()
+    public static function search(): array
     {
         return
             [
@@ -86,7 +86,7 @@ final class CategoryHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function delete()
+    public static function delete(): array
     {
         return
             [

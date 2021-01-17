@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Psr\Container\ContainerInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SessionTimeout;
@@ -54,7 +56,8 @@ abstract class SimpleControllerBase
      * @param Container $container
      * @param           $actionName
      *
-     * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function __construct(Container $container, $actionName)
     {
@@ -79,6 +82,9 @@ abstract class SimpleControllerBase
 
     /**
      * @return void
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function handleSessionTimeout()
     {
@@ -112,11 +118,11 @@ abstract class SimpleControllerBase
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param null $action La acción a comprobar
+     * @param string|null $action La acción a comprobar
      *
      * @throws UnauthorizedPageException
      */
-    protected function checkAccess($action)
+    protected function checkAccess(?string $action)
     {
         if (!$this->session->getUserData()->getIsAdminApp()
             && !$this->acl->checkUserAccess($action)

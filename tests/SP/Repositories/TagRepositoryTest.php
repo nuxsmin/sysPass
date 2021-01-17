@@ -35,7 +35,6 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Tag\TagRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

@@ -48,11 +48,13 @@ final class AccountFavoriteController extends SimpleControllerBase
     private $accountFavoriteService;
 
     /**
-     * @param $accountId
+     * @param int $accountId
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function markAction($accountId)
+    public function markAction(int $accountId): bool
     {
         try {
             $this->accountFavoriteService->add($accountId, $this->session->getUserData()->getId());
@@ -68,11 +70,13 @@ final class AccountFavoriteController extends SimpleControllerBase
     }
 
     /**
-     * @param $accountId
+     * @param int $accountId
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function unmarkAction($accountId)
+    public function unmarkAction(int $accountId): bool
     {
         try {
             $this->accountFavoriteService->delete($accountId, $this->session->getUserData()->getId());

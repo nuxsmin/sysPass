@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use SP\Config\ConfigUtil;
 use SP\Core\Acl\Acl;
@@ -46,9 +48,11 @@ final class ConfigMailController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $eventMessage = EventMessage::factory();
         $configData = $this->config->getConfigData();
@@ -99,7 +103,7 @@ final class ConfigMailController extends SimpleControllerBase
             if ($configData->isMailEnabled() === false) {
                 $eventMessage->addDescription(__u('Mail enabled'));
             }
-        } elseif ($mailEnabled === false && $configData->isMailEnabled()) {
+        } elseif ($configData->isMailEnabled()) {
             $configData->setMailEnabled(false);
             $configData->setMailRequestsEnabled(false);
             $configData->setMailAuthenabled(false);
@@ -122,7 +126,9 @@ final class ConfigMailController extends SimpleControllerBase
     }
 
     /**
-     * checkAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function checkAction()
     {
@@ -172,10 +178,11 @@ final class ConfigMailController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws SessionTimeout
      */
-    protected
-    function initialize()
+    protected function initialize()
     {
         try {
             $this->checks();

@@ -40,18 +40,16 @@
     "ext-zlib": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
-    "league/fractal": "^0.18.0"
+    "league/fractal": "^0.19.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^9",
     "fzaninotto/faker": "^v1.8",
     "fabpot/goutte": "^v3.2",
-    "syspass/extension-installer-plugin": "dev-develop",
-    "syspass/plugin-authenticator": "dev-develop",
     "nikic/php-parser": "^v4.1"
   },
   "suggest": {
-    "syspass/plugin-authenticator": "^v2.1.0",
+    "syspass/plugin-authenticator": "^v2.2",
     "ext-ldap": "*",
     "ext-curl": "*",
     "ext-xdebug": "*"

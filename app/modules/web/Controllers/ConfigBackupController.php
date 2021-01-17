@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
@@ -49,8 +51,10 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function fileBackupAction()
+    public function fileBackupAction(): bool
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
             return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
@@ -79,8 +83,10 @@ final class ConfigBackupController extends SimpleControllerBase
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function xmlExportAction()
+    public function xmlExportAction(): bool
     {
         $exportPassword = $this->request->analyzeEncrypted('exportPwd');
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
@@ -141,9 +147,9 @@ final class ConfigBackupController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function downloadExportAction()
+    public function downloadExportAction(): string
     {
         try {
             SessionContext::close();
@@ -180,9 +186,9 @@ final class ConfigBackupController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function downloadBackupAppAction()
+    public function downloadBackupAppAction(): string
     {
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
@@ -223,9 +229,9 @@ final class ConfigBackupController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function downloadBackupDbAction()
+    public function downloadBackupDbAction(): string
     {
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
@@ -268,6 +274,8 @@ final class ConfigBackupController extends SimpleControllerBase
     /**
      * initialize
      *
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws SessionTimeout
      */
     protected function initialize()

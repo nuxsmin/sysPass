@@ -52,7 +52,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getViewAction()
+    public function getViewAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW);
@@ -77,7 +77,7 @@ final class AccountActionsHelper extends HelperBase
      *
      * @return DataGridAction[]
      */
-    public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
+    public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto): array
     {
         $actions = [];
 
@@ -127,7 +127,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getBackAction()
+    public function getBackAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId('btnBack');
@@ -145,7 +145,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getEditPassAction()
+    public function getEditPassAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_EDIT_PASS);
@@ -165,7 +165,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getEditAction()
+    public function getEditAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_EDIT);
@@ -185,7 +185,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getRequestAction()
+    public function getRequestAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_REQUEST);
@@ -204,7 +204,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getRestoreAction()
+    public function getRestoreAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_EDIT_RESTORE);
@@ -223,7 +223,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getSaveAction()
+    public function getSaveAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT);
@@ -247,7 +247,7 @@ final class AccountActionsHelper extends HelperBase
      *
      * @return DataGridAction[]
      */
-    public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
+    public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto): array
     {
         $userData = $this->context->getUserData();
 
@@ -319,7 +319,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getDeleteAction()
+    public function getDeleteAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_DELETE);
@@ -339,7 +339,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getPublicLinkRefreshAction()
+    public function getPublicLinkRefreshAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::PUBLICLINK_REFRESH);
@@ -358,7 +358,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getPublicLinkDeleteAction()
+    public function getPublicLinkDeleteAction(): DataGridAction
     {
         $icon = clone $this->icons->getIconPublicLink();
         $icon->setIcon('link_off');
@@ -380,7 +380,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getPublicLinkAction()
+    public function getPublicLinkAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::PUBLICLINK_CREATE);
@@ -399,7 +399,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getViewPassHistoryAction()
+    public function getViewPassHistoryAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
@@ -420,7 +420,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getCopyPassHistoryAction()
+    public function getCopyPassHistoryAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
@@ -442,7 +442,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getViewPassAction()
+    public function getViewPassAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
@@ -463,7 +463,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getCopyPassAction()
+    public function getCopyPassAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
@@ -485,7 +485,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
-    public function getCopyAction()
+    public function getCopyAction(): DataGridAction
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_COPY);

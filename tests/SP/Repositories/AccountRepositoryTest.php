@@ -41,7 +41,6 @@ use SP\Repositories\Account\AccountRepository;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Services\Account\AccountRequest;
 use SP\Services\Account\AccountSearchFilter;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use stdClass;
 use function SP\Tests\setupContext;

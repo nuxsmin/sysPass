@@ -121,7 +121,7 @@ final class AccountHelper extends HelperBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function setViewForAccount(AccountDetailsResponse $accountDetailsResponse, $actionId)
+    public function setViewForAccount(AccountDetailsResponse $accountDetailsResponse, int $actionId)
     {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
         $this->actionId = $actionId;
@@ -313,7 +313,7 @@ final class AccountHelper extends HelperBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function checkAccess(AccountDetailsResponse $accountDetailsResponse)
+    protected function checkAccess(AccountDetailsResponse $accountDetailsResponse): AccountAcl
     {
         $accountAcl = $this->dic->get(AccountAclService::class)
             ->getAcl($this->actionId, AccountAclDto::makeFromAccount($accountDetailsResponse));
@@ -534,7 +534,7 @@ final class AccountHelper extends HelperBase
      * @throws NotFoundException
      * @throws ServiceException
      */
-    public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)
+    public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, int $actionId): bool
     {
         $this->accountId = $accountDetailsResponse->getAccountVData()->getId();
         $this->actionId = $actionId;
@@ -567,7 +567,7 @@ final class AccountHelper extends HelperBase
     /**
      * @param bool $isView
      */
-    public function setIsView($isView)
+    public function setIsView(bool $isView)
     {
         $this->isView = (bool)$isView;
     }

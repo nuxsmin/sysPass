@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
@@ -45,7 +47,8 @@ final class InstallController extends ControllerBase
     use JsonTrait;
 
     /**
-     * indexAction
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function indexAction()
     {
@@ -69,9 +72,11 @@ final class InstallController extends ControllerBase
     }
 
     /**
-     * Performs sysPass installation
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function installAction()
+    public function installAction(): bool
     {
         $installData = new InstallData();
         $installData->setSiteLang($this->request->analyzeString('sitelang', 'en_US'));

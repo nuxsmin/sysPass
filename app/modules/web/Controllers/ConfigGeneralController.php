@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use RuntimeException;
 use SP\Config\ConfigUtil;
@@ -49,9 +51,11 @@ final class ConfigGeneralController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * saveAction
+     * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function saveAction()
+    public function saveAction(): bool
     {
         $configData = $this->config->getConfigData();
         $eventMessage = EventMessage::factory();
@@ -105,7 +109,7 @@ final class ConfigGeneralController extends SimpleControllerBase
             if ($configData->isSyslogRemoteEnabled() === false) {
                 $eventMessage->addDescription(__u('Remote syslog enabled'));
             }
-        } elseif ($remoteSyslogEnabled === false && $configData->isSyslogRemoteEnabled()) {
+        } elseif ($configData->isSyslogRemoteEnabled()) {
             $configData->setSyslogRemoteEnabled(false);
 
             $eventMessage->addDescription(__u('Remote syslog disabled'));
@@ -137,7 +141,7 @@ final class ConfigGeneralController extends SimpleControllerBase
             if ($configData->isProxyEnabled() === false) {
                 $eventMessage->addDescription(__u('Proxy enabled'));
             }
-        } elseif ($proxyEnabled === false && $configData->isProxyEnabled()) {
+        } elseif ($configData->isProxyEnabled()) {
             $configData->setProxyEnabled(false);
 
             $eventMessage->addDescription(__u('Proxy disabled'));
@@ -161,7 +165,7 @@ final class ConfigGeneralController extends SimpleControllerBase
             if ($configData->isAuthBasicEnabled() === false) {
                 $eventMessage->addDescription(__u('Auth Basic enabled'));
             }
-        } elseif ($authBasicEnabled === false && $configData->isAuthBasicEnabled()) {
+        } elseif ($configData->isAuthBasicEnabled()) {
             $configData->setAuthBasicEnabled(false);
             $configData->setAuthBasicAutoLoginEnabled(false);
 
@@ -230,7 +234,7 @@ final class ConfigGeneralController extends SimpleControllerBase
      *
      * @return bool
      */
-    public function downloadConfigBackupAction($type)
+    public function downloadConfigBackupAction(string $type)
     {
         if ($this->configData->isDemoEnabled()) {
             return __('Ey, this is a DEMO!!');
@@ -278,6 +282,8 @@ final class ConfigGeneralController extends SimpleControllerBase
     /**
      * @return bool
      * @throws SessionTimeout
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     protected function initialize()
     {

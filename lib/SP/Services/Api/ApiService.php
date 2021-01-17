@@ -83,13 +83,13 @@ final class ApiService extends Service
     /**
      * Sets up API
      *
-     * @param $actionId
+     * @param int $actionId
      *
      * @throws ServiceException
      * @throws SPException
      * @throws Exception
      */
-    public function setup($actionId)
+    public function setup(int $actionId)
     {
         $this->initialized = false;
         $this->apiRequest = $this->dic->get(ApiRequest::class);
@@ -224,6 +224,15 @@ final class ApiService extends Service
     }
 
     /**
+     * @throws ServiceException
+     * @throws ContextException
+     */
+    public function requireMasterPass()
+    {
+        $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
+    }
+
+    /**
      * Devolver la clave maestra
      *
      * @return string
@@ -257,15 +266,6 @@ final class ApiService extends Service
                 JsonRpcResponse::INTERNAL_ERROR
             );
         }
-    }
-
-    /**
-     * @throws ServiceException
-     * @throws ContextException
-     */
-    public function requireMasterPass()
-    {
-        $this->context->setTrasientKey('_masterpass', $this->getMasterPassFromVault());
     }
 
     /**

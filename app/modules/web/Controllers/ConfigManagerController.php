@@ -137,7 +137,10 @@ final class ConfigManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.config', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(Acl::CONFIG), $this->request->analyzeInt('tabIndex', 0));
+        $this->tabsHelper->renderTabs(
+            Acl::getActionRoute(Acl::CONFIG),
+            $this->request->analyzeInt('tabIndex', 0)
+        );
 
         $this->view();
     }
@@ -148,29 +151,60 @@ final class ConfigManagerController extends ControllerBase
      * @throws NotFoundExceptionInterface
      * @throws CheckException
      */
-    protected function getConfigGeneral()
+    protected function getConfigGeneral(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('general');
 
-        $template->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([$this->configData->getSiteLang()]));
-        $template->assign('themes', SelectItemAdapter::factory($this->theme->getThemesAvailable())->getItemsFromArraySelected([$this->configData->getSiteTheme()]));
-        $template->assign('isDemoMode', $this->configData->isDemoEnabled() && !$this->userData->getIsAdminApp());
-        $template->assign('isDisabled', $this->configData->isDemoEnabled() && !$this->userData->getIsAdminApp() ? 'disabled' : '');
+        $template->assign('langs',
+            SelectItemAdapter::factory(
+                Language::getAvailableLanguages()
+            )->getItemsFromArraySelected([$this->configData->getSiteLang()])
+        );
+        $template->assign('themes',
+            SelectItemAdapter::factory(
+                $this->theme->getThemesAvailable()
+            )->getItemsFromArraySelected([$this->configData->getSiteTheme()])
+        );
+        $template->assign('isDemoMode',
+            $this->configData->isDemoEnabled()
+            && !$this->userData->getIsAdminApp()
+        );
+        $template->assign('isDisabled',
+            $this->configData->isDemoEnabled()
+            && !$this->userData->getIsAdminApp() ? 'disabled' : ''
+        );
 
-        $template->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModel());
-        $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
-        $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
+        $template->assign('users',
+            SelectItemAdapter::factory(
+                UserService::getItemsBasic()
+            )->getItemsFromModel()
+        );
+        $template->assign('userGroups',
+            SelectItemAdapter::factory(
+                UserGroupService::getItemsBasic()
+            )->getItemsFromModel()
+        );
+        $template->assign('userProfiles',
+            SelectItemAdapter::factory(
+                UserProfileService::getItemsBasic()
+            )->getItemsFromModel()
+        );
 
-        $template->assign('curlIsAvailable', $this->extensionChecker->checkCurlAvailable());
+        $template->assign('curlIsAvailable',
+            $this->extensionChecker->checkCurlAvailable());
 
         $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
 
         sort($events, SORT_STRING);
 
-        $template->assign('logEvents', SelectItemAdapter::factory($events)
-            ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
+        $template->assign('logEvents',
+            SelectItemAdapter::factory($events)
+                ->getItemsFromArraySelected(
+                    $this->configData->getLogEvents(),
+                    true
+                )
         );
 
         return new DataTab(__('General'), $template);
@@ -183,7 +217,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws CheckException
      * @throws SPException
      */
-    protected function getAccountConfig()
+    protected function getAccountConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
@@ -210,7 +244,7 @@ final class ConfigManagerController extends ControllerBase
      * @return DataTab
      * @throws CheckException
      */
-    protected function getWikiConfig()
+    protected function getWikiConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
@@ -227,7 +261,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws NotFoundExceptionInterface
      * @throws CheckException
      */
-    protected function getLdapConfig()
+    protected function getLdapConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
@@ -279,15 +313,23 @@ final class ConfigManagerController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function getMailConfig()
+    protected function getMailConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('mail');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
-        $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
-        $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
+        $template->assign('userGroups',
+            SelectItemAdapter::factory(
+                UserGroupService::getItemsBasic()
+            )->getItemsFromModel()
+        );
+        $template->assign('userProfiles',
+            SelectItemAdapter::factory(
+                UserProfileService::getItemsBasic()
+            )->getItemsFromModel()
+        );
 
         $events = array_merge(MailHandler::EVENTS, $this->configData->getMailEvents());
 
@@ -309,7 +351,7 @@ final class ConfigManagerController extends ControllerBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    protected function getEncryptionConfig()
+    protected function getEncryptionConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
@@ -324,10 +366,16 @@ final class ConfigManagerController extends ControllerBase
 
         $configService = $this->dic->get(ConfigService::class);
 
-        $template->assign('lastUpdateMPass', $configService->getByParam('lastupdatempass', 0));
+        $template->assign('lastUpdateMPass',
+            $configService->getByParam('lastupdatempass', 0)
+        );
 
-        $template->assign('tempMasterPassTime', $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0));
-        $template->assign('tempMasterMaxTime', $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0));
+        $template->assign('tempMasterPassTime',
+            $configService->getByParam(TemporaryMasterPassService::PARAM_TIME, 0)
+        );
+        $template->assign('tempMasterMaxTime',
+            $configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, 0)
+        );
 
         $tempMasterAttempts = sprintf('%d/%d',
             $configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, 0),
@@ -345,38 +393,62 @@ final class ConfigManagerController extends ControllerBase
      * @return DataTab
      * @throws CheckException
      */
-    protected function getBackupConfig()
+    protected function getBackupConfig(): DataTab
     {
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('backup');
-        $template->assign('pharIsAvailable', $this->extensionChecker->checkPharAvailable());
+        $template->assign('pharIsAvailable',
+            $this->extensionChecker->checkPharAvailable());
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
-        $backupAppFile = new FileHandler(FileBackupService::getAppBackupFilename(BACKUP_PATH, $this->configData->getBackupHash() ?: '', true));
-        $backupDbFile = new FileHandler(FileBackupService::getDbBackupFilename(BACKUP_PATH, $this->configData->getBackupHash() ?: '', true));
-        $exportFile = new FileHandler(XmlExportService::getExportFilename(BACKUP_PATH, $this->configData->getExportHash() ?: '', true));
+        $backupAppFile = new FileHandler(
+            FileBackupService::getAppBackupFilename(
+                BACKUP_PATH,
+                $this->configData->getBackupHash() ?: '', true
+            )
+        );
+        $backupDbFile = new FileHandler(
+            FileBackupService::getDbBackupFilename(
+                BACKUP_PATH,
+                $this->configData->getBackupHash() ?: '', true
+            )
+        );
+        $exportFile = new FileHandler(
+            XmlExportService::getExportFilename(
+                BACKUP_PATH,
+                $this->configData->getExportHash() ?: '', true
+            )
+        );
 
         try {
             $backupAppFile->checkFileExists();
             $backupDbFile->checkFileExists();
 
             $template->assign('hasBackup', true);
-            $template->assign('lastBackupTime', date('r', $backupAppFile->getFileTime()));
+            $template->assign('lastBackupTime',
+                date('r', $backupAppFile->getFileTime())
+            );
         } catch (FileException $e) {
             $template->assign('hasBackup', false);
-            $template->assign('lastBackupTime', __('There aren\'t any backups available'));
+            $template->assign('lastBackupTime',
+                __('There aren\'t any backups available')
+            );
         }
 
         try {
             $exportFile->checkFileExists();
 
             $template->assign('hasExport', true);
-            $template->assign('lastExportTime', date('r', $exportFile->getFileTime()));
+            $template->assign('lastExportTime',
+                date('r', $exportFile->getFileTime())
+            );
         } catch (FileException $e) {
             $template->assign('hasExport', false);
-            $template->assign('lastExportTime', __('No export file found'));
+            $template->assign('lastExportTime',
+                __('No export file found')
+            );
         }
 
         return new DataTab(__('Backup'), $template);
@@ -421,18 +493,38 @@ final class ConfigManagerController extends ControllerBase
         $databaseUtil = $this->dic->get(DatabaseUtil::class);
 
         $template->assign('dbInfo', $databaseUtil->getDBinfo());
-        $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
-        $template->assign('configBackupDate', date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0)));
-        $template->assign('plugins', $this->dic->get(PluginManager::class)->getLoadedPlugins());
-        $template->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed')));
-        $template->assign('securedSession', CryptSessionHandler::$isSecured);
-        $template->assign('missingExtensions', $this->extensionChecker->getMissing());
-        $template->assign('downloadRate', round(Util::getMaxDownloadChunk() / 1024 / 1024));
+        $template->assign('dbName',
+            $this->configData->getDbName() . '@' . $this->configData->getDbHost()
+        );
+        $template->assign('configBackupDate',
+            date('r', $this->dic->get(ConfigService::class)->getByParam('config_backup_date', 0))
+        );
+        $template->assign('plugins',
+            $this->dic->get(PluginManager::class)->getLoadedPlugins()
+        );
+        $template->assign('locale',
+            Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed'))
+        );
+        $template->assign('securedSession',
+            CryptSessionHandler::$isSecured
+        );
+        $template->assign('missingExtensions',
+            $this->extensionChecker->getMissing()
+        );
+        $template->assign('downloadRate',
+            round(Util::getMaxDownloadChunk() / 1024 / 1024)
+        );
 
         $isDemo = $this->configData->isDemoEnabled();
 
-        $template->assign('downloadConfigBackup', !$isDemo && $this->userData->getIsAdminApp());
-        $template->assign('downloadLog', !$isDemo && is_readable(LOG_FILE) && $this->userData->getIsAdminApp());
+        $template->assign('downloadConfigBackup',
+            !$isDemo && $this->userData->getIsAdminApp()
+        );
+        $template->assign('downloadLog',
+            !$isDemo
+            && is_readable(LOG_FILE)
+            && $this->userData->getIsAdminApp()
+        );
 
         return new DataTab(__('Information'), $template);
     }
@@ -440,7 +532,7 @@ final class ConfigManagerController extends ControllerBase
     /**
      * @return TabsHelper
      */
-    public function getTabsHelper()
+    public function getTabsHelper(): TabsHelper
     {
         return $this->tabsHelper;
     }

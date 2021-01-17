@@ -33,7 +33,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Services\Api\ApiRequest;
 use SP\Services\Api\ApiService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\getResource;
 use function SP\Tests\setupContext;

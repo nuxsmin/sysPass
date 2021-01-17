@@ -58,7 +58,10 @@ trait HelpTrait
      *
      * @return array
      */
-    private static function getItem(string $name, string $description, bool $required = false): array
+    private static function getItem(
+        string $name,
+        string $description,
+        bool $required = false): array
     {
         return [$name => ['description' => $description, 'required' => $required]];
     }

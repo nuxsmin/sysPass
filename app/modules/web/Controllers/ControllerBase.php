@@ -81,10 +81,6 @@ abstract class ControllerBase
      * @var bool
      */
     protected $isAjax = false;
-    /**
-     * @var string
-     */
-    protected $previousSk;
 
     /**
      * Constructor
@@ -302,7 +298,7 @@ abstract class ControllerBase
      *
      * @return bool
      */
-    protected function checkAccess($action)
+    protected function checkAccess($action): bool
     {
         return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
     }

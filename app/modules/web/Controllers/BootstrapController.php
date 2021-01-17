@@ -51,7 +51,7 @@ final class BootstrapController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function getEnvironmentAction()
+    public function getEnvironmentAction(): bool
     {
         $checkStatus = $this->session->getAuthCompleted()
             && ($this->session->getUserData()->getIsAdminApp()
@@ -85,7 +85,7 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * @return array
      */
-    private function getJsLang()
+    private function getJsLang(): array
     {
         return require RESOURCES_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
     }
@@ -93,7 +93,7 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * @return bool
      */
-    private function getNotificationsEnabled()
+    private function getNotificationsEnabled(): bool
     {
         if ($this->session->isLoggedIn()) {
             return $this->session->getUserData()->getPreferences()->isCheckNotifications();
@@ -105,7 +105,7 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * @return bool
      */
-    private function getCookiesEnabled()
+    private function getCookiesEnabled(): bool
     {
         return $this->router->request()->cookies()->get(session_name()) !== null;
     }
@@ -113,7 +113,7 @@ final class BootstrapController extends SimpleControllerBase
     /**
      * @return array
      */
-    private function getPlugins()
+    private function getPlugins(): array
     {
         try {
             return $this->dic->get(PluginManager::class)->getEnabledPlugins();
@@ -129,7 +129,7 @@ final class BootstrapController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function getAuthBasicAutologinEnabled()
+    private function getAuthBasicAutologinEnabled(): bool
     {
         return $this->dic->get(Browser::class)->getServerAuthUser() !== null
             && $this->configData->isAuthBasicAutoLoginEnabled();
@@ -140,7 +140,7 @@ final class BootstrapController extends SimpleControllerBase
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function getPublicKey()
+    private function getPublicKey(): string
     {
         try {
             return $this->session->getPublicKey() ?: $this->dic->get(CryptPKI::class)->getPublicKey();

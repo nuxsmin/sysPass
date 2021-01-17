@@ -34,7 +34,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Repositories\Plugin\PluginDataModel;
 use SP\Repositories\Plugin\PluginDataRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 

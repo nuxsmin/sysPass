@@ -49,7 +49,6 @@ use SP\Services\Account\AccountSearchFilter;
 use SP\Services\Account\AccountService;
 use SP\Services\ServiceException;
 use SP\Services\User\UserLoginResponse;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;
 use stdClass;

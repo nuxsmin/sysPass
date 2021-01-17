@@ -34,7 +34,6 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\UserGroup\UserGroupRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
@@ -45,7 +44,7 @@ use function SP\Tests\setupContext;
  *
  * @package SP\Tests
  */
-class UserGroupRepositoryTestCase extends DatabaseTestCase
+class UserGroupRepositoryTest extends DatabaseTestCase
 {
     /**
      * @var UserGroupRepository

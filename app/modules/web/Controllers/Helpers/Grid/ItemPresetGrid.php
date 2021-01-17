@@ -138,7 +138,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
@@ -155,7 +155,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreatePermissionAction()
+    private function getCreatePermissionAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
@@ -179,7 +179,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreatePrivateAction()
+    private function getCreatePrivateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
@@ -203,7 +203,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateSessionTimeoutAction()
+    private function getCreateSessionTimeoutAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
@@ -227,7 +227,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAccountPasswordAction()
+    private function getCreateAccountPasswordAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_CREATE);
@@ -251,7 +251,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEditAction()
+    private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_EDIT);
@@ -268,7 +268,7 @@ final class ItemPresetGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(ActionsInterface::ITEMPRESET_DELETE);

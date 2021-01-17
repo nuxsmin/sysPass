@@ -32,7 +32,6 @@ use SP\Services\Export\VerifyResult;
 use SP\Services\Export\XmlExportService;
 use SP\Services\Export\XmlVerifyService;
 use SP\Services\ServiceException;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\File\FileException;
 use SP\Tests\DatabaseTestCase;
 use SP\Util\PasswordUtil;

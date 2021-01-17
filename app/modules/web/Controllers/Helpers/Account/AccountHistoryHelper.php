@@ -94,7 +94,7 @@ final class AccountHistoryHelper extends HelperBase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function setView(AccountHistoryData $accountHistoryData, $actionId)
+    public function setView(AccountHistoryData $accountHistoryData, int $actionId)
     {
         $this->actionId = $actionId;
         $this->accountHistoryId = $accountHistoryData->getId();
@@ -193,6 +193,6 @@ final class AccountHistoryHelper extends HelperBase
     protected function initialize()
     {
         $this->acl = $this->dic->get(Acl::class);
-        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
+        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);
     }
 }

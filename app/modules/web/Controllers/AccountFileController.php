@@ -37,6 +37,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SessionTimeout;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\Html;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
@@ -70,11 +71,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function viewAction($id)
+    public function viewAction(int $id)
     {
         try {
             if (null === ($fileData = $this->accountFileService->getById($id))) {
@@ -127,11 +130,11 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Download action
      *
-     * @param $id
+     * @param int $id
      *
      * @return string
      */
-    public function downloadAction($id)
+    public function downloadAction(int $id): string
     {
         try {
             if (null === ($fileData = $this->accountFileService->getById($id))) {
@@ -179,8 +182,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @param int $accountId
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function uploadAction($accountId)
+    public function uploadAction(int $accountId): bool
     {
         try {
             $file = $this->router->request()->files()->get('inFile');
@@ -275,7 +280,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      * @throws SPException
      * @throws FileException
      */
-    private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler)
+    private function checkAllowedMimeType(FileData $fileData, FileHandler $fileHandler): string
     {
         if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime())) {
             return $fileData->getType();
@@ -303,7 +308,10 @@ final class AccountFileController extends ControllerBase implements CrudControll
     public function searchAction()
     {
         if (!$this->acl->checkUserAccess(Acl::ACCOUNT_FILE_SEARCH)) {
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('You don\'t have permission to do this operation'));
+            return $this->returnJsonResponse(
+                JsonResponse::JSON_ERROR,
+                __u('You don\'t have permission to do this operation')
+            );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -316,13 +324,12 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * getSearchGrid
      *
-     * @return $this
      * @throws DependencyException
      * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getSearchGrid()
+    protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
@@ -352,11 +359,13 @@ final class AccountFileController extends ControllerBase implements CrudControll
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      *
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
-    public function deleteAction($id = null)
+    public function deleteAction(?int $id = null)
     {
         try {
             if ($id === null) {
@@ -413,7 +422,7 @@ final class AccountFileController extends ControllerBase implements CrudControll
      *
      * @throws ContainerExceptionInterface
      */
-    public function listAction($accountId)
+    public function listAction(int $accountId)
     {
         if (!$this->configData->isFilesEnabled()) {
             echo __('Files management disabled');

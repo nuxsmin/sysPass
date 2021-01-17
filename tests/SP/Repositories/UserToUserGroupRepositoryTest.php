@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Repositories;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -31,7 +31,6 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
-use SP\Storage\Database\DatabaseConnectionData;
 use SP\Tests\DatabaseTestCase;
 use function SP\Tests\setupContext;
 
