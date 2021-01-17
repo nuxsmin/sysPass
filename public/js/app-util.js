@@ -444,7 +444,9 @@ sysPass.Util = function (log) {
                     }
                 }
 
-                if (password.config.complexity.uppercase) {
+                if (password.config.complexity.chars
+                    && password.config.complexity.uppercase
+                ) {
                     const chars = password.config.charset.char.toUpperCase();
                     const res = inPassArray.some(
                         function (el) {
