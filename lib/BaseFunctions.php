@@ -25,6 +25,9 @@
 /**
  * [type] [caller] data
  */
+
+use DI\ContainerBuilder;
+
 define('LOG_FORMAT', "[%s] [%s] %s");
 /**
  * [timestamp] [type] [caller] data
@@ -250,17 +253,27 @@ function getElapsedTime($from)
 /**
  * Inicializar módulo
  *
- * @param $module
+ * @param                       $module
+ * @param ContainerBuilder|null $builder
  */
-function initModule($module)
+function initModule($module, ContainerBuilder $builder = null)
 {
     $dir = dir(MODULES_PATH);
 
     while (false !== ($entry = $dir->read())) {
-        $moduleFile = MODULES_PATH . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'module.php';
+        if ($entry === $module) {
+            $moduleFile = MODULES_PATH . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'module.php';
+            $definitionsFile = MODULES_PATH . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'definitions.php';
 
-        if ($entry === $module && file_exists($moduleFile)) {
-            require $moduleFile;
+            if (file_exists($moduleFile)) {
+                require $moduleFile;
+            }
+
+            if ($builder !== null && file_exists($definitionsFile)) {
+                $definitions = require $definitionsFile;
+
+                $builder->addDefinitions($definitions);
+            }
         }
     }
 

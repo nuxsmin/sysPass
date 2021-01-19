@@ -84,12 +84,12 @@ define('TMP_PATH',
     getenv('TMP_PATH')
         ?: APP_PATH . DS . 'temp');
 
-initModule(APP_MODULE);
-
 try {
     $builder = new ContainerBuilder();
     $builder->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies');
     $builder->addDefinitions(BASE_PATH . DS . 'Definitions.php');
+
+    initModule(APP_MODULE, $builder);
 
     Bootstrap::run($builder->build());
 } catch (Exception $e) {

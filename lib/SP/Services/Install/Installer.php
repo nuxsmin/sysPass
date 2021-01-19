@@ -87,11 +87,10 @@ final class Installer extends Service
      * @return static
      * @throws InvalidArgumentException
      * @throws SPException
-     * @throws EnvironmentIsBrokenException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function run(InstallData $installData)
+    public function run(InstallData $installData): Installer
     {
         $this->installData = $installData;
 
@@ -174,7 +173,6 @@ final class Installer extends Service
      * Iniciar instalación.
      *
      * @throws SPException
-     * @throws EnvironmentIsBrokenException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ConstraintException

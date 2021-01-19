@@ -43,6 +43,7 @@ use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
+use SP\Modules\Cli\Init as InitCli;
 use SP\Plugin\PluginManager;
 use SP\Services\Api\ApiRequest;
 use SP\Services\Api\JsonRpcResponse;
@@ -116,7 +117,7 @@ final class Bootstrap
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private final function __construct(Container $container)
+    private final function __construct(Container $container, bool $useRouter = true)
     {
         self::$container = $container;
 
@@ -125,11 +126,14 @@ final class Bootstrap
 
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
-        $this->router = $container->get(Klein::class);
-        $this->request = $container->get(Request::class);
         $this->language = $container->get(Language::class);
 
-        $this->initRouter();
+        if ($useRouter) {
+            $this->router = $container->get(Klein::class);
+            $this->request = $container->get(Request::class);
+
+            $this->initRouter();
+        }
     }
 
     /**
@@ -239,7 +243,7 @@ final class Bootstrap
 
                     return call_user_func_array([$controller, $methodName], $methodParams);
                 } catch (SessionTimeout $sessionTimeout) {
-                    logger('Session timeout', 'DEBUG');
+                    logger('Session timeout');
                 } catch (\Exception $e) {
                     processException($e);
 
@@ -451,23 +455,31 @@ final class Bootstrap
      * @throws InitializationException
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws Core\Context\ContextException
      */
     public static function run(Container $container, string $module = APP_MODULE)
     {
-        $bs = new Bootstrap($container);
-
         switch ($module) {
             case 'web':
                 logger('------------');
                 logger('Boostrap:web');
 
+                $bs = new Bootstrap($container);
                 $bs->router->dispatch($bs->request->getRequest());
                 break;
             case 'api':
                 logger('------------');
                 logger('Boostrap:api');
 
+                $bs = new Bootstrap($container);
                 $bs->router->dispatch($bs->request->getRequest());
+                break;
+            case 'cli':
+                logger('------------');
+                logger('Boostrap:cli');
+
+                $cli = $container->get(InitCli::class);
+                $cli->initialize('');
                 break;
             default;
                 throw new InitializationException('Unknown module');
