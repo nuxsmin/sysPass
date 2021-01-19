@@ -113,6 +113,7 @@ final class Bootstrap
      * Bootstrap constructor.
      *
      * @param Container $container
+     * @param bool      $useRouter
      *
      * @throws DependencyException
      * @throws NotFoundException

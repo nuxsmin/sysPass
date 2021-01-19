@@ -27,6 +27,7 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use SP\Config\Config;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Language;
 use SP\Services\Install\InstallData;
@@ -52,9 +53,10 @@ final class InstallCommand extends CommandBase
 
     public function __construct(LoggerInterface $logger,
                                 SymfonyStyle $io,
+                                Config $config,
                                 Installer $installer)
     {
-        parent::__construct($logger, $io);
+        parent::__construct($logger, $io, $config);
 
         $this->installer = $installer;
     }
@@ -95,7 +97,12 @@ final class InstallCommand extends CommandBase
             ->addOption('language',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Sets the global app language. You can set a per user language on preferences.'));
+                __('Sets the global app language. You can set a per user language on preferences.'))
+            ->addOption('force',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                __('Force sysPass installation.'),
+                false);
     }
 
     /**
@@ -106,6 +113,14 @@ final class InstallCommand extends CommandBase
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $force = (bool)$input->getOption('force');
+
+        if ($this->configData->isInstalled() && $force === false) {
+            $this->io->warning(__('sysPass is already installed. Use \'--force\' to install it again.'));
+
+            return self::FAILURE;
+        }
+
         $adminPassword = $input->getOption('adminPassword');
 
         $passNonEmptyValidator = function ($value) {
