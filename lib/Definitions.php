@@ -25,7 +25,6 @@
 use Monolog\Logger;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
@@ -94,7 +93,6 @@ return [
         ->constructor(true),
     Logger::class => create(Logger::class)
         ->constructor('syspass'),
-    LoggerInterface::class => get(Logger::class),
     AccountAclService::class => autowire(AccountAclService::class),
     \GuzzleHttp\Client::class => create(GuzzleHttp\Client::class)
         ->constructor(factory([Client::class, 'getOptions'])),

@@ -22,7 +22,10 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use SP\Modules\Cli\Commands\InstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -35,6 +38,12 @@ use function DI\create;
 use function DI\factory;
 
 return [
+    LoggerInterface::class => function (ContainerInterface $c) {
+        $logger = $c->get(Logger::class);
+        $logger->pushHandler(new StreamHandler(LOG_FILE));
+
+        return $logger;
+    },
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)
         ->constructor(ConsoleOutput::VERBOSITY_NORMAL, true),

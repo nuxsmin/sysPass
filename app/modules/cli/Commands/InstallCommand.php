@@ -116,6 +116,8 @@ final class InstallCommand extends CommandBase
         $force = (bool)$input->getOption('force');
 
         if ($this->configData->isInstalled() && $force === false) {
+            $this->logger->warning(__u('sysPass is already installed'));
+
             $this->io->warning(__('sysPass is already installed. Use \'--force\' to install it again.'));
 
             return self::FAILURE;
@@ -132,6 +134,8 @@ final class InstallCommand extends CommandBase
         };
 
         if (empty($adminPassword)) {
+            $this->logger->debug(__u('Ask for admin password'));
+
             $adminPassword = $this->io->askHidden(__('Please provide sysPass admin\'s password'), $passNonEmptyValidator);
             $adminPasswordRepeat = $this->io->askHidden(__('Please provide sysPass admin\'s password again'), $passNonEmptyValidator);
 
@@ -145,6 +149,8 @@ final class InstallCommand extends CommandBase
         $masterPassword = $input->getOption('masterPassword');
 
         if (empty($masterPassword)) {
+            $this->logger->debug(__u('Ask for master password'));
+
             $masterPassword = $this->io->askHidden(__('Please provide sysPass master password'), $passNonEmptyValidator);
             $masterPasswordRepeat = $this->io->askHidden(__('Please provide sysPass master password again'), $passNonEmptyValidator);
 
@@ -158,18 +164,24 @@ final class InstallCommand extends CommandBase
         $databasePassword = $input->getOption('databasePassword');
 
         if (empty($databasePassword)) {
+            $this->logger->debug(__u('Ask for database password'));
+
             $databasePassword = $this->io->askHidden(__('Please provide database admin password'));
         }
 
         $language = $input->getOption('language');
 
         if (empty($language)) {
+            $this->logger->debug(__u('Ask for language'));
+
             $language = $this->io->choice(__('Language'), array_keys(Language::getAvailableLanguages()), 'en_US');
         }
 
         $install = $this->io->confirm(__('Install sysPass?'), false);
 
         if (!$install) {
+            $this->logger->debug(__u('Installation aborted'));
+
             return self::SUCCESS;
         }
 
@@ -189,6 +201,7 @@ final class InstallCommand extends CommandBase
 
             $this->io->success(__('Installation finished'));
 
+            $this->logger->info(__u('Installation finished'));
             return self::SUCCESS;
         } catch (InvalidArgumentException $e) {
             $this->io->error(__($e->getMessage()));
