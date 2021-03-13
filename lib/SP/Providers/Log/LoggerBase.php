@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Log;
 
-
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -81,7 +80,6 @@ abstract class LoggerBase extends Provider implements EventReceiver
         $source = $event->getSource();
 
         if ($source instanceof Exception) {
-            /** @var Exception $source */
             $this->logger->error($eventType,
                 $this->formatContext(
                     __($source->getMessage()),
@@ -114,8 +112,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
     final protected function formatContext(
         string $message,
         string $address,
-        string $user
-    ): array
+        string $user): array
     {
         return [
             'message' => trim($message),
