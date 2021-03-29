@@ -128,6 +128,10 @@ class ProfileData
     /**
      * @var bool
      */
+    protected $mgmApiOnlyUser = false;
+    /**
+     * @var bool
+     */
     protected $mgmPublicLinks = false;
     /**
      * @var bool
@@ -750,6 +754,26 @@ class ProfileData
     public function setAccPrivateGroup($accPrivateGroup)
     {
         $this->accPrivateGroup = $accPrivateGroup;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMgmApiOnlyUser()
+    {
+        return $this->mgmApiOnlyUser;
+    }
+
+    /**
+     * @param boolean $mgmApiOnlyUser
+     *
+     * @return ProfileData
+     */
+    public function setMgmApiOnlyUser($mgmApiOnlyUser)
+    {
+        $this->mgmApiOnlyUser = $mgmApiOnlyUser;
 
         return $this;
     }

@@ -120,6 +120,7 @@ interface ActionsInterface
     const AUTHTOKEN_CREATE = 1004;
     const AUTHTOKEN_EDIT = 1005;
     const AUTHTOKEN_DELETE = 1006;
+    const AUTHTOKEN_ONLY_USER = 1007;
     const PLUGIN = 1101;
     const PLUGIN_SEARCH = 1102;
     const PLUGIN_VIEW = 1103;
