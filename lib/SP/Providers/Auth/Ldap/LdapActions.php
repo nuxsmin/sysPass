@@ -203,7 +203,7 @@ final class LdapActions
                 $searchRes,
                 $cookie
             );
-        } while ($cookie !== null && $cookie != '');
+        } while (!empty($cookie) && $entries["count"] > 0);
 
         return $results;
     }
