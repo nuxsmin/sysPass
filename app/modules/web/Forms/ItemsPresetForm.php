@@ -128,6 +128,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         $accountPermission->setUsersEdit($this->request->analyzeArray('users_edit', null, []));
         $accountPermission->setUserGroupsView($this->request->analyzeArray('user_groups_view', null, []));
         $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
+        $accountPermission->setMainUsergroupId($this->request->analyzeInt('main_usergroup_id'));
 
         if (!$accountPermission->hasItems()) {
             throw new ValidationException(__u('There aren\'t any defined permissions'));

@@ -392,7 +392,7 @@ final class AccountHelper extends HelperBase
         $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit()));
 
         $this->view->assign('users', $selectUsers->getItemsFromModel());
-        $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
+        $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected(array($accountPermission->getMainUsergroupId())));
         $this->view->assign('tags', $selectTags->getItemsFromModel());
 
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->getIsAdminApp());
