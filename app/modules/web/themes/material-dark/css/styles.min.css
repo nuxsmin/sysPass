@@ -895,7 +895,7 @@ body.userpassreset footer a {
 #content .data .list-wrap li,
 #box-popup .list-wrap li {
     display: flex;
-    background: #f2f2f2;
+    background: #161B22;
     padding: .5em;
     font-size: 1em;
     margin-bottom: .5em
@@ -904,7 +904,7 @@ body.userpassreset footer a {
 #content .data .list-wrap li:hover,
 #box-popup .list-wrap li:hover {
     background: #e8eaf6;
-    color: #000
+    color: #fff
 }
 
 #content .data .list-wrap div.files-item-info,
