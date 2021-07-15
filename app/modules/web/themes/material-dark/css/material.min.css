@@ -605,6 +605,10 @@ ol {
     color: #c9c9c9;
 }
 
+.material-icons.md-dark.md-inactive {
+    color: #c9c9c9;
+}
+
 .mdl-color-text--red {
     color: #f44336 !important
 }
