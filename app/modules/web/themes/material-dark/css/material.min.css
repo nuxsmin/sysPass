@@ -601,7 +601,8 @@ ol {
     -moz-font-feature-settings: 'liga';
     font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased
+    -webkit-font-smoothing: antialiased;
+    color: #c9c9c9;
 }
 
 .mdl-color-text--red {
@@ -2266,7 +2267,7 @@ ol {
 }
 
 .mdl-color--amber-A200 {
-    background-color: #ffd740 !important
+    color: #ffd740 !important
 }
 
 .mdl-color-text--amber-A400 {
@@ -3571,7 +3572,7 @@ fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container .mdl-ripple,
 }
 
 .mdl-data-table tbody tr.is-selected {
-    background-color: #e0e0e0
+    background-color: #0D1117
 }
 
 .mdl-data-table tbody tr:hover {
@@ -4516,7 +4517,7 @@ fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container .mdl-ripple,
 }
 
 .mdl-menu__item:active {
-    background-color: #e0e0e0
+    background-color: #161B22;
 }
 
 .mdl-menu__item--ripple-container {
@@ -4756,7 +4757,7 @@ fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container .mdl-ripple,
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
     box-sizing: border-box;
     border-right: 1px solid #e0e0e0;
-    background: #fafafa;
+    background: #161B22;
     -webkit-transform: translateX(-250px);
     transform: translateX(-250px);
     -webkit-transform-style: preserve-3d;
@@ -4797,7 +4798,8 @@ fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container .mdl-ripple,
     .mdl-layout__drawer>.mdl-layout__title,
     .mdl-layout__drawer>.mdl-layout-title {
         line-height: 56px;
-        padding-left: 16px
+        padding-left: 16px;
+        color: #c9c9c9;
     }
 }
 
