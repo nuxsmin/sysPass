@@ -1,0 +1,92 @@
+$font-stack: "Roboto Regular", Verdana, Tahoma, sans-serif;
+$font-stack-mono: Consolas, "Andale Mono WT", "Andale Mono", "Bitstream Vera Sans Mono", "Nimbus Mono L", Monaco, "Courier New", monospace;
+$color-teal-bg: #e0f2f1;
+$color-teal-fg: #26a69a;
+$color-red-bg: #ffebee;
+$color-red-fg: #ef5350;
+$color-amber-bg: #fff8e1;
+$color-amber-fg: #ffca28;
+$color-indigo-bg: #e8eaf6;
+$color-indigo-fg: #5c6bc0;
+$color-indigo-fg-accent: #536dfe;
+$color-bluegrey-bg: #eceff1;
+$color-bluegrey-fg: #607d8b;
+$color-blue-bg: #e3f2fd;
+$color-blue-fg: #2196f3;
+$color-grey: #555;
+$public-path: 'public';
+
+@mixin box-shadow() {
+  -webkit-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.14);
+}
+
+@mixin box-shadow-top() {
+  -webkit-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+}
+
+@mixin box-shadow-top-white() {
+  -webkit-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+  -moz-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+}
+
+@mixin shadow-full() {
+  -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+@mixin border-radius($radius) {
+  border-radius: $radius !important;
+  -moz-border-radius: $radius !important;
+  -webkit-border-radius: $radius !important;
+}
+
+@mixin color-red() {
+  color: $color-red-fg;
+  background-color: $color-red-bg;
+  border: 1px solid $color-red-fg;
+}
+
+@mixin color-teal() {
+  color: $color-teal-fg;
+  background-color: $color-teal-bg;
+  border: 1px solid $color-teal-fg;
+}
+
+@mixin color-amber() {
+  color: $color-amber-fg;
+  background-color: $color-amber-bg;
+  border: 1px solid $color-amber-fg;
+}
+
+@mixin color-blue() {
+  color: $color-blue-fg;
+  background-color: $color-blue-bg;
+  border: 1px solid $color-blue-fg;
+}
+
+@mixin fit-ccntent() {
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+}
+
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin flex($values) {
+  -webkit-box-flex: $values;
+  -moz-box-flex:  $values;
+  -webkit-flex:  $values;
+  -ms-flex:  $values;
+  flex:  $values;
+}

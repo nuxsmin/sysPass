@@ -1,0 +1,99 @@
+@mixin background-logo-outline() {
+  background: transparent url($public-path + "/images/logo_full_nobg_outline.png") no-repeat top center;
+  background-size: 75% auto;
+}
+
+body.login,
+body.logout,
+body.userpassreset {
+  background: $color-bluegrey-fg;
+  #wrap {
+    background: transparent;
+  }
+  #container {
+    padding-top: 5%;
+  }
+  footer {
+    background: #78909C;
+    a {
+      color: #f2f2f2;
+    }
+  }
+}
+
+#box-pub-noheader {
+  @include background-logo-outline;
+  width: 40em;
+  min-height: 20em;
+  margin: 0 auto;
+  > div {
+    width: 100%;
+    padding: 1em;
+    margin: 0 auto;
+  }
+  .box-spacer {
+    height: 15em;
+    background-color: transparent;
+  }
+  .box-header {
+    width: 100%;
+    color: #f2f2f2;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin: 1em 0;
+    letter-spacing: .1em;
+    padding: 0.2em 0;
+  }
+  .box-form {
+    @include shadow-full();
+    background-color: #f2f2f2;
+    form {
+      fieldset#box-data {
+        height: 100%;
+        min-height: 14em;
+        text-align: left;
+        background-color: transparent;
+        legend {
+          width: 100%;
+          color: $color-bluegrey-fg;
+          font-size: 14px;
+          font-weight: bold;
+          text-align: center;
+          margin: 1em 0;
+          letter-spacing: .1em;
+          padding: 0.2em 0;
+        }
+        .form-control > i {
+          margin-right: .5em;
+          opacity: .5;
+        }
+        .extra-hidden {
+          display: none;
+        }
+        margin-bottom: 2em;
+      }
+    }
+    div#box-buttons {
+      margin-top: 2em;
+      text-align: center;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #box-pub-noheader {
+    width: 25em;
+    .box-spacer {
+      height: 10em;
+    }
+    form {
+      fieldset#box-data {
+        .mdl-textfield {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+

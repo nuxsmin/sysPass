@@ -1,0 +1,119 @@
+@charset "UTF-8";
+/* Estilos para mostrar la búsqueda en formato cuadrícula */
+#content #data-search {
+  text-align: center;
+  padding: 0.5em 0;
+  width: 100%;
+  margin: 0 auto; }
+  #content #data-search .account-info img,
+  #content #data-search .account-actions img {
+    width: 24px;
+    height: 24px;
+    margin: 0 0.5em; }
+  #content #data-search .account-label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 8em;
+    height: auto;
+    text-align: left;
+    margin: 0 auto 0.5em;
+    color: #696969;
+    background-color: #fcfcfc;
+    padding: 0 .5em; }
+    #content #data-search .account-label .label-row-up,
+    #content #data-search .account-label .label-row-down {
+      display: flex;
+      min-height: 3em;
+      height: auto;
+      width: 100%;
+      padding: 0.5em 0; }
+    #content #data-search .account-label .label-row-down {
+      height: 3em; }
+    #content #data-search .account-label .label-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+      height: 4em; }
+    #content #data-search .account-label .label-right {
+      display: flex;
+      flex-wrap: wrap;
+      width: 18em;
+      height: 4em; }
+      #content #data-search .account-label .label-right > div {
+        width: 18em; }
+    #content #data-search .account-label .label-field {
+      width: 100%;
+      min-height: 3em;
+      height: auto;
+      padding: 0 .3em; }
+    #content #data-search .account-label .field-text {
+      word-wrap: break-word; }
+      #content #data-search .account-label .field-text a {
+        color: #5c6bc0; }
+    #content #data-search .account-label .field-customer {
+      flex-grow: 2; }
+    #content #data-search .account-label .field-name {
+      padding: 0.3em 0.2em;
+      color: #b9b9b9;
+      display: none; }
+    #content #data-search .account-label .field-name-hidden {
+      display: none; }
+    #content #data-search .account-label .header .field-name {
+      color: white;
+      font-weight: bold; }
+    #content #data-search .account-label .no-link,
+    #content #data-search .account-label .no-link a {
+      color: white;
+      font-weight: bold; }
+  #content #data-search .account-info {
+    padding: .5em 0 .5em 0;
+    text-align: left;
+    opacity: 0.3;
+    min-height: 4em; }
+    #content #data-search .account-info:hover {
+      opacity: 1; }
+  #content #data-search .account-actions {
+    align-self: baseline;
+    padding: .5em 0;
+    text-align: right;
+    border-top: 1px solid #c9c9c9; }
+  #content #data-search .account-spacer {
+    float: left;
+    clear: left;
+    height: 2em;
+    width: 20%; }
+  #content #data-search .tags-box {
+    display: inline-block; }
+    #content #data-search .tags-box span.tag {
+      cursor: pointer;
+      opacity: 0.3; }
+      #content #data-search .tags-box span.tag:hover {
+        opacity: 1; }
+
+@media screen and (max-width: 1000px) {
+  #content #data-search .account-label {
+    flex-wrap: wrap; }
+    #content #data-search .account-label .label-row-up,
+    #content #data-search .account-label .label-row-down {
+      flex-wrap: wrap;
+      height: auto; }
+    #content #data-search .account-label .label-field .field-name {
+      display: block;
+      text-align: left;
+      border-bottom: 1px solid #d9d9d9;
+      color: #607d8b; }
+    #content #data-search .account-label .label-left,
+    #content #data-search .account-label .label-right {
+      height: auto; }
+    #content #data-search .account-label .label-right,
+    #content #data-search .account-label .label-right > div {
+      width: 100%; } }
+/* Default styles first then media queries */
+/*@media screen and (min-width: 400px)  {}*/
+/*@media screen and (min-width: 600px)  {}*/
+/*@media screen and (min-width: 1000px) {}*/
+/*@media screen and (min-width: 1400px) {}*/
+
+/*# sourceMappingURL=search-grid.css.map */

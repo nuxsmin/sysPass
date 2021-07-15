@@ -1,0 +1,92 @@
+@import "base";
+
+#box-popup {
+  #wikiPage {
+    text-align: left;
+    width: 100%;
+    padding: 0 1em;
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: bold;
+      padding: 0;
+      line-height: 1.2;
+      clear: left;
+      color: #777777;
+      border-bottom: 1px solid #777777;
+      a {
+        color: #777;
+      }
+    }
+    h1 {
+      font-size: 2em;
+      margin: 0 0 .444em;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      margin: 0 0 .666em;
+    }
+
+    h3 {
+      font-size: 1.125em;
+      margin: 0 0 .888em;
+    }
+
+    h4 {
+      font-size: 1em;
+      margin: 0 0 1em;
+    }
+
+    h5 {
+      font-size: .875em;
+      margin: 0 0 1.1428em;
+    }
+
+    h6 {
+      font-size: .75em;
+      margin: 0 0 1.333em;
+    }
+
+    pre {
+      overflow: auto;
+      word-wrap: normal;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      box-shadow: inset 0 0 .5em #ccc;
+      padding: .7em 1em;
+    }
+
+    li, ol {
+      padding: 0;
+      margin: 0 0 0 1.5em;
+    }
+
+    ul li {
+      color: #999;
+    }
+
+    li .li {
+      color: #333;
+    }
+
+    ol li {
+      color: #666;
+    }
+  }
+
+  #wikiPageInfo {
+    margin: 1em 0;
+    border-top: 1px solid $color-bluegrey-fg;
+    color: $color-bluegrey-fg;
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      float: left;
+      padding: .5em;
+    }
+  }
+}
+

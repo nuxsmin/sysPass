@@ -1,0 +1,26 @@
+/* Fuente Roboto */
+@font-face {
+    font-family: 'Roboto Light';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto Light'), local('Roboto-Light'), url('app/modules/web/themes/material-blue/css/Roboto_300.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto Regular';
+    font-style: normal;
+    font-weight: 400;
+    /*src: local('Roboto'), local('Roboto-Regular'), url('app/modules/web/themes/material-blue/css/Roboto_400.woff2') format('woff2');*/
+    src: url('app/modules/web/themes/material-blue/css/Roboto_400.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto Medium';
+    font-style: normal;
+    font-weight: 500;
+    src: local('Roboto Medium'), local('Roboto-Medium'), url('app/modules/web/themes/material-blue/css/Roboto_500.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto Bold';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Roboto Bold'), local('Roboto-Bold'), url('app/modules/web/themes/material-blue/css/Roboto_600.woff2') format('woff2');
+}

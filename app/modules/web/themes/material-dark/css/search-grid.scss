@@ -1,0 +1,178 @@
+/* Estilos para mostrar la búsqueda en formato cuadrícula */
+@import "base";
+
+#content {
+  #data-search {
+    text-align: center;
+    padding: 0.5em 0;
+    width: 100%;
+    margin: 0 auto;
+
+    .account-info img,
+    .account-actions img {
+      width: 24px;
+      height: 24px;
+      margin: 0 0.5em;
+    }
+
+    .account-label {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 8em;
+      height: auto;
+      text-align: left;
+      margin: 0 auto 0.5em;
+      color: #696969;
+      background-color: #fcfcfc;
+      padding: 0 .5em;
+
+      .label-row-up,
+      .label-row-down {
+        display: flex;
+        min-height: 3em;
+        height: auto;
+        width: 100%;
+        padding: 0.5em 0;
+      }
+
+      .label-row-down {
+        height: 3em;
+      }
+
+      .label-left {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        height: 4em;
+      }
+
+      .label-right {
+        display: flex;
+        flex-wrap: wrap;
+        width: 18em;
+        height: 4em;
+        & > div {
+          width: 18em;
+        }
+      }
+
+      .label-field {
+        width: 100%;
+        min-height: 3em;
+        height: auto;
+        padding: 0 .3em;
+      }
+
+      .field-text {
+        word-wrap: break-word;
+        a {
+          color: $color-indigo-fg;
+        }
+      }
+
+      .field-customer {
+        flex-grow: 2;
+      }
+
+      .field-name {
+        padding: 0.3em 0.2em;
+        color: #b9b9b9;
+        display: none
+      }
+
+      .field-name-hidden {
+        display: none;
+      }
+
+      .header .field-name {
+        color: white;
+        font-weight: bold
+      }
+
+      .no-link,
+      .no-link a {
+        color: white;
+        font-weight: bold;
+      }
+    }
+
+    .account-info {
+      padding: .5em 0 .5em 0;
+      text-align: left;
+      opacity: 0.3;
+      min-height: 4em;
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .account-actions {
+      align-self: baseline;
+      padding: .5em 0;
+      text-align: right;
+      border-top: 1px solid #c9c9c9;
+    }
+
+    .account-spacer {
+      float: left;
+      clear: left;
+      height: 2em;
+      width: 20%
+    }
+
+    .tags-box {
+      display: inline-block;
+
+      span.tag {
+        cursor: pointer;
+        opacity: 0.3;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  #content {
+    #data-search {
+      .account-label {
+        flex-wrap: wrap;
+
+        .label-row-up,
+        .label-row-down {
+          flex-wrap: wrap;
+          height: auto;
+        }
+
+        .label-field {
+          .field-name {
+            display: block;
+            text-align: left;
+            border-bottom: 1px solid #d9d9d9;
+            color: $color-bluegrey-fg;
+          }
+        }
+
+        .label-left,
+        .label-right {
+          height: auto;
+        }
+
+        .label-right,
+        .label-right > div {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+/* Default styles first then media queries */
+/*@media screen and (min-width: 400px)  {}*/
+/*@media screen and (min-width: 600px)  {}*/
+/*@media screen and (min-width: 1000px) {}*/
+/*@media screen and (min-width: 1400px) {}*/
