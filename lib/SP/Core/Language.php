@@ -189,14 +189,14 @@ final class Language
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
 
-        $locale = setlocale(LC_ALL, $lang);
-
-        if ($locale === false) {
-            logger('Could not set locale', 'ERROR');
-            logger('Domain path: ' . LOCALES_PATH);
-        } else {
-            logger('Locale set to: ' . $locale);
-        }
+#        $locale = setlocale(LC_ALL, $lang);
+#
+#        if ($locale === false) {
+#            logger('Could not set locale', 'ERROR');
+#            logger('Domain path: ' . LOCALES_PATH);
+#        } else {
+#            logger('Locale set to: ' . $locale);
+#        }
 
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
