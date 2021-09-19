@@ -220,6 +220,25 @@ final class LdapConnection implements LdapConnectionInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getServerUri(): string
+    {
+        $server = $this->getServer();
+        $port = $this->ldapParams->getPort();
+
+        if (strpos($server, '://') !== false) {
+            return $server . ':' . $port;
+        } elseif ($port === 389 || $port === null) {
+            return 'ldap://' . $server;
+        } elseif ($port === 636) {
+            return 'ldaps://' . $server;
+        }
+
+        return 'ldap://' . $server . ':' . $port;
+    }
+
+    /**
      * Connect through TLS
      *
      * @throws LdapException

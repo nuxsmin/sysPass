@@ -171,8 +171,10 @@ final class Request
         $forwarded = $this->headers->get('HTTP_FORWARDED');
 
         if ($forwarded !== null &&
-            preg_match_all('/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
-                $forwarded, $matches)
+            preg_match_all(
+                '/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
+                $forwarded,
+                $matches)
         ) {
             return array_filter(array_merge($matches[1], $matches[2]), function ($value) {
                 return !empty($value);
@@ -180,7 +182,7 @@ final class Request
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
-        $xForwarded = $this->headers->exists('HTTP_X_FORWARDED_FOR');
+        $xForwarded = $this->headers->get('HTTP_X_FORWARDED_FOR');
 
         if ($xForwarded !== null) {
             $matches = preg_split('/(?<=[\w])+,\s?/i',

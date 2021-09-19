@@ -20,7 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Services\Install;
@@ -59,9 +59,9 @@ final class Installer extends Service
     /**
      * sysPass' version and build number
      */
-    public const VERSION = [3, 2, 0];
-    public const VERSION_TEXT = '3.2';
-    public const BUILD = 20062901;
+    const VERSION = [3, 2, 2];
+    const VERSION_TEXT = '3.2';
+    const BUILD = 21031301;
 
     /**
      * @var DatabaseSetupInterface

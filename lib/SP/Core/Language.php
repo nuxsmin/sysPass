@@ -79,7 +79,8 @@ final class Language
         'pt_BR' => 'Português',
         'it_IT' => 'Italiano',
         'da' => 'Dansk',
-        'fo' => 'Føroyskt mál'
+        'fo' => 'Føroyskt mál',
+        'ja_JP' => '日本語',
     ];
     /**
      * @var ConfigData
