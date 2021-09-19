@@ -34,7 +34,7 @@ https://syspass.org
 
 https://doc.syspass.org
 
-https://github.com/Fernand0S/sysPass
+https://github.com/nuxsmin/sysPass
 
 https://hub.docker.com/r/nuxsmin/docker-syspass/
 
