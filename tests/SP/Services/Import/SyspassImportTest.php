@@ -79,7 +79,7 @@ class SyspassImportTest extends DatabaseTestCase
      */
     public function testDoImport()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
 
         $params = new ImportParams();
         $params->setDefaultUser(1);

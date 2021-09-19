@@ -74,7 +74,7 @@ class AccountFileServiceTest extends DatabaseTestCase
      */
     public function testCreate()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'imgs' . DIRECTORY_SEPARATOR . 'add.png';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'imgs' . DIRECTORY_SEPARATOR . 'add.png';
         $image = file_get_contents($file);
 
         $data = new FileData();

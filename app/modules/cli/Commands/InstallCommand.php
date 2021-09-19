@@ -24,18 +24,22 @@
 
 namespace SP\Modules\Cli\Commands;
 
+use Closure;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Config\Config;
+use SP\Core\Exceptions\InstallError;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Language;
 use SP\Services\Install\InstallData;
 use SP\Services\Install\Installer;
+use SP\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -45,6 +49,25 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 final class InstallCommand extends CommandBase
 {
+    /**
+     * @var string[]
+     */
+    public static $envVarsMapping = [
+        'adminLogin' => 'ADMIN_LOGIN',
+        'adminPassword' => 'ADMIN_PASSWORD',
+        'databaseHost' => 'DATABASE_HOST',
+        'databaseName' => 'DATABASE_NAME',
+        'databaseUser' => 'DATABASE_USER',
+        'databasePassword' => 'DATABASE_PASSWORD',
+        'masterPassword' => 'MASTER_PASSWORD',
+        'hostingMode' => 'HOSTING_MODE',
+        'language' => 'LANGUAGE',
+        'forceInstall' => 'FORCE_INSTALL',
+        'install' => 'INSTALL'
+    ];
+    /**
+     * @var string
+     */
     protected static $defaultName = 'sp:install';
     /**
      * @var Installer
@@ -52,30 +75,29 @@ final class InstallCommand extends CommandBase
     private $installer;
 
     public function __construct(LoggerInterface $logger,
-                                SymfonyStyle $io,
-                                Config $config,
-                                Installer $installer)
+                                Config          $config,
+                                Installer       $installer)
     {
-        parent::__construct($logger, $io, $config);
+        parent::__construct($logger, $config);
 
         $this->installer = $installer;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setDescription(__('Install sysPass.'))
-            ->setHelp(__('This command installs sysPass.'))
+        $this->setDescription(__('Install sysPass'))
+            ->setHelp(__('This command installs sysPass'))
             ->addArgument('adminLogin',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 __('Admin user to log into the application'))
             ->addArgument('databaseHost',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 __('Server name to install sysPass database'))
             ->addArgument('databaseName',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 __('Application database name. eg. syspass'))
             ->addArgument('databaseUser',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 __('An user with database administrative rights'))
             ->addOption('databasePassword',
                 null,
@@ -91,41 +113,79 @@ final class InstallCommand extends CommandBase
                 __('Master password to encrypt the passwords'))
             ->addOption('hostingMode',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                __('It does not create or verify the user\'s permissions on the DB'),
-                false)
+                InputOption::VALUE_NONE,
+                __('It does not create or verify the user\'s permissions on the DB'))
             ->addOption('language',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Sets the global app language. You can set a per user language on preferences.'))
-            ->addOption('force',
+                __('Sets the global app language. You can set a per user language on preferences'))
+            ->addOption('forceInstall',
                 null,
-                InputOption::VALUE_OPTIONAL,
-                __('Force sysPass installation.'),
-                false);
+                InputOption::VALUE_NONE,
+                __('Force sysPass installation'))
+            ->addOption('install',
+                null,
+                InputOption::VALUE_NONE,
+                __('Skip asking to confirm the installation'));
     }
 
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $force = (bool)$input->getOption('force');
+        $style = new SymfonyStyle($input, $output);
 
-        if ($this->configData->isInstalled() && $force === false) {
-            $this->logger->warning(__u('sysPass is already installed'));
+        try {
+            $installData = $this->getInstallData($input, $style);
 
-            $this->io->warning(__('sysPass is already installed. Use \'--force\' to install it again.'));
+            $forceInstall = $this->getForceInstall($input);
 
-            return self::FAILURE;
+            if (!$forceInstall || !$this->getInstall($input, $style)) {
+                $this->logger->debug(__u('Installation aborted'));
+                $style->info(__('Installation aborted'));
+
+                return self::FAILURE;
+            }
+
+            $this->installer->run($installData);
+
+            $this->logger->info(__('Installation finished'));
+
+            $style->success(__('Installation finished'));
+
+            return self::SUCCESS;
+        } catch (InstallError $e) {
+            $this->logger->error($e->getMessage());
+
+            $style->error(__($e->getMessage()));
+        } catch (InvalidArgumentException $e) {
+            $this->logger->warning($e->getMessage());
+
+            $style->warning(__($e->getMessage()));
+        } catch (Exception $e) {
+            $this->logger->error($e->getTraceAsString());
+            $this->logger->error($e->getMessage());
+
+            $style->error(__($e->getMessage()));
         }
 
-        $adminPassword = $input->getOption('adminPassword');
+        return self::FAILURE;
+    }
 
-        $passNonEmptyValidator = function ($value) {
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     *
+     * @return InstallData
+     * @throws InstallError
+     */
+    private function getInstallData(InputInterface $input, StyleInterface $style): InstallData
+    {
+        $passNotEmptyValidator = function ($value) {
             if (empty($value)) {
                 throw new RuntimeException(__('Password cannot be blank'));
             }
@@ -133,83 +193,258 @@ final class InstallCommand extends CommandBase
             return $value;
         };
 
-        if (empty($adminPassword)) {
+        $adminPassword = $this->getAdminPassword($input, $style, $passNotEmptyValidator);
+        $masterPassword = $this->getMasterPassword($input, $style, $passNotEmptyValidator);
+        $databasePassword = $this->getDatabasePassword($input, $style);
+        $language = $this->getLanguage($input, $style);
+        $hostingMode = $this->isHostingMode($input);
+        $adminLogin = self::getEnvVarOrArgument('adminLogin', $input);
+        $databaseUser = self::getEnvVarOrArgument('databaseUser', $input);
+        $databaseName = self::getEnvVarOrArgument('databaseName', $input);
+        $databaseHost = self::getEnvVarOrArgument('databaseHost', $input);
+
+        $installData = new InstallData();
+        $installData->setSiteLang($language);
+        $installData->setAdminLogin($adminLogin);
+        $installData->setAdminPass($adminPassword);
+        $installData->setMasterPassword($masterPassword);
+        $installData->setDbAdminUser($databaseUser);
+        $installData->setDbAdminPass($databasePassword);
+        $installData->setDbName($databaseName);
+        $installData->setDbHost($databaseHost);
+        $installData->setHostingMode($hostingMode);
+
+        return $installData;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     * @param Closure        $passNotEmptyValidator
+     *
+     * @return array|false|mixed|string
+     * @throws InstallError
+     */
+    private function getAdminPassword(
+        InputInterface $input,
+        StyleInterface $style,
+        Closure        $passNotEmptyValidator
+    )
+    {
+        $option = 'adminPassword';
+
+        $password =
+            self::getEnvVarForOption($option)
+                ?: $input->getOption($option);
+
+        if (empty($password)) {
             $this->logger->debug(__u('Ask for admin password'));
 
-            $adminPassword = $this->io->askHidden(__('Please provide sysPass admin\'s password'), $passNonEmptyValidator);
-            $adminPasswordRepeat = $this->io->askHidden(__('Please provide sysPass admin\'s password again'), $passNonEmptyValidator);
+            $password = $style->askHidden(
+                __('Please provide sysPass admin\'s password'),
+                $passNotEmptyValidator
+            );
 
-            if ($adminPassword !== $adminPasswordRepeat) {
-                $this->io->warning(__('Passwords do not match'));
+            $passwordRepeat = $style->askHidden(
+                __('Please provide sysPass admin\'s password again'),
+                $passNotEmptyValidator
+            );
 
-                return self::FAILURE;
+            if ($password !== $passwordRepeat) {
+                throw new InstallError(__u('Passwords do not match'));
+            } elseif (null === $password || null === $passwordRepeat) {
+                throw new InstallError(sprintf(__u('%s cannot be blank'), 'Admin password'));
             }
         }
 
-        $masterPassword = $input->getOption('masterPassword');
+        return $password;
+    }
 
-        if (empty($masterPassword)) {
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     * @param Closure        $passNotEmptyValidator
+     *
+     * @return array|false|mixed|string
+     * @throws InstallError
+     */
+    private function getMasterPassword(
+        InputInterface $input,
+        StyleInterface $style,
+        Closure        $passNotEmptyValidator
+    )
+    {
+        $password = self::getEnvVarOrOption('masterPassword', $input);
+
+        if (empty($password)) {
             $this->logger->debug(__u('Ask for master password'));
 
-            $masterPassword = $this->io->askHidden(__('Please provide sysPass master password'), $passNonEmptyValidator);
-            $masterPasswordRepeat = $this->io->askHidden(__('Please provide sysPass master password again'), $passNonEmptyValidator);
+            $password = $style->askHidden(
+                __('Please provide sysPass master password'),
+                $passNotEmptyValidator
+            );
+            $passwordRepeat = $style->askHidden(
+                __('Please provide sysPass master password again'),
+                $passNotEmptyValidator
+            );
 
-            if ($masterPassword !== $masterPasswordRepeat) {
-                $this->io->warning(__('Passwords do not match'));
-
-                return self::FAILURE;
+            if ($password !== $passwordRepeat) {
+                throw new InstallError(__u('Passwords do not match'));
+            } elseif (null === $password || null === $passwordRepeat) {
+                throw new InstallError(sprintf(__u('%s cannot be blank'), 'Master password'));
             }
         }
 
-        $databasePassword = $input->getOption('databasePassword');
+        return $password;
+    }
 
-        if (empty($databasePassword)) {
+    /**
+     * @param string         $option
+     * @param InputInterface $input
+     *
+     * @return array|false|mixed|string
+     */
+    private static function getEnvVarOrOption(
+        string         $option,
+        InputInterface $input
+    )
+    {
+        return self::getEnvVarForOption($option)
+            ?: $input->getOption($option);
+    }
+
+    /**
+     * @param string $option
+     *
+     * @return string|false
+     */
+    public static function getEnvVarForOption(string $option)
+    {
+        return getenv(self::$envVarsMapping[$option]);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     *
+     * @return array|false|mixed|string
+     */
+    private function getDatabasePassword(
+        InputInterface $input,
+        StyleInterface $style
+    )
+    {
+        $password = self::getEnvVarOrOption('databasePassword', $input);
+
+        if (empty($password)) {
             $this->logger->debug(__u('Ask for database password'));
 
-            $databasePassword = $this->io->askHidden(__('Please provide database admin password'));
+            $password = $style->askHidden(__('Please provide database admin password'));
         }
 
-        $language = $input->getOption('language');
+        return $password;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     *
+     * @return array|false|mixed|string
+     */
+    private function getLanguage(
+        InputInterface $input,
+        StyleInterface $style
+    )
+    {
+        $language = self::getEnvVarOrOption('language', $input);
 
         if (empty($language)) {
             $this->logger->debug(__u('Ask for language'));
 
-            $language = $this->io->choice(__('Language'), array_keys(Language::getAvailableLanguages()), 'en_US');
+            $language = $style->choice(
+                __('Language'),
+                array_keys(Language::getAvailableLanguages()),
+                'en_US'
+            );
         }
 
-        $install = $this->io->confirm(__('Install sysPass?'), false);
+        return $language;
+    }
 
-        if (!$install) {
-            $this->logger->debug(__u('Installation aborted'));
+    /**
+     * @param InputInterface $input
+     *
+     * @return bool
+     */
+    private function isHostingMode(InputInterface $input): bool
+    {
+        $option = 'hostingMode';
 
-            return self::SUCCESS;
+        $envHostingMode = self::getEnvVarForOption($option);
+
+        return $envHostingMode !== false
+            ? Util::boolval($envHostingMode)
+            : $input->getOption($option);
+    }
+
+    /**
+     * @param string         $argument
+     * @param InputInterface $input
+     *
+     * @return array|false|mixed|string
+     */
+    private static function getEnvVarOrArgument(
+        string         $argument,
+        InputInterface $input
+    )
+    {
+        return self::getEnvVarForOption($argument)
+            ?: $input->getArgument($argument);
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return bool
+     * @throws InstallError
+     */
+    private function getForceInstall(InputInterface $input): bool
+    {
+        $option = 'forceInstall';
+
+        $envForceInstall = self::getEnvVarForOption($option);
+
+        $force = $envForceInstall !== false
+            ? Util::boolval($envForceInstall)
+            : $input->getOption($option);
+
+        if ($force === false && $this->configData->isInstalled()) {
+            throw new InstallError(__u('sysPass is already installed. Use \'--forceInstall\' to install it again.'));
         }
 
-        $installData = new InstallData();
-        $installData->setSiteLang($language);
-        $installData->setAdminLogin($input->getArgument('adminLogin'));
-        $installData->setAdminPass($adminPassword);
-        $installData->setMasterPassword($masterPassword);
-        $installData->setDbAdminUser($input->getArgument('databaseUser'));
-        $installData->setDbAdminPass($databasePassword);
-        $installData->setDbName($input->getArgument('databaseName'));
-        $installData->setDbHost($input->getArgument('databaseHost'));
-        $installData->setHostingMode((bool)$input->getOption('hostingMode'));
+        return $force;
+    }
 
-        try {
-            $this->installer->run($installData);
+    /**
+     * @param InputInterface $input
+     * @param StyleInterface $style
+     *
+     * @return bool
+     */
+    private function getInstall(InputInterface $input, StyleInterface $style): bool
+    {
+        $option = 'install';
 
-            $this->io->success(__('Installation finished'));
+        $envInstall = self::getEnvVarForOption($option);
 
-            $this->logger->info(__u('Installation finished'));
-            return self::SUCCESS;
-        } catch (InvalidArgumentException $e) {
-            $this->io->error(__($e->getMessage()));
-        } catch (Exception $e) {
-            $this->logger->error($e->getTraceAsString());
-            $this->logger->error($e->getMessage());
+        $install = $envInstall !== false
+            ? Util::boolval($envInstall)
+            : $input->getOption($option);
+
+        if ($install === false) {
+            return $style->confirm(__('Install sysPass?'), false);
         }
 
-        return self::FAILURE;
+        return true;
     }
 }

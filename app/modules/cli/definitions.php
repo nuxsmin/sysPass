@@ -32,13 +32,11 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use function DI\autowire;
 use function DI\create;
-use function DI\factory;
 
 return [
-    LoggerInterface::class => function (ContainerInterface $c) {
+    LoggerInterface::class => static function (ContainerInterface $c) {
         $logger = $c->get(Logger::class);
         $logger->pushHandler(new StreamHandler(LOG_FILE));
 
@@ -46,13 +44,7 @@ return [
     },
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)
-        ->constructor(ConsoleOutput::VERBOSITY_NORMAL, true),
+        ->constructor(OutputInterface::VERBOSITY_NORMAL, true),
     InputInterface::class => create(ArgvInput::class),
-    SymfonyStyle::class => factory(function (ContainerInterface $c) {
-        return new SymfonyStyle(
-            $c->get(InputInterface::class),
-            $c->get(OutputInterface::class)
-        );
-    }),
     InstallCommand::class => autowire()
 ];

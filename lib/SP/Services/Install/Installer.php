@@ -25,7 +25,6 @@
 
 namespace SP\Services\Install;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -60,9 +59,9 @@ final class Installer extends Service
     /**
      * sysPass' version and build number
      */
-    const VERSION = [3, 2, 0];
-    const VERSION_TEXT = '3.2';
-    const BUILD = 20062901;
+    public const VERSION = [3, 2, 0];
+    public const VERSION_TEXT = '3.2';
+    public const BUILD = 20062901;
 
     /**
      * @var DatabaseSetupInterface
@@ -203,7 +202,11 @@ final class Installer extends Service
      */
     private function setupDbHost()
     {
-        if (preg_match('/^(?:(?P<host>.*):(?P<port>\d{1,5}))|^(?:unix:(?P<socket>.*))/', $this->installData->getDbHost(), $match)) {
+        if (preg_match(
+            '/^(?:(?P<host>.*):(?P<port>\d{1,5}))|^(?:unix:(?P<socket>.*))/',
+            $this->installData->getDbHost(),
+            $match)
+        ) {
             if (!empty($match['socket'])) {
                 $this->installData->setDbSocket($match['socket']);
             } else {

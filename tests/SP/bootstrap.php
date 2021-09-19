@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests;
@@ -41,21 +41,23 @@ define('APP_MODULE', 'tests');
 
 define('APP_ROOT', dirname(__DIR__, 2));
 define('TEST_ROOT', dirname(__DIR__));
-define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
+define('RESOURCE_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
+define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 
+define('MODULES_PATH', APP_ROOT. DIRECTORY_SEPARATOR. 'app' . DIRECTORY_SEPARATOR . 'modules');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
-define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
+define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
 define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
+
 
 define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
 
 define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('FIXTURE_FILES', [
-    RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
-    RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql'
+    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
+    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql'
 ]);
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
@@ -170,7 +172,7 @@ function getDbHandler(DatabaseConnectionData $connectionData = null): MySQLHandl
  */
 function getResource($dir, $file): string
 {
-    return file_get_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
+    return file_get_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
 }
 
 /**
@@ -182,7 +184,7 @@ function getResource($dir, $file): string
  */
 function saveResource($dir, $file, $data): string
 {
-    return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
+    return file_put_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }
 
 /**
@@ -193,7 +195,9 @@ function recreateDir($dir)
     if (!is_dir($dir)) {
         print 'Creating ' . $dir . PHP_EOL;
 
-        mkdir($dir);
+        if (!mkdir($dir) && !is_dir($dir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+        }
     } else {
         print 'Deleting ' . $dir . PHP_EOL;
 

@@ -24,20 +24,15 @@
 
 namespace SP\Modules\Cli;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Exception;
 use Psr\Container\ContainerInterface;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
-use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Modules\Cli\Commands\InstallCommand;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
-use SP\Storage\File\FileException;
 use SP\Util\VersionUtil;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,7 +57,7 @@ final class Init extends ModuleBase
      */
     protected $language;
     /**
-     * @var mixed|Application
+     * @var Application
      */
     protected $application;
 
@@ -106,8 +101,9 @@ final class Init extends ModuleBase
     /**
      * @throws DependencyException
      * @throws NotFoundException
+     * @throws Exception
      */
-    private function initCli()
+    private function initCli(): void
     {
         $this->application->setName('sysPass CLI');
         $this->application->setVersion(implode('.', VersionUtil::getVersionArray()));
@@ -120,39 +116,5 @@ final class Init extends ModuleBase
             $this->container->get(InputInterface::class),
             $this->container->get(OutputInterface::class)
         );
-    }
-
-    /**
-     * Comprueba que la aplicación esté instalada
-     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
-     *
-     * @throws InitializationException
-     */
-    private function checkInstalled()
-    {
-        if (!$this->configData->isInstalled()) {
-            throw new InitializationException('Not installed');
-        }
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws EnvironmentIsBrokenException
-     * @throws FileException
-     * @throws InitializationException
-     */
-    private function checkUpgrade()
-    {
-        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
-
-        if ($this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
-        ) {
-            $this->config->generateUpgradeKey();
-
-            throw new InitializationException(__u('Updating needed'));
-        }
     }
 }

@@ -26,6 +26,7 @@ namespace SP\Storage\Database;
 
 use Exception;
 use PDO;
+use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
 
@@ -36,9 +37,9 @@ defined('APP_ROOT') || die();
  */
 final class MySQLHandler implements DBStorageInterface
 {
-    const STATUS_OK = 0;
-    const STATUS_KO = 1;
-    const PDO_OPTS = [
+    public const STATUS_OK = 0;
+    public const STATUS_KO = 1;
+    public const PDO_OPTS = [
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_FOUND_ROWS => true,
@@ -97,7 +98,7 @@ final class MySQLHandler implements DBStorageInterface
             ) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
-                    DatabaseException::CRITICAL,
+                    SPException::CRITICAL,
                     __u('Please, check the connection parameters'));
             }
 
@@ -117,7 +118,7 @@ final class MySQLHandler implements DBStorageInterface
             } catch (Exception $e) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
-                    DatabaseException::CRITICAL,
+                    SPException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),
                     $e
@@ -161,22 +162,29 @@ final class MySQLHandler implements DBStorageInterface
     public function getConnectionSimple(): PDO
     {
         if (!$this->db) {
-            if (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket()) {
+            if (null === $this->connectionData->getDbHost()
+                && null === $this->connectionData->getDbSocket()
+            ) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
-                    DatabaseException::CRITICAL,
+                    SPException::CRITICAL,
                     __u('Please, check the connection parameters'));
             }
 
             try {
                 $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
 
-                $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
+                $this->db = new PDO(
+                    $this->getConnectionUri(),
+                    $this->connectionData->getDbUser(),
+                    $this->connectionData->getDbPass(),
+                    $opts
+                );
                 $this->dbStatus = self::STATUS_OK;
             } catch (Exception $e) {
                 throw new DatabaseException(
                     __u('Unable to connect to DB'),
-                    DatabaseException::CRITICAL,
+                    SPException::CRITICAL,
                     sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
                     $e->getCode(),
                     $e

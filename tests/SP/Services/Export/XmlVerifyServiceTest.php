@@ -67,7 +67,7 @@ class XmlVerifyServiceTest extends TestCase
      */
     public function testVerifyEncrypted()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml';
 
         $result = self::$xmlVerifyService->verifyEncrypted($file, 'test_encrypt');
 
@@ -90,7 +90,7 @@ class XmlVerifyServiceTest extends TestCase
      */
     public function testVerify()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
 
         $result = self::$xmlVerifyService->verify($file);
 
@@ -109,17 +109,17 @@ class XmlVerifyServiceTest extends TestCase
     public function testCheckXmlHash()
     {
         $dom = new DOMDocument();
-        $dom->load(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml');
+        $dom->load(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_encrypted.xml');
 
         $this->assertTrue(XmlVerifyService::checkXmlHash($dom, 'test_encrypt'));
 
-        $dom->load(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_invalid.xml');
+        $dom->load(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_invalid.xml');
 
         $this->assertFalse(XmlVerifyService::checkXmlHash($dom, 'test_encrypt'));
 
         $key = sha1('d5851082a3914a647a336d8910e24eb64b8f8adef24d27329040ebd0d4c1');
 
-        $dom->load(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_valid_hash.xml');
+        $dom->load(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass_valid_hash.xml');
 
         $this->assertTrue(XmlVerifyService::checkXmlHash($dom, $key));
     }

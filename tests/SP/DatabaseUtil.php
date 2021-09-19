@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests;
@@ -44,26 +44,31 @@ class DatabaseUtil
      *
      * @throws DatabaseException
      */
-    public static function createUser($user, $pass, $database, $host)
+    public static function createUser(
+        string $user,
+        string $pass,
+        string $database,
+        string $host
+    ): void
     {
         $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'';
 
         $conn = self::getConnection();
-        $conn->query(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
+        $conn->exec(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
 
         // Long hostname returned on Travis CI
         if (getenv('TRAVIS') === false) {
-            $conn->query(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+            $conn->exec(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
         }
 
-        $conn->query(sprintf($query, $database, $user, $host, $pass));
+        $conn->exec(sprintf($query, $database, $user, $host, $pass));
     }
 
     /**
      * @return PDO
      * @throws DatabaseException
      */
-    public static function getConnection()
+    public static function getConnection(): PDO
     {
         $data = (new DatabaseConnectionData())
             ->setDbHost(getenv('DB_SERVER'))
@@ -77,11 +82,11 @@ class DatabaseUtil
      * @param string $user
      * @param string $host
      */
-    public static function dropUser($user, $host)
+    public static function dropUser(string $user, string $host): void
     {
         try {
             self::getConnection()
-                ->query(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
+                ->exec(sprintf('DROP USER \'%s\'@\'%s\'', $user, $host));
         } catch (Exception $e) {
             processException($e);
         }
@@ -92,10 +97,10 @@ class DatabaseUtil
      *
      * @throws DatabaseException
      */
-    public static function dropDatabase($database)
+    public static function dropDatabase(string $database): void
     {
         self::getConnection()
-            ->query(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
+            ->exec(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
     }
 
     /**
@@ -103,9 +108,9 @@ class DatabaseUtil
      *
      * @throws DatabaseException
      */
-    public static function createDatabase($database)
+    public static function createDatabase(string $database): void
     {
         self::getConnection()
-            ->query(sprintf('CREATE DATABASE `%s`', $database));
+            ->exec(sprintf('CREATE DATABASE `%s`', $database));
     }
 }

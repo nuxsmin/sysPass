@@ -40,15 +40,15 @@ class FileHandlerTest extends TestCase
     /**
      * @var string Archvivo de prueba válido
      */
-    protected static $validFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'valid_file.test';
+    protected static $validFile = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'valid_file.test';
     /**
      * @var string Archvivo de prueba inmutable
      */
-    protected static $immutableFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'immutable_file.test';
+    protected static $immutableFile = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'immutable_file.test';
     /**
      * @var string Archivo de prueba no existente
      */
-    protected static $missingFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'missing_file.test';
+    protected static $missingFile = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'missing_file.test';
 
     /**
      * Comprobar la escritura de texto en un archivo

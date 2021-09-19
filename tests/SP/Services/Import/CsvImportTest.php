@@ -78,7 +78,7 @@ class CsvImportTest extends DatabaseTestCase
      */
     public function testDoImport()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data.csv';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data.csv';
 
         $params = new ImportParams();
         $params->setDefaultUser(1);
@@ -170,7 +170,7 @@ class CsvImportTest extends DatabaseTestCase
      */
     public function testDoImportInvalidData()
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_invalid.csv';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_invalid.csv';
 
         $params = new ImportParams();
         $params->setDefaultUser(1);

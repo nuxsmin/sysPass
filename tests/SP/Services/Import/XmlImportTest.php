@@ -69,13 +69,13 @@ class XmlImportTest extends DatabaseTestCase
         $params->setDefaultUser(1);
         $params->setDefaultGroup(1);
 
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_syspass.xml';
 
         $import = new XmlImport(self::$dic, new XmlFileImport(FileImport::fromFilesystem($file)), $params);
 
         $this->assertEquals(5, $import->doImport()->getCounter());
 
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_keepass.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'data_keepass.xml';
 
         $import = new XmlImport(self::$dic, new XmlFileImport(FileImport::fromFilesystem($file)), $params);
 

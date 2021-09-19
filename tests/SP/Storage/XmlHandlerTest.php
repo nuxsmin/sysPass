@@ -55,7 +55,7 @@ class XmlHandlerTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml';
+        $file = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config.xml';
         self::$xmlHandler = new XmlHandler(new FileHandler($file));
 
         self::$itemsData = new stdClass();

@@ -71,7 +71,7 @@ class ItemPresetData extends DataModelBase implements HydratableInterface
      */
     public function getId(): int
     {
-        return $this->id !== null ? (int)$this->id : null;
+        return $this->id ?? 0;
     }
 
     /**

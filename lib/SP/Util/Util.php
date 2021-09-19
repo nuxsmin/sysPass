@@ -139,7 +139,7 @@ final class Util
 
         // not strict? let the regular php bool check figure it out (will
         // largely default to true)
-        return ($in ? true : false);
+        return (bool)$in;
     }
 
     /**

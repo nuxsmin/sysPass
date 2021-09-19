@@ -54,12 +54,11 @@ return [
     Request::class => create(Request::class)
         ->constructor(\Klein\Request::createFromGlobals()),
     ContextInterface::class => function (ContainerInterface $c) {
-        switch (APP_MODULE) {
-            case 'web':
-                return $c->get(SessionContext::class);
-            default:
-                return $c->get(StatelessContext::class);
+        if (APP_MODULE === 'web') {
+            return $c->get(SessionContext::class);
         }
+
+        return $c->get(StatelessContext::class);
     },
     Config::class => function (ContainerInterface $c) {
         return new Config(

@@ -19,10 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('APP_ROOT', __DIR__);
-define('APP_MODULE', 'api');
+namespace SP\Core\Exceptions;
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
+/**
+ * Class InstallError
+ *
+ * @package SP\Core\Exceptions
+ */
+final class InstallError extends SPException
+{
+
+}

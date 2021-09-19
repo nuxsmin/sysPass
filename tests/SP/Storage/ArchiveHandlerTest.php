@@ -50,7 +50,7 @@ class ArchiveHandlerTest extends TestCase
         $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_file';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
-        $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
+        $handler->compressFile(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
 
         $this->assertFileExists($archive . ArchiveHandler::COMPRESS_EXTENSION);
     }
@@ -66,7 +66,7 @@ class ArchiveHandlerTest extends TestCase
         $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_file';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
-        $handler->compressFile(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'non_existant_file');
+        $handler->compressFile(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'non_existant_file');
     }
 
     /**
@@ -78,7 +78,7 @@ class ArchiveHandlerTest extends TestCase
         $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_dir';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
-        $handler->compressDirectory(RESOURCE_DIR);
+        $handler->compressDirectory(RESOURCE_PATH);
 
         $this->assertFileExists($archive . ArchiveHandler::COMPRESS_EXTENSION);
     }
@@ -94,7 +94,7 @@ class ArchiveHandlerTest extends TestCase
         $archive = TMP_PATH . DIRECTORY_SEPARATOR . 'test_archive_dir';
 
         $handler = new ArchiveHandler($archive, new PhpExtensionChecker());
-        $handler->compressDirectory(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'non_existant_dir');
+        $handler->compressDirectory(RESOURCE_PATH . DIRECTORY_SEPARATOR . 'non_existant_dir');
     }
 
     /**

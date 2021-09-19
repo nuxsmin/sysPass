@@ -46,7 +46,7 @@ final class Config
     /**
      * Cache file name
      */
-    const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
+    public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
     /**
      * @var int
      */
