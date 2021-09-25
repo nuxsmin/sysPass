@@ -34,10 +34,9 @@ https://syspass.org
 
 https://doc.syspass.org
 
-https://github.com/nuxsmin/sysPass
+https://github.com/Fernand0S/sysPass
 
-https://hub.docker.com/r/nuxsmin/docker-syspass/
-
+https://hub.docker.com/r/lincenegra/syspass
 ---
 
 Though it would be preferable to ask or report issues through GitHub's website, you can reach me out by email (eg. CVEs, contribution, etc.): nuxsmin[a_t]syspass[d_o_t]org  
