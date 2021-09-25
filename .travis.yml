@@ -30,7 +30,7 @@ after_script:
 notifications:
   email:
     recipients:
-    - nuxsmin@syspass.org
+    - a.fernando@hotmail.com.br
     on_success: change # default: change
     on_failure: always # default: always
 
