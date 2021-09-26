@@ -38,7 +38,7 @@ final class Checks
      */
     public static function checkIsWindows(): bool
     {
-        return strpos(PHP_OS, 'WIN') === 0;
+        return PHP_OS_FAMILY === 'Windows';
     }
 
     /**
@@ -48,7 +48,7 @@ final class Checks
      */
     public static function checkPhpVersion(): bool
     {
-        return version_compare(PHP_VERSION, '7.3', '>=')
-            && version_compare(PHP_VERSION, '7.4', '<=');
+        return PHP_VERSION_ID >= 70400
+            && PHP_VERSION_ID <= 80000;
     }
 }
