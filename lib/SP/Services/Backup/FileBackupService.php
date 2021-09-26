@@ -137,13 +137,14 @@ final class FileBackupService extends Service
     /**
      * Comprobar y crear el directorio de backups.
      *
-     * @return bool
+     * @return void
      * @throws ServiceException
      */
-    private function checkBackupDir()
+    private function checkBackupDir(): void
     {
         if (is_dir($this->path) === false
-            && @mkdir($this->path, 0750) === false
+            && !@mkdir($concurrentDirectory = $this->path, 0750)
+            && !is_dir($concurrentDirectory)
         ) {
             throw new ServiceException(
                 sprintf(__('Unable to create the backups directory ("%s")'), $this->path));
@@ -154,7 +155,6 @@ final class FileBackupService extends Service
                 __u('Please, check the backup directory permissions'));
         }
 
-        return true;
     }
 
     /**

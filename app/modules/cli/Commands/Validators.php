@@ -22,5 +22,27 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const MODULE_PATH = __DIR__;
-const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
+namespace SP\Modules\Cli\Commands;
+
+use RuntimeException;
+
+/**
+ *
+ */
+final class Validators
+{
+    /**
+     * @param string|null $value
+     * @param string|null $message
+     *
+     * @return string
+     */
+    public static function valueNotEmpty(?string $value, ?string $message): string
+    {
+        if (empty($value)) {
+            throw new RuntimeException($message ?? __u('Value cannot be blank'));
+        }
+
+        return $value;
+    }
+}

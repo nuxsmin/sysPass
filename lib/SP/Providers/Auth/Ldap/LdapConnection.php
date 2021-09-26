@@ -203,22 +203,6 @@ final class LdapConnection implements LdapConnectionInterface
         return $this;
     }
 
-    public function getServerUri(): string
-    {
-        $server = $this->getServer();
-        $port = $this->ldapParams->getPort();
-
-        if (strpos($server, '://') !== false) {
-            return $server . ':' . $port;
-        } elseif ($port === 389 || $port === null) {
-            return 'ldap://' . $server;
-        } elseif ($port === 636) {
-            return 'ldaps://' . $server;
-        }
-
-        return 'ldap://' . $server . ':' . $port;
-    }
-
     /**
      * @inheritDoc
      */
@@ -229,9 +213,13 @@ final class LdapConnection implements LdapConnectionInterface
 
         if (strpos($server, '://') !== false) {
             return $server . ':' . $port;
-        } elseif ($port === 389 || $port === null) {
+        }
+
+        if ($port === 389 || $port === null) {
             return 'ldap://' . $server;
-        } elseif ($port === 636) {
+        }
+
+        if ($port === 636) {
             return 'ldaps://' . $server;
         }
 

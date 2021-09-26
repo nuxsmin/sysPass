@@ -202,15 +202,18 @@ final class Config
      * @return Config
      * @throws FileException
      */
-    public function saveConfig(ConfigData $configData, $backup = true): Config
+    public function saveConfig(ConfigData $configData, ?bool $backup = true): Config
     {
         if ($backup) {
             $this->dic->get(ConfigBackupService::class)
                 ->backup($configData);
         }
 
+        $configSaver = $this->context->getUserData()->getLogin()
+            ?: AppInfoInterface::APP_NAME;
+
         $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->context->getUserData()->getLogin() ?: AppInfoInterface::APP_NAME);
+        $configData->setConfigSaver($configSaver);
         $configData->setConfigHash();
 
         // Save only attributes to avoid a parent attributes node within the XML
@@ -258,7 +261,7 @@ final class Config
      *
      * @return ConfigData
      */
-    public function loadConfig($reload = false): ConfigData
+    public function loadConfig(?bool $reload = false): ConfigData
     {
         try {
             $configData = $this->fileCache->load();

@@ -25,9 +25,15 @@
 namespace SP\Tests\Modules\Cli;
 
 use DI\ContainerBuilder;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use SP\Core\Context\ContextInterface;
+use SP\Storage\Database\DBStorageInterface;
+use Symfony\Component\Console\Tester\CommandTester;
+use function SP\Tests\getDbHandler;
 
 /**
  * Class CliTestCase
@@ -40,6 +46,10 @@ abstract class CliTestCase extends TestCase
      * @var ContainerInterface
      */
     protected static $dic;
+    /**
+     * @var string[]
+     */
+    protected static array $commandInputData = [];
 
     /**
      * This method is called before the first test of this test class is run.
@@ -57,5 +67,43 @@ abstract class CliTestCase extends TestCase
         );
 
         self::$dic = $builder->build();
+
+        $context = self::$dic->get(ContextInterface::class);
+        $context->initialize();
+    }
+
+    /**
+     * @param string     $commandClass
+     * @param array|null $inputData
+     * @param bool       $useInputData
+     *
+     * @return CommandTester
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    protected function executeCommandTest(
+        string $commandClass,
+        ?array $inputData = null,
+        bool   $useInputData = true
+    ): CommandTester
+    {
+        $installCommand = self::$dic->get($commandClass);
+
+        if (null === $inputData && $useInputData) {
+            $inputData = static::$commandInputData;
+        }
+
+        $commandTester = new CommandTester($installCommand);
+        $commandTester->execute(
+            $inputData ?? [],
+            ['interactive' => false]
+        );
+
+        return $commandTester;
+    }
+
+    protected function setupDatabase(): void
+    {
+        self::$dic->set(DBStorageInterface::class, getDbHandler());
     }
 }

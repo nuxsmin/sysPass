@@ -32,7 +32,6 @@ use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Storage\Database\DatabaseException;
 use SP\Tests\DatabaseUtil;
 use SP\Tests\Modules\Cli\CliTestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
@@ -45,11 +44,11 @@ class InstallCommandTest extends CliTestCase
     /**
      * @var string
      */
-    protected static $currentConfig;
+    protected static string $currentConfig;
     /**
      * @var string[]
      */
-    private static $commandInputData = [
+    protected static array $commandInputData = [
         'adminLogin' => 'Admin',
         'databaseHost' => 'localhost',
         'databaseName' => 'syspass-test-install',
@@ -92,39 +91,11 @@ class InstallCommandTest extends CliTestCase
      */
     public function testInstallationIsAborted(): void
     {
-        $commandTester = $this->executeCommandTest();
+        $commandTester = $this->executeCommandTest(InstallCommand::class);
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation aborted', $output);
-    }
-
-    /**
-     * @param array|null $inputData
-     * @param bool       $useInputData
-     *
-     * @return CommandTester
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    private function executeCommandTest(
-        ?array $inputData = null,
-        bool   $useInputData = true
-    ): CommandTester
-    {
-        $installCommand = self::$dic->get(InstallCommand::class);
-
-        if (null === $inputData && $useInputData) {
-            $inputData = self::$commandInputData;
-        }
-
-        $commandTester = new CommandTester($installCommand);
-        $commandTester->execute(
-            $inputData ?? [],
-            ['interactive' => false]
-        );
-
-        return $commandTester;
     }
 
     /**
@@ -138,7 +109,10 @@ class InstallCommandTest extends CliTestCase
             ['--forceInstall' => null]
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -156,7 +130,10 @@ class InstallCommandTest extends CliTestCase
             ['--adminPassword' => '']
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -174,7 +151,10 @@ class InstallCommandTest extends CliTestCase
             ['--masterPassword' => '']
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -198,7 +178,10 @@ class InstallCommandTest extends CliTestCase
             ]
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -229,7 +212,10 @@ class InstallCommandTest extends CliTestCase
             ]
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -273,7 +259,10 @@ class InstallCommandTest extends CliTestCase
             ]
         );
 
-        $commandTester = $this->executeCommandTest($inputData);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            $inputData
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -296,7 +285,11 @@ class InstallCommandTest extends CliTestCase
     {
         $this->setEnvironmentVariables();
 
-        $commandTester = $this->executeCommandTest(null, false);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            null,
+            false
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -347,7 +340,11 @@ class InstallCommandTest extends CliTestCase
 
         $this->setEnvironmentVariables();
 
-        $commandTester = $this->executeCommandTest(null, false);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            null,
+            false
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -370,7 +367,11 @@ class InstallCommandTest extends CliTestCase
 
         $this->setEnvironmentVariables();
 
-        $commandTester = $this->executeCommandTest(null, false);
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            null,
+            false
+        );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();

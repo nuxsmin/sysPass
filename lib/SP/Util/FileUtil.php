@@ -54,11 +54,19 @@ final class FileUtil
             throw new FileNotFoundException('Directory does not exist');
         }
 
-        $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);
+        $it = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(
+                $dir,
+                FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
 
         foreach ($it as $file) {
-            if ($file->isDir()) rmdir($file->getPathname());
-            else unlink($file->getPathname());
+            if ($file->isDir()) {
+                rmdir($file->getPathname());
+            } else {
+                unlink($file->getPathname());
+            }
         }
 
         return rmdir($dir);

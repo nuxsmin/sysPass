@@ -27,13 +27,16 @@ namespace SP\Tests;
 use DI\Container;
 use DI\ContainerBuilder;
 use Exception;
+use RuntimeException;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database\DatabaseConnectionData;
 use SP\Storage\Database\DBStorageInterface;
 use SP\Storage\Database\MySQLHandler;
+use SP\Util\FileUtil;
 
 define('DEBUG', true);
 
@@ -46,11 +49,11 @@ define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
 define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 
-define('MODULES_PATH', APP_ROOT. DIRECTORY_SEPARATOR. 'app' . DIRECTORY_SEPARATOR . 'modules');
+define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'modules');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
 define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
-
+define('BACKUP_PATH', TMP_PATH);
 
 define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
 
@@ -189,19 +192,20 @@ function saveResource($dir, $file, $data): string
 
 /**
  * @param $dir
+ *
+ * @throws FileNotFoundException
  */
 function recreateDir($dir)
 {
-    if (!is_dir($dir)) {
-        print 'Creating ' . $dir . PHP_EOL;
-
-        if (!mkdir($dir) && !is_dir($dir)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
-        }
-    } else {
+    if (is_dir($dir)) {
         print 'Deleting ' . $dir . PHP_EOL;
 
-        // Delete tmp dir ...
-        array_map('unlink', glob($dir . DIRECTORY_SEPARATOR . '*'));
+        FileUtil::rmdir_recursive($dir);
+    }
+
+    print 'Creating ' . $dir . PHP_EOL;
+
+    if (!mkdir($dir) && !is_dir($dir)) {
+        throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
     }
 }

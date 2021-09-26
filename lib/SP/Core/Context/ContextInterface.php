@@ -85,9 +85,9 @@ interface ContextInterface
     /**
      * Devuelve los datos del usuario en la sesión.
      *
-     * @return UserLoginResponse|null
+     * @return UserLoginResponse
      */
-    public function getUserData(): ?UserLoginResponse;
+    public function getUserData(): UserLoginResponse;
 
     /**
      * Establecer el lenguaje de la sesión

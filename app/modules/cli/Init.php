@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Cli;
@@ -32,6 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
+use SP\Modules\Cli\Commands\BackupCommand;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Util\VersionUtil;
 use Symfony\Component\Console\Application;
@@ -46,7 +47,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class Init extends ModuleBase
 {
     private const CLI_COMMANDS = [
-        InstallCommand::class
+        InstallCommand::class,
+        BackupCommand::class
     ];
     /**
      * @var StatelessContext

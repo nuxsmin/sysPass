@@ -119,7 +119,7 @@ final class StatelessContext extends ContextBase
      *
      * @return UserLoginResponse
      */
-    public function getUserData(): ?UserLoginResponse
+    public function getUserData(): UserLoginResponse
     {
         return $this->getContextKey('userData', new UserLoginResponse());
     }

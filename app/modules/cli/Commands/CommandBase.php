@@ -28,6 +28,7 @@ use Psr\Log\LoggerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Class CommandBase
@@ -37,18 +38,21 @@ use Symfony\Component\Console\Command\Command;
 abstract class CommandBase extends Command
 {
     /**
+     * @var string[]
+     */
+    public static array $envVarsMapping = [];
+    /**
      * @var LoggerInterface
      */
-    protected $logger;
-
+    protected LoggerInterface $logger;
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
     /**
      * @var ConfigData
      */
-    protected $configData;
+    protected ConfigData $configData;
 
     /**
      * CommandBase constructor.
@@ -66,5 +70,45 @@ abstract class CommandBase extends Command
         $this->configData = $this->config->getConfigData();
 
         parent::__construct();
+    }
+
+    /**
+     * @param string         $option
+     * @param InputInterface $input
+     *
+     * @return array|false|mixed|string
+     */
+    protected static function getEnvVarOrOption(
+        string         $option,
+        InputInterface $input
+    )
+    {
+        return static::getEnvVarForOption($option)
+            ?: $input->getOption($option);
+    }
+
+    /**
+     * @param string $option
+     *
+     * @return string|false
+     */
+    protected static function getEnvVarForOption(string $option)
+    {
+        return getenv(static::$envVarsMapping[$option]);
+    }
+
+    /**
+     * @param string         $argument
+     * @param InputInterface $input
+     *
+     * @return array|false|mixed|string
+     */
+    protected static function getEnvVarOrArgument(
+        string         $argument,
+        InputInterface $input
+    )
+    {
+        return static::getEnvVarForOption($argument)
+            ?: $input->getArgument($argument);
     }
 }

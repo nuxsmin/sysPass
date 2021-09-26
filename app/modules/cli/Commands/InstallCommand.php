@@ -27,7 +27,6 @@ namespace SP\Modules\Cli\Commands;
 use Closure;
 use Exception;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use SP\Config\Config;
 use SP\Core\Exceptions\InstallError;
 use SP\Core\Exceptions\InvalidArgumentException;
@@ -52,7 +51,7 @@ final class InstallCommand extends CommandBase
     /**
      * @var string[]
      */
-    public static $envVarsMapping = [
+    public static array $envVarsMapping = [
         'adminLogin' => 'ADMIN_LOGIN',
         'adminPassword' => 'ADMIN_PASSWORD',
         'databaseHost' => 'DATABASE_HOST',
@@ -72,7 +71,7 @@ final class InstallCommand extends CommandBase
     /**
      * @var Installer
      */
-    private $installer;
+    private Installer $installer;
 
     public function __construct(LoggerInterface $logger,
                                 Config          $config,
@@ -185,16 +184,8 @@ final class InstallCommand extends CommandBase
      */
     private function getInstallData(InputInterface $input, StyleInterface $style): InstallData
     {
-        $passNotEmptyValidator = function ($value) {
-            if (empty($value)) {
-                throw new RuntimeException(__('Password cannot be blank'));
-            }
-
-            return $value;
-        };
-
-        $adminPassword = $this->getAdminPassword($input, $style, $passNotEmptyValidator);
-        $masterPassword = $this->getMasterPassword($input, $style, $passNotEmptyValidator);
+        $adminPassword = $this->getAdminPassword($input, $style);
+        $masterPassword = $this->getMasterPassword($input, $style);
         $databasePassword = $this->getDatabasePassword($input, $style);
         $language = $this->getLanguage($input, $style);
         $hostingMode = $this->isHostingMode($input);
@@ -220,15 +211,13 @@ final class InstallCommand extends CommandBase
     /**
      * @param InputInterface $input
      * @param StyleInterface $style
-     * @param Closure        $passNotEmptyValidator
      *
      * @return array|false|mixed|string
      * @throws InstallError
      */
     private function getAdminPassword(
         InputInterface $input,
-        StyleInterface $style,
-        Closure        $passNotEmptyValidator
+        StyleInterface $style
     )
     {
         $option = 'adminPassword';
@@ -242,12 +231,18 @@ final class InstallCommand extends CommandBase
 
             $password = $style->askHidden(
                 __('Please provide sysPass admin\'s password'),
-                $passNotEmptyValidator
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Admin password')
+                )
             );
 
             $passwordRepeat = $style->askHidden(
                 __('Please provide sysPass admin\'s password again'),
-                $passNotEmptyValidator
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Admin password')
+                )
             );
 
             if ($password !== $passwordRepeat) {
@@ -260,18 +255,17 @@ final class InstallCommand extends CommandBase
         return $password;
     }
 
+
     /**
      * @param InputInterface $input
      * @param StyleInterface $style
-     * @param Closure        $passNotEmptyValidator
      *
      * @return array|false|mixed|string
      * @throws InstallError
      */
     private function getMasterPassword(
         InputInterface $input,
-        StyleInterface $style,
-        Closure        $passNotEmptyValidator
+        StyleInterface $style
     )
     {
         $password = self::getEnvVarOrOption('masterPassword', $input);
@@ -281,11 +275,17 @@ final class InstallCommand extends CommandBase
 
             $password = $style->askHidden(
                 __('Please provide sysPass master password'),
-                $passNotEmptyValidator
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Master password')
+                )
             );
             $passwordRepeat = $style->askHidden(
                 __('Please provide sysPass master password again'),
-                $passNotEmptyValidator
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Master password')
+                )
             );
 
             if ($password !== $passwordRepeat) {
@@ -296,31 +296,6 @@ final class InstallCommand extends CommandBase
         }
 
         return $password;
-    }
-
-    /**
-     * @param string         $option
-     * @param InputInterface $input
-     *
-     * @return array|false|mixed|string
-     */
-    private static function getEnvVarOrOption(
-        string         $option,
-        InputInterface $input
-    )
-    {
-        return self::getEnvVarForOption($option)
-            ?: $input->getOption($option);
-    }
-
-    /**
-     * @param string $option
-     *
-     * @return string|false
-     */
-    public static function getEnvVarForOption(string $option)
-    {
-        return getenv(self::$envVarsMapping[$option]);
     }
 
     /**
@@ -385,21 +360,6 @@ final class InstallCommand extends CommandBase
         return $envHostingMode !== false
             ? Util::boolval($envHostingMode)
             : $input->getOption($option);
-    }
-
-    /**
-     * @param string         $argument
-     * @param InputInterface $input
-     *
-     * @return array|false|mixed|string
-     */
-    private static function getEnvVarOrArgument(
-        string         $argument,
-        InputInterface $input
-    )
-    {
-        return self::getEnvVarForOption($argument)
-            ?: $input->getArgument($argument);
     }
 
     /**
