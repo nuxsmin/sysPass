@@ -24,9 +24,7 @@
 
 namespace SP\Tests;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
-use SP\Storage\Database\DatabaseException;
 
 /**
  * Class DatabaseBaseTest
@@ -37,30 +35,7 @@ use SP\Storage\Database\DatabaseException;
  */
 abstract class DatabaseTestCase extends TestCase
 {
-    /**
-     * @var bool
-     */
-    protected static $loadFixtures = false;
-    /**
-     * @var PDO
-     */
-    private static $conn;
-
-    /**
-     * @param string $table
-     *
-     * @return int
-     */
-    protected static function getRowCount(string $table): int
-    {
-        if (!self::$conn) {
-            return 0;
-        }
-
-        $sql = sprintf('SELECT count(*) FROM `%s`', $table);
-
-        return (int)self::$conn->query($sql)->fetchColumn();
-    }
+    use DatabaseTrait;
 
     protected function setUp(): void
     {
@@ -70,57 +45,4 @@ abstract class DatabaseTestCase extends TestCase
             self::loadFixtures();
         }
     }
-
-    protected static function loadFixtures()
-    {
-        $dbServer = getenv('DB_SERVER');
-        $dbUser = getenv('DB_USER');
-        $dbPass = getenv('DB_PASS');
-        $dbName = getenv('DB_NAME');
-
-        foreach (FIXTURE_FILES as $file) {
-            if (!empty($dbPass)) {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s -p%s %s < %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbPass,
-                    $dbName,
-                    $file
-                );
-            } else {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s %s < %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbName,
-                    $file
-                );
-            }
-
-            exec($cmd, $output, $res);
-
-            if ($res !== 0) {
-                error_log(sprintf('Cannot load fixtures from: %s', $file));
-                error_log(sprintf('CMD: %s', $cmd));
-                error_log(print_r($output, true));
-
-                exit(1);
-            }
-
-            printf('Fixtures loaded from: %s' . PHP_EOL, $file);
-        }
-
-        if (!self::$conn) {
-            try {
-                self::$conn = getDbHandler()->getConnection();
-            } catch (DatabaseException $e) {
-                processException($e);
-
-                exit(1);
-            }
-        }
-    }
-
-
 }

@@ -28,6 +28,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
@@ -135,7 +136,9 @@ final class ConfigEncryptionController extends SimpleControllerBase
 
         if (!$noAccountPassChange) {
             try {
-                $task = $taskId !== null ? TaskFactory::create(__FUNCTION__, $taskId) : null;
+                $task = $taskId !== null
+                    ? TaskFactory::create(__FUNCTION__, $taskId)
+                    : null;
 
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
@@ -177,7 +180,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
         return $this->returnJsonResponse(
             JsonResponse::JSON_SUCCESS_STICKY,
             __u('Master password updated'),
-            [__u('Please, restart the session for update it')]
+            [__u('Please, restart the session to update it')]
         );
     }
 
@@ -275,7 +278,7 @@ final class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $this->checks();
-            $this->checkAccess(Acl::CONFIG_CRYPT);
+            $this->checkAccess(ActionsInterface::CONFIG_CRYPT);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

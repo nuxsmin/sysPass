@@ -26,6 +26,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use SP\Modules\Cli\Commands\BackupCommand;
+use SP\Modules\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
 use SP\Modules\Cli\Commands\InstallCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -46,5 +48,7 @@ return [
     OutputInterface::class => create(ConsoleOutput::class)
         ->constructor(OutputInterface::VERBOSITY_NORMAL, true),
     InputInterface::class => create(ArgvInput::class),
-    InstallCommand::class => autowire()
+    InstallCommand::class => autowire(),
+    BackupCommand::class => autowire(),
+    UpdateMasterPasswordCommand::class => autowire()
 ];

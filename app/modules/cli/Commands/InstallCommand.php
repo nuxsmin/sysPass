@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Cli\Commands;
 
-use Closure;
 use Exception;
 use Psr\Log\LoggerInterface;
 use SP\Config\Config;
@@ -109,7 +108,7 @@ final class InstallCommand extends CommandBase
             ->addOption('masterPassword',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                __('Master password to encrypt the passwords'))
+                __('Master password to encrypt the data'))
             ->addOption('hostingMode',
                 null,
                 InputOption::VALUE_NONE,

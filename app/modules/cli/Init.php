@@ -33,6 +33,7 @@ use SP\Core\Context\StatelessContext;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Modules\Cli\Commands\BackupCommand;
+use SP\Modules\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Util\VersionUtil;
 use Symfony\Component\Console\Application;
@@ -48,7 +49,8 @@ final class Init extends ModuleBase
 {
     private const CLI_COMMANDS = [
         InstallCommand::class,
-        BackupCommand::class
+        BackupCommand::class,
+        UpdateMasterPasswordCommand::class
     ];
     /**
      * @var StatelessContext

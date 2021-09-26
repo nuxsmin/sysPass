@@ -41,7 +41,8 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "league/fractal": "^0.19.2",
-    "symfony/console": "^v5.1.2"
+    "symfony/console": "^v5.1.2",
+    "symfony/lock": "^v5.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9",

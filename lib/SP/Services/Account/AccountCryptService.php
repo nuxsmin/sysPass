@@ -198,12 +198,7 @@ final class AccountCryptService extends Service
 
                 $accountsOk[] = $account->id;
                 $counter++;
-            } catch (SPException $e) {
-                $errorCount++;
-
-                $eventMessage->addDescription(__u('Error while updating the account\'s password'));
-                $eventMessage->addDetail($account->name, $account->id);
-            } catch (CryptoException $e) {
+            } catch (SPException | CryptoException $e) {
                 $errorCount++;
 
                 $eventMessage->addDescription(__u('Error while updating the account\'s password'));
@@ -263,7 +258,7 @@ final class AccountCryptService extends Service
 
             throw new ServiceException(
                 __u('Error while updating the accounts\' passwords in history'),
-                ServiceException::ERROR,
+                SPException::ERROR,
                 null,
                 $e->getCode(),
                 $e);
