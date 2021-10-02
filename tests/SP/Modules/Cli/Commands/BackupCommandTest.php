@@ -165,4 +165,18 @@ class BackupCommandTest extends CliTestCase
                 TMP_PATH)
         );
     }
+
+    protected function setUp(): void
+    {
+        $this->unsetEnvironmentVariables();
+
+        parent::setUp();
+    }
+
+    private function unsetEnvironmentVariables(): void
+    {
+        foreach (BackupCommand::$envVarsMapping as $envVar) {
+            putenv($envVar);
+        }
+    }
 }

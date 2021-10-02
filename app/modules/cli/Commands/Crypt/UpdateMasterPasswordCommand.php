@@ -120,9 +120,21 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $this->checkInstalled();
             $this->checkMaintenance();
 
+            $masterPassword = $this->getMasterPassword($input, $style);
+            $currentMasterPassword = $this->getCurrentMasterPassword($input, $style);
+
+            if ($masterPassword === $currentMasterPassword) {
+                $this->logger->debug(__u('Passwords are the same'));
+                $style->info(__('Passwords are the same'));
+
+                return self::FAILURE;
+            }
+
+            $this->checkMasterPassword($currentMasterPassword);
+
             $request = new UpdateMasterPassRequest(
-                $this->getCurrentMasterPassword($input, $style),
-                $this->getMasterPassword($input, $style),
+                $currentMasterPassword,
+                $masterPassword,
                 $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH)
             );
 
@@ -177,23 +189,41 @@ final class UpdateMasterPasswordCommand extends CommandBase
      * @param InputInterface $input
      * @param StyleInterface $style
      *
-     * @return bool
+     * @return array|false|mixed|string
      */
-    private function getUpdate(InputInterface $input, StyleInterface $style): bool
+    private function getMasterPassword(
+        InputInterface $input,
+        StyleInterface $style
+    )
     {
-        $option = 'update';
+        $password = self::getEnvVarOrOption('masterPassword', $input);
 
-        $envUpdate = self::getEnvVarForOption($option);
+        if (empty($password)) {
+            $this->logger->debug(__u('Ask for master password'));
 
-        $value = $envUpdate !== false
-            ? Util::boolval($envUpdate)
-            : $input->getOption($option);
+            $password = $style->askHidden(
+                __('Please provide the new master password'),
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Master password')
+                )
+            );
+            $passwordRepeat = $style->askHidden(
+                __('Please provide the new master password again'),
+                fn($value) => Validators::valueNotEmpty(
+                    $value,
+                    sprintf(__u('%s cannot be blank'), 'Master password')
+                )
+            );
 
-        if ($value === false) {
-            return $style->confirm(__('Update master password? (This process cannot be undone)'), false);
+            if ($password !== $passwordRepeat) {
+                throw new RuntimeException(__u('Passwords do not match'));
+            } elseif (null === $password || null === $passwordRepeat) {
+                throw new RuntimeException(sprintf(__u('%s cannot be blank'), 'Master password'));
+            }
         }
 
-        return true;
+        return $password;
     }
 
     /**
@@ -238,43 +268,36 @@ final class UpdateMasterPasswordCommand extends CommandBase
     }
 
     /**
+     * @throws \SP\Services\ServiceException
+     * @throws \SP\Repositories\NoSuchItemException
+     */
+    private function checkMasterPassword(string $password): void
+    {
+        if (!$this->masterPassService->checkMasterPassword($password)) {
+            throw new RuntimeException(__u('The current master password does not match'));
+        }
+    }
+
+    /**
      * @param InputInterface $input
      * @param StyleInterface $style
      *
-     * @return array|false|mixed|string
+     * @return bool
      */
-    private function getMasterPassword(
-        InputInterface $input,
-        StyleInterface $style
-    )
+    private function getUpdate(InputInterface $input, StyleInterface $style): bool
     {
-        $password = self::getEnvVarOrOption('masterPassword', $input);
+        $option = 'update';
 
-        if (empty($password)) {
-            $this->logger->debug(__u('Ask for master password'));
+        $envUpdate = self::getEnvVarForOption($option);
 
-            $password = $style->askHidden(
-                __('Please provide the new master password'),
-                fn($value) => Validators::valueNotEmpty(
-                    $value,
-                    sprintf(__u('%s cannot be blank'), 'Master password')
-                )
-            );
-            $passwordRepeat = $style->askHidden(
-                __('Please provide the new master password again'),
-                fn($value) => Validators::valueNotEmpty(
-                    $value,
-                    sprintf(__u('%s cannot be blank'), 'Master password')
-                )
-            );
+        $value = $envUpdate !== false
+            ? Util::boolval($envUpdate)
+            : $input->getOption($option);
 
-            if ($password !== $passwordRepeat) {
-                throw new RuntimeException(__u('Passwords do not match'));
-            } elseif (null === $password || null === $passwordRepeat) {
-                throw new RuntimeException(sprintf(__u('%s cannot be blank'), 'Master password'));
-            }
+        if ($value === false) {
+            return $style->confirm(__('Update master password? (This process cannot be undone)'), false);
         }
 
-        return $password;
+        return true;
     }
 }

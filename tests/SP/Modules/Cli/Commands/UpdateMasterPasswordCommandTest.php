@@ -114,6 +114,18 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
         $this->assertStringContainsString('Master password update aborted', $output);
     }
 
+    private function setEnvironmentVariables(): void
+    {
+        putenv(sprintf('%s=%s',
+                UpdateMasterPasswordCommand::$envVarsMapping['currentMasterPassword'],
+                AccountCryptServiceTest::CURRENT_MASTERPASS)
+        );
+        putenv(sprintf('%s=%s',
+                UpdateMasterPasswordCommand::$envVarsMapping['masterPassword'],
+                AccountCryptServiceTest::NEW_MASTERPASS)
+        );
+    }
+
     /**
      * @throws DependencyException
      * @throws NotFoundException
@@ -156,18 +168,6 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
         $this->assertStringContainsString('Master password cannot be blank', $output);
     }
 
-    private function setEnvironmentVariables(): void
-    {
-        putenv(sprintf('%s=%s',
-                UpdateMasterPasswordCommand::$envVarsMapping['currentMasterPassword'],
-                AccountCryptServiceTest::CURRENT_MASTERPASS)
-        );
-        putenv(sprintf('%s=%s',
-                UpdateMasterPasswordCommand::$envVarsMapping['masterPassword'],
-                AccountCryptServiceTest::NEW_MASTERPASS)
-        );
-    }
-
     /**
      * @throws DependencyException
      * @throws NotFoundException
@@ -191,12 +191,65 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
         $this->assertStringContainsString('Master password updated', $output);
     }
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function testSameMasterPassword(): void
+    {
+        $inputData = [
+            '--currentMasterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
+            '--masterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
+            '--update' => null
+        ];
+
+        $commandTester = $this->executeCommandTest(
+            UpdateMasterPasswordCommand::class,
+            $inputData
+        );
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Passwords are the same', $output);
+    }
+
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function testWrongMasterPassword(): void
+    {
+        $inputData = [
+            '--currentMasterPassword' => uniqid('', true),
+            '--masterPassword' => AccountCryptServiceTest::NEW_MASTERPASS,
+            '--update' => null
+        ];
+
+        $commandTester = $this->executeCommandTest(
+            UpdateMasterPasswordCommand::class,
+            $inputData
+        );
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('The current master password does not match', $output);
+    }
+
     protected function setUp(): void
     {
+        $this->unsetEnvironmentVariables();
+
         $this->setupDatabase();
 
         self::loadFixtures();
 
         parent::setUp();
+    }
+
+    private function unsetEnvironmentVariables(): void
+    {
+        foreach (UpdateMasterPasswordCommand::$envVarsMapping as $envVar) {
+            putenv($envVar);
+        }
     }
 }

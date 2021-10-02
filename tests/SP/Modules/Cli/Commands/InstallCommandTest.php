@@ -380,4 +380,18 @@ class InstallCommandTest extends CliTestCase
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
     }
+
+    protected function setUp(): void
+    {
+        $this->unsetEnvironmentVariables();
+
+        parent::setUp();
+    }
+
+    private function unsetEnvironmentVariables(): void
+    {
+        foreach (InstallCommand::$envVarsMapping as $envVar) {
+            putenv($envVar);
+        }
+    }
 }
