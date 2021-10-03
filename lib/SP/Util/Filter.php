@@ -62,13 +62,11 @@ final class Filter
      */
     public static function getArray(array $array): array
     {
-        return array_map(function ($value) {
+        return array_map(static function ($value) {
             if ($value !== null) {
-                if (is_numeric($value)) {
-                    return Filter::getInt($value);
-                } else {
-                    return Filter::getString($value);
-                }
+                return is_numeric($value)
+                    ? Filter::getInt($value)
+                    : Filter::getString($value);
             }
 
             return null;

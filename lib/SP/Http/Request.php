@@ -44,27 +44,27 @@ final class Request
     /**
      * @var array Directorios seguros para include
      */
-    const SECURE_DIRS = ['css', 'js'];
+    public const SECURE_DIRS = ['css', 'js'];
     /**
      * @var HeaderDataCollection
      */
-    private $headers;
+    private HeaderDataCollection $headers;
     /**
      * @var \Klein\Request
      */
-    private $request;
+    private \Klein\Request $request;
     /**
      * @var DataCollection
      */
-    private $params;
+    private DataCollection $params;
     /**
      * @var string
      */
-    private $method;
+    private string $method;
     /**
      * @var bool
      */
-    private $https;
+    private bool $https;
 
     /**
      * Request constructor.
@@ -86,17 +86,19 @@ final class Request
     {
         if ($this->request->method('GET')) {
             $this->method = 'GET';
+
             return $this->request->paramsGet();
-        } else {
-            $this->method = 'POST';
-            return $this->request->paramsPost();
         }
+
+        $this->method = 'POST';
+
+        return $this->request->paramsPost();
     }
 
     /**
      * Detects if the connection is done through HTTPS
      */
-    private function detectHttps()
+    private function detectHttps(): void
     {
         $this->https = Util::boolval($this->request->server()->get('HTTPS', 'off'))
             || $this->request->server()->get('SERVER_PORT', 0) === 443;
@@ -168,27 +170,34 @@ final class Request
     public function getForwardedFor(): ?array
     {
         // eg: Forwarded: by=<identifier>; for=<identifier>; host=<host>; proto=<http|https>
+        // Forwarded: for=12.34.56.78;host=example.com;proto=https, for=23.45.67.89
         $forwarded = $this->headers->get('HTTP_FORWARDED');
 
         if ($forwarded !== null &&
             preg_match_all(
-                '/(?:for=([\w.:]+))|(?:for="\[([\w.:]+)\]")/i',
+                '/for="?\[?([\w.:]+)]?"?/',
                 $forwarded,
-                $matches)
+                $matches
+            )
         ) {
-            return array_filter(array_merge($matches[1], $matches[2]), function ($value) {
-                return !empty($value);
-            });
+            return array_filter(
+                $matches[1],
+                static function ($value) {
+                    return !empty($value);
+                }
+            );
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
         $xForwarded = $this->headers->get('HTTP_X_FORWARDED_FOR');
 
         if ($xForwarded !== null) {
-            $matches = preg_split('/(?<=[\w])+,\s?/i',
+            $matches = preg_split(
+                '/(?<=[\w])+,\s?/',
                 $xForwarded,
                 -1,
-                PREG_SPLIT_NO_EMPTY);
+                PREG_SPLIT_NO_EMPTY
+            );
 
             if (count($matches) > 0) {
                 return $matches;
@@ -209,8 +218,8 @@ final class Request
     }
 
     /**
-     * @param string $param
-     * @param string $default
+     * @param string      $param
+     * @param string|null $default
      *
      * @return string|null
      */
@@ -299,16 +308,12 @@ final class Request
     {
         $requestValue = $this->params->get($param);
 
-        if ($requestValue !== null
-            && is_array($requestValue)
-        ) {
+        if (is_array($requestValue)) {
             if (is_callable($mapper)) {
                 return $mapper($requestValue);
             }
 
-            return array_map(function ($value) {
-                return is_numeric($value) ? Filter::getInt($value) : Filter::getString($value);
-            }, $requestValue);
+            return Filter::getArray($requestValue);
         }
 
         return $default;
@@ -381,7 +386,7 @@ final class Request
      *
      * @throws SPException
      */
-    public function verifySignature(string $key, ?string $param = null)
+    public function verifySignature(string $key, ?string $param = null): void
     {
         $result = false;
         $hash = $this->params->get('h');
@@ -417,18 +422,11 @@ final class Request
      */
     public function getHttpHost(): string
     {
-        $forwarded = $this->getForwardedData();
+        // Check in style of RFC 7239 otherwise the deprecated standard
+        $forwarded = $this->getForwardedData() ?? $this->getXForwardedData();
 
-        // Check in style of RFC 7239
         if (null !== $forwarded) {
             return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
-        }
-
-        $xForward = $this->getXForwardedData();
-
-        // Check (deprecated) de facto standard
-        if (null !== $xForward) {
-            return strtolower($xForward['proto'] . '://' . $xForward['host']);
         }
 
         $protocol = 'http://';
@@ -453,12 +451,15 @@ final class Request
 
         // Check in style of RFC 7239
         if (!empty($forwarded)
-            && preg_match('/proto=(\w+);/i', $forwarded, $matchesProto)
-            && preg_match('/host=(\w+);/i', $forwarded, $matchesHost)
+            && preg_match_all(
+                '/(?P<proto>proto=(\w+))|(?P<host>host=([\w.]+))/i',
+                $forwarded,
+                $matches
+            )
         ) {
             $data = [
-                'host ' => $matchesHost[0],
-                'proto' => $matchesProto[0],
+                'host ' => $matches['host'][1] ?? null,
+                'proto' => $matches['proto'][1] ?? null,
                 'for' => $this->getForwardedFor()
             ];
 

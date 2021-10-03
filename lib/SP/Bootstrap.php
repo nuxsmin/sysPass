@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP;
 
+use Closure;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
@@ -42,8 +43,8 @@ use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Http\Request;
 use SP\Modules\Api\Init as InitApi;
-use SP\Modules\Web\Init as InitWeb;
 use SP\Modules\Cli\Init as InitCli;
+use SP\Modules\Web\Init as InitWeb;
 use SP\Plugin\PluginManager;
 use SP\Services\Api\ApiRequest;
 use SP\Services\Api\JsonRpcResponse;
@@ -64,18 +65,19 @@ defined('APP_ROOT') || die();
  */
 final class Bootstrap
 {
+    private const OOPS_MESSAGE = "Oops, it looks like this content does not exist...";
     /**
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
      */
-    public static $WEBROOT = '';
+    public static string $WEBROOT = '';
     /**
      * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
      */
-    public static $WEBURI = '';
+    public static string $WEBURI = '';
     /**
      * @var string
      */
-    public static $SUBURI = '';
+    public static string $SUBURI = '';
     /**
      * @var mixed
      */
@@ -83,7 +85,7 @@ final class Bootstrap
     /**
      * @var bool Indica si la versión de PHP es correcta
      */
-    public static $checkPhpVersion;
+    public static bool $checkPhpVersion;
     /**
      * @var ContainerInterface
      */
@@ -93,17 +95,9 @@ final class Bootstrap
      */
     private $router;
     /**
-     * @var Language
-     */
-    private $language;
-    /**
      * @var Request
      */
     private $request;
-    /**
-     * @var Config
-     */
-    private $config;
     /**
      * @var ConfigData
      */
@@ -113,37 +107,29 @@ final class Bootstrap
      * Bootstrap constructor.
      *
      * @param Container $container
-     * @param bool      $useRouter
      *
-     * @throws DependencyException
-     * @throws NotFoundException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    private final function __construct(Container $container, bool $useRouter = true)
+    private function __construct(Container $container)
     {
         self::$container = $container;
 
         // Set the default language
         Language::setLocales('en_US');
 
-        $this->config = $container->get(Config::class);
-        $this->configData = $this->config->getConfigData();
-        $this->language = $container->get(Language::class);
+        $this->configData = $container->get(Config::class)->getConfigData();
+        $this->router = $container->get(Klein::class);
+        $this->request = $container->get(Request::class);
 
-        if ($useRouter) {
-            $this->router = $container->get(Klein::class);
-            $this->request = $container->get(Request::class);
-
-            $this->initRouter();
-        }
+        $this->initRouter();
     }
 
     /**
      * Inicializar router
      */
-    protected function initRouter()
+    protected function initRouter(): void
     {
-        $oops = "Oops, it looks like this content does not exist...";
-
         $this->router->onError(function ($router, $err_msg, $type, $err) {
             logger('Routing error: ' . $err_msg);
 
@@ -154,117 +140,102 @@ final class Bootstrap
             $router->response()->body(__($err_msg));
         });
 
+        // Manage requests for options
+        $this->router->respond(
+            'OPTIONS',
+            null,
+            $this->manageCorsRequest()
+        );
+
         // Manage requests for api module
-        $this->router->respond(['POST'],
+        $this->router->respond(
+            'POST',
             '@/api\.php',
-            function ($request, $response, $service) use ($oops) {
-                try {
-                    logger('API route');
-
-                    $apiRequest = self::$container->get(ApiRequest::class);
-
-                    list($controller, $action) = explode('/', $apiRequest->getMethod());
-
-                    $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
-                    $method = $action . 'Action';
-
-                    if (!method_exists($controllerClass, $method)) {
-                        logger($controllerClass . '::' . $method);
-
-                        /** @var Response $response */
-                        $response->headers()->set('Content-type', 'application/json; charset=utf-8');
-                        return $response->body(JsonRpcResponse::getResponseError($oops, JsonRpcResponse::METHOD_NOT_FOUND, $apiRequest->getId()));
-                    }
-
-                    $this->initializeCommon();
-
-                    self::$container->get(InitApi::class)
-                        ->initialize($controller);
-
-                    logger('Routing call: ' . $controllerClass . '::' . $method);
-
-                    return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
-                } catch (\Exception $e) {
-                    processException($e);
-
-                    /** @var Response $response */
-                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
-                    return $response->body(JsonRpcResponse::getResponseException($e, 0));
-
-                } finally {
-                    $this->router->skipRemaining();
-                }
-            }
+            $this->manageApiRequest()
         );
 
         // Manage requests for web module
-        $this->router->respond(['GET', 'POST'],
+        $this->router->respond(
+            ['GET', 'POST'],
             '@(?!/api\.php)',
-            function ($request, $response, $service) use ($oops) {
-                try {
-                    logger('WEB route');
+            $this->manageWebRequest()
+        );
+    }
 
-                    /** @var \Klein\Request $request */
-                    $route = Filter::getString($request->param('r', 'index/index'));
+    /**
+     * @return \Closure
+     */
+    private function manageCorsRequest(): Closure
+    {
+        return function ($request, $response) {
+            /** @var \Klein\Request $request */
+            /** @var \Klein\Response $response */
 
-                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d\.]+)+)?#', $route, $matches)) {
-                        throw new RuntimeException($oops);
-                    }
+            $this->setCors($response);
+        };
+    }
 
-//                    $app = $matches['app'][0] ?: 'web';
-                    $controllerName = $matches['controller'][0];
-                    $methodName = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
-                    $methodParams = !empty($matches['params'][0]) ? Filter::getArray(explode('/', trim($matches['params'][0], '/'))) : [];
+    /**
+     * @param \Klein\Response $response
+     */
+    private function setCors(Response $response): void
+    {
+        $response->header('Access-Control-Allow-Origin', $this->configData->getApplicationUrl() ?? $this->request->getHttpHost());
+        $response->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    }
 
-                    $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controllerName) . 'Controller';
+    /**
+     *
+     * @return \Closure
+     */
+    private function manageApiRequest(): Closure
+    {
+        return function ($request, $response, $service) {
+            try {
+                logger('API route');
 
-                    $this->initializePluginClasses();
+                $apiRequest = self::$container->get(ApiRequest::class);
 
-                    if (!method_exists($controllerClass, $methodName)) {
-                        logger($controllerClass . '::' . $methodName);
+                [$controller, $action] = explode('/', $apiRequest->getMethod());
 
-                        /** @var Response $response */
-                        $response->code(404);
+                $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
+                $method = $action . 'Action';
 
-                        throw new RuntimeException($oops);
-                    }
-
-                    $this->initializeCommon();
-
-                    switch (APP_MODULE) {
-                        case 'web':
-                            self::$container->get(InitWeb::class)
-                                ->initialize($controllerName);
-                            break;
-                    }
-
-                    logger('Routing call: ' . $controllerClass . '::' . $methodName . '::' . print_r($methodParams, true));
-
-                    $controller = new $controllerClass(self::$container, $methodName);
-
-                    return call_user_func_array([$controller, $methodName], $methodParams);
-                } catch (SessionTimeout $sessionTimeout) {
-                    logger('Session timeout');
-                } catch (\Exception $e) {
-                    processException($e);
+                if (!method_exists($controllerClass, $method)) {
+                    logger($controllerClass . '::' . $method);
 
                     /** @var Response $response */
-                    if ($response->status()->getCode() !== 404) {
-                        $response->code(503);
-                    }
+                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
-                    return __($e->getMessage());
+                    return $response->body(
+                        JsonRpcResponse::getResponseError(
+                            self::OOPS_MESSAGE,
+                            JsonRpcResponse::METHOD_NOT_FOUND,
+                            $apiRequest->getId()
+                        )
+                    );
                 }
-            }
-        );
 
-        // Manejar URLs que no empiecen por '/admin'
-//        $this->Router->respond('GET', '!@^/(admin|public|service)',
-//            function ($request, $response) {
-//                /** @var Response $response */
-//                $response->redirect('index.php');
-//            }
-//        );
+                $this->initializeCommon();
+
+                self::$container->get(InitApi::class)
+                    ->initialize($controller);
+
+                logger('Routing call: ' . $controllerClass . '::' . $method);
+
+                return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
+            } catch (\Exception $e) {
+                processException($e);
+
+                /** @var Response $response */
+                $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                return $response->body(JsonRpcResponse::getResponseException($e, 0));
+
+            } finally {
+                $this->router->skipRemaining();
+            }
+        };
     }
 
     /**
@@ -276,7 +247,7 @@ final class Bootstrap
      * @throws NotFoundException
      * @throws Storage\File\FileException
      */
-    protected function initializeCommon()
+    protected function initializeCommon(): void
     {
         logger(__FUNCTION__);
 
@@ -295,8 +266,8 @@ final class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                sprintf(__('Required PHP version >= %s <= %s'), '7.3', '7.4'),
-                InitializationException::ERROR,
+                sprintf(__('Required PHP version >= %s <= %s'), '7.4', '8.0'),
+                Core\Exceptions\SPException::ERROR,
                 __u('Please update the PHP version to run sysPass')
             );
         }
@@ -308,7 +279,7 @@ final class Bootstrap
     /**
      * Establecer variables de autentificación
      */
-    private function initAuthVariables()
+    private function initAuthVariables(): void
     {
         $server = $this->router->request()->server();
 
@@ -325,7 +296,8 @@ final class Bootstrap
             || ($server->get('REDIRECT_HTTP_AUTHORIZATION') !== null
                 && preg_match('/Basic\s+(.*)$/i', $server->get('REDIRECT_HTTP_AUTHORIZATION'), $matches))
         ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
+            [$name, $password] = explode(':', base64_decode($matches[1]), 2);
+
             $server->set('PHP_AUTH_USER', strip_tags($name));
             $server->set('PHP_AUTH_PW', strip_tags($password));
         }
@@ -334,22 +306,22 @@ final class Bootstrap
     /**
      * Establecer el nivel de logging
      */
-    public function initPHPVars()
+    public function initPHPVars(): void
     {
         if (defined('DEBUG') && DEBUG) {
+            /** @noinspection ForgottenDebugOutputInspection */
+            Debug::enable();
+        } else if (!defined('DEBUG')
+            && ($this->router->request()->cookies()->get('XDEBUG_SESSION')
+                || $this->configData->isDebug())
+        ) {
+            define('DEBUG', true);
+
+            /** @noinspection ForgottenDebugOutputInspection */
             Debug::enable();
         } else {
-            // Set debug mode if an Xdebug session is active
-            if (($this->router->request()->cookies()->get('XDEBUG_SESSION')
-                    || $this->configData->isDebug())
-                && !defined('DEBUG')
-            ) {
-                define('DEBUG', true);
-                Debug::enable();
-            } else {
-                error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-                ini_set('display_errors', 0);
-            }
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 0);
         }
 
         if (!file_exists(LOG_FILE)
@@ -373,7 +345,7 @@ final class Bootstrap
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
      */
-    private function initPaths()
+    private function initPaths(): void
     {
         self::$SUBURI = '/' . basename($this->request->getServer('SCRIPT_FILENAME'));
 
@@ -397,7 +369,7 @@ final class Bootstrap
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function initConfig()
+    private function initConfig(): void
     {
         $this->checkConfigVersion();
 
@@ -412,7 +384,7 @@ final class Bootstrap
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function checkConfigVersion()
+    private function checkConfigVersion(): void
     {
         if (file_exists(OLD_CONFIG_FILE)) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
@@ -430,13 +402,90 @@ final class Bootstrap
     }
 
     /**
+     *
+     * @return \Closure
+     */
+    private function manageWebRequest(): Closure
+    {
+        return function ($request, $response, $service) {
+            /** @var \Klein\Request $request */
+            /** @var \Klein\Response $response */
+
+            try {
+                logger('WEB route');
+
+                /** @var \Klein\Request $request */
+                $route = Filter::getString($request->param('r', 'index/index'));
+
+                if (!preg_match_all(
+                    '#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#',
+                    $route,
+                    $matches)
+                ) {
+                    throw new RuntimeException(self::OOPS_MESSAGE);
+                }
+
+                $controllerName = $matches['controller'][0];
+                $methodName = empty($matches['action'][0])
+                    ? 'indexAction'
+                    : $matches['action'][0] . 'Action';
+                $methodParams = empty($matches['params'][0])
+                    ? []
+                    : Filter::getArray(explode(
+                        '/',
+                        trim($matches['params'][0],
+                            '/')
+                    ));
+
+                $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controllerName) . 'Controller';
+
+                $this->initializePluginClasses();
+
+                if (!method_exists($controllerClass, $methodName)) {
+                    logger($controllerClass . '::' . $methodName);
+
+                    $response->code(404);
+
+                    throw new RuntimeException(self::OOPS_MESSAGE);
+                }
+
+                $this->setCors($response);
+
+                $this->initializeCommon();
+
+                if (APP_MODULE === 'web') {
+                    self::$container->get(InitWeb::class)
+                        ->initialize($controllerName);
+                }
+
+                logger('Routing call: ' . $controllerClass . '::' . $methodName . '::' . print_r($methodParams, true));
+
+                $controller = new $controllerClass(self::$container, $methodName);
+
+                return call_user_func_array([$controller, $methodName], $methodParams);
+            } catch (SessionTimeout $sessionTimeout) {
+                logger('Session timeout');
+            } catch (\Exception $e) {
+                processException($e);
+
+                /** @var Response $response */
+                if ($response->status()->getCode() !== 404) {
+                    $response->code(503);
+                }
+
+                return __($e->getMessage());
+            }
+        };
+    }
+
+    /**
      * initializePluginClasses
      */
-    protected function initializePluginClasses()
+    protected function initializePluginClasses(): void
     {
         $loader = require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-        foreach (PluginManager::getPlugins() as $name => $base) {
+        foreach (PluginManager::getPlugins() as $base) {
             $loader->addPsr4($base['namespace'], $base['dir']);
         }
     }
@@ -458,7 +507,7 @@ final class Bootstrap
      * @throws NotFoundException
      * @throws Core\Context\ContextException
      */
-    public static function run(Container $container, string $module = APP_MODULE)
+    public static function run(Container $container, string $module = APP_MODULE): void
     {
         switch ($module) {
             case 'web':
