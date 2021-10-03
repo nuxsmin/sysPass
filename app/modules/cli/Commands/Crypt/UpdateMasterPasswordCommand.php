@@ -30,6 +30,7 @@ use RuntimeException;
 use SP\Config\Config;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
+use SP\Services\Account\AccountService;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
@@ -70,13 +71,26 @@ final class UpdateMasterPasswordCommand extends CommandBase
      * @var ConfigService
      */
     private ConfigService $configService;
+    /**
+     * @var \SP\Services\Account\AccountService
+     */
+    private AccountService $accountService;
 
+    /**
+     * @param \SP\Services\Crypt\MasterPassService $masterPassService
+     * @param \SP\Services\Account\AccountService  $accountService
+     * @param \SP\Services\Config\ConfigService    $configService
+     * @param \Psr\Log\LoggerInterface             $logger
+     * @param \SP\Config\Config                    $config
+     */
     public function __construct(MasterPassService $masterPassService,
+                                AccountService    $accountService,
                                 ConfigService     $configService,
                                 LoggerInterface   $logger,
                                 Config            $config)
     {
         $this->masterPassService = $masterPassService;
+        $this->accountService = $accountService;
         $this->configService = $configService;
 
         parent::__construct($logger, $config);
@@ -145,6 +159,14 @@ final class UpdateMasterPasswordCommand extends CommandBase
                 return self::FAILURE;
             }
 
+            $style->warning(__('You should save the new password on a secure place'));
+            $style->warning(__('All accounts passwords will be encrypted again.'));
+            $style->warning(__('Users will need to enter the new Master Password.'));
+            $style->warning(printf(
+                __('It will be updated %s accounts. This process could take some time long.'),
+                $this->accountService->getTotalNumAccounts()
+            ));
+            $style->newLine();
             $style->caution(__('This is a critical process, please do not cancel/close this CLI'));
 
             $style->ask(__('Please, press any key to continue'));
